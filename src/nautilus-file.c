@@ -4576,6 +4576,21 @@ nautilus_is_video_file (NautilusFile *file)
     return FALSE;
 }
 
+void
+nautilus_file_prioritize (NautilusFile *file)
+{
+    g_return_if_fail (file != NULL && NAUTILUS_IS_FILE (file));
+
+    nautilus_directory_prioritze_file (file->details->directory, file);
+
+    if (nautilus_file_is_thumbnailing (file))
+    {
+        g_autofree char *uri = nautilus_file_get_uri (file);
+
+        nautilus_thumbnail_prioritize (uri);
+    }
+}
+
 static GList *
 sort_keyword_list_and_remove_duplicates (GList *keywords)
 {

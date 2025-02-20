@@ -207,6 +207,84 @@ nautilus_view_item_set_drag_accept (NautilusViewItem *self,
     g_object_set (self, "drag-accept", drag_accept, NULL);
 }
 
+gint priorization_timeout = 0;
+
+static void
+free_weak_ref (gpointer data)
+{
+    GWeakRef *weak_ref = data;
+    g_weak_ref_clear (weak_ref);
+    g_free (weak_ref);
+}
+
+static GPtrArray *
+get_priority_array (void)
+{
+    static GPtrArray *priority_files = NULL;
+
+    if (G_UNLIKELY (priority_files == NULL))
+    {
+        priority_files = g_ptr_array_new_with_free_func (free_weak_ref);
+    }
+
+    return priority_files;
+}
+
+static void
+prioritize_idle_callback (gpointer data)
+{
+    GPtrArray *priority_files = get_priority_array ();
+
+    priorization_timeout = 0;
+
+    for (gint i = priority_files->len - 1; i >= 0; i--)
+    {
+        g_autoptr (NautilusViewItem) item = g_weak_ref_get ((GWeakRef *) priority_files->pdata[i]);
+
+        if (item != NULL)
+        {
+            NautilusFile *file = nautilus_view_item_get_file (item);
+
+            nautilus_file_prioritize (file);
+            g_ptr_array_remove_index_fast (priority_files, i);
+        }
+    }
+}
+
+void
+nautilus_view_item_prioritize (NautilusViewItem *self,
+                               gboolean          prioritize)
+{
+    GPtrArray *priority_files = get_priority_array ();
+
+    if (prioritize)
+    {
+        GWeakRef *weak_ref = g_new0 (GWeakRef, 1);
+
+        g_weak_ref_init (weak_ref, self);
+        g_ptr_array_add (priority_files, weak_ref);
+
+        if (priorization_timeout == 0)
+        {
+            /* Allow handling files in batches by adding a short delay */
+            priorization_timeout = g_timeout_add_once (5, prioritize_idle_callback, NULL);
+        }
+    }
+    else
+    {
+        for (guint i = 0; i < priority_files->len; i++)
+        {
+            g_autoptr (NautilusViewItem) reffed_item = g_weak_ref_get ((GWeakRef *) priority_files->pdata[i]);
+
+            if (reffed_item != NULL && reffed_item == self)
+            {
+                g_ptr_array_remove_index_fast (priority_files, i);
+                break;
+            }
+        }
+    }
+}
+
 gboolean
 nautilus_view_item_get_loading (NautilusViewItem *self)
 {
