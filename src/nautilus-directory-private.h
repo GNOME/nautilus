@@ -227,7 +227,8 @@ void               nautilus_directory_add_file_to_work_queue          (NautilusD
 								       NautilusFile *file);
 void               nautilus_directory_remove_file_from_work_queue     (NautilusDirectory *directory,
 								       NautilusFile *file);
-
+void               nautilus_directory_prioritze_file                  (NautilusDirectory *directory,
+                                                                       NautilusFile      *file);
 
 /* debugging functions */
 int                nautilus_directory_number_outstanding              (void);
