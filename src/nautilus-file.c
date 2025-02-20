@@ -2380,7 +2380,6 @@ update_info_internal (NautilusFile *file,
     gboolean can_read, can_write, can_execute, can_delete, can_trash, can_rename, can_mount, can_unmount, can_eject;
     gboolean can_start, can_start_degraded, can_stop, can_poll_for_media, is_media_check_automatic;
     GDriveStartStopType start_stop_type;
-    gboolean thumbnailing_failed;
     gboolean has_uid = FALSE;
     uid_t uid = 0;
     gboolean has_gid = FALSE;
@@ -2391,7 +2390,7 @@ update_info_internal (NautilusFile *file,
     time_t trash_time;
     time_t recency;
     const char *time_string;
-    const char *symlink_name, *mime_type, *selinux_context, *name, *thumbnail_path;
+    const char *symlink_name, *mime_type, *selinux_context, *name;
     GFileType file_type;
     GIcon *icon;
     const char *filesystem_id;
@@ -2707,10 +2706,8 @@ update_info_internal (NautilusFile *file,
     if (file->details->atime != atime ||
         file->details->mtime != mtime)
     {
-        if (file->details->thumbnail == NULL)
-        {
-            file->details->thumbnail_is_up_to_date = FALSE;
-        }
+        file->details->thumbnail_info_is_up_to_date = FALSE;
+        file->details->thumbnail_is_up_to_date = FALSE;
 
         changed = TRUE;
     }
@@ -2718,10 +2715,11 @@ update_info_internal (NautilusFile *file,
     file->details->mtime = mtime;
     file->details->btime = btime;
 
-    if (file->details->thumbnail != NULL &&
+    if (nautilus_file_has_thumbnail (file) &&
         file->details->thumbnail_mtime != 0 &&
         file->details->thumbnail_mtime != mtime)
     {
+        file->details->thumbnail_info_is_up_to_date = FALSE;
         file->details->thumbnail_is_up_to_date = FALSE;
         changed = TRUE;
     }
@@ -2736,19 +2734,6 @@ update_info_internal (NautilusFile *file,
             g_object_unref (file->details->icon);
         }
         file->details->icon = g_object_ref (icon);
-    }
-
-    thumbnail_path = g_file_info_get_attribute_byte_string (info, G_FILE_ATTRIBUTE_THUMBNAIL_PATH);
-    if (g_set_str (&file->details->thumbnail_path, thumbnail_path))
-    {
-        changed = TRUE;
-    }
-
-    thumbnailing_failed = g_file_info_get_attribute_boolean (info, G_FILE_ATTRIBUTE_THUMBNAILING_FAILED);
-    if (file->details->thumbnailing_failed != thumbnailing_failed)
-    {
-        changed = TRUE;
-        file->details->thumbnailing_failed = thumbnailing_failed;
     }
 
     symlink_name = g_file_info_get_attribute_byte_string (info,
@@ -4549,7 +4534,7 @@ nautilus_file_should_show_thumbnail (NautilusFile *file)
     /* If the thumbnail has already been created, don't care about the size
      * of the original file.
      */
-    if (file->details->thumbnail_path == NULL &&
+    if (!nautilus_file_has_thumbnail (file) &&
         nautilus_file_get_size (file) > cached_thumbnail_limit &&
         nautilus_thumbnail_is_mimetype_limited_by_size (mime_type))
     {
@@ -4760,6 +4745,13 @@ nautilus_file_get_thumbnail_path (NautilusFile *file)
     return file->details->thumbnail_path;
 }
 
+gboolean
+nautilus_file_has_thumbnail (NautilusFile *file)
+{
+    return file->details->thumbnail_is_up_to_date &&
+           file->details->thumbnail != NULL;
+}
+
 static NautilusIconInfo *
 nautilus_file_get_thumbnail_icon (NautilusFile          *file,
                                   int                    size,
@@ -4771,8 +4763,7 @@ nautilus_file_get_thumbnail_icon (NautilusFile          *file,
 
     icon = NULL;
 
-    if (file->details->thumbnail_path != NULL &&
-        file->details->thumbnail != NULL)
+    if (nautilus_file_has_thumbnail (file))
     {
         GdkTexture *texture = file->details->thumbnail;
         double width = gdk_texture_get_width (texture) / scale;
@@ -4809,7 +4800,8 @@ nautilus_file_get_thumbnail_icon (NautilusFile          *file,
                  (int) (width), (int) (height));
         paintable = gtk_snapshot_to_paintable (snapshot, NULL);
     }
-    else if (file->details->thumbnail_path == NULL &&
+    else if (file->details->thumbnail_info_is_up_to_date &&
+             file->details->thumbnail_path == NULL &&
              file->details->can_read &&
              !file->details->is_thumbnailing &&
              !file->details->thumbnailing_failed &&
@@ -4823,7 +4815,8 @@ nautilus_file_get_thumbnail_icon (NautilusFile          *file,
         icon = nautilus_icon_info_new_for_paintable (paintable, scale);
     }
     else if (file->details->is_thumbnailing ||
-             !nautilus_file_check_if_ready (file, NAUTILUS_FILE_ATTRIBUTE_THUMBNAIL_BUFFER))
+             (nautilus_file_check_if_ready (file, NAUTILUS_FILE_ATTRIBUTE_THUMBNAIL_INFO) &&
+              !nautilus_file_check_if_ready (file, NAUTILUS_FILE_ATTRIBUTE_THUMBNAIL_BUFFER)))
     {
         g_autoptr (GIcon) gicon = g_themed_icon_new (ICON_NAME_THUMBNAIL_LOADING);
         icon = nautilus_icon_info_lookup (gicon, size, scale);

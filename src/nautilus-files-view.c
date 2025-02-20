@@ -8962,7 +8962,7 @@ load_directory (NautilusFilesView *view,
     nautilus_directory_call_when_ready
         (priv->directory,
         attributes,
-        FALSE,
+        !NAUTILUS_IS_SEARCH_DIRECTORY (priv->directory),
         metadata_for_files_in_directory_ready_callback, view);
 
     /* If capabilities change, then we need to update the menus
@@ -8970,6 +8970,7 @@ load_directory (NautilusFilesView *view,
      */
     attributes =
         NAUTILUS_FILE_ATTRIBUTE_INFO |
+        NAUTILUS_FILE_ATTRIBUTE_THUMBNAIL_INFO |
         NAUTILUS_FILE_ATTRIBUTE_FILESYSTEM_INFO;
     nautilus_file_monitor_add (priv->directory_as_file,
                                &priv->directory_as_file,
