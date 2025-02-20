@@ -4298,6 +4298,19 @@ nautilus_directory_add_file_to_work_queue (NautilusDirectory *directory,
                                  file);
 }
 
+void
+nautilus_directory_prioritze_file (NautilusDirectory *directory,
+                                   NautilusFile      *file)
+{
+    g_return_if_fail (directory != NULL && file != NULL);
+    g_return_if_fail (NAUTILUS_IS_DIRECTORY (directory) && NAUTILUS_IS_FILE (file));
+    g_return_if_fail (file->details->directory == directory);
+
+    nautilus_hash_queue_move_existing_to_head (directory->details->high_priority_queue, file);
+    nautilus_hash_queue_move_existing_to_head (directory->details->low_priority_queue, file);
+    nautilus_hash_queue_move_existing_to_head (directory->details->extension_queue, file);
+}
+
 
 static void
 add_all_files_to_work_queue (NautilusDirectory *directory)
