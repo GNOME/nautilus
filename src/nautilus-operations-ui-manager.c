@@ -490,7 +490,7 @@ run_file_conflict_dialog (gpointer user_data)
     files = g_list_prepend (files, data->destination);
     files = g_list_prepend (files, data->destination_directory_file);
 
-    nautilus_file_list_call_when_ready (files,
+    nautilus_file_list_call_when_ready (g_steal_pointer (&files),
                                         NAUTILUS_FILE_ATTRIBUTES_FOR_ICON | NAUTILUS_FILE_ATTRIBUTE_DIRECTORY_ITEM_COUNT,
                                         &data->handle,
                                         data->on_file_list_ready,
@@ -498,8 +498,6 @@ run_file_conflict_dialog (gpointer user_data)
 
     g_signal_connect (data->dialog, "close-request", G_CALLBACK (on_conflict_dialog_closing), data);
     gtk_window_present (GTK_WINDOW (data->dialog));
-
-    g_list_free (files);
 
     return G_SOURCE_REMOVE;
 }
