@@ -8227,6 +8227,7 @@ typedef struct
 {
     GList *file_list;
     GHashTable *remaining_files;
+    gboolean all_prepared;
     NautilusFileListCallback callback;
     gpointer callback_data;
 } FileListReadyData;
@@ -8257,17 +8258,24 @@ file_list_ready_data_new (GList                    *file_list,
     data = g_new0 (FileListReadyData, 1);
     data->file_list = nautilus_file_list_copy (file_list);
     data->remaining_files = g_hash_table_new (NULL, NULL);
+    data->all_prepared = FALSE;
     data->callback = callback;
     data->callback_data = callback_data;
-
-    for (GList *l = file_list; l != NULL; l = l->next)
-    {
-        g_hash_table_add (data->remaining_files, l->data);
-    }
 
     ready_data_list = g_list_prepend (ready_data_list, data);
 
     return data;
+}
+
+static void
+file_list_file_ready_finish (FileListReadyData *data)
+{
+    if (data->callback)
+    {
+        (*data->callback)(data->file_list, data->callback_data);
+    }
+
+    file_list_ready_data_free (data);
 }
 
 static void
@@ -8278,14 +8286,9 @@ file_list_file_ready_callback (NautilusFile *file,
 
     g_hash_table_remove (data->remaining_files, file);
 
-    if (g_hash_table_size (data->remaining_files) == 0)
+    if (data->all_prepared && g_hash_table_size (data->remaining_files) == 0)
     {
-        if (data->callback)
-        {
-            (*data->callback)(data->file_list, data->callback_data);
-        }
-
-        file_list_ready_data_free (data);
+        file_list_file_ready_finish (data);
     }
 }
 
@@ -8308,14 +8311,24 @@ nautilus_file_list_call_when_ready (GList                     *file_list,
 
     for (GList *l = file_list; l != NULL;)
     {
-        /* Need to do this here, as the list can be modified by this call */
+        NautilusFile *file = NAUTILUS_FILE (l->data);
+
+        /* Need to do this here, as the callback can modify the list */
         l = l->next;
 
-        NautilusFile *file = NAUTILUS_FILE (l->data);
-        nautilus_file_call_when_ready (file,
-                                       attributes,
-                                       file_list_file_ready_callback,
-                                       data);
+        if (!nautilus_file_check_if_ready (file, attributes))
+        {
+            g_hash_table_add (data->remaining_files, file);
+            nautilus_file_call_when_ready (
+                file, attributes, file_list_file_ready_callback, data);
+        }
+    }
+
+    data->all_prepared = TRUE;
+
+    if (g_hash_table_size (data->remaining_files) == 0)
+    {
+        file_list_file_ready_finish (data);
     }
 }
 
