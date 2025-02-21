@@ -3609,6 +3609,7 @@ setup_properties_window (GList    *file_list,
                          gpointer  data)
 {
     NautilusPropertiesWindow *window = data;
+    window->files = nautilus_file_list_copy (file_list);
 
     for (GList *l = window->files; l != NULL; l = l->next)
     {
@@ -3668,9 +3669,8 @@ nautilus_properties_window_new (GList *files)
 {
     NautilusPropertiesWindow *self;
     self = NAUTILUS_PROPERTIES_WINDOW (g_object_new (NAUTILUS_TYPE_PROPERTIES_WINDOW, NULL));
-    self->files = files;
 
-    nautilus_file_list_call_when_ready (files,
+    nautilus_file_list_call_when_ready (g_steal_pointer (&files),
                                         NAUTILUS_FILE_ATTRIBUTE_INFO,
                                         &self->handle,
                                         setup_properties_window,

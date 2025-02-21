@@ -8256,7 +8256,7 @@ file_list_ready_data_new (GList                    *file_list,
     FileListReadyData *data;
 
     data = g_new0 (FileListReadyData, 1);
-    data->file_list = nautilus_file_list_copy (file_list);
+    data->file_list = file_list;
     data->remaining_files = g_hash_table_new (NULL, NULL);
     data->all_prepared = FALSE;
     data->callback = callback;
@@ -8292,6 +8292,17 @@ file_list_file_ready_callback (NautilusFile *file,
     }
 }
 
+/**
+ * nautilus_file_list_call_when_ready:
+ * @file_list: (transfer full) list of files that should be ready
+ * @attributes: file attributes that should be ready
+ * @handle: handle with which the callback can be canceled
+ * @callback: callback to call when files are ready
+ * @callback_data: data for callback
+ *
+ * Calls the callback when all files in the list have the specified
+ * attributes ready.
+ */
 void
 nautilus_file_list_call_when_ready (GList                     *file_list,
                                     NautilusFileAttributes     attributes,
@@ -8302,14 +8313,14 @@ nautilus_file_list_call_when_ready (GList                     *file_list,
     g_return_if_fail (file_list != NULL);
 
     FileListReadyData *data = file_list_ready_data_new (
-        file_list, callback, callback_data);
+        g_steal_pointer (&file_list), callback, callback_data);
 
     if (handle)
     {
         *handle = (NautilusFileListHandle *) data;
     }
 
-    for (GList *l = file_list; l != NULL;)
+    for (GList *l = data->file_list; l != NULL;)
     {
         NautilusFile *file = NAUTILUS_FILE (l->data);
 
