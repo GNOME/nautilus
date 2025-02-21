@@ -2604,6 +2604,9 @@ setup_basic_page (NautilusPropertiesWindow *self)
 
     update_name_field (self);
 
+    /* We wish the label to be selectable, but not selected by default. */
+    gtk_label_select_region (GTK_LABEL (self->name_value_label), -1, -1);
+
     if (should_show_volume_usage (self))
     {
         setup_open_in_disks (self);
@@ -3825,9 +3828,6 @@ is_directory_ready_callback (GList    *file_list,
     adw_dialog_present (ADW_DIALOG (new_window), GTK_WIDGET (startup_data->parent_window));
     g_signal_connect (GTK_WIDGET (new_window), "destroy",
                       G_CALLBACK (widget_on_destroy), startup_data);
-
-    /* We wish the label to be selectable, but not selected by default. */
-    gtk_label_select_region (GTK_LABEL (new_window->name_value_label), -1, -1);
 }
 
 void
