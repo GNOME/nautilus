@@ -735,13 +735,12 @@ handle_get_result_metas (NautilusShellSearchProvider2  *skeleton,
         return TRUE;
     }
 
-    nautilus_file_list_call_when_ready (missing_files,
+    nautilus_file_list_call_when_ready (g_steal_pointer (&missing_files),
                                         NAUTILUS_FILE_ATTRIBUTES_FOR_ICON,
                                         &data->handle,
                                         result_list_attributes_ready_cb,
                                         data);
     self->metas_requests = g_list_prepend (self->metas_requests, data);
-    nautilus_file_list_free (missing_files);
     return TRUE;
 }
 
