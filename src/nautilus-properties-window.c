@@ -863,6 +863,9 @@ update_name_field (NautilusPropertiesWindow *self)
     }
 
     gtk_label_set_text (self->name_value_label, name_value);
+
+    /* We wish the label to be selectable, but not selected by default. */
+    gtk_label_select_region (self->name_value_label, -1, -1);
 }
 
 /**
@@ -3826,9 +3829,6 @@ is_directory_ready_callback (GList    *file_list,
     gtk_window_present (GTK_WINDOW (new_window));
     g_signal_connect (GTK_WIDGET (new_window), "destroy",
                       G_CALLBACK (widget_on_destroy), startup_data);
-
-    /* We wish the label to be selectable, but not selected by default. */
-    gtk_label_select_region (GTK_LABEL (new_window->name_value_label), -1, -1);
 }
 
 void
