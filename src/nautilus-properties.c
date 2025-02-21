@@ -3671,7 +3671,6 @@ properties_widget_new (NautilusFileList *files)
 {
     NautilusPropertiesWidget *self =
         NAUTILUS_PROPERTIES_WIDGET (g_object_new (NAUTILUS_TYPE_PROPERTIES_WIDGET, NULL));
-    g_autolist (NautilusFile) taken_files = files;
 
     nautilus_file_list_call_when_ready (files,
                                         NAUTILUS_FILE_ATTRIBUTE_INFO |

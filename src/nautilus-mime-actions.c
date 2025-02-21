@@ -1840,7 +1840,7 @@ activation_mount_not_mounted (ActivateParameters *parameters)
     GFile *location;
     LaunchLocation *loc;
     GMountOperation *mount_op;
-    GList *l, *next, *files;
+    GList *l, *next;
 
     if (parameters->not_mounted != NULL)
     {
@@ -1876,13 +1876,11 @@ activation_mount_not_mounted (ActivateParameters *parameters)
         nautilus_file_invalidate_all_attributes (loc->file);
     }
 
-    files = get_file_list_for_launch_locations (parameters->locations);
-    nautilus_file_list_call_when_ready
-        (files,
+    nautilus_file_list_call_when_ready (
+        get_file_list_for_launch_locations (parameters->locations),
         nautilus_mime_actions_get_required_file_attributes (),
         &parameters->files_handle,
         activate_callback, parameters);
-    nautilus_file_list_free (files);
 }
 
 
@@ -1942,7 +1940,7 @@ activate_activation_uris_ready_callback (GList    **files_ignore,
                                          gpointer   callback_data)
 {
     ActivateParameters *parameters = callback_data;
-    GList *l, *next, *files;
+    GList *l, *next;
     NautilusFile *file;
     LaunchLocation *location;
 
@@ -2007,19 +2005,17 @@ activate_activation_uris_ready_callback (GList    **files_ignore,
 
 
     /* get the parameters for the actual files */
-    files = get_file_list_for_launch_locations (parameters->locations);
-    nautilus_file_list_call_when_ready
-        (files,
+    nautilus_file_list_call_when_ready (
+        get_file_list_for_launch_locations (parameters->locations),
         nautilus_mime_actions_get_required_file_attributes (),
         &parameters->files_handle,
         activate_callback, parameters);
-    nautilus_file_list_free (files);
 }
 
 static void
 activate_regular_files (ActivateParameters *parameters)
 {
-    GList *l, *files;
+    GList *l;
     NautilusFile *file;
     LaunchLocation *location;
 
@@ -2043,12 +2039,11 @@ activate_regular_files (ActivateParameters *parameters)
         return;
     }
 
-    files = get_file_list_for_launch_locations (parameters->locations);
-    nautilus_file_list_call_when_ready
-        (files, nautilus_mime_actions_get_required_file_attributes (),
+    nautilus_file_list_call_when_ready (
+        get_file_list_for_launch_locations (parameters->locations),
+        nautilus_mime_actions_get_required_file_attributes (),
         &parameters->files_handle,
         activate_activation_uris_ready_callback, parameters);
-    nautilus_file_list_free (files);
 }
 
 static void
