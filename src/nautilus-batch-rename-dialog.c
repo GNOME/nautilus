@@ -39,6 +39,8 @@ struct _NautilusBatchRenameDialog
 
     GtkRoot *window;
 
+    AdwBreakpoint *narrow_breakpoint;
+
     GtkWidget *batch_listview;
     GtkWidget *name_entry;
     GtkWidget *rename_button;
@@ -470,7 +472,7 @@ fill_display_listbox (NautilusBatchRenameDialog *dialog)
         g_autofree gchar *name = g_markup_escape_text (nautilus_file_get_name (NAUTILUS_FILE (l2->data)), -1);
         g_autofree gchar *new_name = g_markup_escape_text (((GString *) l1->data)->str, -1);
 
-        item_array[i] = nautilus_batch_rename_item_new (name, new_name);
+        item_array[i] = nautilus_batch_rename_item_new (name, new_name, dialog);
     }
 
     g_list_store_splice (dialog->batch_listmodel, 0, 0, (gpointer *) item_array, items_size);
@@ -1428,6 +1430,21 @@ batch_row_item_arrow (GtkListItem *item,
     return text_direction == GTK_TEXT_DIR_RTL ? g_strdup ("←") : g_strdup ("→");
 }
 
+static GtkOrientation
+batch_row_orientation (GtkListItem               *item,
+                       AdwBreakpoint             *current_breakpoint,
+                       NautilusBatchRenameDialog *dialog)
+{
+    if (current_breakpoint == dialog->narrow_breakpoint)
+    {
+        return GTK_ORIENTATION_VERTICAL;
+    }
+    else
+    {
+        return GTK_ORIENTATION_HORIZONTAL;
+    }
+}
+
 static void
 nautilus_batch_rename_dialog_dispose (GObject *object)
 {
@@ -1520,6 +1537,7 @@ nautilus_batch_rename_dialog_class_init (NautilusBatchRenameDialogClass *klass)
     gtk_widget_class_bind_template_child (widget_class, NautilusBatchRenameDialog, conflict_label);
     gtk_widget_class_bind_template_child (widget_class, NautilusBatchRenameDialog, conflict_up);
     gtk_widget_class_bind_template_child (widget_class, NautilusBatchRenameDialog, conflict_down);
+    gtk_widget_class_bind_template_child (widget_class, NautilusBatchRenameDialog, narrow_breakpoint);
 
     gtk_widget_class_bind_template_callback (widget_class, file_names_widget_on_activate);
     gtk_widget_class_bind_template_callback (widget_class, file_names_widget_entry_on_changed);
@@ -1530,6 +1548,7 @@ nautilus_batch_rename_dialog_class_init (NautilusBatchRenameDialogClass *klass)
     gtk_widget_class_bind_template_callback (widget_class, prepare_batch_rename);
     gtk_widget_class_bind_template_callback (widget_class, batch_row_conflict_css_name);
     gtk_widget_class_bind_template_callback (widget_class, batch_row_item_arrow);
+    gtk_widget_class_bind_template_callback (widget_class, batch_row_orientation);
 }
 
 GtkWidget *

@@ -21,6 +21,8 @@
 #include <glib.h>
 #include <glib-object.h>
 
+#include "nautilus-batch-rename-dialog.h"
+
 G_BEGIN_DECLS
 
 #define NAUTILUS_TYPE_BATCH_RENAME_ITEM (nautilus_batch_rename_item_get_type())
@@ -28,7 +30,8 @@ G_BEGIN_DECLS
 G_DECLARE_FINAL_TYPE (NautilusBatchRenameItem, nautilus_batch_rename_item, NAUTILUS, BATCH_RENAME_ITEM, GObject);
 
 NautilusBatchRenameItem* nautilus_batch_rename_item_new (const gchar *name_before,
-                                                         const gchar *name_after);
+                                                         const gchar *name_after,
+                                                         NautilusBatchRenameDialog *dialog);
 
 void nautilus_batch_rename_item_set_name_before (NautilusBatchRenameItem *item,
                                                  const gchar *name_before);
