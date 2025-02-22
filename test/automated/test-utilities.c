@@ -301,7 +301,7 @@ create_one_empty_directory (gchar *prefix)
 
 void
 create_multiple_files (gchar *prefix,
-                       gint   number_of_files)
+                       guint  number_of_files)
 {
     g_autoptr (GFile) root = NULL;
     g_autoptr (GFile) dir = NULL;
@@ -310,7 +310,7 @@ create_multiple_files (gchar *prefix,
     root = g_file_new_for_path (test_get_tmp_dir ());
     g_assert_true (g_file_query_exists (root, NULL));
 
-    for (int i = 0; i < number_of_files; i++)
+    for (guint i = 0; i < number_of_files; i++)
     {
         GFileOutputStream *out;
         g_autoptr (GFile) file = NULL;
@@ -332,7 +332,7 @@ create_multiple_files (gchar *prefix,
 
 void
 create_multiple_directories (gchar *prefix,
-                             gint   number_of_directories)
+                             guint  number_of_directories)
 {
     g_autoptr (GFile) root = NULL;
     g_autoptr (GFile) dir = NULL;
@@ -341,7 +341,7 @@ create_multiple_directories (gchar *prefix,
     root = g_file_new_for_path (test_get_tmp_dir ());
     g_assert_true (g_file_query_exists (root, NULL));
 
-    for (int i = 0; i < number_of_directories; i++)
+    for (guint i = 0; i < number_of_directories; i++)
     {
         g_autoptr (GFile) file = NULL;
 
@@ -430,14 +430,14 @@ create_fourth_hierarchy (gchar *prefix)
 
 void
 create_multiple_full_directories (gchar *prefix,
-                                  gint   number_of_directories)
+                                  guint  number_of_directories)
 {
     g_autoptr (GFile) root = NULL;
 
     root = g_file_new_for_path (test_get_tmp_dir ());
     g_assert_true (g_file_query_exists (root, NULL));
 
-    for (int i = 0; i < number_of_directories; i++)
+    for (guint i = 0; i < number_of_directories; i++)
     {
         g_autoptr (GFile) directory = NULL;
         g_autoptr (GFile) file = NULL;
