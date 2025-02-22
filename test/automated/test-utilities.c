@@ -496,12 +496,10 @@ create_multiple_full_directories (gchar *prefix,
         directory = g_file_get_child (root, file_name);
         g_free (file_name);
 
-        g_file_make_directory (directory, NULL, NULL);
-
         file_name = g_strdup_printf ("%s_file_%i", prefix, i);
         file = g_file_get_child (directory, file_name);
         g_free (file_name);
 
-        g_file_make_directory (file, NULL, NULL);
+        g_file_make_directory_with_parents (file, NULL, NULL);
     }
 }
