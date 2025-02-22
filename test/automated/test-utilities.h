@@ -43,9 +43,9 @@ void test_operation_undo (void);
 void create_one_file (gchar *prefix);
 void create_one_empty_directory (gchar *prefix);
 
-void create_multiple_files (gchar *prefix, gint number_of_files);
-void create_multiple_directories (gchar *prefix, gint number_of_directories);
-void create_multiple_full_directories (gchar *prefix, gint number_of_directories);
+void create_multiple_files (gchar *prefix, guint number_of_files);
+void create_multiple_directories (gchar *prefix, guint number_of_directories);
+void create_multiple_full_directories (gchar *prefix, guint number_of_directories);
 
 void create_first_hierarchy (gchar *prefix);
 void create_second_hierarchy (gchar *prefix);
