@@ -13,10 +13,10 @@
 #define MAX_CONTEXT_ITERATIONS 100
 
 #define ITER_CONTEXT_WHILE(CONDITION) \
-    for (guint i = 0; \
-         i < MAX_CONTEXT_ITERATIONS && \
+    for (guint context_iter = 0; \
+         context_iter < MAX_CONTEXT_ITERATIONS && \
          CONDITION; \
-         i++) \
+         context_iter++) \
     { \
         g_main_context_iteration (NULL, TRUE); \
     }
