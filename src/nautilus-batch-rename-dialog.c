@@ -35,10 +35,8 @@ struct _NautilusBatchRenameDialog
 {
     GtkDialog parent;
 
-    GtkWidget *grid;
     GtkRoot *window;
 
-    GtkWidget *cancel_button;
     GtkWidget *original_name_listbox;
     GtkWidget *arrow_listbox;
     GtkWidget *result_listbox;
@@ -48,9 +46,7 @@ struct _NautilusBatchRenameDialog
     GtkWidget *mode_stack;
     GtkWidget *replace_entry;
     GtkWidget *format_mode_button;
-    GtkWidget *replace_mode_button;
     GtkWidget *numbering_order_button;
-    GtkWidget *numbering_label;
     GtkWidget *scrolled_window;
     GtkWidget *numbering_revealer;
     GtkWidget *conflict_box;
@@ -1791,7 +1787,6 @@ nautilus_batch_rename_dialog_class_init (NautilusBatchRenameDialogClass *klass)
 
     gtk_widget_class_set_template_from_resource (widget_class, "/org/gnome/nautilus/ui/nautilus-batch-rename-dialog.ui");
 
-    gtk_widget_class_bind_template_child (widget_class, NautilusBatchRenameDialog, grid);
     gtk_widget_class_bind_template_child (widget_class, NautilusBatchRenameDialog, original_name_listbox);
     gtk_widget_class_bind_template_child (widget_class, NautilusBatchRenameDialog, arrow_listbox);
     gtk_widget_class_bind_template_child (widget_class, NautilusBatchRenameDialog, result_listbox);
@@ -1800,7 +1795,6 @@ nautilus_batch_rename_dialog_class_init (NautilusBatchRenameDialogClass *klass)
     gtk_widget_class_bind_template_child (widget_class, NautilusBatchRenameDialog, find_entry);
     gtk_widget_class_bind_template_child (widget_class, NautilusBatchRenameDialog, replace_entry);
     gtk_widget_class_bind_template_child (widget_class, NautilusBatchRenameDialog, mode_stack);
-    gtk_widget_class_bind_template_child (widget_class, NautilusBatchRenameDialog, replace_mode_button);
     gtk_widget_class_bind_template_child (widget_class, NautilusBatchRenameDialog, format_mode_button);
     gtk_widget_class_bind_template_child (widget_class, NautilusBatchRenameDialog, numbering_order_button);
     gtk_widget_class_bind_template_child (widget_class, NautilusBatchRenameDialog, scrolled_window);
@@ -1810,7 +1804,6 @@ nautilus_batch_rename_dialog_class_init (NautilusBatchRenameDialogClass *klass)
     gtk_widget_class_bind_template_child (widget_class, NautilusBatchRenameDialog, conflict_label);
     gtk_widget_class_bind_template_child (widget_class, NautilusBatchRenameDialog, conflict_up);
     gtk_widget_class_bind_template_child (widget_class, NautilusBatchRenameDialog, conflict_down);
-    gtk_widget_class_bind_template_child (widget_class, NautilusBatchRenameDialog, numbering_label);
 
     gtk_widget_class_bind_template_callback (widget_class, file_names_widget_on_activate);
     gtk_widget_class_bind_template_callback (widget_class, file_names_widget_entry_on_changed);
