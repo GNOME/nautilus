@@ -1,3 +1,14 @@
+Major changes in 47.3
+=====================
+* Bugfixes:
+- Focus filename entry in save mode by default (Ian Off)
+- Fix free space calculation for archive extraction (Peter Eisenmann)
+- Fix shell search result order (Khalid Abu Shawarib)
+- Use colored icon for filesystem root properties (Khalid Abu Shawarib)
+- Fix floating bar style when unfocused (Peter Eisenmann)
+
+* Translation updates (GNOME Translation Project contributors)
+
 Major changes in 47.2
 =====================
 * Enhancements:
@@ -1799,7 +1810,7 @@ Major changes in 3.1.2 are:
 * Move the floating bar away from the cursor on hover
 * Add an autostart desktop file
 * Add metadata::custom-icon-name key for custom icons
-* Fix opening the wrong directory when launching an instance 
+* Fix opening the wrong directory when launching an instance
   from the command line
 * Misc crashers
 
@@ -1840,7 +1851,7 @@ Major changes in 2.91.93 are:
 
 Major changes in 2.91.92 are:
 * Use a raised button for Search
-* Tweak the floating bar background 
+* Tweak the floating bar background
 * Only show the "Loading..." floating bar after half a second of loading
 * Style cluebars according to mockups
 * Fix some split view regressions
@@ -1960,7 +1971,7 @@ Major changes in 2.90.1 are:
 * Cleanup of libeel's obsolete code
 * Always show free space in the status string
 * Disable icon scaling outside the desktop
-* Various minor UI fixes 
+* Various minor UI fixes
 
 Major changes in 2.31.5 are:
 * Expand and collapse folders with +/- in list view
@@ -2255,10 +2266,10 @@ Major changes in 2.23.6 are:
 * Use x-content/* MIME type to associate applications with hotpluggable media
 * Path bar
   * enable control-left click and middle-click interaction for path bar buttons
-  * dynamically handle hierarchy changes in the path bar 
+  * dynamically handle hierarchy changes in the path bar
 * Icon view keyboard navigation
   * Use linear selection instead of rectangle selection in when pressing shift
-  * Still offer rectangular selection when pressing ctrl and shift 
+  * Still offer rectangular selection when pressing ctrl and shift
   * Only wrap around horizontally in horizontal layout mode,
   * Only wrap around vertically in vertical layout mode
   * Never wrap around when in rectangle selection
@@ -2466,7 +2477,7 @@ Major changes in 2.21.1 are:
 * Totally replaced gnome-vfs use with gio
 * New implementation of file operations like copy/move with
   a shared progress dialog
-* Lots of cleanup  
+* Lots of cleanup
 
 Major changes in 2.20.0 are:
 * Load thumbnails asynchronously
@@ -2591,7 +2602,7 @@ Major changes in 2.16.2 are:
 * Don't add a newline when pasting filenames
 * Better a11y relationships betweeen widgets
 * Make nautilus --quit not be restarted by session
-* Fix occasional stuck grabs when rubberband selecting 
+* Fix occasional stuck grabs when rubberband selecting
 * Don't timeout typeahead when scrolling with mouse wheel
 * Add X-GNOME-Bugzilla-Version to desktop files
 * Fix desktop icon overlap problem
@@ -2673,7 +2684,7 @@ Major changes in 2.14.1 are:
 * Properly break down URIs for connect to server ui
 * Don't reposition icons on reload
 * Show unmounted but user-visible drives in the places sidebar
-* Display more info in the progress dialog when preparing 
+* Display more info in the progress dialog when preparing
 * Smarter DnD target selection
 * Smaller close icon in the sidebar title
 * GnomeGoals: Use po/LINGUAS
@@ -2971,7 +2982,7 @@ Major changes since 2.7.1 are:
 * Bug fixes
 * Show estimated time remaining in the progress dialog.
 * per-window show hidden files setting
-* Don't warn about mime-type mismatches if the handler is the same 
+* Don't warn about mime-type mismatches if the handler is the same
   for both mime-types.
 * Date formatting improvements
 * Killed start-here
@@ -2985,13 +2996,13 @@ Major changes since 2.6.2 are:
   when user is in root group
 * Fix dnd start coordinates when zoomed
 * Start apps in the directory they are launched from
-* Add close all windows to spatial window menu  
+* Add close all windows to spatial window menu
 
 Major changes since 2.6.1 are:
 * Accessibility/keynav/theming fixes
 * Leak fixes
 * .desktop file updates
-* Fixed help buttons in the preferences dialog 
+* Fixed help buttons in the preferences dialog
 * Portability fix
 * Use initial click position to anchor icon dnd
 * Crash fix in the file properties dialog
@@ -3064,7 +3075,7 @@ Major changes since 2.5.5 are:
 * update egg-recent
 
 Major changes since 2.5.4 are:
-* Extension system for emblem, property page, menu item, and 
+* Extension system for emblem, property page, menu item, and
   list view column plugins.
 * Editable list view columns
 * Don't expand symlinks when following them.
@@ -3073,7 +3084,7 @@ Major changes since 2.5.4 are:
 * Emblems in the list view
 * Added a location button to spatial windows
 * Removed tab icon nav from the icon view
-* Add a context menu to the tree side pane. 
+* Add a context menu to the tree side pane.
 * Pop up folder menu in list view background
 * Turn on home icon on the desktop by default
 * Added status bar info when no files are selected
@@ -3093,7 +3104,7 @@ Major changes since 2.5.2 are:
 * Accessibility fixes
 * Better initial size of navigation window
 * Close all parents closes all parents
-* Focus the next item after delete in list view 
+* Focus the next item after delete in list view
 
 Major changes since 2.5.1.1 are:
 * Don't do unnecessary i/o on remote locations
@@ -3181,7 +3192,7 @@ Major changes since 2.3.6 are:
 
 * Doesn't create new windows when mounting CD-ROMS.
 
-* Improved the gutter-on-the-right problem. 
+* Improved the gutter-on-the-right problem.
 
 * Updates the disks menu when fstab changes
 
@@ -3207,7 +3218,7 @@ Major changes since 2.3.5 are:
 
 * Update emblems list after adding custom emblems
 
-* Prefer existing windows from the command line in open-in-new-window 
+* Prefer existing windows from the command line in open-in-new-window
   mode
 
 Major changes since 2.3.4 are:
@@ -3244,7 +3255,7 @@ Major changes since 2.3.2 are:
 
 * Made the throbber themable using icon themes
   (requires gnome-icon-theme 1.0.4)
-  
+
 * Get manager selection for desktop
 
 * Fix some bugs in new desktop code
@@ -3300,11 +3311,11 @@ Major changes since 2.2.2 are:
 * Don't select the extension for rename in the list view
 
 * Easier to trigger auto scrolling during drag and drop in the icon
-  view 
+  view
 
 * Much better thumbnail queue handling. Visible thumbnails are
   prioritized.
-  
+
 * Scroll to previous position on directory reload
 
 * Show volume and free space in the property dialog for directories
