@@ -4371,7 +4371,14 @@ get_mount_icon (NautilusFile *file,
          * it to be treated the same way. */
         if (nautilus_is_root_directory (location))
         {
-            mount_icon = g_themed_icon_new_with_default_fallbacks ("drive-harddisk-symbolic");
+            if (symbolic)
+            {
+                mount_icon = g_themed_icon_new_with_default_fallbacks ("drive-harddisk-symbolic");
+            }
+            else
+            {
+                mount_icon = g_themed_icon_new_with_default_fallbacks ("drive-harddisk");
+            }
         }
     }
 
