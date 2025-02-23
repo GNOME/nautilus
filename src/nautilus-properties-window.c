@@ -820,8 +820,6 @@ setup_image_widget (NautilusPropertiesWindow *self)
     gtk_widget_add_controller (self->icon_overlay, GTK_EVENT_CONTROLLER (target));
     g_signal_connect (target, "drop",
                       G_CALLBACK (nautilus_properties_window_drag_drop_cb), self->icon_image);
-
-    update_image_widget (self);
 }
 
 static void
@@ -3520,11 +3518,6 @@ setup_permissions_page (NautilusPropertiesWindow *self)
     {
         self->initial_permissions = get_initial_permissions (self->files);
         self->has_recursive_apply = files_has_changable_permissions_directory (self);
-
-        if (!all_can_set_permissions (self->files))
-        {
-            adw_banner_set_revealed (self->owner_permission_banner, TRUE);
-        }
 
         gtk_stack_set_visible_child_name (GTK_STACK (self->permissions_stack), "permissions-box");
         create_simple_permissions (self);
