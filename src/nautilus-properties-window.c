@@ -452,7 +452,6 @@ static void is_directory_ready_callback (GList   *file_list,
                                          gpointer data);
 static void cancel_group_change_callback (GroupChange *change);
 static void cancel_owner_change_callback (OwnerChange *change);
-static gboolean all_can_set_permissions (GList *file_list);
 static void update_owner_row (AdwComboRow     *row,
                               PermissionsInfo *permissions_info);
 static void update_group_row (AdwComboRow     *row,
@@ -1297,7 +1296,8 @@ properties_window_update (NautilusPropertiesWindow *self,
         update_name_field (self);
         update_permissions_navigation_row (self, permissions_info);
         adw_banner_set_revealed (self->owner_permission_banner,
-                                 !all_can_set_permissions (self->files));
+                                 !permissions_info->can_set_all_file_permission ||
+                                 !permissions_info->can_set_all_folder_permission);
         update_owner_row (self->owner_row, permissions_info);
         update_group_row (self->group_row, permissions_info);
         update_execution_row (GTK_WIDGET (self->execution_row), permissions_info);
@@ -3087,25 +3087,6 @@ all_can_get_permissions (GList *file_list)
         file = NAUTILUS_FILE (l->data);
 
         if (!nautilus_file_can_get_permissions (file))
-        {
-            return FALSE;
-        }
-    }
-
-    return TRUE;
-}
-
-static gboolean
-all_can_set_permissions (GList *file_list)
-{
-    GList *l;
-    for (l = file_list; l != NULL; l = l->next)
-    {
-        NautilusFile *file;
-
-        file = NAUTILUS_FILE (l->data);
-
-        if (!nautilus_file_can_set_permissions (file))
         {
             return FALSE;
         }
