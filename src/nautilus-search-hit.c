@@ -99,7 +99,7 @@ nautilus_search_hit_compute_scores (NautilusSearchHit *hit,
     /* Recency bonus is useful for recursive search, but unwanted for results
      * from the current folder, which should always sort by filename match,
      * which makes prefix matches sort first. */
-    if (dir_count != 0)
+    if (dir_count != 0 || query_location == NULL)
     {
         if (hit->modification_time != NULL)
         {
