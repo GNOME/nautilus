@@ -24,6 +24,8 @@
 #include "nautilus-global-preferences.h"
 #include "nautilus-tracker-utilities.h"
 
+#include <tinysparql.h>
+
 #define TRACKER_KEY_RECURSIVE_DIRECTORIES "index-recursive-directories"
 #define TRACKER_KEY_SINGLE_DIRECTORIES "index-single-directories"
 
