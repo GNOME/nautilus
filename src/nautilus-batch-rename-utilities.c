@@ -27,6 +27,7 @@
 #include <gtk/gtk.h>
 #include <string.h>
 #include <stdarg.h>
+#include <tinysparql.h>
 
 typedef struct
 {

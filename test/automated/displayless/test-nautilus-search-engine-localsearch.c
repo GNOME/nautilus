@@ -5,6 +5,8 @@
 #include <src/nautilus-localsearch-utilities.h>
 #include <src/nautilus-search-engine.h>
 
+#include <tinysparql.h>
+
 /* Time in seconds we allow for localsearch Miners to index the file */
 #define LOCALSEARCH_MINERS_AWAIT_TIMEOUT 1000
 

@@ -24,8 +24,8 @@
 #include "nautilus-file-undo-manager.h"
 #include "nautilus-localsearch-utilities.h"
 
-#include <tracker-sparql.h>
 #include <glib/gi18n.h>
+#include <tinysparql.h>
 
 #include "config.h"
 

@@ -20,7 +20,6 @@
 
 #include <gio/gio.h>
 #include <gtk/gtk.h>
-#include <tracker-sparql.h>
 
 GList* batch_rename_dialog_get_new_names_list          (NautilusBatchRenameDialogMode  mode,
                                                         GList                         *selection,
