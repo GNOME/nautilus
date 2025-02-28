@@ -1,4 +1,4 @@
-/* nautilus-batch-rename-utilities.c
+/* nautilus-batch-rename-utilities.h
  *
  * Copyright (C) 2016 Alexandru Pandelea <alexandru.pandelea@gmail.com>
  *
@@ -20,7 +20,6 @@
 
 #include <gio/gio.h>
 #include <gtk/gtk.h>
-#include <tracker-sparql.h>
 
 GList* batch_rename_dialog_get_new_names_list          (NautilusBatchRenameDialogMode  mode,
                                                         GList                         *selection,
