@@ -149,7 +149,7 @@ main (int   argc,
                  "to ensure a private Tracker indexer daemon is used.");
     }
 
-    connection = tracker_sparql_connection_bus_new ("org.freedesktop.Tracker3.Miner.Files", NULL, NULL, &error);
+    connection = tracker_sparql_connection_bus_new ("org.freedesktop.LocalSearch3.Miner.Files", NULL, NULL, &error);
 
     g_assert_no_error (error);
 

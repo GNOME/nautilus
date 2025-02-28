@@ -49,7 +49,7 @@ local_tracker_miner_fs_ready (GObject      *source,
 static void
 start_local_tracker_miner_fs (void)
 {
-    const gchar *busname = APPLICATION_ID ".Tracker3.Miner.Files";
+    const gchar *busname = APPLICATION_ID ".LocalSearch3.Miner.Files";
 
     g_message ("Starting %s", busname);
     tracker_sparql_connection_bus_new_async (busname, NULL, NULL, NULL, local_tracker_miner_fs_ready, NULL);
@@ -87,7 +87,7 @@ nautilus_tracker_setup_miner_fs_connection (void)
 
     if (g_once_init_enter (&tried_tracker_init))
     {
-        const gchar *busname = "org.freedesktop.Tracker3.Miner.Files";
+        const gchar *busname = "org.freedesktop.LocalSearch3.Miner.Files";
 
         g_message ("Connecting to %s", busname);
         tracker_sparql_connection_bus_new_async (busname, NULL, NULL, NULL, host_tracker_miner_fs_ready, NULL);
@@ -109,7 +109,7 @@ void
 nautilus_tracker_setup_host_miner_fs_connection_sync (void)
 {
     g_autoptr (GError) error = NULL;
-    const gchar *busname = "org.freedesktop.Tracker3.Miner.Files";
+    const gchar *busname = "org.freedesktop.LocalSearch3.Miner.Files";
 
     g_message ("Starting %s", busname);
     tracker_miner_fs_connection = tracker_sparql_connection_bus_new (busname, NULL, NULL, &error);
