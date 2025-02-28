@@ -22,7 +22,7 @@
 #pragma once
 
 #include <gio/gio.h>
-#include <libtracker-sparql/tracker-sparql.h>
+#include <tinysparql.h>
 
 TrackerSparqlConnection * nautilus_localsearch_get_miner_fs_connection (GError **error);
 void nautilus_localsearch_setup_miner_fs_connection (void);

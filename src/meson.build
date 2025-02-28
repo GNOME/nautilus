@@ -302,7 +302,7 @@ nautilus_deps = [
   libportal_gtk4,
   nautilus_extension,
   selinux,
-  tracker_sparql,
+  tinysparql,
   xdp_gnome,
 ]
 

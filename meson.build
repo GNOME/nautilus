@@ -113,7 +113,7 @@ gtk = dependency('gtk4', version: '>= 4.20.0')
 libadwaita = dependency('libadwaita-1', version: '>= 1.6.beta')
 libportal = dependency('libportal', version: '>= 0.7')
 libportal_gtk4 = dependency('libportal-gtk4', version: '>= 0.5')
-tracker_sparql = dependency('tracker-sparql-3.0', version: '>= 3.2')
+tinysparql = dependency('tinysparql-3.0', version: '>= 3.8')
 icu_dep = dependency('icu-uc', version: '>=56')
 icu_i18n_dep = dependency('icu-i18n', version: '>=56')
 
