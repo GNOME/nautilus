@@ -1,6 +1,8 @@
 #include "nautilus-tracker-utilities.h"
 #include "test-utilities.h"
 
+#include <tinysparql.h>
+
 /* Time in seconds we allow for Tracker Miners to index the file */
 #define TRACKER_MINERS_AWAIT_TIMEOUT 1000
 

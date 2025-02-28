@@ -30,7 +30,7 @@
 
 #include <string.h>
 #include <gio/gio.h>
-#include <libtracker-sparql/tracker-sparql.h>
+#include <tinysparql.h>
 
 typedef enum
 {
