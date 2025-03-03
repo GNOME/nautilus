@@ -2139,7 +2139,9 @@ properties_cb (GSimpleAction *action,
   g_object_get (sidebar->context_row, "uri", &uri, NULL);
   file = nautilus_file_get_by_uri (uri);
   list = g_list_append (NULL, file);
-  nautilus_properties_window_present (list, GTK_WIDGET (sidebar), NULL, NULL, NULL);
+
+  AdwDialog *dialog = ADW_DIALOG (nautilus_properties_window_new (list));
+  adw_dialog_present (dialog, GTK_WIDGET (sidebar));
 
   nautilus_file_list_free (list);
 }
