@@ -8300,7 +8300,7 @@ file_list_file_ready_finish (FileListReadyData *data)
 {
     if (data->callback)
     {
-        (*data->callback)(data->file_list, data->callback_data);
+        (*data->callback)(&data->file_list, data->callback_data);
     }
 
     file_list_ready_data_free (data);
@@ -8330,6 +8330,7 @@ file_list_file_ready_callback (NautilusFile *file,
  *
  * Calls @callback when all files in @file_list have the specified
  * @attributes ready.
+ * Ownership of the file list can be taken over from the callback.
  */
 void
 nautilus_file_list_call_when_ready (GList                     *file_list,
