@@ -3,11 +3,21 @@
   <requires lib="gtk" version="4.0"/>
   <template class="NautilusPropertiesWindow" parent="AdwDialog">
     <property name="title" translatable="yes">Properties</property>
+    <property name="content-height">620</property>
     <property name="content-width">480</property>
     <property name="child">
       <object class="AdwToastOverlay" id="toast_overlay">
         <property name="child">
           <object class="AdwNavigationView" id="nav_view">
+            <child>
+              <object class="AdwNavigationPage">
+                <property name="tag">loading</property>
+                <property name="title" translatable="yes">Loading…</property>
+                <property name="child">
+                  <object class="AdwSpinner"/>
+                </property>
+              </object>
+            </child>
             <child>
               <object class="AdwNavigationPage">
                 <property name="title" translatable="yes">Properties</property>

@@ -82,6 +82,7 @@ struct _NautilusPropertiesWindow
     AdwDialog parent_instance;
 
     GList *files;
+    NautilusFileListHandle *handle;
 
     AdwWindowTitle *window_title;
 
@@ -405,19 +406,6 @@ permission_value_to_string (PermissionValue permission_value,
 
 /* end NautilusPermissionEntry */
 
-typedef struct
-{
-    GList *files;
-    GtkWidget *parent_widget;
-    GtkWindow *parent_window;
-    char *startup_id;
-    NautilusPropertiesWindowCallback callback;
-    gpointer callback_data;
-    NautilusFileListHandle *handle;
-    NautilusPropertiesWindow *window;
-    gboolean cancelled;
-} StartupData;
-
 #define DIRECTORY_CONTENTS_UPDATE_INTERVAL      200 /* milliseconds */
 #define FILES_UPDATE_INTERVAL                   200 /* milliseconds */
 
@@ -445,8 +433,6 @@ static void value_row_update (AdwActionRow             *row,
                               NautilusPropertiesWindow *self);
 static void properties_window_update (NautilusPropertiesWindow *self,
                                       GList                    *files);
-static void is_directory_ready_callback (GList   *file_list,
-                                         gpointer data);
 static void cancel_group_change_callback (GroupChange *change);
 static void cancel_owner_change_callback (OwnerChange *change);
 static void update_owner_row (AdwComboRow     *row,
@@ -457,9 +443,6 @@ static void select_image_button_callback (GtkWidget                *widget,
                                           NautilusPropertiesWindow *self);
 static void set_icon (const char               *icon_path,
                       NautilusPropertiesWindow *self);
-static void remove_pending (StartupData *data,
-                            gboolean     cancel_call_when_ready,
-                            gboolean     cancel_timed_wait);
 static void refresh_extension_model_pages (NautilusPropertiesWindow *self);
 static gboolean is_root_directory (NautilusFile *file);
 static gboolean is_volume_properties (NautilusPropertiesWindow *self);
@@ -3599,37 +3582,6 @@ should_show_permissions (NautilusPropertiesWindow *self)
     return TRUE;
 }
 
-static StartupData *
-startup_data_new (GList                            *files,
-                  GtkWidget                        *parent_widget,
-                  GtkWindow                        *parent_window,
-                  const char                       *startup_id,
-                  NautilusPropertiesWindowCallback  callback,
-                  gpointer                          callback_data,
-                  NautilusPropertiesWindow         *window)
-{
-    StartupData *data;
-
-    data = g_new0 (StartupData, 1);
-    data->files = nautilus_file_list_copy (files);
-    data->parent_widget = parent_widget;
-    data->parent_window = parent_window;
-    data->startup_id = g_strdup (startup_id);
-    data->callback = callback;
-    data->callback_data = callback_data;
-    data->window = window;
-
-    return data;
-}
-
-static void
-startup_data_free (StartupData *data)
-{
-    nautilus_file_list_free (data->files);
-    g_free (data->startup_id);
-    g_free (data);
-}
-
 static void
 file_changed_callback (NautilusFile *file,
                        gpointer      user_data)
@@ -3644,18 +3596,14 @@ file_changed_callback (NautilusFile *file,
     }
 }
 
-static NautilusPropertiesWindow *
-create_properties_window (StartupData *startup_data)
+static void
+setup_properties_window (GList    *file_list,
+                         gpointer  data)
 {
-    NautilusPropertiesWindow *window;
-    GList *l;
+    NautilusPropertiesWindow *window = data;
+    window->files = nautilus_file_list_copy (file_list);
 
-    window = NAUTILUS_PROPERTIES_WINDOW (g_object_new (NAUTILUS_TYPE_PROPERTIES_WINDOW,
-                                                       NULL));
-
-    window->files = nautilus_file_list_copy (startup_data->files);
-
-    for (l = window->files; l != NULL; l = l->next)
+    for (GList *l = window->files; l != NULL; l = l->next)
     {
         NautilusFile *file;
         NautilusFileAttributes attributes;
@@ -3693,98 +3641,26 @@ create_properties_window (StartupData *startup_data)
     /* Update from initial state */
     properties_window_update (window, NULL);
 
-    return window;
+    /* Show main page */
+    const char * const main_tag[] = {"main", NULL};
+    adw_navigation_view_replace_with_tags (ADW_NAVIGATION_VIEW (window->nav_view),
+                                           main_tag, 1);
 }
 
-static void
-properties_window_finish (StartupData *data)
+static AdwDialog *
+nautilus_properties_window_new (GList *files)
 {
-    gboolean cancel_timed_wait;
+    NautilusPropertiesWindow *self = NAUTILUS_PROPERTIES_WINDOW (
+        g_object_new (NAUTILUS_TYPE_PROPERTIES_WINDOW, NULL));
 
-    if (data->parent_widget != NULL)
-    {
-        g_signal_handlers_disconnect_by_data (data->parent_widget,
-                                              data);
-    }
-    if (data->window != NULL)
-    {
-        g_signal_handlers_disconnect_by_data (data->window,
-                                              data);
-    }
+    nautilus_file_list_call_when_ready (files,
+                                        NAUTILUS_FILE_ATTRIBUTE_INFO |
+                                        NAUTILUS_FILE_ATTRIBUTES_FOR_ICON,
+                                        &self->handle,
+                                        setup_properties_window,
+                                        self);
 
-    cancel_timed_wait = (data->window == NULL && !data->cancelled);
-    remove_pending (data, TRUE, cancel_timed_wait);
-
-    startup_data_free (data);
-}
-
-static void
-cancel_create_properties_window_callback (gpointer callback_data)
-{
-    StartupData *data;
-
-    data = callback_data;
-    data->cancelled = TRUE;
-
-    properties_window_finish (data);
-}
-
-static void
-parent_widget_destroyed_callback (GtkWidget *widget,
-                                  gpointer   callback_data)
-{
-    g_assert (widget == ((StartupData *) callback_data)->parent_widget);
-
-    properties_window_finish ((StartupData *) callback_data);
-}
-
-static void
-remove_pending (StartupData *startup_data,
-                gboolean     cancel_call_when_ready,
-                gboolean     cancel_timed_wait)
-{
-    if (cancel_call_when_ready)
-    {
-        nautilus_file_list_cancel_call_when_ready (startup_data->handle);
-    }
-    if (cancel_timed_wait)
-    {
-        eel_timed_wait_stop
-            (cancel_create_properties_window_callback, startup_data);
-    }
-}
-
-static gboolean
-widget_on_destroy (GtkWidget *widget,
-                   gpointer   user_data)
-{
-    StartupData *data = (StartupData *) user_data;
-
-
-    if (data->callback != NULL)
-    {
-        data->callback (data->callback_data);
-    }
-
-    properties_window_finish (data);
-
-    return GDK_EVENT_PROPAGATE;
-}
-
-static void
-is_directory_ready_callback (GList    *file_list,
-                             gpointer  data)
-{
-    StartupData *startup_data = data;
-    NautilusPropertiesWindow *new_window = create_properties_window (startup_data);
-
-    startup_data->window = new_window;
-
-    remove_pending (startup_data, FALSE, TRUE);
-
-    adw_dialog_present (ADW_DIALOG (new_window), GTK_WIDGET (startup_data->parent_window));
-    g_signal_connect (GTK_WIDGET (new_window), "destroy",
-                      G_CALLBACK (widget_on_destroy), startup_data);
+    return ADW_DIALOG (self);
 }
 
 void
@@ -3794,51 +3670,14 @@ nautilus_properties_window_present (GList                            *files,
                                     NautilusPropertiesWindowCallback  callback,
                                     gpointer                          callback_data)
 {
-    GtkWindow *parent_window;
-    StartupData *startup_data;
-
     g_return_if_fail (files != NULL);
     g_return_if_fail (parent_widget == NULL || GTK_IS_WIDGET (parent_widget));
 
-    if (parent_widget)
-    {
-        parent_window = GTK_WINDOW (gtk_widget_get_ancestor (parent_widget, GTK_TYPE_WINDOW));
-    }
-    else
-    {
-        parent_window = NULL;
-    }
+    AdwDialog *dialog = nautilus_properties_window_new (files);
 
-    startup_data = startup_data_new (files,
-                                     parent_widget,
-                                     parent_window,
-                                     startup_id,
-                                     callback,
-                                     callback_data,
-                                     NULL);
+    adw_dialog_present (dialog, parent_widget);
 
-    /* Wait until we can tell whether it's a directory before showing, since
-     * some one-time layout decisions depend on that info.
-     */
-
-    if (parent_widget)
-    {
-        g_signal_connect (parent_widget, "destroy",
-                          G_CALLBACK (parent_widget_destroyed_callback), startup_data);
-    }
-
-    eel_timed_wait_start
-        (cancel_create_properties_window_callback,
-        startup_data,
-        _("Creating Properties window."),
-        parent_window == NULL ? NULL : GTK_WINDOW (parent_window));
-
-    nautilus_file_list_call_when_ready (startup_data->files,
-                                        NAUTILUS_FILE_ATTRIBUTE_INFO |
-                                        NAUTILUS_FILE_ATTRIBUTES_FOR_ICON,
-                                        &startup_data->handle,
-                                        is_directory_ready_callback,
-                                        startup_data);
+    g_signal_connect_swapped (dialog, "closed", G_CALLBACK (callback), callback_data);
 }
 
 static void
@@ -3852,6 +3691,8 @@ real_dispose (GObject *object)
     unschedule_or_cancel_owner_change (self);
 
     g_clear_pointer (&self->custom_icon_for_undo, g_free);
+
+    nautilus_file_list_cancel_call_when_ready (self->handle);
 
     g_list_foreach (self->files,
                     (GFunc) nautilus_file_monitor_remove,
