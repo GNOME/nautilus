@@ -103,6 +103,9 @@ skeleton_handle_show_folders_cb (NautilusFreedesktopFileManager1 *object,
 static void
 properties_window_on_finished (gpointer user_data)
 {
+    GtkWindow *window = user_data;
+
+    gtk_window_close (window);
     g_application_release (g_application_get_default ());
 }
 
@@ -126,8 +129,13 @@ skeleton_handle_show_item_properties_cb (NautilusFreedesktopFileManager1 *object
     files = g_list_reverse (files);
 
     g_application_hold (g_application_get_default ());
-    nautilus_properties_window_present (files, NULL, startup_id,
-                                        properties_window_on_finished, NULL);
+
+    GtkWindow *window = GTK_WINDOW (gtk_window_new ());
+    gtk_window_set_startup_id (window, startup_id);
+    gtk_window_present (window);
+
+    nautilus_properties_window_present (files, GTK_WIDGET (window), NULL,
+                                        properties_window_on_finished, window);
 
     nautilus_file_list_free (files);
 
