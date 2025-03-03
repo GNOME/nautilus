@@ -14,6 +14,23 @@ template $NautilusPropertiesWindow: Adw.Window {
   Adw.ToastOverlay toast_overlay {
     child: Adw.NavigationView nav_view {
       Adw.NavigationPage {
+        title: _("Loading…");
+        tag: "loading";
+
+        child: Adw.ToolbarView {
+          [top]
+          Adw.HeaderBar {}
+
+          content: Adw.StatusPage {
+            child: Adw.Spinner {
+              height-request: 64;
+              width-request: 64;
+            };
+          };
+        };
+      }
+
+      Adw.NavigationPage {
         title: _("Properties");
         tag: "main";
 
