@@ -3647,9 +3647,11 @@ setup_properties_window (GList    *file_list,
                                            main_tag, 1);
 }
 
-static AdwDialog *
+AdwDialog *
 nautilus_properties_window_new (GList *files)
 {
+    g_return_val_if_fail (files != NULL, NULL);
+
     NautilusPropertiesWindow *self = NAUTILUS_PROPERTIES_WINDOW (
         g_object_new (NAUTILUS_TYPE_PROPERTIES_WINDOW, NULL));
 
@@ -3661,23 +3663,6 @@ nautilus_properties_window_new (GList *files)
                                         self);
 
     return ADW_DIALOG (self);
-}
-
-void
-nautilus_properties_window_present (GList                            *files,
-                                    GtkWidget                        *parent_widget,
-                                    const gchar                      *startup_id,
-                                    NautilusPropertiesWindowCallback  callback,
-                                    gpointer                          callback_data)
-{
-    g_return_if_fail (files != NULL);
-    g_return_if_fail (parent_widget == NULL || GTK_IS_WIDGET (parent_widget));
-
-    AdwDialog *dialog = nautilus_properties_window_new (files);
-
-    adw_dialog_present (dialog, parent_widget);
-
-    g_signal_connect_swapped (dialog, "closed", G_CALLBACK (callback), callback_data);
 }
 
 static void

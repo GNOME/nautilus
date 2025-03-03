@@ -26,6 +26,7 @@
 
 #include "nautilus-files-view.h"
 
+#include <adwaita.h>
 #include <eel/eel-stock-dialogs.h>
 #include <gdk/gdk.h>
 #include <gio/gio.h>
@@ -2449,16 +2450,16 @@ action_properties (GSimpleAction *action,
         {
             files = g_list_append (NULL, nautilus_file_ref (self->directory_as_file));
 
-            nautilus_properties_window_present (files, GTK_WIDGET (self), NULL,
-                                                NULL, NULL);
+            AdwDialog *dialog = nautilus_properties_window_new (files);
+            adw_dialog_present (dialog, GTK_WIDGET (self));
 
             nautilus_file_list_free (files);
         }
     }
     else
     {
-        nautilus_properties_window_present (selection, GTK_WIDGET (self), NULL,
-                                            NULL, NULL);
+        AdwDialog *dialog = nautilus_properties_window_new (selection);
+        adw_dialog_present (dialog, GTK_WIDGET (self));
     }
 }
 
@@ -2477,9 +2478,9 @@ action_current_dir_properties (GSimpleAction *action,
     {
         files = g_list_append (NULL, nautilus_file_ref (self->directory_as_file));
 
-        nautilus_properties_window_present (files, GTK_WIDGET (self), NULL,
-                                            NULL, NULL);
+        AdwDialog *dialog = nautilus_properties_window_new (files);
 
+        adw_dialog_present (dialog, GTK_WIDGET (self));
         nautilus_file_list_free (files);
     }
 }
