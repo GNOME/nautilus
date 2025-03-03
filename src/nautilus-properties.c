@@ -3627,12 +3627,13 @@ setup_properties_widget (NautilusPropertiesWidget *self)
 #define DEFAULT_PROPERTIES_WIDTH 480
 
 static void
-properties_files_are_ready (GList    *file_list,
-                            gpointer  data)
+properties_files_are_ready (GList    **file_list,
+                            gpointer   data)
 {
     const char * const main_tag[] = {"main"};
     NautilusPropertiesWidget *self = data;
 
+    self->files = g_steal_pointer (file_list);
     setup_properties_widget (self);
 
     self->handle = NULL;
@@ -3667,8 +3668,6 @@ properties_widget_new (NautilusFileList *files)
 {
     NautilusPropertiesWidget *self =
         NAUTILUS_PROPERTIES_WIDGET (g_object_new (NAUTILUS_TYPE_PROPERTIES_WIDGET, NULL));
-
-    self->files = nautilus_file_list_copy (files);
 
     nautilus_file_list_call_when_ready (self->files,
                                         NAUTILUS_FILE_ATTRIBUTE_INFO |

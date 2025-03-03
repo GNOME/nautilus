@@ -89,8 +89,12 @@ typedef void (*NautilusFileCallback)          (NautilusFile  *file,
 				               gpointer       callback_data);
 typedef gboolean (*NautilusFileFilterFunc)    (NautilusFile  *file,
                                                gpointer       callback_data);
-typedef void (*NautilusFileListCallback)      (GList         *file_list,
-				               gpointer       callback_data);
+/**
+ * @file_list: pointer to list of ready files
+ * @callback_data: user provided data
+ */
+typedef void (*NautilusFileListCallback)      (GList    **file_list,
+                                               gpointer   callback_data);
 typedef void (*NautilusFileOperationCallback) (NautilusFile  *file,
 					       GFile         *result_location,
 					       GError        *error,

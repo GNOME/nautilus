@@ -545,13 +545,13 @@ cancel_result_meta_requests (NautilusShellSearchProvider *self)
 }
 
 static void
-result_list_attributes_ready_cb (GList    *file_list,
-                                 gpointer  user_data)
+result_list_attributes_ready_cb (GList    **file_list,
+                                 gpointer   user_data)
 {
     ResultMetasData *data = user_data;
     NautilusBookmarkList *bookmarks = nautilus_application_get_bookmarks (NAUTILUS_APPLICATION (g_application_get_default ()));
 
-    for (GList *l = file_list; l != NULL; l = l->next)
+    for (GList *l = *file_list; l != NULL; l = l->next)
     {
         NautilusFile *file = l->data;
         g_autoptr (GFile) file_location = nautilus_file_get_location (file);
