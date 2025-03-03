@@ -3605,11 +3605,11 @@ file_changed_callback (NautilusFile *file,
 }
 
 static void
-setup_properties_window (GList    *file_list,
-                         gpointer  data)
+setup_properties_window (GList    **file_list,
+                         gpointer   data)
 {
     NautilusPropertiesWindow *window = data;
-    window->files = nautilus_file_list_copy (file_list);
+    window->files = g_steal_pointer (file_list);
 
     for (GList *l = window->files; l != NULL; l = l->next)
     {

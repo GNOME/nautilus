@@ -276,11 +276,9 @@ struct
 
 static void activate_files_internal (ActivateParameters *parameters);
 static void cancel_activate_callback (gpointer callback_data);
-static void activate_activation_uris_ready_callback (GList   *files,
-                                                     gpointer callback_data);
 static void activation_mount_mountables (ActivateParameters *parameters);
 static void activation_start_mountables (ActivateParameters *parameters);
-static void activate_callback (GList   *files,
+static void activate_callback (GList  **files,
                                gpointer callback_data);
 static void activation_mount_not_mounted (ActivateParameters *parameters);
 
@@ -1815,8 +1813,8 @@ activation_mount_not_mounted (ActivateParameters *parameters)
 
 
 static void
-activate_callback (GList    *files,
-                   gpointer  callback_data)
+activate_callback (GList **,
+                   gpointer callback_data)
 {
     ActivateParameters *parameters = callback_data;
     GList *l, *next;
@@ -1866,8 +1864,8 @@ activate_callback (GList    *files,
 }
 
 static void
-activate_activation_uris_ready_callback (GList    *files_ignore,
-                                         gpointer  callback_data)
+activate_activation_uris_ready_callback (GList **,
+                                         gpointer callback_data)
 {
     ActivateParameters *parameters = callback_data;
     GList *l, *next;

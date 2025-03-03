@@ -616,8 +616,8 @@ cancel_result_meta_requests (NautilusShellSearchProvider *self)
 }
 
 static void
-result_list_attributes_ready_cb (GList    *file_list,
-                                 gpointer  user_data)
+result_list_attributes_ready_cb (GList    **file_list,
+                                 gpointer   user_data)
 {
     ResultMetasData *data = user_data;
     GVariantBuilder meta;
@@ -633,7 +633,7 @@ result_list_attributes_ready_cb (GList    *file_list,
 
     icon_scale = gdk_monitor_get_scale_factor (g_list_model_get_item (gdk_display_get_monitors (gdk_display_get_default ()), 0));
 
-    for (l = file_list; l != NULL; l = l->next)
+    for (l = *file_list; l != NULL; l = l->next)
     {
         g_autoptr (GFile) file_location = NULL;
         g_autoptr (GVariant) icon_variant = NULL;

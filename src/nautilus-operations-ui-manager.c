@@ -379,8 +379,8 @@ file_icons_changed (NautilusFile           *file,
 }
 
 static void
-copy_move_conflict_on_file_list_ready (GList    *files,
-                                       gpointer  user_data)
+copy_move_conflict_on_file_list_ready (GList **,
+                                       gpointer user_data)
 {
     FileConflictDialogData *data = user_data;
     g_autofree gchar *title = NULL;
