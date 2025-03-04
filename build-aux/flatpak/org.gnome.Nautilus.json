@@ -61,6 +61,7 @@
         "--libdir=/app/lib",
         "-Dintrospection=false",
         "-Dvapi=false",
+        "-Dtools=false",
         "-Dpython3=false"
       ],
       "sources": [
@@ -109,6 +110,8 @@
       "config-opts": [
         "-Ddebug_tools=false",
         "-Ddesktop_docs=false",
+        "-Dlegacy_library=false",
+        "-Dsystemd=disabled",
         "-Dudev=disabled"
       ],
       "sources": [
@@ -122,6 +125,10 @@
       "name": "gnome-autoar",
       "buildsystem": "meson",
       "builddir": true,
+      "config-opts": [
+        "-Dgtk=false",
+        "-Dintrospection=disabled"
+      ],
       "sources": [
         {
           "type": "git",
@@ -134,10 +141,11 @@
       "buildsystem": "meson",
       "builddir": true,
       "config-opts": [
-        "-Ddocs=false",
         "-Dbackend-gtk4=enabled",
         "-Dbackend-gtk3=disabled",
-        "-Dbackend-qt5=disabled",
+        "-Ddocs=false",
+        "-Dintrospection=false",
+        "-Dtests=false",
         "-Dvapi=false",
         "--libdir=/app/lib",
         "--buildtype=debugoptimized"
@@ -155,12 +163,13 @@
       "buildsystem": "meson",
       "builddir": true,
       "config-opts": [
+      	"-Dintrospection=false",
       	"-Dvapigen=false"
       ],
       "sources" : [
         {
           "type": "git",
-          "url": "https://gitlab.gnome.org/World/libcloudproviders.git"
+          "url": "https://gitlab.gnome.org/GNOME/libcloudproviders.git"
         }
       ]
     },
