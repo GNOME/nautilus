@@ -135,7 +135,6 @@ nautilus_module_initialize (GTypeModule *module)
     bind_textdomain_codeset (GETTEXT_PACKAGE, "UTF-8");
 
     totem_properties_plugin_register_type (module);
-    totem_properties_view_register_type (module);
 }
 
 void

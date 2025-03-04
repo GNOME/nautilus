@@ -29,41 +29,38 @@
 #include "totem-properties-view.h"
 #include <math.h>
 
-struct TotemPropertiesViewPriv
+typedef struct AVProperties
 {
     NautilusPropertiesModel *model;
     GListStore *store;
     GstDiscoverer *disco;
-};
-
-static GObjectClass *parent_class = NULL;
-static void totem_properties_view_finalize (GObject *object);
-
-G_DEFINE_TYPE (TotemPropertiesView, totem_properties_view, G_TYPE_OBJECT)
-
-void
-totem_properties_view_register_type (GTypeModule *module)
-{
-    totem_properties_view_get_type ();
-}
+    gulong handler_id;
+} AVProperties;
 
 static void
-totem_properties_view_class_init (TotemPropertiesViewClass *class)
+av_properties_clear (AVProperties *props)
 {
-    parent_class = g_type_class_peek_parent (class);
-    G_OBJECT_CLASS (class)->finalize = totem_properties_view_finalize;
+    if (props->disco)
+    {
+        g_signal_handler_disconnect (props->disco, props->handler_id);
+        gst_discoverer_stop (props->disco);
+        g_clear_object (&props->disco);
+    }
+    g_clear_object (&props->store);
+    g_free (props);
 }
+G_DEFINE_AUTOPTR_CLEANUP_FUNC (AVProperties, av_properties_clear);
 
 static void
-append_item (TotemPropertiesView *props,
-             const char          *name,
-             const char          *value)
+append_item (AVProperties *props,
+             const char   *name,
+             const char   *value)
 {
     g_autoptr (NautilusPropertiesItem) item = NULL;
 
     item = nautilus_properties_item_new (name, value);
 
-    g_list_store_append (props->priv->store, item);
+    g_list_store_append (props->store, item);
 }
 
 /* Copied from bacon-video-widget-properties.c
@@ -119,8 +116,8 @@ time_to_string_text (gint64 msecs)
 }
 
 static void
-update_general (TotemPropertiesView *props,
-                const GstTagList    *list)
+update_general (AVProperties     *props,
+                const GstTagList *list)
 {
     struct
     {
@@ -179,7 +176,7 @@ update_general (TotemPropertiesView *props,
 }
 
 static void
-set_codec (TotemPropertiesView     *props,
+set_codec (AVProperties            *props,
            GstDiscovererStreamInfo *info,
            const char              *title)
 {
@@ -210,9 +207,9 @@ set_codec (TotemPropertiesView     *props,
 }
 
 static void
-set_bitrate (TotemPropertiesView *props,
-             guint                bitrate,
-             const char          *title)
+set_bitrate (AVProperties *props,
+             guint         bitrate,
+             const char   *title)
 {
     char *string;
 
@@ -226,7 +223,7 @@ set_bitrate (TotemPropertiesView *props,
 }
 
 static void
-update_video (TotemPropertiesView    *props,
+update_video (AVProperties           *props,
               GstDiscovererVideoInfo *info)
 {
     guint width, height;
@@ -264,7 +261,7 @@ update_video (TotemPropertiesView    *props,
 }
 
 static void
-update_audio (TotemPropertiesView    *props,
+update_audio (AVProperties           *props,
               GstDiscovererAudioInfo *info)
 {
     guint samplerate, channels;
@@ -317,10 +314,10 @@ update_audio (TotemPropertiesView    *props,
 }
 
 static void
-discovered_cb (GstDiscoverer       *discoverer,
-               GstDiscovererInfo   *info,
-               GError              *error,
-               TotemPropertiesView *props)
+discovered_cb (GstDiscoverer     *discoverer,
+               GstDiscovererInfo *info,
+               GError            *error,
+               gpointer           data)
 {
     GList *video_streams, *audio_streams;
     const GstTagList *taglist;
@@ -329,6 +326,7 @@ discovered_cb (GstDiscoverer       *discoverer,
     GstClockTime duration;
     g_autofree char *duration_string = NULL;
     GstDiscovererStreamInfo *sinfo;
+    g_autoptr (AVProperties) props = data;
 
     if (error)
     {
@@ -357,7 +355,7 @@ discovered_cb (GstDiscoverer       *discoverer,
         label = _("Video Properties");
     }
 
-    nautilus_properties_model_set_title (props->priv->model, label);
+    nautilus_properties_model_set_title (props->model, label);
 
     /* General */
     duration = gst_discoverer_info_get_duration (info);
@@ -388,88 +386,38 @@ discovered_cb (GstDiscoverer       *discoverer,
     gst_discoverer_stream_info_list_free (audio_streams);
 }
 
-static void
-totem_properties_view_init (TotemPropertiesView *props)
-{
-    GError *err = NULL;
-
-    props->priv = g_new0 (TotemPropertiesViewPriv, 1);
-
-    props->priv->store = g_list_store_new (NAUTILUS_TYPE_PROPERTIES_ITEM);
-
-    props->priv->model = nautilus_properties_model_new (_("Audio/Video Properties"),
-                                                        G_LIST_MODEL (props->priv->store));
-
-    props->priv->disco = gst_discoverer_new (GST_SECOND * 60, &err);
-    if (props->priv->disco == NULL)
-    {
-        g_warning ("Could not create discoverer object: %s", err->message);
-        g_error_free (err);
-        return;
-    }
-    g_signal_connect (props->priv->disco, "discovered",
-                      G_CALLBACK (discovered_cb), props);
-}
-
-static void
-totem_properties_view_finalize (GObject *object)
-{
-    TotemPropertiesView *props;
-
-    props = TOTEM_PROPERTIES_VIEW (object);
-
-    if (props->priv != NULL)
-    {
-        if (props->priv->disco)
-        {
-            g_signal_handlers_disconnect_by_func (props->priv->disco,
-                                                  discovered_cb,
-                                                  props);
-            gst_discoverer_stop (props->priv->disco);
-            g_clear_object (&props->priv->disco);
-        }
-        g_free (props->priv);
-    }
-    props->priv = NULL;
-
-    G_OBJECT_CLASS (parent_class)->finalize (object);
-}
-
-static void
-totem_properties_view_set_location (TotemPropertiesView *props,
-                                    const char          *location)
-{
-    g_assert (TOTEM_IS_PROPERTIES_VIEW (props));
-
-    if (props->priv->disco == NULL)
-    {
-        return;
-    }
-
-    gst_discoverer_stop (props->priv->disco);
-
-    if (location != NULL)
-    {
-        gst_discoverer_start (props->priv->disco);
-
-        if (gst_discoverer_discover_uri_async (props->priv->disco, location) == FALSE)
-        {
-            g_warning ("Couldn't add %s to list", location);
-            return;
-        }
-    }
-}
-
 NautilusPropertiesModel *
 totem_properties_view_new (const char *location)
 {
-    TotemPropertiesView *props;
+    g_return_val_if_fail (location != NULL, NULL);
 
-    props = g_object_new (TOTEM_TYPE_PROPERTIES_VIEW, NULL);
+    g_autoptr (GError) err = NULL;
+    GstDiscoverer *disco = gst_discoverer_new (GST_SECOND * 60, &err);
 
-    totem_properties_view_set_location (props, location);
+    if (disco == NULL)
+    {
+        g_warning ("Could not create discoverer object: %s", err->message);
+        return NULL;
+    }
 
-    g_object_weak_ref (G_OBJECT (props->priv->model), (GWeakNotify) g_object_unref, props);
+    AVProperties *props = g_new0 (AVProperties, 1);
+    props->store = g_list_store_new (NAUTILUS_TYPE_PROPERTIES_ITEM);
+    props->model = nautilus_properties_model_new (
+        _("Audio/Video Properties"),
+        G_LIST_MODEL (props->store));
+    props->disco = disco;
+    props->handler_id = g_signal_connect (
+        props->disco, "discovered", G_CALLBACK (discovered_cb), props);
 
-    return props->priv->model;
+    gst_discoverer_start (props->disco);
+
+    if (gst_discoverer_discover_uri_async (props->disco, location) == FALSE)
+    {
+        g_warning ("Couldn't add %s to list", location);
+        return NULL;
+    }
+
+    g_object_weak_ref (G_OBJECT (props->model), (GWeakNotify) g_object_unref, props);
+
+    return props->model;
 }
