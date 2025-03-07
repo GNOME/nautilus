@@ -22,7 +22,6 @@
 #include "nautilus-properties-window.h"
 
 #include <adwaita.h>
-#include <cairo.h>
 #include <eel/eel-stock-dialogs.h>
 #include <gtk/gtk.h>
 #include <gdk/gdkkeysyms.h>
@@ -31,9 +30,6 @@
 #include <nautilus-extension.h>
 #include <string.h>
 #include <sys/stat.h>
-
-#define GNOME_DESKTOP_USE_UNSTABLE_API
-#include <libgnome-desktop/gnome-desktop-thumbnail.h>
 
 #include "nautilus-application.h"
 #include "nautilus-dbus-launcher.h"
