@@ -911,7 +911,7 @@ bind_name_cell (GtkSignalListItemFactory *factory,
     cell = gtk_column_view_cell_get_child (listitem);
     item = get_view_item (listitem);
 
-    nautilus_view_cell_bind_common (NAUTILUS_VIEW_CELL (cell), GTK_LIST_ITEM (listitem));
+    nautilus_view_cell_bind_listitem (NAUTILUS_VIEW_CELL (cell), GTK_LIST_ITEM (listitem));
     nautilus_view_item_set_item_ui (item, gtk_column_view_cell_get_child (listitem));
 
     if (self->expand_as_a_tree)
@@ -939,7 +939,7 @@ unbind_name_cell (GtkSignalListItemFactory *factory,
     g_autoptr (NautilusViewItem) item = NULL;
     GtkWidget *cell = gtk_column_view_cell_get_child (listitem);
 
-    nautilus_view_cell_unbind_common (NAUTILUS_VIEW_CELL (cell));
+    nautilus_view_cell_unbind_listitem (NAUTILUS_VIEW_CELL (cell));
 
     item = get_view_item (listitem);
     if (item == NULL)
@@ -997,7 +997,7 @@ bind_cell (GtkSignalListItemFactory *factory,
 {
     GtkWidget *cell = gtk_column_view_cell_get_child (listitem);
 
-    nautilus_view_cell_bind_common (NAUTILUS_VIEW_CELL (cell), GTK_LIST_ITEM (listitem));
+    nautilus_view_cell_bind_listitem (NAUTILUS_VIEW_CELL (cell), GTK_LIST_ITEM (listitem));
 }
 
 static void
@@ -1007,7 +1007,7 @@ unbind_cell (GtkSignalListItemFactory *factory,
 {
     GtkWidget *cell = gtk_column_view_cell_get_child (listitem);
 
-    nautilus_view_cell_unbind_common (NAUTILUS_VIEW_CELL (cell));
+    nautilus_view_cell_unbind_listitem (NAUTILUS_VIEW_CELL (cell));
 }
 
 static void
