@@ -56,6 +56,9 @@ date_to_str (GDateTime *timestamp,
              gboolean   use_short_format,
              gboolean   detailed_date)
 {
+    const char *time_locale = setlocale (LC_TIME, NULL);
+    locale_t current_locale = uselocale ((locale_t) 0);
+    g_auto (locale_t) forced_locale = (locale_t) 0;
     const gchar *format;
 
     /* We are going to pick a translatable string which defines a time format,
@@ -63,8 +66,12 @@ date_to_str (GDateTime *timestamp,
      *
      * The time locale might be different from the language we pick translations
      * from; so, in order to avoid chimeric results (with some particles in one
-     * language and other particles in another language), we use LC_TIME.
+     * language and other particles in another language), we need to temporarily
+     * force translations to be obtained from the language corresponding to the
+     * time locale. The current locale settings are saved to be restored later.
      */
+    forced_locale = newlocale (LC_MESSAGES_MASK, time_locale, duplocale (current_locale));
+    uselocale (forced_locale);
 
     if (use_short_format && detailed_date)
     {
@@ -73,14 +80,14 @@ date_to_str (GDateTime *timestamp,
             /* Translators: date and time in 24h format,
              * i.e. "12/31/2023 23:59" */
             /* xgettext:no-c-format */
-            format = g_dcgettext (NULL, "%m/%d/%Y %H:%M", LC_TIME);
+            format = _("%m/%d/%Y %H:%M");
         }
         else
         {
             /* Translators: date and time in 12h format,
              * i.e. "12/31/2023 11:59 PM" */
             /* xgettext:no-c-format */
-            format = g_dcgettext (NULL, "%m/%d/%Y %I:%M %p", LC_TIME);
+            format = _("%m/%d/%Y %I:%M %p");
         }
     }
     else if (use_short_format)
@@ -109,14 +116,14 @@ date_to_str (GDateTime *timestamp,
                 /* Translators: this is the word "Today" followed by
                  * a time in 24h format. i.e. "Today 23:04" */
                 /* xgettext:no-c-format */
-                format = g_dcgettext (NULL, "Today %-H:%M", LC_TIME);
+                format = _("Today %-H:%M");
             }
             else
             {
                 /* Translators: this is the word Today followed by
                  * a time in 12h format. i.e. "Today 9:04 PM" */
                 /* xgettext:no-c-format */
-                format = g_dcgettext (NULL, "Today %-I:%M %p", LC_TIME);
+                format = _("Today %-I:%M %p");
             }
         }
         /* Show the word "Yesterday" and time if date is on yesterday */
@@ -127,14 +134,14 @@ date_to_str (GDateTime *timestamp,
                 /* Translators: this is the word Yesterday followed by
                  * a time in 24h format. i.e. "Yesterday 23:04" */
                 /* xgettext:no-c-format */
-                format = g_dcgettext (NULL, "Yesterday %-H:%M", LC_TIME);
+                format = _("Yesterday %-H:%M");
             }
             else
             {
                 /* Translators: this is the word Yesterday followed by
                  * a time in 12h format. i.e. "Yesterday 9:04 PM" */
                 /* xgettext:no-c-format */
-                format = g_dcgettext (NULL, "Yesterday %-I:%M %p", LC_TIME);
+                format = _("Yesterday %-I:%M %p");
             }
         }
         else
@@ -142,7 +149,7 @@ date_to_str (GDateTime *timestamp,
             /* Translators: this is the day of the month followed by the abbreviated
              * month name followed by the year i.e. "3 Feb 2015" */
             /* xgettext:no-c-format */
-            format = g_dcgettext (NULL, "%-e %b %Y", LC_TIME);
+            format = _("%-e %b %Y");
         }
     }
     else
@@ -153,7 +160,7 @@ date_to_str (GDateTime *timestamp,
              * name followed by the year followed by a time in 24h format
              * with seconds i.e. "3 February 2015 23:04:00" */
             /* xgettext:no-c-format */
-            format = g_dcgettext (NULL, "%-e %B %Y %H:%M:%S", LC_TIME);
+            format = _("%-e %B %Y %H:%M:%S");
         }
         else
         {
@@ -161,9 +168,12 @@ date_to_str (GDateTime *timestamp,
              * name followed by the year followed by a time in 12h format
              * with seconds i.e. "3 February 2015 09:04:00 PM" */
             /* xgettext:no-c-format */
-            format = g_dcgettext (NULL, "%-e %B %Y %I:%M:%S %p", LC_TIME);
+            format = _("%-e %B %Y %I:%M:%S %p");
         }
     }
+
+    /* Restore locale settings */
+    uselocale (current_locale);
 
     g_autofree gchar *formatted = g_date_time_format (timestamp, format);
 
