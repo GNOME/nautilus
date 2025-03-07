@@ -15,7 +15,6 @@
 #include <time.h>
 
 
-G_DEFINE_AUTO_CLEANUP_FREE_FUNC (locale_t, freelocale, (locale_t) 0)
 
 static gboolean use_24_hour;
 static gboolean use_detailed_date_format;
@@ -56,9 +55,8 @@ date_to_str (GDateTime *timestamp,
              gboolean   use_short_format,
              gboolean   detailed_date)
 {
-    const char *time_locale = setlocale (LC_TIME, NULL);
     locale_t current_locale = uselocale ((locale_t) 0);
-    g_auto (locale_t) forced_locale = (locale_t) 0;
+    static locale_t forced_locale = NULL;
     const gchar *format;
 
     /* We are going to pick a translatable string which defines a time format,
@@ -70,7 +68,13 @@ date_to_str (GDateTime *timestamp,
      * force translations to be obtained from the language corresponding to the
      * time locale. The current locale settings are saved to be restored later.
      */
-    forced_locale = newlocale (LC_MESSAGES_MASK, time_locale, duplocale (current_locale));
+    if (forced_locale == NULL)
+    {
+        char *time_locale = setlocale (LC_TIME, NULL);
+
+        forced_locale = newlocale (LC_MESSAGES_MASK, time_locale, duplocale (current_locale));
+    }
+
     uselocale (forced_locale);
 
     if (use_short_format && detailed_date)
