@@ -3225,7 +3225,7 @@ list_box_sort_func (GtkListBoxRow *row1,
 {
   NautilusGtkPlacesSectionType section_type_1, section_type_2;
   NautilusGtkPlacesPlaceType place_type_1, place_type_2;
-  char *label_1, *label_2;
+  g_autofree gchar *label_1 = NULL, *label_2 = NULL;
   int index_1, index_2;
   int retval = 0;
 
@@ -3242,8 +3242,13 @@ list_box_sort_func (GtkListBoxRow *row1,
                 "order-index", &index_2,
                 NULL);
 
-  if (section_type_1 == section_type_2)
+  if (section_type_1 != section_type_2)
     {
+      /* Order by section. That means the order in the enum of section types
+       * define the actual order of them in the list */
+      return section_type_1 - section_type_2;
+    }
+
       if (section_type_1 == NAUTILUS_GTK_PLACES_SECTION_MOUNTS)
         {
           if (place_type_1 == place_type_2)
@@ -3294,16 +3299,6 @@ list_box_sort_func (GtkListBoxRow *row1,
         {
           retval = -1;
         }
-    }
-  else
-    {
-      /* Order by section. That means the order in the enum of section types
-       * define the actual order of them in the list */
-      retval = section_type_1 - section_type_2;
-    }
-
-  g_free (label_1);
-  g_free (label_2);
 
   return retval;
 }
