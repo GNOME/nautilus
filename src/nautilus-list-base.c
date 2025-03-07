@@ -901,7 +901,6 @@ setup_cell_common (GObject          *listitem,
     gtk_expression_bind (expression, cell, "item", listitem);
     g_object_bind_property (listitem, "position", cell, "position", G_BINDING_SYNC_CREATE);
 
-
     nautilus_view_setup_cell_once (cell,
                                    G_CALLBACK (on_item_click_pressed),
                                    G_CALLBACK (on_item_click_stopped),

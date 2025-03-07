@@ -8,6 +8,7 @@
 
 #include "nautilus-global-preferences.h"
 #include "nautilus-icon-info.h"
+#include "nautilus-list-base.h"
 #include "nautilus-tag-manager.h"
 #include "nautilus-thumbnails.h"
 #include "nautilus-ui-utilities.h"
@@ -540,12 +541,70 @@ nautilus_grid_cell_init (NautilusGridCell *self)
                             G_BINDING_SYNC_CREATE);
 }
 
+static GPtrArray *static_cells;
+
+void
+grid_cell_steal (NautilusGridCell **self)
+{
+    g_return_if_fail (NAUTILUS_IS_GRID_CELL (*self));
+
+    if (!g_ptr_array_find (static_cells, *self, NULL) &&
+        static_cells->len < 1000)
+    {
+        g_object_set (*self, "item", NULL, NULL);
+        gtk_picture_set_paintable (GTK_PICTURE ((*self)->icon), NULL);
+
+        g_ptr_array_add (static_cells, g_object_ref (*self));
+    }
+
+    g_clear_object (self);
+}
+
+static void
+ensure_cells (void)
+{
+    if (static_cells == NULL)
+    {
+        static_cells = g_ptr_array_new_with_free_func (g_object_unref);
+
+        for (uint i = 0; i < 1000; i++)
+        {
+            NautilusGridCell *cell = g_object_new (NAUTILUS_TYPE_GRID_CELL, NULL);
+
+            g_ptr_array_add (static_cells, g_object_ref_sink (cell));
+        }
+    }
+}
+
+void
+nautilus_grid_cell_cleanup (void)
+{
+    g_clear_pointer (&static_cells, g_ptr_array_unref);
+}
+
 NautilusGridCell *
 nautilus_grid_cell_new (NautilusListBase *view)
 {
-    return g_object_new (NAUTILUS_TYPE_GRID_CELL,
-                         "view", view,
-                         NULL);
+    g_return_val_if_fail (NAUTILUS_IS_LIST_BASE (view), NULL);
+
+    NautilusGridCell *cell;
+
+    ensure_cells ();
+
+    if (static_cells->len == 0)
+    {
+        cell = g_object_new (NAUTILUS_TYPE_GRID_CELL, NULL);
+
+        g_ptr_array_add (static_cells, g_object_ref_sink (cell));
+    }
+
+    cell = g_ptr_array_steal_index (static_cells, static_cells->len - 1);
+
+    g_assert (gtk_widget_get_parent (GTK_WIDGET (cell)) == NULL);
+
+    g_object_set (cell, "view", view, NULL);
+
+    return cell;
 }
 
 void
