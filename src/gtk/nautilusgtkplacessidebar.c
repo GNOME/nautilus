@@ -3253,12 +3253,7 @@ list_box_sort_func (GtkListBoxRow *row1,
         {
           if (place_type_1 == place_type_2)
             {
-              retval = g_utf8_collate (label_1, label_2);
-            }
-          else
-            {
-              /* Sort internals last */
-              retval = (place_type_1 == NAUTILUS_GTK_PLACES_INTERNAL_MOUNT) ? 1 : -1;
+              return g_utf8_collate (label_1, label_2);
             }
         }
   else if ((place_type_1 == NAUTILUS_GTK_PLACES_BOOKMARK || place_type_2 == NAUTILUS_GTK_PLACES_NEW_BOOKMARK) &&
@@ -3282,6 +3277,7 @@ list_box_sort_func (GtkListBoxRow *row1,
             retval =  index_1 - index_2 - 1;
           else
             retval = index_1 - index_2;
+          return retval;
         }
       else if (place_type_1 == NAUTILUS_GTK_PLACES_BOOKMARK && place_type_2 == NAUTILUS_GTK_PLACES_BOOKMARK_PLACEHOLDER)
         {
@@ -3289,16 +3285,13 @@ list_box_sort_func (GtkListBoxRow *row1,
             retval =  index_1 - index_2 + 1;
           else
             retval = index_1 - index_2;
+          return retval;
         }
-      /* Placeholder for dropping a row comes before the "New Bookmark" row. */
-      else if (place_type_1 == NAUTILUS_GTK_PLACES_NEW_BOOKMARK && place_type_2 == NAUTILUS_GTK_PLACES_BOOKMARK_PLACEHOLDER)
-        {
-          retval = 1;
-        }
-      else if (place_type_1 == NAUTILUS_GTK_PLACES_BOOKMARK_PLACEHOLDER && place_type_2 == NAUTILUS_GTK_PLACES_NEW_BOOKMARK)
-        {
-          retval = -1;
-        }
+
+  if (place_type_1 != place_type_2)
+    {
+      return place_type_1 - place_type_2;
+    }
 
   return retval;
 }
