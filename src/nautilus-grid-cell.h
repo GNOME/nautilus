@@ -25,5 +25,7 @@ G_DECLARE_FINAL_TYPE (NautilusGridCell, nautilus_grid_cell, NAUTILUS, GRID_CELL,
 NautilusGridCell * nautilus_grid_cell_new (NautilusListBase *view);
 void nautilus_grid_cell_set_caption_attributes (NautilusGridCell *self,
                                                 GQuark           *attrs);
+void grid_cell_steal (NautilusGridCell **self);
+void nautilus_grid_cell_clear_cache (void);
 
 G_END_DECLS
