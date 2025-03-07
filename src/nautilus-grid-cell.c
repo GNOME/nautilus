@@ -10,6 +10,7 @@
 #include "nautilus-global-preferences.h"
 #include "nautilus-icon-info.h"
 #include "nautilus-image.h"
+#include "nautilus-list-base.h"
 #include "nautilus-tag-manager.h"
 #include "nautilus-thumbnails.h"
 #include "nautilus-ui-utilities.h"
@@ -524,12 +525,75 @@ nautilus_grid_cell_init (NautilusGridCell *self)
                             G_BINDING_SYNC_CREATE);
 }
 
+#define CACHED_CELLS_INIT_COUNT 50
+#define CACHED_CELLS_MAX_COUNT 800
+static GPtrArray *cached_cells;
+
+void
+grid_cell_steal (NautilusGridCell **self)
+{
+    g_return_if_fail (NAUTILUS_IS_GRID_CELL (*self));
+
+    if (!g_ptr_array_find (cached_cells, *self, NULL) &&
+        cached_cells->len < CACHED_CELLS_MAX_COUNT)
+    {
+        g_object_set (*self, "item", NULL, NULL);
+        nautilus_image_set_source (NAUTILUS_IMAGE ((*self)->icon), NULL);
+
+        g_ptr_array_add (cached_cells, g_object_ref (*self));
+    }
+
+    g_clear_object (self);
+}
+
+static void
+ensure_cells (void)
+{
+    if (cached_cells == NULL)
+    {
+        cached_cells = g_ptr_array_new_with_free_func (g_object_unref);
+
+        for (uint i = 0; i < CACHED_CELLS_INIT_COUNT; i++)
+        {
+            NautilusGridCell *cell = g_object_new (NAUTILUS_TYPE_GRID_CELL, NULL);
+
+            g_ptr_array_add (cached_cells, g_object_ref_sink (cell));
+        }
+    }
+}
+
+void
+nautilus_grid_cell_clear_cache (void)
+{
+    g_clear_pointer (&cached_cells, g_ptr_array_unref);
+}
+
 NautilusGridCell *
 nautilus_grid_cell_new (NautilusListBase *view)
 {
-    return g_object_new (NAUTILUS_TYPE_GRID_CELL,
-                         "view", view,
-                         NULL);
+    g_return_val_if_fail (NAUTILUS_IS_LIST_BASE (view), NULL);
+
+    NautilusGridCell *cell;
+
+    ensure_cells ();
+
+    if (cached_cells->len == 0)
+    {
+        cell = g_object_new (NAUTILUS_TYPE_GRID_CELL, NULL);
+
+        /* Needed to avoid warnings when clearing the cache. */
+        g_object_ref_sink (cell);
+    }
+    else
+    {
+        cell = g_ptr_array_steal_index (cached_cells, cached_cells->len - 1);
+
+        g_assert (gtk_widget_get_parent (GTK_WIDGET (cell)) == NULL);
+    }
+
+    g_object_set (cell, "view", view, NULL);
+
+    return cell;
 }
 
 void

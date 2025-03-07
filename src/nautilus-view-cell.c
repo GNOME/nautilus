@@ -159,7 +159,7 @@ nautilus_view_cell_class_init (NautilusViewCellClass *klass)
     properties[PROP_VIEW] = g_param_spec_object ("view",
                                                  "", "",
                                                  NAUTILUS_TYPE_LIST_BASE,
-                                                 G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY | G_PARAM_STATIC_STRINGS);
+                                                 G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS);
     properties[PROP_ITEM] = g_param_spec_object ("item",
                                                  "", "",
                                                  NAUTILUS_TYPE_VIEW_ITEM,

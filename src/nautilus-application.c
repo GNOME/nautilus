@@ -48,6 +48,7 @@
 #include "nautilus-dbus-launcher.h"
 #include "nautilus-dbus-manager.h"
 #include "nautilus-directory-private.h"
+#include "nautilus-grid-cell.h"
 #include "nautilus-file.h"
 #include "nautilus-file-operations.h"
 #include "nautilus-file-undo-manager.h"
@@ -872,6 +873,8 @@ on_application_shutdown (GApplication *application,
     g_list_free (notification_ids);
 
     nautilus_icon_info_clear_caches ();
+
+    nautilus_grid_cell_clear_cache ();
 }
 
 static void

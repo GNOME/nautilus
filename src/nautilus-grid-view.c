@@ -461,16 +461,34 @@ setup_cell (GtkSignalListItemFactory *factory,
 {
     NautilusGridView *self = NAUTILUS_GRID_VIEW (user_data);
     NautilusGridCell *cell;
+    GBinding *binding;
 
     cell = nautilus_grid_cell_new (NAUTILUS_LIST_BASE (self));
     gtk_list_item_set_child (listitem, GTK_WIDGET (cell));
     setup_cell_common (G_OBJECT (listitem), NAUTILUS_VIEW_CELL (cell));
 
-    g_object_bind_property (self, "icon-size",
-                            cell, "icon-size",
-                            G_BINDING_SYNC_CREATE);
+    binding = g_object_bind_property (self, "icon-size",
+                                      cell, "icon-size",
+                                      G_BINDING_SYNC_CREATE);
+    g_object_set_data (G_OBJECT (listitem), "cell", g_object_ref (cell));
+    g_object_set_data_full (G_OBJECT (listitem), "size-binding", binding, (GDestroyNotify) g_binding_unbind);
 
     nautilus_grid_cell_set_caption_attributes (cell, self->caption_attributes);
+}
+
+static void
+teardown_cell (GtkSignalListItemFactory *factory,
+               GtkListItem              *listitem,
+               gpointer                  user_data)
+{
+    NautilusGridCell *cell = g_object_get_data (G_OBJECT (listitem), "cell");
+
+    g_object_set_data (G_OBJECT (listitem), "size-binding", NULL);
+
+    nautilus_grid_cell_set_caption_attributes (cell, NULL);
+
+    grid_cell_steal (&cell);
+    g_object_set_data (G_OBJECT (listitem), "cell", NULL);
 }
 
 static void
@@ -496,6 +514,7 @@ create_view_ui (NautilusGridView *self)
     g_signal_connect (factory, "setup", G_CALLBACK (setup_cell), self);
     g_signal_connect (factory, "bind", G_CALLBACK (bind_cell), self);
     g_signal_connect (factory, "unbind", G_CALLBACK (unbind_cell), self);
+    g_signal_connect (factory, "teardown", G_CALLBACK (teardown_cell), self);
 
     widget = gtk_grid_view_new (NULL, factory);
 
