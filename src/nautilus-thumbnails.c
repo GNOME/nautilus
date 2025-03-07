@@ -200,7 +200,13 @@ nautilus_thumbnail_remove_from_queue (const char *file_uri)
         return;
     }
 
-    nautilus_hash_queue_remove (thumbnails_to_make, file_uri);
+    info = nautilus_hash_queue_find_item (thumbnails_to_make, file_uri);
+    if (info != NULL)
+    {
+        nautilus_hash_queue_remove (thumbnails_to_make, file_uri);
+        free_thumbnail_info (info);
+        return;
+    }
 
     info = g_hash_table_lookup (currently_thumbnailing_hash, file_uri);
     if (info != NULL)

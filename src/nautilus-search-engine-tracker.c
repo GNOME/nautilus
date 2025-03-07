@@ -597,7 +597,7 @@ nautilus_search_engine_tracker_start (NautilusSearchProvider *provider)
         g_autofree gchar *end_date_format = NULL;
         GDateTime *initial_date;
         GDateTime *end_date;
-        GDateTime *shifted_end_date;
+        g_autoptr (GDateTime) shifted_end_date = NULL;
 
         initial_date = g_ptr_array_index (date_range, 0);
         end_date = g_ptr_array_index (date_range, 1);
