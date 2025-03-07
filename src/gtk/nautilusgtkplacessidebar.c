@@ -1013,7 +1013,7 @@ update_places (NautilusGtkPlacesSidebar *sidebar)
 
   /* Add new bookmark row */
   new_bookmark_icon = g_themed_icon_new ("bookmark-new-symbolic");
-  sidebar->new_bookmark_row = add_place (sidebar, NAUTILUS_GTK_PLACES_DROP_FEEDBACK,
+  sidebar->new_bookmark_row = add_place (sidebar, NAUTILUS_GTK_PLACES_NEW_BOOKMARK,
                                          NAUTILUS_GTK_PLACES_SECTION_BOOKMARKS,
                                          _("New bookmark"), new_bookmark_icon, NULL, NULL,
                                          NULL, NULL, NULL, NULL, 0,
@@ -1156,7 +1156,7 @@ check_valid_drop_target (NautilusGtkPlacesSidebar *sidebar,
                 "file", &dest_file,
                 NULL);
 
-  if (place_type == NAUTILUS_GTK_PLACES_DROP_FEEDBACK)
+  if (place_type == NAUTILUS_GTK_PLACES_NEW_BOOKMARK)
     {
       g_free (uri);
       return TRUE;
@@ -1392,7 +1392,7 @@ drag_motion_callback (GtkDropTarget    *target,
        * file move/copy operation itself, or if we should only try to
        * create bookmarks out of the dragged URIs.
        */
-      if (place_type == NAUTILUS_GTK_PLACES_DROP_FEEDBACK)
+      if (place_type == NAUTILUS_GTK_PLACES_NEW_BOOKMARK)
         {
           action = GDK_ACTION_COPY;
         }
@@ -1521,7 +1521,7 @@ drag_drop_callback (GtkDropTarget    *target,
   else if (G_VALUE_HOLDS (value, GDK_TYPE_FILE_LIST))
     {
       /* Dropping URIs! */
-      if (target_place_type == NAUTILUS_GTK_PLACES_DROP_FEEDBACK)
+      if (target_place_type == NAUTILUS_GTK_PLACES_NEW_BOOKMARK)
         {
           drop_files_as_bookmarks (sidebar, g_value_get_boxed (value), target_order_index);
         }
@@ -3261,8 +3261,8 @@ list_box_sort_func (GtkListBoxRow *row1,
               retval = (place_type_1 == NAUTILUS_GTK_PLACES_INTERNAL_MOUNT) ? 1 : -1;
             }
         }
-      else if ((place_type_1 == NAUTILUS_GTK_PLACES_BOOKMARK || place_type_2 == NAUTILUS_GTK_PLACES_DROP_FEEDBACK) &&
-               (place_type_1 == NAUTILUS_GTK_PLACES_DROP_FEEDBACK || place_type_2 == NAUTILUS_GTK_PLACES_BOOKMARK))
+  else if ((place_type_1 == NAUTILUS_GTK_PLACES_BOOKMARK || place_type_2 == NAUTILUS_GTK_PLACES_NEW_BOOKMARK) &&
+           (place_type_1 == NAUTILUS_GTK_PLACES_NEW_BOOKMARK || place_type_2 == NAUTILUS_GTK_PLACES_BOOKMARK))
         {
           retval = index_1 - index_2;
         }
@@ -3291,11 +3291,11 @@ list_box_sort_func (GtkListBoxRow *row1,
             retval = index_1 - index_2;
         }
       /* Placeholder for dropping a row comes before the "New Bookmark" row. */
-      else if (place_type_1 == NAUTILUS_GTK_PLACES_DROP_FEEDBACK && place_type_2 == NAUTILUS_GTK_PLACES_BOOKMARK_PLACEHOLDER)
+      else if (place_type_1 == NAUTILUS_GTK_PLACES_NEW_BOOKMARK && place_type_2 == NAUTILUS_GTK_PLACES_BOOKMARK_PLACEHOLDER)
         {
           retval = 1;
         }
-      else if (place_type_1 == NAUTILUS_GTK_PLACES_BOOKMARK_PLACEHOLDER && place_type_2 == NAUTILUS_GTK_PLACES_DROP_FEEDBACK)
+      else if (place_type_1 == NAUTILUS_GTK_PLACES_BOOKMARK_PLACEHOLDER && place_type_2 == NAUTILUS_GTK_PLACES_NEW_BOOKMARK)
         {
           retval = -1;
         }
