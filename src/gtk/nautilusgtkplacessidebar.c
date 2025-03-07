@@ -3228,7 +3228,6 @@ list_box_sort_func (GtkListBoxRow *row1,
   NautilusGtkPlacesPlaceType place_type_1, place_type_2;
   g_autofree gchar *label_1 = NULL, *label_2 = NULL;
   int index_1, index_2;
-  int retval = 0;
 
   g_object_get (row1,
                 "label", &label_1,
@@ -3249,14 +3248,6 @@ list_box_sort_func (GtkListBoxRow *row1,
        * define the actual order of them in the list */
       return section_type_1 - section_type_2;
     }
-
-      if (section_type_1 == NAUTILUS_GTK_PLACES_SECTION_MOUNTS)
-        {
-          if (place_type_1 == place_type_2)
-            {
-              return g_utf8_collate (label_1, label_2);
-            }
-        }
 
   /* We order the bookmarks sections based on the bookmark index that we
    * set on the row as an order-index property, but we have to deal with
@@ -3280,12 +3271,12 @@ list_box_sort_func (GtkListBoxRow *row1,
       return place_type_1 - place_type_2;
     }
 
-  if (index_1 != index_2)
+  if (section_type_1 == NAUTILUS_GTK_PLACES_SECTION_MOUNTS)
     {
-      return index_1 - index_2;
+      return g_utf8_collate (label_1, label_2);
     }
 
-  return retval;
+  return index_1 - index_2;
 }
 
 static void
