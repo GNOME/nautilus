@@ -988,7 +988,8 @@ update_places (NautilusGtkPlacesSidebar *sidebar)
 
   /* add bookmarks */
   bookmarks = nautilus_bookmark_list_get_all (sidebar->bookmark_list);
-  index = 0;
+  /* Needs to start from 1 so that bookmark drag placeholder can come first. */
+  index = 1;
 
   for (GList *l = bookmarks; l != NULL; l = l->next)
     {
@@ -1357,7 +1358,7 @@ drag_motion_callback (GtkDropTarget    *target,
            * the current row, for instance when the cursor is in the lower half
            * of the row, we need to increase the order-index.
            */
-          row_placeholder_index = row_index;
+          row_placeholder_index = MAX (row_index - 1, 0);
 
 
           if (gtk_widget_compute_point (sidebar->list_box, GTK_WIDGET (row),
@@ -3256,41 +3257,32 @@ list_box_sort_func (GtkListBoxRow *row1,
               return g_utf8_collate (label_1, label_2);
             }
         }
-  else if ((place_type_1 == NAUTILUS_GTK_PLACES_BOOKMARK || place_type_2 == NAUTILUS_GTK_PLACES_NEW_BOOKMARK) &&
-           (place_type_1 == NAUTILUS_GTK_PLACES_NEW_BOOKMARK || place_type_2 == NAUTILUS_GTK_PLACES_BOOKMARK))
-        {
-          retval = index_1 - index_2;
-        }
-      /* We order the bookmarks sections based on the bookmark index that we
-       * set on the row as an order-index property, but we have to deal with
-       * the placeholder row wanted to be between two consecutive bookmarks,
-       * with two consecutive order-index values which is the usual case.
-       * For that, in the list box sort func we give priority to the placeholder row,
-       * that means that if the index-order is the same as another bookmark
-       * the placeholder row goes before. However if we want to show it after
-       * the current row, for instance when the cursor is in the lower half
-       * of the row, we need to increase the order-index.
-       */
-      else if (place_type_1 == NAUTILUS_GTK_PLACES_BOOKMARK_PLACEHOLDER && place_type_2 == NAUTILUS_GTK_PLACES_BOOKMARK)
-        {
-          if (index_1 == index_2)
-            retval =  index_1 - index_2 - 1;
-          else
-            retval = index_1 - index_2;
-          return retval;
-        }
-      else if (place_type_1 == NAUTILUS_GTK_PLACES_BOOKMARK && place_type_2 == NAUTILUS_GTK_PLACES_BOOKMARK_PLACEHOLDER)
-        {
-          if (index_1 == index_2)
-            retval =  index_1 - index_2 + 1;
-          else
-            retval = index_1 - index_2;
-          return retval;
-        }
+
+  /* We order the bookmarks sections based on the bookmark index that we
+   * set on the row as an order-index property, but we have to deal with
+   * the placeholder row wanted to be between two consecutive bookmarks,
+   * with two consecutive order-index values which is the usual case.
+   * For that, in the list box sort func we treat bookmark placeholders as
+   * having the same as place type as normal bookmarks so that the index is
+   * used for ordering.
+   */
+  if (place_type_1 == NAUTILUS_GTK_PLACES_BOOKMARK_PLACEHOLDER)
+  {
+    place_type_1 = NAUTILUS_GTK_PLACES_BOOKMARK;
+  }
+  if (place_type_2 == NAUTILUS_GTK_PLACES_BOOKMARK_PLACEHOLDER)
+  {
+    place_type_2 = NAUTILUS_GTK_PLACES_BOOKMARK;
+  }
 
   if (place_type_1 != place_type_2)
     {
       return place_type_1 - place_type_2;
+    }
+
+  if (index_1 != index_2)
+    {
+      return index_1 - index_2;
     }
 
   return retval;
