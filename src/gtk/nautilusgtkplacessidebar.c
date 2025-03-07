@@ -3256,11 +3256,6 @@ list_box_sort_func (GtkListBoxRow *row1,
               return g_utf8_collate (label_1, label_2);
             }
         }
-  else if ((place_type_1 == NAUTILUS_GTK_PLACES_BOOKMARK || place_type_2 == NAUTILUS_GTK_PLACES_NEW_BOOKMARK) &&
-           (place_type_1 == NAUTILUS_GTK_PLACES_NEW_BOOKMARK || place_type_2 == NAUTILUS_GTK_PLACES_BOOKMARK))
-        {
-          retval = index_1 - index_2;
-        }
       /* We order the bookmarks sections based on the bookmark index that we
        * set on the row as an order-index property, but we have to deal with
        * the placeholder row wanted to be between two consecutive bookmarks,
@@ -3291,6 +3286,11 @@ list_box_sort_func (GtkListBoxRow *row1,
   if (place_type_1 != place_type_2)
     {
       return place_type_1 - place_type_2;
+    }
+
+  if (index_1 != index_2)
+    {
+      return index_1 - index_2;
     }
 
   return retval;
