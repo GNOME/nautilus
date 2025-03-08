@@ -63,7 +63,11 @@ host_tracker_miner_fs_ready (GObject      *source,
     tracker_miner_fs_connection = tracker_sparql_connection_bus_new_finish (res, &tracker_miner_fs_error);
     if (tracker_miner_fs_error)
     {
-        g_warning ("Unable to create connection for session-wide Tracker indexer: %s", (tracker_miner_fs_error)->message);
+        if (g_strcmp0 (g_getenv ("RUNNING_TESTS"), "TRUE") != 0)
+        {
+            g_warning ("Unable to create connection for session-wide Tracker indexer: %s", (tracker_miner_fs_error)->message);
+        }
+
         if (nautilus_application_is_sandboxed ())
         {
             g_clear_error (&tracker_miner_fs_error);
