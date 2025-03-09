@@ -11,7 +11,7 @@
 # Kenneth Nielsen <k.nielsen81@gmail.com>, 2013.
 # Ask Hjorth Larsen <asklarsen@gmail.com>, 2007, 08, 09, 10, 11, 12, 14, 15, 16, 17, 18, 19.
 # scootergrisen, 2015, 2016.
-# Alan Mortensen <alanmortensen.am@gmail.com>, 2019-23.
+# Alan Mortensen <alanmortensen.am@gmail.com>, 2019-25.
 #
 # Konventioner:
 #
@@ -49,7 +49,7 @@ msgstr ""
 "Project-Id-Version: nautilus\n"
 "Report-Msgid-Bugs-To: https://gitlab.gnome.org/GNOME/nautilus/issues\n"
 "POT-Creation-Date: 2025-02-25 15:31+0000\n"
-"PO-Revision-Date: 2024-09-10 19:52+0200\n"
+"PO-Revision-Date: 2025-02-25 19:16+0100\n"
 "Last-Translator: Alan Mortensen <alanmortensen.am@gmail.com>\n"
 "Language-Team: Danish <dansk@dansk-gruppen.dk>\n"
 "Language: da\n"
@@ -806,10 +806,8 @@ msgid "--select must be used with at least an URI."
 msgstr "--select skal bruges med mindst en URI."
 
 #: src/nautilus-application.c:744
-#, fuzzy
-#| msgid "There was an error displaying help."
 msgid "There was an error displaying help"
-msgstr "Der opstod en fejl under visning af hjælp."
+msgstr "Der opstod en fejl under visning af hjælp"
 
 #: src/nautilus-application.c:745 src/nautilus-autorun-software.c:161
 #: src/nautilus-mime-actions.c:1195 src/nautilus-ui-utilities.c:437
@@ -1673,77 +1671,53 @@ msgid "_Replace"
 msgstr "_Erstat"
 
 #: src/nautilus-filename-validator.c:132
-#, fuzzy
-#| msgid "Folder names cannot contain “/”."
 msgid "Folder names cannot contain “/”"
-msgstr "Mappenavne må ikke indeholde “/”."
+msgstr "Mappenavne må ikke indeholde “/”"
 
 #: src/nautilus-filename-validator.c:133
-#, fuzzy
-#| msgid "File names cannot contain “/”."
 msgid "File names cannot contain “/”"
-msgstr "Filnavne må ikke indeholde “/”."
+msgstr "Filnavne må ikke indeholde “/”"
 
 #: src/nautilus-filename-validator.c:138
-#, fuzzy
-#| msgid "A folder cannot be called “.”."
 msgid "A folder cannot be called “.”"
-msgstr "En mappe må ikke hedde “.”."
+msgstr "En mappe må ikke hedde “.”"
 
 #: src/nautilus-filename-validator.c:139
-#, fuzzy
-#| msgid "A file cannot be called “.”."
 msgid "A file cannot be called “.”"
-msgstr "En fil må ikke hedde “.”."
+msgstr "En fil må ikke hedde “.”"
 
 #: src/nautilus-filename-validator.c:144
-#, fuzzy
-#| msgid "A folder cannot be called “..”."
 msgid "A folder cannot be called “..”"
-msgstr "En mappe må ikke hedde “..”."
+msgstr "En mappe må ikke hedde “..”"
 
 #: src/nautilus-filename-validator.c:145
-#, fuzzy
-#| msgid "A file cannot be called “..”."
 msgid "A file cannot be called “..”"
-msgstr "En fil må ikke hedde “..”."
+msgstr "En fil må ikke hedde “..”"
 
 #: src/nautilus-filename-validator.c:150
-#, fuzzy
-#| msgid "Folder name is too long."
 msgid "Folder name is too long"
-msgstr "Mappenavnet er for langt."
+msgstr "Mappenavnet er for langt"
 
 #: src/nautilus-filename-validator.c:151
-#, fuzzy
-#| msgid "File name is too long."
 msgid "File name is too long"
-msgstr "Filnavnet er for langt."
+msgstr "Filnavnet er for langt"
 
 #. We must warn about the side effect
 #: src/nautilus-filename-validator.c:157
-#, fuzzy
-#| msgid "Folders with “.” at the beginning of their name are hidden."
 msgid "Folders with “.” at the beginning of their name are hidden"
-msgstr "Mapper som starter med “.” er skjulte."
+msgstr "Mapper som starter med “.” er skjulte"
 
 #: src/nautilus-filename-validator.c:158
-#, fuzzy
-#| msgid "Files with “.” at the beginning of their name are hidden."
 msgid "Files with “.” at the beginning of their name are hidden"
-msgstr "Filer som starter med “.” er skjulte."
+msgstr "Filer som starter med “.” er skjulte"
 
 #: src/nautilus-filename-validator.c:167
-#, fuzzy
-#| msgid "A folder with that name already exists."
 msgid "A folder with that name already exists"
-msgstr "Der findes allerede en mappe med dette navn."
+msgstr "Der findes allerede en mappe med dette navn"
 
 #: src/nautilus-filename-validator.c:168
-#, fuzzy
-#| msgid "A file with that name already exists."
 msgid "A file with that name already exists"
-msgstr "Der findes allerede en fil med dette navn."
+msgstr "Der findes allerede en fil med dette navn"
 
 # scootergrisen: der er 2 knapper med s som genvejstast, når man sletter flere filer. Find noget bedre.
 #: src/nautilus-file-operations.c:275
@@ -3389,10 +3363,8 @@ msgstr "Indholdsvisning"
 
 #: src/nautilus-grid-view.c:518 src/nautilus-list-view.c:405
 #: src/nautilus-network-view.c:351
-#, fuzzy
-#| msgid "View of the current folder"
 msgid "View of the current location"
-msgstr "Visning af den aktuelle mappe"
+msgstr "Visning af den aktuelle placering"
 
 #: src/nautilus-internal-place-file.c:165
 #: src/gtk/nautilusgtkplacessidebar.c:716
@@ -4145,17 +4117,13 @@ msgstr ""
 "Søgningen vil være langsommere og vil ikke medtage nogle mappers filindhold"
 
 #: src/nautilus-query-editor.c:546
-#, fuzzy
-#| msgid "Rename File"
 msgid "Remove Filter"
-msgstr "Omdøb fil"
+msgstr "Fjern filter"
 
 #. translators: This opens the search panel in the Settings app.
 #: src/nautilus-query-editor.c:764
-#, fuzzy
-#| msgid "Search Settings"
 msgid "_Search Settings"
-msgstr "Indstillinger for søgning"
+msgstr "S_øg i Indstillinger"
 
 #: src/nautilus-query-editor.c:777
 msgid "Filter Search Results"
@@ -4579,11 +4547,9 @@ msgid "Move Tab Right"
 msgstr "Flyt faneblad til højre"
 
 #: src/resources/gtk/help-overlay.ui:156
-#, fuzzy
-#| msgid "Re_store Closed Tab"
 msgctxt "shortcut window"
 msgid "Restore Closed Tab"
-msgstr "_Gendan lukket faneblad"
+msgstr "Gendan lukket faneblad"
 
 #: src/resources/gtk/help-overlay.ui:164
 msgctxt "shortcut window"
@@ -4666,11 +4632,9 @@ msgid "Show/Hide Sidebar"
 msgstr "Vis/skjul sidebjælke"
 
 #: src/resources/gtk/help-overlay.ui:272
-#, fuzzy
-#| msgid "Current Folder Menu"
 msgctxt "shortcut window"
 msgid "Open Current Folder Menu"
-msgstr "Nuværende mappemenu"
+msgstr "Åbn nuværende mappemenu"
 
 #: src/resources/gtk/help-overlay.ui:278
 msgctxt "shortcut window"
@@ -5252,8 +5216,6 @@ msgid "Add to _Bookmarks"
 msgstr "Tilføj i _bogmærker"
 
 #: src/resources/ui/nautilus-pathbar-context-menu.ui:57
-#, fuzzy
-#| msgid "_Remove from Bookmarks"
 msgid "Remove from _Bookmarks"
 msgstr "_Fjern fra bogmærker"
 
@@ -5490,10 +5452,8 @@ msgid "_Group"
 msgstr "_Gruppe"
 
 #: src/resources/ui/nautilus-properties-window.ui:639
-#, fuzzy
-#| msgid "Others"
 msgid "Other Users"
-msgstr "Andre"
+msgstr "Andre brugere"
 
 #: src/resources/ui/nautilus-properties-window.ui:671
 msgid "Security Context"
