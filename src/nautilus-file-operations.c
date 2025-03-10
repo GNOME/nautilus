@@ -6057,7 +6057,6 @@ move_files_prepare (CopyMoveJob  *job,
     GList *l;
     GFile *src;
     gboolean same_fs;
-    int i;
     int total, left;
 
     common = &job->common;
@@ -6066,7 +6065,6 @@ move_files_prepare (CopyMoveJob  *job,
 
     report_preparing_move_progress (job, total, left);
 
-    i = 0;
     for (l = job->files;
          l != NULL && !job_aborted (common);
          l = l->next)
@@ -6085,7 +6083,6 @@ move_files_prepare (CopyMoveJob  *job,
                            fallbacks,
                            left);
         report_preparing_move_progress (job, total, --left);
-        i++;
     }
 
     *fallbacks = g_list_reverse (*fallbacks);
@@ -6103,14 +6100,12 @@ move_files (CopyMoveJob   *job,
     GList *l;
     GFile *src;
     gboolean same_fs;
-    int i;
     gboolean skipped_file;
     MoveFileCopyFallback *fallback;
     common = &job->common;
 
     report_copy_progress (job, source_info, transfer_info);
 
-    i = 0;
     for (l = fallbacks;
          l != NULL && !job_aborted (common);
          l = l->next)
@@ -6132,7 +6127,6 @@ move_files (CopyMoveJob   *job,
                         source_info, transfer_info,
                         job->debuting_files,
                         fallback->overwrite, &skipped_file, FALSE);
-        i++;
 
         if (skipped_file)
         {
