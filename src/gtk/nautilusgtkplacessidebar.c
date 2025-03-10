@@ -3236,6 +3236,16 @@ compare_volume (GVolume *a,
       return 0;
     }
 
+  const gchar *loop_device_prefix = "/dev/loop";
+  gboolean volume_1_is_loop = g_str_has_prefix (volume_id_1, loop_device_prefix);
+  gboolean volume_2_is_loop = g_str_has_prefix (volume_id_2, loop_device_prefix);
+
+  /* Always sort loop devices last */
+  if (volume_1_is_loop != volume_2_is_loop)
+    {
+      return volume_2_is_loop - volume_1_is_loop;
+    }
+
   return (g_strcmp0 (volume_id_1, volume_id_2));
 }
 
