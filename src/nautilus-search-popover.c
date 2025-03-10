@@ -401,6 +401,7 @@ create_row_for_label (const gchar *text,
                           "hexpand", TRUE,
                           "xalign", 0.0,
                           "margin-start", 6,
+                          "height-request", 24,
                           NULL);
 
     gtk_list_box_row_set_child (GTK_LIST_BOX_ROW (row), label);
