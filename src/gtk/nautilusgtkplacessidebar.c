@@ -3220,6 +3220,26 @@ long_press_cb (GtkGesture       *gesture,
 }
 
 static int
+compare_volume (GVolume *a,
+                GVolume *b)
+{
+  if (a == NULL || b == NULL)
+  {
+    return 0;
+  }
+
+  g_autofree gchar *volume_id_1 = g_volume_get_identifier (a, G_DRIVE_IDENTIFIER_KIND_UNIX_DEVICE);
+  g_autofree gchar *volume_id_2 = g_volume_get_identifier (b, G_DRIVE_IDENTIFIER_KIND_UNIX_DEVICE);
+
+  if (volume_id_1 == NULL || volume_id_2 == NULL)
+    {
+      return 0;
+    }
+
+  return (g_strcmp0 (volume_id_1, volume_id_2));
+}
+
+static int
 list_box_sort_func (GtkListBoxRow *row1,
                     GtkListBoxRow *row2,
                     gpointer       user_data)
@@ -3273,6 +3293,18 @@ list_box_sort_func (GtkListBoxRow *row1,
 
   if (section_type_1 == NAUTILUS_GTK_PLACES_SECTION_MOUNTS)
     {
+      g_autoptr (GVolume) volume_1 = NULL, volume_2 = NULL;
+
+      g_object_get (row1, "volume", &volume_1, NULL);
+      g_object_get (row2, "volume", &volume_2, NULL);
+
+      int retval = compare_volume (volume_1 , volume_2);
+
+      if (retval != 0)
+        {
+          return retval;
+        }
+
       return g_utf8_collate (label_1, label_2);
     }
 
