@@ -3231,6 +3231,19 @@ compare_volume (GVolume *a,
       return 0;
     }
 
+  gboolean volume_1_is_loop = volume_id_1 != NULL ?
+                              g_str_has_prefix (volume_id_1, "/dev/loop") :
+                              FALSE;
+  gboolean volume_2_is_loop = volume_id_2 != NULL ?
+                              g_str_has_prefix (volume_id_2, "/dev/loop") :
+                              FALSE;
+
+  /* Always sort loop devices last */
+  if (volume_1_is_loop != volume_2_is_loop)
+    {
+      return volume_2_is_loop - volume_1_is_loop;
+    }
+
   return (g_strcmp0 (volume_id_1, volume_id_2));
 }
 
