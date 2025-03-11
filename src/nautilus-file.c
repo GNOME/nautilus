@@ -79,16 +79,6 @@
 #define NAUTILUS_FILE_EMBLEM_NAME_CANT_READ "readonly-symbolic"
 #define NAUTILUS_FILE_EMBLEM_NAME_CANT_WRITE "unwriteable-symbolic"
 
-#undef NAUTILUS_FILE_DEBUG_REF
-#undef NAUTILUS_FILE_DEBUG_REF_VALGRIND
-
-#ifdef NAUTILUS_FILE_DEBUG_REF_VALGRIND
-#include <valgrind/valgrind.h>
-#define DEBUG_REF_PRINTF VALGRIND_PRINTF_BACKTRACE
-#else
-#define DEBUG_REF_PRINTF printf
-#endif
-
 #define MEGA_TO_BASE_RATE 1000000
 
 /* Files that start with these characters sort after files that don't. */
@@ -620,10 +610,6 @@ nautilus_file_new_from_filename (NautilusDirectory *directory,
     file = nautilus_directory_new_file_from_filename (directory, filename, self_owned);
     file->details->name = g_ref_string_new (filename);
 
-#ifdef NAUTILUS_FILE_DEBUG_REF
-    DEBUG_REF_PRINTF ("%10p ref'd", file);
-#endif
-
     return file;
 }
 
@@ -731,10 +717,6 @@ nautilus_file_new_from_info (NautilusDirectory *directory,
                                         NULL));
 
     update_info_and_name (file, info);
-
-#ifdef NAUTILUS_FILE_DEBUG_REF
-    DEBUG_REF_PRINTF ("%10p ref'd", file);
-#endif
 
     return file;
 }
@@ -954,10 +936,6 @@ nautilus_file_ref (NautilusFile *file)
     }
     g_return_val_if_fail (NAUTILUS_IS_FILE (file), NULL);
 
-#ifdef NAUTILUS_FILE_DEBUG_REF
-    DEBUG_REF_PRINTF ("%10p ref'd", file);
-#endif
-
     return g_object_ref (file);
 }
 
@@ -970,10 +948,6 @@ nautilus_file_unref (NautilusFile *file)
     }
 
     g_return_if_fail (NAUTILUS_IS_FILE (file));
-
-#ifdef NAUTILUS_FILE_DEBUG_REF
-    DEBUG_REF_PRINTF ("%10p unref'd", file);
-#endif
 
     g_object_unref (file);
 }
