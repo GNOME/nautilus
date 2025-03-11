@@ -326,11 +326,6 @@ nautilus_directory_init (NautilusDirectory *directory)
 NautilusDirectory *
 nautilus_directory_ref (NautilusDirectory *directory)
 {
-    if (directory == NULL)
-    {
-        return directory;
-    }
-
     g_return_val_if_fail (NAUTILUS_IS_DIRECTORY (directory), NULL);
 
     g_object_ref (directory);
@@ -340,11 +335,6 @@ nautilus_directory_ref (NautilusDirectory *directory)
 void
 nautilus_directory_unref (NautilusDirectory *directory)
 {
-    if (directory == NULL)
-    {
-        return;
-    }
-
     g_return_if_fail (NAUTILUS_IS_DIRECTORY (directory));
 
     g_object_unref (directory);

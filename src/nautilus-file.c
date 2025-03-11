@@ -935,10 +935,6 @@ finalize (GObject *object)
 NautilusFile *
 nautilus_file_ref (NautilusFile *file)
 {
-    if (file == NULL)
-    {
-        return NULL;
-    }
     g_return_val_if_fail (NAUTILUS_IS_FILE (file), NULL);
 
     return g_object_ref (file);
@@ -947,11 +943,6 @@ nautilus_file_ref (NautilusFile *file)
 void
 nautilus_file_unref (NautilusFile *file)
 {
-    if (file == NULL)
-    {
-        return;
-    }
-
     g_return_if_fail (NAUTILUS_IS_FILE (file));
 
     g_object_unref (file);
