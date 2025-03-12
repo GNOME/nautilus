@@ -859,7 +859,6 @@ notify_files_changed_while_being_added (NautilusDirectory *directory)
 static gboolean
 dequeue_pending_idle_callback (gpointer callback_data)
 {
-    NautilusDirectory *directory;
     GList *pending_file_info;
     GList *node, *next;
     NautilusFile *file;
@@ -868,10 +867,8 @@ dequeue_pending_idle_callback (gpointer callback_data)
     const char *name;
     DirectoryLoadState *dir_load_state;
 
-    directory = NAUTILUS_DIRECTORY (callback_data);
-
-    nautilus_directory_ref (directory);
-
+    g_autoptr (NautilusDirectory) directory = nautilus_directory_ref (
+        NAUTILUS_DIRECTORY (callback_data));
     directory->details->dequeue_pending_idle_id = 0;
 
     /* Handle the files in the order we saw them. */
@@ -1002,7 +999,6 @@ drain:
     /* Get the state machine running again. */
     nautilus_directory_async_state_changed (directory);
 
-    nautilus_directory_unref (directory);
     return FALSE;
 }
 
@@ -1085,12 +1081,10 @@ file_list_cancel (NautilusDirectory *directory)
 }
 
 static void
-directory_load_done (NautilusDirectory *directory,
+directory_load_done (NautilusDirectory *dir,
                      GError            *error)
 {
-    GList *node;
-
-    g_object_ref (directory);
+    g_autoptr (NautilusDirectory) directory = g_object_ref (dir);
 
     directory->details->directory_loaded = TRUE;
     directory->details->directory_loaded_sent_notification = FALSE;
@@ -1103,7 +1097,7 @@ directory_load_done (NautilusDirectory *directory,
          * they won't be marked "gone" later -- we don't know enough
          * about them to know whether they are really gone.
          */
-        for (node = directory->details->file_list;
+        for (GList *node = directory->details->file_list;
              node != NULL; node = node->next)
         {
             set_file_unconfirmed (NAUTILUS_FILE (node->data), FALSE);
@@ -1120,8 +1114,6 @@ directory_load_done (NautilusDirectory *directory,
     dequeue_pending_idle_callback (directory);
 
     directory_load_cancel (directory);
-
-    g_object_unref (directory);
 }
 
 void
@@ -1476,38 +1468,30 @@ new_files_state_unref (NewFilesState *state)
         g_free (state);
     }
 }
+G_DEFINE_AUTOPTR_CLEANUP_FUNC (NewFilesState, new_files_state_unref);
 
 static void
 new_files_callback (GObject      *source_object,
                     GAsyncResult *res,
                     gpointer      user_data)
 {
-    NautilusDirectory *directory;
-    GFileInfo *info;
-    NewFilesState *state;
-
-    state = user_data;
+    g_autoptr (NewFilesState) state = user_data;
 
     if (state->directory == NULL)
     {
         /* Operation was cancelled. Bail out */
-        new_files_state_unref (state);
         return;
     }
 
-    directory = nautilus_directory_ref (state->directory);
-
     /* Queue up the new file. */
-    info = g_file_query_info_finish (G_FILE (source_object), res, NULL);
+    g_autoptr (GFileInfo) info = g_file_query_info_finish (
+        G_FILE (source_object), res, NULL);
+
     if (info != NULL)
     {
+        g_autoptr (NautilusDirectory) directory = nautilus_directory_ref (state->directory);
         directory_load_one (directory, info);
-        g_object_unref (info);
     }
-
-    new_files_state_unref (state);
-
-    nautilus_directory_unref (directory);
 }
 
 void
@@ -2032,47 +2016,38 @@ directory_load_state_free (DirectoryLoadState *state)
     g_object_unref (state->cancellable);
     g_free (state);
 }
+G_DEFINE_AUTOPTR_CLEANUP_FUNC (DirectoryLoadState, directory_load_state_free);
 
 static void
 more_files_callback (GObject      *source_object,
                      GAsyncResult *res,
                      gpointer      user_data)
 {
-    DirectoryLoadState *state;
-    NautilusDirectory *directory;
-    GError *error;
-    GList *files, *l;
-    GFileInfo *info;
-
-    state = user_data;
+    g_autoptr (DirectoryLoadState) state = user_data;
 
     if (state->directory == NULL)
     {
         /* Operation was cancelled. Bail out */
-        directory_load_state_free (state);
         return;
     }
 
-    directory = nautilus_directory_ref (state->directory);
+    g_autoptr (NautilusDirectory) directory = nautilus_directory_ref (state->directory);
 
     g_assert (directory->details->directory_load_in_progress != NULL);
     g_assert (directory->details->directory_load_in_progress == state);
 
-    error = NULL;
-    files = g_file_enumerator_next_files_finish (state->enumerator,
-                                                 res, &error);
+    g_autoptr (GError) error = NULL;
+    g_autolist (GFileInfo) files = g_file_enumerator_next_files_finish (
+        state->enumerator, res, &error);
 
-    for (l = files; l != NULL; l = l->next)
+    for (GList *l = files; l != NULL; l = l->next)
     {
-        info = l->data;
-        directory_load_one (directory, info);
-        g_object_unref (info);
+        directory_load_one (directory, (GFileInfo *) l->data);
     }
 
     if (files == NULL)
     {
         directory_load_done (directory, error);
-        directory_load_state_free (state);
     }
     else
     {
@@ -2081,17 +2056,8 @@ more_files_callback (GObject      *source_object,
                                             G_PRIORITY_DEFAULT,
                                             state->cancellable,
                                             more_files_callback,
-                                            state);
+                                            g_steal_pointer (&state));
     }
-
-    nautilus_directory_unref (directory);
-
-    if (error)
-    {
-        g_error_free (error);
-    }
-
-    g_list_free (files);
 }
 
 static void
@@ -2231,15 +2197,12 @@ nautilus_file_invalidate_count (NautilusFile *file)
 void
 nautilus_directory_invalidate_count (NautilusDirectory *directory)
 {
-    NautilusFile *file;
+    g_autoptr (NautilusFile) file = nautilus_directory_get_existing_corresponding_file (directory);
 
-    file = nautilus_directory_get_existing_corresponding_file (directory);
     if (file != NULL)
     {
         nautilus_file_invalidate_count (file);
     }
-
-    nautilus_file_unref (file);
 }
 
 static void
@@ -2750,31 +2713,25 @@ deep_count_state_free (DeepCountState *state)
     g_free (state->fs_id);
     g_free (state);
 }
+G_DEFINE_AUTOPTR_CLEANUP_FUNC (DeepCountState, deep_count_state_free);
 
 static void
 deep_count_next_dir (DeepCountState *state)
 {
-    GFile *location;
-    NautilusFile *file;
-    NautilusDirectory *directory;
-    gboolean done;
+    NautilusDirectory *directory = state->directory;
+    NautilusFile *file = directory->details->deep_count_file;
+    gboolean done = FALSE;
 
-    directory = state->directory;
+    g_clear_object (&state->deep_count_location);
 
-    g_object_unref (state->deep_count_location);
-    state->deep_count_location = NULL;
-
-    done = FALSE;
-    file = directory->details->deep_count_file;
-
-    if (state->deep_count_subdirectories != NULL)
+    GList *next = g_list_first (state->deep_count_subdirectories);
+    if (next != NULL)
     {
         /* Work on a new directory. */
-        location = state->deep_count_subdirectories->data;
-        state->deep_count_subdirectories = g_list_remove
-                                               (state->deep_count_subdirectories, location);
+        g_autoptr (GFile) location = next->data;
+        state->deep_count_subdirectories = g_list_remove (
+            state->deep_count_subdirectories, next);
         deep_count_load (state, location);
-        g_object_unref (location);
     }
     else
     {
@@ -2800,42 +2757,33 @@ deep_count_more_files_callback (GObject      *source_object,
                                 GAsyncResult *res,
                                 gpointer      user_data)
 {
-    DeepCountState *state;
-    NautilusDirectory *directory;
-    GList *files, *l;
-    GFileInfo *info;
-
-    state = user_data;
+    g_autoptr (DeepCountState) state = user_data;
 
     if (state->directory == NULL)
     {
         /* Operation was cancelled. Bail out */
-        deep_count_state_free (state);
         return;
     }
 
-    directory = nautilus_directory_ref (state->directory);
+    g_autoptr (NautilusDirectory) directory = nautilus_directory_ref (state->directory);
 
     g_assert (directory->details->deep_count_in_progress != NULL);
     g_assert (directory->details->deep_count_in_progress == state);
 
-    files = g_file_enumerator_next_files_finish (state->enumerator,
-                                                 res, NULL);
+    g_autoptr (GList) files = g_file_enumerator_next_files_finish (
+        state->enumerator, res, NULL);
 
-    for (l = files; l != NULL; l = l->next)
+    for (GList *l = files; l != NULL; l = l->next)
     {
-        info = l->data;
-        deep_count_one (state, info);
-        g_object_unref (info);
+        deep_count_one (state, (GFileInfo *) l->data);
     }
 
     if (files == NULL)
     {
         g_file_enumerator_close_async (state->enumerator, 0, NULL, NULL, NULL);
-        g_object_unref (state->enumerator);
-        state->enumerator = NULL;
+        g_clear_object (&state->enumerator);
 
-        deep_count_next_dir (state);
+        deep_count_next_dir (g_steal_pointer (&state));
     }
     else
     {
@@ -2844,12 +2792,8 @@ deep_count_more_files_callback (GObject      *source_object,
                                             G_PRIORITY_LOW,
                                             state->cancellable,
                                             deep_count_more_files_callback,
-                                            state);
+                                            g_steal_pointer (&state));
     }
-
-    g_list_free (files);
-
-    nautilus_directory_unref (directory);
 }
 
 static void
@@ -2857,28 +2801,23 @@ deep_count_callback (GObject      *source_object,
                      GAsyncResult *res,
                      gpointer      user_data)
 {
-    DeepCountState *state;
-    GFileEnumerator *enumerator;
-    NautilusFile *file;
-
-    state = user_data;
+    g_autoptr (DeepCountState) state = user_data;
 
     if (state->directory == NULL)
     {
         /* Operation was cancelled. Bail out */
-        deep_count_state_free (state);
         return;
     }
 
-    file = state->directory->details->deep_count_file;
+    NautilusFile *file = state->directory->details->deep_count_file;
 
-    enumerator = g_file_enumerate_children_finish (G_FILE (source_object), res, NULL);
+    GFileEnumerator *enumerator = g_file_enumerate_children_finish (G_FILE (source_object), res, NULL);
 
     if (enumerator == NULL)
     {
         file->details->deep_unreadable_count += 1;
 
-        deep_count_next_dir (state);
+        deep_count_next_dir (g_steal_pointer (&state));
     }
     else
     {
@@ -2888,7 +2827,7 @@ deep_count_callback (GObject      *source_object,
                                             G_PRIORITY_LOW,
                                             state->cancellable,
                                             deep_count_more_files_callback,
-                                            state);
+                                            g_steal_pointer (&state));
     }
 }
 
@@ -3028,43 +2967,37 @@ get_info_state_free (GetInfoState *state)
     g_object_unref (state->cancellable);
     g_free (state);
 }
+G_DEFINE_AUTOPTR_CLEANUP_FUNC (GetInfoState, get_info_state_free);
 
 static void
 query_info_callback (GObject      *source_object,
                      GAsyncResult *res,
                      gpointer      user_data)
 {
-    NautilusDirectory *directory;
-    NautilusFile *get_info_file;
-    GFileInfo *info;
-    GetInfoState *state;
-    GError *error;
-
-    state = user_data;
+    g_autoptr (GetInfoState) state = user_data;
 
     if (state->directory == NULL)
     {
         /* Operation was cancelled. Bail out */
-        get_info_state_free (state);
         return;
     }
 
-    directory = nautilus_directory_ref (state->directory);
+    g_autoptr (NautilusDirectory) directory = nautilus_directory_ref (state->directory);
 
-    get_info_file = directory->details->get_info_file;
-    g_assert (NAUTILUS_IS_FILE (get_info_file));
-
-    directory->details->get_info_file = NULL;
-    directory->details->get_info_in_progress = NULL;
+    g_assert (NAUTILUS_IS_FILE (directory->details->get_info_file));
 
     /* ref here because we might be removing the last ref when we
      * mark the file gone below, but we need to keep a ref at
      * least long enough to send the change notification.
      */
-    nautilus_file_ref (get_info_file);
+    g_autoptr (NautilusFile) get_info_file = nautilus_file_ref (
+        directory->details->get_info_file);
+    directory->details->get_info_file = NULL;
+    directory->details->get_info_in_progress = NULL;
 
-    error = NULL;
-    info = g_file_query_info_finish (G_FILE (source_object), res, &error);
+    g_autoptr (GError) error = NULL;
+    g_autoptr (GFileInfo) info = g_file_query_info_finish (
+        G_FILE (source_object), res, &error);
 
     if (info == NULL)
     {
@@ -3076,23 +3009,17 @@ query_info_callback (GObject      *source_object,
         get_info_file->details->file_info_is_up_to_date = TRUE;
         nautilus_file_clear_info (get_info_file);
         get_info_file->details->get_info_failed = TRUE;
-        get_info_file->details->get_info_error = error;
+        get_info_file->details->get_info_error = g_steal_pointer (&error);
     }
     else
     {
         nautilus_file_update_info (get_info_file, info);
-        g_object_unref (info);
     }
 
     nautilus_file_changed (get_info_file);
-    nautilus_file_unref (get_info_file);
 
     async_job_end (directory, "file info");
     nautilus_directory_async_state_changed (directory);
-
-    nautilus_directory_unref (directory);
-
-    get_info_state_free (state);
 }
 
 static void
@@ -3334,23 +3261,17 @@ thumbnail_buf_stop (NautilusDirectory *directory)
 }
 
 static void
-thumbnail_got_pixbuf (NautilusDirectory *directory,
+thumbnail_got_pixbuf (NautilusDirectory *dir,
                       NautilusFile      *file,
                       GdkPixbuf         *pixbuf)
 {
-    nautilus_directory_ref (directory);
+    g_autoptr (NautilusDirectory) directory = nautilus_directory_ref (dir);
+    g_autoptr (NautilusFile) reffed_file = nautilus_file_ref (file);
 
-    nautilus_file_ref (file);
     thumbnail_buf_done (directory, file, pixbuf);
     nautilus_file_changed (file);
-    nautilus_file_unref (file);
 
-    if (pixbuf)
-    {
-        g_object_unref (pixbuf);
-    }
-
-    nautilus_directory_unref (directory);
+    g_clear_object (&pixbuf);
 }
 
 static void
@@ -3521,25 +3442,18 @@ static void
 got_mount (MountState *state,
            GMount     *mount)
 {
-    NautilusDirectory *directory;
-    NautilusFile *file;
-
-    directory = nautilus_directory_ref (state->directory);
+    g_autoptr (NautilusDirectory) directory = nautilus_directory_ref (state->directory);
 
     state->directory->details->mount_state = NULL;
     async_job_end (state->directory, "mount");
 
-    file = nautilus_file_ref (state->file);
+    g_autoptr (NautilusFile) file = nautilus_file_ref (state->file);
 
     file->details->mount_is_up_to_date = TRUE;
     nautilus_file_set_mount (file, mount);
 
     nautilus_directory_async_state_changed (directory);
     nautilus_file_changed (file);
-
-    nautilus_file_unref (file);
-
-    nautilus_directory_unref (directory);
 
     mount_state_free (state);
 }
@@ -3701,17 +3615,14 @@ static void
 got_filesystem_info (FilesystemInfoState *state,
                      GFileInfo           *info)
 {
-    NautilusDirectory *directory;
-    NautilusFile *file;
+    g_autoptr (NautilusDirectory) directory = nautilus_directory_ref (state->directory);
 
     /* careful here, info may be NULL */
-
-    directory = nautilus_directory_ref (state->directory);
 
     state->directory->details->filesystem_info_state = NULL;
     async_job_end (state->directory, "filesystem info");
 
-    file = nautilus_file_ref (state->file);
+    g_autoptr (NautilusFile) file = nautilus_file_ref (state->file);
 
     file->details->filesystem_info_is_up_to_date = TRUE;
     if (info != NULL)
@@ -3725,10 +3636,6 @@ got_filesystem_info (FilesystemInfoState *state,
 
     nautilus_directory_async_state_changed (directory);
     nautilus_file_changed (file);
-
-    nautilus_file_unref (file);
-
-    nautilus_directory_unref (directory);
 
     filesystem_info_state_free (state);
 }
