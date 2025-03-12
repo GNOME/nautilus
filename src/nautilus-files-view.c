@@ -345,6 +345,15 @@ static void nautilus_files_view_pop_up_selection_context_menu (NautilusFilesView
                                                                graphene_point_t  *point);
 static void nautilus_files_view_pop_up_background_context_menu (NautilusFilesView *view,
                                                                 graphene_point_t  *point);
+static gboolean
+has_subdirectory (NautilusFilesView *view,
+                  NautilusDirectory *directory);
+static void
+add_subdirectory (NautilusFilesView *view,
+                  NautilusDirectory *directory);
+static void
+remove_subdirectory (NautilusFilesView *view,
+                     NautilusDirectory *directory);
 
 G_DEFINE_TYPE_WITH_CODE (NautilusFilesView,
                          nautilus_files_view,
@@ -3328,9 +3337,9 @@ on_load_subdirectory (NautilusListBase *list_base,
     NautilusFilesView *self = NAUTILUS_FILES_VIEW (user_data);
     g_autoptr (NautilusDirectory) directory = nautilus_directory_get_for_file (nautilus_view_item_get_file (item));
 
-    if (!nautilus_files_view_has_subdirectory (self, directory))
+    if (!has_subdirectory (self, directory))
     {
-        nautilus_files_view_add_subdirectory (self, directory);
+        add_subdirectory (self, directory);
     }
 }
 
@@ -3342,9 +3351,9 @@ on_unload_subdirectory (NautilusListBase *list_base,
     NautilusFilesView *self = NAUTILUS_FILES_VIEW (user_data);
     g_autoptr (NautilusDirectory) directory = nautilus_directory_get_for_file (nautilus_view_item_get_file (item));
 
-    if (nautilus_files_view_has_subdirectory (self, directory))
+    if (has_subdirectory (self, directory))
     {
-        nautilus_files_view_remove_subdirectory (self, directory);
+        remove_subdirectory (self, directory);
     }
 }
 
@@ -3427,8 +3436,7 @@ nautilus_files_view_dispose (GObject *object)
     g_clear_pointer (&priv->subdirectories_loading, g_list_free);
     while (priv->subdirectory_list != NULL)
     {
-        nautilus_files_view_remove_subdirectory (view,
-                                                 priv->subdirectory_list->data);
+        remove_subdirectory (view, priv->subdirectory_list->data);
     }
 
     remove_update_context_menus_timeout_callback (view);
@@ -4876,8 +4884,8 @@ load_error_callback (NautilusDirectory *directory,
 }
 
 gboolean
-nautilus_files_view_has_subdirectory (NautilusFilesView *view,
-                                      NautilusDirectory *directory)
+has_subdirectory (NautilusFilesView *view,
+                  NautilusDirectory *directory)
 {
     NautilusFilesViewPrivate *priv;
     priv = nautilus_files_view_get_instance_private (view);
@@ -4903,8 +4911,8 @@ subdirectory_done_loading (NautilusDirectory *directory,
 }
 
 void
-nautilus_files_view_add_subdirectory (NautilusFilesView *view,
-                                      NautilusDirectory *directory)
+add_subdirectory (NautilusFilesView *view,
+                  NautilusDirectory *directory)
 {
     NautilusFileAttributes attributes;
     NautilusFilesViewPrivate *priv = nautilus_files_view_get_instance_private (view);
@@ -4949,8 +4957,8 @@ nautilus_files_view_add_subdirectory (NautilusFilesView *view,
 }
 
 void
-nautilus_files_view_remove_subdirectory (NautilusFilesView *view,
-                                         NautilusDirectory *directory)
+remove_subdirectory (NautilusFilesView *view,
+                     NautilusDirectory *directory)
 {
     NautilusFilesViewPrivate *priv = nautilus_files_view_get_instance_private (view);
     g_autoptr (NautilusFile) file = nautilus_directory_get_corresponding_file (directory);
@@ -8914,8 +8922,7 @@ load_directory (NautilusFilesView *view,
     g_clear_pointer (&priv->subdirectories_loading, g_list_free);
     while (priv->subdirectory_list != NULL)
     {
-        nautilus_files_view_remove_subdirectory (view,
-                                                 priv->subdirectory_list->data);
+        remove_subdirectory (view, priv->subdirectory_list->data);
     }
 
     /* Avoid freeing it and won't be able to ref it */
@@ -10041,8 +10048,7 @@ nautilus_files_view_change (NautilusFilesView *self,
     g_clear_pointer (&priv->subdirectories_loading, g_list_free);
     while (priv->subdirectory_list != NULL)
     {
-        nautilus_files_view_remove_subdirectory (self,
-                                                 priv->subdirectory_list->data);
+        remove_subdirectory (self, priv->subdirectory_list->data);
     }
 
     /* Create a new one */

@@ -128,13 +128,6 @@ void                nautilus_files_view_activate_file                    (Nautil
                                                                           NautilusFile      *file,
                                                                           NautilusOpenFlags  flags);
 
-gboolean            nautilus_files_view_has_subdirectory                (NautilusFilesView *view,
-                                                                         NautilusDirectory *directory);
-void                nautilus_files_view_add_subdirectory                (NautilusFilesView *view,
-                                                                         NautilusDirectory *directory);
-void                nautilus_files_view_remove_subdirectory             (NautilusFilesView *view,
-                                                                         NautilusDirectory *directory);
-
 /* file operations */
 char *            nautilus_files_view_get_backing_uri            (NautilusFilesView      *view);
 void              nautilus_files_view_move_copy_items            (NautilusFilesView      *view,
