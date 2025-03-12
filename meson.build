@@ -60,6 +60,7 @@ add_project_arguments(
     '-Werror=strict-prototypes',
     '-Werror=undef',
     '-Werror=uninitialized',
+    '-Wunused-function',
     # There are currently too many warnings caused by deprecations, hindering the usefulness
     # of any other warnings. Disable them until
     # https://gitlab.gnome.org/GNOME/nautilus/-/issues/2722 is resolved.
