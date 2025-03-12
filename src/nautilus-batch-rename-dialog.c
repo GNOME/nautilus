@@ -35,7 +35,7 @@
 
 struct _NautilusBatchRenameDialog
 {
-    GtkDialog parent;
+    AdwDialog parent;
 
     GtkRoot *window;
 
@@ -103,7 +103,7 @@ typedef struct
 static void     update_display_text (NautilusBatchRenameDialog *dialog);
 static void     cancel_conflict_check (NautilusBatchRenameDialog *self);
 
-G_DEFINE_TYPE (NautilusBatchRenameDialog, nautilus_batch_rename_dialog, ADW_TYPE_WINDOW);
+G_DEFINE_TYPE (NautilusBatchRenameDialog, nautilus_batch_rename_dialog, ADW_TYPE_DIALOG);
 
 static void
 change_numbering_order (GSimpleAction *action,
@@ -186,7 +186,10 @@ add_tag (NautilusBatchRenameDialog *self,
     tag_data->just_added = FALSE;
     gtk_editable_set_position (GTK_EDITABLE (self->name_entry), cursor_position);
 
-    gtk_entry_grab_focus_without_selecting (GTK_ENTRY (self->name_entry));
+    if (gtk_widget_get_root (GTK_WIDGET (self)) != NULL)
+    {
+        gtk_entry_grab_focus_without_selecting (GTK_ENTRY (self->name_entry));
+    }
 }
 
 static void
@@ -443,7 +446,7 @@ prepare_batch_rename (NautilusBatchRenameDialog *dialog)
 
     begin_batch_rename (dialog, dialog->new_names);
 
-    gtk_window_destroy (GTK_WINDOW (dialog));
+    adw_dialog_close (ADW_DIALOG (dialog));
 }
 
 static void
@@ -455,7 +458,7 @@ batch_rename_dialog_on_cancel (NautilusBatchRenameDialog *dialog,
         cancel_conflict_check (dialog);
     }
 
-    gtk_window_destroy (GTK_WINDOW (dialog));
+    adw_dialog_close (ADW_DIALOG (dialog));
 }
 
 static void
@@ -1081,7 +1084,10 @@ batch_rename_dialog_mode_changed (NautilusBatchRenameDialog *dialog)
 
         dialog->mode = NAUTILUS_BATCH_RENAME_DIALOG_FORMAT;
 
-        gtk_entry_grab_focus_without_selecting (GTK_ENTRY (dialog->name_entry));
+        if (gtk_widget_get_root (GTK_WIDGET (dialog)) != NULL)
+        {
+            gtk_entry_grab_focus_without_selecting (GTK_ENTRY (dialog->name_entry));
+        }
     }
     else
     {
@@ -1089,7 +1095,10 @@ batch_rename_dialog_mode_changed (NautilusBatchRenameDialog *dialog)
 
         dialog->mode = NAUTILUS_BATCH_RENAME_DIALOG_REPLACE;
 
-        gtk_entry_grab_focus_without_selecting (GTK_ENTRY (dialog->find_entry));
+        if (gtk_widget_get_root (GTK_WIDGET (dialog)) != NULL)
+        {
+            gtk_entry_grab_focus_without_selecting (GTK_ENTRY (dialog->find_entry));
+        }
     }
 
     update_display_text (dialog);
@@ -1436,6 +1445,21 @@ batch_row_orientation (GtkListItem               *item,
     }
 }
 
+static gboolean
+nautilus_batch_rename_dialog_grab_focus (GtkWidget *widget)
+{
+    NautilusBatchRenameDialog *dialog = NAUTILUS_BATCH_RENAME_DIALOG (widget);
+
+    if (dialog->mode == NAUTILUS_BATCH_RENAME_DIALOG_REPLACE)
+    {
+        return gtk_entry_grab_focus_without_selecting (GTK_ENTRY (dialog->find_entry));
+    }
+    else
+    {
+        return gtk_entry_grab_focus_without_selecting (GTK_ENTRY (dialog->name_entry));
+    }
+}
+
 static void
 nautilus_batch_rename_dialog_dispose (GObject *object)
 {
@@ -1509,6 +1533,8 @@ nautilus_batch_rename_dialog_class_init (NautilusBatchRenameDialogClass *klass)
     oclass->dispose = nautilus_batch_rename_dialog_dispose;
     oclass->finalize = nautilus_batch_rename_dialog_finalize;
 
+    widget_class->grab_focus = nautilus_batch_rename_dialog_grab_focus;
+
     g_type_ensure (NAUTILUS_TYPE_BATCH_RENAME_ITEM);
 
     gtk_widget_class_set_template_from_resource (widget_class, "/org/gnome/nautilus/ui/nautilus-batch-rename-dialog.ui");
@@ -1557,9 +1583,6 @@ nautilus_batch_rename_dialog_new (GList             *selection,
     dialog->selection = nautilus_file_list_copy (selection);
     dialog->directory = nautilus_directory_ref (directory);
     dialog->window = window;
-
-    gtk_window_set_transient_for (GTK_WINDOW (dialog),
-                                  GTK_WINDOW (window));
 
     all_targets_are_folders = TRUE;
     for (l = selection; l != NULL; l = l->next)
@@ -1610,7 +1633,7 @@ nautilus_batch_rename_dialog_new (GList             *selection,
                                 selection_count);
     }
 
-    gtk_window_set_title (GTK_WINDOW (dialog), dialog_title->str);
+    adw_dialog_set_title (ADW_DIALOG (dialog), dialog_title->str);
 
     dialog->distinct_parent_directories = batch_rename_files_get_distinct_parents (selection);
 

@@ -6275,7 +6275,7 @@ real_action_rename (NautilusFilesView *view)
                                                        priv->directory,
                                                        window);
 
-            gtk_window_present (GTK_WINDOW (dialog));
+            adw_dialog_present (ADW_DIALOG (dialog), GTK_WIDGET (window));
         }
         else
         {
