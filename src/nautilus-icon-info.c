@@ -326,6 +326,36 @@ themed_icon_key_free (ThemedIconKey *key)
     g_slice_free (ThemedIconKey, key);
 }
 
+static GtkIconPaintable *
+lookup_themed_icon (GtkIconTheme *theme,
+                    GIcon        *icon,
+                    int           size,
+                    float         scale)
+{
+    const gchar *generic_app_icon_name = "application-x-generic";
+    g_autoptr (GtkIconPaintable) icon_paintable = gtk_icon_theme_lookup_by_gicon (theme, icon, size, scale,
+                                                                                  GTK_TEXT_DIR_NONE, 0);
+    const gchar *icon_name = gtk_icon_paintable_get_icon_name (icon_paintable);
+
+    if (G_IS_THEMED_ICON (icon) &&
+        g_strcmp0 (generic_app_icon_name, icon_name) == 0)
+    {
+        /* GTK prefers generic icons in the main theme over exact match in
+         * other themes even when the match is meaningless like the empty file
+         * icon 'application-x-generic'. */
+        const gchar **names = (const gchar **) g_themed_icon_get_names (G_THEMED_ICON (icon));
+
+        if (g_strcmp0 (generic_app_icon_name, names[0]) != 0 &&
+            gtk_icon_theme_has_icon (theme, names[0]))
+        {
+            return gtk_icon_theme_lookup_icon (theme, names[0], NULL, size, scale,
+                                               GTK_TEXT_DIR_NONE, 0);
+        }
+    }
+
+    return g_steal_pointer (&icon_paintable);
+}
+
 NautilusIconInfo *
 nautilus_icon_info_lookup (GIcon *icon,
                            int    size,
@@ -401,7 +431,7 @@ nautilus_icon_info_lookup (GIcon *icon,
         return nautilus_icon_info_new_for_paintable (NULL, scale);
     }
 
-    icon_paintable = gtk_icon_theme_lookup_by_gicon (theme, icon, size, scale, GTK_TEXT_DIR_NONE, 0);
+    icon_paintable = lookup_themed_icon (theme, icon, size, scale);
 
     if (G_IS_THEMED_ICON (icon))
     {
