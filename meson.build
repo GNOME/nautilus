@@ -251,3 +251,16 @@ gnome.post_install(
   glib_compile_schemas: true,
   update_desktop_database: true,
 )
+
+#### Summary ####
+
+summary('Extensions', get_option('extensions').to_string(), section: 'Features')
+summary('Cloud providers support', get_option('cloudproviders'), section: 'Features')
+summary('SELinux support', get_option('selinux'), section: 'Features')
+
+summary('Profile', get_option('profile'), section: 'Build')
+summary('Debugging', get_option('debug'), section: 'Build')
+summary('Optimization', get_option('optimization'), section: 'Build')
+summary('Documentation', get_option('docs'), section: 'Build')
+summary('Introspection', get_option('introspection'), section: 'Build')
+summary('Tests', get_option('tests'), section: 'Build')
