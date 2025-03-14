@@ -46,10 +46,8 @@ today = 'unknown'
 date = find_program('date', required: false)
 # Only set dates for nightly builds to make release builds reproducible
 if date.found() and profile == 'Devel'
-  r = run_command(date, '-I')
-  if r.returncode() == 0
-    today = r.stdout().strip()
-  endif
+  r = run_command(date, '-I', check: true)
+  today = r.stdout().strip()
 endif
 
 appdata_conf = configuration_data()
