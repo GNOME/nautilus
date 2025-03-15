@@ -4210,16 +4210,6 @@ still_should_show_file (NautilusFilesView *view,
            view_file_still_belongs (view, fad);
 }
 
-static gboolean
-still_should_add_file (NautilusFilesView *view,
-                       FileAndDirectory  *fad)
-{
-    NautilusFilesViewPrivate *priv = nautilus_files_view_get_instance_private (view);
-
-    return still_should_show_file (view, fad) &&
-           nautilus_view_model_get_item_for_file (priv->model, fad->file) == NULL;
-}
-
 static void
 real_end_file_changes (NautilusFilesView *view)
 {
@@ -4404,7 +4394,7 @@ process_pending_files (NautilusFilesView *view)
             gboolean should_add_file;
             pending = node->data;
 
-            should_add_file = still_should_add_file (view, pending);
+            should_add_file = still_should_show_file (view, pending);
             if (should_add_file)
             {
                 pending_additions = g_list_prepend (pending_additions, pending->file);
