@@ -3203,10 +3203,7 @@ thumbnail_info_done (NautilusDirectory *directory,
                      NautilusFile      *file,
                      GFileInfo         *info)
 {
-    if (info != NULL)
-    {
-        file->details->thumbnail_info_is_up_to_date = TRUE;
-    }
+    file->details->thumbnail_info_is_up_to_date = TRUE;
 
     nautilus_directory_async_state_changed (directory);
 }
