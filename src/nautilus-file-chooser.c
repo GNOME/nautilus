@@ -37,6 +37,7 @@ struct _NautilusFileChooser
     NautilusMode mode;
     char *accept_label;
     char *suggested_name;
+    gboolean flag_initial_focus_done;
 
     GtkWidget *split_view;
     GtkWidget *places_sidebar;
@@ -684,7 +685,12 @@ nautilus_file_chooser_grab_focus (GtkWidget *widget)
 {
     NautilusFileChooser *self = NAUTILUS_FILE_CHOOSER (widget);
 
-    if (self->slot != NULL)
+    if (self->mode == NAUTILUS_MODE_SAVE_FILE && !self->flag_initial_focus_done)
+    {
+        self->flag_initial_focus_done = TRUE;
+        open_filename_entry (self);
+    }
+    else if (self->slot != NULL)
     {
         return gtk_widget_grab_focus (GTK_WIDGET (self->slot));
     }
