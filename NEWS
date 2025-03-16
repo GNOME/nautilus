@@ -1,3 +1,22 @@
+Major Changes in 48
+===================
+* Reversals:
+- Replace uselocale with Glib gettext variant (Khalid Abu Shawarib)
+
+* Bugfixes:
+- Generate thumbnails by order in view (Khalid Abu Shawarib)
+- Try more icons before using generic fallback (Khalid Abu Shawarib)
+- Focus filename entry in save mode by default (Ian Off)
+- Fix tree view and outdated file info crashes introduced in 48.rc (Khalid Abu Shawarib)
+- Use colored icon for filesystem root properties (Khalid Abu Shawarib)
+- Set search popover row heights (Khalid Abu Shawarib)
+
+* Cleanups:
+- Various performance enhancements around sorting, hidden files and image decoding (Khalid Abu Shawarib)
+- Add build summary (Khalid Abu Shawarib)
+
+* Translation updates (GNOME Translation Project contributors)
+
 Major Changes in 48.rc
 ======================
 * Enhancements:
@@ -13,7 +32,7 @@ Major Changes in 48.rc
 * Bugfixes:
 - Fix app chooser widget sizing (Automeris naranja)
 - Fix free space calculation for archive extraction (Peter Eisenmann)
-- Fix shell sesrch result order (Khalid Abu Shawarib)
+- Fix shell search result order (Khalid Abu Shawarib)
 - Fix floating bar style when unfocused (Peter Eisenmann)
 
 * Cleanups:
