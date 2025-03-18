@@ -226,6 +226,10 @@ insert_bookmark_internal (NautilusBookmarkList *bookmarks,
                           NautilusBookmark     *bookmark,
                           int                   index)
 {
+    if (nautilus_bookmark_list_contains (bookmarks, bookmark))
+    {
+        return;
+    }
     bookmarks->list = g_list_insert (bookmarks->list, bookmark, index);
 
     g_signal_connect_object (bookmark, "contents-changed",
