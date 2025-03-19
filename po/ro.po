@@ -12,8 +12,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: nautilus.HEAD.ro\n"
 "Report-Msgid-Bugs-To: https://gitlab.gnome.org/GNOME/nautilus/issues\n"
-"POT-Creation-Date: 2025-03-17 14:56+0000\n"
-"PO-Revision-Date: 2025-03-19 09:56+0100\n"
+"POT-Creation-Date: 2025-03-19 09:02+0000\n"
+"PO-Revision-Date: 2025-03-19 11:10+0100\n"
 "Last-Translator: Antonio Marin <gnmer.6qxyg@slmail.me>\n"
 "Language-Team: Romanian <gnomero-list@lists.sourceforge.net>sourceforge."
 "net>\n"
@@ -991,7 +991,7 @@ msgstr "Număr episod"
 
 #: src/nautilus-batch-rename-dialog.h:149
 msgid "Track number"
-msgstr "Număr piesă"
+msgstr "Numărul piesei"
 
 #: src/nautilus-batch-rename-dialog.h:156
 msgid "Artist name"
@@ -1924,7 +1924,7 @@ msgstr "Se mută la gunoi „%s”"
 #: src/nautilus-file-operations.c:1697
 #, c-format
 msgid "Trashed “%s”"
-msgstr "S-a mutat la gunoi „%s”"
+msgstr "„%s” aruncat la gunoi"
 
 #: src/nautilus-file-operations.c:1708
 #, c-format
@@ -1938,9 +1938,9 @@ msgstr[2] "Se mută %'d de fișiere în coșul de gunoi"
 #, c-format
 msgid "Trashed %'d file"
 msgid_plural "Trashed %'d files"
-msgstr[0] "S-a mutat %'d fișier la coșul de gunoi"
-msgstr[1] "S-au mutat %'d fișiere la coșul de gunoi"
-msgstr[2] "S-au mutat %'d de fișiere la coșul de gunoi"
+msgstr[0] "S-a mutat %'d fișier în coșul de gunoi"
+msgstr[1] "S-au mutat %'d fișiere în coșul de gunoi"
+msgstr[2] "S-au mutat %'d de fișiere în coșul de gunoi"
 
 #. Translators: %s is a file name
 #: src/nautilus-file-operations.c:1863
@@ -2850,7 +2850,7 @@ msgstr "Tragerea și plasarea nu este suportată."
 
 #: src/nautilus-files-view-dnd.c:187
 msgid "An invalid drag type was used."
-msgstr "A fost folosit un tip de tragere invalid."
+msgstr "A fost folosit un tip greșit de tragere."
 
 #: src/nautilus-file-undo-operations.c:177 src/nautilus-window.c:890
 msgid "Undo"
@@ -2920,11 +2920,11 @@ msgstr "_Refă mutarea"
 
 #: src/nautilus-file-undo-operations.c:478
 msgid "_Undo Restore From Trash"
-msgstr "_Refă restaurarea de la gunoi"
+msgstr "An_ulează recuperarea din gunoi"
 
 #: src/nautilus-file-undo-operations.c:479
 msgid "_Redo Restore From Trash"
-msgstr "_Repetă restaurarea de la gunoi"
+msgstr "_Refă recuperarea din gunoi"
 
 #: src/nautilus-file-undo-operations.c:483
 #, c-format
@@ -3119,11 +3119,11 @@ msgstr "Creează un fișier nou „%s” din șablon "
 
 #: src/nautilus-file-undo-operations.c:851
 msgid "_Undo Create From Template"
-msgstr "_Refă crearea din șablon"
+msgstr "An_ulează crearea din șablon"
 
 #: src/nautilus-file-undo-operations.c:852
 msgid "_Redo Create From Template"
-msgstr "_Repetă crearea din șablon"
+msgstr "_Refă crearea din șablon"
 
 #: src/nautilus-file-undo-operations.c:1063
 #: src/nautilus-file-undo-operations.c:1064
@@ -3188,7 +3188,7 @@ msgstr "An_ulează demarcarea cu stea"
 
 #: src/nautilus-file-undo-operations.c:1433
 msgid "_Redo Unstarring"
-msgstr "_Refă demarcarea cu stea"
+msgstr "_Refă eliminarea stelei"
 
 #: src/nautilus-file-undo-operations.c:1630
 #, c-format
@@ -3210,11 +3210,11 @@ msgstr "Mută „%s” la coșul de gunoi"
 
 #: src/nautilus-file-undo-operations.c:1656
 msgid "_Undo Trash"
-msgstr "An_ulează mutarea la coșul de gunoi"
+msgstr "An_ulează mutarea în coșul de gunoi"
 
 #: src/nautilus-file-undo-operations.c:1657
 msgid "_Redo Trash"
-msgstr "_Refă mutarea la coșul de gunoi"
+msgstr "_Refă mutarea în coșul de gunoi"
 
 #: src/nautilus-file-undo-operations.c:1951
 #, c-format
@@ -3463,7 +3463,7 @@ msgstr "Configurări coș de _gunoi"
 
 #: src/nautilus-location-entry.c:706 src/nautilus-query-editor.c:740
 msgid "Clear Entry"
-msgstr "Curăță intrarea"
+msgstr "Șterge elementul"
 
 #: src/nautilus-location-entry.c:715
 msgid "Go to Location"
@@ -3598,7 +3598,7 @@ msgstr "A apărut o eroare internă la încercarea de căutare după aplicații:
 
 #: src/nautilus-mime-actions.c:1232
 msgid "Unable to search for app"
-msgstr "Nu se poate căuta după aplicație"
+msgstr "Nu se poate căuta aplicația"
 
 #: src/nautilus-mime-actions.c:1337
 msgid "_Search in Software"
@@ -3653,7 +3653,7 @@ msgstr "Anu_lează"
 
 #: src/nautilus-network-address-bar.c:219
 msgid "Unable to get remote server location"
-msgstr "Nu s-a putut opține locația serverului la distanță"
+msgstr "Nu se poate accesa adresa serverului de la distanță"
 
 #: src/nautilus-network-address-bar.c:296
 msgid "AppleTalk"
@@ -3759,7 +3759,7 @@ msgstr "Există deja un dosar mai nou cu același nume în „%s”."
 #: src/nautilus-operations-ui-manager.c:179
 #, c-format
 msgid "Another folder with the same name already exists in “%s”."
-msgstr "Există deja un alt dosar cu același nume în „%s”."
+msgstr "Există deja un dosar cu același nume în „%s”."
 
 #: src/nautilus-operations-ui-manager.c:185
 #, c-format
@@ -4048,7 +4048,7 @@ msgstr "Iconița personalizată a fost eliminată"
 #: src/nautilus-properties-window.c:643 src/nautilus-window.c:807
 #: src/resources/ui/nautilus-window.ui:22
 msgid "_Undo"
-msgstr "_Refă"
+msgstr "An_ulează"
 
 #: src/nautilus-properties-window.c:673
 msgid "You cannot assign more than one custom icon at a time!"
@@ -4306,7 +4306,7 @@ msgstr "Filă nouă"
 
 #: src/nautilus-window.c:143
 msgid "Close current view"
-msgstr "Închide vizualizarea curentă"
+msgstr "Închide vizualizarea actuală"
 
 #. Translators: only one item has been moved to trash and %s is its name.
 #: src/nautilus-window.c:730
@@ -4380,6 +4380,7 @@ msgstr ""
 "Bogdan Mințoi <mintoi.bogdan@gmail.com>, 2014\n"
 "Florentina Mușat <florentina [dot] musat [dot] 28 [at] gmail [dot] com>, "
 "2018-2021, 2023\n"
+"Antonio Marin <gnmer.6qxyg@slmail.me>, 2025\n"
 "\n"
 "Contribuții Launchpad:\n"
 "  Adi Roiban https://launchpad.net/~adiroiban\n"
@@ -4462,7 +4463,8 @@ msgid ""
 "Unable to find the requested location. Please check the spelling or the "
 "network settings."
 msgstr ""
-"Nu s-a putut găsi locația dorită. Verificați ortografia sau setările rețelei."
+"Nu s-a putut găsi locul dorit. Trebuie verificată ortografia sau reglările "
+"rețelei."
 
 #. This case can be hit when server application is not installed
 #. * or is inactive in the system user is trying to connect to.
@@ -4517,7 +4519,7 @@ msgstr "Caută în dosarul actual"
 #: src/resources/gtk/help-overlay.ui:44
 msgctxt "shortcut window"
 msgid "Bookmark Current Location"
-msgstr "Marchează locația curentă"
+msgstr "Marchează locul actual"
 
 #: src/resources/gtk/help-overlay.ui:50
 msgctxt "shortcut window"
@@ -4722,7 +4724,7 @@ msgstr "Pliază dosarul"
 #: src/resources/gtk/help-overlay.ui:320
 msgctxt "shortcut window"
 msgid "Editing"
-msgstr "Editare"
+msgstr "Modificare"
 
 #: src/resources/gtk/help-overlay.ui:323
 msgctxt "shortcut window"
@@ -4831,7 +4833,7 @@ msgstr "Număr episod"
 
 #: src/resources/ui/nautilus-batch-rename-dialog.ui:43
 msgid "Track Number"
-msgstr "Număr piesă"
+msgstr "Numărul piesei"
 
 #: src/resources/ui/nautilus-batch-rename-dialog.ui:48
 msgid "Artist Name"
@@ -5185,7 +5187,7 @@ msgstr "Stabilește ca fundal…"
 #. Translators: This is the transitive verb meaning 'to send via email' (e.g. 'email this document to Angela).
 #: src/resources/ui/nautilus-files-view-context-menus.ui:221
 msgid "Email…"
-msgstr "Email…"
+msgstr "E-mail…"
 
 #: src/resources/ui/nautilus-files-view-context-menus.ui:231
 msgid "_Delete From Trash…"
@@ -5294,7 +5296,7 @@ msgstr "_Elimină steaua dosarului"
 
 #: src/resources/ui/nautilus-pathbar-context-menu.ui:72
 msgid "Edit _Location"
-msgstr "Editează locația"
+msgstr "Modifică _locul"
 
 #: src/resources/ui/nautilus-pathbar-context-menu.ui:77
 msgid "_Copy Location"
@@ -5385,7 +5387,7 @@ msgid ""
 "information will appear when zooming closer."
 msgstr ""
 "Adaugă informații de afișat sub numele fișierelor și al dosarelor. Mai multe "
-"informații vor apărea când faceți zoom."
+"informații vor apărea când se face zoom."
 
 #: src/resources/ui/nautilus-preferences-dialog.ui:112
 msgid "Grid View Captions"
@@ -5542,7 +5544,7 @@ msgstr "Selectați date…"
 
 #: src/resources/ui/nautilus-search-popover.ui:55
 msgid "Clear Date Filter"
-msgstr "Curăță filtrul de dată"
+msgstr "Șterge filtrul pentru dată"
 
 #: src/resources/ui/nautilus-search-popover.ui:96
 msgid "Since…"
