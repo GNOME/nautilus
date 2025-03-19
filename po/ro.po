@@ -12,8 +12,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: nautilus.HEAD.ro\n"
 "Report-Msgid-Bugs-To: https://gitlab.gnome.org/GNOME/nautilus/issues\n"
-"POT-Creation-Date: 2025-03-16 18:28+0000\n"
-"PO-Revision-Date: 2025-03-17 15:48+0100\n"
+"POT-Creation-Date: 2025-03-17 14:56+0000\n"
+"PO-Revision-Date: 2025-03-19 09:56+0100\n"
 "Last-Translator: Antonio Marin <gnmer.6qxyg@slmail.me>\n"
 "Language-Team: Romanian <gnomero-list@lists.sourceforge.net>sourceforge."
 "net>\n"
@@ -363,8 +363,7 @@ msgid ""
 "Whether to have full text search enabled by default when opening a new "
 "window/tab"
 msgstr ""
-"Dacă să fie activată căutarea de text în mod implicit când se deschide o "
-"nouă fereastră/tab"
+"Dacă să fie activată căutarea de text când se deschide o nouă fereastră/filă"
 
 #: data/org.gnome.nautilus.gschema.xml:189
 msgid ""
@@ -3431,7 +3430,7 @@ msgstr[2] "Fișierele de la gunoi vor fi șterse permanent după %d de zile"
 
 #: src/nautilus-location-banner.c:211
 msgid "Executable files in this folder will appear in the Scripts menu"
-msgstr "Fișierele executabile din acest dosar vor apărea în meniul Scripturi"
+msgstr "Fișierele executabile din acest dosar vor apărea în lista Scripturi"
 
 #: src/nautilus-location-banner.c:217
 msgid ""
@@ -3536,7 +3535,7 @@ msgstr "Legătura „%s” nu este validă. Doriți să o mutați la coșul de g
 #: src/nautilus-mime-actions.c:611
 #: src/resources/ui/nautilus-files-view-context-menus.ui:226
 msgid "Mo_ve to Trash"
-msgstr "Mută la coșul de _gunoi"
+msgstr "Mută în coșul de _gunoi"
 
 #: src/nautilus-mime-actions.c:618
 #, c-format
@@ -3559,9 +3558,9 @@ msgstr[2] "Aceasta va deschide %d de file și ferestre separate."
 #, c-format
 msgid "This will open %d separate tab."
 msgid_plural "This will open %d separate tabs."
-msgstr[0] "Aceasta va deschide %d tab separat."
-msgstr[1] "Aceasta va deschide %d taburi separate."
-msgstr[2] "Aceasta va deschide %d de taburi separate."
+msgstr[0] "Aceasta va deschide %d filă separată."
+msgstr[1] "Aceasta va deschide %d file separate."
+msgstr[2] "Aceasta va deschide %d de file separate."
 
 #: src/nautilus-mime-actions.c:1018
 #, c-format
@@ -4303,7 +4302,7 @@ msgstr[2] "%d de ani în urmă"
 
 #: src/nautilus-window.c:142
 msgid "New tab"
-msgstr "Tab nou"
+msgstr "Filă nouă"
 
 #: src/nautilus-window.c:143
 msgid "Close current view"
@@ -4498,7 +4497,7 @@ msgstr "Fereastră nouă"
 #: src/resources/gtk/help-overlay.ui:20
 msgctxt "shortcut window"
 msgid "Close Window or Tab"
-msgstr "Închide fereastră sau tab"
+msgstr "Închide fereastra sau fila"
 
 #: src/resources/gtk/help-overlay.ui:26
 msgctxt "shortcut window"
@@ -4578,22 +4577,22 @@ msgstr "Deschide cu aplicația implicită"
 #: src/resources/gtk/help-overlay.ui:117
 msgctxt "shortcut window"
 msgid "Tabs"
-msgstr "Taburi"
+msgstr "File"
 
 #: src/resources/gtk/help-overlay.ui:120
 msgctxt "shortcut window"
 msgid "New Tab"
-msgstr "Tab nou"
+msgstr "Filă nouă"
 
 #: src/resources/gtk/help-overlay.ui:126
 msgctxt "shortcut window"
 msgid "Go to Previous Tab"
-msgstr "La tabul anterior"
+msgstr "La fila anterioară"
 
 #: src/resources/gtk/help-overlay.ui:132
 msgctxt "shortcut window"
 msgid "Go to Next Tab"
-msgstr "La tabul următor"
+msgstr "La fila următoare"
 
 #: src/resources/gtk/help-overlay.ui:138
 msgctxt "shortcut window"
@@ -4603,12 +4602,12 @@ msgstr "Deschide fila"
 #: src/resources/gtk/help-overlay.ui:144
 msgctxt "shortcut window"
 msgid "Move Tab Left"
-msgstr "Mută tabul la stânga"
+msgstr "Mută fila în stânga"
 
 #: src/resources/gtk/help-overlay.ui:150
 msgctxt "shortcut window"
 msgid "Move Tab Right"
-msgstr "Mută tabul la dreapta"
+msgstr "Mută fila în dreapta"
 
 #: src/resources/gtk/help-overlay.ui:156
 msgctxt "shortcut window"
@@ -4738,7 +4737,7 @@ msgstr "Redenumește"
 #: src/resources/gtk/help-overlay.ui:335
 msgctxt "shortcut window"
 msgid "Move to Trash"
-msgstr "Mută la coșul de gunoi"
+msgstr "Mută în coșul de gunoi"
 
 #: src/resources/gtk/help-overlay.ui:341
 msgctxt "shortcut window"
@@ -5036,7 +5035,7 @@ msgstr "Dosa_re"
 #: src/resources/ui/nautilus-files-view-context-menus.ui:6
 #: src/resources/ui/nautilus-pathbar-context-menu.ui:20
 msgid "New _Folder…"
-msgstr "_Dosar nou…"
+msgstr "Dosa_r nou…"
 
 #: src/resources/ui/nautilus-files-view-context-menus.ui:10
 #: src/resources/ui/nautilus-pathbar-context-menu.ui:25
@@ -5422,7 +5421,7 @@ msgstr "Proprietăți"
 
 #: src/resources/ui/nautilus-properties-window.ui:100
 msgid "Set Custom Icon"
-msgstr "Stabilește iconiță personalizată"
+msgstr "Stabilește simbol personalizat"
 
 #: src/resources/ui/nautilus-properties-window.ui:121
 msgid "Remove Custom Icon"
@@ -5682,7 +5681,7 @@ msgstr "_Fereastră nouă"
 
 #: src/resources/ui/nautilus-window.ui:12
 msgid "New _Tab"
-msgstr "_Tab nou"
+msgstr "Filă no_uă"
 
 #: src/resources/ui/nautilus-window.ui:32
 msgid "_Preferences"
@@ -5702,7 +5701,7 @@ msgstr "_Despre Fișiere"
 
 #: src/resources/ui/nautilus-window.ui:52
 msgid "_New Tab"
-msgstr "Tab _nou"
+msgstr "Filă _nouă"
 
 #: src/resources/ui/nautilus-window.ui:56
 msgid "Re_store Closed Tab"
@@ -5710,25 +5709,25 @@ msgstr "Recuperează fila închi_să"
 
 #: src/resources/ui/nautilus-window.ui:62
 msgid "Move Tab to New _Window"
-msgstr "Mută fila la o _fereastră nouă"
+msgstr "Mută fila într-o _fereastră nouă"
 
 #. Translators: use “Move Tab _Right” for RTL languages
 #: src/resources/ui/nautilus-window.ui:66
 msgid "Move Tab _Left"
-msgstr "Mută tabul în _stânga"
+msgstr "Mută fila în _stânga"
 
 #. Translators: use “Move Tab _Left” for RTL languages
 #: src/resources/ui/nautilus-window.ui:70
 msgid "Move Tab _Right"
-msgstr "Mută tabul în d_reapta"
+msgstr "Mută fila în d_reapta"
 
 #: src/resources/ui/nautilus-window.ui:76
 msgid "_Close Tab"
-msgstr "În_chide tabul"
+msgstr "În_chide fila"
 
 #: src/resources/ui/nautilus-window.ui:80
 msgid "Close _Other Tabs"
-msgstr "Închide _celelalte file"
+msgstr "Închide c_elelalte file"
 
 #: src/resources/ui/nautilus-window.ui:128
 msgid "Main Menu"
