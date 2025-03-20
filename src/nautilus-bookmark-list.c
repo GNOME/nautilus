@@ -221,15 +221,28 @@ nautilus_bookmark_list_init (NautilusBookmarkList *bookmarks)
                       G_CALLBACK (bookmark_monitor_changed_cb), bookmarks);
 }
 
-static void
+/**
+ * insert_bookmark_internal:
+ * @bookmarks: pointer to a #NautilusBookmarkList
+ * @bookmark: (transfer full): pointer to a #NautilusBookmark to insert
+ * @index: Position to store bookmark index in the list
+ *
+ * Adds a bookmark to the given #NautilusBookmarkList if it doesn't exist.
+ *
+ * Returns: %TRUE when the bookmark was inserted and %FALSE if the bookmark
+ *      already exists.
+ */
+static gboolean
 insert_bookmark_internal (NautilusBookmarkList *bookmarks,
                           NautilusBookmark     *bookmark,
                           int                   index)
 {
     if (nautilus_bookmark_list_contains (bookmarks, bookmark))
     {
-        return;
+        g_object_unref (bookmark);
+        return FALSE;
     }
+
     bookmarks->list = g_list_insert (bookmarks->list, bookmark, index);
 
     g_signal_connect_object (bookmark, "contents-changed",
@@ -238,6 +251,8 @@ insert_bookmark_internal (NautilusBookmarkList *bookmarks,
                              G_CALLBACK (bookmark_in_list_icon_changed), bookmarks, G_CONNECT_SWAPPED);
     g_signal_connect_object (bookmark, "notify::name",
                              G_CALLBACK (bookmark_in_list_name_changed), bookmarks, G_CONNECT_SWAPPED);
+
+    return TRUE;
 }
 
 /**
@@ -301,14 +316,10 @@ nautilus_bookmark_list_append (NautilusBookmarkList *bookmarks,
     g_return_if_fail (NAUTILUS_IS_BOOKMARK_LIST (bookmarks));
     g_return_if_fail (NAUTILUS_IS_BOOKMARK (bookmark));
 
-    if (g_list_find_custom (bookmarks->list, bookmark,
-                            nautilus_bookmark_compare_with) != NULL)
+    if (insert_bookmark_internal (bookmarks, g_object_ref (bookmark), -1))
     {
-        return;
+        nautilus_bookmark_list_save_file (bookmarks);
     }
-
-    insert_bookmark_internal (bookmarks, g_object_ref (bookmark), -1);
-    nautilus_bookmark_list_save_file (bookmarks);
 }
 
 /**
@@ -442,8 +453,10 @@ nautilus_bookmark_list_insert_item (NautilusBookmarkList *bookmarks,
     g_return_if_fail (NAUTILUS_IS_BOOKMARK_LIST (bookmarks));
     g_return_if_fail (index <= g_list_length (bookmarks->list));
 
-    insert_bookmark_internal (bookmarks, g_object_ref (new_bookmark), index);
-    nautilus_bookmark_list_save_file (bookmarks);
+    if (insert_bookmark_internal (bookmarks, g_object_ref (new_bookmark), index))
+    {
+        nautilus_bookmark_list_save_file (bookmarks);
+    }
 }
 
 /**
