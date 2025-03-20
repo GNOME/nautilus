@@ -1948,6 +1948,22 @@ typedef struct
     GList *selection;
 } NewFolderData;
 
+static void
+new_folder_data_free (NewFolderData *data)
+{
+    g_hash_table_destroy (data->added_locations);
+
+    if (data->directory_view != NULL)
+    {
+        g_object_remove_weak_pointer (G_OBJECT (data->directory_view),
+                                      (gpointer *) &data->directory_view);
+    }
+
+    nautilus_file_list_free (data->selection);
+    g_free (data);
+}
+G_DEFINE_AUTOPTR_CLEANUP_FUNC (NewFolderData, new_folder_data_free);
+
 typedef struct
 {
     NautilusFilesView *directory_view;
@@ -1982,19 +1998,12 @@ new_folder_done (GFile    *new_folder,
                  gboolean  success,
                  gpointer  user_data)
 {
-    NautilusFilesView *directory_view;
-    NautilusFilesViewPrivate *priv;
-    NautilusFile *file;
-    NewFolderData *data;
-
-    data = (NewFolderData *) user_data;
-
-    directory_view = data->directory_view;
-    priv = nautilus_files_view_get_instance_private (directory_view);
+    g_autoptr (NewFolderData) data = user_data;
+    NautilusFilesView *directory_view = data->directory_view;
 
     if (directory_view == NULL)
     {
-        goto fail;
+        return;
     }
 
     g_signal_handlers_disconnect_by_func (directory_view,
@@ -2003,31 +2012,28 @@ new_folder_done (GFile    *new_folder,
 
     if (new_folder == NULL)
     {
-        goto fail;
+        return;
     }
 
-    file = nautilus_file_get (new_folder);
+    g_autoptr (NautilusFile) file = nautilus_file_get (new_folder);
 
     if (data->selection != NULL)
     {
-        GList *uris, *l;
-        char *target_uri;
+        GList *uris = NULL;
 
-        uris = NULL;
-        for (l = data->selection; l != NULL; l = l->next)
+        for (GList *l = data->selection; l != NULL; l = l->next)
         {
             uris = g_list_prepend (uris, nautilus_file_get_uri ((NautilusFile *) l->data));
         }
         uris = g_list_reverse (uris);
 
-        target_uri = nautilus_file_get_uri (file);
+        g_autofree char *target_uri = nautilus_file_get_uri (file);
 
         nautilus_files_view_move_copy_items (directory_view,
                                              uris,
                                              target_uri,
                                              GDK_ACTION_MOVE);
         g_list_free_full (uris, g_free);
-        g_free (target_uri);
     }
 
     if (g_hash_table_contains (data->added_locations, new_folder))
@@ -2037,24 +2043,12 @@ new_folder_done (GFile    *new_folder,
     }
     else
     {
+        NautilusFilesViewPrivate *priv = nautilus_files_view_get_instance_private (directory_view);
+
         g_hash_table_insert (priv->pending_reveal,
                              file,
                              GUINT_TO_POINTER (TRUE));
     }
-
-    nautilus_file_unref (file);
-
-fail:
-    g_hash_table_destroy (data->added_locations);
-
-    if (data->directory_view != NULL)
-    {
-        g_object_remove_weak_pointer (G_OBJECT (data->directory_view),
-                                      (gpointer *) &data->directory_view);
-    }
-
-    nautilus_file_list_free (data->selection);
-    g_free (data);
 }
 
 
@@ -2214,25 +2208,34 @@ typedef struct
 } CompressData;
 
 static void
+compress_data_free (CompressData *data)
+{
+    if (data->view != NULL)
+    {
+        g_object_remove_weak_pointer (G_OBJECT (data->view),
+                                      (gpointer *) &data->view);
+    }
+
+    g_hash_table_destroy (data->added_locations);
+    g_free (data);
+}
+
+G_DEFINE_AUTOPTR_CLEANUP_FUNC (CompressData, compress_data_free);
+
+static void
 compress_done (GFile    *new_file,
                gboolean  success,
                gpointer  user_data)
 {
-    CompressData *data;
-    NautilusFilesView *view;
-    NautilusFilesViewPrivate *priv;
-    NautilusFile *file;
-    char *uri = NULL;
-
-    data = user_data;
-    view = data->view;
+    g_autoptr (CompressData) data = user_data;
+    NautilusFilesView *view = data->view;
 
     if (view == NULL)
     {
-        goto out;
+        return;
     }
 
-    priv = nautilus_files_view_get_instance_private (view);
+    NautilusFilesViewPrivate *priv = nautilus_files_view_get_instance_private (view);
 
     g_signal_handlers_disconnect_by_func (view,
                                           G_CALLBACK (track_newly_added_locations),
@@ -2240,10 +2243,10 @@ compress_done (GFile    *new_file,
 
     if (!success)
     {
-        goto out;
+        return;
     }
 
-    file = nautilus_file_get (new_file);
+    g_autoptr (NautilusFile) file = nautilus_file_get (new_file);
 
     if (g_hash_table_contains (data->added_locations, new_file))
     {
@@ -2257,21 +2260,8 @@ compress_done (GFile    *new_file,
                              GUINT_TO_POINTER (TRUE));
     }
 
-    uri = nautilus_file_get_uri (file);
+    g_autofree char *uri = nautilus_file_get_uri (file);
     gtk_recent_manager_add_item (gtk_recent_manager_get_default (), uri);
-
-    nautilus_file_unref (file);
-out:
-    g_hash_table_destroy (data->added_locations);
-
-    if (data->view != NULL)
-    {
-        g_object_remove_weak_pointer (G_OBJECT (data->view),
-                                      (gpointer *) &data->view);
-    }
-
-    g_free (uri);
-    g_free (data);
 }
 
 static void
@@ -6309,22 +6299,29 @@ typedef struct
 } ExtractData;
 
 static void
+extract_data_free (ExtractData *data)
+{
+    if (data->view != NULL)
+    {
+        g_object_remove_weak_pointer (G_OBJECT (data->view),
+                                      (gpointer *) &data->view);
+    }
+
+    g_hash_table_destroy (data->added_locations);
+    g_free (data);
+}
+G_DEFINE_AUTOPTR_CLEANUP_FUNC (ExtractData, extract_data_free);
+
+static void
 extract_done (GList    *outputs,
               gpointer  user_data)
 {
-    NautilusFilesViewPrivate *priv;
-    ExtractData *data;
-    GList *l;
-    gboolean all_files_acknowledged;
-
-    data = user_data;
+    g_autoptr (ExtractData) data = user_data;
 
     if (data->view == NULL)
     {
-        goto out;
+        return;
     }
-
-    priv = nautilus_files_view_get_instance_private (data->view);
 
     g_signal_handlers_disconnect_by_func (data->view,
                                           G_CALLBACK (track_newly_added_locations),
@@ -6332,11 +6329,11 @@ extract_done (GList    *outputs,
 
     if (outputs == NULL)
     {
-        goto out;
+        return;
     }
 
-    all_files_acknowledged = TRUE;
-    for (l = outputs; l && all_files_acknowledged; l = l->next)
+    gboolean all_files_acknowledged = TRUE;
+    for (GList *l = outputs; l && all_files_acknowledged; l = l->next)
     {
         all_files_acknowledged &= g_hash_table_contains (data->added_locations,
                                                          l->data);
@@ -6346,7 +6343,7 @@ extract_done (GList    *outputs,
     {
         GList *selection = NULL;
 
-        for (l = outputs; l != NULL; l = l->next)
+        for (GList *l = outputs; l != NULL; l = l->next)
         {
             selection = g_list_prepend (selection,
                                         nautilus_file_get (l->data));
@@ -6359,7 +6356,9 @@ extract_done (GList    *outputs,
     }
     else
     {
-        for (l = outputs; l != NULL; l = l->next)
+        NautilusFilesViewPrivate *priv = nautilus_files_view_get_instance_private (data->view);
+
+        for (GList *l = outputs; l != NULL; l = l->next)
         {
             gboolean acknowledged;
             g_autoptr (NautilusFile) file = nautilus_file_get (l->data);
@@ -6372,16 +6371,6 @@ extract_done (GList    *outputs,
                                  GUINT_TO_POINTER (acknowledged));
         }
     }
-out:
-    g_hash_table_destroy (data->added_locations);
-
-    if (data->view != NULL)
-    {
-        g_object_remove_weak_pointer (G_OBJECT (data->view),
-                                      (gpointer *) &data->view);
-    }
-
-    g_free (data);
 }
 
 static void
