@@ -144,12 +144,12 @@ nautilus_star_cell_init (NautilusStarCell *self)
 }
 
 static void
-nautilus_star_cell_finalize (GObject *object)
+nautilus_star_cell_dispose (GObject *object)
 {
     NautilusStarCell *self = (NautilusStarCell *) object;
 
-    g_object_unref (self->item_signal_group);
-    G_OBJECT_CLASS (nautilus_star_cell_parent_class)->finalize (object);
+    g_clear_object (&self->item_signal_group);
+    G_OBJECT_CLASS (nautilus_star_cell_parent_class)->dispose (object);
 }
 
 static void
@@ -157,7 +157,8 @@ nautilus_star_cell_class_init (NautilusStarCellClass *klass)
 {
     GObjectClass *object_class = G_OBJECT_CLASS (klass);
 
-    object_class->finalize = nautilus_star_cell_finalize;
+    object_class->dispose = nautilus_star_cell_dispose;
+
 }
 
 NautilusViewCell *

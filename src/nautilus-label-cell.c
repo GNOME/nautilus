@@ -131,12 +131,12 @@ nautilus_label_cell_constructed (GObject *object)
 }
 
 static void
-nautilus_label_cell_finalize (GObject *object)
+nautilus_label_cell_dispose (GObject *object)
 {
     NautilusLabelCell *self = (NautilusLabelCell *) object;
 
-    g_object_unref (self->item_signal_group);
-    G_OBJECT_CLASS (nautilus_label_cell_parent_class)->finalize (object);
+    g_clear_object (&self->item_signal_group);
+    G_OBJECT_CLASS (nautilus_label_cell_parent_class)->dispose (object);
 }
 
 static void
@@ -146,7 +146,7 @@ nautilus_label_cell_class_init (NautilusLabelCellClass *klass)
 
     object_class->set_property = nautilus_label_cell_set_property;
     object_class->constructed = nautilus_label_cell_constructed;
-    object_class->finalize = nautilus_label_cell_finalize;
+    object_class->dispose = nautilus_label_cell_dispose;
 
     properties[PROP_COLUMN] = g_param_spec_object ("column",
                                                    "", "",
