@@ -17,9 +17,6 @@
       Its functions can be extended with plugins and scripts.
     </p>
   </description>
-  <categories>
-    <category>System</category>
-  </categories>
   <url type="bugtracker">https://gitlab.gnome.org/GNOME/nautilus/issues</url>
   <url type="contact">https://discourse.gnome.org/tag/nautilus</url>
   <url type="contribute">https://welcome.gnome.org/app/Nautilus/</url>
@@ -47,20 +44,30 @@
   <developer id="org.gnome">
     <name>The GNOME Project</name>
   </developer>
+  <provides>
+    <binary>nautilus</binary>
+    <library>libnautilus-extension.so.4</library>
+    <dbus type="user">org.freedesktop.FileManager1</dbus>
+    <dbus type="user">org.freedesktop.impl.portal.Request</dbus>
+    <dbus type="user">org.freedesktop.impl.portal.FileChooser</dbus>
+    <dbus type="user">org.gnome.Nautilus.FileOperations</dbus>
+    <dbus type="user">org.gnome.Nautilus.FileOperations2</dbus>
+    <dbus type="user">org.gnome.Shell.SearchProvider2</dbus>
+  </provides>
   <screenshots>
-    <screenshot type="default">
+    <screenshot type="default" environment="gnome">
       <image>https://static.gnome.org/appdata/gnome-48/files/grid.png</image>
       <caption>Grid View</caption>
     </screenshot>
-    <screenshot>
+    <screenshot environment="gnome">
       <image>https://static.gnome.org/appdata/gnome-48/files/list.png</image>
       <caption>List View</caption>
     </screenshot>
-    <screenshot>
+    <screenshot environment="gnome">
       <image>https://static.gnome.org/appdata/gnome-48/files/search.png</image>
       <caption>Search</caption>
     </screenshot>
-    <screenshot>
+    <screenshot environment="gnome">
       <image>https://static.gnome.org/appdata/gnome-48/files/thumbnails.png</image>
       <caption>Selection of Multiple Files</caption>
     </screenshot>
@@ -83,6 +90,7 @@
   <supports>
     <control>touch</control>
     <control>tablet</control>
+    <internet>offline-only</internet>
   </supports>
   <requires>
     <display_length>360</display_length>
