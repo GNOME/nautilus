@@ -18,10 +18,9 @@ struct _NautilusGridCell
 
     GQuark *caption_attributes;
 
-    GtkWidget *fixed_height_box;
-    GtkWidget *icon_bin;
     GtkWidget *icon;
     GtkWidget *emblems_box;
+    GtkWidget *labels_box;
     GtkWidget *first_caption;
     GtkWidget *second_caption;
     GtkWidget *third_caption;
@@ -49,10 +48,6 @@ update_icon (NautilusGridCell *self)
     icon_paintable = nautilus_file_get_icon_paintable (file, icon_size, scale_factor, flags);
     gtk_picture_set_paintable (GTK_PICTURE (self->icon), icon_paintable);
 
-    /* Set the same height and width for all icons regardless of aspect ratio.
-     */
-    gtk_widget_set_size_request (self->fixed_height_box, icon_size, icon_size);
-    gtk_widget_set_size_request (self->icon_bin, icon_size, icon_size);
     if (nautilus_file_has_thumbnail (file) &&
         nautilus_file_should_show_thumbnail (file))
     {
@@ -161,6 +156,7 @@ on_icon_size_changed (NautilusGridCell *self)
 
     update_icon (self);
     update_captions (self);
+    gtk_widget_queue_resize (GTK_WIDGET (self));
 }
 
 static void
@@ -255,6 +251,148 @@ nautilus_grid_cell_dispose (GObject *object)
     G_OBJECT_CLASS (nautilus_grid_cell_parent_class)->dispose (object);
 }
 
+#define EMBLEMS_BOX_WIDTH 18
+#define VERTICAL_PADDING 6
+
+static void
+nautilus_grid_cell_measure (GtkWidget      *widget,
+                            GtkOrientation  orientation,
+                            int             for_size,
+                            int            *minimum,
+                            int            *natural,
+                            int            *min_baseline,
+                            int            *nat_baseline)
+{
+    NautilusGridCell *self = NAUTILUS_GRID_CELL (widget);
+    guint icon_size;
+    int width, child_min, child_nat;
+
+    g_object_get (self, "icon-size", &icon_size, NULL);
+    width = EMBLEMS_BOX_WIDTH + icon_size + EMBLEMS_BOX_WIDTH;
+
+    /* We always expect our layout to fit into this width. Check that
+     * this is indeed the case. This also shuts up the
+     *     Allocating size to ... without calling gtk_widget_measure().
+     *     How does the code know the size to allocate?
+     * warning that we get in debug builds of GTK otherwise. The answer
+     * to that question is: we know that the icon is a GtkPicture, and
+     * we set the icon_paintable of the specific size on it.
+     */
+    if (orientation == GTK_ORIENTATION_HORIZONTAL)
+    {
+        gtk_widget_measure (self->labels_box, orientation, -1,
+                            &child_min, NULL, NULL, NULL);
+        if (G_UNLIKELY (child_min > width))
+        {
+            g_warning ("%s %p unexpectedly doesn't fit into width of %d",
+                       gtk_widget_get_name (self->labels_box), self->labels_box, width);
+            width = child_min;
+        }
+        gtk_widget_measure (self->icon, orientation, -1,
+                            &child_min, NULL, NULL, NULL);
+        if (G_UNLIKELY (child_min > (int) icon_size))
+        {
+            g_warning ("%s %p unexpectedly doesn't fit into width of %d",
+                       gtk_widget_get_name (self->icon), self->icon, icon_size);
+            width += child_min - icon_size;
+        }
+        gtk_widget_measure (self->emblems_box, orientation, -1,
+                            &child_min, NULL, NULL, NULL);
+        if (G_UNLIKELY (child_min > EMBLEMS_BOX_WIDTH))
+        {
+            g_warning ("%s %p unexpectedly doesn't fit into width of %d",
+                       gtk_widget_get_name (self->emblems_box), self->emblems_box, EMBLEMS_BOX_WIDTH);
+            width += 2 * (child_min - EMBLEMS_BOX_WIDTH);
+        }
+    }
+    else /* GTK_ORIENTATION_VERTICAL */
+    {
+        gtk_widget_measure (self->icon, orientation, icon_size,
+                            &child_min, NULL, NULL, NULL);
+        if (G_UNLIKELY (child_min > (int) icon_size))
+        {
+            g_warning ("%s %p unexpectedly doesn't fit into height of %d",
+                       gtk_widget_get_name (self->icon), self->icon, icon_size);
+        }
+        gtk_widget_measure (self->emblems_box, orientation, EMBLEMS_BOX_WIDTH,
+                            &child_min, NULL, NULL, NULL);
+        if (G_UNLIKELY (child_min > (int) icon_size))
+        {
+            g_warning ("%s %p unexpectedly doesn't fit into height of %d",
+                       gtk_widget_get_name (self->emblems_box), self->emblems_box, icon_size);
+        }
+    }
+
+    if (orientation == GTK_ORIENTATION_HORIZONTAL)
+    {
+        *natural = *minimum = width;
+        *min_baseline = *nat_baseline = -1;
+        return;
+    }
+
+    gtk_widget_measure (self->labels_box, GTK_ORIENTATION_VERTICAL, width,
+                        &child_min, &child_nat,
+                        min_baseline, nat_baseline);
+
+    *minimum = icon_size + VERTICAL_PADDING + child_min;
+    *natural = icon_size + VERTICAL_PADDING + child_nat;
+    if (*min_baseline != -1)
+    {
+        *min_baseline += icon_size + VERTICAL_PADDING;
+    }
+    if (*nat_baseline != -1)
+    {
+        *nat_baseline += icon_size + VERTICAL_PADDING;
+    }
+}
+
+static void
+nautilus_grid_cell_size_allocate (GtkWidget *widget,
+                                  int        width,
+                                  int        height,
+                                  int        baseline)
+{
+    NautilusGridCell *self = NAUTILUS_GRID_CELL (widget);
+    GtkAllocation child_allocation;
+    guint icon_size;
+
+    g_object_get (self, "icon-size", &icon_size, NULL);
+
+    /* Put the icon at the top. Center it horizontally, with
+     * EMBLEMS_BOX_WIDTH horizontal margins on both sides.
+     * Note that the icon is expected to center itself further
+     * inside the allocation that we give it.
+     */
+    child_allocation = (GtkAllocation) {
+        EMBLEMS_BOX_WIDTH, 0,
+        width - EMBLEMS_BOX_WIDTH * 2, icon_size
+    };
+    gtk_widget_size_allocate (self->icon, &child_allocation, -1);
+
+    /* Put the emblems_box into the "end" margin. */
+    child_allocation.width = EMBLEMS_BOX_WIDTH;
+    if (gtk_widget_get_direction (widget) == GTK_TEXT_DIR_LTR)
+    {
+        child_allocation.x = width - EMBLEMS_BOX_WIDTH;
+    }
+    else
+    {
+        child_allocation.x = 0;
+    }
+    gtk_widget_size_allocate (self->emblems_box, &child_allocation, -1);
+
+    /* Give the remaining space to labels box. */
+    child_allocation = (GtkAllocation) {
+        0, icon_size + VERTICAL_PADDING,
+        width, height - (icon_size + VERTICAL_PADDING)
+    };
+    if (baseline != -1)
+    {
+        baseline -= icon_size + VERTICAL_PADDING;
+    }
+    gtk_widget_size_allocate (self->labels_box, &child_allocation, baseline);
+}
+
 static void
 nautilus_grid_cell_class_init (NautilusGridCellClass *klass)
 {
@@ -263,12 +401,14 @@ nautilus_grid_cell_class_init (NautilusGridCellClass *klass)
 
     object_class->dispose = nautilus_grid_cell_dispose;
 
+    widget_class->measure = nautilus_grid_cell_measure;
+    widget_class->size_allocate = nautilus_grid_cell_size_allocate;
+
     gtk_widget_class_set_template_from_resource (widget_class, "/org/gnome/nautilus/ui/nautilus-grid-cell.ui");
 
-    gtk_widget_class_bind_template_child (widget_class, NautilusGridCell, fixed_height_box);
-    gtk_widget_class_bind_template_child (widget_class, NautilusGridCell, icon_bin);
     gtk_widget_class_bind_template_child (widget_class, NautilusGridCell, icon);
     gtk_widget_class_bind_template_child (widget_class, NautilusGridCell, emblems_box);
+    gtk_widget_class_bind_template_child (widget_class, NautilusGridCell, labels_box);
     gtk_widget_class_bind_template_child (widget_class, NautilusGridCell, first_caption);
     gtk_widget_class_bind_template_child (widget_class, NautilusGridCell, second_caption);
     gtk_widget_class_bind_template_child (widget_class, NautilusGridCell, third_caption);
@@ -276,7 +416,6 @@ nautilus_grid_cell_class_init (NautilusGridCellClass *klass)
     gtk_widget_class_bind_template_callback (widget_class, on_label_query_tooltip);
 
     gtk_widget_class_set_accessible_role (widget_class, GTK_ACCESSIBLE_ROLE_GRID_CELL);
-    gtk_widget_class_set_layout_manager_type (widget_class, GTK_TYPE_BIN_LAYOUT);
 }
 
 static void
