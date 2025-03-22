@@ -22,7 +22,7 @@
 typedef struct _NautilusViewCellPrivate NautilusViewCellPrivate;
 struct _NautilusViewCellPrivate
 {
-    AdwBin parent_instance;
+    GtkWidget parent_instance;
 
     NautilusListBase *view; /* Unowned */
     NautilusViewItem *item; /* Owned reference */
@@ -34,7 +34,7 @@ struct _NautilusViewCellPrivate
 };
 
 
-G_DEFINE_ABSTRACT_TYPE_WITH_PRIVATE (NautilusViewCell, nautilus_view_cell, ADW_TYPE_BIN)
+G_DEFINE_ABSTRACT_TYPE_WITH_PRIVATE (NautilusViewCell, nautilus_view_cell, GTK_TYPE_WIDGET)
 
 enum
 {

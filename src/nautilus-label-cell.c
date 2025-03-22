@@ -80,7 +80,7 @@ nautilus_label_cell_init (NautilusLabelCell *self)
     GtkWidget *child;
 
     child = gtk_label_new (NULL);
-    adw_bin_set_child (ADW_BIN (self), child);
+    gtk_widget_set_parent (child, GTK_WIDGET (self));
     gtk_widget_set_valign (child, GTK_ALIGN_CENTER);
     gtk_widget_add_css_class (child, "dim-label");
     self->label = GTK_LABEL (child);
@@ -136,6 +136,11 @@ nautilus_label_cell_dispose (GObject *object)
     NautilusLabelCell *self = (NautilusLabelCell *) object;
 
     g_clear_object (&self->item_signal_group);
+    if (self->label)
+    {
+        gtk_widget_unparent (GTK_WIDGET (self->label));
+        self->label = NULL;
+    }
     G_OBJECT_CLASS (nautilus_label_cell_parent_class)->dispose (object);
 }
 
@@ -143,6 +148,7 @@ static void
 nautilus_label_cell_class_init (NautilusLabelCellClass *klass)
 {
     GObjectClass *object_class = G_OBJECT_CLASS (klass);
+    GtkWidgetClass *widget_class = GTK_WIDGET_CLASS (klass);
 
     object_class->set_property = nautilus_label_cell_set_property;
     object_class->constructed = nautilus_label_cell_constructed;
@@ -154,6 +160,8 @@ nautilus_label_cell_class_init (NautilusLabelCellClass *klass)
                                                    G_PARAM_WRITABLE | G_PARAM_CONSTRUCT_ONLY | G_PARAM_STATIC_STRINGS);
 
     g_object_class_install_properties (object_class, N_PROPS, properties);
+
+    gtk_widget_class_set_layout_manager_type (widget_class, GTK_TYPE_BIN_LAYOUT);
 }
 
 NautilusViewCell *

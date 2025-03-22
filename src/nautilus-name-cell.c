@@ -401,6 +401,7 @@ nautilus_name_cell_class_init (NautilusNameCellClass *klass)
     object_class->dispose = nautilus_name_cell_dispose;
     object_class->finalize = nautilus_name_cell_finalize;
 
+    gtk_widget_class_set_layout_manager_type (widget_class, GTK_TYPE_BIN_LAYOUT);
     gtk_widget_class_set_template_from_resource (widget_class, "/org/gnome/nautilus/ui/nautilus-name-cell.ui");
 
     gtk_widget_class_bind_template_child (widget_class, NautilusNameCell, expander);

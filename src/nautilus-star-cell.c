@@ -122,7 +122,7 @@ nautilus_star_cell_init (NautilusStarCell *self)
     gtk_widget_add_css_class (star, "star");
     gtk_widget_add_css_class (star, "flat");
     gtk_widget_add_css_class (star, "circular");
-    adw_bin_set_child (ADW_BIN (self), star);
+    gtk_widget_set_parent (star, GTK_WIDGET (self));
     self->star = GTK_BUTTON (star);
 
     g_signal_connect_swapped (self->star, "clicked", G_CALLBACK (toggle_star), self);
@@ -149,6 +149,11 @@ nautilus_star_cell_dispose (GObject *object)
     NautilusStarCell *self = (NautilusStarCell *) object;
 
     g_clear_object (&self->item_signal_group);
+    if (self->star)
+    {
+        gtk_widget_unparent (GTK_WIDGET (self->star));
+        self->star = NULL;
+    }
     G_OBJECT_CLASS (nautilus_star_cell_parent_class)->dispose (object);
 }
 
@@ -156,9 +161,11 @@ static void
 nautilus_star_cell_class_init (NautilusStarCellClass *klass)
 {
     GObjectClass *object_class = G_OBJECT_CLASS (klass);
+    GtkWidgetClass *widget_class = GTK_WIDGET_CLASS (klass);
 
     object_class->dispose = nautilus_star_cell_dispose;
 
+    gtk_widget_class_set_layout_manager_type (widget_class, GTK_TYPE_BIN_LAYOUT);
 }
 
 NautilusViewCell *
