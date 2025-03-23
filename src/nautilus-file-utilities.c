@@ -156,20 +156,10 @@ nautilus_should_use_templates_directory (void)
 }
 
 char *
-nautilus_get_templates_directory (void)
-{
-    return g_strdup (g_get_user_special_dir (G_USER_DIRECTORY_TEMPLATES));
-}
-
-char *
 nautilus_get_templates_directory_uri (void)
 {
-    char *directory, *uri;
-
-    directory = nautilus_get_templates_directory ();
-    uri = g_filename_to_uri (directory, NULL, NULL);
-    g_free (directory);
-    return uri;
+    const char *directory = g_get_user_special_dir (G_USER_DIRECTORY_TEMPLATES);
+    return g_filename_to_uri (directory, NULL, NULL);
 }
 
 gboolean

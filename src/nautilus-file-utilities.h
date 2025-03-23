@@ -45,7 +45,6 @@ gboolean nautilus_is_home_directory_file             (GFile *dir,
 GMount * nautilus_get_mounted_mount_for_root         (GFile *location);
 
 gboolean nautilus_should_use_templates_directory     (void);
-char *   nautilus_get_templates_directory            (void);
 char *   nautilus_get_templates_directory_uri        (void);
 
 char *	 nautilus_compute_title_for_location	     (GFile *file);
