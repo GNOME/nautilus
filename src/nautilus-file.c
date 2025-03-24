@@ -744,14 +744,12 @@ nautilus_file_get_internal (GFile    *location,
                             gboolean  create)
 {
     gboolean self_owned;
-    NautilusDirectory *directory;
     NautilusFile *file;
-    GFile *parent;
     char *basename;
 
     g_assert (location != NULL);
 
-    parent = g_file_get_parent (location);
+    g_autoptr (GFile) parent = g_file_get_parent (location);
 
     self_owned = FALSE;
     if (parent == NULL)
@@ -761,9 +759,7 @@ nautilus_file_get_internal (GFile    *location,
     }
 
     /* Get object that represents the directory. */
-    directory = nautilus_directory_get_internal (parent, create);
-
-    g_object_unref (parent);
+    g_autoptr (NautilusDirectory) directory = nautilus_directory_get_internal (parent, create);
 
     /* Get the name for the file. */
     if (self_owned && directory != NULL)
@@ -808,7 +804,6 @@ nautilus_file_get_internal (GFile    *location,
     }
 
     g_free (basename);
-    nautilus_directory_unref (directory);
 
     return NAUTILUS_FILE_INFO (file);
 }
@@ -2976,7 +2971,7 @@ nautilus_file_update_name_and_directory (NautilusFile      *file,
         }
     }
 
-    nautilus_file_ref (file);
+    g_autoptr (NautilusFile) tmp_file_ref = g_object_ref (file);
 
     /* FIXME bugzilla.gnome.org 42044: Need to let links that
      * point to the old name know that the file has been moved.
@@ -3000,8 +2995,6 @@ nautilus_file_update_name_and_directory (NautilusFile      *file,
     add_to_link_hash_table (file);
 
     update_links_if_target (file);
-
-    nautilus_file_unref (file);
 
     return TRUE;
 }
@@ -3319,9 +3312,7 @@ prepend_automatic_keywords (NautilusFile *file,
                             GList        *names)
 {
     /* Prepend in reverse order. */
-    NautilusFile *parent;
-
-    parent = nautilus_file_get_parent (file);
+    g_autoptr (NautilusFile) parent = nautilus_file_get_parent (file);
 
     /* Trash files are assumed to be read-only,
      * so we want to ignore them here. */
@@ -3342,12 +3333,6 @@ prepend_automatic_keywords (NautilusFile *file,
         names = g_list_prepend
                     (names, g_strdup (NAUTILUS_FILE_EMBLEM_NAME_SYMBOLIC_LINK));
     }
-
-    if (parent)
-    {
-        nautilus_file_unref (parent);
-    }
-
 
     return names;
 }
@@ -5013,19 +4998,14 @@ nautilus_file_get_where_string (NautilusFile *file)
 static char *
 nautilus_file_get_trash_original_file_parent_as_string (NautilusFile *file)
 {
-    NautilusFile *orig_file;
-    char *filename;
+    g_autoptr (NautilusFile) orig_file = nautilus_file_get_trash_original_file (file);
 
-    filename = NULL;
-    orig_file = nautilus_file_get_trash_original_file (file);
     if (orig_file != NULL)
     {
-        filename = nautilus_file_get_parent_uri_for_display (orig_file);
-
-        nautilus_file_unref (orig_file);
+        return nautilus_file_get_parent_uri_for_display (orig_file);
     }
 
-    return filename;
+    return NULL;
 }
 
 /**
@@ -7141,22 +7121,17 @@ get_fs_free_cb (GObject      *source_object,
                 GAsyncResult *res,
                 gpointer      user_data)
 {
-    NautilusFile *file;
-    guint64 free_space;
-    GFileInfo *info;
+    g_autoptr (NautilusFile) file = NAUTILUS_FILE (user_data);
+    g_autoptr (GFileInfo) info = g_file_query_filesystem_info_finish (
+        G_FILE (source_object), res, NULL);
+    guint64 free_space = G_MAXUINT64;
 
-    file = NAUTILUS_FILE (user_data);
-
-    free_space = (guint64) - 1;
-    info = g_file_query_filesystem_info_finish (G_FILE (source_object),
-                                                res, NULL);
-    if (info)
+    if (info != NULL)
     {
         if (g_file_info_has_attribute (info, G_FILE_ATTRIBUTE_FILESYSTEM_FREE))
         {
             free_space = g_file_info_get_attribute_uint64 (info, G_FILE_ATTRIBUTE_FILESYSTEM_FREE);
         }
-        g_object_unref (info);
     }
 
     if (file->details->free_space != free_space)
@@ -7164,8 +7139,6 @@ get_fs_free_cb (GObject      *source_object,
         file->details->free_space = free_space;
         nautilus_file_emit_changed (file);
     }
-
-    nautilus_file_unref (file);
 }
 
 /**
@@ -7178,35 +7151,30 @@ get_fs_free_cb (GObject      *source_object,
 char *
 nautilus_file_get_volume_free_space (NautilusFile *file)
 {
-    GFile *location;
-    char *res;
-    time_t now;
+    time_t now = time (NULL);
 
-    now = time (NULL);
     /* Update first time and then every 2 seconds */
     if (file->details->free_space_read == 0 ||
         (now - file->details->free_space_read) > 2)
     {
         file->details->free_space_read = now;
-        location = nautilus_file_get_location (file);
+        g_autoptr (GFile) location = nautilus_file_get_location (file);
         g_file_query_filesystem_info_async (location,
                                             G_FILE_ATTRIBUTE_FILESYSTEM_FREE,
                                             0, NULL,
                                             get_fs_free_cb,
                                             nautilus_file_ref (file));
-        g_object_unref (location);
     }
 
-    res = NULL;
     if (file->details->free_space != (guint64) - 1)
     {
         g_autofree gchar *size_string = g_format_size (file->details->free_space);
 
         /* Translators: This refers to available space in a folder; e.g.: 100 MB Free */
-        res = g_strdup_printf (_("%s Free"), size_string);
+        return g_strdup_printf (_("%s Free"), size_string);
     }
 
-    return res;
+    return NULL;
 }
 
 /**
