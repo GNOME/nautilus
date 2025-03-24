@@ -787,7 +787,7 @@ nautilus_file_get_internal (GFile    *location,
     /* Ref or create the file. */
     if (file != NULL)
     {
-        nautilus_file_ref (file);
+        g_object_ref (file);
     }
     else if (create)
     {
@@ -891,7 +891,7 @@ finalize (GObject *object)
         g_error_free (file->details->get_info_error);
     }
 
-    nautilus_directory_unref (directory);
+    g_clear_object (&file->details->directory);
     g_clear_pointer (&file->details->name, g_ref_string_release);
     g_clear_pointer (&file->details->display_name, g_ref_string_release);
     g_free (file->details->display_name_collation_key);
@@ -1318,7 +1318,7 @@ unmount_done (void *callback_data)
     {
         data->callback (data->file, NULL, NULL, data->callback_data);
     }
-    nautilus_file_unref (data->file);
+    g_clear_object (&data->file);
     g_free (data);
 }
 
@@ -1358,7 +1358,7 @@ nautilus_file_unmount (NautilusFile                  *file,
         parent = gtk_mount_operation_get_parent (GTK_MOUNT_OPERATION (mount_op));
 
         data = g_new0 (UnmountData, 1);
-        data->file = nautilus_file_ref (file);
+        data->file = g_object_ref (file);
         data->callback = callback;
         data->callback_data = callback_data;
         nautilus_file_operations_unmount_mount_full (parent, file->details->mount, mount_op, FALSE, TRUE, unmount_done, data);
@@ -1405,7 +1405,7 @@ nautilus_file_eject (NautilusFile                  *file,
         parent = gtk_mount_operation_get_parent (GTK_MOUNT_OPERATION (mount_op));
 
         data = g_new0 (UnmountData, 1);
-        data->file = nautilus_file_ref (file);
+        data->file = g_object_ref (file);
         data->callback = callback;
         data->callback_data = callback_data;
         nautilus_file_operations_unmount_mount_full (parent, file->details->mount, mount_op, TRUE, TRUE, unmount_done, data);
@@ -1676,7 +1676,7 @@ nautilus_file_operation_new (NautilusFile                  *file,
     NautilusFileOperation *op;
 
     op = g_new0 (NautilusFileOperation, 1);
-    op->file = nautilus_file_ref (file);
+    op->file = g_object_ref (file);
     op->callback = callback;
     op->callback_data = callback_data;
     op->cancellable = g_cancellable_new ();
@@ -1712,7 +1712,7 @@ nautilus_file_operation_free (NautilusFileOperation *op)
 
     if (op->files == NULL)
     {
-        nautilus_file_unref (op->file);
+        g_clear_object (&op->file);
     }
     else
     {
@@ -4006,11 +4006,11 @@ nautilus_file_list_filter (GList                   *files,
     {
         if (filter_function (l->data, user_data))
         {
-            filtered = g_list_prepend (filtered, nautilus_file_ref (l->data));
+            filtered = g_list_prepend (filtered, g_object_ref (l->data));
         }
         else
         {
-            *failed = g_list_prepend (*failed, nautilus_file_ref (l->data));
+            *failed = g_list_prepend (*failed, g_object_ref (l->data));
         }
     }
 
@@ -7163,7 +7163,7 @@ nautilus_file_get_volume_free_space (NautilusFile *file)
                                             G_FILE_ATTRIBUTE_FILESYSTEM_FREE,
                                             0, NULL,
                                             get_fs_free_cb,
-                                            nautilus_file_ref (file));
+                                            g_object_ref (file));
     }
 
     if (file->details->free_space != (guint64) - 1)
@@ -8089,7 +8089,7 @@ nautilus_file_list_free (GList *list)
 GList *
 nautilus_file_list_copy (GList *list)
 {
-    return g_list_copy_deep (list, (GCopyFunc) nautilus_file_ref, NULL);
+    return g_list_copy_deep (list, (GCopyFunc) g_object_ref, NULL);
 }
 
 /**
