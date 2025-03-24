@@ -6330,8 +6330,8 @@ extract_done (GList    *outputs,
     all_files_acknowledged = TRUE;
     for (l = outputs; l && all_files_acknowledged; l = l->next)
     {
-        all_files_acknowledged = g_hash_table_contains (data->added_locations,
-                                                        l->data);
+        all_files_acknowledged &= g_hash_table_contains (data->added_locations,
+                                                         l->data);
     }
 
     if (all_files_acknowledged)
