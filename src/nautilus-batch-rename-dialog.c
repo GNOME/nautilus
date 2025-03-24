@@ -1052,7 +1052,7 @@ on_directory_attributes_ready_for_conflicts_check (NautilusDirectory *conflict_d
 
     self->directories_pending_conflict_check = g_list_remove (self->directories_pending_conflict_check, conflict_directory);
 
-    nautilus_directory_unref (conflict_directory);
+    g_clear_object (&conflict_directory);
 
     if (self->directories_pending_conflict_check == NULL)
     {
@@ -1764,7 +1764,7 @@ nautilus_batch_rename_dialog_finalize (GObject *object)
     g_list_free_full (dialog->duplicates, conflict_data_free);
 
     nautilus_file_list_free (dialog->selection);
-    nautilus_directory_unref (dialog->directory);
+    g_clear_object (&dialog->directory);
     nautilus_directory_list_free (dialog->distinct_parent_directories);
 
     g_object_unref (dialog->size_group);
@@ -1835,7 +1835,7 @@ nautilus_batch_rename_dialog_new (GList             *selection,
     dialog = g_object_new (NAUTILUS_TYPE_BATCH_RENAME_DIALOG, NULL);
 
     dialog->selection = nautilus_file_list_copy (selection);
-    dialog->directory = nautilus_directory_ref (directory);
+    dialog->directory = g_object_ref (directory);
     dialog->window = window;
 
     gtk_window_set_transient_for (GTK_WINDOW (dialog),
