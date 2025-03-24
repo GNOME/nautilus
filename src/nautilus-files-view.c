@@ -1215,8 +1215,8 @@ file_and_directory_new (NautilusFile      *file,
     FileAndDirectory *fad;
 
     fad = g_new0 (FileAndDirectory, 1);
-    fad->directory = nautilus_directory_ref (directory);
-    fad->file = nautilus_file_ref (file);
+    fad->directory = g_object_ref (directory);
+    fad->file = g_object_ref (file);
 
     return fad;
 }
@@ -1234,8 +1234,8 @@ file_and_directory_free (gpointer data)
 {
     FileAndDirectory *fad = data;
 
-    nautilus_directory_unref (fad->directory);
-    nautilus_file_unref (fad->file);
+    g_clear_object (&fad->directory);
+    g_clear_object (&fad->file);
     g_free (fad);
 }
 
@@ -1249,8 +1249,7 @@ script_launch_parameters_new (NautilusFile      *file,
 
     result = g_new0 (ScriptLaunchParameters, 1);
     result->directory_view = directory_view;
-    nautilus_file_ref (file);
-    result->file = file;
+    result->file = g_object_ref (file);
 
     return result;
 }
@@ -1258,7 +1257,7 @@ script_launch_parameters_new (NautilusFile      *file,
 static void
 script_launch_parameters_free (ScriptLaunchParameters *parameters)
 {
-    nautilus_file_unref (parameters->file);
+    g_clear_object (&parameters->file);
     g_free (parameters);
 }
 
@@ -1270,8 +1269,7 @@ create_template_parameters_new (NautilusFile      *file,
 
     result = g_new0 (CreateTemplateParameters, 1);
     result->directory_view = directory_view;
-    nautilus_file_ref (file);
-    result->file = file;
+    result->file = g_object_ref (file);
 
     return result;
 }
@@ -1279,7 +1277,7 @@ create_template_parameters_new (NautilusFile      *file,
 static void
 create_templates_parameters_free (CreateTemplateParameters *parameters)
 {
-    nautilus_file_unref (parameters->file);
+    g_clear_object (&parameters->file);
     g_free (parameters);
 }
 
@@ -1650,7 +1648,7 @@ action_open_current_directory_with_other_application (GSimpleAction *action,
 
     if (priv->directory_as_file != NULL)
     {
-        files = g_list_append (NULL, nautilus_file_ref (priv->directory_as_file));
+        files = g_list_append (NULL, g_object_ref (priv->directory_as_file));
         choose_program (view, files);
     }
 }
@@ -2585,7 +2583,7 @@ action_properties (GSimpleAction *action,
     {
         if (priv->directory_as_file != NULL)
         {
-            files = g_list_append (NULL, nautilus_file_ref (priv->directory_as_file));
+            files = g_list_append (NULL, g_object_ref (priv->directory_as_file));
 
             nautilus_properties_window_present (files, GTK_WIDGET (view), NULL,
                                                 NULL, NULL);
@@ -2616,7 +2614,7 @@ action_current_dir_properties (GSimpleAction *action,
 
     if (priv->directory_as_file != NULL)
     {
-        files = g_list_append (NULL, nautilus_file_ref (priv->directory_as_file));
+        files = g_list_append (NULL, g_object_ref (priv->directory_as_file));
 
         nautilus_properties_window_present (files, GTK_WIDGET (view), NULL,
                                             NULL, NULL);
@@ -3090,7 +3088,7 @@ add_directory_to_directory_list (NautilusFilesView  *view,
 
     if (g_list_find (*directory_list, directory) == NULL)
     {
-        nautilus_directory_ref (directory);
+        *directory_list = g_list_append (*directory_list, g_object_ref (directory));
 
         attributes =
             NAUTILUS_FILE_ATTRIBUTES_FOR_ICON |
@@ -3105,8 +3103,6 @@ add_directory_to_directory_list (NautilusFilesView  *view,
                                  G_CALLBACK (changed_callback), view, 0);
         g_signal_connect_object (directory, "files-changed",
                                  G_CALLBACK (changed_callback), view, 0);
-
-        *directory_list = g_list_append (*directory_list, directory);
     }
 }
 
@@ -3124,7 +3120,7 @@ remove_directory_from_directory_list (NautilusFilesView  *view,
 
     nautilus_directory_file_monitor_remove (directory, directory_list);
 
-    nautilus_directory_unref (directory);
+    g_object_unref (directory);
 }
 
 
@@ -3391,12 +3387,7 @@ nautilus_files_view_dispose (GObject *object)
     g_clear_pointer (&priv->selection_menu, gtk_widget_unparent);
     g_clear_pointer (&priv->background_menu, gtk_widget_unparent);
     g_clear_pointer (&priv->rename_file_popover, gtk_widget_unparent);
-
-    if (priv->directory)
-    {
-        nautilus_directory_unref (priv->directory);
-        priv->directory = NULL;
-    }
+    g_clear_object (&priv->directory);
 
     for (node = priv->scripts_directory_list; node != NULL; node = next)
     {
@@ -3460,9 +3451,7 @@ nautilus_files_view_dispose (GObject *object)
     g_signal_handlers_disconnect_by_func (clipboard, on_clipboard_owner_changed, view);
     g_cancellable_cancel (priv->clipboard_cancellable);
 
-    nautilus_file_unref (priv->directory_as_file);
-    priv->directory_as_file = NULL;
-
+    g_clear_object (&priv->directory_as_file);
     g_clear_object (&priv->search_query);
     g_clear_object (&priv->location_before_search);
     g_clear_object (&priv->outgoing_search);
@@ -3973,19 +3962,15 @@ debuting_files_add_files_callback (NautilusFilesView *view,
                                    GList             *new_files,
                                    DebutingFilesData *data)
 {
-    GFile *location;
-    GList *l;
-
-    for (l = new_files; l != NULL; l = l->next)
+    for (GList *l = new_files; l != NULL; l = l->next)
     {
-        location = nautilus_file_get_location (NAUTILUS_FILE (l->data));
+        NautilusFile *file = NAUTILUS_FILE (l->data);
+        g_autoptr (GFile) location = nautilus_file_get_location (file);
 
         if (g_hash_table_remove (data->debuting_files, location))
         {
-            nautilus_file_ref (NAUTILUS_FILE (l->data));
-            data->added_files = g_list_prepend (data->added_files, NAUTILUS_FILE (l->data));
+            data->added_files = g_list_prepend (data->added_files, g_object_ref (file));
         }
-        g_object_unref (location);
     }
 
     if (g_hash_table_size (data->debuting_files) == 0)
@@ -4017,12 +4002,10 @@ pre_copy_move_add_files_callback (NautilusFilesView *view,
                                   GList             *new_files,
                                   CopyMoveDoneData  *data)
 {
-    GList *l;
-
-    for (l = new_files; l != NULL; l = l->next)
+    for (GList *l = new_files; l != NULL; l = l->next)
     {
-        nautilus_file_ref (NAUTILUS_FILE (l->data));
-        data->added_files = g_list_prepend (data->added_files, l->data);
+        NautilusFile *file = NAUTILUS_FILE (l->data);
+        data->added_files = g_list_prepend (data->added_files, g_object_ref (file));
     }
 }
 
@@ -4898,8 +4881,6 @@ add_subdirectory (NautilusFilesView *view,
 
     g_return_if_fail (!g_list_find (priv->subdirectory_list, directory));
 
-    nautilus_directory_ref (directory);
-
     attributes =
         NAUTILUS_FILE_ATTRIBUTES_FOR_ICON |
         NAUTILUS_FILE_ATTRIBUTE_DIRECTORY_ITEM_COUNT |
@@ -4923,7 +4904,8 @@ add_subdirectory (NautilusFilesView *view,
                              G_CALLBACK (subdirectory_done_loading),
                              view, 0);
 
-    priv->subdirectory_list = g_list_prepend (priv->subdirectory_list, directory);
+    priv->subdirectory_list = g_list_prepend (priv->subdirectory_list,
+                                              g_object_ref (directory));
     priv->subdirectories_loading = g_list_prepend (priv->subdirectories_loading, directory);
 
     if (item != NULL &&
@@ -4966,7 +4948,7 @@ remove_subdirectory (NautilusFilesView *view,
 
     nautilus_directory_file_monitor_remove (directory, &priv->directory);
 
-    nautilus_directory_unref (directory);
+    g_object_unref (directory);
 }
 
 /**
@@ -6115,7 +6097,7 @@ action_copy_current_location (GSimpleAction *action,
 
     if (priv->directory_as_file != NULL)
     {
-        files = g_list_append (NULL, nautilus_file_ref (priv->directory_as_file));
+        files = g_list_append (NULL, g_object_ref (priv->directory_as_file));
 
         clipboard = gtk_widget_get_clipboard (GTK_WIDGET (view));
         nautilus_clipboard_prepare_for_files (clipboard, files, FALSE);
@@ -8831,11 +8813,10 @@ load_directory (NautilusFilesView *view,
     /* Avoid freeing it and won't be able to ref it */
     if (priv->directory != directory)
     {
-        nautilus_directory_unref (priv->directory);
-        priv->directory = nautilus_directory_ref (directory);
+        g_set_object (&priv->directory, directory);
     }
 
-    nautilus_file_unref (priv->directory_as_file);
+    g_clear_object (&priv->directory_as_file);
     priv->directory_as_file = nautilus_directory_get_corresponding_file (directory);
 
     g_clear_object (&priv->location);
