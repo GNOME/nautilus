@@ -1783,7 +1783,7 @@ static void
 call_ready_callbacks_at_idle (gpointer callback_data)
 {
     /* Ensure the directory is alive until the end of this scope */
-    g_autoptr (NautilusDirectory) directory = nautilus_directory_ref (NAUTILUS_DIRECTORY (callback_data));
+    g_autoptr (NautilusDirectory) directory = g_object_ref (NAUTILUS_DIRECTORY (callback_data));
     g_autoptr (GPtrArray) values = NULL;
 
     /* Steal all ready callbacks, new callbacks will end up in empty table. */
@@ -1987,7 +1987,7 @@ directory_load_state_free (DirectoryLoadState *state)
         g_object_unref (state->enumerator);
     }
 
-    nautilus_file_unref (state->load_directory_file);
+    g_clear_object (&state->load_directory_file);
     g_object_unref (state->cancellable);
     g_free (state);
 }
@@ -2087,7 +2087,7 @@ start_monitoring_file_list (NautilusDirectory *directory)
     {
         g_assert (!directory->details->directory_load_in_progress);
         directory->details->file_list_monitored = TRUE;
-        g_list_foreach (directory->details->file_list, (GFunc) nautilus_file_ref, NULL);
+        g_list_foreach (directory->details->file_list, (GFunc) g_object_ref, NULL);
     }
 
     if (directory->details->directory_loaded ||
@@ -2139,7 +2139,7 @@ nautilus_directory_stop_monitoring_file_list (NautilusDirectory *directory)
 
     directory->details->file_list_monitored = FALSE;
     file_list_cancel (directory);
-    g_list_foreach (directory->details->file_list, (GFunc) nautilus_file_unref, NULL);
+    g_list_free_full (directory->details->file_list, g_object_unref);
     directory->details->directory_loaded = FALSE;
 }
 
@@ -2415,7 +2415,7 @@ directory_count_state_free (DirectoryCountState *state)
         g_object_unref (state->enumerator);
     }
     g_object_unref (state->cancellable);
-    nautilus_directory_unref (state->directory);
+    g_clear_object (&state->directory);
     g_free (state);
 }
 
@@ -2567,7 +2567,7 @@ directory_count_start (NautilusDirectory *directory,
     /* Start counting. */
     state = g_new0 (DirectoryCountState, 1);
     state->count_file = file;
-    state->directory = nautilus_directory_ref (directory);
+    state->directory = g_object_ref (directory);
     state->cancellable = g_cancellable_new ();
 
     directory->details->count_in_progress = state;
@@ -3132,8 +3132,8 @@ thumbnail_info_query_callback (GObject      *source_object,
 
     g_autoptr (GError) error = NULL;
     g_autoptr (GFileInfo) info = g_file_query_info_finish (G_FILE (source_object), res, &error);
-    g_autoptr (NautilusDirectory) directory = nautilus_directory_ref (state->directory);
-    g_autoptr (NautilusFile) file = nautilus_file_ref (state->file);
+    g_autoptr (NautilusDirectory) directory = g_object_ref (state->directory);
+    g_autoptr (NautilusFile) file = g_object_ref (state->file);
 
     if (info != NULL && error == NULL)
     {
@@ -3327,7 +3327,7 @@ thumbnail_pixbuf_ready_callback (GObject      *source_object,
         pixbuf = pixbuf2;
     }
 
-    g_autoptr (NautilusDirectory) directory = nautilus_directory_ref (state->directory);
+    g_autoptr (NautilusDirectory) directory = g_object_ref (state->directory);
 
     state->directory->details->thumbnail_buf_state = NULL;
     async_job_end (state->directory, "thumbnail buffer");
@@ -3372,7 +3372,7 @@ thumbnail_file_read_callback (GObject      *source_object,
     }
     else
     {
-        g_autoptr (NautilusDirectory) directory = nautilus_directory_ref (state->directory);
+        g_autoptr (NautilusDirectory) directory = g_object_ref (state->directory);
 
         state->directory->details->thumbnail_buf_state = NULL;
         async_job_end (state->directory, "thumbnail buffer");
@@ -4007,7 +4007,7 @@ nautilus_directory_async_state_changed (NautilusDirectory *directory)
         return;
     }
     directory->details->in_async_service_loop = TRUE;
-    nautilus_directory_ref (directory);
+    g_object_ref (directory);
     do
     {
         directory->details->state_changed = FALSE;
@@ -4019,7 +4019,7 @@ nautilus_directory_async_state_changed (NautilusDirectory *directory)
     }
     while (directory->details->state_changed);
     directory->details->in_async_service_loop = FALSE;
-    nautilus_directory_unref (directory);
+    g_object_unref (directory);
 
     /* Check if any directories should wake up. */
     async_job_wake_up ();
