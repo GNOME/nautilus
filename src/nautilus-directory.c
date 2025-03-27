@@ -351,38 +351,16 @@ nautilus_directory_unref (NautilusDirectory *directory)
 }
 
 static void
-collect_all_directories (gpointer key,
-                         gpointer value,
-                         gpointer callback_data)
+filtering_changed_callback (gpointer)
 {
-    NautilusDirectory *directory;
-    GList **dirs;
-
-    directory = NAUTILUS_DIRECTORY (value);
-    dirs = callback_data;
-
-    *dirs = g_list_prepend (*dirs, nautilus_directory_ref (directory));
-}
-
-static void
-filtering_changed_callback (gpointer callback_data)
-{
-    g_autolist (NautilusDirectory) dirs = NULL;
-
-    g_assert (callback_data == NULL);
-
-    dirs = NULL;
-    g_hash_table_foreach (directories, collect_all_directories, &dirs);
+    g_autoptr (GList) dirs = g_hash_table_get_values (directories);
 
     /* Preference about which items to show has changed, so we
      * can't trust any of our precomputed directory counts.
      */
     for (GList *l = dirs; l != NULL; l = l->next)
     {
-        NautilusDirectory *directory;
-
-        directory = NAUTILUS_DIRECTORY (l->data);
-
+        NautilusDirectory *directory = l->data;
         nautilus_directory_invalidate_count (directory);
     }
 }
@@ -404,27 +382,18 @@ emit_change_signals_for_all_files (NautilusDirectory *directory)
 void
 emit_change_signals_for_all_files_in_all_directories (void)
 {
-    GList *dirs, *l;
-    NautilusDirectory *directory;
-
     if (directories == NULL)
     {
         return;
     }
 
-    dirs = NULL;
-    g_hash_table_foreach (directories,
-                          collect_all_directories,
-                          &dirs);
+    g_autoptr (GList) dirs = g_hash_table_get_values (directories);
 
-    for (l = dirs; l != NULL; l = l->next)
+    for (GList *l = dirs; l != NULL; l = l->next)
     {
-        directory = NAUTILUS_DIRECTORY (l->data);
+        NautilusDirectory *directory = l->data;
         emit_change_signals_for_all_files (directory);
-        nautilus_directory_unref (directory);
     }
-
-    g_list_free (dirs);
 }
 
 static void
