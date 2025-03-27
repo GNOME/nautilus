@@ -1797,31 +1797,6 @@ nautilus_directory_match_pattern (NautilusDirectory *directory,
 }
 
 /**
- * nautilus_directory_list_ref
- *
- * Ref all the directories in a list.
- * @list: GList of directories.
- **/
-GList *
-nautilus_directory_list_ref (GList *list)
-{
-    g_list_foreach (list, (GFunc) nautilus_directory_ref, NULL);
-    return list;
-}
-
-/**
- * nautilus_directory_list_unref
- *
- * Unref all the directories in a list.
- * @list: GList of directories.
- **/
-void
-nautilus_directory_list_unref (GList *list)
-{
-    g_list_foreach (list, (GFunc) nautilus_directory_unref, NULL);
-}
-
-/**
  * nautilus_directory_list_free
  *
  * Free a list of directories after unrefing them.
@@ -1830,7 +1805,7 @@ nautilus_directory_list_unref (GList *list)
 void
 nautilus_directory_list_free (GList *list)
 {
-    nautilus_directory_list_unref (list);
+    g_list_foreach (list, (GFunc) nautilus_directory_unref, NULL);
     g_list_free (list);
 }
 
@@ -1843,7 +1818,8 @@ nautilus_directory_list_free (GList *list)
 GList *
 nautilus_directory_list_copy (GList *list)
 {
-    return g_list_copy (nautilus_directory_list_ref (list));
+    g_list_foreach (list, (GFunc) nautilus_directory_ref, NULL);
+    return g_list_copy (list);
 }
 
 static int
