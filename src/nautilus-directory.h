@@ -237,8 +237,6 @@ gboolean           nautilus_directory_is_not_empty             (NautilusDirector
 /* Convenience functions for dealing with a list of NautilusDirectory objects that each have a ref.
  * These are just convenient names for functions that work on lists of GtkObject *.
  */
-GList *            nautilus_directory_list_ref                 (GList                     *directory_list);
-void               nautilus_directory_list_unref               (GList                     *directory_list);
 void               nautilus_directory_list_free                (GList                     *directory_list);
 GList *            nautilus_directory_list_copy                (GList                     *directory_list);
 GList *            nautilus_directory_list_sort_by_uri         (GList                     *directory_list);
