@@ -199,10 +199,7 @@ enum {
 /* Names for themed icons */
 #define ICON_NAME_HOME     "user-home-symbolic"
 #define ICON_NAME_DESKTOP  "user-desktop-symbolic"
-#define ICON_NAME_EJECT    "media-eject-symbolic"
-#define ICON_NAME_NETWORK  "network-workgroup-symbolic"
 #define ICON_NAME_NETWORK_VIEW  "network-computer-symbolic"
-#define ICON_NAME_FOLDER_NETWORK "folder-remote-symbolic"
 
 static guint places_sidebar_signals [LAST_SIGNAL] = { 0 };
 static GParamSpec *properties[NUM_PROPERTIES] = { NULL, };
