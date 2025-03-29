@@ -5395,7 +5395,6 @@ copy_files (CopyMoveJob  *job,
     GList *l;
     GFile *src;
     gboolean same_fs;
-    int i;
     gboolean skipped_file;
     gboolean unique_names;
     GFile *dest;
@@ -5432,7 +5431,6 @@ copy_files (CopyMoveJob  *job,
     }
 
     unique_names = (job->destination == NULL);
-    i = 0;
     for (l = job->files;
          l != NULL && !job_aborted (common);
          l = l->next)
@@ -5471,7 +5469,6 @@ copy_files (CopyMoveJob  *job,
                 report_copy_progress (job, source_info, transfer_info);
             }
         }
-        i++;
     }
 
     g_free (dest_fs_type);
@@ -6601,7 +6598,6 @@ link_task_thread_func (GTask        *task,
     GFile *src;
     g_autofree char *dest_fs_type = NULL;
     int total, left;
-    int i;
     GList *l;
 
     job = task_data;
@@ -6622,7 +6618,6 @@ link_task_thread_func (GTask        *task,
 
     report_preparing_link_progress (job, total, left);
 
-    i = 0;
     for (l = job->files;
          l != NULL && !job_aborted (common);
          l = l->next)
@@ -6633,7 +6628,6 @@ link_task_thread_func (GTask        *task,
                    &dest_fs_type, job->debuting_files,
                    left);
         report_preparing_link_progress (job, total, --left);
-        i++;
     }
 }
 
