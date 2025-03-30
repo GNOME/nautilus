@@ -9945,6 +9945,7 @@ nautilus_files_view_init (NautilusFilesView *view)
     ADD_SHORTCUT_FOR_ACTION (priv->shortcuts, "view.new-folder", "<control><shift>n");
     ADD_SHORTCUT_FOR_ACTION (priv->shortcuts, "view.select-pattern", "<control>s");
     ADD_SHORTCUT_FOR_ACTION (priv->shortcuts, "view.zoom-standard", "<control>0|<control>KP_0");
+    ADD_SHORTCUT_FOR_ACTION (priv->shortcuts, "view.current-directory-console", "<control>period");
 #undef ADD_SHORTCUT_FOR_ACTION
 
     /* This one should have been a keybinding, because it should trigger only
