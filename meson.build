@@ -77,6 +77,8 @@ add_project_arguments(
     # This being an error is nice and all, but not when its appearance is
     # dependent on optimization level and other flags.
     '-Wno-error=maybe-uninitialized',
+    '-Wno-format-nonliteral',
+    '-Wno-format-security',
   ]),
   '-D_GNU_SOURCE',
   language: 'c'
