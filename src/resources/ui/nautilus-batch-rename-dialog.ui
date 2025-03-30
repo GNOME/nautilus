@@ -326,10 +326,89 @@
                     <property name="child">
                       <object class="GtkListView" id="batch_listview">
                         <property name="factory">
-                          <object class="GtkSignalListItemFactory" id="factory">
-                            <signal name="setup" handler="batch_row_setup" swapped="yes"/>
-                            <signal name="bind" handler="batch_row_bind" swapped="yes"/>
-                            <signal name="unbind" handler="batch_row_unbind" swapped="yes"/>
+                          <object class="GtkBuilderListItemFactory">
+                            <property name="bytes"><![CDATA[
+<?xml version="1.0" encoding="UTF-8"?>
+<interface>
+  <template class="GtkListItem">
+    <property name="child">
+      <object class="GtkBox" id="batch_row">
+        <property name="orientation">horizontal</property>
+        <property name="spacing">6</property>
+        <binding name="css-classes">
+          <closure type="GStrv" function="batch_row_conflict_css_name">
+            <lookup name="has-conflict" type="NautilusBatchRenameItem">
+              <lookup name="item" type="GtkListItem"/>
+            </lookup>
+          </closure>
+        </binding>
+        <child>
+          <object class="GtkLabel" id="original_name_label">
+            <property name="hexpand">True</property>
+            <property name="xalign">0</property>
+            <property name="use-markup">True</property>
+            <property name="ellipsize">end</property>
+            <binding name="label">
+              <lookup name="name-before" type="NautilusBatchRenameItem">
+                <lookup name="item" type="GtkListItem"/>
+              </lookup>
+            </binding>
+            <binding name="tooltip-markup">
+              <lookup name="name-before" type="NautilusBatchRenameItem">
+                <lookup name="item" type="GtkListItem"/>
+              </lookup>
+            </binding>
+          </object>
+        </child>
+        <child>
+          <object class="GtkBox">
+            <property name="orientation">horizontal</property>
+            <property name="spacing">6</property>
+            <child>
+              <object class="GtkLabel">
+                <property name="hexpand">False</property>
+                <property name="xalign">1.0</property>
+                <property name="use-markup">True</property>
+                <property name="ellipsize">end</property>
+                <binding name="label">
+                  <closure type="gchararray" function="batch_row_item_arrow">
+                    <constant type="GtkWidget">batch_row</constant>
+                  </closure>
+                </binding>
+              </object>
+            </child>
+            <child>
+              <object class="GtkLabel" id="result_label">
+                <property name="hexpand">True</property>
+                <property name="xalign">0</property>
+                <property name="use-markup">True</property>
+                <property name="ellipsize">end</property>
+                <binding name="label">
+                  <lookup name="name-after" type="NautilusBatchRenameItem">
+                    <lookup name="item" type="GtkListItem"/>
+                  </lookup>
+                </binding>
+                <binding name="tooltip-markup">
+                  <lookup name="name-after" type="NautilusBatchRenameItem">
+                    <lookup name="item" type="GtkListItem"/>
+                  </lookup>
+                </binding>
+              </object>
+            </child>
+          </object>
+        </child>
+      </object>
+    </property>
+  </template>
+  <object class="GtkSizeGroup">
+    <property name="mode">horizontal</property>
+    <widgets>
+      <widget name="original_name_label"/>
+      <widget name="result_label"/>
+    </widgets>
+  </object>
+</interface>
+                              ]]></property>
                           </object>
                         </property>
                         <property name="show-separators">True</property>

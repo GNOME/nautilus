@@ -36,8 +36,6 @@ void nautilus_batch_rename_item_set_name_before (NautilusBatchRenameItem *item,
 void nautilus_batch_rename_item_set_name_after (NautilusBatchRenameItem *item,
                                                 const gchar *name_after);
 
-gboolean nautilus_batch_rename_item_get_has_conflict (NautilusBatchRenameItem *item);
-
 void nautilus_batch_rename_item_set_has_conflict (NautilusBatchRenameItem *item,
                                                   gboolean has_conflict);
 

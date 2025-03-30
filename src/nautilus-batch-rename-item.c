@@ -196,12 +196,6 @@ nautilus_batch_rename_item_set_name_after (NautilusBatchRenameItem *item,
     }
 }
 
-gboolean
-nautilus_batch_rename_item_get_has_conflict (NautilusBatchRenameItem *item)
-{
-    return item->has_conflict;
-}
-
 void
 nautilus_batch_rename_item_set_has_conflict (NautilusBatchRenameItem *item,
                                              gboolean                 has_conflict)

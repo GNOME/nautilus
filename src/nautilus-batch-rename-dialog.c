@@ -419,64 +419,6 @@ begin_batch_rename (NautilusBatchRenameDialog *dialog,
     gtk_widget_set_cursor (GTK_WIDGET (dialog->window), NULL);
 }
 
-static GtkWidget *
-create_original_name_label (NautilusBatchRenameDialog *dialog,
-                            NautilusBatchRenameItem   *rename_item)
-{
-    GtkWidget *label_old;
-
-    label_old = gtk_label_new ("…");
-    gtk_label_set_use_markup (GTK_LABEL (label_old), TRUE);
-    g_object_bind_property (rename_item, "name-before", label_old, "label", G_BINDING_SYNC_CREATE);
-    g_object_bind_property (rename_item, "name-before", label_old, "tooltip-text", G_BINDING_SYNC_CREATE);
-    gtk_label_set_xalign (GTK_LABEL (label_old), 0.0);
-    gtk_widget_set_hexpand (label_old, TRUE);
-    gtk_widget_set_margin_start (label_old, ROW_MARGIN_START);
-    gtk_label_set_ellipsize (GTK_LABEL (label_old), PANGO_ELLIPSIZE_END);
-
-    return label_old;
-}
-
-static GtkWidget *
-create_result_label (NautilusBatchRenameDialog *dialog,
-                     NautilusBatchRenameItem   *rename_item)
-{
-    GtkWidget *label_new;
-
-    label_new = gtk_label_new ("…");
-    gtk_label_set_use_markup (GTK_LABEL (label_new), TRUE);
-    g_object_bind_property (rename_item, "name-after", label_new, "label", G_BINDING_SYNC_CREATE);
-    g_object_bind_property (rename_item, "name-after", label_new, "tooltip-text", G_BINDING_SYNC_CREATE);
-    gtk_label_set_xalign (GTK_LABEL (label_new), 0.0);
-    gtk_widget_set_hexpand (label_new, TRUE);
-    gtk_widget_set_margin_start (label_new, ROW_MARGIN_START);
-    gtk_label_set_ellipsize (GTK_LABEL (label_new), PANGO_ELLIPSIZE_END);
-
-    return label_new;
-}
-
-static GtkWidget *
-create_arrow (NautilusBatchRenameDialog *dialog)
-{
-    GtkWidget *icon;
-    GtkTextDirection text_direction = gtk_widget_get_direction (GTK_WIDGET (dialog));
-
-    if (text_direction == GTK_TEXT_DIR_RTL)
-    {
-        icon = gtk_label_new ("←");
-    }
-    else
-    {
-        icon = gtk_label_new ("→");
-    }
-
-    gtk_label_set_xalign (GTK_LABEL (icon), 1.0);
-    gtk_widget_set_hexpand (icon, FALSE);
-    gtk_widget_set_margin_start (icon, ROW_MARGIN_START);
-
-    return icon;
-}
-
 static void
 prepare_batch_rename (NautilusBatchRenameDialog *dialog)
 {
@@ -1464,68 +1406,22 @@ file_names_widget_entry_on_changed (NautilusBatchRenameDialog *self)
     update_display_text (self);
 }
 
-static void
-batch_item_conflict_changed (GtkWidget               *box,
-                             GParamSpec              *pspec,
-                             NautilusBatchRenameItem *rename_item)
+static GStrv
+batch_row_conflict_css_name (GtkListItem *item,
+                             gboolean     has_conflict)
 {
-    if (nautilus_batch_rename_item_get_has_conflict (rename_item))
-    {
-        gtk_widget_add_css_class (box, "conflict-row");
-    }
-    else
-    {
-        gtk_widget_remove_css_class (box, "conflict-row");
-    }
+    static gchar *css_names_has_conflict[2] = { "conflict-row", NULL };
+
+    return has_conflict ? g_strdupv (css_names_has_conflict) : NULL;
 }
 
-static void
-batch_row_setup (NautilusBatchRenameDialog *dialog,
-                 GObject                   *object,
-                 GtkSignalListItemFactory  *factory)
+static gchar *
+batch_row_item_arrow (GtkListItem *item,
+                      GtkWidget   *widget)
 {
-    GtkListItem *item = GTK_LIST_ITEM (object);
+    GtkTextDirection text_direction = gtk_widget_get_direction (widget);
 
-    gtk_list_item_set_child (item, gtk_box_new (GTK_ORIENTATION_HORIZONTAL, 6));
-}
-
-static void
-batch_row_bind (NautilusBatchRenameDialog *dialog,
-                GObject                   *object,
-                GtkSignalListItemFactory  *factory)
-{
-    GtkListItem *item = GTK_LIST_ITEM (object);
-    GtkWidget *box = gtk_list_item_get_child (item);
-    g_autoptr (GtkSizeGroup) size_group = gtk_size_group_new (GTK_SIZE_GROUP_HORIZONTAL);
-    NautilusBatchRenameItem *rename_item = NAUTILUS_BATCH_RENAME_ITEM (gtk_list_item_get_item (item));
-
-    GtkWidget *original_name_label = create_original_name_label (dialog, rename_item);
-    GtkWidget *result_label = create_result_label (dialog, rename_item);
-
-    gtk_size_group_add_widget (size_group, original_name_label);
-    gtk_size_group_add_widget (size_group, result_label);
-
-    gtk_box_append (GTK_BOX (box), original_name_label);
-    gtk_box_append (GTK_BOX (box), create_arrow (dialog));
-    gtk_box_append (GTK_BOX (box), result_label);
-
-    g_signal_connect_object (rename_item, "notify::has-conflict",
-                             G_CALLBACK (batch_item_conflict_changed),
-                             box, G_CONNECT_SWAPPED);
-}
-
-static void
-batch_row_unbind (NautilusBatchRenameDialog *dialog,
-                  GObject                   *object,
-                  GtkSignalListItemFactory  *factory)
-{
-    GtkListItem *item = GTK_LIST_ITEM (object);
-    GtkWidget *box = gtk_list_item_get_child (item);
-
-    while (gtk_widget_get_first_child (box))
-    {
-        gtk_box_remove (GTK_BOX (box), gtk_widget_get_first_child (box));
-    }
+    return text_direction == GTK_TEXT_DIR_RTL ? g_strdup ("←") : g_strdup ("→");
 }
 
 static void
@@ -1628,9 +1524,8 @@ nautilus_batch_rename_dialog_class_init (NautilusBatchRenameDialogClass *klass)
     gtk_widget_class_bind_template_callback (widget_class, select_next_conflict_down);
     gtk_widget_class_bind_template_callback (widget_class, batch_rename_dialog_on_cancel);
     gtk_widget_class_bind_template_callback (widget_class, prepare_batch_rename);
-    gtk_widget_class_bind_template_callback (widget_class, batch_row_setup);
-    gtk_widget_class_bind_template_callback (widget_class, batch_row_bind);
-    gtk_widget_class_bind_template_callback (widget_class, batch_row_unbind);
+    gtk_widget_class_bind_template_callback (widget_class, batch_row_conflict_css_name);
+    gtk_widget_class_bind_template_callback (widget_class, batch_row_item_arrow);
 }
 
 GtkWidget *
