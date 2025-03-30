@@ -1,5 +1,5 @@
 project('nautilus', 'c',
-  default_options: ['c_std=c11'],
+  default_options: ['c_std=c23'],
 
   # Do not forget when releasing:
   #  * Set release date in data/org.gnome.Nautilus.metainfo.xml.in.in
@@ -77,6 +77,8 @@ add_project_arguments(
     # This being an error is nice and all, but not when its appearance is
     # dependent on optimization level and other flags.
     '-Wno-error=maybe-uninitialized',
+    '-Wno-format-nonliteral',
+    '-Wno-format-security',
   ]),
   '-D_GNU_SOURCE',
   language: 'c'
