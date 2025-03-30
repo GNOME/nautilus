@@ -58,21 +58,6 @@ get_directory_store (NautilusViewModel *self,
     return store;
 }
 
-static inline GtkTreeListRow *
-get_child_row (NautilusViewModel *self,
-               GtkTreeListRow    *parent,
-               guint              position)
-{
-    if (parent != NULL)
-    {
-        return gtk_tree_list_row_get_child_row (parent, position);
-    }
-    else
-    {
-        return gtk_tree_list_model_get_child_row (self->tree_model, position);
-    }
-}
-
 static GType
 nautilus_view_model_get_item_type (GListModel *list)
 {
