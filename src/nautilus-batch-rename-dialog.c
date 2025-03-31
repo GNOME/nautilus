@@ -459,17 +459,21 @@ batch_rename_dialog_on_cancel (NautilusBatchRenameDialog *dialog,
 static void
 fill_display_listbox (NautilusBatchRenameDialog *dialog)
 {
+    guint items_size = g_list_length (dialog->new_names);
+    NautilusBatchRenameItem *item_array[items_size];
     GList *l1;
     GList *l2;
+    guint i;
 
-    for (l1 = dialog->new_names, l2 = dialog->selection; l1 != NULL && l2 != NULL; l1 = l1->next, l2 = l2->next)
+    for (i = 0, l1 = dialog->new_names, l2 = dialog->selection; i < items_size; i++, l1 = l1->next, l2 = l2->next)
     {
         g_autofree gchar *name = g_markup_escape_text (nautilus_file_get_name (NAUTILUS_FILE (l2->data)), -1);
         g_autofree gchar *new_name = g_markup_escape_text (((GString *) l1->data)->str, -1);
 
-        NautilusBatchRenameItem *item = nautilus_batch_rename_item_new (name, new_name);
-        g_list_store_append (dialog->batch_listmodel, item);
+        item_array[i] = nautilus_batch_rename_item_new (name, new_name);
     }
+
+    g_list_store_splice (dialog->batch_listmodel, 0, 0, (gpointer *) item_array, items_size);
 }
 
 static void
