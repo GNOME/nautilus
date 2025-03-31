@@ -6733,19 +6733,20 @@ action_run_in_terminal (GSimpleAction *action,
         return;
     }
 
-    old_working_dir = change_to_view_directory (view);
-
     uri = nautilus_file_get_activation_uri (NAUTILUS_FILE (selection->data));
     executable_path = g_filename_from_uri (uri, NULL, NULL);
     quoted_path = g_shell_quote (executable_path);
+    g_autofree char *executable_dir = g_path_get_dirname (executable_path);
 
     parent_window = nautilus_files_view_get_containing_window (view);
     display = gtk_widget_get_display (GTK_WIDGET (parent_window));
 
     g_debug ("Launching in terminal %s", quoted_path);
 
-    nautilus_launch_application_from_command (display, quoted_path, TRUE, NULL);
+    old_working_dir = g_get_current_dir ();
 
+    g_chdir (executable_dir);
+    nautilus_launch_application_from_command (display, quoted_path, TRUE, NULL);
     g_chdir (old_working_dir);
 }
 
