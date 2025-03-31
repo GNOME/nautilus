@@ -6713,37 +6713,27 @@ action_run_in_terminal (GSimpleAction *action,
                         GVariant      *state,
                         gpointer       user_data)
 {
-    NautilusFilesView *view;
-    g_autolist (NautilusFile) selection = NULL;
-    g_autofree char *old_working_dir = NULL;
-    g_autofree char *uri = NULL;
-    g_autofree char *executable_path = NULL;
-    g_autofree char *quoted_path = NULL;
-    GtkWindow *parent_window;
-    GdkDisplay *display;
-
     g_assert (NAUTILUS_IS_FILES_VIEW (user_data));
 
-    view = NAUTILUS_FILES_VIEW (user_data);
-
-    selection = nautilus_view_get_selection (NAUTILUS_VIEW (view));
+    NautilusFilesView *view = user_data;
+    g_autolist (NautilusFile) selection = nautilus_view_get_selection (NAUTILUS_VIEW (view));
 
     if (!can_run_in_terminal (selection))
     {
         return;
     }
 
-    uri = nautilus_file_get_activation_uri (NAUTILUS_FILE (selection->data));
-    executable_path = g_filename_from_uri (uri, NULL, NULL);
-    quoted_path = g_shell_quote (executable_path);
-    g_autofree char *executable_dir = g_path_get_dirname (executable_path);
+    GtkWindow *parent_window = nautilus_files_view_get_containing_window (view);
+    GdkDisplay *display = gtk_widget_get_display (GTK_WIDGET (parent_window));
 
-    parent_window = nautilus_files_view_get_containing_window (view);
-    display = gtk_widget_get_display (GTK_WIDGET (parent_window));
+    g_autofree char *uri = nautilus_file_get_activation_uri (NAUTILUS_FILE (selection->data));
+    g_autofree char *executable_path = g_filename_from_uri (uri, NULL, NULL);
+    g_autofree char *executable_dir = g_path_get_dirname (executable_path);
+    g_autofree char *quoted_path = g_shell_quote (executable_path);
 
     g_debug ("Launching in terminal %s", quoted_path);
 
-    old_working_dir = g_get_current_dir ();
+    g_autofree char *old_working_dir = g_get_current_dir ();
 
     g_chdir (executable_dir);
     nautilus_launch_application_from_command (display, quoted_path, TRUE, NULL);
