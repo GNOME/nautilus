@@ -375,16 +375,8 @@
             <property name="orientation">horizontal</property>
             <property name="spacing">6</property>
             <child>
-              <object class="GtkLabel">
-                <property name="hexpand">False</property>
-                <property name="xalign">1.0</property>
-                <property name="use-markup">True</property>
-                <property name="ellipsize">end</property>
-                <binding name="label">
-                  <closure type="gchararray" function="batch_row_item_arrow">
-                    <constant type="GtkWidget">batch_row</constant>
-                  </closure>
-                </binding>
+              <object class="GtkImage">
+                <property name="icon-name">arrow-next-symbolic</property>
               </object>
             </child>
             <child>

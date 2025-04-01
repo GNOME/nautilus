@@ -1421,15 +1421,6 @@ batch_row_conflict_css_name (GtkListItem *item,
     return has_conflict ? g_strdupv (css_names_has_conflict) : NULL;
 }
 
-static gchar *
-batch_row_item_arrow (GtkListItem *item,
-                      GtkWidget   *widget)
-{
-    GtkTextDirection text_direction = gtk_widget_get_direction (widget);
-
-    return text_direction == GTK_TEXT_DIR_RTL ? g_strdup ("←") : g_strdup ("→");
-}
-
 static GtkOrientation
 batch_row_orientation (GtkListItem               *item,
                        AdwBreakpoint             *current_breakpoint,
@@ -1547,7 +1538,6 @@ nautilus_batch_rename_dialog_class_init (NautilusBatchRenameDialogClass *klass)
     gtk_widget_class_bind_template_callback (widget_class, batch_rename_dialog_on_cancel);
     gtk_widget_class_bind_template_callback (widget_class, prepare_batch_rename);
     gtk_widget_class_bind_template_callback (widget_class, batch_row_conflict_css_name);
-    gtk_widget_class_bind_template_callback (widget_class, batch_row_item_arrow);
     gtk_widget_class_bind_template_callback (widget_class, batch_row_orientation);
 }
 
