@@ -2899,6 +2899,7 @@ create_row_popover (NautilusGtkPlacesSidebar *sidebar,
   g_object_unref (item);
 
   item = g_menu_item_new (_("_Rename"), "row.rename");
+  g_menu_item_set_attribute (item, "hidden-when", "s", "action-disabled");
   g_menu_append_item (section, item);
   g_object_unref (item);
 
