@@ -294,8 +294,8 @@ get_menu_from_choices (GVariant     *arg_options,
     const char *choice_id;
     const char *label;
     const char *selected;
-    const char *option_id;
-    const char *option_label;
+    char *option_id;
+    char *option_label;
 
     if (!g_variant_lookup (arg_options, "choices", "a(ssa(ss)s)", &iter))
     {
@@ -335,6 +335,9 @@ get_menu_from_choices (GVariant     *arg_options,
                 {
                     g_simple_action_set_state (G_SIMPLE_ACTION (action), g_variant_new_string (option_id));
                 }
+
+                g_free (option_id);
+                g_free (option_label);
             }
         }
         else
