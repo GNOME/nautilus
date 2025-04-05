@@ -5800,32 +5800,7 @@ nautilus_file_set_owner (NautilusFile                  *file,
 GList *
 nautilus_get_user_names (void)
 {
-    GList *list;
-    char *real_name, *name;
-    struct passwd *user;
-
-    list = NULL;
-
-    setpwent ();
-
-    while ((user = getpwent ()) != NULL)
-    {
-        real_name = get_real_name (user->pw_name, user->pw_gecos);
-        if (real_name != NULL && !g_str_equal (real_name, ""))
-        {
-            name = g_strconcat (user->pw_name, " – ", real_name, NULL);
-        }
-        else
-        {
-            name = g_strdup (user->pw_name);
-        }
-        g_free (real_name);
-        list = g_list_prepend (list, name);
-    }
-
-    endpwent ();
-
-    return g_list_sort (list, (GCompareFunc) g_utf8_collate);
+    return NULL;
 }
 
 /**

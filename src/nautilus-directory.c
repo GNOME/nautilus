@@ -1148,10 +1148,9 @@ nautilus_directory_notify_files_added (GList *files)
 {
     GHashTable *added_lists;
     GList *p;
-    NautilusDirectory *directory;
     GHashTable *parent_directories;
     NautilusFile *file;
-    GFile *location, *parent;
+    GFile *parent;
 
     /* Make a list of added files in each directory. */
     added_lists = g_hash_table_new (NULL, NULL);
@@ -1161,10 +1160,10 @@ nautilus_directory_notify_files_added (GList *files)
 
     for (p = files; p != NULL; p = p->next)
     {
-        location = p->data;
+        GFile *location = p->data;
 
         /* See if the directory is already known. */
-        directory = get_parent_directory_if_exists (location);
+        NautilusDirectory *directory = get_parent_directory_if_exists (location);
         if (directory == NULL)
         {
             /* In case the directory is not being
@@ -1190,7 +1189,11 @@ nautilus_directory_notify_files_added (GList *files)
             continue;
         }
 
-        collect_parent_directories (parent_directories, directory);
+        if (!g_hash_table_contains (parent_directories, directory))
+        {
+            nautilus_directory_ref (directory);
+            g_hash_table_add (parent_directories, directory);
+        }
 
         /* If no one is monitoring files in the directory, nothing to do. */
         if (!nautilus_directory_is_file_list_monitored (directory))
@@ -1325,10 +1328,14 @@ nautilus_directory_notify_files_removed (GList *files)
         directory = get_parent_directory_if_exists (location);
         if (directory != NULL)
         {
-            collect_parent_directories (parent_directories, directory);
-            nautilus_directory_unref (directory);
+            if (!g_hash_table_contains (parent_directories, directory))
+            {
+                g_hash_table_add (parent_directories, directory);
+            }
         }
 
+        /* Find the file. */
+        file = nautilus_file_get_existing (location);
         /* Find the file. */
         file = nautilus_file_get_existing (location);
         if (file != NULL && !nautilus_file_rename_in_progress (file))
@@ -1554,7 +1561,11 @@ nautilus_directory_notify_files_moved (GList *file_pairs)
             /* Mark it gone and prepare to send the changed signal. */
             nautilus_file_mark_gone (file);
             hash_table_list_prepend (changed_lists, directory, file);
-            collect_parent_directories (parent_directories, directory);
+            if (!g_hash_table_contains (parent_directories, directory))
+            {
+                nautilus_directory_ref (directory);
+                g_hash_table_add (parent_directories, directory);
+            }
         }
 
         /* Update any directory objects that are affected. */
@@ -1586,7 +1597,10 @@ nautilus_directory_notify_files_moved (GList *file_pairs)
 
             /* Handle notification in the old directory. */
             old_directory = directory;
-            collect_parent_directories (parent_directories, old_directory);
+            if (!g_hash_table_contains (parent_directories, old_directory))
+            {
+                g_hash_table_add (parent_directories, g_object_ref (old_directory));
+            }
 
             /* Cancel loading of attributes in the old directory */
             nautilus_directory_cancel_loading_file_attributes
@@ -1594,7 +1608,11 @@ nautilus_directory_notify_files_moved (GList *file_pairs)
 
             /* Locate the new directory. */
             new_directory = get_parent_directory (to_location);
-            collect_parent_directories (parent_directories, new_directory);
+            if (!g_hash_table_contains (parent_directories, new_directory))
+            {
+                g_hash_table_add (parent_directories, g_object_ref (new_directory));
+            }
+
             /* We can unref now -- new_directory is in the
              * parent directories list so it will be
              * around until the end of this function
