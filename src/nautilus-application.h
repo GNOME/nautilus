@@ -25,20 +25,10 @@
 #include "nautilus-types.h"
 
 G_BEGIN_DECLS
+
 #define NAUTILUS_TYPE_APPLICATION (nautilus_application_get_type())
-G_DECLARE_DERIVABLE_TYPE (NautilusApplication, nautilus_application, NAUTILUS, APPLICATION, AdwApplication)
-
-struct _NautilusApplicationClass {
-	AdwApplicationClass parent_class;
-
-        void  (*open_location_full) (NautilusApplication     *application,
-                                     GFile                   *location,
-                                     NautilusOpenFlags        flags,
-                                     GList                   *selection,
-                                     NautilusWindow          *target_window,
-                                     NautilusWindowSlot      *target_slot,
-                                     const char              *startup_id);
-};
+G_DECLARE_FINAL_TYPE (NautilusApplication, nautilus_application,
+                      NAUTILUS, APPLICATION, AdwApplication)
 
 NautilusApplication * nautilus_application_new (void);
 
