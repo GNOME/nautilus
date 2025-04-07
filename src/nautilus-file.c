@@ -4487,6 +4487,17 @@ get_filesystem_remote (NautilusFile *file,
     }
     else
     {
+        g_autoptr (GFile) location = nautilus_file_get_location (file);
+        /* Should be Okay to use a blocking call if a mount monitor exists. */
+        g_autoptr (GFileInfo) info = g_file_query_filesystem_info (location,
+                                                                   G_FILE_ATTRIBUTE_FILESYSTEM_REMOTE,
+                                                                   NULL, NULL);
+
+        if (info != NULL)
+        {
+            return g_file_info_get_attribute_boolean (info, G_FILE_ATTRIBUTE_FILESYSTEM_REMOTE);
+        }
+
         return FALSE;
     }
 }
