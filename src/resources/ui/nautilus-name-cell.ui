@@ -3,7 +3,7 @@
   <requires lib="gtk" version="4.0"/>
   <template class="NautilusNameCell" parent="NautilusViewCell">
     <child>
-      <object class="GtkBox">
+      <object class="GtkBox" id="top_child">
         <child>
           <object class="GtkTreeExpander" id="expander">
             <property name="indent-for-icon">False</property>

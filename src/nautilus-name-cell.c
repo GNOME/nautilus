@@ -21,6 +21,7 @@ struct _NautilusNameCell
     GQuark path_attribute_q;
     GFile *file_path_base_location;
 
+    GtkWidget *top_child;
     GtkWidget *expander;
     GtkWidget *content;
     GtkWidget *fixed_height_box;
@@ -404,6 +405,9 @@ nautilus_name_cell_class_init (NautilusNameCellClass *klass)
     gtk_widget_class_set_layout_manager_type (widget_class, GTK_TYPE_BIN_LAYOUT);
     gtk_widget_class_set_template_from_resource (widget_class, "/org/gnome/nautilus/ui/nautilus-name-cell.ui");
 
+    /* Needs to add the direct child of the template widget to dispose it since
+     * a plain GtkWidget doesn't dispose it's child automatically. */
+    gtk_widget_class_bind_template_child (widget_class, NautilusNameCell, top_child);
     gtk_widget_class_bind_template_child (widget_class, NautilusNameCell, expander);
     gtk_widget_class_bind_template_child (widget_class, NautilusNameCell, content);
     gtk_widget_class_bind_template_child (widget_class, NautilusNameCell, fixed_height_box);

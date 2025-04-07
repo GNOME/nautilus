@@ -3,7 +3,7 @@
   <requires lib="gtk" version="4.0"/>
   <template class="NautilusNetworkCell" parent="NautilusViewCell">
     <child>
-      <object class="GtkBox">
+      <object class="GtkBox" id="top_child">
         <property name="spacing">6</property>
         <property name="orientation">horizontal</property>
         <child>
