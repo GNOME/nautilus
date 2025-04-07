@@ -252,6 +252,20 @@ ask_confirm_overwrite (NautilusFileChooser *self)
                              NULL, (GAsyncReadyCallback) on_overwrite_confirm_response, self);
 }
 
+static GFile *
+get_file_chooser_activation_location (NautilusFile *file)
+{
+    g_autoptr (GFile) location = nautilus_file_get_location (file);
+    const gchar *path = g_file_peek_path (location);
+
+    if (path != NULL)
+    {
+        return g_steal_pointer (&location);
+    }
+
+    return nautilus_file_get_activation_location (file);
+}
+
 static void
 on_accept_button_clicked (NautilusFileChooser *self)
 {
@@ -276,7 +290,9 @@ on_accept_button_clicked (NautilusFileChooser *self)
     {
         if (mode_can_accept_files (self->mode, selection))
         {
-            g_autolist (GFile) file_locations = g_list_copy_deep (selection, (GCopyFunc) nautilus_file_get_activation_location, NULL);
+            g_autolist (GFile) file_locations = g_list_copy_deep (selection,
+                                                                  (GCopyFunc) get_file_chooser_activation_location,
+                                                                  NULL);
 
             emit_accepted (self, file_locations);
         }
