@@ -134,6 +134,8 @@ nautilus_network_cell_class_init (NautilusNetworkCellClass *klass)
     gtk_widget_class_bind_template_child (widget_class, NautilusNetworkCell, target_uri);
     gtk_widget_class_bind_template_child (widget_class, NautilusNetworkCell, unmount_button);
     gtk_widget_class_bind_template_callback (widget_class, on_unmount_clicked);
+
+    gtk_widget_class_set_layout_manager_type (widget_class, GTK_TYPE_BIN_LAYOUT);
 }
 
 NautilusViewCell *
