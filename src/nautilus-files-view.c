@@ -10024,11 +10024,11 @@ nautilus_files_view_change (NautilusFilesView *self,
     /* Prepare empty page for reuse. It's not destroyed because we own it. */
     gtk_widget_unparent (priv->empty_view_page);
 
-    /* Destroy existing inner view (which is owned by the overlay) */
-    gtk_overlay_set_child (GTK_OVERLAY (priv->overlay), NULL);
-
     /* Avoid subfolder items showing up in grid view. */
     nautilus_view_model_expand_as_a_tree (priv->model, FALSE);
+
+    /* Destroy existing inner view (which is owned by the overlay) */
+    gtk_overlay_set_child (GTK_OVERLAY (priv->overlay), NULL);
     g_clear_pointer (&priv->subdirectories_loading, g_list_free);
     while (priv->subdirectory_list != NULL)
     {
