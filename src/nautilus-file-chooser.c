@@ -268,8 +268,6 @@ get_file_chooser_activation_location (NautilusFile *file)
 static void
 on_accept_button_clicked (NautilusFileChooser *self)
 {
-    NautilusFileList *selection = nautilus_window_slot_get_selection (self->slot);
-
     if (self->mode == NAUTILUS_MODE_SAVE_FILE)
     {
         if (nautilus_filename_validator_get_will_overwrite (self->validator))
@@ -287,6 +285,8 @@ on_accept_button_clicked (NautilusFileChooser *self)
     }
     else
     {
+        NautilusFileList *selection = nautilus_window_slot_get_selection (self->slot);
+
         if (mode_can_accept_files (self->mode, selection))
         {
             g_autolist (GFile) file_locations = g_list_copy_deep (selection,

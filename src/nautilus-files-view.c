@@ -1311,14 +1311,14 @@ void
 nautilus_files_view_activate_selection (NautilusFilesView *self,
                                         NautilusOpenFlags  flags)
 {
-    g_autolist (NautilusFile) selection = nautilus_files_view_get_selection (self);
-
     if (nautilus_window_slot_get_mode (self->slot) != NAUTILUS_MODE_BROWSE &&
         flags & NAUTILUS_OPEN_FLAG_NEW_TAB)
     {
         /* Don't allow new tabs in filechooser */
         return;
     }
+
+    g_autolist (NautilusFile) selection = nautilus_files_view_get_selection (self);
 
     nautilus_files_view_activate_files (self, selection, flags, TRUE);
 }
