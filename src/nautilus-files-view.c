@@ -2233,7 +2233,7 @@ static void
 nautilus_files_view_compress_dialog_new (NautilusFilesView *view)
 {
     NautilusDirectory *containing_directory;
-    g_autolist (NautilusFile) selection = nautilus_files_view_get_selection (view);
+    g_autolist (NautilusFile) selection = nautilus_files_view_get_selection_for_file_transfer (view);
     gboolean is_single_selection = list_len_is_one (selection);
     g_autofree char *common_prefix = NULL;
     g_autofree char *uri = NULL;
@@ -2264,7 +2264,7 @@ nautilus_files_view_compress_dialog_new (NautilusFilesView *view)
 
     data = g_new0 (CompressCallbackData, 1);
     data->view = view;
-    data->selection = nautilus_files_view_get_selection_for_file_transfer (view);
+    data->selection = g_steal_pointer (&selection);
 
     compress_dialog = nautilus_compress_dialog_new (nautilus_files_view_get_containing_window (view),
                                                     containing_directory,
