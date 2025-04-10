@@ -857,6 +857,7 @@ get_selection_internal (NautilusFilesView *self,
     g_autoptr (GtkBitset) selection = NULL;
     GtkBitsetIter iter;
     guint i;
+    GListModel *model = G_LIST_MODEL (self->model);
     NautilusFileList *selected_files = NULL;
 
     selection = gtk_selection_model_get_selection (GTK_SELECTION_MODEL (self->model));
@@ -869,7 +870,7 @@ get_selection_internal (NautilusFilesView *self,
         g_autoptr (NautilusViewItem) item = NULL;
         NautilusFile *file;
 
-        row = GTK_TREE_LIST_ROW (g_list_model_get_item (G_LIST_MODEL (self->model), i));
+        row = GTK_TREE_LIST_ROW (g_list_model_get_item (model, i));
 
         if (for_file_transfer && is_ancestor_selected (row, selection))
         {
