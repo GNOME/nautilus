@@ -865,6 +865,11 @@ nautilus_window_on_undo_changed (NautilusFileUndoManager *manager,
             GFile *location;
 
             active_slot = nautilus_window_get_active_slot (window);
+            if (active_slot == NULL)
+            {
+                return;
+            }
+
             location = nautilus_window_slot_get_location (active_slot);
             /* Don't pop up a notification if the focus is not in the this
              * window. This is an easy way to know from which window was the
