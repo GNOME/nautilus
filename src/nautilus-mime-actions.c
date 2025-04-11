@@ -516,7 +516,6 @@ GAppInfo *
 nautilus_mime_get_default_application_for_file (NautilusFile *file)
 {
     GAppInfo *app;
-    char *uri_scheme;
 
     if (!nautilus_mime_actions_check_if_required_attributes_ready (file))
     {
@@ -528,11 +527,13 @@ nautilus_mime_get_default_application_for_file (NautilusFile *file)
 
     if (app == NULL)
     {
-        uri_scheme = nautilus_file_get_uri_scheme (file);
-        if (uri_scheme != NULL)
+        g_autofree gchar *uri_scheme = nautilus_file_get_uri_scheme (file);
+
+        /* Ignore "file://" scheme handlers as they are entirely meaningless. */
+        if (uri_scheme != NULL &&
+            g_strcmp0 (uri_scheme, "file") != 0)
         {
             app = g_app_info_get_default_for_uri_scheme (uri_scheme);
-            g_free (uri_scheme);
         }
     }
 
