@@ -36,6 +36,12 @@
 #include "nautilus-vfs-directory.h"
 #include "nautilus-vfs-file.h"
 
+struct _NautilusDirectory
+{
+    GObject object;
+    NautilusDirectoryPrivate *details;
+};
+
 enum
 {
     FILES_ADDED,
