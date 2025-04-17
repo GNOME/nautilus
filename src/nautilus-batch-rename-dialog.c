@@ -1641,8 +1641,6 @@ nautilus_batch_rename_dialog_new (GList             *selection,
 
     nautilus_batch_rename_dialog_initialize_actions (dialog);
 
-    update_display_text (dialog);
-
     fill_display_listbox (dialog);
 
     gtk_widget_set_cursor (GTK_WIDGET (window), NULL);
