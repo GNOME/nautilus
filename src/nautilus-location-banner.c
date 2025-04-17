@@ -239,10 +239,10 @@ set_mode (AdwBanner                  *banner,
             button_label = _("_Empty Trash…");
             callback = G_CALLBACK (on_trash_clear_clicked);
 
-            g_signal_connect_swapped (nautilus_trash_monitor_get (),
-                                      "trash-state-changed",
-                                      G_CALLBACK (update_trash_banner_visibility),
-                                      banner);
+            g_signal_connect_object (nautilus_trash_monitor_get (),
+                                     "trash-state-changed",
+                                     G_CALLBACK (update_trash_banner_visibility),
+                                     banner, G_CONNECT_SWAPPED);
             g_signal_connect_object (gnome_privacy_preferences,
                                      "changed::remove-old-trash-files",
                                      G_CALLBACK (on_remove_old_trash_files_changed),
