@@ -89,13 +89,15 @@ conflict_data_free (gpointer mem)
 gchar *
 batch_rename_get_tag_text_representation (TagConstants tag_constants)
 {
+    static gchar*
+
     return g_strdup_printf ("[%s]", gettext (tag_constants.label));
 }
 
 static GString *
-batch_rename_replace (gchar *string,
-                      gchar *substring,
-                      gchar *replacement)
+batch_rename_replace (const gchar *string,
+                      const gchar *substring,
+                      const gchar *replacement)
 {
     GString *new_string;
     gchar **splitted_string;
@@ -496,7 +498,6 @@ batch_rename_dialog_get_new_names_list (NautilusBatchRenameDialogMode  mode,
 {
     GList *l;
     GList *result;
-    GString *file_name;
     GString *new_name;
     gint count;
 
@@ -507,8 +508,6 @@ batch_rename_dialog_get_new_names_list (NautilusBatchRenameDialogMode  mode,
     {
         NautilusFile *file = NAUTILUS_FILE (l->data);
         const char *name = nautilus_file_get_name (file);
-
-        file_name = g_string_new (name);
 
         /* get the new name here and add it to the list*/
         if (mode == NAUTILUS_BATCH_RENAME_DIALOG_FORMAT)
@@ -522,13 +521,11 @@ batch_rename_dialog_get_new_names_list (NautilusBatchRenameDialogMode  mode,
 
         if (mode == NAUTILUS_BATCH_RENAME_DIALOG_REPLACE)
         {
-            new_name = batch_rename_replace (file_name->str,
+            new_name = batch_rename_replace (name,
                                              entry_text,
                                              replace_text);
             result = g_list_prepend (result, new_name);
         }
-
-        g_string_free (file_name, TRUE);
     }
 
     return result;
