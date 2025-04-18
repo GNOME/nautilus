@@ -1560,6 +1560,13 @@ nautilus_batch_rename_dialog_class_init (NautilusBatchRenameDialogClass *klass)
     gtk_widget_class_bind_template_callback (widget_class, batch_row_orientation);
 }
 
+/**
+ * nautilus_batch_rename_dialog_new:
+ * @selections: (element-type NautilusFile*) (transfer full): a list of files to rename.
+ * @window: Parent root widget to change its cursor on during active operation.
+ *
+ * Returns: (transfer full): A dialog widget ready to present.
+ */
 GtkWidget *
 nautilus_batch_rename_dialog_new (GList   *selection,
                                   GtkRoot *window)
@@ -1572,7 +1579,7 @@ nautilus_batch_rename_dialog_new (GList   *selection,
 
     dialog = g_object_new (NAUTILUS_TYPE_BATCH_RENAME_DIALOG, NULL);
 
-    dialog->selection = nautilus_file_list_copy (selection);
+    dialog->selection = selection;
     dialog->window = window;
 
     all_targets_are_folders = TRUE;
