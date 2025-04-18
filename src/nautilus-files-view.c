@@ -6270,7 +6270,7 @@ real_action_rename (NautilusFilesView *view)
 
             gtk_widget_set_cursor_from_name (GTK_WIDGET (window), "progress");
 
-            dialog = nautilus_batch_rename_dialog_new (selection,
+            dialog = nautilus_batch_rename_dialog_new (g_steal_pointer (&selection),
                                                        window);
 
             adw_dialog_present (ADW_DIALOG (dialog), GTK_WIDGET (window));
