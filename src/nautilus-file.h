@@ -128,6 +128,8 @@ void                    nautilus_file_monitor_add                       (Nautilu
 void                    nautilus_file_monitor_remove                    (NautilusFile                   *file,
 									 gconstpointer                   client);
 
+NautilusDirectory *     nautilus_file_get_directory                     (NautilusFile                   *file);
+
 /* Waiting for data that's read asynchronously.
  * This interface currently works only for metadata, but could be expanded
  * to other attributes as well.

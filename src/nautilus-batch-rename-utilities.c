@@ -1151,20 +1151,16 @@ batch_rename_files_get_distinct_parents (GList *selection)
     GList *l1;
     NautilusFile *file;
     NautilusDirectory *directory;
-    NautilusFile *parent;
 
     result = NULL;
     for (l1 = selection; l1 != NULL; l1 = l1->next)
     {
         file = NAUTILUS_FILE (l1->data);
-        parent = nautilus_file_get_parent (file);
-        directory = nautilus_directory_get_for_file (parent);
+        directory = nautilus_file_get_directory (file);
         if (!g_list_find (result, directory))
         {
-            result = g_list_prepend (result, directory);
+            result = g_list_prepend (result, nautilus_directory_ref (directory));
         }
-
-        nautilus_file_unref (parent);
     }
 
     return result;
