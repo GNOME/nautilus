@@ -345,7 +345,7 @@ get_metadata (GList        *selection_metadata,
     for (l = selection_metadata; l != NULL; l = l->next)
     {
         file_metadata = l->data;
-        if (g_strcmp0 (file_name, file_metadata->file_name->str) == 0)
+        if (g_strcmp0 (file_name, nautilus_file_get_name (file_metadata->file)) == 0)
         {
             if (file_metadata->metadata[metadata_type] &&
                 file_metadata->metadata[metadata_type]->len > 0)
@@ -876,7 +876,7 @@ on_cursor_callback (GObject      *object,
     {
         file_metadata = l->data;
 
-        if (g_strcmp0 (file_name, file_metadata->file_name->str) == 0)
+        if (g_strcmp0 (file_name, nautilus_file_get_name (file_metadata->file)) == 0)
         {
             break;
         }
@@ -1089,7 +1089,8 @@ check_metadata_for_selection (NautilusBatchRenameDialog *dialog,
 
     for (l = selection; l != NULL; l = l->next)
     {
-        const char *file_name = nautilus_file_get_name (NAUTILUS_FILE (l->data));
+        NautilusFile *file = NAUTILUS_FILE (l->data);
+        const char *file_name = nautilus_file_get_name (file);
         file_name_escaped = tracker_sparql_escape_string (file_name);
 
         if (l == selection)
@@ -1112,7 +1113,7 @@ check_metadata_for_selection (NautilusBatchRenameDialog *dialog,
         }
 
         file_metadata = g_new0 (FileMetadata, 1);
-        file_metadata->file_name = g_string_new (file_name);
+        file_metadata->file = nautilus_file_ref (file);
         file_metadata->metadata[ORIGINAL_FILE_NAME] = g_string_new (file_name);
 
         selection_metadata = g_list_prepend (selection_metadata, file_metadata);

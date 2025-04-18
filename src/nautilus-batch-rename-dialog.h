@@ -213,7 +213,7 @@ typedef struct
 } ConflictData;
 
 typedef struct {
-    GString *file_name;
+    NautilusFile *file;
     GString *metadata [G_N_ELEMENTS (metadata_tags_constants)];
 } FileMetadata;
 
