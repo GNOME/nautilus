@@ -192,10 +192,7 @@ nautilus_rename_file_popover_show_for_file (NautilusRenameFilePopover *self,
 
     if (!nautilus_file_is_self_owned (self->target_file))
     {
-        g_autoptr (NautilusFile) parent = NULL;
-
-        parent = nautilus_file_get_parent (self->target_file);
-        containing_directory = nautilus_directory_get_for_file (parent);
+        containing_directory = nautilus_directory_ref (nautilus_file_get_directory (self->target_file));
     }
     else
     {
