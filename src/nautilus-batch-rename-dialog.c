@@ -1491,7 +1491,7 @@ nautilus_batch_rename_dialog_finalize (GObject *object)
             }
         }
 
-        g_string_free (file_metadata->file_name, TRUE);
+        nautilus_file_unref (file_metadata->file);
         g_free (file_metadata);
     }
 
