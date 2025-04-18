@@ -162,7 +162,7 @@ static void
 add_tag (NautilusBatchRenameDialog *self,
          TagConstants               tag_constants)
 {
-    g_autofree gchar *tag_text_representation = NULL;
+    const gchar *tag_text_representation;
     gint cursor_position;
     TagData *tag_data;
 
@@ -328,7 +328,7 @@ split_entry_text (NautilusBatchRenameDialog *self,
 
         for (l = tag_info_keys; l != NULL; l = l->next)
         {
-            g_autofree gchar *tag_text_representation = NULL;
+            const gchar *tag_text_representation;
 
             tag_data = g_hash_table_lookup (self->tag_info_table, l->data);
             if (tag_data->set && g_array_index (tag_positions, gint, i) == tag_data->position)
@@ -1024,7 +1024,7 @@ numbering_tag_is_some_added (NautilusBatchRenameDialog *self)
 
     for (i = 0; i < G_N_ELEMENTS (numbering_tags_constants); i++)
     {
-        g_autofree gchar *tag_text_representation = NULL;
+        const gchar *tag_text_representation;
 
         tag_text_representation = batch_rename_get_tag_text_representation (numbering_tags_constants[i]);
         tag_data = g_hash_table_lookup (self->tag_info_table, tag_text_representation);
@@ -1251,7 +1251,7 @@ get_tags_intersecting_sorted (NautilusBatchRenameDialog *self,
     tag_info_keys = g_hash_table_get_keys (self->tag_info_table);
     for (l = tag_info_keys; l != NULL; l = l->next)
     {
-        g_autofree gchar *tag_text_representation = NULL;
+        const gchar *tag_text_representation;
 
         tag_data = g_hash_table_lookup (self->tag_info_table, l->data);
         tag_text_representation = batch_rename_get_tag_text_representation (tag_data->tag_constants);
@@ -1336,7 +1336,7 @@ on_delete_text (GtkEditable *editable,
     if (intersecting_tags)
     {
         gint last_tag_end_position;
-        g_autofree gchar *tag_text_representation = NULL;
+        const gchar *tag_text_representation;
         TagData *first_tag = g_list_first (intersecting_tags)->data;
         TagData *last_tag = g_list_last (intersecting_tags)->data;
 
@@ -1671,7 +1671,7 @@ nautilus_batch_rename_dialog_init (NautilusBatchRenameDialog *self)
 
     for (i = 0; i < G_N_ELEMENTS (numbering_tags_constants); i++)
     {
-        g_autofree gchar *tag_text_representation = NULL;
+        const gchar *tag_text_representation;
 
         tag_text_representation = batch_rename_get_tag_text_representation (numbering_tags_constants[i]);
         tag_data = g_new (TagData, 1);
@@ -1684,7 +1684,7 @@ nautilus_batch_rename_dialog_init (NautilusBatchRenameDialog *self)
 
     for (i = 0; i < G_N_ELEMENTS (metadata_tags_constants); i++)
     {
-        g_autofree gchar *tag_text_representation = NULL;
+        const gchar *tag_text_representation;
 
         /* Only the original name is available and set at the start */
         tag_text_representation = batch_rename_get_tag_text_representation (metadata_tags_constants[i]);
