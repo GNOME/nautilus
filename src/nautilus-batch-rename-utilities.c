@@ -522,7 +522,6 @@ batch_rename_dialog_get_new_names_list (NautilusBatchRenameDialogMode  mode,
     for (l = selection; l != NULL; l = l->next)
     {
         NautilusFile *file = NAUTILUS_FILE (l->data);
-        const char *name = nautilus_file_get_name (file);
 
         /* get the new name here and add it to the list*/
         if (mode == NAUTILUS_BATCH_RENAME_DIALOG_FORMAT)
@@ -536,6 +535,8 @@ batch_rename_dialog_get_new_names_list (NautilusBatchRenameDialogMode  mode,
 
         if (mode == NAUTILUS_BATCH_RENAME_DIALOG_REPLACE)
         {
+            const char *name = nautilus_file_get_name (file);
+
             new_name = batch_rename_replace (name,
                                              entry_text,
                                              replace_text);
