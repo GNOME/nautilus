@@ -222,7 +222,6 @@ typedef struct {
 G_DECLARE_FINAL_TYPE (NautilusBatchRenameDialog, nautilus_batch_rename_dialog, NAUTILUS, BATCH_RENAME_DIALOG, AdwDialog);
 
 GtkWidget*      nautilus_batch_rename_dialog_new                      (GList                     *selection,
-                                                                       NautilusDirectory         *directory,
                                                                        GtkRoot                   *window);
 
 void            nautilus_batch_rename_dialog_query_finished           (NautilusBatchRenameDialog *dialog,
