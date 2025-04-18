@@ -86,10 +86,27 @@ conflict_data_free (gpointer mem)
     g_free (conflict_data);
 }
 
-gchar *
+const gchar *
 batch_rename_get_tag_text_representation (TagConstants tag_constants)
 {
-    return g_strdup_printf ("[%s]", gettext (tag_constants.label));
+    static GHashTable *tag_text_hash;
+
+    if (G_UNLIKELY (tag_text_hash == NULL))
+    {
+        tag_text_hash = g_hash_table_new_full (g_str_hash, g_str_equal, NULL, g_free);
+    }
+
+    const gchar *tag_text = g_hash_table_lookup (tag_text_hash, tag_constants.label);
+    if (G_UNLIKELY (tag_text == NULL))
+    {
+        tag_text = g_strdup_printf ("[%s]", gettext (tag_constants.label));
+
+        g_hash_table_insert (tag_text_hash,
+                             (gpointer) tag_constants.label,
+                             (gpointer) tag_text);
+    }
+
+    return tag_text;
 }
 
 static GString *
@@ -367,7 +384,7 @@ batch_rename_format (NautilusFile *file,
 
         for (guint i = 0; i < G_N_ELEMENTS (numbering_tags_constants); i++)
         {
-            g_autofree gchar *tag_text_representation = NULL;
+            const gchar *tag_text_representation;
 
             tag_text_representation = batch_rename_get_tag_text_representation (numbering_tags_constants[i]);
             if (g_strcmp0 (tag_string->str, tag_text_representation) == 0)
@@ -411,7 +428,7 @@ batch_rename_format (NautilusFile *file,
 
         for (guint i = 0; i < G_N_ELEMENTS (metadata_tags_constants); i++)
         {
-            g_autofree gchar *tag_text_representation = NULL;
+            const gchar *tag_text_representation;
 
             tag_text_representation = batch_rename_get_tag_text_representation (metadata_tags_constants[i]);
             if (g_strcmp0 (tag_string->str, tag_text_representation) == 0)
