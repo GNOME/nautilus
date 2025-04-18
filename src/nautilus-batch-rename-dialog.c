@@ -60,7 +60,6 @@ struct _NautilusBatchRenameDialog
     GList *selection;
     GList *new_names;
     NautilusBatchRenameDialogMode mode;
-    NautilusDirectory *directory;
 
     GActionGroup *action_group;
 
@@ -1505,7 +1504,6 @@ nautilus_batch_rename_dialog_finalize (GObject *object)
     g_list_free_full (dialog->duplicates, conflict_data_free);
 
     nautilus_file_list_free (dialog->selection);
-    nautilus_directory_unref (dialog->directory);
     nautilus_directory_list_free (dialog->distinct_parent_directories);
 
     g_hash_table_destroy (dialog->tag_info_table);
@@ -1564,7 +1562,6 @@ nautilus_batch_rename_dialog_class_init (NautilusBatchRenameDialogClass *klass)
 
 GtkWidget *
 nautilus_batch_rename_dialog_new (GList             *selection,
-                                  NautilusDirectory *directory,
                                   GtkRoot           *window)
 {
     NautilusBatchRenameDialog *dialog;
@@ -1576,7 +1573,6 @@ nautilus_batch_rename_dialog_new (GList             *selection,
     dialog = g_object_new (NAUTILUS_TYPE_BATCH_RENAME_DIALOG, NULL);
 
     dialog->selection = nautilus_file_list_copy (selection);
-    dialog->directory = nautilus_directory_ref (directory);
     dialog->window = window;
 
     all_targets_are_folders = TRUE;
