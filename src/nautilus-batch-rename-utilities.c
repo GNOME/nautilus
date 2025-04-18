@@ -62,6 +62,7 @@ enum
     ARTIST_NAME_INDEX,
     TITLE_INDEX,
     ALBUM_NAME_INDEX,
+    URL_INDEX,
 } QueryMetadata;
 
 static void on_cursor_callback (GObject      *object,
@@ -824,6 +825,7 @@ on_cursor_callback (GObject      *object,
     const gchar *artist_name;
     const gchar *title;
     const gchar *album_name;
+    NautilusFile *file;
 
     file_metadata = NULL;
 
@@ -869,6 +871,7 @@ on_cursor_callback (GObject      *object,
     artist_name = tracker_sparql_cursor_get_string (cursor, ARTIST_NAME_INDEX, NULL);
     title = tracker_sparql_cursor_get_string (cursor, TITLE_INDEX, NULL);
     album_name = tracker_sparql_cursor_get_string (cursor, ALBUM_NAME_INDEX, NULL);
+    file = nautilus_file_get_by_uri (tracker_sparql_cursor_get_string (cursor, URL_INDEX, NULL));
 
     /* Search for the metadata object corresponding to the file name */
     file_name = tracker_sparql_cursor_get_string (cursor, FILE_NAME_INDEX, NULL);
@@ -876,7 +879,7 @@ on_cursor_callback (GObject      *object,
     {
         file_metadata = l->data;
 
-        if (g_strcmp0 (file_name, nautilus_file_get_name (file_metadata->file)) == 0)
+        if (file == file_metadata->file)
         {
             break;
         }
@@ -1079,6 +1082,7 @@ check_metadata_for_selection (NautilusBatchRenameDialog *dialog,
                           "nmm:artistName(nmm:performer(?content)) "
                           "nie:title(?content) "
                           "nie:title(nmm:musicAlbum(?content)) "
+                          "nie:url(?file) "
                           "WHERE { ?file a nfo:FileDataObject. ?file nie:url ?url. ?content nie:isStoredAs ?file. ");
 
     parent_uri = nautilus_file_get_parent_uri (NAUTILUS_FILE (selection->data));
