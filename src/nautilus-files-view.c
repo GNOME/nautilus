@@ -6253,7 +6253,6 @@ action_paste_files_into (GSimpleAction *action,
 static void
 real_action_rename (NautilusFilesView *view)
 {
-    NautilusFilesViewPrivate *priv = nautilus_files_view_get_instance_private (view);
     NautilusFile *file;
     g_autolist (NautilusFile) selection = NULL;
     GtkWidget *dialog;
@@ -6272,7 +6271,6 @@ real_action_rename (NautilusFilesView *view)
             gtk_widget_set_cursor_from_name (GTK_WIDGET (window), "progress");
 
             dialog = nautilus_batch_rename_dialog_new (selection,
-                                                       priv->directory,
                                                        window);
 
             adw_dialog_present (ADW_DIALOG (dialog), GTK_WIDGET (window));
