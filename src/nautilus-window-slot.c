@@ -2096,8 +2096,16 @@ got_file_info_for_view_selection_callback (NautilusFile *file,
         }
 
         g_assert (self->pending_location != NULL);
+
+        /* Setting the view location might trigger a signal that calls
+         * into the slot. We don't want that when setting the location
+         * outselves from the slot */
+        g_object_freeze_notify (G_OBJECT (self->content_view));
+
         apply_pending_location_and_selection_on_view (self);
         nautilus_window_slot_update_for_new_location (self);
+
+        g_object_thaw_notify (G_OBJECT (self->content_view));
     }
     else
     {
