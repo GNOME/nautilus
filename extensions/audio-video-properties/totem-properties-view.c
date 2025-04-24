@@ -328,7 +328,7 @@ discovered_cb (GstDiscoverer       *discoverer,
     const char *label;
     GstClockTime duration;
     g_autofree char *duration_string = NULL;
-    GstDiscovererStreamInfo *sinfo;
+    g_autoptr (GstDiscovererStreamInfo) sinfo = NULL;
 
     if (error)
     {
@@ -365,10 +365,10 @@ discovered_cb (GstDiscoverer       *discoverer,
     append_item (props, _("Duration"), duration_string);
 
     sinfo = gst_discoverer_info_get_stream_info (info);
-    if (sinfo)
+    if (sinfo != NULL &&
+        g_str_equal (gst_discoverer_stream_info_get_stream_type_nick (sinfo), "container"))
     {
         set_codec (props, sinfo, _("Container"));
-        gst_discoverer_stream_info_unref (sinfo);
     }
 
     taglist = gst_discoverer_info_get_tags (info);
