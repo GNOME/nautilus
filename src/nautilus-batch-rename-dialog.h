@@ -226,6 +226,7 @@ GtkWidget*      nautilus_batch_rename_dialog_new                      (GList    
 
 void            nautilus_batch_rename_dialog_query_finished           (NautilusBatchRenameDialog *dialog,
                                                                        GHashTable                *hash_table,
-                                                                       GList                     *selection_metadata);
+                                                                       GList                     *selection_metadata,
+                                                                       gboolean                   has_metadata[]);
 
 G_END_DECLS

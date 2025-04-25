@@ -756,26 +756,6 @@ cursor_next (QueryData           *query_data,
                                       query_data);
 }
 
-static void
-remove_metadata (QueryData    *query_data,
-                 MetadataType  metadata_type)
-{
-    GList *l;
-    FileMetadata *metadata_to_delete;
-
-    for (l = query_data->selection_metadata; l != NULL; l = l->next)
-    {
-        metadata_to_delete = l->data;
-        if (metadata_to_delete->metadata[metadata_type])
-        {
-            g_string_free (metadata_to_delete->metadata[metadata_type], TRUE);
-            metadata_to_delete->metadata[metadata_type] = NULL;
-        }
-    }
-
-    query_data->has_metadata[metadata_type] = FALSE;
-}
-
 static GString *
 format_date_time (GDateTime *date_time)
 {
@@ -848,7 +828,8 @@ on_cursor_callback (GObject      *object,
         {
             nautilus_batch_rename_dialog_query_finished (query_data->dialog,
                                                          query_data->date_order_hash_table,
-                                                         query_data->selection_metadata);
+                                                         query_data->selection_metadata,
+                                                         query_data->has_metadata);
         }
 
         g_free (query_data);
@@ -957,8 +938,7 @@ on_cursor_callback (GObject      *object,
 
             if (!current_metadata)
             {
-                remove_metadata (query_data,
-                                 metadata_type);
+                query_data->has_metadata[i] = FALSE;
 
                 if (metadata_type == CREATION_DATE &&
                     query_data->date_order_hash_table)
@@ -1024,7 +1004,8 @@ batch_rename_dialog_query_callback (GObject      *object,
         {
             nautilus_batch_rename_dialog_query_finished (query_data->dialog,
                                                          query_data->date_order_hash_table,
-                                                         query_data->selection_metadata);
+                                                         query_data->selection_metadata,
+                                                         query_data->has_metadata);
         }
 
         g_free (query_data);
