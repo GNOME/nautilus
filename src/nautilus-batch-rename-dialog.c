@@ -705,6 +705,7 @@ check_conflict_for_files (NautilusBatchRenameDialog *dialog,
     gchar *current_directory;
     GString *file_name;
     GList *l1, *l2;
+    guint index = 0;
     GHashTable *directory_files_table;
     GHashTable *new_names_table;
     GHashTable *names_conflicts_table;
@@ -767,7 +768,9 @@ check_conflict_for_files (NautilusBatchRenameDialog *dialog,
                              GINT_TO_POINTER (TRUE));
     }
 
-    for (l1 = dialog->selection, l2 = dialog->new_names; l1 != NULL && l2 != NULL; l1 = l1->next, l2 = l2->next)
+    for (index = 0, l1 = dialog->selection, l2 = dialog->new_names;
+         l1 != NULL && l2 != NULL;
+         index++, l1 = l1->next, l2 = l2->next)
     {
         NautilusFile *file = NAUTILUS_FILE (l1->data);
         GString *new_name = l2->data;
@@ -787,12 +790,9 @@ check_conflict_for_files (NautilusBatchRenameDialog *dialog,
             if (exists == TRUE &&
                 !file_name_conflicts_with_results (dialog->selection, dialog->new_names, new_name, parent_uri))
             {
-                gint index = g_list_index (dialog->selection, l1->data);
-                g_assert (index >= 0);
-
                 conflict_data = g_new (ConflictData, 1);
                 conflict_data->name = g_strdup (new_name->str);
-                conflict_data->index = (guint) index;
+                conflict_data->index = index;
                 dialog->duplicates = g_list_prepend (dialog->duplicates,
                                                      conflict_data);
 
@@ -807,12 +807,9 @@ check_conflict_for_files (NautilusBatchRenameDialog *dialog,
             if (tag_present &&
                 g_strcmp0 (parent_uri, current_directory) == 0)
             {
-                gint index = g_list_index (dialog->selection, l1->data);
-                g_assert (index >= 0);
-
                 conflict_data = g_new (ConflictData, 1);
                 conflict_data->name = g_strdup (new_name->str);
-                conflict_data->index = (guint) index;
+                conflict_data->index = index;
                 dialog->duplicates = g_list_prepend (dialog->duplicates,
                                                      conflict_data);
 
