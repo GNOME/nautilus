@@ -703,7 +703,6 @@ check_conflict_for_files (NautilusBatchRenameDialog *dialog,
                           GList                     *files)
 {
     gchar *current_directory;
-    GString *file_name;
     GList *l1, *l2;
     guint index = 0;
     GHashTable *directory_files_table;
@@ -774,8 +773,7 @@ check_conflict_for_files (NautilusBatchRenameDialog *dialog,
     {
         NautilusFile *file = NAUTILUS_FILE (l1->data);
         GString *new_name = l2->data;
-
-        file_name = g_string_new (nautilus_file_get_name (file));
+        const gchar *file_name = nautilus_file_get_name (file);
         g_autofree gchar *parent_uri = nautilus_file_get_parent_uri (file);
 
         have_conflict = FALSE;
@@ -783,7 +781,7 @@ check_conflict_for_files (NautilusBatchRenameDialog *dialog,
         /* check for duplicate only if the parent of the current file is
          * the current directory and the name of the file has changed */
         if (g_strcmp0 (parent_uri, current_directory) == 0 &&
-            !g_string_equal (new_name, file_name))
+            !g_str_equal (new_name->str, file_name))
         {
             exists = GPOINTER_TO_INT (g_hash_table_lookup (directory_files_table, new_name->str));
 
@@ -816,8 +814,6 @@ check_conflict_for_files (NautilusBatchRenameDialog *dialog,
                 have_conflict = TRUE;
             }
         }
-
-        g_string_free (file_name, TRUE);
     }
 
     g_free (current_directory);
