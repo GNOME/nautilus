@@ -66,7 +66,7 @@ struct _NautilusBatchRenameDialog
     GMenu *numbering_order_menu;
 
     GHashTable *create_date;
-    GList *selection_metadata;
+    GHashTable *selection_metadata;
 
     /* the index of the currently selected conflict */
     gint selected_conflict;
@@ -1106,11 +1106,12 @@ batch_rename_dialog_mode_changed (NautilusBatchRenameDialog *dialog)
 void
 nautilus_batch_rename_dialog_query_finished (NautilusBatchRenameDialog *dialog,
                                              GHashTable                *hash_table,
-                                             GList                     *selection_metadata,
+                                             GHashTable                *selection_metadata,
                                              gboolean                   has_metadata[])
 {
     GMenuItem *first_created;
     GMenuItem *last_created;
+    GHashTableIter selection_metadata_iter;
     FileMetadata *file_metadata;
     MetadataType metadata_type;
     gboolean is_metadata;
@@ -1149,7 +1150,10 @@ nautilus_batch_rename_dialog_query_finished (NautilusBatchRenameDialog *dialog,
     }
 
     dialog->selection_metadata = selection_metadata;
-    file_metadata = selection_metadata->data;
+
+    g_hash_table_iter_init (&selection_metadata_iter, selection_metadata);
+    g_hash_table_iter_next (&selection_metadata_iter, NULL, (gpointer *) &file_metadata);
+
     tag_info_keys = g_hash_table_get_keys (dialog->tag_info_table);
     for (l = tag_info_keys; l != NULL; l = l->next)
     {
@@ -1470,8 +1474,6 @@ static void
 nautilus_batch_rename_dialog_finalize (GObject *object)
 {
     NautilusBatchRenameDialog *dialog;
-    GList *l;
-    guint i;
 
     dialog = NAUTILUS_BATCH_RENAME_DIALOG (object);
 
@@ -1480,22 +1482,7 @@ nautilus_batch_rename_dialog_finalize (GObject *object)
         cancel_conflict_check (dialog);
     }
 
-    for (l = dialog->selection_metadata; l != NULL; l = g_list_delete_link (l, l))
-    {
-        FileMetadata *file_metadata;
-
-        file_metadata = l->data;
-        for (i = 0; i < G_N_ELEMENTS (file_metadata->metadata); i++)
-        {
-            if (file_metadata->metadata[i])
-            {
-                g_string_free (file_metadata->metadata[i], TRUE);
-            }
-        }
-
-        nautilus_file_unref (file_metadata->file);
-        g_free (file_metadata);
-    }
+    g_clear_pointer (&dialog->selection_metadata, g_hash_table_unref);
 
     if (dialog->create_date != NULL)
     {

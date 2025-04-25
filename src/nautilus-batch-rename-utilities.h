@@ -25,7 +25,7 @@
 GList* batch_rename_dialog_get_new_names_list          (NautilusBatchRenameDialogMode  mode,
                                                         GList                         *selection,
                                                         GList                         *tags_list,
-                                                        GList                         *selection_metadata,
+                                                        GHashTable                    *selection_metadata,
                                                         gchar                         *entry_text,
                                                         gchar                         *replace_text);
 
