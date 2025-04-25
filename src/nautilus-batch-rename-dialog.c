@@ -1106,7 +1106,8 @@ batch_rename_dialog_mode_changed (NautilusBatchRenameDialog *dialog)
 void
 nautilus_batch_rename_dialog_query_finished (NautilusBatchRenameDialog *dialog,
                                              GHashTable                *hash_table,
-                                             GList                     *selection_metadata)
+                                             GList                     *selection_metadata,
+                                             gboolean                   has_metadata[])
 {
     GMenuItem *first_created;
     GMenuItem *last_created;
@@ -1161,7 +1162,8 @@ nautilus_batch_rename_dialog_query_finished (NautilusBatchRenameDialog *dialog,
         }
 
         metadata_type = tag_data->tag_constants.metadata_type;
-        if (file_metadata->metadata[metadata_type] == NULL ||
+        if (has_metadata[metadata_type] == FALSE ||
+            file_metadata->metadata[metadata_type] == NULL ||
             file_metadata->metadata[metadata_type]->len <= 0)
         {
             disable_action (dialog, tag_data->tag_constants.action_name);
