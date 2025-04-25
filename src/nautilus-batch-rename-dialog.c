@@ -803,9 +803,9 @@ check_conflict_for_files (NautilusBatchRenameDialog *dialog,
         if (!have_conflict)
         {
             tag_present = g_hash_table_lookup (names_conflicts_table, new_name->str) != NULL;
-            same_parent_directory = g_strcmp0 (parent_uri, current_directory) == 0;
 
-            if (tag_present && same_parent_directory)
+            if (tag_present &&
+                g_strcmp0 (parent_uri, current_directory) == 0)
             {
                 gint index = g_list_index (dialog->selection, l1->data);
                 g_assert (index >= 0);
