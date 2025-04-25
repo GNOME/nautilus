@@ -38,7 +38,7 @@ typedef struct
     NautilusBatchRenameDialog *dialog;
     GHashTable *date_order_hash_table;
 
-    GList *selection_metadata;
+    GHashTable *selection_metadata;
 
     gboolean has_metadata[G_N_ELEMENTS (metadata_tags_constants)];
 
@@ -85,6 +85,22 @@ conflict_data_free (gpointer mem)
 
     g_free (conflict_data->name);
     g_free (conflict_data);
+}
+
+static void
+file_metadata_free (gpointer data)
+{
+    FileMetadata *file_metadata = data;
+
+    for (guint i = 0; i < G_N_ELEMENTS (file_metadata->metadata); i++)
+    {
+        if (file_metadata->metadata[i] != NULL)
+        {
+            g_string_free (file_metadata->metadata[i], TRUE);
+        }
+    }
+
+    g_free (file_metadata);
 }
 
 const gchar *
@@ -335,27 +351,25 @@ batch_rename_replace_label_text (const char  *label,
 }
 
 static gchar *
-get_metadata (GList        *selection_metadata,
-              const char   *file_name,
+get_metadata (GHashTable   *selection_metadata,
+              NautilusFile *file,
               MetadataType  metadata_type)
 {
-    GList *l;
-    FileMetadata *file_metadata;
+    if (selection_metadata == NULL)
+    {
+        /* We did not start collecting metadata yet */
+        return NULL;
+    }
+
+    FileMetadata *file_metadata = g_hash_table_lookup (selection_metadata,
+                                                       file);
     gchar *metadata = NULL;
 
-    for (l = selection_metadata; l != NULL; l = l->next)
+    if (file_metadata != NULL &&
+        file_metadata->metadata[metadata_type] != NULL &&
+        file_metadata->metadata[metadata_type]->len > 0)
     {
-        file_metadata = l->data;
-        if (g_strcmp0 (file_name, nautilus_file_get_name (file_metadata->file)) == 0)
-        {
-            if (file_metadata->metadata[metadata_type] &&
-                file_metadata->metadata[metadata_type]->len > 0)
-            {
-                metadata = file_metadata->metadata[metadata_type]->str;
-            }
-
-            break;
-        }
+        metadata = file_metadata->metadata[metadata_type]->str;
     }
 
     return metadata;
@@ -364,7 +378,7 @@ get_metadata (GList        *selection_metadata,
 static GString *
 batch_rename_format (NautilusFile *file,
                      GList        *text_chunks,
-                     GList        *selection_metadata,
+                     GHashTable   *selection_metadata,
                      gint          count)
 {
     GList *l;
@@ -435,7 +449,7 @@ batch_rename_format (NautilusFile *file,
             if (g_strcmp0 (tag_string->str, tag_text_representation) == 0)
             {
                 metadata_type = metadata_tags_constants[i].metadata_type;
-                metadata = get_metadata (selection_metadata, file_name, metadata_type);
+                metadata = get_metadata (selection_metadata, file, metadata_type);
 
                 /* TODO: This is a hack, we should provide a cancellable for checking
                  * the metadata, and if that is happening don't enter here. We can
@@ -508,7 +522,7 @@ GList *
 batch_rename_dialog_get_new_names_list (NautilusBatchRenameDialogMode  mode,
                                         GList                         *selection,
                                         GList                         *text_chunks,
-                                        GList                         *selection_metadata,
+                                        GHashTable                    *selection_metadata,
                                         gchar                         *entry_text,
                                         gchar                         *replace_text)
 {
@@ -785,7 +799,6 @@ on_cursor_callback (GObject      *object,
     QueryData *query_data;
     MetadataType metadata_type;
     g_autoptr (GError) error = NULL;
-    GList *l;
     FileMetadata *file_metadata;
     GDateTime *date_time;
     guint i;
@@ -837,6 +850,18 @@ on_cursor_callback (GObject      *object,
         return;
     }
 
+    /* Search for the metadata object corresponding to the file */
+    file = nautilus_file_get_by_uri (tracker_sparql_cursor_get_string (cursor, URL_INDEX, NULL));
+
+    file_metadata = g_hash_table_lookup (query_data->selection_metadata, file);
+    if (G_UNLIKELY (file_metadata == NULL))
+    {
+        g_warning ("Got a file that was not in the list of requested files");
+        cursor_next (query_data, cursor);
+
+        return;
+    }
+
     creation_date = tracker_sparql_cursor_get_string (cursor, CREATION_DATE_INDEX, NULL);
 
     year = tracker_sparql_cursor_get_string (cursor, YEAR_INDEX, NULL);
@@ -852,19 +877,7 @@ on_cursor_callback (GObject      *object,
     artist_name = tracker_sparql_cursor_get_string (cursor, ARTIST_NAME_INDEX, NULL);
     title = tracker_sparql_cursor_get_string (cursor, TITLE_INDEX, NULL);
     album_name = tracker_sparql_cursor_get_string (cursor, ALBUM_NAME_INDEX, NULL);
-    file = nautilus_file_get_by_uri (tracker_sparql_cursor_get_string (cursor, URL_INDEX, NULL));
-
-    /* Search for the metadata object corresponding to the file name */
     file_name = tracker_sparql_cursor_get_string (cursor, FILE_NAME_INDEX, NULL);
-    for (l = query_data->selection_metadata; l != NULL; l = l->next)
-    {
-        file_metadata = l->data;
-
-        if (file == file_metadata->file)
-        {
-            break;
-        }
-    }
 
     /* Set metadata when available, and delete for the whole selection when not */
     for (i = 0; i < G_N_ELEMENTS (metadata_tags_constants); i++)
@@ -1027,7 +1040,7 @@ check_metadata_for_selection (NautilusBatchRenameDialog *dialog,
     GError *error;
     QueryData *query_data;
     FileMetadata *file_metadata;
-    GList *selection_metadata;
+    g_autoptr (GHashTable) selection_metadata = NULL;
     guint i;
     g_autofree gchar *parent_uri = NULL;
     gchar *file_name_escaped;
@@ -1045,7 +1058,8 @@ check_metadata_for_selection (NautilusBatchRenameDialog *dialog,
     }
 
     error = NULL;
-    selection_metadata = NULL;
+    selection_metadata = g_hash_table_new_full (NULL, NULL,
+                                                (GDestroyNotify) nautilus_file_unref, file_metadata_free);
 
     query = g_string_new ("SELECT "
                           "nfo:fileName(?file) "
@@ -1098,15 +1112,14 @@ check_metadata_for_selection (NautilusBatchRenameDialog *dialog,
         }
 
         file_metadata = g_new0 (FileMetadata, 1);
-        file_metadata->file = nautilus_file_ref (file);
+        file_metadata->file = file;
         file_metadata->metadata[ORIGINAL_FILE_NAME] = g_string_new (file_name);
 
-        selection_metadata = g_list_prepend (selection_metadata, file_metadata);
+        g_hash_table_insert (selection_metadata,
+                             nautilus_file_ref (file), file_metadata);
 
         g_free (file_name_escaped);
     }
-
-    selection_metadata = g_list_reverse (selection_metadata);
 
     g_string_append (query, "} ORDER BY ASC(nie:contentCreated(?content))");
 
@@ -1116,7 +1129,7 @@ check_metadata_for_selection (NautilusBatchRenameDialog *dialog,
                                                                (GDestroyNotify) g_free,
                                                                NULL);
     query_data->dialog = dialog;
-    query_data->selection_metadata = selection_metadata;
+    query_data->selection_metadata = g_steal_pointer (&selection_metadata);
     for (i = 0; i < G_N_ELEMENTS (metadata_tags_constants); i++)
     {
         query_data->has_metadata[i] = TRUE;
