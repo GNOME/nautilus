@@ -703,7 +703,6 @@ check_conflict_for_files (NautilusBatchRenameDialog *dialog,
                           GList                     *files)
 {
     gchar *current_directory;
-    gchar *parent_uri;
     GString *file_name;
     GList *l1, *l2;
     GHashTable *directory_files_table;
@@ -738,7 +737,7 @@ check_conflict_for_files (NautilusBatchRenameDialog *dialog,
     {
         GString *new_name = l1->data;
         NautilusFile *file = NAUTILUS_FILE (l2->data);
-        parent_uri = nautilus_file_get_parent_uri (file);
+        g_autofree gchar *parent_uri = nautilus_file_get_parent_uri (file);
 
         tag_present = g_hash_table_lookup (new_names_table, new_name->str) != NULL;
         same_parent_directory = g_strcmp0 (parent_uri, current_directory) == 0;
@@ -749,17 +748,15 @@ check_conflict_for_files (NautilusBatchRenameDialog *dialog,
             {
                 g_hash_table_insert (new_names_table,
                                      g_strdup (new_name->str),
-                                     nautilus_file_get_parent_uri (file));
+                                     g_steal_pointer (&parent_uri));
             }
             else
             {
                 g_hash_table_insert (names_conflicts_table,
                                      g_strdup (new_name->str),
-                                     nautilus_file_get_parent_uri (file));
+                                     g_steal_pointer (&parent_uri));
             }
         }
-
-        g_free (parent_uri);
     }
 
     for (l1 = files; l1 != NULL; l1 = l1->next)
@@ -776,8 +773,7 @@ check_conflict_for_files (NautilusBatchRenameDialog *dialog,
         GString *new_name = l2->data;
 
         file_name = g_string_new (nautilus_file_get_name (file));
-
-        parent_uri = nautilus_file_get_parent_uri (file);
+        g_autofree gchar *parent_uri = nautilus_file_get_parent_uri (file);
 
         have_conflict = FALSE;
 
@@ -825,7 +821,6 @@ check_conflict_for_files (NautilusBatchRenameDialog *dialog,
         }
 
         g_string_free (file_name, TRUE);
-        g_free (parent_uri);
     }
 
     g_free (current_directory);
