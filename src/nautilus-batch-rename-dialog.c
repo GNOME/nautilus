@@ -739,11 +739,12 @@ check_conflict_for_files (NautilusBatchRenameDialog *dialog,
         NautilusFile *file = NAUTILUS_FILE (l2->data);
         g_autofree gchar *parent_uri = nautilus_file_get_parent_uri (file);
 
-        tag_present = g_hash_table_lookup (new_names_table, new_name->str) != NULL;
         same_parent_directory = g_strcmp0 (parent_uri, current_directory) == 0;
 
         if (same_parent_directory)
         {
+            tag_present = g_hash_table_contains (new_names_table, new_name->str);
+
             if (!tag_present)
             {
                 g_hash_table_insert (new_names_table,
@@ -762,9 +763,7 @@ check_conflict_for_files (NautilusBatchRenameDialog *dialog,
     for (l1 = files; l1 != NULL; l1 = l1->next)
     {
         NautilusFile *file = NAUTILUS_FILE (l1->data);
-        g_hash_table_insert (directory_files_table,
-                             g_strdup (nautilus_file_get_name (file)),
-                             GINT_TO_POINTER (TRUE));
+        g_hash_table_add (directory_files_table, g_strdup (nautilus_file_get_name (file)));
     }
 
     for (index = 0, l1 = dialog->selection, l2 = dialog->new_names;
@@ -783,7 +782,7 @@ check_conflict_for_files (NautilusBatchRenameDialog *dialog,
         if (g_strcmp0 (parent_uri, current_directory) == 0 &&
             !g_str_equal (new_name->str, file_name))
         {
-            exists = GPOINTER_TO_INT (g_hash_table_lookup (directory_files_table, new_name->str));
+            exists = g_hash_table_contains (directory_files_table, new_name->str);
 
             if (exists == TRUE &&
                 !file_name_conflicts_with_results (dialog->selection, dialog->new_names, new_name, parent_uri))
