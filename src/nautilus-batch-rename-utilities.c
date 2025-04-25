@@ -579,21 +579,28 @@ file_name_conflicts_with_results (GList   *selection,
     {
         NautilusFile *selection_file = NAUTILUS_FILE (l1->data);
         const char *name1 = nautilus_file_get_name (selection_file);
-        g_autofree gchar *selection_parent_uri = NULL;
-
-        selection_parent_uri = nautilus_file_get_parent_uri (selection_file);
 
         if (g_strcmp0 (name1, old_name->str) == 0)
         {
             new_name = l2->data;
 
             /* if the name didn't change, then there's a conflict */
-            if (g_string_equal (old_name, new_name) &&
-                (parent_uri == NULL || g_strcmp0 (parent_uri, selection_parent_uri) == 0))
+            if (g_string_equal (old_name, new_name))
             {
-                return FALSE;
-            }
+                if (parent_uri == NULL)
+                {
+                    return FALSE;
+                }
 
+                g_autofree gchar *selection_parent_uri = NULL;
+
+                selection_parent_uri = nautilus_file_get_parent_uri (selection_file);
+
+                if (g_strcmp0 (parent_uri, selection_parent_uri) == 0)
+                {
+                    return FALSE;
+                }
+            }
 
             /* if this file exists and it changed it's name, then there's no
              * conflict */
