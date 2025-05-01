@@ -8953,7 +8953,7 @@ load_directory (NautilusFilesView *view,
     nautilus_directory_call_when_ready
         (priv->directory,
         attributes,
-        !NAUTILUS_IS_SEARCH_DIRECTORY (priv->directory),
+        FALSE,
         metadata_for_files_in_directory_ready_callback, view);
 
     /* If capabilities change, then we need to update the menus
