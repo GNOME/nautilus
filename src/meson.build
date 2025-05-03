@@ -302,6 +302,8 @@ nautilus_deps = [
   tracker_sparql,
   xdp_gnome,
   cloudproviders,
+  icu_dep,
+  icu_i18n_dep,
 ]
 
 libnautilus = static_library(
