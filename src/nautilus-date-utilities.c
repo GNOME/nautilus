@@ -11,7 +11,6 @@
 
 #include <gdesktop-enums.h>
 #include <glib.h>
-#include <glib/gi18n.h>
 #include <locale.h>
 #include <time.h>
 
@@ -250,115 +249,175 @@ ensure_formatters (GTimeZone *new_tz)
     return status;
 }
 
+static gint32
+get_relative_day_month_year (GTimeSpan   timespan,
+                             UChar      *relative_date_buf,
+                             gint32      capacity,
+                             UErrorCode *status)
+{
+    double relative_value = (double) timespan / G_TIME_SPAN_DAY;
+    URelativeDateTimeUnit unit;
+
+    *status = U_ZERO_ERROR;
+
+    if (relative_value < 7.0)
+    {
+        unit = UDAT_REL_UNIT_DAY;
+    }
+    else if (relative_value < 31)
+    {
+        unit = UDAT_REL_UNIT_WEEK;
+        relative_value /= 7.0;
+    }
+    else if (relative_value < 365)
+    {
+        unit = UDAT_REL_UNIT_MONTH;
+        relative_value /= 30.4;
+    }
+    else
+    {
+        unit = UDAT_REL_UNIT_YEAR;
+        relative_value /= 365.25;
+    }
+
+    gint32 relative_date_len = ureldatefmt_format (relative_formatter,
+                                                   (int) -relative_value, unit,
+                                                   relative_date_buf, capacity,
+                                                   status);
+
+    return relative_date_len;
+}
+
 static char *
 date_to_str (GDateTime *timestamp,
              gboolean   use_short_format,
              gboolean   detailed_date)
 {
-    const gchar *format;
+    UErrorCode status = U_ZERO_ERROR;
+    g_autofree char *formatted_utf8 = NULL;
 
-    if (use_short_format && detailed_date)
-    {
-        if (use_24_hour)
-        {
-            /* Translators: date and time in 24h format,
-             * i.e. "12/31/2023 23:59" */
-            /* xgettext:no-c-format */
-            format = _("%m/%d/%Y %H:%M");
-        }
-        else
-        {
-            /* Translators: date and time in 12h format,
-             * i.e. "12/31/2023 11:59 PM" */
-            /* xgettext:no-c-format */
-            format = _("%m/%d/%Y %I:%M %p");
-        }
-    }
-    else if (use_short_format)
+    /* START Unicode error handling */
+    do
     {
         /* Re-use local time zone, because every time a new local time zone is
          * created, GLib needs to check if the time zone file has changed */
         GTimeZone *local_tz = g_date_time_get_timezone (timestamp);
-        g_autoptr (GDateTime) now = g_date_time_new_now (local_tz);
-        g_autoptr (GDateTime) today_midnight = g_date_time_new (local_tz,
-                                                                g_date_time_get_year (now),
-                                                                g_date_time_get_month (now),
-                                                                g_date_time_get_day_of_month (now),
-                                                                0, 0, 0);
-        g_autoptr (GDateTime) date_midnight = g_date_time_new (local_tz,
-                                                               g_date_time_get_year (timestamp),
-                                                               g_date_time_get_month (timestamp),
-                                                               g_date_time_get_day_of_month (timestamp),
-                                                               0, 0, 0);
-        GTimeSpan time_difference = g_date_time_difference (today_midnight, date_midnight);
 
-        /* Show the word "Today" and time if date is on today */
-        if (time_difference < G_TIME_SPAN_DAY && time_difference >= 0)
+        status = ensure_formatters (local_tz);
+
+        if (U_FAILURE (status))
         {
-            if (use_24_hour)
+            break;
+        }
+
+        if (use_short_format && !detailed_date)
+        {
+            g_autoptr (GDateTime) now = g_date_time_new_now (local_tz);
+            g_autoptr (GDateTime) today_midnight = g_date_time_new (local_tz,
+                                                                    g_date_time_get_year (now),
+                                                                    g_date_time_get_month (now),
+                                                                    g_date_time_get_day_of_month (now),
+                                                                    0, 0, 0);
+            g_autoptr (GDateTime) date_midnight = g_date_time_new (local_tz,
+                                                                   g_date_time_get_year (timestamp),
+                                                                   g_date_time_get_month (timestamp),
+                                                                   g_date_time_get_day_of_month (timestamp),
+                                                                   0, 0, 0);
+            GTimeSpan midnight_difference = g_date_time_difference (today_midnight, date_midnight);
+            UChar relative_date_buf[128];
+            /* Show time on Today/yesterday/tomorrow. */
+            gboolean add_time = llabs (midnight_difference) < (2 * G_TIME_SPAN_DAY);
+
+            /* Use explicit day boundary */
+            gint32 relative_date_len = get_relative_day_month_year (midnight_difference,
+                                                                    relative_date_buf,
+                                                                    G_N_ELEMENTS (relative_date_buf),
+                                                                    &status);
+
+            if (U_FAILURE (status))
             {
-                /* Translators: this is the word "Today" followed by
-                 * a time in 24h format. i.e. "Today 23:04" */
-                /* xgettext:no-c-format */
-                format = _("Today %-H:%M");
+                break;
+            }
+
+            if (add_time)
+            {
+                UChar time_buffer[128];
+                UChar combined_buffer[512];
+                UDateFormat *formatter = use_24_hour
+                                         ? time_24_hour_formatter
+                                         : time_12_hour_formatter;
+                gint64 timestamp_ms = g_date_time_to_unix_usec (timestamp) / 1000;
+                gint32 time_len = udat_format (formatter,
+                                               timestamp_ms,
+                                               time_buffer, G_N_ELEMENTS (time_buffer),
+                                               NULL,
+                                               &status);
+
+                if (U_FAILURE (status))
+                {
+                    break;
+                }
+
+                gint32 combinedLength = ureldatefmt_combineDateAndTime (relative_formatter,
+                                                                        relative_date_buf, relative_date_len,
+                                                                        time_buffer, time_len,
+                                                                        combined_buffer, G_N_ELEMENTS (combined_buffer),
+                                                                        &status);
+
+                if (U_FAILURE (status))
+                {
+                    break;
+                }
+
+                formatted_utf8 = g_utf16_to_utf8 (combined_buffer, combinedLength, NULL, NULL, NULL);
             }
             else
             {
-                /* Translators: this is the word Today followed by
-                 * a time in 12h format. i.e. "Today 9:04 PM" */
-                /* xgettext:no-c-format */
-                format = _("Today %-I:%M %p");
+                formatted_utf8 = g_utf16_to_utf8 (relative_date_buf, relative_date_len, NULL, NULL, NULL);
             }
         }
-        /* Show the word "Yesterday" and time if date is on yesterday */
-        else if (time_difference < 2 * G_TIME_SPAN_DAY && time_difference >= 0)
+        else /* Long or short detailed format */
         {
-            if (use_24_hour)
+            UDateFormat *formatter = use_short_format
+                                     ? (use_24_hour
+                                        ? datetime_short_24_hour_formatter
+                                        : datetime_short_12_hour_formatter)
+                                     : (use_24_hour
+                                        ? datetime_detailed_24_hour_formatter
+                                        : datetime_detailed_12_hour_formatter);
+            gint64 timestamp_ms = g_date_time_to_unix_usec (timestamp) / 1000;
+            UChar result_buffer[512];
+            guint32 result_buffer_len;
+
+            result_buffer_len = udat_format (formatter,
+                                             timestamp_ms,
+                                             result_buffer, G_N_ELEMENTS (result_buffer),
+                                             NULL,
+                                             &status);
+
+            if (U_FAILURE (status))
             {
-                /* Translators: this is the word Yesterday followed by
-                 * a time in 24h format. i.e. "Yesterday 23:04" */
-                /* xgettext:no-c-format */
-                format = _("Yesterday %-H:%M");
+                break;
             }
-            else
-            {
-                /* Translators: this is the word Yesterday followed by
-                 * a time in 12h format. i.e. "Yesterday 9:04 PM" */
-                /* xgettext:no-c-format */
-                format = _("Yesterday %-I:%M %p");
-            }
-        }
-        else
-        {
-            /* Translators: this is the day of the month followed by the abbreviated
-             * month name followed by the year i.e. "3 Feb 2015" */
-            /* xgettext:no-c-format */
-            format = _("%-e %b %Y");
+
+            formatted_utf8 = g_utf16_to_utf8 (result_buffer, result_buffer_len, NULL, NULL, NULL);
         }
     }
-    else
+    while (false);
+    /* END Unicode error handling */
+
+    if (U_FAILURE (status))
     {
-        if (use_24_hour)
-        {
-            /* Translators: this is the day number followed by the full month
-             * name followed by the year followed by a time in 24h format
-             * with seconds i.e. "3 February 2015 23:04:00" */
-            /* xgettext:no-c-format */
-            format = _("%-e %B %Y %H:%M:%S");
-        }
-        else
-        {
-            /* Translators: this is the day number followed by the full month
-             * name followed by the year followed by a time in 12h format
-             * with seconds i.e. "3 February 2015 09:04:00 PM" */
-            /* xgettext:no-c-format */
-            format = _("%-e %B %Y %I:%M:%S %p");
-        }
+        g_warning_once ("ICU failed to create a formatted date: %s", u_errorName (status));
     }
 
-    g_autofree gchar *formatted = g_date_time_format (timestamp, format);
+    /* Fallback if ICU formatting failed */
+    if (formatted_utf8 == NULL)
+    {
+        formatted_utf8 = g_date_time_format (timestamp, "%x %X");
+    }
 
-    return g_steal_pointer (&formatted);
+    return g_steal_pointer (&formatted_utf8);
 }
 
 char *
