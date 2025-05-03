@@ -10,11 +10,11 @@
 
 #include <gdesktop-enums.h>
 #include <glib.h>
-#include <glib/gi18n.h>
 #include <locale.h>
 #include <time.h>
 
-
+#include <unicode/udatpg.h>
+#include <unicode/ureldatefmt.h>
 
 static gboolean use_24_hour;
 static gboolean use_detailed_date_format;
@@ -50,138 +50,222 @@ nautilus_date_setup_preferences (void)
                               NULL);
 }
 
+G_DEFINE_AUTOPTR_CLEANUP_FUNC (UDateFormat, udat_close);
+G_DEFINE_AUTOPTR_CLEANUP_FUNC (UDateTimePatternGenerator, udatpg_close);
+G_DEFINE_AUTOPTR_CLEANUP_FUNC (URelativeDateTimeFormatter, ureldatefmt_close);
+G_DEFINE_AUTO_CLEANUP_FREE_FUNC (UCalendar, ucal_close, NULL);
+
 static char *
 date_to_str (GDateTime *timestamp,
              gboolean   use_short_format,
              gboolean   detailed_date)
 {
-    locale_t current_locale = uselocale ((locale_t) 0);
-    static locale_t forced_locale = NULL;
-    const gchar *format;
+    GTimeZone *local_tz = g_date_time_get_timezone (timestamp);
+    g_autoptr (GDateTime) now = g_date_time_new_now (local_tz);
+    static const char *icu_locale = NULL;
+    UErrorCode status = U_ZERO_ERROR;
+    g_autoptr (UDateTimePatternGenerator) pattern_gen = NULL;
+    g_autofree char *formatted_utf8 = NULL;
 
-    /* We are going to pick a translatable string which defines a time format,
-     * which is then used to obtain a final string for the current time.
-     *
-     * The time locale might be different from the language we pick translations
-     * from; so, in order to avoid chimeric results (with some particles in one
-     * language and other particles in another language), we need to temporarily
-     * force translations to be obtained from the language corresponding to the
-     * time locale. The current locale settings are saved to be restored later.
-     */
-    if (forced_locale == NULL)
+    if (icu_locale == NULL)
     {
-        char *time_locale = setlocale (LC_TIME, NULL);
+        gchar *locale = setlocale (LC_TIME, NULL);
 
-        forced_locale = newlocale (LC_MESSAGES_MASK, time_locale, duplocale (current_locale));
-    }
-
-    uselocale (forced_locale);
-
-    if (use_short_format && detailed_date)
-    {
-        if (use_24_hour)
+        if (locale != NULL)
         {
-            /* Translators: date and time in 24h format,
-             * i.e. "12/31/2023 23:59" */
-            /* xgettext:no-c-format */
-            format = _("%m/%d/%Y %H:%M");
+            /* Convert locale format (e.g., en_US.UTF-8) to ICU format (en_US) */
+            char *dot = strchr (locale, '.');
+            if (dot != NULL)
+            {
+                *dot = '\0';
+            }
+            icu_locale = locale;
         }
         else
         {
-            /* Translators: date and time in 12h format,
-             * i.e. "12/31/2023 11:59 PM" */
-            /* xgettext:no-c-format */
-            format = _("%m/%d/%Y %I:%M %p");
+            /* Fallback to default locale if setlocale returns NULL */
+            icu_locale = uloc_getDefault ();
         }
     }
-    else if (use_short_format)
-    {
-        /* Re-use local time zone, because every time a new local time zone is
-         * created, GLib needs to check if the time zone file has changed */
-        GTimeZone *local_tz = g_date_time_get_timezone (timestamp);
-        g_autoptr (GDateTime) now = g_date_time_new_now (local_tz);
-        g_autoptr (GDateTime) today_midnight = g_date_time_new (local_tz,
-                                                                g_date_time_get_year (now),
-                                                                g_date_time_get_month (now),
-                                                                g_date_time_get_day_of_month (now),
-                                                                0, 0, 0);
-        g_autoptr (GDateTime) date_midnight = g_date_time_new (local_tz,
-                                                               g_date_time_get_year (timestamp),
-                                                               g_date_time_get_month (timestamp),
-                                                               g_date_time_get_day_of_month (timestamp),
-                                                               0, 0, 0);
-        GTimeSpan time_difference = g_date_time_difference (today_midnight, date_midnight);
 
-        /* Show the word "Today" and time if date is on today */
-        if (time_difference < G_TIME_SPAN_DAY && time_difference >= 0)
+    pattern_gen = udatpg_open (icu_locale, &status);
+
+    do
+    {
+        g_autoptr (UDateFormat) formatter = NULL;
+        UChar time_pattern[64];
+        guint32 time_pattern_len;
+
+        if (use_short_format && !detailed_date)
         {
-            if (use_24_hour)
+            GTimeSpan m_diff = g_date_time_difference (now, timestamp);
+            double relative_value = (double) m_diff / (1000.0 * 1000.0 * 60 * 60 * 24);
+            URelativeDateTimeUnit unit;
+            g_autoptr (URelativeDateTimeFormatter) relative_formatter = NULL;
+            UChar relative_date_buf[128];
+
+            if (relative_value < 7.0)
             {
-                /* Translators: this is the word "Today" followed by
-                 * a time in 24h format. i.e. "Today 23:04" */
-                /* xgettext:no-c-format */
-                format = _("Today %-H:%M");
+                unit = UDAT_REL_UNIT_DAY;
+            }
+            else if (relative_value < 31)
+            {
+                unit = UDAT_REL_UNIT_WEEK;
+                relative_value /= 7.0;
+            }
+            else if (relative_value < 365)
+            {
+                unit = UDAT_REL_UNIT_MONTH;
+                relative_value /= 31.0;
             }
             else
             {
-                /* Translators: this is the word Today followed by
-                 * a time in 12h format. i.e. "Today 9:04 PM" */
-                /* xgettext:no-c-format */
-                format = _("Today %-I:%M %p");
+                unit = UDAT_REL_UNIT_YEAR;
+                relative_value /= 365.0;
             }
-        }
-        /* Show the word "Yesterday" and time if date is on yesterday */
-        else if (time_difference < 2 * G_TIME_SPAN_DAY && time_difference >= 0)
-        {
-            if (use_24_hour)
+
+            relative_formatter = ureldatefmt_open (icu_locale, NULL,
+                                                   UDAT_STYLE_LONG, UDISPCTX_CAPITALIZATION_FOR_BEGINNING_OF_SENTENCE,
+                                                   &status);
+
+            if (!U_SUCCESS (status))
             {
-                /* Translators: this is the word Yesterday followed by
-                 * a time in 24h format. i.e. "Yesterday 23:04" */
-                /* xgettext:no-c-format */
-                format = _("Yesterday %-H:%M");
+                break;
+            }
+
+            gint32 relative_date_len = ureldatefmt_format (relative_formatter,
+                                                           (int) -relative_value, unit,
+                                                           relative_date_buf, G_N_ELEMENTS (relative_date_buf),
+                                                           &status);
+
+            if (!U_SUCCESS (status))
+            {
+                break;
+            }
+
+            /* Use relative formatting for today/yesterday */
+            if (relative_value > -2.0 && relative_value < 1.0)
+            {
+                const UChar *time_skeleton = use_24_hour ? u"Hm" : u"hm";
+
+                time_pattern_len = udatpg_getBestPatternWithOptions (pattern_gen,
+                                                                     time_skeleton, -1,
+                                                                     UDATPG_MATCH_NO_OPTIONS,
+                                                                     time_pattern, G_N_ELEMENTS (time_pattern),
+                                                                     &status);
+
+                if (!U_SUCCESS (status))
+                {
+                    break;
+                }
+
+                formatter = udat_open (UDAT_PATTERN, UDAT_NONE, icu_locale,
+                                       0, -1,
+                                       time_pattern, time_pattern_len,
+                                       &status);
+
+                if (!U_SUCCESS (status))
+                {
+                    break;
+                }
+
+                UChar time_buffer[256];
+                UChar combined_buffer[512];
+                gint32 time_len = udat_format (formatter, g_date_time_to_unix (timestamp), /* Format the TARGET time */
+                                               time_buffer, G_N_ELEMENTS (time_buffer),
+                                               NULL, /* No field position needed */
+                                               &status);
+
+                if (!U_SUCCESS (status))
+                {
+                    break;
+                }
+
+                gint32 combinedLength = ureldatefmt_combineDateAndTime (relative_formatter,
+                                                                        relative_date_buf, relative_date_len,
+                                                                        time_buffer, time_len,
+                                                                        combined_buffer, G_N_ELEMENTS (combined_buffer),
+                                                                        &status);
+
+                if (!U_SUCCESS (status))
+                {
+                    break;
+                }
+
+                formatted_utf8 = g_utf16_to_utf8 (combined_buffer, combinedLength, NULL, NULL, NULL);
             }
             else
             {
-                /* Translators: this is the word Yesterday followed by
-                 * a time in 12h format. i.e. "Yesterday 9:04 PM" */
-                /* xgettext:no-c-format */
-                format = _("Yesterday %-I:%M %p");
+                formatted_utf8 = g_utf16_to_utf8 (relative_date_buf, relative_date_len, NULL, NULL, NULL);
             }
         }
-        else
+        else /* Long format or detailed short format */
         {
-            /* Translators: this is the day of the month followed by the abbreviated
-             * month name followed by the year i.e. "3 Feb 2015" */
-            /* xgettext:no-c-format */
-            format = _("%-e %b %Y");
+            const UChar *datetime_skeleton = use_short_format
+                                             ? (use_24_hour ? u"yMd, hm" : u"yMd, Hm")
+                                             : (use_24_hour ? u"yMd, hms" : u"yMd, Hms");
+            g_auto (UCalendar) gregorian_cal = ucal_open (0, -1, icu_locale, UCAL_GREGORIAN, &status);
+
+            if (!U_SUCCESS (status))
+            {
+                break;
+            }
+
+            time_pattern_len = udatpg_getBestPatternWithOptions (pattern_gen,
+                                                                 datetime_skeleton, -1,
+                                                                 UDATPG_MATCH_NO_OPTIONS,
+                                                                 time_pattern, G_N_ELEMENTS (time_pattern),
+                                                                 &status);
+
+            if (!U_SUCCESS (status))
+            {
+                break;
+            }
+
+            formatter = udat_open (UDAT_PATTERN, UDAT_PATTERN, icu_locale,
+                                   0, -1,
+                                   time_pattern, time_pattern_len,
+                                   &status);
+
+            if (!U_SUCCESS (status))
+            {
+                break;
+            }
+
+            UChar result_buffer[512];
+            gint64 timestamp_ms = g_date_time_to_unix (timestamp) * 1000;
+            guint32 result_buffer_len;
+
+            /* Force Gregorian calendar */
+            udat_setCalendar (formatter, gregorian_cal);
+
+            result_buffer_len = udat_format (formatter, timestamp_ms,
+                                             result_buffer, sizeof (result_buffer) / sizeof (result_buffer[0]),
+                                             NULL,
+                                             &status);
+
+            if (!U_SUCCESS (status))
+            {
+                break;
+            }
+
+            formatted_utf8 = g_utf16_to_utf8 (result_buffer, result_buffer_len, NULL, NULL, NULL);
         }
     }
-    else
+    while (false);
+
+    if (!U_SUCCESS (status))
     {
-        if (use_24_hour)
-        {
-            /* Translators: this is the day number followed by the full month
-             * name followed by the year followed by a time in 24h format
-             * with seconds i.e. "3 February 2015 23:04:00" */
-            /* xgettext:no-c-format */
-            format = _("%-e %B %Y %H:%M:%S");
-        }
-        else
-        {
-            /* Translators: this is the day number followed by the full month
-             * name followed by the year followed by a time in 12h format
-             * with seconds i.e. "3 February 2015 09:04:00 PM" */
-            /* xgettext:no-c-format */
-            format = _("%-e %B %Y %I:%M:%S %p");
-        }
+        g_warning ("ICU failed create a formatted date: %s", u_errorName (status));
     }
 
-    /* Restore locale settings */
-    uselocale (current_locale);
+    /* Fallback if ICU formatting failed */
+    if (formatted_utf8 == NULL)
+    {
+        formatted_utf8 = g_date_time_format (timestamp, "%x %X");
+    }
 
-    g_autofree gchar *formatted = g_date_time_format (timestamp, format);
-
-    return g_steal_pointer (&formatted);
+    return g_steal_pointer (&formatted_utf8);
 }
 
 char *
