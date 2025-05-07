@@ -181,12 +181,7 @@ date_to_str (GDateTime *timestamp,
 
     g_autofree gchar *formatted = g_date_time_format (timestamp, format);
 
-    /* Replace ":" with ratio. Replacement is done afterward because g_date_time_format
-     * may fail with utf8 chars in some locales */
-    GString *time_label = g_string_new_take (g_steal_pointer (&formatted));
-    g_string_replace (time_label, ":", "∶", 0);
-
-    return g_string_free_and_steal (time_label);
+    return g_steal_pointer (&formatted);
 }
 
 char *
