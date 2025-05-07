@@ -6022,105 +6022,6 @@ get_dialog_initial_location (NautilusFilesView *view,
     return location;
 }
 
-typedef struct _CopyCallbackData
-{
-    NautilusFilesView *view;
-    GList *selection;
-    gboolean is_move;
-} CopyCallbackData;
-
-static void
-copy_data_free (CopyCallbackData *data)
-{
-    nautilus_file_list_free (data->selection);
-    g_free (data);
-}
-
-static void
-on_destination_dialog_response (GtkFileDialog *dialog,
-                                GAsyncResult  *result,
-                                gpointer       user_data)
-{
-    CopyCallbackData *copy_data = user_data;
-    g_autoptr (GFile) target_location = NULL;
-    g_autoptr (GError) error = NULL;
-
-    target_location = gtk_file_dialog_select_folder_finish (dialog, result, &error);
-
-    if (target_location != NULL)
-    {
-        char *target_uri;
-        GList *uris, *l;
-
-        target_uri = g_file_get_uri (target_location);
-        uris = NULL;
-        for (l = copy_data->selection; l != NULL; l = l->next)
-        {
-            uris = g_list_prepend (uris,
-                                   nautilus_file_get_uri ((NautilusFile *) l->data));
-        }
-        uris = g_list_reverse (uris);
-
-        nautilus_files_view_move_copy_items (copy_data->view, uris, target_uri,
-                                             copy_data->is_move ? GDK_ACTION_MOVE : GDK_ACTION_COPY);
-
-        g_list_free_full (uris, g_free);
-        g_free (target_uri);
-    }
-    else if (error != NULL &&
-             !g_error_matches (error, GTK_DIALOG_ERROR, GTK_DIALOG_ERROR_DISMISSED))
-    {
-        g_warning ("Error while choosing a destination folder: %s", error->message);
-    }
-
-    copy_data_free (copy_data);
-}
-
-static void
-copy_or_move_selection (NautilusFilesView *view,
-                        gboolean           is_move)
-{
-    g_autoptr (GtkFileDialog) dialog = gtk_file_dialog_new ();
-    g_autoptr (GFile) location = NULL;
-    CopyCallbackData *copy_data;
-    GList *selection;
-    const gchar *title;
-
-    if (is_move)
-    {
-        title = _("Select Move Destination");
-    }
-    else
-    {
-        title = _("Select Copy Destination");
-    }
-
-    selection = nautilus_files_view_get_selection_for_file_transfer (view);
-
-    if (selection == NULL)
-    {
-        return;
-    }
-
-    gtk_file_dialog_set_title (dialog, title);
-    gtk_file_dialog_set_accept_label (dialog, _("_Select"));
-
-    copy_data = g_new0 (CopyCallbackData, 1);
-    copy_data->view = view;
-    copy_data->selection = selection;
-    copy_data->is_move = is_move;
-
-    location = get_dialog_initial_location (view, selection);
-
-    gtk_file_dialog_set_initial_folder (dialog, location);
-
-    gtk_file_dialog_select_folder (dialog,
-                                   GTK_WINDOW (gtk_widget_get_root (GTK_WIDGET (view))),
-                                   NULL,
-                                   (GAsyncReadyCallback) on_destination_dialog_response,
-                                   copy_data);
-}
-
 static void
 action_copy (GSimpleAction *action,
              GVariant      *state,
@@ -6210,28 +6111,6 @@ action_create_links_in_place (GSimpleAction *action,
 
     g_list_free_full (item_uris, g_free);
     nautilus_file_list_free (selection);
-}
-
-static void
-action_copy_to (GSimpleAction *action,
-                GVariant      *state,
-                gpointer       user_data)
-{
-    NautilusFilesView *view;
-
-    view = NAUTILUS_FILES_VIEW (user_data);
-    copy_or_move_selection (view, FALSE);
-}
-
-static void
-action_move_to (GSimpleAction *action,
-                GVariant      *state,
-                gpointer       user_data)
-{
-    NautilusFilesView *view;
-
-    view = NAUTILUS_FILES_VIEW (user_data);
-    copy_or_move_selection (view, TRUE);
 }
 
 static void
@@ -7189,8 +7068,6 @@ const GActionEntry view_entries[] =
     { .name = "copy", .activate = action_copy},
     { .name = "create-link-in-place", .activate = action_create_links_in_place },
     { .name = "create-link-in-place-shortcut", .activate = action_create_links_in_place },
-    { .name = "move-to", .activate = action_move_to},
-    { .name = "copy-to", .activate = action_copy_to},
     { .name = "move-to-trash", .activate = action_move_to_trash},
     { .name = "delete-from-trash", .activate = action_delete },
     { .name = "star", .activate = action_star},
@@ -7836,17 +7713,6 @@ real_update_actions_state (NautilusFilesView *view)
     g_simple_action_set_enabled (G_SIMPLE_ACTION (action),
                                  mode == NAUTILUS_MODE_BROWSE &&
                                  app_info_mailto != NULL);
-    action = g_action_map_lookup_action (G_ACTION_MAP (view_action_group),
-                                         "copy-to");
-    g_simple_action_set_enabled (G_SIMPLE_ACTION (action),
-                                 mode == NAUTILUS_MODE_BROWSE &&
-                                 can_copy_files);
-    action = g_action_map_lookup_action (G_ACTION_MAP (view_action_group),
-                                         "move-to");
-    g_simple_action_set_enabled (G_SIMPLE_ACTION (action),
-                                 mode == NAUTILUS_MODE_BROWSE &&
-                                 can_move_files && !selection_contains_recent &&
-                                 !selection_contains_starred);
     action = g_action_map_lookup_action (G_ACTION_MAP (view_action_group),
                                          "preview-selection");
     g_simple_action_set_enabled (G_SIMPLE_ACTION (action), selection != NULL);
