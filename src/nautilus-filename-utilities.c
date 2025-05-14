@@ -10,8 +10,6 @@
 #include <glib/gi18n.h>
 #include <stdio.h>
 
-#include <stdio.h>
-
 
 typedef gboolean (* AppendixParser) (const char *appendix,
                                      size_t      appendix_len,
