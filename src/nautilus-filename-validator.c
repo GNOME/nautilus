@@ -126,7 +126,7 @@ nautilus_filename_validator_name_is_valid (NautilusFilenameValidator  *self,
     {
         is_valid = FALSE;
     }
-    else if (strstr (name, "/") != NULL)
+    else if (strchr (name, '/') != NULL)
     {
         is_valid = FALSE;
         *error_message = is_folder ? _("Folder names cannot contain “/”") :

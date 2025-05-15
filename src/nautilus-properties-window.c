@@ -1416,14 +1416,15 @@ hash_string_list (GList *list)
 static gsize
 get_first_word_length (const gchar *str)
 {
-    const gchar *space_pos = g_strstr_len (str, -1, " ");
+    const size_t length = strlen (str);
+    const char *space_pos = memchr (str, ' ', length);
     if (space_pos != NULL)
     {
         /* Calculate length through pointer arithmetic. */
         return (gsize) (space_pos - str);
     }
 
-    return strlen (str);
+    return length;
 }
 
 static void

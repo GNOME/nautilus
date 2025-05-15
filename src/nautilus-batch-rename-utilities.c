@@ -769,7 +769,7 @@ format_date_time (GDateTime *date_time)
     GString *formated_date;
 
     date = g_date_time_format (date_time, "%x");
-    if (strstr (date, "/") != NULL)
+    if (strchr (date, '/') != NULL)
     {
         formated_date = batch_rename_replace (date, "/", "-");
     }

@@ -926,7 +926,7 @@ have_unallowed_character (NautilusBatchRenameDialog *dialog)
         entry_text = gtk_editable_get_text (GTK_EDITABLE (dialog->replace_entry));
     }
 
-    if (strstr (entry_text, "/") != NULL)
+    if (strchr (entry_text, '/') != NULL)
     {
         have_unallowed_character_slash = TRUE;
     }
