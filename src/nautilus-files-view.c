@@ -9395,6 +9395,8 @@ nautilus_files_view_class_init (NautilusFilesViewClass *klass)
     gtk_widget_class_add_binding_action (widget_class, GDK_KEY_Return, GDK_CONTROL_MASK, "view.open-item-new-tab", NULL);
     gtk_widget_class_add_binding_action (widget_class, GDK_KEY_Return, GDK_SHIFT_MASK, "view.open-item-new-window", NULL);
     gtk_widget_class_add_binding_action (widget_class, GDK_KEY_o, GDK_CONTROL_MASK | GDK_ALT_MASK, "view.open-item-location", NULL);
+    gtk_widget_class_add_binding_action (widget_class, GDK_KEY_Insert, GDK_CONTROL_MASK, "view.copy", NULL);
+    gtk_widget_class_add_binding_action (widget_class, GDK_KEY_KP_Insert, GDK_CONTROL_MASK, "view.copy", NULL);
     gtk_widget_class_add_binding_action (widget_class, GDK_KEY_c, GDK_CONTROL_MASK, "view.copy", NULL);
     gtk_widget_class_add_binding_action (widget_class, GDK_KEY_x, GDK_CONTROL_MASK, "view.cut", NULL);
     gtk_widget_class_add_binding_action (widget_class, GDK_KEY_c, GDK_CONTROL_MASK, "view.copy-network-address", NULL);
@@ -9538,7 +9540,7 @@ nautilus_files_view_init (NautilusFilesView *self)
      * with e.g. Alt+Tab and paste directly the copied file without having to
      * make sure the focus is on the files view.
      */
-    ADD_SHORTCUT_FOR_ACTION (self->shortcuts, "view.paste_accel", "<control>v");
+    ADD_SHORTCUT_FOR_ACTION (self->shortcuts, "view.paste_accel", "<control>v|<shift>Insert|<shift>KP_Insert");
     ADD_SHORTCUT_FOR_ACTION (self->shortcuts, "view.new-folder", "<control><shift>n");
     ADD_SHORTCUT_FOR_ACTION (self->shortcuts, "view.select-pattern", "<control>s");
     ADD_SHORTCUT_FOR_ACTION (self->shortcuts, "view.zoom-standard", "<control>0|<control>KP_0");
