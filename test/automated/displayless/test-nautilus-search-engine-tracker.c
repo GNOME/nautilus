@@ -147,7 +147,7 @@ main (int   argc,
                  "to ensure a private Tracker indexer daemon is used.");
     }
 
-    connection = tracker_sparql_connection_bus_new ("org.freedesktop.Tracker3.Miner.Files", NULL, NULL, &error);
+    connection = nautilus_tracker_get_miner_fs_connection (&error);
 
     g_assert_no_error (error);
 
