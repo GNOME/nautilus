@@ -43,6 +43,7 @@ update_icon (NautilusGridCell *self)
     if (is_cut)
     {
         gtk_picture_set_paintable (GTK_PICTURE (self->icon), NULL);
+        gtk_widget_remove_css_class (self->icon, "hidden-file");
         gtk_widget_remove_css_class (self->icon, "thumbnail");
 
         return;
@@ -68,6 +69,15 @@ update_icon (NautilusGridCell *self)
     else
     {
         gtk_widget_remove_css_class (self->icon, "thumbnail");
+    }
+
+    if (nautilus_file_is_hidden_file (file))
+    {
+        gtk_widget_add_css_class (self->icon, "hidden-file");
+    }
+    else
+    {
+        gtk_widget_remove_css_class (self->icon, "hidden-file");
     }
 }
 
