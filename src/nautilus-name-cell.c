@@ -7,10 +7,14 @@
 #include "nautilus-name-cell.h"
 
 #include "nautilus-directory.h"
+#include "nautilus-icon-info.h"
 #include "nautilus-file-utilities.h"
 #include "nautilus-thumbnails.h"
+#include "nautilus-ui-utilities.h"
 
 #define SPINNER_DELAY_MS 200
+
+#define NAUTILUS_ICON_CUT                   "cut-symbolic"
 
 struct _NautilusNameCell
 {
@@ -133,6 +137,7 @@ update_icon (NautilusNameCell *self)
     g_autoptr (NautilusViewItem) item = NULL;
     NautilusFile *file;
     guint icon_size;
+    gboolean is_cut;
     gint scale_factor;
     int icon_height;
     int extra_margin;
@@ -142,16 +147,34 @@ update_icon (NautilusNameCell *self)
 
     file = nautilus_view_item_get_file (item);
     g_object_get (self, "icon-size", &icon_size, NULL);
-    scale_factor = gtk_widget_get_scale_factor (GTK_WIDGET (self));
-    flags = NAUTILUS_FILE_ICON_FLAGS_USE_THUMBNAILS;
-
-    icon_paintable = nautilus_file_get_icon_paintable (file, icon_size, scale_factor, flags);
-    gtk_picture_set_paintable (GTK_PICTURE (self->icon), icon_paintable);
+    g_object_get (item, "is-cut", &is_cut, NULL);
 
     /* Set the same width for all icons regardless of aspect ratio.
      * Don't set the width here because it would get GtkPicture w4h confused.
      */
     gtk_widget_set_size_request (self->fixed_height_box, icon_size, -1);
+
+    if (is_cut)
+    {
+        GtkSnapshot *snapshot = gtk_snapshot_new ();
+        const GdkRGBA color = { .red = 0.0, .green = 0.0, .blue = 0.0, .alpha = 0.0};
+
+        gtk_snapshot_append_color (snapshot, &color,
+                                   &GRAPHENE_RECT_INIT (0, 0, icon_size, icon_size));
+        g_autoptr (GdkPaintable) paintable = gtk_snapshot_free_to_paintable (snapshot,
+                                                                             &GRAPHENE_SIZE_INIT (icon_size, icon_size));
+
+        gtk_picture_set_paintable (GTK_PICTURE (self->icon), paintable);
+        gtk_widget_remove_css_class (self->icon, "thumbnail");
+
+        return;
+    }
+
+    scale_factor = gtk_widget_get_scale_factor (GTK_WIDGET (self));
+    flags = NAUTILUS_FILE_ICON_FLAGS_USE_THUMBNAILS;
+
+    icon_paintable = nautilus_file_get_icon_paintable (file, icon_size, scale_factor, flags);
+    gtk_picture_set_paintable (GTK_PICTURE (self->icon), icon_paintable);
 
     /* Give all items the same minimum width. This cannot be done by setting the
      * width request directly, as above, because it would get mess up with
@@ -232,6 +255,7 @@ on_icon_size_changed (NautilusNameCell *self)
     }
 
     update_icon (self);
+    gtk_widget_queue_draw (GTK_WIDGET (self));
 }
 
 static void
@@ -250,26 +274,6 @@ on_item_drag_accept_changed (NautilusNameCell *self)
     else
     {
         gtk_widget_unset_state_flags (list_row, GTK_STATE_FLAG_DROP_ACTIVE);
-    }
-}
-
-static void
-on_item_is_cut_changed (NautilusNameCell *self)
-{
-    gboolean is_cut;
-    g_autoptr (NautilusViewItem) item = NULL;
-
-    item = nautilus_view_cell_get_item (NAUTILUS_VIEW_CELL (self));
-    g_object_get (item,
-                  "is-cut", &is_cut,
-                  NULL);
-    if (is_cut)
-    {
-        gtk_widget_add_css_class (self->icon, "cut");
-    }
-    else
-    {
-        gtk_widget_remove_css_class (self->icon, "cut");
     }
 }
 
@@ -358,7 +362,7 @@ nautilus_name_cell_init (NautilusNameCell *self)
     g_signal_group_connect_swapped (self->item_signal_group, "notify::drag-accept",
                                     (GCallback) on_item_drag_accept_changed, self);
     g_signal_group_connect_swapped (self->item_signal_group, "notify::is-cut",
-                                    (GCallback) on_item_is_cut_changed, self);
+                                    (GCallback) update_icon, self);
     g_signal_group_connect_swapped (self->item_signal_group, "notify::loading",
                                     (GCallback) on_item_is_loading_changed, self);
     g_signal_group_connect_swapped (self->item_signal_group, "file-changed",
@@ -394,6 +398,52 @@ nautilus_name_cell_finalize (GObject *object)
 }
 
 static void
+snapshot (GtkWidget   *widget,
+          GtkSnapshot *snapshot)
+{
+    NautilusNameCell *self = NAUTILUS_NAME_CELL (widget);
+    g_autoptr (NautilusViewItem) item = NULL;
+    gboolean is_cut;
+    graphene_rect_t icon_bounds;
+
+    item = nautilus_view_cell_get_item (NAUTILUS_VIEW_CELL (self));
+    g_object_get (item, "is-cut", &is_cut, NULL);
+
+    if (is_cut &&
+        gtk_widget_compute_bounds (self->icon, widget, &icon_bounds))
+    {
+        guint icon_size;
+        GdkRGBA color;
+        gboolean is_light;
+
+        g_object_get (self, "icon-size", &icon_size, NULL);
+        gtk_widget_get_color (widget, &color);
+        is_light = color.red >= 0.5;
+
+        if (icon_size >= NAUTILUS_THUMBNAIL_MINIMUM_ICON_SIZE)
+        {
+            /* CHANGE THIS VALUE */
+            color.alpha = is_light ? 0.6 : 0.4;
+            nautilus_ui_draw_icon_dashed_border (snapshot, &icon_bounds, color);
+
+            graphene_rect_inset (&icon_bounds,
+                                 0.2 * icon_bounds.size.width,
+                                 0.2 * icon_bounds.size.height);
+        }
+
+        /* CHANGE THIS VALUE */
+        color.alpha = is_light ? 0.6 : 0.4;
+        nautilus_ui_draw_symbolic_icon (snapshot,
+                                        NAUTILUS_ICON_CUT,
+                                        &icon_bounds,
+                                        color,
+                                        gtk_widget_get_scale_factor (widget));
+    }
+
+    GTK_WIDGET_CLASS (nautilus_name_cell_parent_class)->snapshot (widget, snapshot);
+}
+
+static void
 nautilus_name_cell_class_init (NautilusNameCellClass *klass)
 {
     GObjectClass *object_class = G_OBJECT_CLASS (klass);
@@ -401,6 +451,8 @@ nautilus_name_cell_class_init (NautilusNameCellClass *klass)
 
     object_class->dispose = nautilus_name_cell_dispose;
     object_class->finalize = nautilus_name_cell_finalize;
+
+    widget_class->snapshot = snapshot;
 
     gtk_widget_class_set_layout_manager_type (widget_class, GTK_TYPE_BIN_LAYOUT);
     gtk_widget_class_set_template_from_resource (widget_class, "/org/gnome/nautilus/ui/nautilus-name-cell.ui");
