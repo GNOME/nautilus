@@ -7,8 +7,10 @@
 #include "nautilus-name-cell.h"
 
 #include "nautilus-directory.h"
+#include "nautilus-icon-info.h"
 #include "nautilus-file-utilities.h"
 #include "nautilus-thumbnails.h"
+#include "nautilus-ui-utilities.h"
 
 #define SPINNER_DELAY_MS 200
 
@@ -130,30 +132,44 @@ update_labels (NautilusNameCell *self)
 static void
 update_icon (NautilusNameCell *self)
 {
-    NautilusFileIconFlags flags;
-    g_autoptr (GdkPaintable) icon_paintable = NULL;
-    g_autoptr (NautilusViewItem) item = NULL;
-    NautilusFile *file;
+    g_autoptr (NautilusViewItem) item = nautilus_view_cell_get_item (NAUTILUS_VIEW_CELL (self));
     guint icon_size;
-    gint scale_factor;
-    int icon_height;
-    int extra_margin;
+    gboolean is_cut;
 
-    item = nautilus_view_cell_get_item (NAUTILUS_VIEW_CELL (self));
     g_return_if_fail (item != NULL);
 
-    file = nautilus_view_item_get_file (item);
     g_object_get (self, "icon-size", &icon_size, NULL);
-    scale_factor = gtk_widget_get_scale_factor (GTK_WIDGET (self));
-    flags = NAUTILUS_FILE_ICON_FLAGS_USE_THUMBNAILS;
-
-    icon_paintable = nautilus_file_get_icon_paintable (file, icon_size, scale_factor, flags);
-    gtk_picture_set_paintable (GTK_PICTURE (self->icon), icon_paintable);
+    g_object_get (item, "is-cut", &is_cut, NULL);
 
     /* Set the same width for all icons regardless of aspect ratio.
      * Don't set the width here because it would get GtkPicture w4h confused.
      */
     gtk_widget_set_size_request (self->fixed_height_box, icon_size, -1);
+
+    if (is_cut)
+    {
+        /* This is needed to retain a size for the icon so that we can know
+         * where to draw for cut items. */
+        GtkSnapshot *snapshot = gtk_snapshot_new ();
+        g_autoptr (GdkPaintable) paintable =
+            gtk_snapshot_free_to_paintable (snapshot,
+                                            &GRAPHENE_SIZE_INIT (icon_size, icon_size));
+
+        gtk_picture_set_paintable (GTK_PICTURE (self->icon), paintable);
+        gtk_widget_remove_css_class (self->icon, "thumbnail");
+
+        return;
+    }
+
+    NautilusFile *file = nautilus_view_item_get_file (item);
+    gint scale_factor = gtk_widget_get_scale_factor (GTK_WIDGET (self));
+    NautilusFileIconFlags flags = NAUTILUS_FILE_ICON_FLAGS_USE_THUMBNAILS;
+    g_autoptr (GdkPaintable) icon_paintable = nautilus_file_get_icon_paintable (file, icon_size,
+                                                                                scale_factor, flags);
+    int icon_height;
+    int extra_margin;
+
+    gtk_picture_set_paintable (GTK_PICTURE (self->icon), icon_paintable);
 
     /* Give all items the same minimum width. This cannot be done by setting the
      * width request directly, as above, because it would get mess up with
@@ -234,6 +250,7 @@ on_icon_size_changed (NautilusNameCell *self)
     }
 
     update_icon (self);
+    gtk_widget_queue_draw (GTK_WIDGET (self));
 }
 
 static void
@@ -252,26 +269,6 @@ on_item_drag_accept_changed (NautilusNameCell *self)
     else
     {
         gtk_widget_unset_state_flags (list_row, GTK_STATE_FLAG_DROP_ACTIVE);
-    }
-}
-
-static void
-on_item_is_cut_changed (NautilusNameCell *self)
-{
-    gboolean is_cut;
-    g_autoptr (NautilusViewItem) item = NULL;
-
-    item = nautilus_view_cell_get_item (NAUTILUS_VIEW_CELL (self));
-    g_object_get (item,
-                  "is-cut", &is_cut,
-                  NULL);
-    if (is_cut)
-    {
-        gtk_widget_add_css_class (self->icon, "cut");
-    }
-    else
-    {
-        gtk_widget_remove_css_class (self->icon, "cut");
     }
 }
 
@@ -381,7 +378,7 @@ nautilus_name_cell_init (NautilusNameCell *self)
     g_signal_group_connect_swapped (self->item_signal_group, "notify::drag-accept",
                                     (GCallback) on_item_drag_accept_changed, self);
     g_signal_group_connect_swapped (self->item_signal_group, "notify::is-cut",
-                                    (GCallback) on_item_is_cut_changed, self);
+                                    (GCallback) update_icon, self);
     g_signal_group_connect_swapped (self->item_signal_group, "notify::loading",
                                     (GCallback) on_item_is_loading_changed, self);
     g_signal_group_connect_swapped (self->item_signal_group, "file-changed",
@@ -417,6 +414,60 @@ nautilus_name_cell_finalize (GObject *object)
 }
 
 static void
+snapshot (GtkWidget   *widget,
+          GtkSnapshot *snapshot)
+{
+    NautilusNameCell *self = NAUTILUS_NAME_CELL (widget);
+    g_autoptr (NautilusViewItem) item = nautilus_view_cell_get_item (NAUTILUS_VIEW_CELL (self));
+    gboolean is_cut;
+
+    g_object_get (item, "is-cut", &is_cut, NULL);
+
+    if (is_cut)
+    {
+        graphene_rect_t dash_bounds;
+
+        if (gtk_widget_compute_bounds (self->icon, widget, &dash_bounds))
+        {
+            guint icon_size;
+            GdkRGBA color;
+            gboolean is_light = !adw_style_manager_get_dark (adw_style_manager_get_default ());
+            gboolean use_small_icon;
+            gchar *icon_name;
+            graphene_rect_t icon_bounds = dash_bounds;
+
+            g_object_get (self, "icon-size", &icon_size, NULL);
+            gtk_widget_get_color (widget, &color);
+            color.alpha = is_light ? 0.4 : 0.6;
+            use_small_icon = icon_size <= NAUTILUS_LIST_ICON_SIZE_MEDIUM;
+            icon_name = use_small_icon ? "cut-symbolic" : "cut-large-symbolic";
+
+            if (icon_size >= NAUTILUS_THUMBNAIL_MINIMUM_ICON_SIZE)
+            {
+                nautilus_ui_draw_icon_dashed_border (snapshot, &dash_bounds, color);
+
+                graphene_rect_inset_r (&dash_bounds,
+                                       0.2 * dash_bounds.size.width,
+                                       0.2 * dash_bounds.size.height,
+                                       &icon_bounds);
+            }
+
+            nautilus_ui_draw_symbolic_icon (snapshot,
+                                            icon_name,
+                                            &icon_bounds,
+                                            color,
+                                            gtk_widget_get_scale_factor (widget));
+        }
+        else
+        {
+            g_warning ("Could not compute icon bounds in cell coordinates.");
+        }
+    }
+
+    GTK_WIDGET_CLASS (nautilus_name_cell_parent_class)->snapshot (widget, snapshot);
+}
+
+static void
 nautilus_name_cell_class_init (NautilusNameCellClass *klass)
 {
     GObjectClass *object_class = G_OBJECT_CLASS (klass);
@@ -424,6 +475,8 @@ nautilus_name_cell_class_init (NautilusNameCellClass *klass)
 
     object_class->dispose = nautilus_name_cell_dispose;
     object_class->finalize = nautilus_name_cell_finalize;
+
+    widget_class->snapshot = snapshot;
 
     gtk_widget_class_set_layout_manager_type (widget_class, GTK_TYPE_BIN_LAYOUT);
     gtk_widget_class_set_template_from_resource (widget_class, "/org/gnome/nautilus/ui/nautilus-name-cell.ui");
