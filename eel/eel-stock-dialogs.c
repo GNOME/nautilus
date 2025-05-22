@@ -100,7 +100,7 @@ timed_wait_delayed_close_timeout_callback (gpointer callback_data)
                                           G_CALLBACK (timed_wait_delayed_close_destroy_dialog_callback),
                                           GUINT_TO_POINTER (handler_id));
 
-    gtk_window_destroy (GTK_WINDOW (callback_data));
+    adw_dialog_close (ADW_DIALOG (callback_data));
 
     return FALSE;
 }
@@ -150,7 +150,7 @@ timed_wait_free (TimedWait *wait)
         }
         else
         {
-            gtk_window_destroy (GTK_WINDOW (wait->dialog));
+            adw_dialog_close (ADW_DIALOG (wait->dialog));
         }
     }
 
