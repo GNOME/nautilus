@@ -9398,6 +9398,7 @@ nautilus_files_view_class_init (NautilusFilesViewClass *klass)
     gtk_widget_class_add_binding_action (widget_class, GDK_KEY_Insert, GDK_CONTROL_MASK, "view.copy", NULL);
     gtk_widget_class_add_binding_action (widget_class, GDK_KEY_KP_Insert, GDK_CONTROL_MASK, "view.copy", NULL);
     gtk_widget_class_add_binding_action (widget_class, GDK_KEY_c, GDK_CONTROL_MASK, "view.copy", NULL);
+    gtk_widget_class_add_binding_action (widget_class, GDK_KEY_v, GDK_CONTROL_MASK, "view.paste", NULL);
     gtk_widget_class_add_binding_action (widget_class, GDK_KEY_x, GDK_CONTROL_MASK, "view.cut", NULL);
     gtk_widget_class_add_binding_action (widget_class, GDK_KEY_c, GDK_CONTROL_MASK, "view.copy-network-address", NULL);
 }
