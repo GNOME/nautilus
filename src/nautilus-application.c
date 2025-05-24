@@ -1128,12 +1128,49 @@ maybe_migrate_gtk_filechooser_preferences (void)
 }
 
 static void
+nautilus_application_identify_to_portal (GApplication *app)
+{
+    GDBusConnection *session_bus = g_application_get_dbus_connection (app);
+    if (session_bus == NULL)
+    {
+        return;
+    }
+
+    GVariantBuilder builder;
+    g_variant_builder_init_static (&builder, G_VARIANT_TYPE_VARDICT);
+
+    /* Intentionally ignore errors */
+    g_dbus_connection_call (session_bus,
+                            "org.freedesktop.portal.Desktop",
+                            "/org/freedesktop/portal/desktop",
+                            "org.freedesktop.host.portal.Registry",
+                            "Register",
+                            g_variant_new ("(sa{sv})",
+                                           APPLICATION_ID,
+                                           &builder),
+                            NULL,
+                            G_DBUS_CALL_FLAGS_NO_AUTO_START,
+                            -1,
+                            NULL, NULL, NULL);
+}
+
+static void
 nautilus_application_startup (GApplication *app)
 {
     NautilusApplication *self = NAUTILUS_APPLICATION (app);
     NautilusApplicationPrivate *priv = nautilus_application_get_instance_private (self);
 
     g_application_set_resource_base_path (G_APPLICATION (self), "/org/gnome/nautilus");
+
+    /* Register the app with the host app registry in XDG Desktop Portal before
+     * we initialize GDK display, which on Wayland uses Settings portal.
+     * This is needed for subsequent portal calls to access app id, which is
+     * necessary for working suspend/logout inhibition.
+     * See https://gitlab.gnome.org/GNOME/nautilus/-/issues/3874 */
+    if (!nautilus_application_is_sandboxed ())
+    {
+        nautilus_application_identify_to_portal (app);
+    }
 
     /* Initialize GDK display (for wayland-x11-interop protocol) before GTK does
      * it during the chain-up. */
