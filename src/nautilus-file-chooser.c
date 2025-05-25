@@ -151,6 +151,7 @@ mode_can_accept_current_directory (NautilusMode  mode,
     switch (mode)
     {
         case NAUTILUS_MODE_OPEN_FOLDER:
+        case NAUTILUS_MODE_OPEN_FOLDERS:
         case NAUTILUS_MODE_SAVE_FILE:
         case NAUTILUS_MODE_SAVE_FILES:
         {
@@ -161,7 +162,6 @@ mode_can_accept_current_directory (NautilusMode  mode,
 
         case NAUTILUS_MODE_OPEN_FILE:
         case NAUTILUS_MODE_OPEN_FILES:
-        case NAUTILUS_MODE_OPEN_FOLDERS:
         {
             return FALSE;
         }
