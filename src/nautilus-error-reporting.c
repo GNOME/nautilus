@@ -272,16 +272,12 @@ nautilus_report_error_renaming_file (NautilusFile *file,
             case G_IO_ERROR_INVALID_FILENAME:
             {
                 const char *invalid_chars = FAT_FORBIDDEN_CHARACTERS;
-
-                for (guint i = 0; i < strlen (invalid_chars); i++)
+                const char *forbidden_char = strpbrk (new_name, invalid_chars);
+                if (forbidden_char != NULL)
                 {
-                    if (strchr (new_name, invalid_chars[i]) != NULL)
-                    {
-                        message = g_strdup_printf (_("The name “%s” is not valid because it contains the character “%c”. "
-                                                     "Please use a different name."),
-                                                   truncated_new_name, invalid_chars[i]);
-                        break;
-                    }
+                    message = g_strdup_printf (_("The name “%s” is not valid because it contains the character “%c”. "
+                                                 "Please use a different name."),
+                                               truncated_new_name, *forbidden_char);
                 }
                 if (message == NULL)
                 {
