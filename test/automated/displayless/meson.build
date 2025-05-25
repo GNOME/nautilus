@@ -63,6 +63,10 @@ tracker_tests = [
   ]],
 ]
 
+# disable tracker tests for now, until issues with accessing it from
+# within the sandbox are resolved
+tracker_tests = []
+
 foreach t: tests
   test(
     t[0],
