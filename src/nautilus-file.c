@@ -4571,11 +4571,37 @@ nautilus_file_should_show_thumbnail (NautilusFile *file)
     return get_speed_tradeoff_preference_for_file (file, show_file_thumbs);
 }
 
+static GHashTable *video_mime_types_hash;
+
+static void
+ensure_video_types_hash (void)
+{
+    if (G_LIKELY (video_mime_types_hash != NULL))
+    {
+        return;
+    }
+
+    GList *mime_types = g_content_types_get_registered ();
+    video_mime_types_hash = g_hash_table_new (g_str_hash, g_str_equal);
+
+    for (GList *l = mime_types; l != NULL; l = l->next)
+    {
+        for (uint i = 0; video_mime_types[i] != NULL; i++)
+        {
+            if (g_content_type_equals (video_mime_types[i], l->data))
+            {
+                g_hash_table_add (video_mime_types_hash, (gpointer) video_mime_types[i]);
+            }
+        }
+    }
+
+    g_list_free_full (mime_types, g_free);
+}
+
 static gboolean
 nautilus_is_video_file (NautilusFile *file)
 {
     const char *mime_type;
-    guint i;
 
     mime_type = file->details->mime_type;
     if (mime_type == NULL)
@@ -4583,15 +4609,9 @@ nautilus_is_video_file (NautilusFile *file)
         return FALSE;
     }
 
-    for (i = 0; video_mime_types[i] != NULL; i++)
-    {
-        if (g_content_type_equals (video_mime_types[i], mime_type))
-        {
-            return TRUE;
-        }
-    }
+    ensure_video_types_hash ();
 
-    return FALSE;
+    return g_hash_table_contains (video_mime_types_hash, mime_type);
 }
 
 void
