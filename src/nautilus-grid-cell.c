@@ -233,8 +233,9 @@ on_map_changed (GtkWidget *widget,
     NautilusFile *file = nautilus_view_item_get_file (item);
 
     if (nautilus_file_is_thumbnailing (file) ||
-        !nautilus_file_check_if_ready (file, NAUTILUS_FILE_ATTRIBUTE_THUMBNAIL_INFO) ||
-        !nautilus_file_check_if_ready (file, NAUTILUS_FILE_ATTRIBUTE_THUMBNAIL_BUFFER))
+        !nautilus_file_check_if_ready (file,
+                                       NAUTILUS_FILE_ATTRIBUTE_THUMBNAIL_INFO |
+                                       NAUTILUS_FILE_ATTRIBUTE_THUMBNAIL_BUFFER))
     {
         nautilus_view_item_prioritize (item, is_mapped);
     }
