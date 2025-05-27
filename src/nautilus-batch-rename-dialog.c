@@ -109,15 +109,17 @@ change_numbering_order (GSimpleAction *action,
                         GVariant      *value,
                         gpointer       user_data)
 {
-    NautilusBatchRenameDialog *dialog;
-    const gchar *target_name;
-    guint i;
+    NautilusBatchRenameDialog *dialog = NAUTILUS_BATCH_RENAME_DIALOG (user_data);
+    g_autoptr (GVariant) current_state = g_action_get_state (G_ACTION (action));
+    const gchar *current_target_name = g_variant_get_string (current_state, NULL);
+    const gchar *target_name = g_variant_get_string (value, NULL);
 
-    dialog = NAUTILUS_BATCH_RENAME_DIALOG (user_data);
+    if (g_str_equal (current_target_name, target_name))
+    {
+        return;
+    }
 
-    target_name = g_variant_get_string (value, NULL);
-
-    for (i = 0; i < G_N_ELEMENTS (sorts_constants); i++)
+    for (guint i = 0; i < G_N_ELEMENTS (sorts_constants); i++)
     {
         if (g_strcmp0 (sorts_constants[i].action_target_name, target_name) == 0)
         {
