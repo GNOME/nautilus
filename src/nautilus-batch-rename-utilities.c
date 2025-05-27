@@ -807,17 +807,10 @@ on_cursor_callback (GObject      *object,
     MetadataType metadata_type;
     g_autoptr (GError) error = NULL;
     FileMetadata *file_metadata;
-    GDateTime *date_time;
     guint i;
     const gchar *current_metadata;
     const gchar *file_name;
     const gchar *creation_date;
-    const gchar *year;
-    const gchar *month;
-    const gchar *day;
-    const gchar *hours;
-    const gchar *minutes;
-    const gchar *seconds;
     const gchar *equipment;
     const gchar *season_number;
     const gchar *episode_number;
@@ -870,13 +863,6 @@ on_cursor_callback (GObject      *object,
     }
 
     creation_date = tracker_sparql_cursor_get_string (cursor, CREATION_DATE_INDEX, NULL);
-
-    year = tracker_sparql_cursor_get_string (cursor, YEAR_INDEX, NULL);
-    month = tracker_sparql_cursor_get_string (cursor, MONTH_INDEX, NULL);
-    day = tracker_sparql_cursor_get_string (cursor, DAY_INDEX, NULL);
-    hours = tracker_sparql_cursor_get_string (cursor, HOURS_INDEX, NULL);
-    minutes = tracker_sparql_cursor_get_string (cursor, MINUTES_INDEX, NULL);
-    seconds = tracker_sparql_cursor_get_string (cursor, SECONDS_INDEX, NULL);
     equipment = tracker_sparql_cursor_get_string (cursor, CAMERA_MODEL_INDEX, NULL);
     season_number = tracker_sparql_cursor_get_string (cursor, SEASON_INDEX, NULL);
     episode_number = tracker_sparql_cursor_get_string (cursor, EPISODE_NUMBER_INDEX, NULL);
@@ -974,17 +960,23 @@ on_cursor_callback (GObject      *object,
         {
             if (metadata_type == CREATION_DATE)
             {
+                const gchar *year = tracker_sparql_cursor_get_string (cursor, YEAR_INDEX, NULL);
+                const gchar *month = tracker_sparql_cursor_get_string (cursor, MONTH_INDEX, NULL);
+                const gchar *day = tracker_sparql_cursor_get_string (cursor, DAY_INDEX, NULL);
+                const gchar *hours = tracker_sparql_cursor_get_string (cursor, HOURS_INDEX, NULL);
+                const gchar *minutes = tracker_sparql_cursor_get_string (cursor, MINUTES_INDEX, NULL);
+                const gchar *seconds = tracker_sparql_cursor_get_string (cursor, SECONDS_INDEX, NULL);
+                GDateTime *date_time = g_date_time_new_local (atoi (year),
+                                                              atoi (month),
+                                                              atoi (day),
+                                                              atoi (hours),
+                                                              atoi (minutes),
+                                                              atoi (seconds));
+
                 /* Add the sort order to the order hash table */
                 g_hash_table_insert (query_data->date_order_hash_table,
-                                     g_strdup (tracker_sparql_cursor_get_string (cursor, 0, NULL)),
+                                     g_strdup (tracker_sparql_cursor_get_string (cursor, FILE_NAME_INDEX, NULL)),
                                      GINT_TO_POINTER (g_hash_table_size (query_data->date_order_hash_table)));
-
-                date_time = g_date_time_new_local (atoi (year),
-                                                   atoi (month),
-                                                   atoi (day),
-                                                   atoi (hours),
-                                                   atoi (minutes),
-                                                   atoi (seconds));
 
                 file_metadata->metadata[metadata_type] = format_date_time (date_time);
             }
