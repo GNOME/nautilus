@@ -889,107 +889,109 @@ on_cursor_callback (GObject      *object,
     /* Set metadata when available, and delete for the whole selection when not */
     for (i = 0; i < G_N_ELEMENTS (metadata_tags_constants); i++)
     {
-        if (query_data->has_metadata[i])
+        if (!query_data->has_metadata[i])
         {
-            metadata_type = metadata_tags_constants[i].metadata_type;
-            current_metadata = NULL;
-            switch (metadata_type)
+            continue;
+        }
+
+        metadata_type = metadata_tags_constants[i].metadata_type;
+        current_metadata = NULL;
+        switch (metadata_type)
+        {
+            case ORIGINAL_FILE_NAME:
             {
-                case ORIGINAL_FILE_NAME:
-                {
-                    current_metadata = file_name;
-                }
-                break;
-
-                case CREATION_DATE:
-                {
-                    current_metadata = creation_date;
-                }
-                break;
-
-                case EQUIPMENT:
-                {
-                    current_metadata = equipment;
-                }
-                break;
-
-                case SEASON_NUMBER:
-                {
-                    current_metadata = season_number;
-                }
-                break;
-
-                case EPISODE_NUMBER:
-                {
-                    current_metadata = episode_number;
-                }
-                break;
-
-                case ARTIST_NAME:
-                {
-                    current_metadata = artist_name;
-                }
-                break;
-
-                case ALBUM_NAME:
-                {
-                    current_metadata = album_name;
-                }
-                break;
-
-                case TITLE:
-                {
-                    current_metadata = title;
-                }
-                break;
-
-                case TRACK_NUMBER:
-                {
-                    current_metadata = track_number;
-                }
-                break;
-
-                default:
-                {
-                    g_warn_if_reached ();
-                }
-                break;
+                current_metadata = file_name;
             }
+            break;
 
-            if (!current_metadata)
+            case CREATION_DATE:
             {
-                query_data->has_metadata[i] = FALSE;
+                current_metadata = creation_date;
+            }
+            break;
 
-                if (metadata_type == CREATION_DATE &&
-                    query_data->date_order_hash_table)
-                {
-                    g_hash_table_destroy (query_data->date_order_hash_table);
-                    query_data->date_order_hash_table = NULL;
-                }
+            case EQUIPMENT:
+            {
+                current_metadata = equipment;
+            }
+            break;
+
+            case SEASON_NUMBER:
+            {
+                current_metadata = season_number;
+            }
+            break;
+
+            case EPISODE_NUMBER:
+            {
+                current_metadata = episode_number;
+            }
+            break;
+
+            case ARTIST_NAME:
+            {
+                current_metadata = artist_name;
+            }
+            break;
+
+            case ALBUM_NAME:
+            {
+                current_metadata = album_name;
+            }
+            break;
+
+            case TITLE:
+            {
+                current_metadata = title;
+            }
+            break;
+
+            case TRACK_NUMBER:
+            {
+                current_metadata = track_number;
+            }
+            break;
+
+            default:
+            {
+                g_warn_if_reached ();
+            }
+            break;
+        }
+
+        if (!current_metadata)
+        {
+            query_data->has_metadata[i] = FALSE;
+
+            if (metadata_type == CREATION_DATE &&
+                query_data->date_order_hash_table)
+            {
+                g_hash_table_destroy (query_data->date_order_hash_table);
+                query_data->date_order_hash_table = NULL;
+            }
+        }
+        else
+        {
+            if (metadata_type == CREATION_DATE)
+            {
+                /* Add the sort order to the order hash table */
+                g_hash_table_insert (query_data->date_order_hash_table,
+                                     g_strdup (tracker_sparql_cursor_get_string (cursor, 0, NULL)),
+                                     GINT_TO_POINTER (g_hash_table_size (query_data->date_order_hash_table)));
+
+                date_time = g_date_time_new_local (atoi (year),
+                                                   atoi (month),
+                                                   atoi (day),
+                                                   atoi (hours),
+                                                   atoi (minutes),
+                                                   atoi (seconds));
+
+                file_metadata->metadata[metadata_type] = format_date_time (date_time);
             }
             else
             {
-                if (metadata_type == CREATION_DATE)
-                {
-                    /* Add the sort order to the order hash table */
-                    g_hash_table_insert (query_data->date_order_hash_table,
-                                         g_strdup (tracker_sparql_cursor_get_string (cursor, 0, NULL)),
-                                         GINT_TO_POINTER (g_hash_table_size (query_data->date_order_hash_table)));
-
-                    date_time = g_date_time_new_local (atoi (year),
-                                                       atoi (month),
-                                                       atoi (day),
-                                                       atoi (hours),
-                                                       atoi (minutes),
-                                                       atoi (seconds));
-
-                    file_metadata->metadata[metadata_type] = format_date_time (date_time);
-                }
-                else
-                {
-                    file_metadata->metadata[metadata_type] = g_string_new (current_metadata);
-                    g_string_replace (file_metadata->metadata[metadata_type], "/", "_", 0);
-                }
+                file_metadata->metadata[metadata_type] = g_string_new (current_metadata);
+                g_string_replace (file_metadata->metadata[metadata_type], "/", "_", 0);
             }
         }
     }
