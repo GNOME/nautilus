@@ -20,8 +20,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: eel.HEAD.he\n"
 "Report-Msgid-Bugs-To: https://gitlab.gnome.org/GNOME/nautilus/issues\n"
-"POT-Creation-Date: 2025-02-21 07:50+0000\n"
-"PO-Revision-Date: 2025-02-24 16:58+0200\n"
+"POT-Creation-Date: 2025-05-25 17:36+0000\n"
+"PO-Revision-Date: 2025-05-28 08:56+0300\n"
 "Last-Translator: Yosef Or Boczko <yoseforb@gmail.com>\n"
 "Language-Team: Hebrew <yoseforb@gmail.com>\n"
 "Language: he\n"
@@ -30,7 +30,7 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=4; plural=(n==1 ? 0 : n==2 ? 1 : n>10 && n%10==0 ? "
 "2 : 3)\n"
-"X-Generator: Gtranslator 47.1\n"
+"X-Generator: Gtranslator 48.0\n"
 "X-DL-Lang: he\n"
 "X-DL-Module: nautilus\n"
 "X-DL-Branch: main\n"
@@ -43,7 +43,7 @@ msgstr "הפעלת התוכנה"
 
 #: data/org.gnome.Nautilus.metainfo.xml.in.in:5
 #: data/org.gnome.Nautilus.desktop.in.in:3 src/nautilus-mime-actions.c:102
-#: src/nautilus-portal.c:518 src/resources/ui/nautilus-window.ui:124
+#: src/nautilus-portal.c:534 src/resources/ui/nautilus-window.ui:123
 msgid "Files"
 msgstr "קבצים"
 
@@ -74,20 +74,24 @@ msgstr ""
 "וממדיות נתיקות, להריץ תסריטים ולשגר יישומים. יש לו שלוש תצוגות: רשת סמלים, "
 "רשימת סמלים ורשימת עץ. ניתן להרחיב את הפעולות שלו עם תוספים ותסריטים."
 
-#: data/org.gnome.Nautilus.metainfo.xml.in.in:53 src/nautilus-view.c:150
+#: data/org.gnome.Nautilus.metainfo.xml.in.in:60 src/nautilus-view.c:150
 msgid "Grid View"
 msgstr "תצוגת רשת"
 
-#: data/org.gnome.Nautilus.metainfo.xml.in.in:57 src/nautilus-view.c:154
+#: data/org.gnome.Nautilus.metainfo.xml.in.in:64 src/nautilus-view.c:154
 msgid "List View"
 msgstr "תצוגת רשימה"
 
-#: data/org.gnome.Nautilus.metainfo.xml.in.in:61 src/nautilus-query.c:538
+#: data/org.gnome.Nautilus.metainfo.xml.in.in:68 src/nautilus-query.c:538
 #: src/nautilus-search-directory-file.c:225
 #: src/nautilus-search-directory-file.c:265
 #: src/resources/ui/nautilus-search-popover.ui:278
 msgid "Search"
 msgstr "חיפוש"
+
+#: data/org.gnome.Nautilus.metainfo.xml.in.in:72
+msgid "Selection of Multiple Files"
+msgstr "בחירת קבצים מרובה"
 
 #. Translators: Search terms to find this application. Do NOT translate or localize the semicolons! The list MUST also end with a semicolon!
 #: data/org.gnome.Nautilus.desktop.in.in:6
@@ -455,10 +459,10 @@ msgid "You can stop this operation by clicking cancel."
 msgstr "לחיצה על ביטול תעצור את הפעולה הזאת."
 
 #: eel/eel-stock-dialogs.c:196 src/nautilus-autorun-software.c:223
-#: src/nautilus-file-chooser.c:239 src/nautilus-file-operations.c:274
+#: src/nautilus-file-chooser.c:240 src/nautilus-file-operations.c:274
 #: src/nautilus-mime-actions.c:610 src/nautilus-mime-actions.c:1024
 #: src/nautilus-mime-actions.c:1336 src/resources/ui/nautilus-app-chooser.ui:90
-#: src/resources/ui/nautilus-batch-rename-dialog.ui:106
+#: src/resources/ui/nautilus-batch-rename-dialog.ui:117
 #: src/resources/ui/nautilus-compress-dialog.ui:17
 #: src/resources/ui/nautilus-file-conflict-dialog.ui:15
 #: src/resources/ui/nautilus-file-properties-change-permissions.ui:14
@@ -624,7 +628,7 @@ msgstr "מאפייני וידאו"
 msgid "Duration"
 msgstr "משך"
 
-#: extensions/audio-video-properties/totem-properties-view.c:370
+#: extensions/audio-video-properties/totem-properties-view.c:371
 msgid "Container"
 msgstr "מכיל"
 
@@ -885,33 +889,33 @@ msgstr "„%s” מכילה תכנה שאמורה לפעול אוטומטית. �
 msgid "_Run"
 msgstr "ה_פעלה"
 
-#: src/nautilus-batch-rename-dialog.c:708
+#: src/nautilus-batch-rename-dialog.c:522
 #, c-format
 msgid "“%s” would not be a unique new name."
 msgstr "‏„%s” לא יהיה שם חדש ייחודי."
 
-#: src/nautilus-batch-rename-dialog.c:714
+#: src/nautilus-batch-rename-dialog.c:528
 #, c-format
 msgid "“%s” would conflict with an existing file."
 msgstr "‏„%s” יתנגש אם קובץ קיים."
 
-#: src/nautilus-batch-rename-dialog.c:1181
+#: src/nautilus-batch-rename-dialog.c:979
 msgid "Name cannot be empty."
 msgstr "השם לא יכול להיות ריק."
 
-#: src/nautilus-batch-rename-dialog.c:1187
+#: src/nautilus-batch-rename-dialog.c:985
 msgid "Name cannot contain “/”."
 msgstr "השם לא יכול להכיל „/”."
 
-#: src/nautilus-batch-rename-dialog.c:1193
+#: src/nautilus-batch-rename-dialog.c:991
 msgid "“.” is not a valid name."
 msgstr "‏„.” אינו שם תקני."
 
-#: src/nautilus-batch-rename-dialog.c:1199
+#: src/nautilus-batch-rename-dialog.c:997
 msgid "“..” is not a valid name."
 msgstr "‏„..” אינו שם תקני."
 
-#: src/nautilus-batch-rename-dialog.c:1869
+#: src/nautilus-batch-rename-dialog.c:1612
 #, c-format
 msgid "Rename %d Folder"
 msgid_plural "Rename %d Folders"
@@ -920,7 +924,7 @@ msgstr[1] "שינוי שם ל‏שתי תיקיות"
 msgstr[2] "שינוי שם ל‏־%d תיקיות"
 msgstr[3] "שינוי שם ל‏־%d תיקיות"
 
-#: src/nautilus-batch-rename-dialog.c:1877
+#: src/nautilus-batch-rename-dialog.c:1620
 #, c-format
 msgid "Rename %d File"
 msgid_plural "Rename %d Files"
@@ -931,7 +935,7 @@ msgstr[3] "שינוי שם ל‏־%d קבצים"
 
 #. To translators: %d is the total number of files and folders.
 #. * Singular case of the string is never used
-#: src/nautilus-batch-rename-dialog.c:1887
+#: src/nautilus-batch-rename-dialog.c:1630
 #, c-format
 msgid "Rename %d File and Folder"
 msgid_plural "Rename %d Files and Folders"
@@ -1014,7 +1018,7 @@ msgstr "001, 002, 003"
 
 #: src/nautilus-bookmark.c:110 src/nautilus-file-utilities.c:59
 #: src/nautilus-pathbar.c:416 src/nautilus-shell-search-provider.c:342
-#: src/nautilus-window.c:141 src/gtk/nautilusgtkplacessidebar.c:670
+#: src/nautilus-window.c:141 src/gtk/nautilusgtkplacessidebar.c:667
 msgid "Home"
 msgstr "בית"
 
@@ -1038,7 +1042,7 @@ msgstr "לוח הגזירים של Nautilus לא יכול להכיל שורה ר
 msgid "View More"
 msgstr "להציג עוד"
 
-#: src/nautilus-column-utilities.c:69 src/gtk/nautilusgtkplacessidebar.c:1980
+#: src/nautilus-column-utilities.c:69 src/gtk/nautilusgtkplacessidebar.c:1978
 msgid "Name"
 msgstr "שם"
 
@@ -1063,7 +1067,7 @@ msgid "The type of the file."
 msgstr "סוג הקובץ."
 
 #: src/nautilus-column-utilities.c:90
-#: src/resources/ui/nautilus-properties-window.ui:441
+#: src/resources/ui/nautilus-properties-window.ui:444
 msgid "Modified"
 msgstr "מועד שינוי"
 
@@ -1080,7 +1084,7 @@ msgid "The detailed type of the file."
 msgstr "פרטים על סוג הקובץ."
 
 #: src/nautilus-column-utilities.c:106
-#: src/resources/ui/nautilus-properties-window.ui:427
+#: src/resources/ui/nautilus-properties-window.ui:430
 msgid "Accessed"
 msgstr "מועד גישה"
 
@@ -1089,7 +1093,7 @@ msgid "The date the file was accessed."
 msgstr "התאריך בו ניגשו לקובץ."
 
 #: src/nautilus-column-utilities.c:115
-#: src/resources/ui/nautilus-properties-window.ui:455
+#: src/resources/ui/nautilus-properties-window.ui:458
 msgid "Created"
 msgstr "נוצר"
 
@@ -1132,7 +1136,7 @@ msgstr "לאחרונה"
 msgid "The date the file was accessed by the user."
 msgstr "התאריך בו המשתמש ניגש לקובץ."
 
-#: src/nautilus-column-utilities.c:159 src/nautilus-properties-window.c:737
+#: src/nautilus-column-utilities.c:159 src/nautilus-properties-window.c:741
 #: src/nautilus-star-cell.c:66
 msgid "Star"
 msgstr "כוכב"
@@ -1142,7 +1146,7 @@ msgid "Shows if file is starred."
 msgstr "מציג אם הקובץ מכוכב."
 
 #: src/nautilus-column-utilities.c:205
-#: src/resources/ui/nautilus-properties-window.ui:409
+#: src/resources/ui/nautilus-properties-window.ui:412
 msgid "Trashed On"
 msgstr "נזרק לאשפה"
 
@@ -1201,49 +1205,49 @@ msgstr "ארכיון קטן אך חייב להיות מותקן על Windows ו�
 
 #. Translators: date and time in 24h format,
 #. * i.e. "12/31/2023 23:59"
-#: src/nautilus-date-utilities.c:76
+#: src/nautilus-date-utilities.c:87
 #, no-c-format
 msgid "%m/%d/%Y %H:%M"
 msgstr "‎%d/%m/%Y %H:%M"
 
 #. Translators: date and time in 12h format,
 #. * i.e. "12/31/2023 11:59 PM"
-#: src/nautilus-date-utilities.c:83
+#: src/nautilus-date-utilities.c:94
 #, no-c-format
 msgid "%m/%d/%Y %I:%M %p"
 msgstr "‎%d/%m/%Y %I:%M %p"
 
 #. Translators: this is the word "Today" followed by
 #. * a time in 24h format. i.e. "Today 23:04"
-#: src/nautilus-date-utilities.c:112
+#: src/nautilus-date-utilities.c:123
 #, no-c-format
 msgid "Today %-H:%M"
 msgstr "היום, ‎%-H∶%M"
 
 #. Translators: this is the word Today followed by
 #. * a time in 12h format. i.e. "Today 9:04 PM"
-#: src/nautilus-date-utilities.c:119
+#: src/nautilus-date-utilities.c:130
 #, no-c-format
 msgid "Today %-I:%M %p"
 msgstr "היום, %p ‎%-I∶%M"
 
 #. Translators: this is the word Yesterday followed by
 #. * a time in 24h format. i.e. "Yesterday 23:04"
-#: src/nautilus-date-utilities.c:130
+#: src/nautilus-date-utilities.c:141
 #, no-c-format
 msgid "Yesterday %-H:%M"
 msgstr "אתמול,‏ ‎%-H:%M"
 
 #. Translators: this is the word Yesterday followed by
 #. * a time in 12h format. i.e. "Yesterday 9:04 PM"
-#: src/nautilus-date-utilities.c:137
+#: src/nautilus-date-utilities.c:148
 #, no-c-format
 msgid "Yesterday %-I:%M %p"
 msgstr "אתמול ‏‎%-I∶%M ‏%p"
 
 #. Translators: this is the day of the month followed by the abbreviated
 #. * month name followed by the year i.e. "3 Feb 2015"
-#: src/nautilus-date-utilities.c:145
+#: src/nautilus-date-utilities.c:156
 #, no-c-format
 msgid "%-e %b %Y"
 msgstr "%-e ב%b %Y"
@@ -1251,7 +1255,7 @@ msgstr "%-e ב%b %Y"
 #. Translators: this is the day number followed by the full month
 #. * name followed by the year followed by a time in 24h format
 #. * with seconds i.e. "3 February 2015 23:04:00"
-#: src/nautilus-date-utilities.c:156
+#: src/nautilus-date-utilities.c:167
 #, no-c-format
 msgid "%-e %B %Y %H:%M:%S"
 msgstr "‏‎‏%-e ב%B %Y, ‎‎%H:%M"
@@ -1259,7 +1263,7 @@ msgstr "‏‎‏%-e ב%B %Y, ‎‎%H:%M"
 #. Translators: this is the day number followed by the full month
 #. * name followed by the year followed by a time in 12h format
 #. * with seconds i.e. "3 February 2015 09:04:00 PM"
-#: src/nautilus-date-utilities.c:164
+#: src/nautilus-date-utilities.c:175
 #, no-c-format
 msgid "%-e %B %Y %I:%M:%S %p"
 msgstr "‏%-e ב%B ‏%Y, ‏‎%I∶%M ‏%p"
@@ -1279,7 +1283,7 @@ msgid "Details: The proxy has not been created."
 msgstr "פרטים: המתווך לא נוצר."
 
 #. Translators: this is of the format "hostname (uri-scheme)"
-#: src/nautilus-directory.c:644
+#: src/nautilus-directory.c:641
 #, c-format
 msgid "%s (%s)"
 msgstr "‏%s ‏(%s)"
@@ -1376,24 +1380,24 @@ msgstr "אין „%s” בתיקייה הזו. אולי הוא הועבר או �
 msgid "You do not have the permissions necessary to rename “%s”."
 msgstr "אין לך את ההרשאות הדרושות לשינוי השם של „%s”."
 
-#: src/nautilus-error-reporting.c:280
+#: src/nautilus-error-reporting.c:278
 #, c-format
 msgid ""
 "The name “%s” is not valid because it contains the character “%c”. Please "
 "use a different name."
 msgstr "השם „%s” אינו תקני כיוון שהוא מכיל את התו „%c“. נא להשתמש בשם אחר."
 
-#: src/nautilus-error-reporting.c:288
+#: src/nautilus-error-reporting.c:284
 #, c-format
 msgid "The name “%s” is not valid. Please use a different name."
 msgstr "השם „%s” אינו תקני. נא להשתמש בשם אחר."
 
-#: src/nautilus-error-reporting.c:297
+#: src/nautilus-error-reporting.c:293
 #, c-format
 msgid "The name “%s” is too long. Please use a different name."
 msgstr "השם „%s” ארוך מדי. נא להשתמש בשם אחר."
 
-#: src/nautilus-error-reporting.c:305
+#: src/nautilus-error-reporting.c:301
 #, c-format
 msgid ""
 "Could not rename “%s” because a process is using it. If it's open in another "
@@ -1403,16 +1407,16 @@ msgstr ""
 "אחר, יש לסגור אותו לפני שינוי השם."
 
 #. fall through
-#: src/nautilus-error-reporting.c:330
+#: src/nautilus-error-reporting.c:326
 #, c-format
 msgid "Sorry, could not rename “%s” to “%s”: %s"
 msgstr "לא ניתן לשנות את השם של „%s” ל־„%s”, עמך הסליחה: ‏%s"
 
-#: src/nautilus-error-reporting.c:335
+#: src/nautilus-error-reporting.c:331
 msgid "The item could not be renamed."
 msgstr "לא ניתן לשנות את שם הפריט."
 
-#: src/nautilus-error-reporting.c:447
+#: src/nautilus-error-reporting.c:443
 #, c-format
 msgid "Renaming “%s” to “%s”."
 msgstr "‏„%s” משנה את שמו ל־„%s”."
@@ -1452,38 +1456,38 @@ msgstr "לא ניתן לשנות שם עבור קובצי רמה עליונה"
 msgid "File not found"
 msgstr "קובץ לא נמצא"
 
-#: src/nautilus-file.c:5397
+#: src/nautilus-file.c:5447
 #, c-format
 msgid "Not allowed to set permissions"
 msgstr "אין הרשאה להגדרת הרשאות"
 
-#: src/nautilus-file.c:5741
+#: src/nautilus-file.c:5791
 #, c-format
 msgid "Not allowed to set owner"
 msgstr "אין הרשאה להגדרת הבעלים"
 
-#: src/nautilus-file.c:5760
+#: src/nautilus-file.c:5810
 #, c-format
 msgid "Specified owner “%s” doesn’t exist"
 msgstr "הבעלים שצוינו „%s” לא קיימים"
 
-#: src/nautilus-file.c:6050
+#: src/nautilus-file.c:6100
 #, c-format
 msgid "Not allowed to set group"
 msgstr "לא מורשה לקבוע את הקבוצה"
 
-#: src/nautilus-file.c:6069
+#: src/nautilus-file.c:6119
 #, c-format
 msgid "Specified group “%s” doesn’t exist"
 msgstr "הקבוצה „%s” שצוינה לא קיימת"
 
 #. Translators: This is a username followed by "(You)" to indicate the file is owned by the current user
-#: src/nautilus-file.c:6209
+#: src/nautilus-file.c:6259
 #, c-format
 msgid "%s (You)"
 msgstr "‏%s (אני)"
 
-#: src/nautilus-file.c:6241
+#: src/nautilus-file.c:6291
 #, c-format
 msgid "%'u item"
 msgid_plural "%'u items"
@@ -1492,7 +1496,7 @@ msgstr[1] "שני פריטים"
 msgstr[2] "‫%'u פריטים"
 msgstr[3] "‫%'u פריטים"
 
-#: src/nautilus-file.c:6242
+#: src/nautilus-file.c:6292
 #, c-format
 msgid "%'u folder"
 msgid_plural "%'u folders"
@@ -1501,7 +1505,7 @@ msgstr[1] "שתי תיקיות"
 msgstr[2] "‫%'u תיקיות"
 msgstr[3] "‫%'u תיקיות"
 
-#: src/nautilus-file.c:6243
+#: src/nautilus-file.c:6293
 #, c-format
 msgid "%'u file"
 msgid_plural "%'u files"
@@ -1510,7 +1514,7 @@ msgstr[1] "שני קבצים"
 msgstr[2] "‫%'u קבצים"
 msgstr[3] "‫%'u קבצים"
 
-#: src/nautilus-file.c:6327 src/nautilus-properties-window.c:2088
+#: src/nautilus-file.c:6377 src/nautilus-properties-window.c:2099
 #, c-format
 msgid "%s byte"
 msgid_plural "%s bytes"
@@ -1520,93 +1524,93 @@ msgstr[2] "‏%s בתים"
 msgstr[3] "‏%s בתים"
 
 #. This means no contents at all were readable
-#: src/nautilus-file.c:6731
+#: src/nautilus-file.c:6781
 msgid "? bytes"
 msgstr "? בתים"
 
 #. This means no contents at all were readable
-#: src/nautilus-file.c:6743
+#: src/nautilus-file.c:6793
 msgid "? items"
 msgstr "? פריטים"
 
 #. Translators: This about a file type.
-#: src/nautilus-file.c:6752
+#: src/nautilus-file.c:6802
 msgid "Unknown type"
 msgstr "סוג לא ידוע"
 
 #. Fallback, use for both unknown attributes and attributes
 #. * for which we have no more appropriate default.
 #.
-#: src/nautilus-file.c:6783
+#: src/nautilus-file.c:6833
 msgid "Unknown"
 msgstr "לא ידוע"
 
-#: src/nautilus-file.c:6820 src/nautilus-file.c:6828 src/nautilus-file.c:6887
+#: src/nautilus-file.c:6870 src/nautilus-file.c:6878 src/nautilus-file.c:6937
 msgid "Program"
 msgstr "תכנית"
 
-#: src/nautilus-file.c:6821
+#: src/nautilus-file.c:6871
 msgid "Audio"
 msgstr "שמע"
 
-#: src/nautilus-file.c:6822
+#: src/nautilus-file.c:6872
 msgid "Font"
 msgstr "גופן"
 
-#: src/nautilus-file.c:6823
+#: src/nautilus-file.c:6873
 msgid "Image"
 msgstr "תמונה"
 
-#: src/nautilus-file.c:6824
+#: src/nautilus-file.c:6874
 msgid "Archive"
 msgstr "ארכיון"
 
-#: src/nautilus-file.c:6825
+#: src/nautilus-file.c:6875
 msgid "Markup"
 msgstr "שפת סימון"
 
-#: src/nautilus-file.c:6826 src/nautilus-file.c:6827
+#: src/nautilus-file.c:6876 src/nautilus-file.c:6877
 msgid "Text"
 msgstr "טקסט"
 
-#: src/nautilus-file.c:6829 src/nautilus-mime-actions.c:245
+#: src/nautilus-file.c:6879 src/nautilus-mime-actions.c:245
 msgid "Video"
 msgstr "וידאו"
 
-#: src/nautilus-file.c:6830
+#: src/nautilus-file.c:6880
 msgid "Contacts"
 msgstr "אנשי קשר"
 
-#: src/nautilus-file.c:6831
+#: src/nautilus-file.c:6881
 msgid "Calendar"
 msgstr "יומן"
 
-#: src/nautilus-file.c:6832
+#: src/nautilus-file.c:6882
 msgid "Document"
 msgstr "מסמך"
 
-#: src/nautilus-file.c:6833 src/nautilus-mime-actions.c:206
+#: src/nautilus-file.c:6883 src/nautilus-mime-actions.c:206
 msgid "Presentation"
 msgstr "מצגת"
 
-#: src/nautilus-file.c:6834 src/nautilus-mime-actions.c:218
+#: src/nautilus-file.c:6884 src/nautilus-mime-actions.c:218
 msgid "Spreadsheet"
 msgstr "גיליון אלקטרוני"
 
 #. Refers to a file type which is known but not one of the basic types
-#: src/nautilus-file.c:6867
+#: src/nautilus-file.c:6917
 msgid "Other"
 msgstr "אחר"
 
-#: src/nautilus-file.c:6889
+#: src/nautilus-file.c:6939
 msgid "Binary"
 msgstr "בינרי"
 
-#: src/nautilus-file.c:6894
+#: src/nautilus-file.c:6944
 msgid "Folder"
 msgstr "תיקייה"
 
-#: src/nautilus-file.c:6952
+#: src/nautilus-file.c:7002
 msgid "Link"
 msgstr "קישור"
 
@@ -1615,32 +1619,32 @@ msgstr "קישור"
 #. * to that kind of file (e.g. "link to folder").
 #.
 #. Translators: File name for new symlink. %s is target's name
-#: src/nautilus-file.c:6958 src/nautilus-filename-utilities.c:254
+#: src/nautilus-file.c:7008 src/nautilus-filename-utilities.c:253
 #, c-format
 msgid "Link to %s"
 msgstr "קישור ל־%s"
 
-#: src/nautilus-file.c:6974 src/nautilus-file.c:6990 src/nautilus-file.c:7006
+#: src/nautilus-file.c:7024 src/nautilus-file.c:7040 src/nautilus-file.c:7056
 msgid "Link (broken)"
 msgstr "קישור (שבור)"
 
 #. Translators: This refers to available space in a folder; e.g.: 100 MB Free
-#: src/nautilus-file.c:7167
+#: src/nautilus-file.c:7217
 #, c-format
 msgid "%s Free"
 msgstr "‏%s פנויים"
 
-#: src/nautilus-file-chooser.c:229
+#: src/nautilus-file-chooser.c:230
 msgid "Replace When Saving?"
 msgstr "להחליף עם השמירה?"
 
-#: src/nautilus-file-chooser.c:235
+#: src/nautilus-file-chooser.c:236
 #, c-format
 msgid ""
 "“%s” already exists in “%s”. Saving will replace or overwrite its contents."
 msgstr "‏„%s” כבר קיים בתיקייה „%s”. שמירה תחליף או תדרוס את התוכן שלו."
 
-#: src/nautilus-file-chooser.c:240 src/nautilus-file-chooser.c:316
+#: src/nautilus-file-chooser.c:241 src/nautilus-file-chooser.c:333
 #: src/nautilus-file-operations.c:280
 #: src/resources/ui/nautilus-file-conflict-dialog.ui:40
 msgid "_Replace"
@@ -1767,7 +1771,7 @@ msgstr[1] "שעתיים"
 msgstr[2] "‫%'d שעות"
 msgstr[3] "‫%'d שעות"
 
-#: src/nautilus-file-operations.c:484 src/nautilus-properties-window.c:900
+#: src/nautilus-file-operations.c:484 src/nautilus-properties-window.c:902
 msgid "unknown"
 msgstr "לא ידוע"
 
@@ -1867,8 +1871,8 @@ msgstr[3] "‫%'d קבצים במחיקה"
 #: src/nautilus-file-operations.c:1397 src/nautilus-file-operations.c:1743
 #: src/nautilus-file-operations.c:1751 src/nautilus-file-operations.c:1791
 #: src/nautilus-file-operations.c:3693 src/nautilus-file-operations.c:3701
-#: src/nautilus-file-operations.c:3772 src/nautilus-file-operations.c:8499
-#: src/nautilus-file-operations.c:8567
+#: src/nautilus-file-operations.c:3772 src/nautilus-file-operations.c:8490
+#: src/nautilus-file-operations.c:8558
 #, c-format
 msgid "%'d / %'d"
 msgstr "‏‎%'d / %'d"
@@ -1974,9 +1978,9 @@ msgid "Deleting Files"
 msgstr "קבצים נמחקים"
 
 #. Translators: %s is a file name formatted for display
-#: src/nautilus-file-operations.c:2331 src/nautilus-files-view.c:6920
-#: src/gtk/nautilusgtkplacessidebar.c:2312
-#: src/gtk/nautilusgtkplacessidebar.c:2341
+#: src/nautilus-file-operations.c:2331 src/nautilus-files-view.c:6901
+#: src/gtk/nautilusgtkplacessidebar.c:2310
+#: src/gtk/nautilusgtkplacessidebar.c:2339
 #, c-format
 msgid "Unable to eject “%s”"
 msgstr "לא ניתן לשלוף את „%s”"
@@ -2009,8 +2013,8 @@ msgid "_Empty"
 msgstr "_לפנות"
 
 #. Translators: %s is a file name formatted for display
-#: src/nautilus-file-operations.c:2659 src/nautilus-files-view.c:6870
-#: src/gtk/nautilusgtkplacessidebar.c:1704
+#: src/nautilus-file-operations.c:2659 src/nautilus-files-view.c:6851
+#: src/gtk/nautilusgtkplacessidebar.c:1702
 #, c-format
 msgid "Unable to access “%s”"
 msgstr "לא ניתן לגשת אל „%s”"
@@ -2249,8 +2253,8 @@ msgstr[3] "‏%'d קבצים שוכפלו ב־„%s”"
 #. To translators: %s will expand to a size like "2 bytes" or "3 MB", so something like "4 kB / 4 MB"
 #. To translators: %s will expand to a size like "2 bytes" or "3 MB".
 #: src/nautilus-file-operations.c:3683 src/nautilus-file-operations.c:3743
-#: src/nautilus-file-operations.c:8009 src/nautilus-file-operations.c:8239
-#: src/nautilus-file-operations.c:8494 src/nautilus-file-operations.c:8537
+#: src/nautilus-file-operations.c:8003 src/nautilus-file-operations.c:8230
+#: src/nautilus-file-operations.c:8485 src/nautilus-file-operations.c:8528
 #, c-format
 msgid "%s / %s"
 msgstr "%s / %s"
@@ -2274,8 +2278,8 @@ msgstr "%s / %s"
 #. *
 #. * The singular/plural form will be used depending on the remaining time (i.e. the %s argument).
 #.
-#: src/nautilus-file-operations.c:3727 src/nautilus-file-operations.c:8027
-#: src/nautilus-file-operations.c:8526
+#: src/nautilus-file-operations.c:3727 src/nautilus-file-operations.c:8021
+#: src/nautilus-file-operations.c:8517
 #, c-format
 msgid "%s / %s — %s left (%s/s)"
 msgid_plural "%s / %s — %s left (%s/s)"
@@ -2290,7 +2294,7 @@ msgstr[3] "‏%s מתוך %s ‏— %s נותרו (%s לשנייה)"
 #. *
 #. * The singular/plural form will be used depending on the remaining time (i.e. the %s argument).
 #.
-#: src/nautilus-file-operations.c:3761 src/nautilus-file-operations.c:8556
+#: src/nautilus-file-operations.c:3761 src/nautilus-file-operations.c:8547
 #, c-format
 msgid "%'d / %'d — %s left (%s/s)"
 msgid_plural "%'d / %'d — %s left (%s/s)"
@@ -2408,16 +2412,16 @@ msgstr[3] "בהכנות להעברת %'d קבצים"
 msgid "There was an error moving the file into %s."
 msgstr "ארעה שגיאה בהעברת הקובץ אל %s."
 
-#: src/nautilus-file-operations.c:6262
+#: src/nautilus-file-operations.c:6256
 msgid "Moving Files"
 msgstr "קבצים מועברים"
 
-#: src/nautilus-file-operations.c:6368
+#: src/nautilus-file-operations.c:6362
 #, c-format
 msgid "Creating links in “%s”"
 msgstr "נוצרים קישורים ב־„%s”"
 
-#: src/nautilus-file-operations.c:6372
+#: src/nautilus-file-operations.c:6366
 #, c-format
 msgid "Making link to %'d file"
 msgid_plural "Making links to %'d files"
@@ -2426,113 +2430,113 @@ msgstr[1] "נוצרו קישורים לשני קבצים"
 msgstr[2] "נוצרו קישורים ל־%'d קבצים"
 msgstr[3] "נוצרו קישורים ל־%'d קבצים"
 
-#: src/nautilus-file-operations.c:6522
+#: src/nautilus-file-operations.c:6516
 #, c-format
 msgid "Error while creating link to “%s”."
 msgstr "שגיאה ביצירת קישור אל „%s”."
 
-#: src/nautilus-file-operations.c:6526
+#: src/nautilus-file-operations.c:6520
 msgid "Symbolic links only supported for local files"
 msgstr "קישורים סימבוליים נתמכים עבור קבצים מקומיים בלבד"
 
-#: src/nautilus-file-operations.c:6531
+#: src/nautilus-file-operations.c:6525
 msgid "The target doesn’t support symbolic links."
 msgstr "היעד אינו תומך בקישורים סימבוליים."
 
-#: src/nautilus-file-operations.c:6539
+#: src/nautilus-file-operations.c:6533
 #, c-format
 msgid "There was an error creating the symlink in %s."
 msgstr "ארעה שגיאה ביצירת קישור סימבולי ב־%s."
 
-#: src/nautilus-file-operations.c:6869
+#: src/nautilus-file-operations.c:6863
 msgid "Setting permissions"
 msgstr "קובע הרשאות"
 
 #. localizers: the initial name of a new folder
-#: src/nautilus-file-operations.c:7161
+#: src/nautilus-file-operations.c:7155
 msgid "Untitled Folder"
 msgstr "תיקייה ללא שם"
 
 #. localizers: the initial name of a new empty document
-#: src/nautilus-file-operations.c:7176
+#: src/nautilus-file-operations.c:7170
 msgid "Untitled Document"
 msgstr "מסמך ללא שם"
 
-#: src/nautilus-file-operations.c:7402
+#: src/nautilus-file-operations.c:7396
 #, c-format
 msgid "Error while creating directory “%s”."
 msgstr "שגיאה ביצירת התיקייה „%s”."
 
-#: src/nautilus-file-operations.c:7407
+#: src/nautilus-file-operations.c:7401
 #, c-format
 msgid "Error while creating file “%s”."
 msgstr "שגיאה ביצירת הקובץ „%s”."
 
-#: src/nautilus-file-operations.c:7411
+#: src/nautilus-file-operations.c:7405
 #, c-format
 msgid "There was an error creating the directory in %s."
 msgstr "ארעה שגיאה ביצירת התיקייה תחת %s."
 
-#: src/nautilus-file-operations.c:7512
+#: src/nautilus-file-operations.c:7506
 msgid "Saving image to file"
 msgstr "תמונה נשמרת לקובץ"
 
-#: src/nautilus-file-operations.c:7521
+#: src/nautilus-file-operations.c:7515
 msgid "Successfully saved image to file"
 msgstr "תמונה נשמרה בהצלחה לקובץ"
 
-#: src/nautilus-file-operations.c:7551
+#: src/nautilus-file-operations.c:7545
 msgid "Failed to save image"
 msgstr "שמירת תמונה נכשלה"
 
 #. Translators: This is used to auto-generate a file name for pasted images from
 #. * the clipboard i.e. "Pasted image.png", "Pasted image 1.png", ...
-#: src/nautilus-file-operations.c:7613
+#: src/nautilus-file-operations.c:7607
 msgid "Pasted image"
 msgstr "תמונה מודבקת"
 
-#: src/nautilus-file-operations.c:7620
+#: src/nautilus-file-operations.c:7614
 msgid "Retrieving clipboard data"
 msgstr "מאחזר מידע מלוח הגזירים"
 
-#: src/nautilus-file-operations.c:7652
+#: src/nautilus-file-operations.c:7646
 msgid "Retrieving image data"
 msgstr "מאחזר תמונה"
 
-#: src/nautilus-file-operations.c:7870
+#: src/nautilus-file-operations.c:7864
 msgid "Emptying Trash"
 msgstr "האשפה מתרוקנת"
 
-#: src/nautilus-file-operations.c:7913
+#: src/nautilus-file-operations.c:7907
 msgid "Verifying destination"
 msgstr "אימות יעד"
 
-#: src/nautilus-file-operations.c:7967
+#: src/nautilus-file-operations.c:7961
 #, c-format
 msgid "Extracting “%s”"
 msgstr "‏„%s” מחולץ"
 
-#: src/nautilus-file-operations.c:8093 src/nautilus-file-operations.c:8186
+#: src/nautilus-file-operations.c:8087 src/nautilus-file-operations.c:8177
 #, c-format
 msgid "Error extracting “%s”"
 msgstr "שגיאה בחילוץ „%s”."
 
-#: src/nautilus-file-operations.c:8100
+#: src/nautilus-file-operations.c:8094
 #, c-format
 msgid "There was an error while extracting “%s”."
 msgstr "ארעה שגיאה בעת חילוץ „%s”."
 
-#: src/nautilus-file-operations.c:8189
+#: src/nautilus-file-operations.c:8180
 #, c-format
 msgid "Not enough free space to extract “%s”"
 msgstr "אין מספיק מקום פנוי לחילוץ „%s”"
 
-#: src/nautilus-file-operations.c:8222
+#: src/nautilus-file-operations.c:8213
 #, c-format
 msgid "Extracted “%s” to “%s”"
 msgstr "‏„%s” חולץ אל „%s”"
 
-#: src/nautilus-file-operations.c:8228
+#: src/nautilus-file-operations.c:8219
 #, c-format
 msgid "Extracted %'d file to “%s”"
 msgid_plural "Extracted %'d files to “%s”"
@@ -2541,20 +2545,20 @@ msgstr[1] "שני (%'d) קבצים חולצו אל „%s”"
 msgstr[2] "‫%'d קבצים חולצו אל „%s”"
 msgstr[3] "‫%'d קבצים חולצו אל „%s”"
 
-#: src/nautilus-file-operations.c:8262
+#: src/nautilus-file-operations.c:8253
 msgid "Preparing to extract"
 msgstr "הכנות לחילוץ"
 
-#: src/nautilus-file-operations.c:8390
+#: src/nautilus-file-operations.c:8381
 msgid "Extracting Files"
 msgstr "חילוץ קבצים"
 
-#: src/nautilus-file-operations.c:8450
+#: src/nautilus-file-operations.c:8441
 #, c-format
 msgid "Compressing “%s” into “%s”"
 msgstr "מכווץ את ‏„%s” לתוך „%s”"
 
-#: src/nautilus-file-operations.c:8456
+#: src/nautilus-file-operations.c:8447
 #, c-format
 msgid "Compressing %'d file into “%s”"
 msgid_plural "Compressing %'d files into “%s”"
@@ -2563,12 +2567,12 @@ msgstr[1] "‏%'d קבצים נדחסים לתוך „%s”"
 msgstr[2] "‏%'d קבצים נדחסים לתוך „%s”"
 msgstr[3] "‏%'d קבצים נדחסים לתוך „%s”"
 
-#: src/nautilus-file-operations.c:8604
+#: src/nautilus-file-operations.c:8595
 #, c-format
 msgid "Error compressing “%s” into “%s”"
 msgstr "אירעה שגיאה בכיווץ „%s” לתוך „%s”"
 
-#: src/nautilus-file-operations.c:8610
+#: src/nautilus-file-operations.c:8601
 #, c-format
 msgid "Error compressing %'d file into “%s”"
 msgid_plural "Error compressing %'d files into “%s”"
@@ -2577,16 +2581,16 @@ msgstr[1] "שגיאה בדחיסת %'d קבצים לתוך „%s”"
 msgstr[2] "שגיאה בדחיסת %'d קבצים לתוך „%s”"
 msgstr[3] "שגיאה בדחיסת %'d קבצים לתוך „%s”"
 
-#: src/nautilus-file-operations.c:8620
+#: src/nautilus-file-operations.c:8611
 msgid "There was an error while compressing files."
 msgstr "אירעה שגיאה במהלך כיווץ הקבצים."
 
-#: src/nautilus-file-operations.c:8645
+#: src/nautilus-file-operations.c:8636
 #, c-format
 msgid "Compressed “%s” into “%s”"
 msgstr "‏„%s” כווץ לתוך „%s”"
 
-#: src/nautilus-file-operations.c:8651
+#: src/nautilus-file-operations.c:8642
 #, c-format
 msgid "Compressed %'d file into “%s”"
 msgid_plural "Compressed %'d files into “%s”"
@@ -2595,7 +2599,7 @@ msgstr[1] "‏%'d קבצים נדחסו אל „%s”"
 msgstr[2] "‏%'d קבצים נדחסו אל „%s”"
 msgstr[3] "‏%'d קבצים נדחסו אל „%s”"
 
-#: src/nautilus-file-operations.c:8770
+#: src/nautilus-file-operations.c:8761
 msgid "Compressing Files"
 msgstr "כיווץ קבצים"
 
@@ -2752,46 +2756,46 @@ msgstr "נא להזין כתובת על מנת להתחבר למיקום ברש�
 msgid "Folder is Empty"
 msgstr "תיקייה זו ריקה"
 
-#: src/nautilus-files-view.c:6101
+#: src/nautilus-files-view.c:6091
 msgid "Select Move Destination"
 msgstr "בחירת יעד להעברה"
 
-#: src/nautilus-files-view.c:6105
+#: src/nautilus-files-view.c:6095
 msgid "Select Copy Destination"
 msgstr "בחירת יעד להעתקה"
 
-#: src/nautilus-files-view.c:6116 src/nautilus-files-view.c:6504
-#: src/nautilus-portal.c:417 src/nautilus-properties-window.c:4026
+#: src/nautilus-files-view.c:6106 src/nautilus-files-view.c:6494
+#: src/nautilus-portal.c:434 src/nautilus-properties-window.c:4021
 #: src/resources/ui/nautilus-files-view-select-items.ui:23
 msgid "_Select"
 msgstr "_בחירה"
 
-#: src/nautilus-files-view.c:6503
+#: src/nautilus-files-view.c:6493
 msgid "Select Extract Destination"
 msgstr "בחירת יעד לחילוץ"
 
-#: src/nautilus-files-view.c:6579
+#: src/nautilus-files-view.c:6569
 msgid "Error sending email."
 msgstr "שגיאה בשליחת דוא״ל."
 
 #. Translators: %s is a file name formatted for display
-#: src/nautilus-files-view.c:6897
+#: src/nautilus-files-view.c:6878
 #, c-format
 msgid "Unable to remove “%s”"
 msgstr "לא ניתן להסיר את „%s”"
 
-#: src/nautilus-files-view.c:6942
+#: src/nautilus-files-view.c:6923
 msgid "Unable to stop drive"
 msgstr "לא ניתן לעצור את הכונן"
 
 #. Translators: %s is a file name formatted for display
-#: src/nautilus-files-view.c:7057 src/gtk/nautilusgtkplacessidebar.c:1659
-#: src/gtk/nautilusgtkplacessidebar.c:2538
+#: src/nautilus-files-view.c:7038 src/gtk/nautilusgtkplacessidebar.c:1657
+#: src/gtk/nautilusgtkplacessidebar.c:2536
 #, c-format
 msgid "Unable to start “%s”"
 msgstr "לא ניתן להפעיל את „%s”"
 
-#: src/nautilus-files-view.c:8178
+#: src/nautilus-files-view.c:8159
 #, c-format
 msgid "New Folder with Selection (%'d Item)"
 msgid_plural "New Folder with Selection (%'d Items)"
@@ -2800,64 +2804,64 @@ msgstr[1] "תיקייה חדשה עם הבחירה (שני פריטים)"
 msgstr[2] "תיקייה חדשה עם הבחירה (%'d פריטים)"
 msgstr[3] "תיקייה חדשה עם הבחירה (%'d פריטים)"
 
-#: src/nautilus-files-view.c:8233
+#: src/nautilus-files-view.c:8214
 #, c-format
 msgid "Open With %s"
 msgstr "פתיחה באמצעות %s"
 
-#: src/nautilus-files-view.c:8244
+#: src/nautilus-files-view.c:8225
 msgid "Run"
 msgstr "הפעלה"
 
-#: src/nautilus-files-view.c:8249
+#: src/nautilus-files-view.c:8230
 #: src/resources/ui/nautilus-operations-ui-manager-request-passphrase.ui:17
 msgid "Extract"
 msgstr "חילוץ"
 
-#: src/nautilus-files-view.c:8250
+#: src/nautilus-files-view.c:8231
 msgid "Extract to…"
 msgstr "חילוץ אל…"
 
-#: src/nautilus-files-view.c:8254
+#: src/nautilus-files-view.c:8235
 #: src/resources/ui/nautilus-files-view-context-menus.ui:93
 msgid "Open"
 msgstr "פתיחה"
 
-#: src/nautilus-files-view.c:8333
+#: src/nautilus-files-view.c:8314
 #: src/resources/ui/nautilus-files-view-context-menus.ui:159
-#: src/gtk/nautilusgtkplacessidebar.c:2960
+#: src/gtk/nautilusgtkplacessidebar.c:2959
 msgid "_Start"
 msgstr "ה_תחלה"
 
-#: src/nautilus-files-view.c:8339
+#: src/nautilus-files-view.c:8320
 msgid "_Connect"
 msgstr "ה_תחברות"
 
-#: src/nautilus-files-view.c:8345
+#: src/nautilus-files-view.c:8326
 msgid "_Start Multi-disk Drive"
 msgstr "ה_תחלת כונן מרובה דיסקים"
 
-#: src/nautilus-files-view.c:8351
+#: src/nautilus-files-view.c:8332
 msgid "U_nlock Drive"
 msgstr "ש_חרור כונן"
 
-#: src/nautilus-files-view.c:8369
+#: src/nautilus-files-view.c:8350
 msgid "Stop Drive"
 msgstr "ה_שהית כונן"
 
-#: src/nautilus-files-view.c:8375 src/gtk/nautilusgtkplacessidebar.c:2977
+#: src/nautilus-files-view.c:8356 src/gtk/nautilusgtkplacessidebar.c:2976
 msgid "_Safely Remove Drive"
 msgstr "הסרת הכונן _בבטחה"
 
-#: src/nautilus-files-view.c:8381
+#: src/nautilus-files-view.c:8362
 msgid "_Disconnect"
 msgstr "_ניתוק"
 
-#: src/nautilus-files-view.c:8387
+#: src/nautilus-files-view.c:8368
 msgid "_Stop Multi-disk Drive"
 msgstr "_עצירת כונן מרובה דיסקים"
 
-#: src/nautilus-files-view.c:8393
+#: src/nautilus-files-view.c:8374
 msgid "_Lock Drive"
 msgstr "_נעילת כונן"
 
@@ -2874,7 +2878,7 @@ msgstr "גרירה והשלכה אינן נתמכות."
 msgid "An invalid drag type was used."
 msgstr "שימוש בסוג גרירה לא תקני."
 
-#: src/nautilus-file-undo-operations.c:177 src/nautilus-window.c:890
+#: src/nautilus-file-undo-operations.c:177 src/nautilus-window.c:895
 msgid "Undo"
 msgstr "ביטול"
 
@@ -3422,24 +3426,28 @@ msgid "Contains photos and music"
 msgstr "מכיל תמונות ומוזיקה"
 
 #. Translators: This is appended to a file name when a copy of a file is created.
-#: src/nautilus-filename-utilities.c:165
+#: src/nautilus-filename-utilities.c:164
 msgctxt "Noun"
 msgid "Copy"
 msgstr "העתקה"
 
 #. Translators: This is appended to a file name when a copy of an already copied file is created.
 #. * `%zu` will be replaced with a number one higher than that of the previous copy.
-#: src/nautilus-filename-utilities.c:168
+#: src/nautilus-filename-utilities.c:167
 #, c-format
 msgctxt "Noun"
 msgid "Copy %zu"
 msgstr "עותק %zu"
 
 #. Translators: File name for new symlink. %s is target's name, %zu is number of symlink.
-#: src/nautilus-filename-utilities.c:259
+#: src/nautilus-filename-utilities.c:258
 #, c-format
 msgid "Link to %s (%zu)"
 msgstr "קישור ל־%s (%zu)"
+
+#: src/nautilus-floating-bar.c:391
+msgid "Stop"
+msgstr "עצירה"
 
 #: src/nautilus-grid-view.c:516 src/nautilus-list-view.c:403
 #: src/nautilus-network-view.c:349
@@ -3452,12 +3460,12 @@ msgid "View of the current location"
 msgstr "הצגת המיקום הנוכחי"
 
 #: src/nautilus-internal-place-file.c:165
-#: src/gtk/nautilusgtkplacessidebar.c:716
+#: src/gtk/nautilusgtkplacessidebar.c:713
 msgid "Network"
 msgstr "רשת"
 
 #: src/nautilus-internal-place-file.c:169
-#: src/gtk/nautilusgtkplacessidebar.c:690
+#: src/gtk/nautilusgtkplacessidebar.c:687
 msgid "Starred"
 msgstr "מסומן בכוכב"
 
@@ -3495,7 +3503,7 @@ msgstr "קבצים בתיקייה זו ישמשו תבניות למסמכים ח
 msgid "_Learn More"
 msgstr "_ללמוד עוד"
 
-#: src/nautilus-location-banner.c:239 src/gtk/nautilusgtkplacessidebar.c:2912
+#: src/nautilus-location-banner.c:239 src/gtk/nautilusgtkplacessidebar.c:2911
 msgid "_Empty Trash…"
 msgstr "_פינוי האשפה…"
 
@@ -3736,7 +3744,7 @@ msgid "dav:// or davs://"
 msgstr "‏‎dav:// או ‎davs://"
 
 #. Online accounts do not currently have a target URI.
-#: src/nautilus-network-cell.c:41
+#: src/nautilus-network-cell.c:42
 msgid "Online Account"
 msgstr "חשבון מקוון"
 
@@ -3838,7 +3846,7 @@ msgid "Another file with the same name already exists in “%s”."
 msgstr "קובץ אחר בעל אותו השם כבר קיים ב־„%s”."
 
 #: src/nautilus-operations-ui-manager.c:282
-#: src/resources/ui/nautilus-properties-window.ui:398
+#: src/resources/ui/nautilus-properties-window.ui:401
 msgid "Original Folder"
 msgstr "תיקייה מקורית"
 
@@ -3872,7 +3880,7 @@ msgstr "מיזוג עם"
 
 #: src/nautilus-operations-ui-manager.c:314
 #: src/nautilus-operations-ui-manager.c:319
-#: src/resources/ui/nautilus-batch-rename-dialog.ui:281
+#: src/resources/ui/nautilus-batch-rename-dialog.ui:283
 msgid "Replace With"
 msgstr "החלפה עם"
 
@@ -3908,7 +3916,7 @@ msgstr "תפריט תיקייה נוכחית"
 
 #. Translators: This is the label used in the pathbar when seeing
 #. * the root directory (also known as /)
-#: src/nautilus-pathbar.c:404 src/nautilus-properties-window.c:849
+#: src/nautilus-pathbar.c:404 src/nautilus-properties-window.c:851
 msgid "Operating System"
 msgstr "מערכת הפעלה"
 
@@ -3918,18 +3926,18 @@ msgstr "מערכת הפעלה"
 msgid "Administrator Root"
 msgstr "מנהל מערכת (Root)"
 
-#: src/nautilus-portal.c:417 src/resources/ui/nautilus-app-chooser.ui:96
+#: src/nautilus-portal.c:434 src/resources/ui/nautilus-app-chooser.ui:96
 #: src/resources/ui/nautilus-files-view-context-menus.ui:87
-#: src/gtk/nautilusgtkplacessidebar.c:2753
-#: src/gtk/nautilusgtkplacessidebar.c:2869
+#: src/gtk/nautilusgtkplacessidebar.c:2751
+#: src/gtk/nautilusgtkplacessidebar.c:2867
 msgid "_Open"
 msgstr "_פתיחה"
 
-#: src/nautilus-portal.c:421
+#: src/nautilus-portal.c:438
 msgid "_Save"
 msgstr "_שמירה"
 
-#: src/nautilus-portal.c:502
+#: src/nautilus-portal.c:518
 msgid "Open Read-Only"
 msgstr "פתיחה לקריאה בלבד"
 
@@ -4077,63 +4085,63 @@ msgstr "כתיבה בלבד, ללא גישה"
 msgid "Access-Only"
 msgstr "גישה בלבד"
 
-#: src/nautilus-properties-window.c:638
+#: src/nautilus-properties-window.c:642
 msgid "Custom icon removed"
 msgstr "סמליל מותאם אישית הוסר"
 
-#: src/nautilus-properties-window.c:639 src/nautilus-window.c:807
+#: src/nautilus-properties-window.c:643 src/nautilus-window.c:807
 #: src/resources/ui/nautilus-window.ui:22
 msgid "_Undo"
 msgstr "_ביטול"
 
-#: src/nautilus-properties-window.c:669
+#: src/nautilus-properties-window.c:673
 msgid "You cannot assign more than one custom icon at a time!"
 msgstr "לא ניתן לשייך יותר מסמל מותאם אישית אחד בכל פעם!"
 
-#: src/nautilus-properties-window.c:670
+#: src/nautilus-properties-window.c:674
 msgid "Please drop just one image to set a custom icon."
 msgstr "נא לגרור רק תמונה אחת כדי להגדיר סמל מותאם."
 
-#: src/nautilus-properties-window.c:686
+#: src/nautilus-properties-window.c:690
 msgid "The file that you dropped is not local."
 msgstr "הקובץ שהושלך אינו מקומי."
 
-#: src/nautilus-properties-window.c:687 src/nautilus-properties-window.c:694
+#: src/nautilus-properties-window.c:691 src/nautilus-properties-window.c:698
 msgid "You can only use local images as custom icons."
 msgstr "ניתן להשתמש רק בתמונות מקומיות כסמלים מותאמים אישית."
 
-#: src/nautilus-properties-window.c:693
+#: src/nautilus-properties-window.c:697
 msgid "The file that you dropped is not an image."
 msgstr "הקובץ שהשלכת אינו תמונה."
 
 #. Translators: This is a verb for tagging or untagging a file with a star.
 #. Unmarks a file as starred (starred)
-#: src/nautilus-properties-window.c:737 src/nautilus-star-cell.c:66
+#: src/nautilus-properties-window.c:741 src/nautilus-star-cell.c:66
 #: src/resources/ui/nautilus-files-view-context-menus.ui:256
 msgid "Unstar"
 msgstr "ביטול כוכב"
 
-#: src/nautilus-properties-window.c:1588
+#: src/nautilus-properties-window.c:1586
 msgid "Cancel Group Change?"
 msgstr "לבטל שינוי קבוצה?"
 
-#: src/nautilus-properties-window.c:1737
+#: src/nautilus-properties-window.c:1735
 msgid "Cancel Owner Change?"
 msgstr "לבטל שינוי בעלים?"
 
-#: src/nautilus-properties-window.c:1876 src/nautilus-properties-window.c:1921
+#: src/nautilus-properties-window.c:1885 src/nautilus-properties-window.c:1932
 msgid "Multiple"
 msgstr "מרובה"
 
-#: src/nautilus-properties-window.c:2055
+#: src/nautilus-properties-window.c:2066
 msgid "Empty folder"
 msgstr "תיקייה ריקה"
 
-#: src/nautilus-properties-window.c:2059
+#: src/nautilus-properties-window.c:2070
 msgid "Contents unreadable"
 msgstr "תוכן לא ניתן לקריאה"
 
-#: src/nautilus-properties-window.c:2071
+#: src/nautilus-properties-window.c:2082
 #, c-format
 msgid "%'d item, with size %s"
 msgid_plural "%'d items, totalling %s"
@@ -4142,26 +4150,26 @@ msgstr[1] "‫%'d פריטים, סה״כ %s"
 msgstr[2] "‫%'d פריטים, סה״כ %s"
 msgstr[3] "‫%'d פריטים, סה״כ %s"
 
-#: src/nautilus-properties-window.c:2081
+#: src/nautilus-properties-window.c:2092
 msgid "(some contents unreadable)"
 msgstr "(חלק מהתוכן אינו קריא)"
 
 #. Translators: %s will be filled with a filesystem type, such as 'ext4' or 'msdos'.
-#: src/nautilus-properties-window.c:2413
+#: src/nautilus-properties-window.c:2424
 #, c-format
 msgid "%s Filesystem"
 msgstr "מערכת קבצים %s"
 
-#: src/nautilus-properties-window.c:3549
+#: src/nautilus-properties-window.c:3529
 #, c-format
 msgid "The permissions of “%s” could not be determined."
 msgstr "לא ניתן לזהות את ההרשאות של „%s”."
 
-#: src/nautilus-properties-window.c:3895
+#: src/nautilus-properties-window.c:3891
 msgid "Creating Properties window."
 msgstr "נוצר חלון מאפיינים."
 
-#: src/nautilus-properties-window.c:4025
+#: src/nautilus-properties-window.c:4020
 msgid "Select Custom Icon"
 msgstr "בחירת סמל מותאם אישית"
 
@@ -4250,22 +4258,22 @@ msgid "Use Calendar"
 msgstr "שימוש ביומן"
 
 #. Add the no date filter element first
-#: src/nautilus-search-popover.c:426
+#: src/nautilus-search-popover.c:427
 msgid "Any time"
 msgstr "כל זמן"
 
 #. Other types
-#: src/nautilus-search-popover.c:521
+#: src/nautilus-search-popover.c:522
 msgid "Other Type…"
 msgstr "סוג אחר…"
 
-#: src/nautilus-search-popover.c:713
+#: src/nautilus-search-popover.c:714
 msgid "Select Dates…"
 msgstr "בחירת תאריכים…"
 
 #. trash
 #: src/nautilus-shell-search-provider.c:347
-#: src/gtk/nautilusgtkplacessidebar.c:727
+#: src/gtk/nautilusgtkplacessidebar.c:724
 msgid "Trash"
 msgstr "אשפה"
 
@@ -4389,31 +4397,31 @@ msgid "_Redo"
 msgstr "ביצוע מ_חדש"
 
 #. translators: %s is the name of a cloud provider for files
-#: src/nautilus-window.c:933 src/gtk/nautilusgtkplacessidebar.c:584
+#: src/nautilus-window.c:938 src/gtk/nautilusgtkplacessidebar.c:581
 #, c-format
 msgid "Open %s"
 msgstr "פתיחת %s"
 
-#: src/nautilus-window.c:1719 src/nautilus-window.c:1724
-#: src/nautilus-window.c:1729
+#: src/nautilus-window.c:1724 src/nautilus-window.c:1729
+#: src/nautilus-window.c:1734
 msgid "The GNOME Project"
 msgstr "מיזם GNOME"
 
-#: src/nautilus-window.c:1736
+#: src/nautilus-window.c:1741
 msgid "No plugins currently installed."
 msgstr "לא מותקנים תוספים."
 
-#: src/nautilus-window.c:1740
+#: src/nautilus-window.c:1745
 msgid "Currently installed plugins:"
 msgstr "תוספים מותקנים:"
 
-#: src/nautilus-window.c:1742
+#: src/nautilus-window.c:1747
 msgid "For bug testing only, the following command can be used:"
 msgstr "אך ורק לבדיקת תקלות, ניתן להשתמש בפקודה הבאה:"
 
 #. Translators should localize the following string which will be displayed at the bottom of
 #. * the about box to give credit to the translator(s).
-#: src/nautilus-window.c:1757
+#: src/nautilus-window.c:1762
 msgid "translator-credits"
 msgstr ""
 "גיל אשר <dolfin@rpg.org.il>\n"
@@ -4438,7 +4446,7 @@ msgid "Forward"
 msgstr "קדימה"
 
 #: src/nautilus-window-slot.c:912 src/resources/ui/nautilus-file-chooser.ui:27
-#: src/resources/ui/nautilus-window.ui:117
+#: src/resources/ui/nautilus-window.ui:116
 msgid "Search Everywhere"
 msgstr "חיפוש בכל מקום"
 
@@ -4901,41 +4909,41 @@ msgstr "שם אלבום"
 msgid "Original File Name"
 msgstr "שם הקובץ המקורי"
 
-#: src/resources/ui/nautilus-batch-rename-dialog.ui:113
+#: src/resources/ui/nautilus-batch-rename-dialog.ui:124
 #: src/resources/ui/nautilus-file-conflict-dialog.ui:30
 #: src/resources/ui/nautilus-rename-file-popover.ui:47
-#: src/gtk/nautilusgtkplacessidebar.c:1986
-#: src/gtk/nautilusgtkplacessidebar.c:2903
+#: src/gtk/nautilusgtkplacessidebar.c:1984
+#: src/gtk/nautilusgtkplacessidebar.c:2901
 msgid "_Rename"
 msgstr "_שינוי שם"
 
-#: src/resources/ui/nautilus-batch-rename-dialog.ui:141
+#: src/resources/ui/nautilus-batch-rename-dialog.ui:153
 msgid "Rename _using a template"
 msgstr "שינוי שם _באמצעות תבנית"
 
-#: src/resources/ui/nautilus-batch-rename-dialog.ui:149
+#: src/resources/ui/nautilus-batch-rename-dialog.ui:161
 msgid "Find and replace _text"
 msgstr "חיפוש והחלפת _טקסט"
 
 #. Translators: This is a noun, not a verb
-#: src/resources/ui/nautilus-batch-rename-dialog.ui:170
+#: src/resources/ui/nautilus-batch-rename-dialog.ui:178
 msgid "Format"
 msgstr "תבנית"
 
-#: src/resources/ui/nautilus-batch-rename-dialog.ui:195
+#: src/resources/ui/nautilus-batch-rename-dialog.ui:203
 msgid "Add"
 msgstr "הוספה"
 
-#: src/resources/ui/nautilus-batch-rename-dialog.ui:218
+#: src/resources/ui/nautilus-batch-rename-dialog.ui:224
 msgid "Automatic Numbering Order"
 msgstr "מספור אוטומטי"
 
-#: src/resources/ui/nautilus-batch-rename-dialog.ui:243
+#: src/resources/ui/nautilus-batch-rename-dialog.ui:244
 msgctxt "title"
 msgid "Replace"
 msgstr "החלפה"
 
-#: src/resources/ui/nautilus-batch-rename-dialog.ui:255
+#: src/resources/ui/nautilus-batch-rename-dialog.ui:257
 msgid "Existing Text"
 msgstr "טקסט קיים"
 
@@ -5151,15 +5159,15 @@ msgstr "ה_רצה כתָכְנה"
 
 #: src/resources/ui/nautilus-files-view-context-menus.ui:98
 #: src/resources/ui/nautilus-pathbar-context-menu.ui:10
-#: src/gtk/nautilusgtkplacessidebar.c:2761
-#: src/gtk/nautilusgtkplacessidebar.c:2877
+#: src/gtk/nautilusgtkplacessidebar.c:2759
+#: src/gtk/nautilusgtkplacessidebar.c:2875
 msgid "Open in New _Tab"
 msgstr "פתיחה ב_לשונית חדשה"
 
 #: src/resources/ui/nautilus-files-view-context-menus.ui:103
 #: src/resources/ui/nautilus-pathbar-context-menu.ui:6
-#: src/gtk/nautilusgtkplacessidebar.c:2768
-#: src/gtk/nautilusgtkplacessidebar.c:2886
+#: src/gtk/nautilusgtkplacessidebar.c:2766
+#: src/gtk/nautilusgtkplacessidebar.c:2884
 msgid "Open in New _Window"
 msgstr "פתיחה ב_חלון חדש"
 
@@ -5176,27 +5184,27 @@ msgid "_Open Scripts Folder"
 msgstr "_פתיחת תיקיית הסקריפטים"
 
 #: src/resources/ui/nautilus-files-view-context-menus.ui:144
-#: src/gtk/nautilusgtkplacessidebar.c:2925
+#: src/gtk/nautilusgtkplacessidebar.c:2924
 msgid "_Mount"
 msgstr "_עיגון"
 
 #: src/resources/ui/nautilus-files-view-context-menus.ui:149
-#: src/gtk/nautilusgtkplacessidebar.c:2934
+#: src/gtk/nautilusgtkplacessidebar.c:2933
 msgid "_Unmount"
 msgstr "_ניתוק"
 
 #: src/resources/ui/nautilus-files-view-context-menus.ui:154
-#: src/gtk/nautilusgtkplacessidebar.c:2941
+#: src/gtk/nautilusgtkplacessidebar.c:2940
 msgid "_Eject"
 msgstr "_שליפה"
 
 #: src/resources/ui/nautilus-files-view-context-menus.ui:164
-#: src/gtk/nautilusgtkplacessidebar.c:2975
+#: src/gtk/nautilusgtkplacessidebar.c:2974
 msgid "_Stop"
 msgstr "_עצירה"
 
 #: src/resources/ui/nautilus-files-view-context-menus.ui:169
-#: src/gtk/nautilusgtkplacessidebar.c:2951
+#: src/gtk/nautilusgtkplacessidebar.c:2950
 msgid "_Detect Media"
 msgstr "_זיהוי מדיה"
 
@@ -5305,7 +5313,7 @@ msgid "Server Address Information"
 msgstr "פרטי כתובת שרת"
 
 #: src/resources/ui/nautilus-network-cell.ui:70
-#: src/gtk/nautilusgtkplacessidebar.c:392
+#: src/gtk/nautilusgtkplacessidebar.c:389
 msgid "Disconnect"
 msgstr "התנתקות"
 
@@ -5465,117 +5473,117 @@ msgid "Show File Operations"
 msgstr "הצגת פעולות על קובץ"
 
 #: src/resources/ui/nautilus-properties-window.ui:5
-#: src/resources/ui/nautilus-properties-window.ui:13
-#: src/gtk/nautilusgtkplacessidebar.c:2999
+#: src/resources/ui/nautilus-properties-window.ui:16
+#: src/gtk/nautilusgtkplacessidebar.c:2998
 msgid "Properties"
 msgstr "מאפיינים"
 
-#: src/resources/ui/nautilus-properties-window.ui:97
+#: src/resources/ui/nautilus-properties-window.ui:100
 msgid "Set Custom Icon"
 msgstr "ה"
 
-#: src/resources/ui/nautilus-properties-window.ui:118
+#: src/resources/ui/nautilus-properties-window.ui:121
 msgid "Remove Custom Icon"
 msgstr "הסרת סמליל מותאם אישית"
 
-#: src/resources/ui/nautilus-properties-window.ui:165
+#: src/resources/ui/nautilus-properties-window.ui:168
 msgid "Unknown Filesystem"
 msgstr "סוג מערכת קבצים לא ידוע"
 
-#: src/resources/ui/nautilus-properties-window.ui:252
+#: src/resources/ui/nautilus-properties-window.ui:255
 msgid "total"
 msgstr "סה״כ"
 
 #. Refers to the capacity of the filesystem
-#: src/resources/ui/nautilus-properties-window.ui:282
+#: src/resources/ui/nautilus-properties-window.ui:285
 msgid "used"
 msgstr "בשימוש"
 
 #. Refers to the capacity of the filesystem
-#: src/resources/ui/nautilus-properties-window.ui:313
+#: src/resources/ui/nautilus-properties-window.ui:316
 msgid "free"
 msgstr "פנוי"
 
 #. Disks refers to GNOME Disks.
-#: src/resources/ui/nautilus-properties-window.ui:330
+#: src/resources/ui/nautilus-properties-window.ui:333
 msgid "_Open in Disks"
 msgstr "_פתיחה באמצעות כוננים"
 
-#: src/resources/ui/nautilus-properties-window.ui:343
+#: src/resources/ui/nautilus-properties-window.ui:346
 msgid "_Link Target"
 msgstr "יעד _קישור"
 
-#: src/resources/ui/nautilus-properties-window.ui:355
+#: src/resources/ui/nautilus-properties-window.ui:358
 msgid "Open Link Target"
 msgstr "פתיחת יעד הקישור"
 
-#: src/resources/ui/nautilus-properties-window.ui:368
+#: src/resources/ui/nautilus-properties-window.ui:371
 msgid "Parent _Folder"
 msgstr "_תיקייה מכילה"
 
-#: src/resources/ui/nautilus-properties-window.ui:380
+#: src/resources/ui/nautilus-properties-window.ui:383
 msgid "Open Parent Folder"
 msgstr "פתיחת תיקייה מכילה"
 
-#: src/resources/ui/nautilus-properties-window.ui:475
+#: src/resources/ui/nautilus-properties-window.ui:478
 msgid "_Permissions"
 msgstr "_הרשאות"
 
-#: src/resources/ui/nautilus-properties-window.ui:497
+#: src/resources/ui/nautilus-properties-window.ui:500
 msgid "_Executable as Program"
 msgstr "ה_רצה כתָכְנה"
 
-#: src/resources/ui/nautilus-properties-window.ui:525
+#: src/resources/ui/nautilus-properties-window.ui:528
 msgid "Set Custom Permissions"
 msgstr "הגדרת הרשאות מותאמות"
 
-#: src/resources/ui/nautilus-properties-window.ui:539
+#: src/resources/ui/nautilus-properties-window.ui:542
 msgid "Unknown Permissions"
 msgstr "הרשאות לא ידועות"
 
-#: src/resources/ui/nautilus-properties-window.ui:540
+#: src/resources/ui/nautilus-properties-window.ui:543
 msgid "The permissions of the selected files could not be determined"
 msgstr "לא ניתן לזהות את ההרשאות של הקבצים הנבחרים"
 
-#: src/resources/ui/nautilus-properties-window.ui:553
+#: src/resources/ui/nautilus-properties-window.ui:556
 msgid "Only the owner can edit these permissions"
 msgstr "רק הבעלים יכולים לשנות את ההרשאות הללו"
 
-#: src/resources/ui/nautilus-properties-window.ui:562
+#: src/resources/ui/nautilus-properties-window.ui:566
 msgid "_Owner"
 msgstr "_בעלים"
 
-#: src/resources/ui/nautilus-properties-window.ui:575
-#: src/resources/ui/nautilus-properties-window.ui:615
-#: src/resources/ui/nautilus-properties-window.ui:644
+#: src/resources/ui/nautilus-properties-window.ui:578
+#: src/resources/ui/nautilus-properties-window.ui:618
+#: src/resources/ui/nautilus-properties-window.ui:647
 msgid "Access"
 msgstr "גישה"
 
-#: src/resources/ui/nautilus-properties-window.ui:583
-#: src/resources/ui/nautilus-properties-window.ui:623
-#: src/resources/ui/nautilus-properties-window.ui:652
+#: src/resources/ui/nautilus-properties-window.ui:586
+#: src/resources/ui/nautilus-properties-window.ui:626
+#: src/resources/ui/nautilus-properties-window.ui:655
 msgid "Folder Access"
 msgstr "גישה לתיקייה"
 
-#: src/resources/ui/nautilus-properties-window.ui:591
-#: src/resources/ui/nautilus-properties-window.ui:631
-#: src/resources/ui/nautilus-properties-window.ui:660
+#: src/resources/ui/nautilus-properties-window.ui:594
+#: src/resources/ui/nautilus-properties-window.ui:634
+#: src/resources/ui/nautilus-properties-window.ui:663
 msgid "File Access"
 msgstr "גישה לקובץ"
 
-#: src/resources/ui/nautilus-properties-window.ui:603
+#: src/resources/ui/nautilus-properties-window.ui:606
 msgid "_Group"
 msgstr "קבו_צה"
 
-#: src/resources/ui/nautilus-properties-window.ui:639
+#: src/resources/ui/nautilus-properties-window.ui:642
 msgid "Other Users"
 msgstr "משתמשים אחרים"
 
-#: src/resources/ui/nautilus-properties-window.ui:671
+#: src/resources/ui/nautilus-properties-window.ui:674
 msgid "Security Context"
 msgstr "הקשר אבטחה"
 
-#: src/resources/ui/nautilus-properties-window.ui:688
+#: src/resources/ui/nautilus-properties-window.ui:691
 msgid "Change Permissions for _Enclosed Files…"
 msgstr "החלפת ההרשאות לכל הקבצים ש_בפנים…"
 
@@ -5780,132 +5788,132 @@ msgstr "סגירת ה_לשונית"
 msgid "Close _Other Tabs"
 msgstr "סגירת _שאר הלשוניות"
 
-#: src/resources/ui/nautilus-window.ui:129
+#: src/resources/ui/nautilus-window.ui:128
 msgid "Main Menu"
 msgstr "תפריט ראשי"
 
-#: src/gtk/nautilusgtkplacessidebar.c:394
+#: src/gtk/nautilusgtkplacessidebar.c:391
 msgid "Eject"
 msgstr "שליפה"
 
-#: src/gtk/nautilusgtkplacessidebar.c:396
+#: src/gtk/nautilusgtkplacessidebar.c:393
 msgid "Unmount"
 msgstr "ביטול עיגון"
 
-#: src/gtk/nautilusgtkplacessidebar.c:672
+#: src/gtk/nautilusgtkplacessidebar.c:669
 msgid "Open Personal Folder"
 msgstr "פתיחת התיקייה הפרטית שלך"
 
-#: src/gtk/nautilusgtkplacessidebar.c:681
+#: src/gtk/nautilusgtkplacessidebar.c:678
 msgid "Recent"
 msgstr "בשימוש לאחרונה"
 
-#: src/gtk/nautilusgtkplacessidebar.c:683
+#: src/gtk/nautilusgtkplacessidebar.c:680
 msgid "Recent Files"
 msgstr "קבצים אחרונים"
 
-#: src/gtk/nautilusgtkplacessidebar.c:692
+#: src/gtk/nautilusgtkplacessidebar.c:689
 msgid "Starred Files"
 msgstr "קבצים מסומנים בכוכב"
 
-#: src/gtk/nautilusgtkplacessidebar.c:704
+#: src/gtk/nautilusgtkplacessidebar.c:701
 msgid "Desktop"
 msgstr "שולחן עבודה"
 
-#: src/gtk/nautilusgtkplacessidebar.c:706
+#: src/gtk/nautilusgtkplacessidebar.c:703
 msgid "Open the contents of your desktop in a folder"
 msgstr "פתיחת תוכן שולחן העבודה שלך בתיקייה"
 
-#: src/gtk/nautilusgtkplacessidebar.c:718
+#: src/gtk/nautilusgtkplacessidebar.c:715
 msgid "Open Network Locations"
 msgstr "פתיחת מקומות ברשת"
 
-#: src/gtk/nautilusgtkplacessidebar.c:729
+#: src/gtk/nautilusgtkplacessidebar.c:726
 msgid "Open Trash"
 msgstr "פתיחת האשפה"
 
-#: src/gtk/nautilusgtkplacessidebar.c:833
-#: src/gtk/nautilusgtkplacessidebar.c:863
-#: src/gtk/nautilusgtkplacessidebar.c:1040
+#: src/gtk/nautilusgtkplacessidebar.c:830
+#: src/gtk/nautilusgtkplacessidebar.c:860
+#: src/gtk/nautilusgtkplacessidebar.c:1038
 #, c-format
 msgid "Mount and Open “%s”"
 msgstr "לעגן ולפתוח את „%s”"
 
-#: src/gtk/nautilusgtkplacessidebar.c:1018
+#: src/gtk/nautilusgtkplacessidebar.c:1016
 msgid "New bookmark"
 msgstr "סימנייה חדשה"
 
-#: src/gtk/nautilusgtkplacessidebar.c:1020
+#: src/gtk/nautilusgtkplacessidebar.c:1018
 msgid "Add a new bookmark"
 msgstr "הוספת סימנייה חדשה"
 
 #. Translators: This means that unlocking an encrypted storage
 #. * device failed. %s is the name of the device.
 #.
-#: src/gtk/nautilusgtkplacessidebar.c:1702
+#: src/gtk/nautilusgtkplacessidebar.c:1700
 #, c-format
 msgid "Error unlocking “%s”"
 msgstr "שגיאה בנעילת „%s”"
 
-#: src/gtk/nautilusgtkplacessidebar.c:1899
+#: src/gtk/nautilusgtkplacessidebar.c:1897
 msgid "This name is already taken"
 msgstr "שם זה כבר בשימוש"
 
-#: src/gtk/nautilusgtkplacessidebar.c:2283
+#: src/gtk/nautilusgtkplacessidebar.c:2281
 #, c-format
 msgid "Unable to stop “%s”"
 msgstr "לא ניתן לעצור את „%s”"
 
-#: src/gtk/nautilusgtkplacessidebar.c:2490
+#: src/gtk/nautilusgtkplacessidebar.c:2488
 #, c-format
 msgid "Unable to poll “%s” for media changes"
 msgstr "לא ניתן לתשאל את „%s” מהם השינויים במדיה"
 
-#: src/gtk/nautilusgtkplacessidebar.c:2898
+#: src/gtk/nautilusgtkplacessidebar.c:2896
 msgid "_Remove from Bookmarks"
 msgstr "ה_סרה מהסימניות"
 
-#: src/gtk/nautilusgtkplacessidebar.c:2962
+#: src/gtk/nautilusgtkplacessidebar.c:2961
 msgid "_Power On"
 msgstr "ה_דלקה"
 
-#: src/gtk/nautilusgtkplacessidebar.c:2963
+#: src/gtk/nautilusgtkplacessidebar.c:2962
 msgid "_Connect Drive"
 msgstr "_חיבור כונן"
 
-#: src/gtk/nautilusgtkplacessidebar.c:2964
+#: src/gtk/nautilusgtkplacessidebar.c:2963
 msgid "_Start Multi-disk Device"
 msgstr "ה_תחלת התקן מרובה כוננים"
 
-#: src/gtk/nautilusgtkplacessidebar.c:2965
+#: src/gtk/nautilusgtkplacessidebar.c:2964
 msgid "_Unlock Device"
 msgstr "_שחרור ההתקן"
 
-#: src/gtk/nautilusgtkplacessidebar.c:2978
+#: src/gtk/nautilusgtkplacessidebar.c:2977
 msgid "_Disconnect Drive"
 msgstr "_ניתוק כונן"
 
-#: src/gtk/nautilusgtkplacessidebar.c:2979
+#: src/gtk/nautilusgtkplacessidebar.c:2978
 msgid "_Stop Multi-disk Device"
 msgstr "_עצירת התקן מרובה כוננים"
 
-#: src/gtk/nautilusgtkplacessidebar.c:2980
+#: src/gtk/nautilusgtkplacessidebar.c:2979
 msgid "_Lock Device"
 msgstr "_נעילת ההתקן"
 
-#: src/gtk/nautilusgtkplacessidebar.c:2989
+#: src/gtk/nautilusgtkplacessidebar.c:2988
 msgid "Format…"
 msgstr "אתחול…"
 
-#: src/gtk/nautilusgtkplacessidebar.c:3508
+#: src/gtk/nautilusgtkplacessidebar.c:3519
 msgid "Device"
 msgstr "התקן"
 
-#: src/gtk/nautilusgtkplacessidebar.c:3550
+#: src/gtk/nautilusgtkplacessidebar.c:3561
 msgid "Sidebar"
 msgstr "סרגל צד"
 
-#: src/gtk/nautilusgtkplacessidebar.c:3552
+#: src/gtk/nautilusgtkplacessidebar.c:3563
 msgid "List of common shortcuts, mountpoints, and bookmarks."
 msgstr "רשימה של צירופי מקשים, נקודות עגינה וסימניות נפוצות."
 
@@ -11807,9 +11815,6 @@ msgstr "רשימה של צירופי מקשים, נקודות עגינה וסי�
 #~ "commandThe %d selected items will be copied if you select the Paste Files "
 #~ "command"
 #~ msgstr "הפריט הנבחר יועתק אם תבחר בפקודת הדבק קבצים"
-
-#~ msgid "Select _All Files"
-#~ msgstr "בחר את _כל הקבצים"
 
 #~ msgid "_Browse Folders"
 #~ msgstr "ד_פדף בתיקיות"
