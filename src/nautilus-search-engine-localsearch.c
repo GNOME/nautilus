@@ -370,7 +370,7 @@ create_statement (NautilusSearchProvider *provider,
                              " } UNION");
         }
 
-        /* Note: Do not be fooled by `fts:match` bellow. It matches only the
+        /* Note: Do not be fooled by `fts:match` below. It matches only the
          * filename here, unlike its usage above. This is because it's used
          * with `nfo:FileDataObject`, not `nie:InformationElement`. The only
          * full-text indexed property of `nfo:FileDataObject` is `nfo:fileName`.

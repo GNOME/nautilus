@@ -730,7 +730,7 @@ on_click_gesture_pressed (GtkGestureClick *gesture,
             else
             {
                 /* GtkButton will claim the primary button presses and emit the
-                 * "clicked" signal. Handle it in the singal callback, not here.
+                 * "clicked" signal. Handle it in the signal callback, not here.
                  */
                 return;
             }

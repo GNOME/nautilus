@@ -1401,9 +1401,9 @@ nautilus_list_base_set_zoom_level (NautilusListBase *self,
 }
 
 /* This should be called when changing view directory, but only once information
- * on the new directory file is ready, becase we need it to define sorting,
+ * on the new directory file is ready, because we need it to define sorting,
  * drop action. etc. We defer on NautilusFilesView the responsibility of calling
- * this at the right time, which, at the time of writing, is the default hanlder
+ * this at the right time, which, at the time of writing, is the default handler
  * of the NautilusFilesView::begin-loading signal. */
 void
 nautilus_list_base_setup_directory (NautilusListBase  *self,

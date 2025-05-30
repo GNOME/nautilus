@@ -469,7 +469,7 @@ nautilus_toolbar_class_init (NautilusToolbarClass *klass)
     properties [PROP_WINDOW_SLOT] =
         g_param_spec_object ("window-slot",
                              "Window slot currently active",
-                             "Window slot currently acive",
+                             "Window slot currently active",
                              NAUTILUS_TYPE_WINDOW_SLOT,
                              (G_PARAM_READWRITE |
                               G_PARAM_STATIC_STRINGS));

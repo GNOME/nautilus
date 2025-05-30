@@ -150,7 +150,7 @@ bookmark_file_changed_callback (NautilusFile     *file,
          * we will notice. However, we can't immediately do so
          * because creating a new NautilusFile directly as a result
          * of noticing a file goes away may trigger i/o on that file
-         * again, noticeing it is gone, leading to a loop.
+         * again, noticing it is gone, leading to a loop.
          * So, the new NautilusFile is created when the bookmark
          * is used again. However, this is not really a problem, as
          * we don't want to change the icon or anything about the

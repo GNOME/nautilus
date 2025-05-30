@@ -257,7 +257,7 @@ idle_callback (gpointer data)
 
     source = g_main_current_source ();
 
-    /* Protect agains races where the source has
+    /* Protect against races where the source has
      *  been destroyed on another thread while it
      *  was being dispatched.
      *  Similar to what gdk_threads_add_idle does.
@@ -269,7 +269,7 @@ idle_callback (gpointer data)
     }
 
     /* We hadn't destroyed the source, so take a ref.
-     * This might ressurect the object from dispose, but
+     * This might resurrect the object from dispose, but
      * that should be ok.
      */
     g_object_ref (info);

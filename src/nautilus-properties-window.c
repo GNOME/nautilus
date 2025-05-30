@@ -1944,7 +1944,7 @@ setup_ownership_row (NautilusPropertiesWindow *self,
 {
     adw_combo_row_set_model (row, G_LIST_MODEL (gtk_string_list_new (NULL)));
 
-    /* Intial setup of list model is handled via update function, called via properties_window_update. */
+    /* Initial setup of list model is handled via update function, called via properties_window_update. */
 }
 
 static gboolean
@@ -2761,7 +2761,7 @@ static gboolean
 files_has_changable_permissions_directory (NautilusPropertiesWindow *self)
 {
     GList *l;
-    gboolean changable = FALSE;
+    gboolean changeable = FALSE;
 
     for (l = self->files; l != NULL; l = l->next)
     {
@@ -2771,16 +2771,16 @@ files_has_changable_permissions_directory (NautilusPropertiesWindow *self)
             nautilus_file_can_get_permissions (file) &&
             nautilus_file_can_set_permissions (file))
         {
-            changable = TRUE;
+            changeable = TRUE;
         }
         else
         {
-            changable = FALSE;
+            changeable = FALSE;
             break;
         }
     }
 
-    return changable;
+    return changeable;
 }
 
 static void

@@ -426,7 +426,7 @@ nautilus_search_hit_class_init (NautilusSearchHitClass *class)
     g_object_class_install_property (object_class,
                                      PROP_ACCESS_TIME,
                                      g_param_spec_boxed ("access-time",
-                                                         "acess time",
+                                                         "access time",
                                                          "access time",
                                                          G_TYPE_DATE_TIME,
                                                          G_PARAM_READWRITE | G_PARAM_CONSTRUCT));

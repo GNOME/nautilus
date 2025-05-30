@@ -85,11 +85,11 @@
 #include "nautilus-view.h"
 #include "nautilus-view-model.h"
 
-/* Minimum starting update inverval */
+/* Minimum starting update interval */
 #define UPDATE_INTERVAL_MIN 100
 /* Maximum update interval */
 #define UPDATE_INTERVAL_MAX 2000
-/* Amount of miliseconds the update interval is increased */
+/* Amount of milliseconds the update interval is increased */
 #define UPDATE_INTERVAL_INC 250
 /* Interval at which the update interval is increased */
 #define UPDATE_INTERVAL_TIMEOUT_INTERVAL 250
@@ -109,7 +109,7 @@
 /* Delay to show the Loading... floating bar */
 #define FLOATING_BAR_LOADING_DELAY 200 /* ms */
 
-/* Delay to clear search results (avoid while flasing while typing) */
+/* Delay to clear search results (avoid while flashing while typing) */
 #define SEARCH_TRANSITION_TIMEOUT 200 /* ms */
 
 #define MIN_COMMON_FILENAME_PREFIX_LENGTH 4

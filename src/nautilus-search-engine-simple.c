@@ -186,7 +186,7 @@ search_thread_process_idle (gpointer user_data)
     g_mutex_lock (&thread_data->idle_mutex);
     hits = g_queue_pop_head (thread_data->idle_queue);
     /* Even if the cancellable is cancelled, we need to make sure the search
-     * thread has aknowledge it, and therefore not using the thread data after
+     * thread has acknowledge it, and therefore not using the thread data after
      * freeing it. The search thread will mark as finished whenever the search
      * is finished or cancelled.
      * Nonetheless, we should stop yielding results if the search was cancelled
@@ -221,7 +221,7 @@ finish_search_thread (SearchThreadData *thread_data)
     thread_data->finished = TRUE;
     g_mutex_unlock (&thread_data->idle_mutex);
 
-    /* If no results were processed, direclty finish the search, in the main
+    /* If no results were processed, directly finish the search, in the main
      * thread.
      */
     if (thread_data->processing_id == 0)

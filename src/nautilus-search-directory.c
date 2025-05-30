@@ -43,13 +43,13 @@ struct _NautilusSearchDirectory
     NautilusSearchEngine *engine;
 
     gboolean search_running;
-    /* When the search directory is stopped or cancelled, we migth wait
+    /* When the search directory is stopped or cancelled, we might wait
      * until all data and signals from previous search are stopped and removed
      * from the search engine. While this situation happens we don't want to connect
      * clients to our signals, and we will wait until the search data and signals
      * are valid and ready.
      * The worst thing that can happens if we don't do this is that new clients
-     * migth get the information of old searchs if they are waiting_for_file_list.
+     * might get the information of old searches if they are waiting_for_file_list.
      * But that shouldn't be a big deal since old clients have the old information.
      * But anyway it's currently unused for this case since the only client is
      * nautilus-view and is not waiting_for_file_list :) .
@@ -479,7 +479,7 @@ search_call_when_ready (NautilusDirectory         *directory,
     {
         /* Add it to the pending callback list, which will be
          * processed when the directory has valid data from the new
-         * search and all data and signals from previous searchs is removed. */
+         * search and all data and signals from previous search is removed. */
         self->pending_callback_list =
             g_list_prepend (self->pending_callback_list, search_callback);
 
