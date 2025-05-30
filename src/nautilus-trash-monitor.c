@@ -157,7 +157,7 @@ schedule_update_info (NautilusTrashMonitor *trash_monitor)
     GFile *location;
 
     /* Rate limit the updates to not flood the gvfsd-trash when too many changes
-     * happended in a short time.
+     * happened in a short time.
      */
     if (trash_monitor->timeout_id > 0)
     {

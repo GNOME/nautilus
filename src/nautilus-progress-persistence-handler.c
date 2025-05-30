@@ -264,7 +264,7 @@ release_application (NautilusProgressInfo               *info,
 {
     /* release the GApplication hold we acquired */
     g_application_release (g_application_get_default ());
-    /* Release reference aquired when the signal was connected. */
+    /* Release reference acquired when the signal was connected. */
     g_object_unref (info);
 }
 

@@ -364,7 +364,7 @@ real_open_location_full (NautilusApplication *self,
     /* FIXME: We are having problems on getting the current focused window with
      * gtk_application_get_active_window, see https://bugzilla.gnome.org/show_bug.cgi?id=756499
      * so what we do is never rely on this on the callers, but would be cool to
-     * make it work withouth explicitly setting the active window on the callers. */
+     * make it work without explicitly setting the active window on the callers. */
     active_window = NAUTILUS_WINDOW (gtk_application_get_active_window (GTK_APPLICATION (self)));
     /* There is no active window if the application is run with
      * --gapplication-service

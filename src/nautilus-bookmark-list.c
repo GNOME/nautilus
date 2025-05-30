@@ -535,7 +535,7 @@ load_callback (GObject      *source_object,
         if (lines[i][0] != '\0' && lines[i][0] != ' ')
         {
             /* gtk 2.7/2.8 might have labels appended to bookmarks which are separated by a space
-             * we must seperate the bookmark uri and the potential label
+             * we must separate the bookmark URI and the potential label.
              */
             char *space;
             g_autofree char *label = NULL;

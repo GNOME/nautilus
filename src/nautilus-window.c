@@ -1090,7 +1090,7 @@ const GActionEntry win_entries[] =
     { .name = "new-tab", .activate = action_new_tab },
     { .name = "undo", .activate = action_undo },
     { .name = "redo", .activate = action_redo },
-    /* Only accessible by shorcuts */
+    /* Only accessible by shortcuts */
     { .name = "close-current-view", .activate = action_close_current_view },
     { .name = "close-other-tabs", .activate = action_close_other_tabs },
     { .name = "go-home", .activate = action_go_home },
@@ -1123,7 +1123,7 @@ nautilus_window_initialize_actions (NautilusWindow *window)
 
     nautilus_application_set_accelerator (app, "win.undo", "<control>z");
     nautilus_application_set_accelerator (app, "win.redo", "<shift><control>z");
-    /* Only accessible by shorcuts */
+    /* Only accessible by shortcuts */
     nautilus_application_set_accelerator (app, "win.tab-move-left", "<shift><control>Page_Up");
     nautilus_application_set_accelerator (app, "win.tab-move-right", "<shift><control>Page_Down");
     nautilus_application_set_accelerator (app, "win.current-location-menu", "F10");
@@ -1235,7 +1235,7 @@ nautilus_window_constructed (GObject *self)
                              G_CALLBACK (nautilus_window_on_undo_changed), self,
                              G_CONNECT_AFTER);
 
-    /* Is required that the UI is constructed before initializating the actions, since
+    /* Is required that the UI is constructed before initializing the actions, since
      * some actions trigger UI widgets to show/hide. */
     nautilus_window_initialize_actions (window);
 }

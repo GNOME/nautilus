@@ -620,7 +620,7 @@ nautilus_dbus_manager_register (NautilusDBusManager  *self,
 {
     gboolean success1;
     gboolean success2;
-    gboolean succes;
+    gboolean success;
 
     success1 = g_dbus_interface_skeleton_export (G_DBUS_INTERFACE_SKELETON (self->file_operations),
                                                  connection,
@@ -632,9 +632,9 @@ nautilus_dbus_manager_register (NautilusDBusManager  *self,
                                                  "/org/gnome/Nautilus" PROFILE "/FileOperations2",
                                                  error);
 
-    succes = success1 && success2;
+    success = success1 && success2;
 
-    if (succes)
+    if (success)
     {
         g_signal_connect_object (nautilus_file_undo_manager_get (),
                                  "undo-changed",
@@ -645,7 +645,7 @@ nautilus_dbus_manager_register (NautilusDBusManager  *self,
         undo_manager_changed (self);
     }
 
-    return succes;
+    return success;
 }
 
 void
