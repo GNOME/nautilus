@@ -29,6 +29,14 @@
 
 G_BEGIN_DECLS
 
+typedef enum {
+  NAUTILUS_SEARCH_TYPE_ALL,
+  NAUTILUS_SEARCH_TYPE_LOCALSEARCH,
+  NAUTILUS_SEARCH_TYPE_RECENT,
+  NAUTILUS_SEARCH_TYPE_MODEL,
+  NAUTILUS_SEARCH_TYPE_SIMPLE,
+} NautilusSearchType;
+
 #define NAUTILUS_TYPE_SEARCH_ENGINE		(nautilus_search_engine_get_type ())
 
 G_DECLARE_DERIVABLE_TYPE (NautilusSearchEngine, nautilus_search_engine, NAUTILUS, SEARCH_ENGINE, GObject)
@@ -43,7 +51,7 @@ NautilusSearchEngineModel *
                       nautilus_search_engine_get_model_provider (NautilusSearchEngine *engine);
 void                  nautilus_search_engine_enable_recent (NautilusSearchEngine *engine);
 
+void
+nautilus_search_engine_start_by_type (NautilusSearchEngine *self,
+                                      NautilusSearchType    search_type);
 G_END_DECLS
-
-void nautilus_search_engine_start_by_target (NautilusSearchProvider     *provider,
-                                             NautilusSearchEngineTarget  taregt_engine);

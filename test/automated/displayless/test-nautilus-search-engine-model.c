@@ -68,8 +68,7 @@ main (int   argc,
 
     create_search_file_hierarchy ("model");
 
-    nautilus_search_engine_start_by_target (NAUTILUS_SEARCH_PROVIDER (engine),
-                                            NAUTILUS_SEARCH_ENGINE_MODEL_ENGINE);
+    nautilus_search_engine_start_by_type (engine, NAUTILUS_SEARCH_TYPE_MODEL);
 
     g_main_loop_run (loop);
 

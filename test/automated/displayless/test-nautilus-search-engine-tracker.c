@@ -176,8 +176,7 @@ main (int   argc,
     directory = nautilus_directory_get (location);
     nautilus_query_set_location (query, location);
 
-    nautilus_search_engine_start_by_target (NAUTILUS_SEARCH_PROVIDER (engine),
-                                            NAUTILUS_SEARCH_ENGINE_TRACKER_ENGINE);
+    nautilus_search_engine_start_by_type (engine, NAUTILUS_SEARCH_TYPE_LOCALSEARCH);
 
     g_main_loop_run (loop);
 

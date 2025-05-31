@@ -148,38 +148,38 @@ search_engine_start_real_simple (NautilusSearchEngine *engine)
 }
 
 static void
-search_engine_start_real (NautilusSearchEngine       *engine,
-                          NautilusSearchEngineTarget  target_engine)
+search_engine_start_real (NautilusSearchEngine *engine,
+                          NautilusSearchType    search_type)
 {
     search_engine_start_real_setup (engine);
 
-    switch (target_engine)
+    switch (search_type)
     {
-        case NAUTILUS_SEARCH_ENGINE_TRACKER_ENGINE:
+        case NAUTILUS_SEARCH_TYPE_LOCALSEARCH:
         {
             search_engine_start_real_tracker (engine);
         }
         break;
 
-        case NAUTILUS_SEARCH_ENGINE_RECENT_ENGINE:
+        case NAUTILUS_SEARCH_TYPE_RECENT:
         {
             search_engine_start_real_recent (engine);
         }
         break;
 
-        case NAUTILUS_SEARCH_ENGINE_MODEL_ENGINE:
+        case NAUTILUS_SEARCH_TYPE_MODEL:
         {
             search_engine_start_real_model (engine);
         }
         break;
 
-        case NAUTILUS_SEARCH_ENGINE_SIMPLE_ENGINE:
+        case NAUTILUS_SEARCH_TYPE_SIMPLE:
         {
             search_engine_start_real_simple (engine);
         }
         break;
 
-        case NAUTILUS_SEARCH_ENGINE_ALL_ENGINES:
+        case NAUTILUS_SEARCH_TYPE_ALL:
         default:
         {
             search_engine_start_real_tracker (engine);
@@ -191,14 +191,12 @@ search_engine_start_real (NautilusSearchEngine       *engine,
 }
 
 void
-nautilus_search_engine_start_by_target (NautilusSearchProvider     *provider,
-                                        NautilusSearchEngineTarget  target_engine)
+nautilus_search_engine_start_by_type (NautilusSearchEngine *engine,
+                                      NautilusSearchType    search_type);
 {
-    NautilusSearchEngine *engine;
     NautilusSearchEnginePrivate *priv;
     guint num_finished;
 
-    engine = NAUTILUS_SEARCH_ENGINE (provider);
     priv = nautilus_search_engine_get_instance_private (engine);
 
     g_debug ("Search engine start");
@@ -210,7 +208,7 @@ nautilus_search_engine_start_by_target (NautilusSearchProvider     *provider,
         if (num_finished == priv->providers_running &&
             priv->restart)
         {
-            search_engine_start_real (engine, target_engine);
+            search_engine_start_real (engine, search_type);
         }
 
         return;
@@ -226,7 +224,7 @@ nautilus_search_engine_start_by_target (NautilusSearchProvider     *provider,
     }
     else
     {
-        search_engine_start_real (engine, target_engine);
+        search_engine_start_real (engine, search_type);
     }
 }
 
@@ -251,7 +249,7 @@ nautilus_search_engine_start (NautilusSearchProvider *provider)
         if (num_finished == priv->providers_running &&
             priv->restart)
         {
-            search_engine_start_real (engine, NAUTILUS_SEARCH_ENGINE_ALL_ENGINES);
+            search_engine_start_real (engine, NAUTILUS_SEARCH_TYPE_ALL);
         }
 
         return;
@@ -267,7 +265,7 @@ nautilus_search_engine_start (NautilusSearchProvider *provider)
     }
     else
     {
-        search_engine_start_real (engine, NAUTILUS_SEARCH_ENGINE_ALL_ENGINES);
+        search_engine_start_real (engine, NAUTILUS_SEARCH_TYPE_ALL);
     }
 }
 
