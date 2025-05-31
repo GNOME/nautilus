@@ -132,6 +132,8 @@ if get_option('cloudproviders')
   cloudproviders = dependency('cloudproviders', version: '>= 0.3.1')
 endif
 gi_docgen = find_program('gi-docgen', required: get_option('docs'))
+icu_dep = dependency('icu-uc', version: '>=56')
+icu_i18n_dep = dependency('icu-i18n', version: '>=56')
 
 ####################
 # End dependencies #

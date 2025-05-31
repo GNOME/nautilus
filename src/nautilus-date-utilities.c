@@ -3,6 +3,7 @@
  *
  * SPDX-License-Identifier: GPL-2.0-or-later
  */
+#define G_LOG_DOMAIN "nautilus-date-utilities"
 
 #include "nautilus-date-utilities.h"
 
@@ -14,7 +15,8 @@
 #include <locale.h>
 #include <time.h>
 
-
+#include <unicode/udatpg.h>
+#include <unicode/ureldatefmt.h>
 
 static gboolean use_24_hour;
 static gboolean use_detailed_date_format;
@@ -48,6 +50,204 @@ nautilus_date_setup_preferences (void)
                               "changed::" NAUTILUS_PREFERENCES_DATE_TIME_FORMAT,
                               G_CALLBACK (date_format_changed_callback),
                               NULL);
+}
+
+static gchar *
+posix_locale_to_icu (const gchar *posix_locale)
+{
+    if (strpbrk (posix_locale, "_.@") == NULL)
+    {
+        return g_strdup (posix_locale);
+    }
+
+    GString *icu_id = g_string_new (posix_locale);
+    gchar *dot_ptr = strchr (icu_id->str, '.');
+
+    /* Remove the encoding, which comes prefixed with a dot */
+    if (dot_ptr != NULL)
+    {
+        g_string_erase (icu_id, dot_ptr - icu_id->str, strcspn (dot_ptr, "_@"));
+    }
+
+    /* This is for currency only so disregard it. */
+    g_string_replace (icu_id, "@euro", "", -1);
+
+    /* These are the respective variants for libicu */
+    g_string_replace (icu_id, "@latin", "@Latn", -1);
+    g_string_replace (icu_id, "@cyrillic", "@Cyrl", -1);
+    g_string_replace (icu_id, "@devanagari", "@Deva", -1);
+
+    gchar *underscore_ptr = strchr (icu_id->str, '_');
+    gchar *at_ptr = strchr (icu_id->str, '@');
+
+    /* Put variants after first part, e.g. sr_RS@Cyrl to sr@Cyrl_RS */
+    if (at_ptr != NULL &&
+        underscore_ptr != NULL &&
+        underscore_ptr < at_ptr)
+    {
+        gsize at_segment_len = strcspn (at_ptr, "_");
+        g_autofree gchar *at_segment = g_strndup (at_ptr, at_segment_len);
+
+        g_string_erase (icu_id, at_ptr - icu_id->str, at_segment_len);
+        g_string_insert (icu_id, underscore_ptr - icu_id->str, at_segment);
+    }
+
+    g_string_replace (icu_id, "@", "_", -1);
+
+    return g_string_free_and_steal (icu_id);
+}
+
+/* We initialize these only sparingly to increase performance. */
+static char *icu_locale;
+static URelativeDateTimeFormatter *relative_formatter;
+static UCalendar gregorian_cal;
+static UDateFormat *time_12_hour_formatter;
+static UDateFormat *time_24_hour_formatter;
+static UDateFormat *datetime_short_12_hour_formatter;
+static UDateFormat *datetime_short_24_hour_formatter;
+static UDateFormat *datetime_detailed_12_hour_formatter;
+static UDateFormat *datetime_detailed_24_hour_formatter;
+
+static void
+ensure_icu_locale (void)
+{
+    /* The time locale might be different from the locale we pick translations
+     * from; i.e. different locales for LC_MESSAGES and LC_TIME. So we need to
+     * to derive ICU locale from the time locale.
+     */
+    if (G_UNLIKELY (icu_locale == NULL))
+    {
+        UErrorCode status = U_ZERO_ERROR;
+        g_autofree char *time_locale = posix_locale_to_icu (setlocale (LC_TIME, NULL));
+        gchar buffer[64] = {0};
+        guint32 size = uloc_canonicalize (time_locale, buffer, G_N_ELEMENTS (buffer), &status);
+
+        if (U_FAILURE (status))
+        {
+            g_warning ("ICU failed to canonicalize locale: %s", u_errorName (status));
+
+            icu_locale = g_strdup (time_locale);
+        }
+        else
+        {
+            icu_locale = g_strndup (buffer, size);
+        }
+
+        g_debug ("ICU date locale: %s", icu_locale);
+    }
+}
+
+static UErrorCode
+ensure_formatters (GTimeZone *new_tz)
+{
+    static UErrorCode status = U_ZERO_ERROR;
+    static UDateTimePatternGenerator *pattern_gen;
+    static gchar *tz_id;
+
+    if (U_FAILURE (status))
+    {
+        return status;
+    }
+
+    if (G_UNLIKELY (pattern_gen == NULL &&
+                    relative_formatter == NULL))
+    {
+        ensure_icu_locale ();
+
+        pattern_gen = udatpg_open (icu_locale, &status);
+
+        if (U_FAILURE (status))
+        {
+            return status;
+        }
+
+        relative_formatter = ureldatefmt_open (icu_locale, NULL,
+                                               UDAT_STYLE_LONG,
+                                               UDISPCTX_CAPITALIZATION_FOR_BEGINNING_OF_SENTENCE,
+                                               &status);
+
+        if (U_FAILURE (status))
+        {
+            return status;
+        }
+    }
+
+    /* Detect if timezone has changed and reset the formatters. */
+    if (g_set_str (&tz_id, g_time_zone_get_identifier (new_tz)))
+    {
+        g_clear_pointer (&gregorian_cal, ucal_close);
+        g_clear_pointer (&time_12_hour_formatter, udat_close);
+        g_clear_pointer (&time_24_hour_formatter, udat_close);
+        g_clear_pointer (&datetime_short_12_hour_formatter, udat_close);
+        g_clear_pointer (&datetime_short_24_hour_formatter, udat_close);
+        g_clear_pointer (&datetime_detailed_12_hour_formatter, udat_close);
+        g_clear_pointer (&datetime_detailed_24_hour_formatter, udat_close);
+    }
+
+    if (time_12_hour_formatter == NULL)
+    {
+        gregorian_cal = ucal_open (NULL, -1, icu_locale, UCAL_GREGORIAN, &status);
+
+        if (U_FAILURE (status))
+        {
+            return status;
+        }
+
+        struct
+        {
+            UDateFormat **formatter;
+            const UChar *skeleton;
+            UDateFormatStyle time_style;
+            UDateFormatStyle date_style;
+        } formatter_setup[] =
+        {
+            /* Time formatters, 12 and 24 hours */
+            {&time_12_hour_formatter, u"hm", UDAT_PATTERN, UDAT_NONE},
+            {&time_24_hour_formatter, u"Hm", UDAT_PATTERN, UDAT_NONE},
+            /* Datetime formatters, short and detailed, 12 and 24 hours */
+            {&datetime_short_12_hour_formatter, u"yMd, hm", UDAT_PATTERN, UDAT_PATTERN},
+            {&datetime_short_24_hour_formatter, u"yMd, Hm", UDAT_PATTERN, UDAT_PATTERN},
+            {&datetime_detailed_12_hour_formatter, u"yMd, hms", UDAT_PATTERN, UDAT_PATTERN},
+            {&datetime_detailed_24_hour_formatter, u"yMd, Hms", UDAT_PATTERN, UDAT_PATTERN},
+        };
+
+        for (uint i = 0; i < G_N_ELEMENTS (formatter_setup); i++)
+        {
+            UChar buffer[128];
+            guint32 buffer_len;
+
+            buffer_len = udatpg_getBestPatternWithOptions (pattern_gen,
+                                                           formatter_setup[i].skeleton, -1,
+                                                           UDATPG_MATCH_NO_OPTIONS,
+                                                           buffer, G_N_ELEMENTS (buffer),
+                                                           &status);
+
+            if (U_FAILURE (status))
+            {
+                return status;
+            }
+
+            *formatter_setup[i].formatter = udat_open (formatter_setup[i].time_style,
+                                                       formatter_setup[i].date_style,
+                                                       icu_locale,
+                                                       0, -1,
+                                                       buffer, buffer_len,
+                                                       &status);
+
+            if (U_FAILURE (status))
+            {
+                return status;
+            }
+
+            if (formatter_setup[i].date_style != UDAT_NONE)
+            {
+                /* Force Gregorian calendar */
+                udat_setCalendar (*formatter_setup[i].formatter, gregorian_cal);
+            }
+        }
+    }
+
+    return status;
 }
 
 static char *
