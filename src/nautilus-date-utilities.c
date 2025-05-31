@@ -55,27 +55,7 @@ date_to_str (GDateTime *timestamp,
              gboolean   use_short_format,
              gboolean   detailed_date)
 {
-    locale_t current_locale = uselocale ((locale_t) 0);
-    static locale_t forced_locale = NULL;
     const gchar *format;
-
-    /* We are going to pick a translatable string which defines a time format,
-     * which is then used to obtain a final string for the current time.
-     *
-     * The time locale might be different from the language we pick translations
-     * from; so, in order to avoid chimeric results (with some particles in one
-     * language and other particles in another language), we need to temporarily
-     * force translations to be obtained from the language corresponding to the
-     * time locale. The current locale settings are saved to be restored later.
-     */
-    if (forced_locale == NULL)
-    {
-        char *time_locale = setlocale (LC_TIME, NULL);
-
-        forced_locale = newlocale (LC_MESSAGES_MASK, time_locale, duplocale (current_locale));
-    }
-
-    uselocale (forced_locale);
 
     if (use_short_format && detailed_date)
     {
@@ -175,9 +155,6 @@ date_to_str (GDateTime *timestamp,
             format = _("%-e %B %Y %I:%M:%S %p");
         }
     }
-
-    /* Restore locale settings */
-    uselocale (current_locale);
 
     g_autofree gchar *formatted = g_date_time_format (timestamp, format);
 
