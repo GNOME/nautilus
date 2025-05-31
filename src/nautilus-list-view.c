@@ -76,26 +76,6 @@ static const NautilusViewInfo list_view_info =
     .zoom_level_standard = NAUTILUS_LIST_ZOOM_LEVEL_MEDIUM,
 };
 
-/** HACK: Iterates the children of a GtkColumnView to find its list base.
- *  Used because GtkColumnView does not provide functionality to do so. */
-static GtkWidget *
-get_gtk_column_list_view (GtkColumnView *column_view)
-{
-    g_autoptr (GListModel) children = gtk_widget_observe_children (GTK_WIDGET (column_view));
-
-    for (guint i = 0; i < g_list_model_get_n_items (children); i++)
-    {
-        g_autoptr (GtkWidget) child = g_list_model_get_item (children, i);
-
-        if (GTK_IS_LIST_BASE (child))
-        {
-            return g_steal_pointer (&child);
-        }
-    }
-
-    return NULL;
-}
-
 static NautilusViewInfo
 real_get_view_info (NautilusListBase *list_base)
 {
@@ -1142,14 +1122,6 @@ nautilus_list_view_init (NautilusListView *self)
 
     self->view_ui = create_view_ui (self);
     nautilus_list_base_setup_gestures (NAUTILUS_LIST_BASE (self));
-
-    /* FIXME: GTK currently does not have a way to get the list view contained
-     * within GtkColumnView for us to attach gestures to. */
-    g_autoptr (GtkWidget) list_view = get_gtk_column_list_view (self->view_ui);
-    if (list_view != NULL)
-    {
-        nautilus_list_base_setup_background_longpress (NAUTILUS_LIST_BASE (self), list_view);
-    }
 
     setup_view_columns (self);
 

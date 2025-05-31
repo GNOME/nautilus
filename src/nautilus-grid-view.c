@@ -564,8 +564,6 @@ nautilus_grid_view_init (NautilusGridView *self)
 
     self->view_ui = create_view_ui (self);
     nautilus_list_base_setup_gestures (NAUTILUS_LIST_BASE (self));
-    nautilus_list_base_setup_background_longpress (NAUTILUS_LIST_BASE (self),
-                                                   GTK_WIDGET (self->view_ui));
 
     g_signal_connect_swapped (self, "notify::model", G_CALLBACK (on_model_changed), self);
 
