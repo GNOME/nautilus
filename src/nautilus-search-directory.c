@@ -115,12 +115,6 @@ G_DEFINE_TYPE_WITH_CODE (NautilusSearchDirectory, nautilus_search_directory, NAU
 
 static GParamSpec *properties[NUM_PROPERTIES] = { NULL, };
 
-static void search_engine_hits_added (NautilusSearchEngine    *engine,
-                                      GList                   *hits,
-                                      NautilusSearchDirectory *self);
-static void search_engine_error (NautilusSearchEngine    *engine,
-                                 const char              *error,
-                                 NautilusSearchDirectory *self);
 static void search_callback_file_ready_callback (NautilusFile *file,
                                                  gpointer      data);
 static void file_changed (NautilusFile            *file,
