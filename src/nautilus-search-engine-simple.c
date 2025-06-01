@@ -633,7 +633,6 @@ nautilus_search_provider_init (NautilusSearchProviderInterface *iface)
     iface->set_query = nautilus_search_engine_simple_set_query;
     iface->start = nautilus_search_engine_simple_start;
     iface->stop = nautilus_search_engine_simple_stop;
-    iface->is_running = nautilus_search_engine_simple_is_running;
 }
 
 static void

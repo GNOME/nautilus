@@ -134,12 +134,3 @@ nautilus_search_provider_error (NautilusSearchProvider *provider,
                G_OBJECT_TYPE_NAME (provider), error_message);
     g_signal_emit (provider, signals[ERROR], 0, error_message);
 }
-
-gboolean
-nautilus_search_provider_is_running (NautilusSearchProvider *provider)
-{
-    g_return_val_if_fail (NAUTILUS_IS_SEARCH_PROVIDER (provider), FALSE);
-    g_return_val_if_fail (NAUTILUS_SEARCH_PROVIDER_GET_IFACE (provider)->is_running, FALSE);
-
-    return NAUTILUS_SEARCH_PROVIDER_GET_IFACE (provider)->is_running (provider);
-}
