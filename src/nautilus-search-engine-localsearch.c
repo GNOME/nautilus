@@ -183,7 +183,7 @@ cursor_callback (GObject      *object,
     const char *atime_str;
     const char *ctime_str;
     const gchar *snippet;
-    g_autoptr (GTimeZone) tz = g_time_zone_new_local ();
+    g_autoptr (GTimeZone) tz = NULL;
     gdouble rank, match;
     gboolean success;
     gchar *basename;
@@ -230,6 +230,13 @@ cursor_callback (GObject      *object,
 
             nautilus_search_hit_set_fts_snippet (hit, buffer->str);
         }
+    }
+
+    if (mtime_str != NULL ||
+        atime_str != NULL ||
+        ctime_str != NULL)
+    {
+        tz = g_time_zone_new_local ();
     }
 
     if (mtime_str != NULL)
