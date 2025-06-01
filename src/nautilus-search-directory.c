@@ -171,17 +171,9 @@ start_search (NautilusSearchDirectory *self)
 {
     NautilusSearchEngineModel *model_provider;
 
-    if (!self->query)
-    {
-        return;
-    }
-
-    if (self->search_running)
-    {
-        return;
-    }
-
-    if (!self->monitor_list && !self->pending_callback_list)
+    if (self->query == NULL ||
+        self->search_running ||
+        (self->monitor_list == NULL && self->pending_callback_list == NULL))
     {
         return;
     }
