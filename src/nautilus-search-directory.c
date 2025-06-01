@@ -59,7 +59,6 @@ struct _NautilusSearchDirectory
      * scheduled timeouts. */
     gboolean search_ready_and_valid;
 
-    GList *files;
     GHashTable *files_hash;
 
     GList *monitor_list;
@@ -120,29 +119,27 @@ static void file_changed (NautilusFile            *file,
 static void
 reset_file_list (NautilusSearchDirectory *self)
 {
-    GList *list, *monitor_list;
+    GHashTableIter hash_iter;
     NautilusFile *file;
-    SearchMonitor *monitor;
+
+    g_hash_table_iter_init (&hash_iter, self->files_hash);
 
     /* Remove file connections */
-    for (list = self->files; list != NULL; list = list->next)
+    while (g_hash_table_iter_next (&hash_iter, (gpointer *) &file, NULL))
     {
-        file = list->data;
-
         /* Disconnect change handler */
         g_signal_handlers_disconnect_by_func (file, file_changed, self);
 
         /* Remove monitors */
-        for (monitor_list = self->monitor_list; monitor_list;
+        for (GList *monitor_list = self->monitor_list;
+             monitor_list != NULL;
              monitor_list = monitor_list->next)
         {
-            monitor = monitor_list->data;
+            SearchMonitor *monitor = monitor_list->data;
+
             nautilus_file_monitor_remove (file, monitor);
         }
     }
-
-    nautilus_file_list_free (self->files);
-    self->files = NULL;
 
     g_hash_table_remove_all (self->files_hash);
 }
@@ -214,6 +211,7 @@ search_monitor_add (NautilusDirectory         *directory,
                     NautilusDirectoryCallback  callback,
                     gpointer                   callback_data)
 {
+    g_autoptr (GList) files_list = NULL;
     GList *list;
     SearchMonitor *monitor;
     NautilusSearchDirectory *self;
@@ -227,13 +225,14 @@ search_monitor_add (NautilusDirectory         *directory,
     monitor->client = client;
 
     self->monitor_list = g_list_prepend (self->monitor_list, monitor);
+    files_list = g_hash_table_get_keys (self->files_hash);
 
     if (callback != NULL)
     {
-        (*callback)(directory, self->files, callback_data);
+        (*callback)(directory, files_list, callback_data);
     }
 
-    for (list = self->files; list != NULL; list = list->next)
+    for (list = files_list; list != NULL; list = list->next)
     {
         file = list->data;
 
@@ -248,12 +247,11 @@ static void
 search_monitor_remove_file_monitors (SearchMonitor           *monitor,
                                      NautilusSearchDirectory *self)
 {
-    GList *list;
-    NautilusFile *file;
+    g_autoptr (GList) files_list = g_hash_table_get_keys (self->files_hash);
 
-    for (list = self->files; list != NULL; list = list->next)
+    for (GList *list = files_list; list != NULL; list = list->next)
     {
-        file = list->data;
+        NautilusFile *file = list->data;
 
         nautilus_file_monitor_remove (file, monitor);
     }
@@ -477,8 +475,10 @@ search_call_when_ready (NautilusDirectory         *directory,
     }
     else
     {
-        search_callback->file_list = nautilus_file_list_copy (self->files);
-        search_callback->non_ready_hash = file_list_to_hash_table (self->files);
+        g_autoptr (GList) files_list = g_hash_table_get_keys (self->files_hash);
+
+        search_callback->file_list = nautilus_file_list_copy (files_list);
+        search_callback->non_ready_hash = file_list_to_hash_table (files_list);
 
         if (!search_callback->non_ready_hash)
         {
@@ -526,8 +526,10 @@ search_cancel_callback (NautilusDirectory         *directory,
 static void
 search_callback_add_pending_file_callbacks (SearchCallback *callback)
 {
-    callback->file_list = nautilus_file_list_copy (callback->search_directory->files);
-    callback->non_ready_hash = file_list_to_hash_table (callback->search_directory->files);
+    g_autoptr (GList) files_list = g_hash_table_get_keys (callback->search_directory->files_hash);
+
+    callback->file_list = nautilus_file_list_copy (files_list);
+    callback->non_ready_hash = file_list_to_hash_table (files_list);
 
     search_callback_add_file_callbacks (callback);
 }
@@ -569,31 +571,25 @@ search_engine_hits_added (NautilusSearchEngine    *engine,
     for (guint i = 0; i < hits->len; i++)
     {
         NautilusSearchHit *hit = hits->pdata[i];
-        const char *uri;
-
-        uri = nautilus_search_hit_get_uri (hit);
+        const char *uri = nautilus_search_hit_get_uri (hit);
+        NautilusFile *hit_file = nautilus_file_get_by_uri (uri);
 
         nautilus_search_hit_compute_scores (hit, now, query_location);
-
-        file = nautilus_file_get_by_uri (uri);
-        nautilus_file_set_search_relevance (file, nautilus_search_hit_get_relevance (hit));
-        nautilus_file_set_search_fts_snippet (file, nautilus_search_hit_get_fts_snippet (hit));
+        nautilus_file_set_search_relevance (hit_file, nautilus_search_hit_get_relevance (hit));
+        nautilus_file_set_search_fts_snippet (hit_file, nautilus_search_hit_get_fts_snippet (hit));
 
         for (monitor_list = self->monitor_list; monitor_list; monitor_list = monitor_list->next)
         {
             monitor = monitor_list->data;
 
             /* Add monitors */
-            nautilus_file_monitor_add (file, monitor, monitor->monitor_attributes);
+            nautilus_file_monitor_add (hit_file, monitor, monitor->monitor_attributes);
         }
 
-        g_signal_connect (file, "changed", G_CALLBACK (file_changed), self),
+        g_signal_connect (hit_file, "changed", G_CALLBACK (file_changed), self),
 
-        file_list = g_list_prepend (file_list, file);
-        g_hash_table_add (self->files_hash, file);
+        g_hash_table_add (self->files_hash, g_steal_pointer (&hit_file));
     }
-
-    self->files = g_list_concat (self->files, file_list);
 
     nautilus_directory_emit_files_added (NAUTILUS_DIRECTORY (self), file_list);
 
@@ -666,11 +662,11 @@ search_contains_file (NautilusDirectory *directory,
 static GList *
 search_get_file_list (NautilusDirectory *directory)
 {
-    NautilusSearchDirectory *self;
+    NautilusSearchDirectory *self = NAUTILUS_SEARCH_DIRECTORY (directory);
 
-    self = NAUTILUS_SEARCH_DIRECTORY (directory);
+    g_hash_table_foreach (self->files_hash, (GHFunc) nautilus_file_ref, NULL);
 
-    return nautilus_file_list_copy (self->files);
+    return g_hash_table_get_keys (self->files_hash);
 }
 
 
@@ -833,7 +829,8 @@ static void
 nautilus_search_directory_init (NautilusSearchDirectory *self)
 {
     self->query = NULL;
-    self->files_hash = g_hash_table_new (g_direct_hash, g_direct_equal);
+    self->files_hash = g_hash_table_new_full (NULL, NULL,
+                                              g_object_unref, NULL);
 
     self->engine = nautilus_search_engine_new (NAUTILUS_SEARCH_TYPE_FOLDER);
     search_connect_engine (self);
