@@ -39,12 +39,7 @@ typedef enum {
 
 #define NAUTILUS_TYPE_SEARCH_ENGINE		(nautilus_search_engine_get_type ())
 
-G_DECLARE_DERIVABLE_TYPE (NautilusSearchEngine, nautilus_search_engine, NAUTILUS, SEARCH_ENGINE, GObject)
-
-struct _NautilusSearchEngineClass
-{
-  GObjectClass parent_class;
-};
+G_DECLARE_FINAL_TYPE (NautilusSearchEngine, nautilus_search_engine, NAUTILUS, SEARCH_ENGINE, GObject)
 
 NautilusSearchEngine *nautilus_search_engine_new                (void);
 NautilusSearchEngineModel *
