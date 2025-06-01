@@ -150,25 +150,20 @@ reset_file_list (NautilusSearchDirectory *self)
     g_hash_table_remove_all (self->files_hash);
 }
 
-static void
-set_hidden_files (NautilusSearchDirectory *self)
+static gboolean
+is_monitoring_hidden_files (NautilusSearchDirectory *self)
 {
-    GList *l;
-    SearchMonitor *monitor;
-    gboolean monitor_hidden = FALSE;
-
-    for (l = self->monitor_list; l != NULL; l = l->next)
+    for (GList *l = self->monitor_list; l != NULL; l = l->next)
     {
-        monitor = l->data;
-        monitor_hidden |= monitor->monitor_hidden_files;
+        SearchMonitor *monitor = l->data;
 
-        if (monitor_hidden)
+        if (monitor->monitor_hidden_files)
         {
-            break;
+            return TRUE;
         }
     }
 
-    nautilus_query_set_show_hidden_files (self->query, monitor_hidden);
+    return FALSE;
 }
 
 static void
@@ -195,7 +190,8 @@ start_search (NautilusSearchDirectory *self)
     self->search_running = TRUE;
     self->search_ready_and_valid = FALSE;
 
-    set_hidden_files (self);
+    nautilus_query_set_show_hidden_files (self->query,
+                                          is_monitoring_hidden_files (self));
     nautilus_search_provider_set_query (NAUTILUS_SEARCH_PROVIDER (self->engine),
                                         self->query);
 
