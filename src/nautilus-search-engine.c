@@ -48,7 +48,6 @@ struct _NautilusSearchEngine
 
     gboolean running;
     gboolean restart;
-    gboolean recent_enabled;
 };
 
 enum
@@ -103,8 +102,7 @@ search_engine_start_real (NautilusSearchEngine *self)
         nautilus_search_provider_start (NAUTILUS_SEARCH_PROVIDER (self->tracker));
     }
 
-    if (self->search_type & NAUTILUS_SEARCH_TYPE_RECENT &&
-        self->recent_enabled)
+    if (self->search_type & NAUTILUS_SEARCH_TYPE_RECENT)
     {
         self->providers_running++;
         nautilus_search_provider_start (NAUTILUS_SEARCH_PROVIDER (self->recent));
@@ -383,10 +381,6 @@ nautilus_search_engine_init (NautilusSearchEngine *self)
 
     self->recent = nautilus_search_engine_recent_new ();
     connect_provider_signals (self, NAUTILUS_SEARCH_PROVIDER (self->recent));
-
-    /* The recent engine is really only meant for the shell search provider,
-     * where it might get search hits that are not indexed by tracker. */
-    self->recent_enabled = FALSE;
 }
 
 NautilusSearchEngine *
@@ -404,10 +398,4 @@ NautilusSearchEngineModel *
 nautilus_search_engine_get_model_provider (NautilusSearchEngine *self)
 {
     return self->model;
-}
-
-void
-nautilus_search_engine_enable_recent (NautilusSearchEngine *self)
-{
-    self->recent_enabled = TRUE;
 }

@@ -54,6 +54,5 @@ nautilus_search_engine_new (NautilusSearchType search_type);
 
 NautilusSearchEngineModel *
                       nautilus_search_engine_get_model_provider (NautilusSearchEngine *engine);
-void                  nautilus_search_engine_enable_recent (NautilusSearchEngine *engine);
 
 G_END_DECLS
