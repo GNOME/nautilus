@@ -37,18 +37,6 @@ G_DEFINE_INTERFACE (NautilusSearchProvider, nautilus_search_provider, G_TYPE_OBJ
 static void
 nautilus_search_provider_default_init (NautilusSearchProviderInterface *iface)
 {
-    /**
-     * NautilusSearchProvider::running:
-     *
-     * Whether the provider is running a search.
-     */
-    g_object_interface_install_property (iface,
-                                         g_param_spec_boolean ("running",
-                                                               "Whether the provider is running",
-                                                               "Whether the provider is running a search",
-                                                               FALSE,
-                                                               G_PARAM_READABLE));
-
     signals[HITS_ADDED] = g_signal_new ("hits-added",
                                         NAUTILUS_TYPE_SEARCH_PROVIDER,
                                         G_SIGNAL_RUN_LAST,

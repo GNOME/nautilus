@@ -55,14 +55,6 @@ G_DEFINE_TYPE_WITH_CODE (NautilusSearchEngineRecent,
                          G_IMPLEMENT_INTERFACE (NAUTILUS_TYPE_SEARCH_PROVIDER,
                                                 nautilus_search_provider_init))
 
-enum
-{
-    PROP_0,
-    PROP_RUNNING,
-    LAST_PROP
-};
-
-
 NautilusSearchEngineRecent *
 nautilus_search_engine_recent_new (void)
 {
@@ -113,7 +105,6 @@ search_thread_add_hits_idle (gpointer user_data)
     g_debug ("Recent engine finished");
     nautilus_search_provider_finished (provider,
                                        NAUTILUS_SEARCH_PROVIDER_STATUS_NORMAL);
-    g_object_notify (G_OBJECT (provider), "running");
 
     return FALSE;
 }
@@ -372,8 +363,6 @@ nautilus_search_engine_recent_start (NautilusSearchProvider *provider)
     self->cancellable = g_cancellable_new ();
     thread = g_thread_new ("nautilus-search-recent", recent_thread_func,
                            g_object_ref (self));
-
-    g_object_notify (G_OBJECT (provider), "running");
 }
 
 static void
@@ -400,39 +389,6 @@ nautilus_search_engine_recent_set_query (NautilusSearchProvider *provider,
     self->query = g_object_ref (query);
 }
 
-static gboolean
-nautilus_search_engine_recent_is_running (NautilusSearchProvider *provider)
-{
-    NautilusSearchEngineRecent *self = NAUTILUS_SEARCH_ENGINE_RECENT (provider);
-
-    return self->running;
-}
-
-static void
-nautilus_search_engine_recent_get_property (GObject    *object,
-                                            guint       prop_id,
-                                            GValue     *value,
-                                            GParamSpec *pspec)
-{
-    NautilusSearchProvider *provider = NAUTILUS_SEARCH_PROVIDER (object);
-
-    switch (prop_id)
-    {
-        case PROP_RUNNING:
-        {
-            gboolean running;
-            running = nautilus_search_engine_recent_is_running (provider);
-            g_value_set_boolean (value, running);
-        }
-        break;
-
-        default:
-        {
-            G_OBJECT_WARN_INVALID_PROPERTY_ID (object, prop_id, pspec);
-        }
-    }
-}
-
 static void
 nautilus_search_provider_init (NautilusSearchProviderInterface *iface)
 {
@@ -447,9 +403,6 @@ nautilus_search_engine_recent_class_init (NautilusSearchEngineRecentClass *klass
     GObjectClass *object_class = G_OBJECT_CLASS (klass);
 
     object_class->finalize = nautilus_search_engine_recent_finalize;
-    object_class->get_property = nautilus_search_engine_recent_get_property;
-
-    g_object_class_override_property (object_class, PROP_RUNNING, "running");
 }
 
 static void

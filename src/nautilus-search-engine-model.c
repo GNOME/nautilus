@@ -46,13 +46,6 @@ struct _NautilusSearchEngineModel
     guint finished_id;
 };
 
-enum
-{
-    PROP_0,
-    PROP_RUNNING,
-    LAST_PROP
-};
-
 static void nautilus_search_provider_init (NautilusSearchProviderInterface *iface);
 
 G_DEFINE_TYPE_WITH_CODE (NautilusSearchEngineModel,
@@ -101,8 +94,6 @@ search_finished (NautilusSearchEngineModel *model)
     }
 
     model->query_pending = FALSE;
-
-    g_object_notify (G_OBJECT (model), "running");
 
     g_debug ("Model engine finished");
     nautilus_search_provider_finished (NAUTILUS_SEARCH_PROVIDER (model),
@@ -263,8 +254,6 @@ nautilus_search_engine_model_start (NautilusSearchProvider *provider)
     g_object_ref (model);
     model->query_pending = TRUE;
 
-    g_object_notify (G_OBJECT (provider), "running");
-
     if (model->directory == NULL)
     {
         search_finished_idle (model);
@@ -308,16 +297,6 @@ nautilus_search_engine_model_set_query (NautilusSearchProvider *provider,
     model->query = query;
 }
 
-static gboolean
-nautilus_search_engine_model_is_running (NautilusSearchProvider *provider)
-{
-    NautilusSearchEngineModel *model;
-
-    model = NAUTILUS_SEARCH_ENGINE_MODEL (provider);
-
-    return model->query_pending;
-}
-
 static void
 nautilus_search_provider_init (NautilusSearchProviderInterface *iface)
 {
@@ -327,43 +306,12 @@ nautilus_search_provider_init (NautilusSearchProviderInterface *iface)
 }
 
 static void
-nautilus_search_engine_model_get_property (GObject    *object,
-                                           guint       prop_id,
-                                           GValue     *value,
-                                           GParamSpec *pspec)
-{
-    NautilusSearchProvider *self = NAUTILUS_SEARCH_PROVIDER (object);
-
-    switch (prop_id)
-    {
-        case PROP_RUNNING:
-        {
-            g_value_set_boolean (value, nautilus_search_engine_model_is_running (self));
-        }
-        break;
-
-        default:
-        {
-            G_OBJECT_WARN_INVALID_PROPERTY_ID (object, prop_id, pspec);
-        }
-    }
-}
-
-static void
 nautilus_search_engine_model_class_init (NautilusSearchEngineModelClass *class)
 {
     GObjectClass *gobject_class;
 
     gobject_class = G_OBJECT_CLASS (class);
     gobject_class->finalize = finalize;
-    gobject_class->get_property = nautilus_search_engine_model_get_property;
-
-    /**
-     * NautilusSearchEngine::running:
-     *
-     * Whether the search engine is running a search.
-     */
-    g_object_class_override_property (gobject_class, PROP_RUNNING, "running");
 }
 
 static void

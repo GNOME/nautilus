@@ -62,13 +62,6 @@ struct _NautilusSearchEngineTracker
     GCancellable *cancellable;
 };
 
-enum
-{
-    PROP_0,
-    PROP_RUNNING,
-    LAST_PROP
-};
-
 static void nautilus_search_provider_init (NautilusSearchProviderInterface *iface);
 
 G_DEFINE_TYPE_WITH_CODE (NautilusSearchEngineTracker,
@@ -142,8 +135,6 @@ search_finished (NautilusSearchEngineTracker *tracker,
     }
 
     tracker->query_pending = FALSE;
-
-    g_object_notify (G_OBJECT (tracker), "running");
 
     if (error && !g_error_matches (error, G_IO_ERROR, G_IO_ERROR_CANCELLED))
     {
@@ -494,8 +485,6 @@ nautilus_search_engine_tracker_start (NautilusSearchProvider *provider)
     g_object_ref (tracker);
     tracker->query_pending = TRUE;
 
-    g_object_notify (G_OBJECT (provider), "running");
-
     if (tracker->connection == NULL)
     {
         g_idle_add (search_finished_idle, provider);
@@ -634,8 +623,6 @@ nautilus_search_engine_tracker_stop (NautilusSearchProvider *provider)
         g_cancellable_cancel (tracker->cancellable);
         g_clear_object (&tracker->cancellable);
         tracker->query_pending = FALSE;
-
-        g_object_notify (G_OBJECT (provider), "running");
     }
 }
 
@@ -668,16 +655,6 @@ nautilus_search_engine_tracker_set_query (NautilusSearchProvider *provider,
     }
 }
 
-static gboolean
-nautilus_search_engine_tracker_is_running (NautilusSearchProvider *provider)
-{
-    NautilusSearchEngineTracker *tracker;
-
-    tracker = NAUTILUS_SEARCH_ENGINE_TRACKER (provider);
-
-    return tracker->query_pending;
-}
-
 static void
 nautilus_search_provider_init (NautilusSearchProviderInterface *iface)
 {
@@ -687,43 +664,12 @@ nautilus_search_provider_init (NautilusSearchProviderInterface *iface)
 }
 
 static void
-nautilus_search_engine_tracker_get_property (GObject    *object,
-                                             guint       prop_id,
-                                             GValue     *value,
-                                             GParamSpec *pspec)
-{
-    NautilusSearchProvider *self = NAUTILUS_SEARCH_PROVIDER (object);
-
-    switch (prop_id)
-    {
-        case PROP_RUNNING:
-        {
-            g_value_set_boolean (value, nautilus_search_engine_tracker_is_running (self));
-        }
-        break;
-
-        default:
-        {
-            G_OBJECT_WARN_INVALID_PROPERTY_ID (object, prop_id, pspec);
-        }
-    }
-}
-
-static void
 nautilus_search_engine_tracker_class_init (NautilusSearchEngineTrackerClass *class)
 {
     GObjectClass *gobject_class;
 
     gobject_class = G_OBJECT_CLASS (class);
     gobject_class->finalize = finalize;
-    gobject_class->get_property = nautilus_search_engine_tracker_get_property;
-
-    /**
-     * NautilusSearchEngine::running:
-     *
-     * Whether the search engine is running a search.
-     */
-    g_object_class_override_property (gobject_class, PROP_RUNNING, "running");
 }
 
 static void

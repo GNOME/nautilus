@@ -56,8 +56,6 @@ enum
 
 static void nautilus_search_provider_init (NautilusSearchProviderInterface *iface);
 
-static gboolean nautilus_search_engine_is_running (NautilusSearchProvider *provider);
-
 G_DEFINE_TYPE_WITH_CODE (NautilusSearchEngine,
                          nautilus_search_engine,
                          G_TYPE_OBJECT,
@@ -428,18 +426,6 @@ connect_provider_signals (NautilusSearchEngine   *engine,
                       engine);
 }
 
-static gboolean
-nautilus_search_engine_is_running (NautilusSearchProvider *provider)
-{
-    NautilusSearchEngine *engine;
-    NautilusSearchEnginePrivate *priv;
-
-    engine = NAUTILUS_SEARCH_ENGINE (provider);
-    priv = nautilus_search_engine_get_instance_private (engine);
-
-    return priv->running;
-}
-
 static void
 nautilus_search_provider_init (NautilusSearchProviderInterface *iface)
 {
@@ -473,13 +459,14 @@ nautilus_search_engine_get_property (GObject    *object,
                                      GValue     *value,
                                      GParamSpec *pspec)
 {
-    NautilusSearchProvider *self = NAUTILUS_SEARCH_PROVIDER (object);
+    NautilusSearchEngine *self = NAUTILUS_SEARCH_ENGINE (object);
+    NautilusSearchEnginePrivate *priv = nautilus_search_engine_get_instance_private (self);
 
     switch (prop_id)
     {
         case PROP_RUNNING:
         {
-            g_value_set_boolean (value, nautilus_search_engine_is_running (self));
+            g_value_set_boolean (value, priv->running);
         }
         break;
 
@@ -505,7 +492,13 @@ nautilus_search_engine_class_init (NautilusSearchEngineClass *class)
      *
      * Whether the search engine is running a search.
      */
-    g_object_class_override_property (object_class, PROP_RUNNING, "running");
+    g_object_class_install_property (object_class,
+                                     PROP_RUNNING,
+                                     g_param_spec_boolean ("running",
+                                                           "search running",
+                                                           "Whether the engine is running a search",
+                                                           FALSE,
+                                                           G_PARAM_READABLE));
 }
 
 static void

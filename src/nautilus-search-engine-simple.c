@@ -34,13 +34,6 @@
 #define BATCH_SIZE 500
 #define CREATE_THREAD_DELAY_MS 500
 
-enum
-{
-    PROP_0,
-    PROP_RUNNING,
-    NUM_PROPERTIES
-};
-
 typedef struct
 {
     NautilusSearchEngineSimple *engine;
@@ -157,8 +150,6 @@ search_thread_done (SearchThreadData *data)
     engine->active_search = NULL;
     nautilus_search_provider_finished (NAUTILUS_SEARCH_PROVIDER (engine),
                                        NAUTILUS_SEARCH_PROVIDER_STATUS_NORMAL);
-
-    g_object_notify (G_OBJECT (engine), "running");
 
     search_thread_data_free (data);
 
@@ -551,7 +542,6 @@ nautilus_search_engine_simple_start (NautilusSearchProvider *provider)
     data = search_thread_data_new (simple, simple->query);
 
     simple->active_search = data;
-    g_object_notify (G_OBJECT (provider), "running");
 
     location = nautilus_query_get_location (simple->query);
     if (location == NULL)
@@ -599,34 +589,6 @@ nautilus_search_engine_simple_set_query (NautilusSearchProvider *provider,
     simple->query = g_object_ref (query);
 }
 
-static gboolean
-nautilus_search_engine_simple_is_running (NautilusSearchProvider *provider)
-{
-    NautilusSearchEngineSimple *simple;
-
-    simple = NAUTILUS_SEARCH_ENGINE_SIMPLE (provider);
-
-    return simple->active_search != NULL;
-}
-
-static void
-nautilus_search_engine_simple_get_property (GObject    *object,
-                                            guint       arg_id,
-                                            GValue     *value,
-                                            GParamSpec *pspec)
-{
-    NautilusSearchEngineSimple *engine = NAUTILUS_SEARCH_ENGINE_SIMPLE (object);
-
-    switch (arg_id)
-    {
-        case PROP_RUNNING:
-        {
-            g_value_set_boolean (value, nautilus_search_engine_simple_is_running (NAUTILUS_SEARCH_PROVIDER (engine)));
-        }
-        break;
-    }
-}
-
 static void
 nautilus_search_provider_init (NautilusSearchProviderInterface *iface)
 {
@@ -642,14 +604,6 @@ nautilus_search_engine_simple_class_init (NautilusSearchEngineSimpleClass *class
 
     gobject_class = G_OBJECT_CLASS (class);
     gobject_class->finalize = finalize;
-    gobject_class->get_property = nautilus_search_engine_simple_get_property;
-
-    /**
-     * NautilusSearchEngine::running:
-     *
-     * Whether the search engine is running a search.
-     */
-    g_object_class_override_property (gobject_class, PROP_RUNNING, "running");
 }
 
 static void
