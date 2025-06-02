@@ -133,40 +133,21 @@ search_engine_start_real (NautilusSearchEngine *engine,
 {
     search_engine_start_real_setup (engine);
 
-    switch (search_type)
+    if (search_type & NAUTILUS_SEARCH_TYPE_LOCALSEARCH)
     {
-        case NAUTILUS_SEARCH_TYPE_LOCALSEARCH:
-        {
-            search_engine_start_real_tracker (engine);
-        }
-        break;
-
-        case NAUTILUS_SEARCH_TYPE_RECENT:
-        {
-            search_engine_start_real_recent (engine);
-        }
-        break;
-
-        case NAUTILUS_SEARCH_TYPE_MODEL:
-        {
-            search_engine_start_real_model (engine);
-        }
-        break;
-
-        case NAUTILUS_SEARCH_TYPE_SIMPLE:
-        {
-            search_engine_start_real_simple (engine);
-        }
-        break;
-
-        case NAUTILUS_SEARCH_TYPE_ALL:
-        default:
-        {
-            search_engine_start_real_tracker (engine);
-            search_engine_start_real_recent (engine);
-            search_engine_start_real_model (engine);
-            search_engine_start_real_simple (engine);
-        }
+        search_engine_start_real_tracker (engine);
+    }
+    if (search_type & NAUTILUS_SEARCH_TYPE_RECENT)
+    {
+        search_engine_start_real_recent (engine);
+    }
+    if (search_type & NAUTILUS_SEARCH_TYPE_MODEL)
+    {
+        search_engine_start_real_model (engine);
+    }
+    if (search_type & NAUTILUS_SEARCH_TYPE_SIMPLE)
+    {
+        search_engine_start_real_simple (engine);
     }
 }
 
