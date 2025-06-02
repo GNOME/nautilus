@@ -353,7 +353,14 @@ update_completions_store (gpointer callback_data)
     /* populate the completions model */
     gtk_list_store_clear (priv->completions_store);
 
-    current_dir_strlen = strlen (priv->current_directory);
+    if (priv->current_directory)
+    {
+        current_dir_strlen = strlen (priv->current_directory);
+    }
+    else
+    {
+        current_dir_strlen = 0;
+    }
     for (i = 0; completions[i] != NULL; i++)
     {
         completion = completions[i];
