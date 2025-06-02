@@ -91,63 +91,35 @@ search_engine_start_real_setup (NautilusSearchEngine *self)
 }
 
 static void
-search_engine_start_real_tracker (NautilusSearchEngine *self)
+search_engine_start_real (NautilusSearchEngine *self,
+                          NautilusSearchType    search_type)
 {
-    self->providers_running++;
-    nautilus_search_provider_start (NAUTILUS_SEARCH_PROVIDER (self->tracker));
-}
+    search_engine_start_real_setup (self);
 
-static void
-search_engine_start_real_recent (NautilusSearchEngine *self)
-{
-    if (!self->recent_enabled)
+    if (search_type & NAUTILUS_SEARCH_TYPE_LOCALSEARCH)
     {
-        return;
+        self->providers_running++;
+        nautilus_search_provider_start (NAUTILUS_SEARCH_PROVIDER (self->tracker));
     }
 
-    self->providers_running++;
-    nautilus_search_provider_start (NAUTILUS_SEARCH_PROVIDER (self->recent));
-}
+    if (search_type & NAUTILUS_SEARCH_TYPE_RECENT &&
+        self->recent_enabled)
+    {
+        self->providers_running++;
+        nautilus_search_provider_start (NAUTILUS_SEARCH_PROVIDER (self->recent));
+    }
 
-static void
-search_engine_start_real_model (NautilusSearchEngine *self)
-{
-    if (nautilus_search_engine_model_get_model (self->model))
+    if (search_type & NAUTILUS_SEARCH_TYPE_MODEL &&
+        nautilus_search_engine_model_get_model (self->model) != NULL)
     {
         self->providers_running++;
         nautilus_search_provider_start (NAUTILUS_SEARCH_PROVIDER (self->model));
     }
-}
 
-static void
-search_engine_start_real_simple (NautilusSearchEngine *self)
-{
-    self->providers_running++;
-
-    nautilus_search_provider_start (NAUTILUS_SEARCH_PROVIDER (self->simple));
-}
-
-static void
-search_engine_start_real (NautilusSearchEngine *engine,
-                          NautilusSearchType    search_type)
-{
-    search_engine_start_real_setup (engine);
-
-    if (search_type & NAUTILUS_SEARCH_TYPE_LOCALSEARCH)
-    {
-        search_engine_start_real_tracker (engine);
-    }
-    if (search_type & NAUTILUS_SEARCH_TYPE_RECENT)
-    {
-        search_engine_start_real_recent (engine);
-    }
-    if (search_type & NAUTILUS_SEARCH_TYPE_MODEL)
-    {
-        search_engine_start_real_model (engine);
-    }
     if (search_type & NAUTILUS_SEARCH_TYPE_SIMPLE)
     {
-        search_engine_start_real_simple (engine);
+        self->providers_running++;
+        nautilus_search_provider_start (NAUTILUS_SEARCH_PROVIDER (self->simple));
     }
 }
 
