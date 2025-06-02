@@ -33,7 +33,6 @@ main (int   argc,
       char *argv[])
 {
     g_autoptr (GMainLoop) loop = NULL;
-    NautilusSearchEngine *engine;
     g_autoptr (NautilusDirectory) directory = NULL;
     g_autoptr (NautilusQuery) query = NULL;
     g_autoptr (GFile) location = NULL;
@@ -47,7 +46,7 @@ main (int   argc,
      */
     nautilus_global_preferences_init ();
 
-    engine = nautilus_search_engine_new ();
+    NautilusSearchEngine *engine = nautilus_search_engine_new (NAUTILUS_SEARCH_TYPE_SIMPLE);
     g_signal_connect (engine, "hits-added",
                       G_CALLBACK (hits_added_cb), NULL);
     g_signal_connect (engine, "finished",
@@ -63,7 +62,7 @@ main (int   argc,
 
     create_search_file_hierarchy ("simple");
 
-    nautilus_search_engine_start_by_type (engine, NAUTILUS_SEARCH_TYPE_SIMPLE);
+    nautilus_search_provider_start (NAUTILUS_SEARCH_PROVIDER (engine));
 
     g_main_loop_run (loop);
 

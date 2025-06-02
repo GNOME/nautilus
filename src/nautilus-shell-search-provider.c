@@ -496,7 +496,7 @@ execute_search (NautilusShellSearchProvider  *self,
     pending_search->invocation = g_object_ref (invocation);
     pending_search->hits = g_hash_table_new_full (g_str_hash, g_str_equal, g_free, g_object_unref);
     pending_search->query = query;
-    pending_search->engine = nautilus_search_engine_new ();
+    pending_search->engine = nautilus_search_engine_new (NAUTILUS_SEARCH_TYPE_GLOBAL);
     pending_search->start_time = g_get_monotonic_time ();
     pending_search->self = self;
 

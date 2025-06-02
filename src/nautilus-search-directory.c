@@ -915,7 +915,7 @@ nautilus_search_directory_init (NautilusSearchDirectory *self)
     self->query = NULL;
     self->files_hash = g_hash_table_new (g_direct_hash, g_direct_equal);
 
-    self->engine = nautilus_search_engine_new ();
+    self->engine = nautilus_search_engine_new (NAUTILUS_SEARCH_TYPE_FOLDER);
     search_connect_engine (self);
 }
 

@@ -34,6 +34,8 @@ struct _NautilusSearchEngine
 {
     GObject parent_instance;
 
+    NautilusSearchType search_type;
+
     NautilusSearchEngineTracker *tracker;
     NautilusSearchEngineRecent *recent;
     NautilusSearchEngineSimple *simple;
@@ -91,74 +93,36 @@ search_engine_start_real_setup (NautilusSearchEngine *self)
 }
 
 static void
-search_engine_start_real (NautilusSearchEngine *self,
-                          NautilusSearchType    search_type)
+search_engine_start_real (NautilusSearchEngine *self)
 {
     search_engine_start_real_setup (self);
 
-    if (search_type & NAUTILUS_SEARCH_TYPE_LOCALSEARCH)
+    if (self->search_type & NAUTILUS_SEARCH_TYPE_LOCALSEARCH)
     {
         self->providers_running++;
         nautilus_search_provider_start (NAUTILUS_SEARCH_PROVIDER (self->tracker));
     }
 
-    if (search_type & NAUTILUS_SEARCH_TYPE_RECENT &&
+    if (self->search_type & NAUTILUS_SEARCH_TYPE_RECENT &&
         self->recent_enabled)
     {
         self->providers_running++;
         nautilus_search_provider_start (NAUTILUS_SEARCH_PROVIDER (self->recent));
     }
 
-    if (search_type & NAUTILUS_SEARCH_TYPE_MODEL &&
+    if (self->search_type & NAUTILUS_SEARCH_TYPE_MODEL &&
         nautilus_search_engine_model_get_model (self->model) != NULL)
     {
         self->providers_running++;
         nautilus_search_provider_start (NAUTILUS_SEARCH_PROVIDER (self->model));
     }
 
-    if (search_type & NAUTILUS_SEARCH_TYPE_SIMPLE)
+    if (self->search_type & NAUTILUS_SEARCH_TYPE_SIMPLE)
     {
         self->providers_running++;
         nautilus_search_provider_start (NAUTILUS_SEARCH_PROVIDER (self->simple));
     }
 }
-
-void
-nautilus_search_engine_start_by_type (NautilusSearchEngine *self,
-                                      NautilusSearchType    search_type)
-{
-    guint num_finished;
-
-    g_debug ("Search engine start");
-
-    num_finished = self->providers_error + self->providers_finished;
-
-    if (self->running)
-    {
-        if (num_finished == self->providers_running &&
-            self->restart)
-        {
-            search_engine_start_real (self, search_type);
-        }
-
-        return;
-    }
-
-    self->running = TRUE;
-
-    g_object_notify (G_OBJECT (self), "running");
-
-    if (num_finished < self->providers_running)
-    {
-        self->restart = TRUE;
-    }
-    else
-    {
-        search_engine_start_real (self, search_type);
-    }
-}
-
-
 
 static void
 nautilus_search_engine_start (NautilusSearchProvider *provider)
@@ -173,7 +137,7 @@ nautilus_search_engine_start (NautilusSearchProvider *provider)
         if (num_finished == self->providers_running &&
             self->restart)
         {
-            search_engine_start_real (self, NAUTILUS_SEARCH_TYPE_ALL);
+            search_engine_start_real (self);
         }
 
         return;
@@ -189,7 +153,7 @@ nautilus_search_engine_start (NautilusSearchProvider *provider)
     }
     else
     {
-        search_engine_start_real (self, NAUTILUS_SEARCH_TYPE_ALL);
+        search_engine_start_real (self);
     }
 }
 
@@ -426,11 +390,12 @@ nautilus_search_engine_init (NautilusSearchEngine *self)
 }
 
 NautilusSearchEngine *
-nautilus_search_engine_new (void)
+nautilus_search_engine_new (NautilusSearchType search_type)
 {
     NautilusSearchEngine *engine;
 
     engine = g_object_new (NAUTILUS_TYPE_SEARCH_ENGINE, NULL);
+    engine->search_type = search_type;
 
     return engine;
 }

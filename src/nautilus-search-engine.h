@@ -49,12 +49,11 @@ typedef enum {
 
 G_DECLARE_FINAL_TYPE (NautilusSearchEngine, nautilus_search_engine, NAUTILUS, SEARCH_ENGINE, GObject)
 
-NautilusSearchEngine *nautilus_search_engine_new                (void);
+NautilusSearchEngine *
+nautilus_search_engine_new (NautilusSearchType search_type);
+
 NautilusSearchEngineModel *
                       nautilus_search_engine_get_model_provider (NautilusSearchEngine *engine);
 void                  nautilus_search_engine_enable_recent (NautilusSearchEngine *engine);
 
-void
-nautilus_search_engine_start_by_type (NautilusSearchEngine *self,
-                                      NautilusSearchType    search_type);
 G_END_DECLS
