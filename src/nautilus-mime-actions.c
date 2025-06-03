@@ -335,6 +335,7 @@ struct
             "video/ogg",
             "video/quicktime",
             "video/vivo",
+            "video/vnd.avi",
             "video/vnd.divx",
             "video/vnd.mpegurl",
             "video/vnd.rn-realvideo",
