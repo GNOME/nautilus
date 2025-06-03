@@ -2440,6 +2440,13 @@ update_info_internal (NautilusFile *file,
     }
     file->details->type = file_type;
 
+    if (!nautilus_file_is_directory (file))
+    {
+        file->details->directory_count_is_up_to_date = TRUE;
+        file->details->directory_count_failed = FALSE;
+        file->details->got_directory_count = FALSE;
+    }
+
     if (g_file_info_get_attribute_boolean (info, G_FILE_ATTRIBUTE_STANDARD_IS_VIRTUAL) ||
         file_type == G_FILE_TYPE_SHORTCUT ||
         file_type == G_FILE_TYPE_MOUNTABLE ||

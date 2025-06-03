@@ -2607,16 +2607,6 @@ directory_count_start (NautilusDirectory *directory,
     }
     *doing_io = TRUE;
 
-    if (!nautilus_file_is_directory (file))
-    {
-        file->details->directory_count_is_up_to_date = TRUE;
-        file->details->directory_count_failed = FALSE;
-        file->details->got_directory_count = FALSE;
-
-        nautilus_directory_async_state_changed (directory);
-        return;
-    }
-
     if (!async_job_start (directory, "directory count"))
     {
         return;
