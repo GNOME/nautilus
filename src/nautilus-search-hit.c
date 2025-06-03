@@ -142,8 +142,12 @@ nautilus_search_hit_compute_scores (NautilusSearchHit *hit,
     }
 
     hit->relevance = recent_bonus + proximity_bonus + match_bonus;
-    g_debug ("Hit %s computed relevance %.2f (%.2f + %.2f + %.2f)", hit->uri, hit->relevance,
-             proximity_bonus, recent_bonus, match_bonus);
+
+    if (g_getenv ("G_MESSAGES_DEBUG") != NULL)
+    {
+        g_debug ("Hit %s computed relevance %.2f (%.2f + %.2f + %.2f)",
+                 hit->uri, hit->relevance, proximity_bonus, recent_bonus, match_bonus);
+    }
 }
 
 const char *

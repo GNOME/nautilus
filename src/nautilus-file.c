@@ -4856,8 +4856,12 @@ nautilus_file_get_thumbnail_icon (NautilusFile          *file,
 
         gtk_snapshot_pop (snapshot); /* End rounded clip */
 
-        g_debug ("Returning thumbnailed image, at size %d %d",
-                 (int) (width), (int) (height));
+        if (g_getenv ("G_MESSAGES_DEBUG") != NULL)
+        {
+            g_debug ("Returning thumbnailed image, at size %d %d",
+                     (int) (width), (int) (height));
+        }
+
         paintable = gtk_snapshot_to_paintable (snapshot, NULL);
     }
     else if (file->details->thumbnail_info_is_up_to_date &&
@@ -4910,7 +4914,10 @@ nautilus_file_get_icon (NautilusFile          *file,
         goto out;
     }
 
-    g_debug ("Called file_get_icon(), at size %d", size);
+    if (g_getenv ("G_MESSAGES_DEBUG") != NULL)
+    {
+        g_debug ("Called file_get_icon(), at size %d", size);
+    }
 
     if (flags & NAUTILUS_FILE_ICON_FLAGS_USE_THUMBNAILS &&
         size >= NAUTILUS_THUMBNAIL_MINIMUM_ICON_SIZE &&
