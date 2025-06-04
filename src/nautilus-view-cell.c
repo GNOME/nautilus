@@ -225,13 +225,10 @@ nautilus_view_cell_set_item (NautilusViewCell *self,
 NautilusViewItem *
 nautilus_view_cell_get_item (NautilusViewCell *self)
 {
-    NautilusViewItem *item;
-
     g_return_val_if_fail (NAUTILUS_IS_VIEW_CELL (self), NULL);
 
-    /* This gets a full reference. */
-    g_object_get (self, "item", &item, NULL);
+    NautilusViewCellPrivate *priv = nautilus_view_cell_get_instance_private (self);
 
     /* Return full reference for consistency with gtk_tree_list_row_get_item() */
-    return item;
+    return priv->item != NULL ? g_object_ref (priv->item) : NULL;
 }
