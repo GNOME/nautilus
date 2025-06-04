@@ -117,7 +117,11 @@ update_labels (NautilusNameCell *self)
     }
 
     gtk_label_set_text (GTK_LABEL (self->path), path_text);
-    gtk_label_set_markup (self->snippet, fts_snippet);
+    if (fts_snippet != NULL &&
+        !g_str_equal (gtk_label_get_text (self->snippet), fts_snippet))
+    {
+        gtk_label_set_markup (self->snippet, fts_snippet);
+    }
 
     gtk_widget_set_visible (self->path, (path_text != NULL));
     gtk_widget_set_visible (self->snippet_button, (fts_snippet != NULL));
