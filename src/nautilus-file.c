@@ -3326,18 +3326,19 @@ prepend_automatic_keywords (NautilusFile *file,
                             GList        *names)
 {
     /* Prepend in reverse order. */
-    NautilusFile *parent;
-
-    parent = nautilus_file_get_parent (file);
 
     /* Trash files are assumed to be read-only,
      * so we want to ignore them here. */
     if (!nautilus_file_can_write (file) &&
-        !nautilus_file_is_in_trash (file) &&
-        (parent == NULL || nautilus_file_can_write (parent)))
+        !nautilus_file_is_in_trash (file))
     {
-        names = g_list_prepend
-                    (names, g_strdup (NAUTILUS_FILE_EMBLEM_NAME_CANT_WRITE));
+        g_autoptr (NautilusFile) parent = nautilus_file_get_parent (file);
+
+        if (parent == NULL || nautilus_file_can_write (parent))
+        {
+            names = g_list_prepend
+                        (names, g_strdup (NAUTILUS_FILE_EMBLEM_NAME_CANT_WRITE));
+        }
     }
     if (!nautilus_file_can_read (file))
     {
@@ -3349,12 +3350,6 @@ prepend_automatic_keywords (NautilusFile *file,
         names = g_list_prepend
                     (names, g_strdup (NAUTILUS_FILE_EMBLEM_NAME_SYMBOLIC_LINK));
     }
-
-    if (parent)
-    {
-        nautilus_file_unref (parent);
-    }
-
 
     return names;
 }
