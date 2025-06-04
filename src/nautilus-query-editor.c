@@ -480,7 +480,7 @@ entry_activate_cb (GtkWidget           *entry,
     g_signal_emit (editor, signals[ACTIVATED], 0);
 }
 
-static gboolean
+static void
 entry_changed_internal (NautilusQueryEditor *editor)
 {
     const gchar *text = gtk_editable_get_text (GTK_EDITABLE (editor->text));
@@ -495,13 +495,11 @@ entry_changed_internal (NautilusQueryEditor *editor)
     {
         if (!nautilus_query_set_text (editor->query, text))
         {
-            return G_SOURCE_REMOVE;
+            return;
         }
     }
 
     nautilus_query_editor_changed (editor);
-
-    return G_SOURCE_REMOVE;
 }
 
 static void
@@ -520,8 +518,8 @@ entry_changed_cb (GtkWidget           *entry,
         return;
     }
 
-    editor->search_changed_idle_id = g_idle_add (G_SOURCE_FUNC (entry_changed_internal),
-                                                 editor);
+    editor->search_changed_idle_id = g_idle_add_once ((GSourceOnceFunc) entry_changed_internal,
+                                                      editor);
 }
 
 static GtkWidget *
