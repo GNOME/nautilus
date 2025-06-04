@@ -44,7 +44,7 @@ G_DECLARE_FINAL_TYPE (NautilusQuery, nautilus_query, NAUTILUS, QUERY, GObject)
 NautilusQuery* nautilus_query_new      (void);
 
 char *         nautilus_query_get_text           (NautilusQuery *query);
-void           nautilus_query_set_text           (NautilusQuery *query, const char *text);
+gboolean       nautilus_query_set_text           (NautilusQuery *query, const char *text);
 
 gboolean       nautilus_query_get_show_hidden_files (NautilusQuery *query);
 void           nautilus_query_set_show_hidden_files (NautilusQuery *query, gboolean show_hidden);

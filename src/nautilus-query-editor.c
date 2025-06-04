@@ -493,7 +493,10 @@ entry_changed_internal (NautilusQueryEditor *editor)
     }
     else
     {
-        nautilus_query_set_text (editor->query, text);
+        if (!nautilus_query_set_text (editor->query, text))
+        {
+            return G_SOURCE_REMOVE;
+        }
     }
 
     nautilus_query_editor_changed (editor);

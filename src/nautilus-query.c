@@ -172,14 +172,18 @@ nautilus_query_get_text (NautilusQuery *query)
     return g_strdup (query->text);
 }
 
-void
+gboolean
 nautilus_query_set_text (NautilusQuery *query,
                          const char    *text)
 {
-    g_return_if_fail (NAUTILUS_IS_QUERY (query));
+    g_return_val_if_fail (NAUTILUS_IS_QUERY (query), FALSE);
 
-    g_free (query->text);
-    query->text = g_strstrip (g_strdup (text));
+    g_autofree gchar *stripped_text = g_strstrip (g_strdup (text));
+
+    if (!g_set_str (&query->text, stripped_text))
+    {
+        return FALSE;
+    }
 
     g_autofree gchar *prepared_query = prepare_string_for_compare (query->text);
     g_auto (GStrv) split_query = g_strsplit (prepared_query, " ", -1);
@@ -202,6 +206,8 @@ nautilus_query_set_text (NautilusQuery *query,
     query->prepared_words = prepared_words;
 
     g_rw_lock_writer_unlock (&query->prepared_words_rwlock);
+
+    return TRUE;
 }
 
 GFile *
