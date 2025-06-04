@@ -43,19 +43,13 @@ get_path_text (NautilusFile *file,
                GQuark        path_attribute_q,
                GFile        *base_location)
 {
-    g_autofree gchar *path = NULL;
-    g_autoptr (GFile) dir_location = NULL;
-    g_autoptr (GFile) home_location = g_file_new_for_path (g_get_home_dir ());
-    g_autoptr (GFile) root_location = g_file_new_for_path ("/");
-    GFile *relative_location_base;
-
     if (path_attribute_q == 0)
     {
         return NULL;
     }
 
-    path = nautilus_file_get_string_attribute_q (file, path_attribute_q);
-    dir_location = g_file_new_for_commandline_arg (path);
+    g_autofree gchar *path = nautilus_file_get_string_attribute_q (file, path_attribute_q);
+    g_autoptr (GFile) dir_location = g_file_new_for_commandline_arg (path);
 
     if (base_location != NULL && g_file_equal (base_location, dir_location))
     {
@@ -65,12 +59,16 @@ get_path_text (NautilusFile *file,
         return NULL;
     }
 
+    g_autoptr (GFile) home_location = g_file_new_for_path (g_get_home_dir ());
+
     if (g_file_equal (dir_location, home_location))
     {
         return nautilus_compute_title_for_location (home_location);
     }
 
-    relative_location_base = base_location;
+    g_autoptr (GFile) root_location = g_file_new_for_path ("/");
+    GFile *relative_location_base = base_location;
+
     if (relative_location_base == NULL)
     {
         /* Only occurs in Recent, Starred and Trash. */
