@@ -42,26 +42,19 @@
 
 #define NAUTILUS_TYPE_DIRECTORY nautilus_directory_get_type()
 
+G_DECLARE_DERIVABLE_TYPE (NautilusDirectory, nautilus_directory, NAUTILUS, DIRECTORY, GObject)
+
 /* NautilusFile is defined both here and in nautilus-file.h. */
 #ifndef NAUTILUS_FILE_DEFINED
 #define NAUTILUS_FILE_DEFINED
 typedef struct NautilusFile NautilusFile;
 #endif
 
-typedef struct _NautilusDirectory        NautilusDirectory;
-typedef struct  NautilusDirectoryPrivate NautilusDirectoryPrivate;
-
-struct _NautilusDirectory
-{
-	GObject object;
-	NautilusDirectoryPrivate *details;
-};
-
 typedef void (*NautilusDirectoryCallback) (NautilusDirectory *directory,
 					   GList             *files,
 					   gpointer           callback_data);
 
-typedef struct
+struct _NautilusDirectoryClass
 {
 	GObjectClass parent_class;
 

@@ -5527,70 +5527,6 @@ nautilus_file_get_selinux_context (NautilusFile *file)
     return translated;
 }
 
-static char *
-get_real_name (const char *name,
-               const char *gecos)
-{
-    char *part_before_comma, *capitalized_login_name, *real_name;
-    const char *locale_string;
-    g_auto (GStrv) geco_parts = NULL;
-
-    if (gecos == NULL || gecos[0] == '\0')
-    {
-        return NULL;
-    }
-
-    geco_parts = g_strsplit (gecos, ",", 2);
-    if (geco_parts == NULL)
-    {
-        return NULL;
-    }
-
-    locale_string = geco_parts[0];
-    if (!g_utf8_validate (locale_string, -1, NULL))
-    {
-        part_before_comma = g_locale_to_utf8 (locale_string, -1, NULL, NULL, NULL);
-    }
-    else
-    {
-        part_before_comma = g_strdup (locale_string);
-    }
-
-    if (!g_utf8_validate (name, -1, NULL))
-    {
-        g_autofree gchar *login_name = g_locale_to_utf8 (name, -1, NULL, NULL, NULL);
-        capitalized_login_name = nautilus_capitalize_str (login_name);
-    }
-    else
-    {
-        capitalized_login_name = nautilus_capitalize_str (name);
-    }
-
-    if (capitalized_login_name == NULL)
-    {
-        real_name = part_before_comma;
-    }
-    else
-    {
-        GString *real_name_str = g_string_new_take (g_steal_pointer (&part_before_comma));
-        g_string_replace (real_name_str, "&", capitalized_login_name, 0);
-        real_name = g_string_free_and_steal (real_name_str);
-    }
-
-
-    if (g_strcmp0 (real_name, NULL) == 0
-        || g_strcmp0 (name, real_name) == 0
-        || g_strcmp0 (capitalized_login_name, real_name) == 0)
-    {
-        g_free (real_name);
-        real_name = NULL;
-    }
-
-    g_free (capitalized_login_name);
-
-    return real_name;
-}
-
 static gboolean
 get_group_id_from_group_name (const char *group_name,
                               uid_t      *gid)
@@ -5846,32 +5782,7 @@ nautilus_file_set_owner (NautilusFile                  *file,
 GList *
 nautilus_get_user_names (void)
 {
-    GList *list;
-    char *real_name, *name;
-    struct passwd *user;
-
-    list = NULL;
-
-    setpwent ();
-
-    while ((user = getpwent ()) != NULL)
-    {
-        real_name = get_real_name (user->pw_name, user->pw_gecos);
-        if (real_name != NULL && !g_str_equal (real_name, ""))
-        {
-            name = g_strconcat (user->pw_name, " – ", real_name, NULL);
-        }
-        else
-        {
-            name = g_strdup (user->pw_name);
-        }
-        g_free (real_name);
-        list = g_list_prepend (list, name);
-    }
-
-    endpwent ();
-
-    return g_list_sort (list, (GCompareFunc) g_utf8_collate);
+    return NULL;
 }
 
 /**

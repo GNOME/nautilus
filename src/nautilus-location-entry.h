@@ -27,15 +27,8 @@
 #include <gtk/gtk.h>
 
 #define NAUTILUS_TYPE_LOCATION_ENTRY nautilus_location_entry_get_type()
-G_DECLARE_DERIVABLE_TYPE (NautilusLocationEntry, nautilus_location_entry,
-                          NAUTILUS, LOCATION_ENTRY,
-                          GtkEntry)
-
-typedef struct _NautilusLocationEntryClass {
-	GtkEntryClass parent_class;
-	/* for GtkBindingSet */
-	void         (* cancel)           (NautilusLocationEntry *entry);
-} NautilusLocationEntryClass;
+G_DECLARE_FINAL_TYPE (NautilusLocationEntry, nautilus_location_entry,
+                      NAUTILUS, LOCATION_ENTRY, GtkEntry)
 
 typedef enum {
 	NAUTILUS_LOCATION_ENTRY_ACTION_GOTO,
