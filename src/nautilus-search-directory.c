@@ -972,9 +972,14 @@ update_base_model (NautilusSearchDirectory *self)
 
     if (self->base_model != NULL)
     {
+        nautilus_search_engine_set_search_type (self->engine, NAUTILUS_SEARCH_TYPE_FOLDER);
         nautilus_directory_file_monitor_add (base_model, &self->base_model,
                                              TRUE, NAUTILUS_FILE_ATTRIBUTE_INFO,
                                              NULL, NULL);
+    }
+    else
+    {
+        nautilus_search_engine_set_search_type (self->engine, NAUTILUS_SEARCH_TYPE_GLOBAL);
     }
 }
 
