@@ -126,56 +126,6 @@ batch_rename_get_tag_text_representation (TagConstants tag_constants)
     return tag_text;
 }
 
-static GString *
-batch_rename_replace (const gchar *string,
-                      const gchar *substring,
-                      const gchar *replacement)
-{
-    GString *new_string;
-    gchar **splitted_string;
-    gint i, n_splits;
-
-    new_string = g_string_new ("");
-
-    if (substring == NULL || replacement == NULL)
-    {
-        g_string_append (new_string, string);
-
-        return new_string;
-    }
-
-    if (g_utf8_strlen (substring, -1) == 0)
-    {
-        g_string_append (new_string, string);
-
-        return new_string;
-    }
-
-    splitted_string = g_strsplit (string, substring, -1);
-    if (splitted_string == NULL)
-    {
-        g_string_append (new_string, string);
-
-        return new_string;
-    }
-
-    n_splits = g_strv_length (splitted_string);
-
-    for (i = 0; i < n_splits; i++)
-    {
-        g_string_append (new_string, splitted_string[i]);
-
-        if (i != n_splits - 1)
-        {
-            g_string_append (new_string, replacement);
-        }
-    }
-
-    g_strfreev (splitted_string);
-
-    return new_string;
-}
-
 void
 batch_rename_sort_lists_for_rename (GList    **selection,
                                     GList    **new_names,
@@ -550,11 +500,10 @@ batch_rename_dialog_get_new_names_list (NautilusBatchRenameDialogMode  mode,
 
         if (mode == NAUTILUS_BATCH_RENAME_DIALOG_REPLACE)
         {
-            const char *name = nautilus_file_get_name (file);
+            new_name = g_string_new (nautilus_file_get_name (file));
 
-            new_name = batch_rename_replace (name,
-                                             entry_text,
-                                             replace_text);
+            g_string_replace (new_name, entry_text, replace_text, -1);
+
             result = g_list_prepend (result, new_name);
         }
     }
@@ -780,20 +729,11 @@ cursor_next (QueryData           *query_data,
 static GString *
 format_date_time (GDateTime *date_time)
 {
-    g_autofree gchar *date = NULL;
-    GString *formated_date;
+    g_autoptr (GString) formated_date = g_string_new_take (g_date_time_format (date_time, "%x"));
 
-    date = g_date_time_format (date_time, "%x");
-    if (strchr (date, '/') != NULL)
-    {
-        formated_date = batch_rename_replace (date, "/", "-");
-    }
-    else
-    {
-        formated_date = g_string_new (date);
-    }
+    g_string_replace (formated_date, "/", "-", -1);
 
-    return formated_date;
+    return g_steal_pointer (&formated_date);
 }
 
 static void
