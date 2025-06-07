@@ -87,6 +87,8 @@ search_engine_start_real (NautilusSearchEngine *self)
 {
     search_engine_start_real_setup (self);
 
+    g_autoptr (GFile) query_location = nautilus_query_get_location (self->query);
+
     if (self->search_type & NAUTILUS_SEARCH_TYPE_LOCALSEARCH)
     {
         self->providers_running++;
@@ -100,13 +102,14 @@ search_engine_start_real (NautilusSearchEngine *self)
     }
 
     if (self->search_type & NAUTILUS_SEARCH_TYPE_MODEL &&
-        nautilus_search_engine_model_get_model (self->model) != NULL)
+        query_location != NULL)
     {
         self->providers_running++;
         nautilus_search_provider_start (NAUTILUS_SEARCH_PROVIDER (self->model), self->query);
     }
 
-    if (self->search_type & NAUTILUS_SEARCH_TYPE_SIMPLE)
+    if (self->search_type & NAUTILUS_SEARCH_TYPE_SIMPLE &&
+        query_location != NULL)
     {
         self->providers_running++;
         nautilus_search_provider_start (NAUTILUS_SEARCH_PROVIDER (self->simple), self->query);
@@ -427,10 +430,4 @@ nautilus_search_engine_new (NautilusSearchType search_type)
     return g_object_new (NAUTILUS_TYPE_SEARCH_ENGINE,
                          "search-type", search_type,
                          NULL);
-}
-
-NautilusSearchEngineModel *
-nautilus_search_engine_get_model_provider (NautilusSearchEngine *self)
-{
-    return self->model;
 }

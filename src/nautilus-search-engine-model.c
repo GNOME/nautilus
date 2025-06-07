@@ -247,6 +247,10 @@ search_engine_model_start (NautilusSearchProvider *provider,
 
     g_set_object (&model->query, query);
 
+    g_autoptr (GFile) query_location = nautilus_query_get_location (model->query);
+    g_autoptr (NautilusDirectory) directory = nautilus_directory_get (query_location);
+    g_set_object (&model->directory, directory);
+
     if (model->query_pending)
     {
         return;
@@ -259,6 +263,7 @@ search_engine_model_start (NautilusSearchProvider *provider,
 
     if (model->directory == NULL)
     {
+        g_warning ("Started model search engine without model");
         search_finished_idle (model);
         return;
     }
@@ -316,17 +321,4 @@ nautilus_search_engine_model_new (void)
     engine = g_object_new (NAUTILUS_TYPE_SEARCH_ENGINE_MODEL, NULL);
 
     return engine;
-}
-
-void
-nautilus_search_engine_model_set_model (NautilusSearchEngineModel *model,
-                                        NautilusDirectory         *directory)
-{
-    g_set_object (&model->directory, directory);
-}
-
-NautilusDirectory *
-nautilus_search_engine_model_get_model (NautilusSearchEngineModel *model)
-{
-    return model->directory;
 }

@@ -31,7 +31,6 @@
 #include "nautilus-query.h"
 #include "nautilus-scheme.h"
 #include "nautilus-search-directory-file.h"
-#include "nautilus-search-engine-model.h"
 #include "nautilus-search-engine.h"
 #include "nautilus-search-provider.h"
 
@@ -169,8 +168,6 @@ is_monitoring_hidden_files (NautilusSearchDirectory *self)
 static void
 start_search (NautilusSearchDirectory *self)
 {
-    NautilusSearchEngineModel *model_provider;
-
     if (self->query == NULL ||
         self->search_running ||
         (self->monitor_list == NULL && self->pending_callback_list == NULL))
@@ -184,9 +181,6 @@ start_search (NautilusSearchDirectory *self)
 
     nautilus_query_set_show_hidden_files (self->query,
                                           is_monitoring_hidden_files (self));
-
-    model_provider = nautilus_search_engine_get_model_provider (self->engine);
-    nautilus_search_engine_model_set_model (model_provider, self->base_model);
 
     reset_file_list (self);
     nautilus_search_provider_start (NAUTILUS_SEARCH_PROVIDER (self->engine),
