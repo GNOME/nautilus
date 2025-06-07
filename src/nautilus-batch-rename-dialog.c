@@ -635,8 +635,9 @@ update_listbox (NautilusBatchRenameDialog *dialog)
         }
         else
         {
-            new_name = batch_rename_replace_label_text (old_name,
-                                                        gtk_editable_get_text (GTK_EDITABLE (dialog->find_entry)));
+            const gchar *replaced_text = gtk_editable_get_text (GTK_EDITABLE (dialog->find_entry));
+            new_name = markup_hightlight_text (old_name, replaced_text,
+                                               "white", "#f57900");
             nautilus_batch_rename_item_set_name_before (item, new_name->str);
 
             g_string_free (new_name, TRUE);

@@ -244,10 +244,11 @@ batch_rename_sort_lists_for_rename (GList    **selection,
     }
 }
 
-/* This function changes the background color of the replaced part of the name */
 GString *
-batch_rename_replace_label_text (const char  *label,
-                                 const gchar *substring)
+markup_hightlight_text (const char  *label,
+                        const gchar *substring,
+                        const gchar *text_color,
+                        const gchar *background_color)
 {
     GString *new_label;
     gchar **splitted_string;
@@ -288,8 +289,8 @@ batch_rename_replace_label_text (const char  *label,
         {
             token = g_markup_escape_text (substring, -1);
             g_string_append_printf (new_label,
-                                    "<span background=\'#f57900\' color='white'>%s</span>",
-                                    token);
+                                    "<span background='%s' color='%s'>%s</span>",
+                                    background_color, text_color, token);
 
             g_free (token);
         }
