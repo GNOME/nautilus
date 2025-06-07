@@ -1021,7 +1021,6 @@ check_metadata_for_selection (NautilusBatchRenameDialog *dialog,
 
         file_metadata = g_new0 (FileMetadata, 1);
         file_metadata->file = file;
-        file_metadata->metadata[ORIGINAL_FILE_NAME] = g_string_new (file_name);
 
         g_hash_table_insert (selection_metadata,
                              nautilus_file_ref (file), file_metadata);
