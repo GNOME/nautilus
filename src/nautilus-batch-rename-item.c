@@ -56,7 +56,7 @@ nautilus_batch_rename_item_finalize (GObject *object)
 
     g_free (item->name_before);
     g_free (item->name_after);
-    g_clear_weak_pointer (item->dialog);
+    g_clear_weak_pointer (&item->dialog);
 
     G_OBJECT_CLASS (nautilus_batch_rename_item_parent_class)->finalize (object);
 }
