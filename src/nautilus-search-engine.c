@@ -46,6 +46,7 @@ struct _NautilusSearchEngine
     guint providers_finished;
     guint providers_error;
 
+    NautilusQuery *query;
     gboolean running;
     gboolean restart;
 };
@@ -66,18 +67,6 @@ G_DEFINE_TYPE_WITH_CODE (NautilusSearchEngine,
                          G_TYPE_OBJECT,
                          G_IMPLEMENT_INTERFACE (NAUTILUS_TYPE_SEARCH_PROVIDER,
                                                 nautilus_search_provider_init))
-
-static void
-nautilus_search_engine_set_query (NautilusSearchProvider *provider,
-                                  NautilusQuery          *query)
-{
-    NautilusSearchEngine *self = NAUTILUS_SEARCH_ENGINE (provider);
-
-    nautilus_search_provider_set_query (NAUTILUS_SEARCH_PROVIDER (self->localsearch), query);
-    nautilus_search_provider_set_query (NAUTILUS_SEARCH_PROVIDER (self->recent), query);
-    nautilus_search_provider_set_query (NAUTILUS_SEARCH_PROVIDER (self->model), query);
-    nautilus_search_provider_set_query (NAUTILUS_SEARCH_PROVIDER (self->simple), query);
-}
 
 static void
 search_engine_start_real_setup (NautilusSearchEngine *self)
@@ -101,36 +90,41 @@ search_engine_start_real (NautilusSearchEngine *self)
     if (self->search_type & NAUTILUS_SEARCH_TYPE_LOCALSEARCH)
     {
         self->providers_running++;
-        nautilus_search_provider_start (NAUTILUS_SEARCH_PROVIDER (self->localsearch));
+        nautilus_search_provider_start (NAUTILUS_SEARCH_PROVIDER (self->localsearch), self->query);
     }
 
     if (self->search_type & NAUTILUS_SEARCH_TYPE_RECENT)
     {
         self->providers_running++;
-        nautilus_search_provider_start (NAUTILUS_SEARCH_PROVIDER (self->recent));
+        nautilus_search_provider_start (NAUTILUS_SEARCH_PROVIDER (self->recent), self->query);
     }
 
     if (self->search_type & NAUTILUS_SEARCH_TYPE_MODEL &&
         nautilus_search_engine_model_get_model (self->model) != NULL)
     {
         self->providers_running++;
-        nautilus_search_provider_start (NAUTILUS_SEARCH_PROVIDER (self->model));
+        nautilus_search_provider_start (NAUTILUS_SEARCH_PROVIDER (self->model), self->query);
     }
 
     if (self->search_type & NAUTILUS_SEARCH_TYPE_SIMPLE)
     {
         self->providers_running++;
-        nautilus_search_provider_start (NAUTILUS_SEARCH_PROVIDER (self->simple));
+        nautilus_search_provider_start (NAUTILUS_SEARCH_PROVIDER (self->simple), self->query);
     }
 }
 
 static void
-nautilus_search_engine_start (NautilusSearchProvider *provider)
+nautilus_search_engine_start (NautilusSearchProvider *provider,
+                              NautilusQuery          *query)
 {
+    g_return_if_fail (query != NULL);
+
     NautilusSearchEngine *self = NAUTILUS_SEARCH_ENGINE (provider);
 
     g_debug ("Search engine start");
     guint num_finished = self->providers_error + self->providers_finished;
+
+    g_set_object (&self->query, query);
 
     if (self->running)
     {
@@ -252,7 +246,7 @@ check_providers_status (NautilusSearchEngine *self)
 
     if (self->restart)
     {
-        nautilus_search_engine_start (NAUTILUS_SEARCH_PROVIDER (self));
+        nautilus_search_engine_start (NAUTILUS_SEARCH_PROVIDER (self), self->query);
     }
 
     g_object_unref (self);
@@ -310,7 +304,6 @@ nautilus_search_engine_set_search_type (NautilusSearchEngine *self,
 static void
 nautilus_search_provider_init (NautilusSearchProviderInterface *iface)
 {
-    iface->set_query = nautilus_search_engine_set_query;
     iface->start = nautilus_search_engine_start;
     iface->stop = nautilus_search_engine_stop;
 }
@@ -326,6 +319,7 @@ nautilus_search_engine_finalize (GObject *object)
     g_clear_object (&self->recent);
     g_clear_object (&self->model);
     g_clear_object (&self->simple);
+    g_clear_object (&self->query);
 
     G_OBJECT_CLASS (nautilus_search_engine_parent_class)->finalize (object);
 }

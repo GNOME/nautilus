@@ -169,13 +169,12 @@ main (int   argc,
 
     query = nautilus_query_new ();
     nautilus_query_set_text (query, "target");
-    nautilus_search_provider_set_query (NAUTILUS_SEARCH_PROVIDER (engine), query);
 
     location = g_file_new_for_path (indexed_tmpdir);
     directory = nautilus_directory_get (location);
     nautilus_query_set_location (query, location);
 
-    nautilus_search_provider_start (NAUTILUS_SEARCH_PROVIDER (engine));
+    nautilus_search_provider_start (NAUTILUS_SEARCH_PROVIDER (engine), query);
 
     g_main_loop_run (loop);
 

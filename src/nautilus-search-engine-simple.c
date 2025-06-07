@@ -524,13 +524,16 @@ create_thread_timeout (gpointer user_data)
 }
 
 static void
-nautilus_search_engine_simple_start (NautilusSearchProvider *provider)
+search_engine_simple_start (NautilusSearchProvider *provider,
+                            NautilusQuery          *query)
 {
     NautilusSearchEngineSimple *simple;
     SearchThreadData *data;
     g_autoptr (GFile) location = NULL;
 
     simple = NAUTILUS_SEARCH_ENGINE_SIMPLE (provider);
+
+    g_set_object (&simple->query, query);
 
     if (simple->active_search != NULL)
     {
@@ -579,21 +582,9 @@ nautilus_search_engine_simple_stop (NautilusSearchProvider *provider)
 }
 
 static void
-nautilus_search_engine_simple_set_query (NautilusSearchProvider *provider,
-                                         NautilusQuery          *query)
-{
-    NautilusSearchEngineSimple *simple = NAUTILUS_SEARCH_ENGINE_SIMPLE (provider);
-
-    g_clear_object (&simple->query);
-
-    simple->query = g_object_ref (query);
-}
-
-static void
 nautilus_search_provider_init (NautilusSearchProviderInterface *iface)
 {
-    iface->set_query = nautilus_search_engine_simple_set_query;
-    iface->start = nautilus_search_engine_simple_start;
+    iface->start = search_engine_simple_start;
     iface->stop = nautilus_search_engine_simple_stop;
 }
 

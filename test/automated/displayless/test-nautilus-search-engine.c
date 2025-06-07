@@ -56,7 +56,6 @@ main (int   argc,
 
     query = nautilus_query_new ();
     nautilus_query_set_text (query, "engine_all_engines");
-    nautilus_search_provider_set_query (NAUTILUS_SEARCH_PROVIDER (engine), query);
 
     location = g_file_new_for_path (test_get_tmp_dir ());
     directory = nautilus_directory_get (location);
@@ -64,7 +63,7 @@ main (int   argc,
 
     create_search_file_hierarchy ("all_engines");
 
-    nautilus_search_provider_start (NAUTILUS_SEARCH_PROVIDER (engine));
+    nautilus_search_provider_start (NAUTILUS_SEARCH_PROVIDER (engine), query);
 
     g_main_loop_run (loop);
 

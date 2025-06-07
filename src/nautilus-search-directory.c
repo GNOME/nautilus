@@ -184,15 +184,13 @@ start_search (NautilusSearchDirectory *self)
 
     nautilus_query_set_show_hidden_files (self->query,
                                           is_monitoring_hidden_files (self));
-    nautilus_search_provider_set_query (NAUTILUS_SEARCH_PROVIDER (self->engine),
-                                        self->query);
 
     model_provider = nautilus_search_engine_get_model_provider (self->engine);
     nautilus_search_engine_model_set_model (model_provider, self->base_model);
 
     reset_file_list (self);
-
-    nautilus_search_provider_start (NAUTILUS_SEARCH_PROVIDER (self->engine));
+    nautilus_search_provider_start (NAUTILUS_SEARCH_PROVIDER (self->engine),
+                                    self->query);
 }
 
 static void

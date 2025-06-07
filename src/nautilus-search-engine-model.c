@@ -238,11 +238,14 @@ model_directory_ready_cb (NautilusDirectory *directory,
 }
 
 static void
-nautilus_search_engine_model_start (NautilusSearchProvider *provider)
+search_engine_model_start (NautilusSearchProvider *provider,
+                           NautilusQuery          *query)
 {
     NautilusSearchEngineModel *model;
 
     model = NAUTILUS_SEARCH_ENGINE_MODEL (provider);
+
+    g_set_object (&model->query, query);
 
     if (model->query_pending)
     {
@@ -285,23 +288,9 @@ nautilus_search_engine_model_stop (NautilusSearchProvider *provider)
 }
 
 static void
-nautilus_search_engine_model_set_query (NautilusSearchProvider *provider,
-                                        NautilusQuery          *query)
-{
-    NautilusSearchEngineModel *model;
-
-    model = NAUTILUS_SEARCH_ENGINE_MODEL (provider);
-
-    g_object_ref (query);
-    g_clear_object (&model->query);
-    model->query = query;
-}
-
-static void
 nautilus_search_provider_init (NautilusSearchProviderInterface *iface)
 {
-    iface->set_query = nautilus_search_engine_model_set_query;
-    iface->start = nautilus_search_engine_model_start;
+    iface->start = search_engine_model_start;
     iface->stop = nautilus_search_engine_model_stop;
 }
 

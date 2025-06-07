@@ -36,8 +36,8 @@ struct _NautilusSearchProviderInterface {
         GTypeInterface g_iface;
 
         /* VTable */
-        void (*set_query) (NautilusSearchProvider *provider, NautilusQuery *query);
-        void (*start) (NautilusSearchProvider *provider);
+        void (*start) (NautilusSearchProvider *provider,
+                       NautilusQuery          *query);
         void (*stop) (NautilusSearchProvider *provider);
 
         /* Signals */
@@ -75,9 +75,8 @@ struct _NautilusSearchProviderInterface {
 GType          nautilus_search_provider_get_type        (void) G_GNUC_CONST;
 
 /* Interface Functions */
-void           nautilus_search_provider_set_query       (NautilusSearchProvider *provider,
+void           nautilus_search_provider_start           (NautilusSearchProvider *provider,
                                                          NautilusQuery *query);
-void           nautilus_search_provider_start           (NautilusSearchProvider *provider);
 void           nautilus_search_provider_stop            (NautilusSearchProvider *provider);
 
 void           nautilus_search_provider_hits_added      (NautilusSearchProvider *provider,

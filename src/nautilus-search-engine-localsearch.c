@@ -62,6 +62,9 @@ struct _NautilusSearchEngineLocalsearch
     GCancellable *cancellable;
 };
 
+static void
+nautilus_search_engine_localsearch_set_query (NautilusSearchProvider *provider,
+                                              NautilusQuery          *query);
 static void nautilus_search_provider_init (NautilusSearchProviderInterface *iface);
 
 G_DEFINE_TYPE_WITH_CODE (NautilusSearchEngineLocalsearch,
@@ -455,7 +458,8 @@ create_statement (NautilusSearchProvider *provider,
 }
 
 static void
-nautilus_search_engine_localsearch_start (NautilusSearchProvider *provider)
+search_engine_localsearch_start (NautilusSearchProvider *provider,
+                                 NautilusQuery          *query)
 {
     NautilusSearchEngineLocalsearch *self = NAUTILUS_SEARCH_ENGINE_LOCALSEARCH (provider);
     g_autofree gchar *query_text = NULL;
@@ -465,6 +469,8 @@ nautilus_search_engine_localsearch_start (NautilusSearchProvider *provider)
     TrackerSparqlStatement *stmt;
     SearchFeatures features = 0;
     g_autoptr (GFile) location = NULL;
+
+    nautilus_search_engine_localsearch_set_query (provider, query);
 
     if (self->query_pending)
     {
@@ -645,8 +651,7 @@ nautilus_search_engine_localsearch_set_query (NautilusSearchProvider *provider,
 static void
 nautilus_search_provider_init (NautilusSearchProviderInterface *iface)
 {
-    iface->set_query = nautilus_search_engine_localsearch_set_query;
-    iface->start = nautilus_search_engine_localsearch_start;
+    iface->start = search_engine_localsearch_start;
     iface->stop = nautilus_search_engine_localsearch_stop;
 }
 
