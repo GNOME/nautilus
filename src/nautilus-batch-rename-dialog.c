@@ -609,7 +609,6 @@ update_listbox (NautilusBatchRenameDialog *dialog)
     guint i;
     GList *l1;
     GList *l2;
-    GString *new_name;
     gboolean empty_name = FALSE;
 
     for (i = 0, l1 = dialog->new_names, l2 = dialog->selection;
@@ -617,7 +616,7 @@ update_listbox (NautilusBatchRenameDialog *dialog)
          i++, l1 = l1->next, l2 = l2->next)
     {
         NautilusBatchRenameItem *item = g_list_model_get_item (G_LIST_MODEL (dialog->batch_listmodel), i);
-        new_name = l1->data;
+        GString *new_name = l1->data;
         const char *old_name = nautilus_file_get_name (NAUTILUS_FILE (l2->data));
         g_autofree gchar *new_name_escaped = g_markup_escape_text (new_name->str, -1);
 
@@ -636,11 +635,10 @@ update_listbox (NautilusBatchRenameDialog *dialog)
         else
         {
             const gchar *replaced_text = gtk_editable_get_text (GTK_EDITABLE (dialog->find_entry));
-            new_name = markup_hightlight_text (old_name, replaced_text,
-                                               "white", "#f57900");
-            nautilus_batch_rename_item_set_name_before (item, new_name->str);
+            g_autoptr (GString) highlighted_name = markup_hightlight_text (old_name, replaced_text,
+                                                                           "white", "#f57900");
 
-            g_string_free (new_name, TRUE);
+            nautilus_batch_rename_item_set_name_before (item, highlighted_name->str);
         }
     }
 
@@ -711,10 +709,6 @@ check_conflict_for_files (NautilusBatchRenameDialog *dialog,
     GHashTable *directory_files_table;
     GHashTable *new_names_table;
     GHashTable *names_conflicts_table;
-    gboolean exists;
-    gboolean have_conflict;
-    gboolean tag_present;
-    gboolean same_parent_directory;
     ConflictData *conflict_data;
 
     current_directory = nautilus_directory_get_uri (directory);
@@ -742,11 +736,11 @@ check_conflict_for_files (NautilusBatchRenameDialog *dialog,
         NautilusFile *file = NAUTILUS_FILE (l2->data);
         g_autofree gchar *parent_uri = nautilus_file_get_parent_uri (file);
 
-        same_parent_directory = g_strcmp0 (parent_uri, current_directory) == 0;
+        gboolean same_parent_directory = g_strcmp0 (parent_uri, current_directory) == 0;
 
         if (same_parent_directory)
         {
-            tag_present = g_hash_table_contains (new_names_table, new_name->str);
+            gboolean tag_present = g_hash_table_contains (new_names_table, new_name->str);
 
             if (!tag_present)
             {
@@ -777,15 +771,14 @@ check_conflict_for_files (NautilusBatchRenameDialog *dialog,
         GString *new_name = l2->data;
         const gchar *file_name = nautilus_file_get_name (file);
         g_autofree gchar *parent_uri = nautilus_file_get_parent_uri (file);
-
-        have_conflict = FALSE;
+        gboolean have_conflict = FALSE;
 
         /* check for duplicate only if the parent of the current file is
          * the current directory and the name of the file has changed */
         if (g_strcmp0 (parent_uri, current_directory) == 0 &&
             !g_str_equal (new_name->str, file_name))
         {
-            exists = g_hash_table_contains (directory_files_table, new_name->str);
+            gboolean exists = g_hash_table_contains (directory_files_table, new_name->str);
 
             if (exists == TRUE &&
                 !file_name_conflicts_with_results (dialog->selection, dialog->new_names, new_name, parent_uri))
@@ -802,7 +795,7 @@ check_conflict_for_files (NautilusBatchRenameDialog *dialog,
 
         if (!have_conflict)
         {
-            tag_present = g_hash_table_lookup (names_conflicts_table, new_name->str) != NULL;
+            gboolean tag_present = g_hash_table_lookup (names_conflicts_table, new_name->str) != NULL;
 
             if (tag_present &&
                 g_strcmp0 (parent_uri, current_directory) == 0)
@@ -1104,8 +1097,6 @@ nautilus_batch_rename_dialog_query_finished (NautilusBatchRenameDialog *dialog,
     GHashTableIter selection_metadata_iter;
     FileMetadata *file_metadata;
     MetadataType metadata_type;
-    gboolean is_metadata;
-    TagData *tag_data;
     g_autoptr (GList) tag_info_keys = NULL;
     GList *l;
 
@@ -1148,8 +1139,9 @@ nautilus_batch_rename_dialog_query_finished (NautilusBatchRenameDialog *dialog,
     for (l = tag_info_keys; l != NULL; l = l->next)
     {
         /* Only metadata has to be handled here. */
-        tag_data = g_hash_table_lookup (dialog->tag_info_table, l->data);
-        is_metadata = tag_data->tag_constants.is_metadata;
+        TagData *tag_data = g_hash_table_lookup (dialog->tag_info_table, l->data);
+        gboolean is_metadata = tag_data->tag_constants.is_metadata;
+
         if (!is_metadata)
         {
             continue;
