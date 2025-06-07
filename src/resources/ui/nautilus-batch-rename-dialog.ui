@@ -436,8 +436,9 @@
         </property>
         <child type="bottom">
           <object class="GtkBox">
-            <property name="spacing">6</property>
-            <property name="margin-start">6</property>
+            <style>
+              <class name="toolbar"/>
+            </style>
             <child>
               <object class="GtkLabel" id="conflict_label">
                 <property name="hexpand">True</property>
