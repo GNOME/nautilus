@@ -466,7 +466,7 @@ static void
 fill_display_listbox (NautilusBatchRenameDialog *dialog)
 {
     guint items_size = g_list_length (dialog->new_names);
-    NautilusBatchRenameItem *item_array[items_size];
+    g_autoptr (GPtrArray) item_array = g_ptr_array_new_full (items_size, g_object_unref);
     GList *l1;
     GList *l2;
     guint i;
@@ -476,10 +476,10 @@ fill_display_listbox (NautilusBatchRenameDialog *dialog)
         g_autofree gchar *name = g_markup_escape_text (nautilus_file_get_name (NAUTILUS_FILE (l2->data)), -1);
         g_autofree gchar *new_name = g_markup_escape_text (((GString *) l1->data)->str, -1);
 
-        item_array[i] = nautilus_batch_rename_item_new (name, new_name, dialog);
+        g_ptr_array_add (item_array, nautilus_batch_rename_item_new (name, new_name, dialog));
     }
 
-    g_list_store_splice (dialog->batch_listmodel, 0, 0, (gpointer *) item_array, items_size);
+    g_list_store_splice (dialog->batch_listmodel, 0, 0, item_array->pdata, item_array->len);
 }
 
 static void
@@ -584,7 +584,7 @@ update_conflict_row_background (NautilusBatchRenameDialog *dialog)
 
     for (guint index = 0; index < model_size; index++)
     {
-        NautilusBatchRenameItem *item = g_list_model_get_item (model, index);
+        g_autoptr (NautilusBatchRenameItem) item = g_list_model_get_item (model, index);
 
         if (duplicates != NULL)
         {
@@ -615,7 +615,7 @@ update_listbox (NautilusBatchRenameDialog *dialog)
          i < g_list_model_get_n_items (G_LIST_MODEL (dialog->batch_listmodel));
          i++, l1 = l1->next, l2 = l2->next)
     {
-        NautilusBatchRenameItem *item = g_list_model_get_item (G_LIST_MODEL (dialog->batch_listmodel), i);
+        g_autoptr (NautilusBatchRenameItem) item = g_list_model_get_item (G_LIST_MODEL (dialog->batch_listmodel), i);
         GString *new_name = l1->data;
         const char *old_name = nautilus_file_get_name (NAUTILUS_FILE (l2->data));
         g_autofree gchar *new_name_escaped = g_markup_escape_text (new_name->str, -1);
