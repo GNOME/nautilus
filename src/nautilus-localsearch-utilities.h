@@ -1,4 +1,4 @@
-/* nautilus-tracker-utilities.h
+/* nautilus-localsearch-utilities.h
  *
  * Copyright 2019 Carlos Soriano <csoriano@redhat.com>
  *
@@ -24,11 +24,11 @@
 #include <gio/gio.h>
 #include <libtracker-sparql/tracker-sparql.h>
 
-TrackerSparqlConnection * nautilus_tracker_get_miner_fs_connection (GError **error);
-void nautilus_tracker_setup_miner_fs_connection (void);
+TrackerSparqlConnection * nautilus_localsearch_get_miner_fs_connection (GError **error);
+void nautilus_localsearch_setup_miner_fs_connection (void);
 
-/* nautilus_tracker_setup_host_miner_fs_connection_sync() is for testing purposes only */
-void nautilus_tracker_setup_host_miner_fs_connection_sync (void);
+/* nautilus_localsearch_setup_host_miner_fs_connection_sync() is for testing purposes only */
+void nautilus_localsearch_setup_host_miner_fs_connection_sync (void);
 
-gboolean nautilus_tracker_directory_is_tracked (GFile *directory);
-gboolean nautilus_tracker_directory_is_single (GFile *directory);
+gboolean nautilus_localsearch_directory_is_tracked (GFile *directory);
+gboolean nautilus_localsearch_directory_is_single (GFile *directory);

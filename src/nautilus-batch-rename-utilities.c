@@ -20,7 +20,7 @@
 #include "nautilus-batch-rename-utilities.h"
 #include "nautilus-file.h"
 #include "nautilus-filename-utilities.h"
-#include "nautilus-tracker-utilities.h"
+#include "nautilus-localsearch-utilities.h"
 
 #include <glib.h>
 #include <gtk/gtk.h>
@@ -1046,7 +1046,7 @@ check_metadata_for_selection (NautilusBatchRenameDialog *dialog,
     g_autofree gchar *parent_uri = NULL;
     gchar *file_name_escaped;
 
-    connection = nautilus_tracker_get_miner_fs_connection (&error);
+    connection = nautilus_localsearch_get_miner_fs_connection (&error);
     if (!connection)
     {
         if (error)

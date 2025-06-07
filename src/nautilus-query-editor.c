@@ -36,7 +36,7 @@
 #include "nautilus-search-directory.h"
 #include "nautilus-search-popover.h"
 #include "nautilus-mime-actions.h"
-#include "nautilus-tracker-utilities.h"
+#include "nautilus-localsearch-utilities.h"
 #include "nautilus-ui-utilities.h"
 
 struct _NautilusQueryEditor
@@ -167,14 +167,14 @@ find_enclosing_mount_cb (GObject      *source_object,
                                        _("External Drive"));
             gtk_widget_set_visible (editor->search_info_button, TRUE);
         }
-        else if (!nautilus_tracker_directory_is_tracked (editor->location))
+        else if (!nautilus_localsearch_directory_is_tracked (editor->location))
         {
             adw_status_page_set_title (ADW_STATUS_PAGE (editor->status_page),
                                        _("Folder Not in Search Locations"));
             gtk_widget_set_visible (editor->search_info_button, TRUE);
             gtk_widget_set_visible (editor->search_settings_button, TRUE);
         }
-        else if (nautilus_tracker_directory_is_single (editor->location))
+        else if (nautilus_localsearch_directory_is_single (editor->location))
         {
             adw_status_page_set_title (ADW_STATUS_PAGE (editor->status_page),
                                        _("Subfolders Not in Search Locations"));

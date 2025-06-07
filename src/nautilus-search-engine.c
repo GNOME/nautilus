@@ -26,9 +26,9 @@
 #include "nautilus-file-utilities.h"
 #include "nautilus-search-engine-model.h"
 #include <glib/gi18n.h>
+#include "nautilus-search-engine-localsearch.h"
 #include "nautilus-search-engine-recent.h"
 #include "nautilus-search-engine-simple.h"
-#include "nautilus-search-engine-tracker.h"
 
 struct _NautilusSearchEngine
 {
@@ -36,7 +36,7 @@ struct _NautilusSearchEngine
 
     NautilusSearchType search_type;
 
-    NautilusSearchEngineTracker *tracker;
+    NautilusSearchEngineLocalsearch *localsearch;
     NautilusSearchEngineRecent *recent;
     NautilusSearchEngineSimple *simple;
     NautilusSearchEngineModel *model;
@@ -71,7 +71,7 @@ nautilus_search_engine_set_query (NautilusSearchProvider *provider,
 {
     NautilusSearchEngine *self = NAUTILUS_SEARCH_ENGINE (provider);
 
-    nautilus_search_provider_set_query (NAUTILUS_SEARCH_PROVIDER (self->tracker), query);
+    nautilus_search_provider_set_query (NAUTILUS_SEARCH_PROVIDER (self->localsearch), query);
     nautilus_search_provider_set_query (NAUTILUS_SEARCH_PROVIDER (self->recent), query);
     nautilus_search_provider_set_query (NAUTILUS_SEARCH_PROVIDER (self->model), query);
     nautilus_search_provider_set_query (NAUTILUS_SEARCH_PROVIDER (self->simple), query);
@@ -99,7 +99,7 @@ search_engine_start_real (NautilusSearchEngine *self)
     if (self->search_type & NAUTILUS_SEARCH_TYPE_LOCALSEARCH)
     {
         self->providers_running++;
-        nautilus_search_provider_start (NAUTILUS_SEARCH_PROVIDER (self->tracker));
+        nautilus_search_provider_start (NAUTILUS_SEARCH_PROVIDER (self->localsearch));
     }
 
     if (self->search_type & NAUTILUS_SEARCH_TYPE_RECENT)
@@ -162,7 +162,7 @@ nautilus_search_engine_stop (NautilusSearchProvider *provider)
 
     g_debug ("Search engine stop");
 
-    nautilus_search_provider_stop (NAUTILUS_SEARCH_PROVIDER (self->tracker));
+    nautilus_search_provider_stop (NAUTILUS_SEARCH_PROVIDER (self->localsearch));
     nautilus_search_provider_stop (NAUTILUS_SEARCH_PROVIDER (self->recent));
     nautilus_search_provider_stop (NAUTILUS_SEARCH_PROVIDER (self->model));
     nautilus_search_provider_stop (NAUTILUS_SEARCH_PROVIDER (self->simple));
@@ -310,7 +310,7 @@ nautilus_search_engine_finalize (GObject *object)
 
     g_hash_table_destroy (self->uris);
 
-    g_clear_object (&self->tracker);
+    g_clear_object (&self->localsearch);
     g_clear_object (&self->recent);
     g_clear_object (&self->model);
     g_clear_object (&self->simple);
@@ -370,8 +370,8 @@ nautilus_search_engine_init (NautilusSearchEngine *self)
 {
     self->uris = g_hash_table_new_full (g_str_hash, g_str_equal, g_free, NULL);
 
-    self->tracker = nautilus_search_engine_tracker_new ();
-    connect_provider_signals (self, NAUTILUS_SEARCH_PROVIDER (self->tracker));
+    self->localsearch = nautilus_search_engine_localsearch_new ();
+    connect_provider_signals (self, NAUTILUS_SEARCH_PROVIDER (self->localsearch));
 
     self->model = nautilus_search_engine_model_new ();
     connect_provider_signals (self, NAUTILUS_SEARCH_PROVIDER (self->model));

@@ -45,15 +45,15 @@ tests = [
   ]],
 ]
 
-tracker_tests = [
-  ['test-nautilus-search-engine-tracker', [
-    'test-nautilus-search-engine-tracker.c',
+localsearch_tests = [
+  ['test-nautilus-search-engine-localsearch', [
+    'test-nautilus-search-engine-localsearch.c',
   ]],
 ]
 
-# disable tracker tests for now, until issues with accessing it from
+# disable localsearch tests for now, until issues with accessing it from
 # within the sandbox are resolved
-tracker_tests = []
+localsearch_tests = []
 
 foreach t: tests
   test(
@@ -73,7 +73,7 @@ endforeach
 
 # Tests that read and write from the Tracker index are run using 'tracker-sandbox'
 # script to use a temporary instance of tracker-miner-fs instead of the session one.
-foreach t: tracker_tests
+foreach t: localsearch_tests
   test_exe = executable(t[0], t[1], dependencies: [libnautilus_dep, libtestutils_dep])
   test(
     t[0],

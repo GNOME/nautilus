@@ -63,7 +63,7 @@
 #include "nautilus-shell-search-provider.h"
 #include "nautilus-signaller.h"
 #include "nautilus-tag-manager.h"
-#include "nautilus-tracker-utilities.h"
+#include "nautilus-localsearch-utilities.h"
 #include "nautilus-trash-monitor.h"
 #include "nautilus-ui-utilities.h"
 #include "nautilus-view.h"
@@ -1008,7 +1008,7 @@ nautilus_application_init (NautilusApplication *self)
 
     priv->dbus_launcher = nautilus_dbus_launcher_new ();
 
-    nautilus_tracker_setup_miner_fs_connection ();
+    nautilus_localsearch_setup_miner_fs_connection ();
 
     g_application_add_main_option_entries (G_APPLICATION (self), options);
 
