@@ -22,7 +22,7 @@
 #include "nautilus-file.h"
 #include "nautilus-file-undo-operations.h"
 #include "nautilus-file-undo-manager.h"
-#include "nautilus-tracker-utilities.h"
+#include "nautilus-localsearch-utilities.h"
 
 #include <tracker-sparql.h>
 

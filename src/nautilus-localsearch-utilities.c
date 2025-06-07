@@ -1,4 +1,4 @@
-/* nautilus-tracker-utilities.c
+/* nautilus-localsearch-utilities.c
  *
  * Copyright 2019 Carlos Soriano <csoriano@redhat.com>
  * Copyright 2020 Sam Thursfield <sam@afuera.me.uk>
@@ -22,7 +22,7 @@
 #include "config.h"
 #include "nautilus-application.h"
 #include "nautilus-global-preferences.h"
-#include "nautilus-tracker-utilities.h"
+#include "nautilus-localsearch-utilities.h"
 
 #define TRACKER_KEY_RECURSIVE_DIRECTORIES "index-recursive-directories"
 #define TRACKER_KEY_SINGLE_DIRECTORIES "index-single-directories"
@@ -77,7 +77,7 @@ host_tracker_miner_fs_ready (GObject      *source,
 }
 
 void
-nautilus_tracker_setup_miner_fs_connection (void)
+nautilus_localsearch_setup_miner_fs_connection (void)
 {
     static gsize tried_tracker_init = FALSE;
 
@@ -101,14 +101,14 @@ nautilus_tracker_setup_miner_fs_connection (void)
 }
 
 /**
- * nautilus_tracker_setup_host_miner_fs_connection_sync:
+ * nautilus_localsearch_setup_host_miner_fs_connection_sync:
  *
  * This function is only meant to be used within tests.
  * This version of this setup function intentionally blocks to help with tests.
  *
  */
 void
-nautilus_tracker_setup_host_miner_fs_connection_sync (void)
+nautilus_localsearch_setup_host_miner_fs_connection_sync (void)
 {
     g_autoptr (GError) error = NULL;
     const gchar *busname = "org.freedesktop.Tracker3.Miner.Files";
@@ -125,7 +125,7 @@ nautilus_tracker_setup_host_miner_fs_connection_sync (void)
 }
 
 /**
- * nautilus_tracker_get_miner_fs_connection:
+ * nautilus_localsearch_get_miner_fs_connection:
  * @error: return location for a #GError
  *
  * This function returns a global singleton #TrackerSparqlConnection, or %NULL
@@ -138,9 +138,9 @@ nautilus_tracker_setup_host_miner_fs_connection_sync (void)
  * Returns: a #TrackerSparqlConnection, or %NULL
  */
 TrackerSparqlConnection *
-nautilus_tracker_get_miner_fs_connection (GError **error)
+nautilus_localsearch_get_miner_fs_connection (GError **error)
 {
-    nautilus_tracker_setup_miner_fs_connection ();
+    nautilus_localsearch_setup_miner_fs_connection ();
 
     if (tracker_miner_fs_error && error)
     {
@@ -238,7 +238,7 @@ get_tracker_locations (const gchar *key)
 }
 
 /**
- * nautilus_tracker_directory_is_tracked:
+ * nautilus_localsearch_directory_is_tracked:
  * @directory: a #GFile representing a directory
  *
  * This function reads the "index-recursive-directories" and
@@ -254,7 +254,7 @@ get_tracker_locations (const gchar *key)
  * Returns: $TRUE if the @directory is, in principle, tracked. $FALSE otherwise.
  */
 gboolean
-nautilus_tracker_directory_is_tracked (GFile *directory)
+nautilus_localsearch_directory_is_tracked (GFile *directory)
 {
     g_autolist (GFile) recursive_locations = NULL;
     g_autolist (GFile) single_locations = NULL;
@@ -270,11 +270,11 @@ nautilus_tracker_directory_is_tracked (GFile *directory)
         }
     }
 
-    return nautilus_tracker_directory_is_single (directory);
+    return nautilus_localsearch_directory_is_single (directory);
 }
 
 gboolean
-nautilus_tracker_directory_is_single (GFile *directory)
+nautilus_localsearch_directory_is_single (GFile *directory)
 {
     g_autolist (GFile) single_locations = NULL;
     GList *l;

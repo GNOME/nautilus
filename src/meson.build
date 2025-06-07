@@ -275,16 +275,16 @@ libnautilus_sources = [
   'nautilus-batch-rename-item.h',
   'nautilus-batch-rename-utilities.c',
   'nautilus-batch-rename-utilities.h',
-  'nautilus-search-engine-tracker.c',
-  'nautilus-search-engine-tracker.h',
+  'nautilus-search-engine-localsearch.c',
+  'nautilus-search-engine-localsearch.h',
   'nautilus-tag-manager.c',
   'nautilus-tag-manager.h',
   'nautilus-starred-directory.c',
   'nautilus-starred-directory.h',
   'nautilus-enums.h',
   'nautilus-types.h',
-  'nautilus-tracker-utilities.c',
-  'nautilus-tracker-utilities.h'
+  'nautilus-localsearch-utilities.c',
+  'nautilus-localsearch-utilities.h'
 ]
 
 nautilus_deps = [
