@@ -250,55 +250,21 @@ markup_hightlight_text (const char  *label,
                         const gchar *text_color,
                         const gchar *background_color)
 {
-    GString *new_label;
-    gchar **splitted_string;
-    gchar *token;
-    gint i, n_splits;
+    g_autoptr (GString) new_label = g_string_new_take (g_markup_escape_text (label, -1));
 
-    new_label = g_string_new ("");
-
-    if (substring == NULL || g_strcmp0 (substring, "") == 0)
+    if (substring == NULL || *substring == '\0')
     {
-        token = g_markup_escape_text (label, -1);
-        new_label = g_string_append (new_label, token);
-        g_free (token);
-
-        return new_label;
+        return g_steal_pointer (&new_label);
     }
 
-    splitted_string = g_strsplit (label, substring, -1);
-    if (splitted_string == NULL)
-    {
-        token = g_markup_escape_text (label, -1);
-        new_label = g_string_append (new_label, token);
-        g_free (token);
+    g_autofree gchar *escaped_substring = g_markup_escape_text (substring, -1);
+    g_autofree gchar *highlighted_string = g_strdup_printf ("<span background='%s' color='%s'>%s</span>",
+                                                            background_color, text_color,
+                                                            escaped_substring);
 
-        return new_label;
-    }
+    g_string_replace (new_label, escaped_substring, highlighted_string, -1);
 
-    n_splits = g_strv_length (splitted_string);
-
-    for (i = 0; i < n_splits; i++)
-    {
-        token = g_markup_escape_text (splitted_string[i], -1);
-        new_label = g_string_append (new_label, token);
-
-        g_free (token);
-
-        if (i != n_splits - 1)
-        {
-            token = g_markup_escape_text (substring, -1);
-            g_string_append_printf (new_label,
-                                    "<span background='%s' color='%s'>%s</span>",
-                                    background_color, text_color, token);
-
-            g_free (token);
-        }
-    }
-
-    g_strfreev (splitted_string);
-
-    return new_label;
+    return g_steal_pointer (&new_label);
 }
 
 static gchar *
