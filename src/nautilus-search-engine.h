@@ -52,6 +52,10 @@ G_DECLARE_FINAL_TYPE (NautilusSearchEngine, nautilus_search_engine, NAUTILUS, SE
 NautilusSearchEngine *
 nautilus_search_engine_new (NautilusSearchType search_type);
 
+void
+nautilus_search_engine_set_search_type (NautilusSearchEngine *self,
+                                        NautilusSearchType search_type);
+
 NautilusSearchEngineModel *
                       nautilus_search_engine_get_model_provider (NautilusSearchEngine *engine);
 
