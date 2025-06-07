@@ -107,7 +107,9 @@
     </child>
 
     <property name="child">
-      <object class="AdwToolbarView">
+      <object class="AdwToolbarView" id="toolbar_view">
+        <property name="reveal-bottom-bars">False</property>
+        <property name="bottom-bar-style">raised</property>
         <child type="top">
           <object class="AdwHeaderBar">
             <property name="show-start-title-buttons">False</property>
@@ -428,47 +430,46 @@
                     </property>
                   </object>
                 </child>
+              </object>
+            </child>
+          </object>
+        </property>
+        <child type="bottom">
+          <object class="GtkBox">
+            <property name="spacing">6</property>
+            <property name="margin-start">6</property>
+            <child>
+              <object class="GtkLabel" id="conflict_label">
+                <property name="hexpand">True</property>
+                <property name="xalign">0</property>
+              </object>
+            </child>
+            <child>
+              <object class="GtkBox">
                 <child>
-                  <object class="GtkBox" id="conflict_box">
-                    <property name="spacing">6</property>
-                    <property name="visible">False</property>
-                    <property name="margin-start">6</property>
-                    <child>
-                      <object class="GtkLabel" id="conflict_label">
-                        <property name="hexpand">True</property>
-                        <property name="xalign">0</property>
-                      </object>
-                    </child>
-                    <child>
-                      <object class="GtkBox">
-                        <child>
-                          <object class="GtkButton" id="conflict_down">
-                            <property name="icon-name">go-down-symbolic</property>
-                            <property name="tooltip-text">Next Conflict</property>
-                            <signal name="clicked" handler="select_next_conflict_down" swapped="yes"/>
-                            <style>
-                              <class name="flat"/>
-                            </style>
-                          </object>
-                        </child>
-                        <child>
-                          <object class="GtkButton" id="conflict_up">
-                            <property name="icon-name">go-up-symbolic</property>
-                            <property name="tooltip-text">Previous Conflict</property>
-                            <signal name="clicked" handler="select_next_conflict_up" swapped="yes"/>
-                            <style>
-                              <class name="flat"/>
-                            </style>
-                          </object>
-                        </child>
-                      </object>
-                    </child>
+                  <object class="GtkButton" id="conflict_down">
+                    <property name="icon-name">go-down-symbolic</property>
+                    <property name="tooltip-text">Next Conflict</property>
+                    <signal name="clicked" handler="select_next_conflict_down" swapped="yes"/>
+                    <style>
+                      <class name="flat"/>
+                    </style>
+                  </object>
+                </child>
+                <child>
+                  <object class="GtkButton" id="conflict_up">
+                    <property name="icon-name">go-up-symbolic</property>
+                    <property name="tooltip-text">Previous Conflict</property>
+                    <signal name="clicked" handler="select_next_conflict_up" swapped="yes"/>
+                    <style>
+                      <class name="flat"/>
+                    </style>
                   </object>
                 </child>
               </object>
             </child>
           </object>
-        </property>
+        </child>
       </object>
     </property>
   </template>
