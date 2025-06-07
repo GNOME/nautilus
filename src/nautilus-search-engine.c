@@ -54,8 +54,10 @@ enum
 {
     PROP_0,
     PROP_RUNNING,
-    LAST_PROP
+    PROP_SEARCH_TYPE,
+    N_PROPERTIES
 };
+static GParamSpec *properties[N_PROPERTIES];
 
 static void nautilus_search_provider_init (NautilusSearchProviderInterface *iface);
 
@@ -295,6 +297,16 @@ connect_provider_signals (NautilusSearchEngine   *engine,
                       engine);
 }
 
+void
+nautilus_search_engine_set_search_type (NautilusSearchEngine *self,
+                                        NautilusSearchType    search_type)
+{
+    if (self->search_type != search_type)
+    {
+        self->search_type = search_type;
+    }
+}
+
 static void
 nautilus_search_provider_init (NautilusSearchProviderInterface *iface)
 {
@@ -342,6 +354,30 @@ nautilus_search_engine_get_property (GObject    *object,
 }
 
 static void
+search_engine_set_property (GObject      *object,
+                            guint         prop_id,
+                            const GValue *value,
+                            GParamSpec   *pspec)
+{
+    NautilusSearchEngine *self = NAUTILUS_SEARCH_ENGINE (object);
+
+    switch (prop_id)
+    {
+        case PROP_SEARCH_TYPE:
+        {
+            NautilusSearchType search_type = g_value_get_int (value);
+            nautilus_search_engine_set_search_type (self, search_type);
+        }
+        break;
+
+        default:
+        {
+            G_OBJECT_WARN_INVALID_PROPERTY_ID (object, prop_id, pspec);
+        }
+    }
+}
+
+static void
 nautilus_search_engine_class_init (NautilusSearchEngineClass *class)
 {
     GObjectClass *object_class;
@@ -350,19 +386,27 @@ nautilus_search_engine_class_init (NautilusSearchEngineClass *class)
 
     object_class->finalize = nautilus_search_engine_finalize;
     object_class->get_property = nautilus_search_engine_get_property;
+    object_class->set_property = search_engine_set_property;
 
     /**
      * NautilusSearchEngine::running:
      *
      * Whether the search engine is running a search.
      */
-    g_object_class_install_property (object_class,
-                                     PROP_RUNNING,
-                                     g_param_spec_boolean ("running",
-                                                           "search running",
-                                                           "Whether the engine is running a search",
-                                                           FALSE,
-                                                           G_PARAM_READABLE));
+    properties[PROP_RUNNING] =
+        g_param_spec_boolean ("running",
+                              "search running",
+                              "Whether the engine is running a search",
+                              FALSE,
+                              G_PARAM_READABLE);
+    properties[PROP_SEARCH_TYPE] =
+        g_param_spec_int ("search-type",
+                          "search type",
+                          "a #NautilusSearchType",
+                          0, G_MAXINT, 0,
+                          G_PARAM_WRITABLE);
+
+    g_object_class_install_properties (object_class, N_PROPERTIES, properties);
 }
 
 static void
@@ -386,12 +430,9 @@ nautilus_search_engine_init (NautilusSearchEngine *self)
 NautilusSearchEngine *
 nautilus_search_engine_new (NautilusSearchType search_type)
 {
-    NautilusSearchEngine *engine;
-
-    engine = g_object_new (NAUTILUS_TYPE_SEARCH_ENGINE, NULL);
-    engine->search_type = search_type;
-
-    return engine;
+    return g_object_new (NAUTILUS_TYPE_SEARCH_ENGINE,
+                         "search-type", search_type,
+                         NULL);
 }
 
 NautilusSearchEngineModel *
