@@ -126,7 +126,7 @@ selinux = []
 if get_option('selinux')
   selinux = dependency('libselinux', version: '>= 2.0')
 endif
-tracker_sparql = dependency('tracker-sparql-3.0')
+tracker_sparql = dependency('tracker-sparql-3.0', version: '>= 3.2')
 cloudproviders = []
 if get_option('cloudproviders')
   cloudproviders = dependency('cloudproviders', version: '>= 0.3.1')
