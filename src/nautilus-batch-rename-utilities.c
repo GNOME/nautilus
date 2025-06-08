@@ -986,7 +986,7 @@ check_metadata_for_selection (NautilusBatchRenameDialog *dialog,
                           "nmm:seasonNumber(?content) "
                           "nmm:episodeNumber(?content) "
                           "nmm:trackNumber(?content) "
-                          "nmm:artistName(nmm:performer(?content)) "
+                          "nmm:artistName(nmm:artist(?content)) "
                           "nie:title(?content) "
                           "nie:title(nmm:musicAlbum(?content)) "
                           "nie:url(?file) "
