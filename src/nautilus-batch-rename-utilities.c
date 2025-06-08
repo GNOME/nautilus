@@ -716,6 +716,7 @@ on_cursor_callback (GObject      *object,
     FileMetadata *file_metadata;
     guint i;
     const gchar *current_metadata;
+    const gchar *file_uri;
     const gchar *file_name;
     const gchar *creation_date;
     const gchar *equipment;
@@ -758,7 +759,8 @@ on_cursor_callback (GObject      *object,
     }
 
     /* Search for the metadata object corresponding to the file */
-    file = nautilus_file_get_by_uri (tracker_sparql_cursor_get_string (cursor, URL_INDEX, NULL));
+    file_uri = tracker_sparql_cursor_get_string (cursor, URL_INDEX, NULL);
+    file = nautilus_file_get_by_uri (file_uri);
 
     file_metadata = g_hash_table_lookup (query_data->selection_metadata, file);
     if (G_UNLIKELY (file_metadata == NULL))
@@ -889,6 +891,13 @@ on_cursor_callback (GObject      *object,
             }
             else
             {
+                if (file_metadata->metadata[metadata_type] != NULL)
+                {
+                    g_warning ("File %s has metadata type number %u being set but it already exists.",
+                               file_uri, metadata_type);
+                    g_string_free (file_metadata->metadata[metadata_type], TRUE);
+                }
+
                 file_metadata->metadata[metadata_type] = g_string_new (current_metadata);
                 g_string_replace (file_metadata->metadata[metadata_type], "/", "_", 0);
             }
@@ -969,7 +978,7 @@ check_metadata_for_selection (NautilusBatchRenameDialog *dialog,
     selection_metadata = g_hash_table_new_full (NULL, NULL,
                                                 (GDestroyNotify) nautilus_file_unref, file_metadata_free);
 
-    query = g_string_new ("SELECT "
+    query = g_string_new ("SELECT DISTINCT "
                           "nfo:fileName(?file) "
                           "nie:contentCreated(?content) "
                           "year(nie:contentCreated(?content)) "
