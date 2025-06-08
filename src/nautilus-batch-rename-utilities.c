@@ -651,11 +651,11 @@ nautilus_batch_rename_dialog_sort (GList      *selection,
         for (l = selection; l != NULL; l = l->next)
         {
             NautilusFile *file = NAUTILUS_FILE (l->data);
-            const char *name = nautilus_file_get_name (file);
+            g_autofree gchar *uri = nautilus_file_get_uri (file);
             CreateDateElem *elem = g_new (CreateDateElem, 1);
 
             elem->file = file;
-            elem->position = GPOINTER_TO_INT (g_hash_table_lookup (creation_date_table, name));
+            elem->position = GPOINTER_TO_INT (g_hash_table_lookup (creation_date_table, uri));
 
             create_date_list = g_list_prepend (create_date_list, elem);
         }
@@ -884,7 +884,7 @@ on_cursor_callback (GObject      *object,
 
                 /* Add the sort order to the order hash table */
                 g_hash_table_insert (query_data->date_order_hash_table,
-                                     g_strdup (tracker_sparql_cursor_get_string (cursor, FILE_NAME_INDEX, NULL)),
+                                     g_strdup (file_uri),
                                      GINT_TO_POINTER (g_hash_table_size (query_data->date_order_hash_table)));
 
                 file_metadata->metadata[metadata_type] = format_date_time (date_time);
