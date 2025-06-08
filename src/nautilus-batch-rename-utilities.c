@@ -870,12 +870,12 @@ on_cursor_callback (GObject      *object,
                 const gchar *hours = tracker_sparql_cursor_get_string (cursor, HOURS_INDEX, NULL);
                 const gchar *minutes = tracker_sparql_cursor_get_string (cursor, MINUTES_INDEX, NULL);
                 const gchar *seconds = tracker_sparql_cursor_get_string (cursor, SECONDS_INDEX, NULL);
-                GDateTime *date_time = g_date_time_new_local (atoi (year),
-                                                              atoi (month),
-                                                              atoi (day),
-                                                              atoi (hours),
-                                                              atoi (minutes),
-                                                              atoi (seconds));
+                g_autoptr (GDateTime) date_time = g_date_time_new_local (atoi (year),
+                                                                         atoi (month),
+                                                                         atoi (day),
+                                                                         atoi (hours),
+                                                                         atoi (minutes),
+                                                                         atoi (seconds));
 
                 /* Add the sort order to the order hash table */
                 g_hash_table_insert (query_data->date_order_hash_table,
