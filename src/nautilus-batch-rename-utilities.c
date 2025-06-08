@@ -49,12 +49,6 @@ enum
 {
     FILE_NAME_INDEX,
     CREATION_DATE_INDEX,
-    YEAR_INDEX,
-    MONTH_INDEX,
-    DAY_INDEX,
-    HOURS_INDEX,
-    MINUTES_INDEX,
-    SECONDS_INDEX,
     CAMERA_MODEL_INDEX,
     SEASON_INDEX,
     EPISODE_NUMBER_INDEX,
@@ -710,10 +704,10 @@ on_cursor_callback (GObject      *object,
     g_autoptr (GError) error = NULL;
     FileMetadata *file_metadata;
     guint i;
-    const gchar *current_metadata;
+    gconstpointer current_metadata;
     const gchar *file_uri;
     const gchar *file_name;
-    const gchar *creation_date;
+    g_autoptr (GDateTime) creation_datetime = NULL;
     const gchar *equipment;
     const gchar *season_number;
     const gchar *episode_number;
@@ -766,7 +760,7 @@ on_cursor_callback (GObject      *object,
         return;
     }
 
-    creation_date = tracker_sparql_cursor_get_string (cursor, CREATION_DATE_INDEX, NULL);
+    creation_datetime = tracker_sparql_cursor_get_datetime (cursor, CREATION_DATE_INDEX);
     equipment = tracker_sparql_cursor_get_string (cursor, CAMERA_MODEL_INDEX, NULL);
     season_number = tracker_sparql_cursor_get_string (cursor, SEASON_INDEX, NULL);
     episode_number = tracker_sparql_cursor_get_string (cursor, EPISODE_NUMBER_INDEX, NULL);
@@ -796,7 +790,7 @@ on_cursor_callback (GObject      *object,
 
             case CREATION_DATE:
             {
-                current_metadata = creation_date;
+                current_metadata = creation_datetime;
             }
             break;
 
@@ -864,25 +858,12 @@ on_cursor_callback (GObject      *object,
         {
             if (metadata_type == CREATION_DATE)
             {
-                const gchar *year = tracker_sparql_cursor_get_string (cursor, YEAR_INDEX, NULL);
-                const gchar *month = tracker_sparql_cursor_get_string (cursor, MONTH_INDEX, NULL);
-                const gchar *day = tracker_sparql_cursor_get_string (cursor, DAY_INDEX, NULL);
-                const gchar *hours = tracker_sparql_cursor_get_string (cursor, HOURS_INDEX, NULL);
-                const gchar *minutes = tracker_sparql_cursor_get_string (cursor, MINUTES_INDEX, NULL);
-                const gchar *seconds = tracker_sparql_cursor_get_string (cursor, SECONDS_INDEX, NULL);
-                g_autoptr (GDateTime) date_time = g_date_time_new_local (atoi (year),
-                                                                         atoi (month),
-                                                                         atoi (day),
-                                                                         atoi (hours),
-                                                                         atoi (minutes),
-                                                                         atoi (seconds));
-
                 /* Add the sort order to the order hash table */
                 g_hash_table_insert (query_data->date_order_hash_table,
                                      g_strdup (file_uri),
                                      GINT_TO_POINTER (g_hash_table_size (query_data->date_order_hash_table)));
 
-                file_metadata->metadata[metadata_type] = format_date_time (date_time);
+                file_metadata->metadata[metadata_type] = format_date_time (creation_datetime);
             }
             else
             {
@@ -976,12 +957,6 @@ check_metadata_for_selection (NautilusBatchRenameDialog *dialog,
     query = g_string_new ("SELECT DISTINCT "
                           "nfo:fileName(?file) "
                           "nie:contentCreated(?content) "
-                          "year(nie:contentCreated(?content)) "
-                          "month(nie:contentCreated(?content)) "
-                          "day(nie:contentCreated(?content)) "
-                          "hours(nie:contentCreated(?content)) "
-                          "minutes(nie:contentCreated(?content)) "
-                          "seconds(nie:contentCreated(?content)) "
                           "nfo:model(nfo:equipment(?content)) "
                           "nmm:seasonNumber(?content) "
                           "nmm:episodeNumber(?content) "
