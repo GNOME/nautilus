@@ -620,9 +620,7 @@ nautilus_batch_rename_dialog_sort (GList      *selection,
                                    SortMode    mode,
                                    GHashTable *creation_date_table)
 {
-    GList *l, *l2;
-    GList *create_date_list;
-    GList *create_date_list_sorted;
+    GList *l;
 
     if (mode == ORIGINAL_ASCENDING)
     {
@@ -646,7 +644,8 @@ nautilus_batch_rename_dialog_sort (GList      *selection,
 
     if (mode == FIRST_CREATED || mode == LAST_CREATED)
     {
-        create_date_list = NULL;
+        g_autoptr (GPtrArray) create_date_list = g_ptr_array_new_with_free_func (g_free);
+        guint i = 0;
 
         for (l = selection; l != NULL; l = l->next)
         {
@@ -657,27 +656,23 @@ nautilus_batch_rename_dialog_sort (GList      *selection,
             elem->file = file;
             elem->position = GPOINTER_TO_INT (g_hash_table_lookup (creation_date_table, uri));
 
-            create_date_list = g_list_prepend (create_date_list, elem);
+            g_ptr_array_add (create_date_list, elem);
         }
 
         if (mode == FIRST_CREATED)
         {
-            create_date_list_sorted = g_list_sort (create_date_list,
-                                                   compare_files_by_first_created);
+            g_ptr_array_sort_values (create_date_list, compare_files_by_first_created);
         }
         else
         {
-            create_date_list_sorted = g_list_sort (create_date_list,
-                                                   compare_files_by_last_created);
+            g_ptr_array_sort_values (create_date_list, compare_files_by_last_created);
         }
 
-        for (l = selection, l2 = create_date_list_sorted; l2 != NULL; l = l->next, l2 = l2->next)
+        for (l = selection, i = 0; i < create_date_list->len; l = l->next, i++)
         {
-            CreateDateElem *elem = l2->data;
+            CreateDateElem *elem = create_date_list->pdata[i];
             l->data = elem->file;
         }
-
-        g_list_free_full (create_date_list, g_free);
     }
 
     return selection;
