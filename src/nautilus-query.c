@@ -49,9 +49,6 @@ struct _NautilusQuery
     GRWLock prepared_words_rwlock;
 };
 
-static void  nautilus_query_class_init (NautilusQueryClass *class);
-static void  nautilus_query_init (NautilusQuery *query);
-
 G_DEFINE_TYPE (NautilusQuery, nautilus_query, G_TYPE_OBJECT);
 
 enum
