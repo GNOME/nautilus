@@ -1092,8 +1092,6 @@ nautilus_batch_rename_dialog_query_finished (NautilusBatchRenameDialog *dialog,
                                              GHashTable                *selection_metadata,
                                              gboolean                   has_metadata[])
 {
-    GMenuItem *first_created;
-    GMenuItem *last_created;
     GHashTableIter selection_metadata_iter;
     FileMetadata *file_metadata;
     MetadataType metadata_type;
@@ -1119,6 +1117,8 @@ nautilus_batch_rename_dialog_query_finished (NautilusBatchRenameDialog *dialog,
 
     if (dialog->create_date != NULL)
     {
+        g_autoptr (GMenuItem) first_created = NULL, last_created = NULL;
+
         first_created = g_menu_item_new ("First Created",
                                          "dialog.numbering-order-changed('first-created')");
 
