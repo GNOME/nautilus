@@ -85,6 +85,11 @@ nautilus_search_provider_stop (NautilusSearchProvider *provider)
     NAUTILUS_SEARCH_PROVIDER_GET_IFACE (provider)->stop (provider);
 }
 
+/**
+ * nautilus_search_provider_hits_added:
+ * @provider: search provider
+ * @hits: (transfer full): list of #NautilusSearchHit
+ */
 void
 nautilus_search_provider_hits_added (NautilusSearchProvider *provider,
                                      GList                  *hits)

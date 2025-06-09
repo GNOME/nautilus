@@ -160,12 +160,19 @@ static void
 search_thread_process_hits_idle (SearchThreadData *data,
                                  GList            *hits)
 {
+    if (hits == NULL)
+    {
+        return;
+    }
+
     if (!g_cancellable_is_cancelled (data->cancellable))
     {
         g_debug ("Simple engine add hits");
         nautilus_search_provider_hits_added (NAUTILUS_SEARCH_PROVIDER (data->engine),
-                                             hits);
+                                             g_steal_pointer (&hits));
     }
+
+    g_list_free_full (hits, g_object_unref);
 }
 
 static gboolean
@@ -202,11 +209,7 @@ search_thread_process_idle (gpointer user_data)
 
     g_mutex_unlock (&thread_data->idle_mutex);
 
-    if (hits)
-    {
-        search_thread_process_hits_idle (thread_data, hits);
-        g_list_free_full (hits, g_object_unref);
-    }
+    search_thread_process_hits_idle (thread_data, hits);
 
     return G_SOURCE_CONTINUE;
 }

@@ -111,8 +111,8 @@ check_pending_hits (NautilusSearchEngineLocalsearch *self,
         hits = g_list_prepend (hits, hit);
     }
 
-    nautilus_search_provider_hits_added (NAUTILUS_SEARCH_PROVIDER (self), hits);
-    g_list_free_full (hits, g_object_unref);
+    nautilus_search_provider_hits_added (NAUTILUS_SEARCH_PROVIDER (self),
+                                         g_steal_pointer (&hits));
 }
 
 static void

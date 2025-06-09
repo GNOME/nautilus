@@ -576,9 +576,10 @@ on_search_directory_search_ready_and_valid (NautilusSearchDirectory *self)
 
 static void
 search_engine_hits_added (NautilusSearchEngine    *engine,
-                          GList                   *hits,
+                          GList                   *transferred_hits,
                           NautilusSearchDirectory *self)
 {
+    g_autolist (NautilusSearchHit) hits = transferred_hits;
     GList *hit_list;
     GList *file_list;
     NautilusFile *file;

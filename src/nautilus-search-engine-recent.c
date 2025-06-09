@@ -87,18 +87,18 @@ search_thread_add_hits_idle (gpointer user_data)
 {
     SearchHitsData *search_hits = user_data;
     g_autoptr (NautilusSearchEngineRecent) self = search_hits->recent;
+    g_autolist (NautilusSearchHit) hits = search_hits->hits;
     NautilusSearchProvider *provider = NAUTILUS_SEARCH_PROVIDER (self);
 
     self->add_hits_idle_id = 0;
 
     if (!g_cancellable_is_cancelled (self->cancellable))
     {
-        nautilus_search_provider_hits_added (provider, search_hits->hits);
+        nautilus_search_provider_hits_added (provider, g_steal_pointer (&hits));
         g_debug ("Recent engine add hits");
     }
 
     self->running = FALSE;
-    g_list_free_full (search_hits->hits, g_object_unref);
     g_clear_object (&self->cancellable);
     g_free (search_hits);
 

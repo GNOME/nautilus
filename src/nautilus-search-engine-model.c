@@ -88,9 +88,7 @@ search_finished (NautilusSearchEngineModel *model)
     {
         g_debug ("Model engine hits added");
         nautilus_search_provider_hits_added (NAUTILUS_SEARCH_PROVIDER (model),
-                                             model->hits);
-        g_list_free_full (model->hits, g_object_unref);
-        model->hits = NULL;
+                                             g_steal_pointer (&model->hits));
     }
 
     model->query_pending = FALSE;

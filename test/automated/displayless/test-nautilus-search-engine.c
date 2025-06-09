@@ -4,8 +4,10 @@ static guint total_hits = 0;
 
 static void
 hits_added_cb (NautilusSearchEngine *engine,
-               GSList               *hits)
+               GList                *transferred_hits)
 {
+    g_autolist (NautilusSearchHit) hits = transferred_hits;
+
     g_print ("Hits added for search engine!\n");
     for (gint hit_number = 0; hits != NULL; hits = hits->next, hit_number++)
     {

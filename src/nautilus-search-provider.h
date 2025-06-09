@@ -41,6 +41,12 @@ struct _NautilusSearchProviderInterface {
         void (*stop) (NautilusSearchProvider *provider);
 
         /* Signals */
+        /**
+         * @provider: search provider
+         * @hits: (transfer full): list of #NautilusSearchHit
+         *
+         * Provider emits this signal when adding search hits
+         */
         void (*hits_added) (NautilusSearchProvider *provider, GList *hits);
         /* This signal has a status parameter because it's necesary to discern
          * when the search engine finished normally or wheter it finished in a

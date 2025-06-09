@@ -184,9 +184,11 @@ nautilus_search_engine_stop (NautilusSearchProvider *provider)
 
 static void
 search_provider_hits_added (NautilusSearchProvider *provider,
-                            GList                  *hits,
+                            GList                  *transferred_hits,
                             NautilusSearchEngine   *self)
 {
+    g_autolist (NautilusSearchHit) hits = transferred_hits;
+
     if (!self->running || self->restart)
     {
         g_debug ("Ignoring hits-added, since engine is %s",
@@ -203,15 +205,15 @@ search_provider_hits_added (NautilusSearchProvider *provider,
         if (!g_hash_table_contains (self->uris, uri))
         {
             g_hash_table_add (self->uris, g_strdup (uri));
-            added = g_list_prepend (added, hit);
+            added = g_list_prepend (added, g_steal_pointer (&l->data));
         }
     }
 
     if (added != NULL)
     {
         added = g_list_reverse (added);
-        nautilus_search_provider_hits_added (NAUTILUS_SEARCH_PROVIDER (self), added);
-        g_list_free (added);
+        nautilus_search_provider_hits_added (NAUTILUS_SEARCH_PROVIDER (self),
+                                             g_steal_pointer (&added));
     }
 }
 
