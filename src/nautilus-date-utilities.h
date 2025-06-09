@@ -21,7 +21,7 @@ char *
 nautilus_date_preview_detailed_format (GDateTime *timestamp,
                                        gboolean   use_detailed);
 
-/* This is meant to be upstreamed to GLib, but lives in-tree for now */
+/* These are meant to be upstreamed to GLib, but live in-tree for now */
 
 /**
  * g_set_date_time: (skip)
@@ -67,6 +67,50 @@ g_set_date_time (GDateTime **date_time_pointer,
     if (old_date_time != NULL)
     {
         g_date_time_unref (old_date_time);
+    }
+
+    return TRUE;
+}
+
+/**
+ * g_set_ptr_array: (skip)
+ * @ptr_array_pointer: (inout) (not optional) (nullable): a pointer to either
+ *   a #GPtrArray or `NULL`
+ * @new_ptr_array: (nullable): a #GPtrArray to assign to @ptr_array_pointer
+ *
+ * Updates a pointer to a #GPtrArray to @new_ptr_array, adjusts the ref-counts
+ * accordingly and returns whether @ptr_array_pointer was changed.
+ *
+ * If @new_ptr_array matches the previous array, this function is a no-op.
+ * If @new_ptr_array is different, its ref-count will be increased and it will
+ * be assigned to @ptr_array_pointer.
+ * The previous array pointed to by @ptr_array_pointer will have its
+ * ref-count decreased.
+ *
+ * @ptr_array_pointer must not be `NULL`, but can point to a `NULL` value.
+ *
+ * Returns: true if the value of @ptr_array_pointer changed, false otherwise
+ */
+static inline gboolean
+g_set_ptr_array (GPtrArray **ptr_array_pointer,
+                 GPtrArray  *new_ptr_array)
+{
+    if (*ptr_array_pointer == new_ptr_array)
+    {
+        return FALSE;
+    }
+
+    if (new_ptr_array != NULL)
+    {
+        g_ptr_array_ref (new_ptr_array);
+    }
+
+    GPtrArray *old_ptr_array = *ptr_array_pointer;
+    *ptr_array_pointer = new_ptr_array;
+
+    if (old_ptr_array != NULL)
+    {
+        g_ptr_array_unref (old_ptr_array);
     }
 
     return TRUE;
