@@ -187,9 +187,6 @@ search_provider_hits_added (NautilusSearchProvider *provider,
                             GList                  *hits,
                             NautilusSearchEngine   *self)
 {
-    GList *added = NULL;
-    GList *l;
-
     if (!self->running || self->restart)
     {
         g_debug ("Ignoring hits-added, since engine is %s",
@@ -197,20 +194,19 @@ search_provider_hits_added (NautilusSearchProvider *provider,
         return;
     }
 
-    for (l = hits; l != NULL; l = l->next)
+    GList *added = NULL;
+    for (GList *l = hits; l != NULL; l = l->next)
     {
         NautilusSearchHit *hit = l->data;
-        int count;
-        const char *uri;
+        const char *uri = nautilus_search_hit_get_uri (hit);
 
-        uri = nautilus_search_hit_get_uri (hit);
-        count = GPOINTER_TO_INT (g_hash_table_lookup (self->uris, uri));
-        if (count == 0)
+        if (!g_hash_table_contains (self->uris, uri))
         {
+            g_hash_table_add (self->uris, g_strdup (uri));
             added = g_list_prepend (added, hit);
         }
-        g_hash_table_replace (self->uris, g_strdup (uri), GINT_TO_POINTER (++count));
     }
+
     if (added != NULL)
     {
         added = g_list_reverse (added);
