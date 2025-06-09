@@ -56,15 +56,11 @@ struct _NautilusSearchEngineLocalsearch
     gboolean query_pending;
     GQueue *hits_pending;
 
-    gboolean recursive;
     gboolean fts_enabled;
 
     GCancellable *cancellable;
 };
 
-static void
-nautilus_search_engine_localsearch_set_query (NautilusSearchProvider *provider,
-                                              NautilusQuery          *query);
 static void nautilus_search_provider_init (NautilusSearchProviderInterface *iface);
 
 G_DEFINE_TYPE_WITH_CODE (NautilusSearchEngineLocalsearch,
@@ -457,6 +453,25 @@ create_statement (NautilusSearchProvider *provider,
     return stmt;
 }
 
+static bool
+should_set_recursive (NautilusSearchEngineLocalsearch *self,
+                      GFile                           *location)
+{
+    NautilusQueryRecursive recurse_type = nautilus_query_get_recursive (self->query);
+
+    if (location != NULL && recurse_type == NAUTILUS_QUERY_RECURSIVE_LOCAL_ONLY)
+    {
+        g_autoptr (NautilusFile) location_file = nautilus_file_get (location);
+
+        return location_file != NULL && !nautilus_file_is_remote (location_file);
+    }
+    else
+    {
+        return recurse_type == NAUTILUS_QUERY_RECURSIVE_ALWAYS ||
+               recurse_type == NAUTILUS_QUERY_RECURSIVE_INDEXED_ONLY;
+    }
+}
+
 static void
 search_engine_localsearch_start (NautilusSearchProvider *provider,
                                  NautilusQuery          *query)
@@ -468,9 +483,8 @@ search_engine_localsearch_start (NautilusSearchProvider *provider,
     NautilusQuerySearchType type;
     TrackerSparqlStatement *stmt;
     SearchFeatures features = 0;
-    g_autoptr (GFile) location = NULL;
 
-    nautilus_search_engine_localsearch_set_query (provider, query);
+    g_set_object (&self->query, query);
 
     if (self->query_pending)
     {
@@ -487,6 +501,8 @@ search_engine_localsearch_start (NautilusSearchProvider *provider,
         return;
     }
 
+    g_autoptr (GFile) location = nautilus_query_get_location (self->query);
+
     self->fts_enabled = nautilus_query_get_search_content (self->query);
 
     query_text = nautilus_query_get_text (self->query);
@@ -502,7 +518,7 @@ search_engine_localsearch_start (NautilusSearchProvider *provider,
     {
         features |= SEARCH_FEATURE_CONTENT;
     }
-    if (self->recursive)
+    if (should_set_recursive (self, location))
     {
         features |= SEARCH_FEATURE_RECURSIVE;
     }
@@ -527,7 +543,6 @@ search_engine_localsearch_start (NautilusSearchProvider *provider,
         }
     }
 
-    location = nautilus_query_get_location (self->query);
     if (location != NULL)
     {
         features |= SEARCH_FEATURE_LOCATION;
@@ -617,34 +632,6 @@ nautilus_search_engine_localsearch_stop (NautilusSearchProvider *provider)
         g_cancellable_cancel (self->cancellable);
         g_clear_object (&self->cancellable);
         self->query_pending = FALSE;
-    }
-}
-
-static void
-nautilus_search_engine_localsearch_set_query (NautilusSearchProvider *provider,
-                                              NautilusQuery          *query)
-{
-    NautilusSearchEngineLocalsearch *self = NAUTILUS_SEARCH_ENGINE_LOCALSEARCH (provider);
-    NautilusQueryRecursive recursive;
-
-    recursive = nautilus_query_get_recursive (query);
-
-    g_clear_object (&self->query);
-
-    self->query = g_object_ref (query);
-
-    if (recursive == NAUTILUS_QUERY_RECURSIVE_LOCAL_ONLY)
-    {
-        g_autoptr (GFile) location = nautilus_query_get_location (query);
-        g_autoptr (NautilusFile) location_file = (location != NULL ?
-                                                  nautilus_file_get (location) : NULL);
-
-        self->recursive = location_file != NULL && !nautilus_file_is_remote (location_file);
-    }
-    else
-    {
-        self->recursive = recursive == NAUTILUS_QUERY_RECURSIVE_ALWAYS ||
-                          recursive == NAUTILUS_QUERY_RECURSIVE_INDEXED_ONLY;
     }
 }
 
