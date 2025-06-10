@@ -36,10 +36,10 @@ struct _NautilusSearchEngine
 
     NautilusSearchType search_type;
 
-    NautilusSearchEngineLocalsearch *localsearch;
-    NautilusSearchEngineRecent *recent;
-    NautilusSearchEngineSimple *simple;
-    NautilusSearchEngineModel *model;
+    NautilusSearchProvider *localsearch;
+    NautilusSearchProvider *model;
+    NautilusSearchProvider *recent;
+    NautilusSearchProvider *simple;
 
     GHashTable *uris;
     guint providers_running;
@@ -92,27 +92,27 @@ search_engine_start_real (NautilusSearchEngine *self)
     if (self->search_type & NAUTILUS_SEARCH_TYPE_LOCALSEARCH)
     {
         self->providers_running++;
-        nautilus_search_provider_start (NAUTILUS_SEARCH_PROVIDER (self->localsearch), self->query);
+        nautilus_search_provider_start (self->localsearch, self->query);
     }
 
     if (self->search_type & NAUTILUS_SEARCH_TYPE_RECENT)
     {
         self->providers_running++;
-        nautilus_search_provider_start (NAUTILUS_SEARCH_PROVIDER (self->recent), self->query);
+        nautilus_search_provider_start (self->recent, self->query);
     }
 
     if (self->search_type & NAUTILUS_SEARCH_TYPE_MODEL &&
         query_location != NULL)
     {
         self->providers_running++;
-        nautilus_search_provider_start (NAUTILUS_SEARCH_PROVIDER (self->model), self->query);
+        nautilus_search_provider_start (self->model, self->query);
     }
 
     if (self->search_type & NAUTILUS_SEARCH_TYPE_SIMPLE &&
         query_location != NULL)
     {
         self->providers_running++;
-        nautilus_search_provider_start (NAUTILUS_SEARCH_PROVIDER (self->simple), self->query);
+        nautilus_search_provider_start (self->simple, self->query);
     }
 }
 
@@ -161,10 +161,10 @@ nautilus_search_engine_stop (NautilusSearchProvider *provider)
 
     g_debug ("Search engine stop");
 
-    nautilus_search_provider_stop (NAUTILUS_SEARCH_PROVIDER (self->localsearch));
-    nautilus_search_provider_stop (NAUTILUS_SEARCH_PROVIDER (self->recent));
-    nautilus_search_provider_stop (NAUTILUS_SEARCH_PROVIDER (self->model));
-    nautilus_search_provider_stop (NAUTILUS_SEARCH_PROVIDER (self->simple));
+    nautilus_search_provider_stop (self->localsearch);
+    nautilus_search_provider_stop (self->model);
+    nautilus_search_provider_stop (self->recent);
+    nautilus_search_provider_stop (self->simple);
 
     self->running = FALSE;
     self->restart = FALSE;
@@ -411,17 +411,17 @@ nautilus_search_engine_init (NautilusSearchEngine *self)
 {
     self->uris = g_hash_table_new_full (g_str_hash, g_str_equal, g_free, NULL);
 
-    self->localsearch = nautilus_search_engine_localsearch_new ();
-    connect_provider_signals (self, NAUTILUS_SEARCH_PROVIDER (self->localsearch));
+    self->localsearch = NAUTILUS_SEARCH_PROVIDER (nautilus_search_engine_localsearch_new ());
+    connect_provider_signals (self, self->localsearch);
 
-    self->model = nautilus_search_engine_model_new ();
-    connect_provider_signals (self, NAUTILUS_SEARCH_PROVIDER (self->model));
+    self->model = NAUTILUS_SEARCH_PROVIDER (nautilus_search_engine_model_new ());
+    connect_provider_signals (self, self->model);
 
-    self->simple = nautilus_search_engine_simple_new ();
-    connect_provider_signals (self, NAUTILUS_SEARCH_PROVIDER (self->simple));
+    self->simple = NAUTILUS_SEARCH_PROVIDER (nautilus_search_engine_simple_new ());
+    connect_provider_signals (self, self->simple);
 
-    self->recent = nautilus_search_engine_recent_new ();
-    connect_provider_signals (self, NAUTILUS_SEARCH_PROVIDER (self->recent));
+    self->recent = NAUTILUS_SEARCH_PROVIDER (nautilus_search_engine_recent_new ());
+    connect_provider_signals (self, self->recent);
 }
 
 NautilusSearchEngine *
