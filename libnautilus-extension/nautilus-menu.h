@@ -129,15 +129,4 @@ void              nautilus_menu_item_activate    (NautilusMenuItem *item);
 void              nautilus_menu_item_set_submenu (NautilusMenuItem *item,
                                                   NautilusMenu     *menu);
 
-/* NautilusMenuItem has the following properties:
- *   name (string)        - the identifier for the menu item
- *   label (string)       - the user-visible label of the menu item
- *   tip (string)         - the tooltip of the menu item 
- *   icon (string)        - the name of the icon to display in the menu item
- *   sensitive (boolean)  - whether the menu item is sensitive or not
- *   priority (boolean)   - used for toolbar items, whether to show priority
- *                          text.
- *   menu (NautilusMenu)  - The menu belonging to this item. May be null.
- */
-
 G_END_DECLS
