@@ -43,22 +43,24 @@ G_DECLARE_DERIVABLE_TYPE (NautilusMenuItem, nautilus_menu_item,
                           GObject)
 
 /**
- * SECTION:nautilus-menu
- * @title: NautilusMenu
- * @short_description: Menu descriptor object
+ * NautilusMenu:
  *
- * #NautilusMenu is an object that describes a submenu in a file manager
- * menu. Extensions can provide #NautilusMenu objects by attaching them to
- * #NautilusMenuItem objects, using nautilus_menu_item_set_submenu().
+ * An object that describes a submenu in a file manager menu.
  *
- * ## Menu Items
+ * Extensions can provide #NautilusMenu objects by attaching them to
+ * [class@Nautilus.MenuItem] objects, using [method@Nautilus.MenuItem.set_submenu].
+ */
+
+/**
+ * NautilusMenuItem:
  *
- * #NautilusMenuItem is an object that describes an item in a file manager
- * menu. Extensions can provide #NautilusMenuItem objects by registering a
- * #NautilusMenuProvider and returning them from
- * nautilus_menu_provider_get_file_items(), or
- * nautilus_menu_provider_get_background_items(), which will be called by the
- * main application when creating menus.
+ * An object that describes an item in a file manager menu.
+ *
+ * Extensions can provide #NautilusMenuItem objects by registering a
+ * [iface@Nautilus.MenuProvider] and returning them from
+ * [method@Nautilus.MenuProvider.get_file_items], or
+ * [method@Nautilus.MenuProvider.get_background_items], which will be called by
+ * the main application when creating menus.
  */
 
 struct _NautilusMenuItemClass

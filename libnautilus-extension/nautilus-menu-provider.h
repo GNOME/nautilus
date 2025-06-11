@@ -44,21 +44,19 @@ G_DECLARE_INTERFACE (NautilusMenuProvider, nautilus_menu_provider,
                      GObject)
 
 /**
- * SECTION:nautilus-menu-provider
- * @title: NautilusMenuProvider
- * @short_description: Interface to provide additional menu items
+ * NautilusMenuProvider:
  *
- * #NautilusMenuProvider allows extension to provide additional menu items
+ * An interface that extensions can implement to provide additional menu items
  * in the file manager menus.
  */
 
 /**
  * NautilusMenuProviderInterface:
  * @g_iface: The parent interface.
- * @get_file_items: Returns a #GList of #NautilusMenuItem.
- *                  See nautilus_menu_provider_get_file_items() for details.
- * @get_background_items: Returns a #GList of #NautilusMenuItem.
- *                        See nautilus_menu_provider_get_background_items() for details.
+ * @get_file_items: Returns a list of [class@Nautilus.MenuItem]s.
+ *                  See [method@Nautilus.MenuProvider.get_file_items] for details.
+ * @get_background_items: Returns a list of [class@Nautilus.MenuItem]s.
+ *                        See [method@Nautilus.MenuProvider.get_background_items] for details.
  *
  * Interface for extensions to provide additional menu items.
  */
@@ -77,6 +75,9 @@ struct _NautilusMenuProviderInterface
  * @provider: a #NautilusMenuProvider
  * @files: (element-type NautilusFileInfo): a list of #NautilusFileInfo
  *
+ * Lists any menu items that should be added when a menu is displayed for a
+ * given list of selected files.
+ *
  * Returns: (nullable) (element-type NautilusMenuItem) (transfer full): the provided list of #NautilusMenuItem.
  */
 GList  *nautilus_menu_provider_get_file_items           (NautilusMenuProvider *provider,
@@ -85,6 +86,9 @@ GList  *nautilus_menu_provider_get_file_items           (NautilusMenuProvider *p
  * nautilus_menu_provider_get_background_items:
  * @provider: a #NautilusMenuProvider
  * @current_folder: the folder for which background items are requested
+ *
+ * Lists any menu items that should be added when a menu is displayed for the
+ * background in a specific folder.
  *
  * Returns: (nullable) (element-type NautilusMenuItem) (transfer full): the provided list of #NautilusMenuItem.
  */
@@ -95,7 +99,8 @@ GList *nautilus_menu_provider_get_background_items      (NautilusMenuProvider *p
  * nautilus_menu_provider_emit_items_updated_signal:
  * @provider: a #NautilusMenuProvider
  *
- * Emits #NautilusMenuProvider::items-updated.
+ * Emits [signal@NautilusMenuProvider::items-updated], to signal a menu should
+ * be updated.
  */
 void   nautilus_menu_provider_emit_items_updated_signal (NautilusMenuProvider *provider);
 
