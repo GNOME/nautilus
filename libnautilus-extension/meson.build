@@ -73,7 +73,7 @@ if get_option('introspection')
     extra_args: [
       '-DNAUTILUS_COMPILATION'
     ],
-    sources: libnautilus_extension_sources,
+    sources: [ libnautilus_extension_sources, 'nautilus-extension.h' ],
     nsversion: nautilus_extension_version + '.0',
     namespace: 'Nautilus',
     includes: [
