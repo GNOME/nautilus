@@ -112,8 +112,8 @@ prepare_string_for_compare (const gchar *string)
 }
 
 gdouble
-nautilus_query_matches_string (NautilusQuery *query,
-                               const gchar   *string)
+nautilus_query_matches_string (const NautilusQuery *query,
+                               const gchar         *string)
 {
     g_autofree gchar *prepared_string = NULL;
     gchar *ptr = NULL;
@@ -163,7 +163,7 @@ nautilus_query_new (void)
 }
 
 NautilusQuery *
-nautilus_query_new_copy (NautilusQuery *query)
+nautilus_query_new_copy (const NautilusQuery *query)
 {
     NautilusQuery *copy = g_object_new (NAUTILUS_TYPE_QUERY, NULL);
 
@@ -181,7 +181,7 @@ nautilus_query_new_copy (NautilusQuery *query)
 }
 
 char *
-nautilus_query_get_text (NautilusQuery *query)
+nautilus_query_get_text (const NautilusQuery *query)
 {
     g_return_val_if_fail (NAUTILUS_IS_QUERY (query), NULL);
 
@@ -217,7 +217,7 @@ nautilus_query_set_text (NautilusQuery *query,
 }
 
 GFile *
-nautilus_query_get_location (NautilusQuery *query)
+nautilus_query_get_location (const NautilusQuery *query)
 {
     g_return_val_if_fail (NAUTILUS_IS_QUERY (query), NULL);
 
@@ -248,7 +248,7 @@ nautilus_query_set_location (NautilusQuery *query,
  * Returns: (transfer container) A #GPtrArray reference with MIME type name strings.
  */
 GPtrArray *
-nautilus_query_get_mime_types (NautilusQuery *query)
+nautilus_query_get_mime_types (const NautilusQuery *query)
 {
     g_return_val_if_fail (NAUTILUS_IS_QUERY (query), NULL);
 
@@ -279,7 +279,7 @@ nautilus_query_set_mime_types (NautilusQuery *query,
 }
 
 gboolean
-nautilus_query_get_show_hidden_files (NautilusQuery *query)
+nautilus_query_get_show_hidden_files (const NautilusQuery *query)
 {
     g_return_val_if_fail (NAUTILUS_IS_QUERY (query), FALSE);
 
@@ -296,7 +296,7 @@ nautilus_query_set_show_hidden_files (NautilusQuery *query,
 }
 
 char *
-nautilus_query_to_readable_string (NautilusQuery *query)
+nautilus_query_to_readable_string (const NautilusQuery *query)
 {
     if (!query || !query->text || query->text[0] == '\0')
     {
@@ -307,7 +307,7 @@ nautilus_query_to_readable_string (NautilusQuery *query)
 }
 
 gboolean
-nautilus_query_get_search_content (NautilusQuery *query)
+nautilus_query_get_search_content (const NautilusQuery *query)
 {
     g_return_val_if_fail (NAUTILUS_IS_QUERY (query), -1);
 
@@ -324,7 +324,7 @@ nautilus_query_set_search_content (NautilusQuery *query,
 }
 
 NautilusQuerySearchType
-nautilus_query_get_search_type (NautilusQuery *query)
+nautilus_query_get_search_type (const NautilusQuery *query)
 {
     g_return_val_if_fail (NAUTILUS_IS_QUERY (query), -1);
 
@@ -350,7 +350,7 @@ nautilus_query_set_search_type (NautilusQuery           *query,
  * Returns: (transfer full): the #GptrArray composed of #GDateTime representing the date range.
  */
 GPtrArray *
-nautilus_query_get_date_range (NautilusQuery *query)
+nautilus_query_get_date_range (const NautilusQuery *query)
 {
     g_return_val_if_fail (NAUTILUS_IS_QUERY (query), NULL);
 
@@ -371,7 +371,7 @@ nautilus_query_set_date_range (NautilusQuery *query,
 }
 
 NautilusQueryRecursive
-nautilus_query_get_recursive (NautilusQuery *query)
+nautilus_query_get_recursive (const NautilusQuery *query)
 {
     g_return_val_if_fail (NAUTILUS_IS_QUERY (query),
                           NAUTILUS_QUERY_RECURSIVE_ALWAYS);
@@ -389,7 +389,7 @@ nautilus_query_set_recursive (NautilusQuery          *query,
 }
 
 gboolean
-nautilus_query_is_empty (NautilusQuery *query)
+nautilus_query_is_empty (const NautilusQuery *query)
 {
     if (!query)
     {
@@ -407,7 +407,7 @@ nautilus_query_is_empty (NautilusQuery *query)
 }
 
 gboolean
-nautilus_query_is_global (NautilusQuery *self)
+nautilus_query_is_global (const NautilusQuery *self)
 {
     g_return_val_if_fail (NAUTILUS_IS_QUERY (self), FALSE);
 
