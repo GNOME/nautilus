@@ -66,8 +66,6 @@ struct _NautilusSearchDirectory
     GList *callback_list;
     GList *pending_callback_list;
 
-    GBinding *binding;
-
     NautilusDirectory *base_model;
 };
 
@@ -992,15 +990,6 @@ nautilus_search_directory_set_query (NautilusSearchDirectory *self,
 
     if (g_set_object (&self->query, query))
     {
-        g_clear_pointer (&self->binding, g_binding_unbind);
-
-        if (query)
-        {
-            self->binding = g_object_bind_property (self->engine, "running",
-                                                    query, "searching",
-                                                    G_BINDING_DEFAULT | G_BINDING_SYNC_CREATE);
-        }
-
         g_object_notify_by_pspec (G_OBJECT (self), properties[PROP_QUERY]);
     }
 

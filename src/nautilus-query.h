@@ -72,11 +72,6 @@ NautilusQueryRecursive nautilus_query_get_recursive (NautilusQuery *query);
 void                   nautilus_query_set_recursive (NautilusQuery          *query,
                                                      NautilusQueryRecursive  recursive);
 
-gboolean       nautilus_query_get_searching      (NautilusQuery *query);
-
-void           nautilus_query_set_searching      (NautilusQuery *query,
-                                                  gboolean       searching);
-
 gdouble        nautilus_query_matches_string     (NautilusQuery *query, const gchar *string);
 
 char *         nautilus_query_to_readable_string (NautilusQuery *query);

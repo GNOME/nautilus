@@ -44,7 +44,6 @@ struct _NautilusQuery
     NautilusQuerySearchType search_type;
     gboolean search_content;
 
-    gboolean searching;
     char **prepared_words;
     GRWLock prepared_words_rwlock;
 };
@@ -59,7 +58,6 @@ enum
     PROP_MIMETYPES,
     PROP_RECURSIVE,
     PROP_SEARCH_TYPE,
-    PROP_SEARCHING,
     PROP_SHOW_HIDDEN,
     PROP_TEXT,
     LAST_PROP
@@ -122,12 +120,6 @@ nautilus_query_get_property (GObject    *object,
         }
         break;
 
-        case PROP_SEARCHING:
-        {
-            g_value_set_boolean (value, self->searching);
-        }
-        break;
-
         case PROP_SHOW_HIDDEN:
         {
             g_value_set_boolean (value, self->show_hidden);
@@ -184,12 +176,6 @@ nautilus_query_set_property (GObject      *object,
         case PROP_SEARCH_TYPE:
         {
             nautilus_query_set_search_type (self, g_value_get_enum (value));
-        }
-        break;
-
-        case PROP_SEARCHING:
-        {
-            nautilus_query_set_searching (self, g_value_get_boolean (value));
         }
         break;
 
@@ -289,20 +275,6 @@ nautilus_query_class_init (NautilusQueryClass *class)
                                                         NAUTILUS_TYPE_QUERY_SEARCH_TYPE,
                                                         NAUTILUS_QUERY_SEARCH_TYPE_LAST_MODIFIED,
                                                         G_PARAM_READWRITE));
-
-    /**
-     * NautilusQuery::searching:
-     *
-     * Whether the query is being performed or not.
-     *
-     */
-    g_object_class_install_property (gobject_class,
-                                     PROP_SEARCHING,
-                                     g_param_spec_boolean ("searching",
-                                                           "Whether the query is being performed",
-                                                           "Whether the query is being performed or not",
-                                                           FALSE,
-                                                           G_PARAM_READWRITE));
 
     /**
      * NautilusQuery::show-hidden:
@@ -619,30 +591,6 @@ nautilus_query_set_date_range (NautilusQuery *query,
     }
 
     g_object_notify (G_OBJECT (query), "date-range");
-}
-
-gboolean
-nautilus_query_get_searching (NautilusQuery *query)
-{
-    g_return_val_if_fail (NAUTILUS_IS_QUERY (query), FALSE);
-
-    return query->searching;
-}
-
-void
-nautilus_query_set_searching (NautilusQuery *query,
-                              gboolean       searching)
-{
-    g_return_if_fail (NAUTILUS_IS_QUERY (query));
-
-    searching = !!searching;
-
-    if (query->searching != searching)
-    {
-        query->searching = searching;
-
-        g_object_notify (G_OBJECT (query), "searching");
-    }
 }
 
 NautilusQueryRecursive
