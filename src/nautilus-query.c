@@ -31,6 +31,12 @@
 #define MIN_RANK 10.0
 #define MAX_RANK 50.0
 
+static void
+prepared_word_free (GString *string)
+{
+    g_string_free (string, TRUE);
+}
+
 struct _NautilusQuery
 {
     GObject parent;
@@ -45,7 +51,7 @@ struct _NautilusQuery
     NautilusQuerySearchType search_type;
     gboolean search_content;
 
-    char **prepared_words;
+    GPtrArray *prepared_words;
     GRWLock prepared_words_rwlock;
 };
 
@@ -59,7 +65,10 @@ finalize (GObject *object)
     query = NAUTILUS_QUERY (object);
 
     g_free (query->text);
-    g_strfreev (query->prepared_words);
+    if (query->prepared_words != NULL)
+    {
+        g_ptr_array_free (query->prepared_words, TRUE);
+    }
     g_clear_object (&query->location);
     g_clear_pointer (&query->mime_types, g_ptr_array_unref);
     g_clear_pointer (&query->date_range, g_ptr_array_unref);
@@ -107,7 +116,7 @@ nautilus_query_matches_string (NautilusQuery *query,
     gchar *ptr = NULL;
     gboolean found = TRUE;
     gdouble retval;
-    gint idx, nonexact_malus = 0;
+    gint nonexact_malus = 0;
 
     if (!query->text)
     {
@@ -118,15 +127,17 @@ nautilus_query_matches_string (NautilusQuery *query,
 
     g_rw_lock_reader_lock (&query->prepared_words_rwlock);
 
-    for (idx = 0; query->prepared_words[idx] != NULL; idx++)
+    for (guint idx = 0; idx < query->prepared_words->len; idx++)
     {
-        if ((ptr = strstr (prepared_string, query->prepared_words[idx])) == NULL)
+        GString *word = query->prepared_words->pdata[idx];
+
+        if ((ptr = strstr (prepared_string, word->str)) == NULL)
         {
             found = FALSE;
             break;
         }
 
-        nonexact_malus += strlen (ptr) - strlen (query->prepared_words[idx]);
+        nonexact_malus += strlen (ptr) - word->len;
     }
 
     g_rw_lock_reader_unlock (&query->prepared_words_rwlock);
@@ -171,11 +182,23 @@ nautilus_query_set_text (NautilusQuery *query,
     query->text = g_strstrip (g_strdup (text));
 
     g_autofree gchar *prepared_query = prepare_string_for_compare (query->text);
-    GStrv prepared_words = g_strsplit (prepared_query, " ", -1);
+    g_auto (GStrv) split_query = g_strsplit (prepared_query, " ", -1);
+    guint split_num = g_strv_length (split_query);
+
+    GPtrArray *prepared_words =
+        g_ptr_array_new_full (split_num, (GDestroyNotify) prepared_word_free);
+    for (guint i = 0; i < split_num; i += 1)
+    {
+        GString *word = g_string_new (split_query[i]);
+        g_ptr_array_add (prepared_words, word);
+    }
 
     g_rw_lock_writer_lock (&query->prepared_words_rwlock);
 
-    g_strfreev (query->prepared_words);
+    if (query->prepared_words != NULL)
+    {
+        g_ptr_array_free (query->prepared_words, TRUE);
+    }
     query->prepared_words = prepared_words;
 
     g_rw_lock_writer_unlock (&query->prepared_words_rwlock);
