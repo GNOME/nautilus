@@ -42,7 +42,7 @@ struct _NautilusQuery
     GPtrArray *date_range;
     NautilusQueryRecursive recursive;
     NautilusQuerySearchType search_type;
-    NautilusQuerySearchContent search_content;
+    gboolean search_content;
 
     gboolean searching;
     char **prepared_words;
@@ -339,7 +339,7 @@ nautilus_query_init (NautilusQuery *query)
     query->mime_types = g_ptr_array_new ();
     query->show_hidden = TRUE;
     query->search_type = g_settings_get_enum (nautilus_preferences, "search-filter-time-type");
-    query->search_content = NAUTILUS_QUERY_SEARCH_CONTENT_SIMPLE;
+    query->search_content = FALSE;
     g_rw_lock_init (&query->prepared_words_rwlock);
 }
 
@@ -538,7 +538,7 @@ nautilus_query_to_readable_string (NautilusQuery *query)
     return g_strdup_printf (_("Search for “%s”"), query->text);
 }
 
-NautilusQuerySearchContent
+gboolean
 nautilus_query_get_search_content (NautilusQuery *query)
 {
     g_return_val_if_fail (NAUTILUS_IS_QUERY (query), -1);
@@ -547,14 +547,14 @@ nautilus_query_get_search_content (NautilusQuery *query)
 }
 
 void
-nautilus_query_set_search_content (NautilusQuery              *query,
-                                   NautilusQuerySearchContent  content)
+nautilus_query_set_search_content (NautilusQuery *query,
+                                   gboolean       search_content)
 {
     g_return_if_fail (NAUTILUS_IS_QUERY (query));
 
-    if (query->search_content != content)
+    if (query->search_content != search_content)
     {
-        query->search_content = content;
+        query->search_content = search_content;
         g_object_notify (G_OBJECT (query), "search-type");
     }
 }
