@@ -140,14 +140,6 @@ setup_date (NautilusSearchPopover *popover,
 }
 
 static void
-query_date_changed (GObject               *object,
-                    GParamSpec            *pspec,
-                    NautilusSearchPopover *popover)
-{
-    setup_date (popover, NAUTILUS_QUERY (object));
-}
-
-static void
 clear_date_button_clicked (GtkButton             *button,
                            NautilusSearchPopover *popover)
 {
@@ -1019,31 +1011,16 @@ void
 nautilus_search_popover_set_query (NautilusSearchPopover *popover,
                                    NautilusQuery         *query)
 {
-    NautilusQuery *previous_query;
-
     g_return_if_fail (NAUTILUS_IS_SEARCH_POPOVER (popover));
-
-    previous_query = popover->query;
 
     if (popover->query != query)
     {
-        /* Disconnect signals and bindings from the old query */
-        if (previous_query)
-        {
-            g_signal_handlers_disconnect_by_func (previous_query, query_date_changed, popover);
-        }
-
         g_set_object (&popover->query, query);
 
         if (query)
         {
             /* Date */
             setup_date (popover, query);
-
-            g_signal_connect (query,
-                              "notify::date",
-                              G_CALLBACK (query_date_changed),
-                              popover);
         }
         else
         {
