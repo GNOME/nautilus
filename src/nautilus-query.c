@@ -31,6 +31,12 @@
 #define MIN_RANK 10.0
 #define MAX_RANK 50.0
 
+static GString *
+string_create_copy (const GString *orig)
+{
+    return g_string_new_len (orig->str, orig->len);
+}
+
 static void
 prepared_word_free (GString *string)
 {
@@ -52,7 +58,6 @@ struct _NautilusQuery
     gboolean search_content;
 
     GPtrArray *prepared_words;
-    GRWLock prepared_words_rwlock;
 };
 
 G_DEFINE_TYPE (NautilusQuery, nautilus_query, G_TYPE_OBJECT);
@@ -72,7 +77,6 @@ finalize (GObject *object)
     g_clear_object (&query->location);
     g_clear_pointer (&query->mime_types, g_ptr_array_unref);
     g_clear_pointer (&query->date_range, g_ptr_array_unref);
-    g_rw_lock_clear (&query->prepared_words_rwlock);
 
     G_OBJECT_CLASS (nautilus_query_parent_class)->finalize (object);
 }
@@ -93,7 +97,6 @@ nautilus_query_init (NautilusQuery *query)
     query->show_hidden = TRUE;
     query->search_type = g_settings_get_enum (nautilus_preferences, "search-filter-time-type");
     query->search_content = FALSE;
-    g_rw_lock_init (&query->prepared_words_rwlock);
 }
 
 static gchar *
@@ -125,8 +128,6 @@ nautilus_query_matches_string (NautilusQuery *query,
 
     prepared_string = prepare_string_for_compare (string);
 
-    g_rw_lock_reader_lock (&query->prepared_words_rwlock);
-
     for (guint idx = 0; idx < query->prepared_words->len; idx++)
     {
         GString *word = query->prepared_words->pdata[idx];
@@ -139,8 +140,6 @@ nautilus_query_matches_string (NautilusQuery *query,
 
         nonexact_malus += strlen (ptr) - word->len;
     }
-
-    g_rw_lock_reader_unlock (&query->prepared_words_rwlock);
 
     if (!found)
     {
@@ -163,6 +162,23 @@ nautilus_query_new (void)
     return g_object_new (NAUTILUS_TYPE_QUERY, NULL);
 }
 
+NautilusQuery *
+nautilus_query_copy (NautilusQuery *query)
+{
+    NautilusQuery *copy = g_object_new (NAUTILUS_TYPE_QUERY, NULL);
+
+    copy->text = nautilus_query_get_text (query);
+    copy->location = nautilus_query_get_location (query);
+    copy->mime_types = nautilus_query_get_mime_types (query);
+    copy->show_hidden = query->show_hidden;
+    copy->date_range = nautilus_query_get_date_range (query);
+    copy->recursive = query->recursive;
+    copy->search_type = query->search_type;
+    copy->search_content = query->search_content;
+    copy->prepared_words = g_ptr_array_copy (query->prepared_words, (GCopyFunc) string_create_copy, NULL);
+
+    return copy;
+}
 
 char *
 nautilus_query_get_text (NautilusQuery *query)
@@ -204,15 +220,11 @@ nautilus_query_set_text (NautilusQuery *query,
         }
     }
 
-    g_rw_lock_writer_lock (&query->prepared_words_rwlock);
-
     if (query->prepared_words != NULL)
     {
         g_ptr_array_free (query->prepared_words, TRUE);
     }
     query->prepared_words = prepared_words;
-
-    g_rw_lock_writer_unlock (&query->prepared_words_rwlock);
 
     return TRUE;
 }
@@ -244,7 +256,7 @@ nautilus_query_set_location (NautilusQuery *query,
  * @query: A #NautilusQuery
  *
  * Retrieves the current MIME Types filter from @query. Its content must not be
- * modified. It can be read by multiple threads.
+ * modified.
  *
  * Returns: (transfer container) A #GPtrArray reference with MIME type name strings.
  */
@@ -346,25 +358,15 @@ nautilus_query_set_search_type (NautilusQuery          *query,
  * @query: a #NautilusQuery
  *
  * Retrieves the #GptrArray composed of #GDateTime representing the date range.
- * This function is thread safe.
  *
  * Returns: (transfer full): the #GptrArray composed of #GDateTime representing the date range.
  */
 GPtrArray *
 nautilus_query_get_date_range (NautilusQuery *query)
 {
-    static GMutex mutex;
-
     g_return_val_if_fail (NAUTILUS_IS_QUERY (query), NULL);
 
-    g_mutex_lock (&mutex);
-    if (query->date_range)
-    {
-        g_ptr_array_ref (query->date_range);
-    }
-    g_mutex_unlock (&mutex);
-
-    return query->date_range;
+    return query->date_range != NULL ? g_ptr_array_ref (query->date_range) : NULL;
 }
 
 void
