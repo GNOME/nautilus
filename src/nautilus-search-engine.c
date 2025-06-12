@@ -89,27 +89,25 @@ search_engine_start_real (NautilusSearchEngine *self)
 
     g_autoptr (GFile) query_location = nautilus_query_get_location (self->query);
 
-    if (self->search_type & NAUTILUS_SEARCH_TYPE_LOCALSEARCH)
+    if (self->localsearch != NULL)
     {
         self->providers_running++;
         nautilus_search_provider_start (self->localsearch, self->query);
     }
 
-    if (self->search_type & NAUTILUS_SEARCH_TYPE_RECENT)
+    if (self->recent != NULL)
     {
         self->providers_running++;
         nautilus_search_provider_start (self->recent, self->query);
     }
 
-    if (self->search_type & NAUTILUS_SEARCH_TYPE_MODEL &&
-        query_location != NULL)
+    if (self->model != NULL && query_location != NULL)
     {
         self->providers_running++;
         nautilus_search_provider_start (self->model, self->query);
     }
 
-    if (self->search_type & NAUTILUS_SEARCH_TYPE_SIMPLE &&
-        query_location != NULL)
+    if (self->simple && query_location != NULL)
     {
         self->providers_running++;
         nautilus_search_provider_start (self->simple, self->query);
@@ -161,10 +159,22 @@ nautilus_search_engine_stop (NautilusSearchProvider *provider)
 
     g_debug ("Search engine stop");
 
-    nautilus_search_provider_stop (self->localsearch);
-    nautilus_search_provider_stop (self->model);
-    nautilus_search_provider_stop (self->recent);
-    nautilus_search_provider_stop (self->simple);
+    if (self->localsearch != NULL)
+    {
+        nautilus_search_provider_stop (self->localsearch);
+    }
+    if (self->model != NULL)
+    {
+        nautilus_search_provider_stop (self->model);
+    }
+    if (self->recent != NULL)
+    {
+        nautilus_search_provider_stop (self->recent);
+    }
+    if (self->simple != NULL)
+    {
+        nautilus_search_provider_stop (self->simple);
+    }
 
     self->running = FALSE;
     self->restart = FALSE;
@@ -279,29 +289,56 @@ search_provider_finished (NautilusSearchProvider       *provider,
     check_providers_status (self);
 }
 
+typedef NautilusSearchProvider *(* CreateFunc) (void);
+
 static void
-connect_provider_signals (NautilusSearchEngine   *engine,
-                          NautilusSearchProvider *provider)
+setup_provider (NautilusSearchEngine    *self,
+                NautilusSearchProvider **provider_pointer,
+                NautilusSearchType       provider_flag,
+                CreateFunc               create_func)
 {
-    g_signal_connect (provider, "hits-added",
-                      G_CALLBACK (search_provider_hits_added),
-                      engine);
-    g_signal_connect (provider, "finished",
-                      G_CALLBACK (search_provider_finished),
-                      engine);
-    g_signal_connect (provider, "error",
-                      G_CALLBACK (search_provider_error),
-                      engine);
+    if (self->search_type & provider_flag)
+    {
+        if (*provider_pointer == NULL)
+        {
+            *provider_pointer = create_func ();
+
+            g_signal_connect (*provider_pointer, "hits-added",
+                              G_CALLBACK (search_provider_hits_added),
+                              self);
+            g_signal_connect (*provider_pointer, "finished",
+                              G_CALLBACK (search_provider_finished),
+                              self);
+            g_signal_connect (*provider_pointer, "error",
+                              G_CALLBACK (search_provider_error),
+                              self);
+        }
+    }
+    else
+    {
+        g_clear_object (provider_pointer);
+    }
 }
 
 void
 nautilus_search_engine_set_search_type (NautilusSearchEngine *self,
                                         NautilusSearchType    search_type)
 {
-    if (self->search_type != search_type)
+    if (self->search_type == search_type)
     {
-        self->search_type = search_type;
+        return;
     }
+
+    self->search_type = search_type;
+
+    setup_provider (self, &self->localsearch, NAUTILUS_SEARCH_TYPE_LOCALSEARCH,
+                    (CreateFunc) nautilus_search_engine_localsearch_new);
+    setup_provider (self, &self->model, NAUTILUS_SEARCH_TYPE_MODEL,
+                    (CreateFunc) nautilus_search_engine_model_new);
+    setup_provider (self, &self->recent, NAUTILUS_SEARCH_TYPE_RECENT,
+                    (CreateFunc) nautilus_search_engine_recent_new);
+    setup_provider (self, &self->simple, NAUTILUS_SEARCH_TYPE_SIMPLE,
+                    (CreateFunc) nautilus_search_engine_simple_new);
 }
 
 static void
@@ -410,18 +447,6 @@ static void
 nautilus_search_engine_init (NautilusSearchEngine *self)
 {
     self->uris = g_hash_table_new_full (g_str_hash, g_str_equal, g_free, NULL);
-
-    self->localsearch = NAUTILUS_SEARCH_PROVIDER (nautilus_search_engine_localsearch_new ());
-    connect_provider_signals (self, self->localsearch);
-
-    self->model = NAUTILUS_SEARCH_PROVIDER (nautilus_search_engine_model_new ());
-    connect_provider_signals (self, self->model);
-
-    self->simple = NAUTILUS_SEARCH_PROVIDER (nautilus_search_engine_simple_new ());
-    connect_provider_signals (self, self->simple);
-
-    self->recent = NAUTILUS_SEARCH_PROVIDER (nautilus_search_engine_recent_new ());
-    connect_provider_signals (self, self->recent);
 }
 
 NautilusSearchEngine *
