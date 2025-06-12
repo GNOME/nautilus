@@ -38,6 +38,7 @@ typedef enum {
 G_DECLARE_FINAL_TYPE (NautilusQuery, nautilus_query, NAUTILUS, QUERY, GObject)
 
 NautilusQuery* nautilus_query_new      (void);
+NautilusQuery* nautilus_query_copy     (NautilusQuery *query);
 
 char *         nautilus_query_get_text           (NautilusQuery *query);
 gboolean       nautilus_query_set_text           (NautilusQuery *query, const char *text);
