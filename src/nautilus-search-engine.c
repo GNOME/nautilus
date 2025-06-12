@@ -125,7 +125,7 @@ nautilus_search_engine_start (NautilusSearchProvider *provider,
     g_debug ("Search engine start");
     guint num_finished = self->providers_error + self->providers_finished;
 
-    g_set_object (&self->query, query);
+    g_set_object (&self->query, nautilus_query_new_copy (query));
 
     if (self->running)
     {
