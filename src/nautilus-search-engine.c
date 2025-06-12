@@ -120,12 +120,15 @@ nautilus_search_engine_start (NautilusSearchProvider *provider,
 {
     g_return_if_fail (query != NULL);
 
+    g_autoptr (NautilusQuery) query_to_copy = g_object_ref (query);
+
     NautilusSearchEngine *self = NAUTILUS_SEARCH_ENGINE (provider);
 
     g_debug ("Search engine start");
     guint num_finished = self->providers_error + self->providers_finished;
 
-    g_set_object (&self->query, query);
+    g_clear_object (&self->query);
+    self->query = nautilus_query_copy (query_to_copy);
 
     if (self->running)
     {
