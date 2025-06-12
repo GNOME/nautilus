@@ -150,18 +150,14 @@ cancel_current_search (NautilusShellSearchProvider *self)
 {
     if (self->current_search != NULL)
     {
-        NautilusSearchProvider *engine;
-
         g_debug ("*** Cancel current search");
 
-        engine = NAUTILUS_SEARCH_PROVIDER (self->current_search->engine);
         /* The finish signal may be emitted during the call to nautilus_search_provider_stop
          * which causes shell_search_provider to free the engine. Increase
          * the ref count to prevent use after free issues.
          */
-        g_object_ref (engine);
-        nautilus_search_provider_stop (engine);
-        g_object_unref (engine);
+        g_autoptr (NautilusSearchEngine) engine = g_object_ref (self->current_search->engine);
+        nautilus_search_engine_stop (engine);
     }
 }
 
@@ -515,8 +511,7 @@ execute_search (NautilusShellSearchProvider  *self,
 
     /* start searching */
     g_debug ("*** Search engine search started");
-    nautilus_search_provider_start (NAUTILUS_SEARCH_PROVIDER (pending_search->engine),
-                                    query);
+    nautilus_search_engine_start (pending_search->engine, query);
 }
 
 static gboolean

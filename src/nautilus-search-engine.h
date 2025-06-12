@@ -55,4 +55,10 @@ void
 nautilus_search_engine_set_search_type (NautilusSearchEngine *self,
                                         NautilusSearchType search_type);
 
+void
+nautilus_search_engine_start (NautilusSearchEngine *self,
+                              const NautilusQuery  *query);
+void
+nautilus_search_engine_stop (NautilusSearchEngine *self);
+
 G_END_DECLS

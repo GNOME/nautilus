@@ -181,8 +181,8 @@ start_search (NautilusSearchDirectory *self)
                                           is_monitoring_hidden_files (self));
 
     reset_file_list (self);
-    nautilus_search_provider_start (NAUTILUS_SEARCH_PROVIDER (self->engine),
-                                    self->query);
+    nautilus_search_engine_start (self->engine,
+                                  self->query);
 }
 
 static void
@@ -194,7 +194,7 @@ stop_search (NautilusSearchDirectory *self)
     }
 
     self->search_running = FALSE;
-    nautilus_search_provider_stop (NAUTILUS_SEARCH_PROVIDER (self->engine));
+    nautilus_search_engine_stop (self->engine);
 
     reset_file_list (self);
 }

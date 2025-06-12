@@ -21,7 +21,7 @@ finished_cb (NautilusSearchEngine         *engine,
              NautilusSearchProviderStatus  status,
              gpointer                      user_data)
 {
-    nautilus_search_provider_stop (NAUTILUS_SEARCH_PROVIDER (engine));
+    nautilus_search_engine_stop (engine);
 
     g_print ("\nNautilus search engine finished!\n");
 
@@ -65,7 +65,7 @@ main (int   argc,
 
     create_search_file_hierarchy ("all_engines");
 
-    nautilus_search_provider_start (NAUTILUS_SEARCH_PROVIDER (engine), query);
+    nautilus_search_engine_start (engine, query);
 
     g_main_loop_run (loop);
 

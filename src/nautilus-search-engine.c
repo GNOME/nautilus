@@ -60,13 +60,11 @@ enum
 };
 static GParamSpec *properties[N_PROPERTIES];
 
-static void nautilus_search_provider_init (NautilusSearchProviderInterface *iface);
-
 G_DEFINE_TYPE_WITH_CODE (NautilusSearchEngine,
                          nautilus_search_engine,
                          G_TYPE_OBJECT,
                          G_IMPLEMENT_INTERFACE (NAUTILUS_TYPE_SEARCH_PROVIDER,
-                                                nautilus_search_provider_init))
+                                                NULL))
 
 static void
 search_engine_start_real_setup (NautilusSearchEngine *self)
@@ -114,13 +112,11 @@ search_engine_start_real (NautilusSearchEngine *self)
     }
 }
 
-static void
-nautilus_search_engine_start (NautilusSearchProvider *provider,
-                              NautilusQuery          *query)
+void
+nautilus_search_engine_start (NautilusSearchEngine *self,
+                              const NautilusQuery  *query)
 {
     g_return_if_fail (query != NULL);
-
-    NautilusSearchEngine *self = NAUTILUS_SEARCH_ENGINE (provider);
 
     g_debug ("Search engine start");
     guint num_finished = self->providers_error + self->providers_finished;
@@ -152,11 +148,9 @@ nautilus_search_engine_start (NautilusSearchProvider *provider,
     }
 }
 
-static void
-nautilus_search_engine_stop (NautilusSearchProvider *provider)
+void
+nautilus_search_engine_stop (NautilusSearchEngine *self)
 {
-    NautilusSearchEngine *self = NAUTILUS_SEARCH_ENGINE (provider);
-
     g_debug ("Search engine stop");
 
     if (self->localsearch != NULL)
@@ -257,7 +251,7 @@ check_providers_status (NautilusSearchEngine *self)
 
     if (self->restart)
     {
-        nautilus_search_engine_start (NAUTILUS_SEARCH_PROVIDER (self), self->query);
+        nautilus_search_engine_start (self, self->query);
     }
 
     g_object_unref (self);
@@ -337,13 +331,6 @@ nautilus_search_engine_set_search_type (NautilusSearchEngine *self,
                     (CreateFunc) nautilus_search_engine_recent_new);
     setup_provider (self, &self->simple, NAUTILUS_SEARCH_TYPE_SIMPLE,
                     (CreateFunc) nautilus_search_engine_simple_new);
-}
-
-static void
-nautilus_search_provider_init (NautilusSearchProviderInterface *iface)
-{
-    iface->start = nautilus_search_engine_start;
-    iface->stop = nautilus_search_engine_stop;
 }
 
 static void
