@@ -1033,52 +1033,32 @@ nautilus_file_can_rename_files (GList *files)
 }
 
 NautilusQueryRecursive
-location_settings_search_get_recursive (void)
+location_settings_search_get_recursive (GFile *location)
 {
-    switch (g_settings_get_enum (nautilus_preferences, "recursive-search"))
+    NautilusSpeedTradeoffValue tradeoff = g_settings_get_enum (nautilus_preferences, "recursive-search");
+
+    if (tradeoff == NAUTILUS_SPEED_TRADEOFF_NEVER)
     {
-        case NAUTILUS_SPEED_TRADEOFF_ALWAYS:
-        {
-            return NAUTILUS_QUERY_RECURSIVE_ALWAYS;
-        }
-        break;
-
-        case NAUTILUS_SPEED_TRADEOFF_LOCAL_ONLY:
-        {
-            return NAUTILUS_QUERY_RECURSIVE_LOCAL_ONLY;
-        }
-        break;
-
-        case NAUTILUS_SPEED_TRADEOFF_NEVER:
-        {
-            return NAUTILUS_QUERY_RECURSIVE_NEVER;
-        }
-        break;
+        return NAUTILUS_QUERY_RECURSIVE_NEVER;
     }
-
-    return NAUTILUS_QUERY_RECURSIVE_ALWAYS;
-}
-
-NautilusQueryRecursive
-location_settings_search_get_recursive_for_location (GFile *location)
-{
-    NautilusQueryRecursive recursive = location_settings_search_get_recursive ();
-
-    g_return_val_if_fail (location, recursive);
-
-    if (recursive == NAUTILUS_QUERY_RECURSIVE_LOCAL_ONLY)
+    else if (tradeoff == NAUTILUS_SPEED_TRADEOFF_ALWAYS)
+    {
+        return NAUTILUS_QUERY_RECURSIVE_ALWAYS;
+    }
+    else if (tradeoff == NAUTILUS_SPEED_TRADEOFF_LOCAL_ONLY && location != NULL)
     {
         g_autoptr (NautilusFile) file = nautilus_file_get_existing (location);
 
-        g_return_val_if_fail (file != NULL, recursive);
+        g_return_val_if_fail (file != NULL, NAUTILUS_QUERY_RECURSIVE_INDEXED_ONLY);
 
-        if (nautilus_file_is_remote (file))
-        {
-            recursive = NAUTILUS_QUERY_RECURSIVE_NEVER;
-        }
+        return nautilus_file_is_remote (file)
+               ? NAUTILUS_QUERY_RECURSIVE_NEVER
+               : NAUTILUS_QUERY_RECURSIVE_INDEXED_ONLY;
     }
-
-    return recursive;
+    else
+    {
+        return NAUTILUS_QUERY_RECURSIVE_INDEXED_ONLY;
+    }
 }
 
 /* check_schema_available() was copied from GNOME Settings */

@@ -100,7 +100,7 @@ update_fts_sensitivity (NautilusQueryEditor *editor)
 
         fts_sensitive = !g_file_has_uri_scheme (editor->location, SCHEME_NETWORK) &&
                         !(nautilus_file_is_remote (file) &&
-                          location_settings_search_get_recursive_for_location (editor->location) == NAUTILUS_QUERY_RECURSIVE_NEVER);
+                          location_settings_search_get_recursive (editor->location) == NAUTILUS_QUERY_RECURSIVE_NEVER);
         nautilus_search_popover_set_fts_sensitive (NAUTILUS_SEARCH_POPOVER (editor->popover),
                                                    fts_sensitive);
     }
@@ -139,7 +139,7 @@ find_enclosing_mount_cb (GObject      *source_object,
         g_autoptr (NautilusFile) file = nautilus_file_get (editor->location);
 
         /* Subfolders are disabled */
-        if (location_settings_search_get_recursive_for_location (editor->location)
+        if (location_settings_search_get_recursive (editor->location)
             == NAUTILUS_QUERY_RECURSIVE_NEVER)
         {
             adw_status_page_set_description (ADW_STATUS_PAGE (editor->status_page),
@@ -183,7 +183,7 @@ find_enclosing_mount_cb (GObject      *source_object,
 
 
             /* Subfolders are disabled */
-            if (location_settings_search_get_recursive_for_location (editor->location)
+            if (location_settings_search_get_recursive (editor->location)
                 == NAUTILUS_QUERY_RECURSIVE_NEVER)
             {
                 adw_status_page_set_description (ADW_STATUS_PAGE (editor->status_page),
@@ -223,14 +223,12 @@ recursive_search_preferences_changed (GSettings           *settings,
                                       gchar               *key,
                                       NautilusQueryEditor *editor)
 {
-    NautilusQueryRecursive recursive;
-
     if (!editor->query)
     {
         return;
     }
 
-    recursive = location_settings_search_get_recursive ();
+    NautilusQueryRecursive recursive = location_settings_search_get_recursive (editor->location);
     if (recursive != nautilus_query_get_recursive (editor->query))
     {
         nautilus_query_set_recursive (editor->query, recursive);
@@ -465,10 +463,8 @@ create_query (NautilusQueryEditor *editor)
     nautilus_query_set_text (query, gtk_editable_get_text (GTK_EDITABLE (editor->text)));
     nautilus_query_set_location (query, editor->location);
 
-    /* We only set the query using the global setting for recursivity here,
-     * it's up to the search engine to check weather it can proceed with
-     * deep search in the current directory or not. */
-    nautilus_query_set_recursive (query, location_settings_search_get_recursive ());
+    NautilusQueryRecursive recursive = location_settings_search_get_recursive (editor->location);
+    nautilus_query_set_recursive (query, recursive);
 
     nautilus_query_editor_set_query (editor, query);
 }

@@ -128,8 +128,7 @@ gboolean nautilus_file_can_rename_files (GList *files);
 
 GList * nautilus_file_list_from_uri_list (GList *uris);
 
-NautilusQueryRecursive location_settings_search_get_recursive (void);
-NautilusQueryRecursive location_settings_search_get_recursive_for_location (GFile *location);
+NautilusQueryRecursive location_settings_search_get_recursive (GFile *location);
 
 gboolean check_schema_available (const gchar *schema_id);
 gboolean is_external_volume (GVolume *volume);
