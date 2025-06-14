@@ -23,6 +23,7 @@
 #include "nautilus-label-cell.h"
 #include "nautilus-metadata.h"
 #include "nautilus-name-cell.h"
+#include "nautilus-query.h"
 #include "nautilus-scheme.h"
 #include "nautilus-search-directory.h"
 #include "nautilus-star-cell.h"

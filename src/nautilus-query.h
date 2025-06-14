@@ -21,8 +21,9 @@
 
 #pragma once
 
-#include <glib-object.h>
 #include <gio/gio.h>
+#include <glib.h>
+#include <glib-object.h>
 
 typedef enum {
         NAUTILUS_QUERY_SEARCH_TYPE_LAST_ACCESS,
