@@ -74,7 +74,5 @@ nautilus_query_update_recursive_setting (NautilusQuery *self);
 
 gdouble        nautilus_query_matches_string     (const NautilusQuery *query, const gchar *string);
 
-char *         nautilus_query_to_readable_string (const NautilusQuery *query);
-
 gboolean       nautilus_query_is_empty           (const NautilusQuery *query);
 gboolean       nautilus_query_is_global          (const NautilusQuery *query);
