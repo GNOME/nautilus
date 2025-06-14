@@ -70,8 +70,6 @@ nautilus_query_update_recursive_setting (NautilusQuery *self);
 
 gdouble        nautilus_query_matches_string     (NautilusQuery *query, const gchar *string);
 
-char *         nautilus_query_to_readable_string (NautilusQuery *query);
-
 gboolean       nautilus_query_has_active_filter  (NautilusQuery *query);
 gboolean       nautilus_query_is_empty           (NautilusQuery *query);
 gboolean       nautilus_query_is_global          (NautilusQuery *query);

@@ -216,7 +216,12 @@ nautilus_search_directory_file_update_display_name (NautilusSearchDirectoryFile 
 
         if (query != NULL)
         {
-            display_name = nautilus_query_to_readable_string (query);
+            g_autofree char *query_text = nautilus_query_get_text (query);
+
+            if (query_text != NULL && query_text[0] != '\0')
+            {
+                display_name = g_strdup_printf (_("Search for “%s”"), query_text);
+            }
         }
     }
 
