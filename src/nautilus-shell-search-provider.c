@@ -468,7 +468,6 @@ shell_query_new (gchar **terms)
     nautilus_query_set_text (query, terms_joined);
     /* Global search is not limited by location. */
     nautilus_query_set_location (query, NULL);
-    nautilus_query_set_recursive (query, NAUTILUS_QUERY_RECURSIVE_INDEXED_ONLY);
 
     return query;
 }

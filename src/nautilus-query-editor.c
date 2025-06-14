@@ -32,6 +32,7 @@
 #include "nautilus-file.h"
 #include "nautilus-file-utilities.h"
 #include "nautilus-global-preferences.h"
+#include "nautilus-query.h"
 #include "nautilus-scheme.h"
 #include "nautilus-search-directory.h"
 #include "nautilus-search-popover.h"
@@ -89,26 +90,11 @@ static void nautilus_query_editor_changed (NautilusQueryEditor *editor);
 
 G_DEFINE_TYPE (NautilusQueryEditor, nautilus_query_editor, GTK_TYPE_WIDGET);
 
-static gboolean
-fts_is_available (NautilusQueryEditor *self)
-{
-    if (self->location == NULL)
-    {
-        return TRUE;
-    }
-
-    g_autoptr (NautilusFile) file = nautilus_file_get (self->location);
-
-    return !g_file_has_uri_scheme (self->location, SCHEME_NETWORK) &&
-           !(nautilus_file_is_remote (file) &&
-             location_settings_search_get_recursive_for_location (self->location) == NAUTILUS_QUERY_RECURSIVE_NEVER);
-}
-
 static void
 update_fts_sensitivity (NautilusQueryEditor *editor)
 {
     nautilus_search_popover_set_fts_sensitive (NAUTILUS_SEARCH_POPOVER (editor->popover),
-                                               fts_is_available (editor));
+                                               nautilus_query_can_search_content (editor->query));
 }
 
 static void
@@ -144,8 +130,7 @@ find_enclosing_mount_cb (GObject      *source_object,
         g_autoptr (NautilusFile) file = nautilus_file_get (editor->location);
 
         /* Subfolders are disabled */
-        if (location_settings_search_get_recursive_for_location (editor->location)
-            == NAUTILUS_QUERY_RECURSIVE_NEVER)
+        if (!nautilus_query_recursive (editor->query))
         {
             adw_status_page_set_description (ADW_STATUS_PAGE (editor->status_page),
                                              _("Search may be slow and will not include "
@@ -188,8 +173,7 @@ find_enclosing_mount_cb (GObject      *source_object,
 
 
             /* Subfolders are disabled */
-            if (location_settings_search_get_recursive_for_location (editor->location)
-                == NAUTILUS_QUERY_RECURSIVE_NEVER)
+            if (!nautilus_query_recursive (editor->query))
             {
                 adw_status_page_set_description (ADW_STATUS_PAGE (editor->status_page),
                                                  _("Some subfolders will not be included "
@@ -228,22 +212,17 @@ recursive_search_preferences_changed (GSettings           *settings,
                                       gchar               *key,
                                       NautilusQueryEditor *editor)
 {
-    NautilusQueryRecursive recursive;
-
     if (!editor->query)
     {
         return;
     }
 
-    recursive = location_settings_search_get_recursive ();
-    if (recursive != nautilus_query_get_recursive (editor->query))
+    if (nautilus_query_update_recursive_setting (editor->query))
     {
-        nautilus_query_set_recursive (editor->query, recursive);
         nautilus_query_editor_changed (editor);
+        update_fts_sensitivity (editor);
+        update_search_information (editor);
     }
-
-    update_fts_sensitivity (editor);
-    update_search_information (editor);
 }
 
 
@@ -459,18 +438,8 @@ create_query (NautilusQueryEditor *editor)
     g_return_if_fail (editor->query == NULL);
 
     g_autoptr (NautilusQuery) query = nautilus_query_new ();
-    gboolean fts_enabled = fts_is_available (editor) &&
-                           g_settings_get_boolean (nautilus_preferences, NAUTILUS_PREFERENCES_FTS_ENABLED);
-
-    nautilus_query_set_search_content (query, fts_enabled);
-
     nautilus_query_set_text (query, gtk_editable_get_text (GTK_EDITABLE (editor->text)));
     nautilus_query_set_location (query, editor->location);
-
-    /* We only set the query using the global setting for recursivity here,
-     * it's up to the search engine to check weather it can proceed with
-     * deep search in the current directory or not. */
-    nautilus_query_set_recursive (query, location_settings_search_get_recursive ());
 
     nautilus_query_editor_set_query (editor, query);
 }
@@ -659,9 +628,10 @@ search_popover_fts_changed_cb (NautilusQueryEditor *editor,
         create_query (editor);
     }
 
-    nautilus_query_set_search_content (editor->query, fts_enabled);
-
-    nautilus_query_editor_changed (editor);
+    if (nautilus_query_update_search_content (editor->query))
+    {
+        nautilus_query_editor_changed (editor);
+    }
 }
 
 static void

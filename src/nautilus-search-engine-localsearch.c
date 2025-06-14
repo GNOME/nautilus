@@ -463,25 +463,6 @@ create_statement (NautilusSearchProvider *provider,
     return stmt;
 }
 
-static bool
-should_set_recursive (NautilusSearchEngineLocalsearch *self,
-                      GFile                           *location)
-{
-    NautilusQueryRecursive recurse_type = nautilus_query_get_recursive (self->query);
-
-    if (location != NULL && recurse_type == NAUTILUS_QUERY_RECURSIVE_LOCAL_ONLY)
-    {
-        g_autoptr (NautilusFile) location_file = nautilus_file_get (location);
-
-        return location_file != NULL && !nautilus_file_is_remote (location_file);
-    }
-    else
-    {
-        return recurse_type == NAUTILUS_QUERY_RECURSIVE_ALWAYS ||
-               recurse_type == NAUTILUS_QUERY_RECURSIVE_INDEXED_ONLY;
-    }
-}
-
 static void
 search_engine_localsearch_start (NautilusSearchProvider *provider,
                                  NautilusQuery          *query)
@@ -528,7 +509,7 @@ search_engine_localsearch_start (NautilusSearchProvider *provider,
     {
         features |= SEARCH_FEATURE_CONTENT;
     }
-    if (should_set_recursive (self, location))
+    if (nautilus_query_recursive (self->query))
     {
         features |= SEARCH_FEATURE_RECURSIVE;
     }
