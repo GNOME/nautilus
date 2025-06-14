@@ -24,8 +24,9 @@
 #include <glib/gi18n.h>
 
 #include "nautilus-enum-types.h"
-#include "nautilus-file-utilities.h"
+#include "nautilus-file.h"
 #include "nautilus-global-preferences.h"
+#include "nautilus-scheme.h"
 
 #define RANK_SCALE_FACTOR 100
 #define MIN_RANK 10.0
@@ -53,7 +54,7 @@ struct _NautilusQuery
     GPtrArray *mime_types;
     gboolean show_hidden;
     GPtrArray *date_range;
-    NautilusQueryRecursive recursive;
+    NautilusSpeedTradeoffValue recursion_tradeoff;
     NautilusSearchTimeType search_type;
     gboolean search_content;
 
@@ -61,6 +62,35 @@ struct _NautilusQuery
 };
 
 G_DEFINE_TYPE (NautilusQuery, nautilus_query, G_TYPE_OBJECT);
+
+static NautilusSpeedTradeoffValue
+get_recursion_tradeoff (GFile *location)
+{
+    NautilusSpeedTradeoffValue tradeoff = g_settings_get_enum (
+        nautilus_preferences, "recursive-search");
+
+    if (tradeoff != NAUTILUS_SPEED_TRADEOFF_LOCAL_ONLY)
+    {
+        return tradeoff;
+    }
+    else if (location == NULL)
+    {
+        /* Local-only without location -> never */
+        return NAUTILUS_SPEED_TRADEOFF_NEVER;
+    }
+
+    g_autoptr (NautilusFile) file = nautilus_file_get_existing (location);
+    if (file != NULL && !nautilus_file_is_remote (file))
+    {
+        /* It's up to the search engine to check whether it can proceed with
+         * deep search in the current directory or not. */
+        return NAUTILUS_SPEED_TRADEOFF_LOCAL_ONLY;
+    }
+    else
+    {
+        return NAUTILUS_SPEED_TRADEOFF_NEVER;
+    }
+}
 
 static void
 finalize (GObject *object)
@@ -96,7 +126,8 @@ nautilus_query_init (NautilusQuery *query)
     query->mime_types = g_ptr_array_new ();
     query->show_hidden = TRUE;
     query->search_type = g_settings_get_enum (nautilus_preferences, "search-filter-time-type");
-    query->search_content = FALSE;
+    nautilus_query_update_recursive_setting (query);
+    nautilus_query_update_search_content (query);
 }
 
 static gchar *
@@ -172,7 +203,7 @@ nautilus_query_copy (NautilusQuery *query)
     copy->mime_types = nautilus_query_get_mime_types (query);
     copy->show_hidden = query->show_hidden;
     copy->date_range = nautilus_query_get_date_range (query);
-    copy->recursive = query->recursive;
+    copy->recursion_tradeoff = query->recursion_tradeoff;
     copy->search_type = query->search_type;
     copy->search_content = query->search_content;
     copy->prepared_words = g_ptr_array_copy (query->prepared_words, (GCopyFunc) string_create_copy, NULL);
@@ -248,7 +279,11 @@ nautilus_query_set_location (NautilusQuery *query,
 {
     g_return_if_fail (NAUTILUS_IS_QUERY (query));
 
-    g_set_object (&query->location, location);
+    if (g_set_object (&query->location, location))
+    {
+        nautilus_query_update_recursive_setting (query);
+        nautilus_query_update_search_content (query);
+    }
 }
 
 /**
@@ -327,13 +362,43 @@ nautilus_query_get_search_content (NautilusQuery *query)
     return query->search_content;
 }
 
-void
-nautilus_query_set_search_content (NautilusQuery *query,
-                                   gboolean       search_content)
-{
-    g_return_if_fail (NAUTILUS_IS_QUERY (query));
 
-    query->search_content = search_content;
+/** Returns: whether full text search is available */
+gboolean
+nautilus_query_can_search_content (NautilusQuery *self)
+{
+    if (self->location == NULL)
+    {
+        return TRUE;
+    }
+    else if (g_file_has_uri_scheme (self->location, SCHEME_NETWORK))
+    {
+        return FALSE;
+    }
+    else if (nautilus_query_recursive_local_only (self))
+    {
+        g_autoptr (NautilusFile) file = nautilus_file_get (self->location);
+        return !nautilus_file_is_remote (file);
+    }
+    else
+    {
+        return TRUE;
+    }
+}
+
+/**
+ * Returns: Whether the query has changed
+ */
+gboolean
+nautilus_query_update_search_content (NautilusQuery *self)
+{
+    gboolean old_search_content = self->search_content;
+
+    self->search_content = nautilus_query_can_search_content (self) &&
+                           g_settings_get_boolean (nautilus_preferences,
+                                                   NAUTILUS_PREFERENCES_FTS_ENABLED);
+
+    return old_search_content != self->search_content;
 }
 
 NautilusSearchTimeType
@@ -382,22 +447,31 @@ nautilus_query_set_date_range (NautilusQuery *query,
     }
 }
 
-NautilusQueryRecursive
-nautilus_query_get_recursive (NautilusQuery *query)
+/** Returns: whether recursive search is generally enabled */
+gboolean
+nautilus_query_recursive (NautilusQuery *self)
 {
-    g_return_val_if_fail (NAUTILUS_IS_QUERY (query),
-                          NAUTILUS_QUERY_RECURSIVE_ALWAYS);
-
-    return query->recursive;
+    return self->recursion_tradeoff != NAUTILUS_SPEED_TRADEOFF_NEVER;
 }
 
-void
-nautilus_query_set_recursive (NautilusQuery          *query,
-                              NautilusQueryRecursive  recursive)
+/** Returns: whether recursive search is only enabled for local paths */
+gboolean
+nautilus_query_recursive_local_only (NautilusQuery *self)
 {
-    g_return_if_fail (NAUTILUS_IS_QUERY (query));
+    return self->recursion_tradeoff == NAUTILUS_SPEED_TRADEOFF_LOCAL_ONLY;
+}
 
-    query->recursive = recursive;
+/**
+ * Returns: Whether the query has changed
+ */
+gboolean
+nautilus_query_update_recursive_setting (NautilusQuery *self)
+{
+    NautilusSpeedTradeoffValue old_tradeoff = self->recursion_tradeoff;
+
+    self->recursion_tradeoff = get_recursion_tradeoff (self->location);
+
+    return old_tradeoff != self->recursion_tradeoff;
 }
 
 gboolean

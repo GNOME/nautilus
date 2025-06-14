@@ -32,6 +32,7 @@
 #include "nautilus-files-view.h"
 #include "nautilus-location-banner.h"
 #include "nautilus-mime-actions.h"
+#include "nautilus-query.h"
 #include "nautilus-query-editor.h"
 #include "nautilus-scheme.h"
 #include "nautilus-tag-manager.h"

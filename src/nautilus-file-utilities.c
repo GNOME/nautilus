@@ -1032,55 +1032,6 @@ nautilus_file_can_rename_files (GList *files)
     return TRUE;
 }
 
-NautilusQueryRecursive
-location_settings_search_get_recursive (void)
-{
-    switch (g_settings_get_enum (nautilus_preferences, "recursive-search"))
-    {
-        case NAUTILUS_SPEED_TRADEOFF_ALWAYS:
-        {
-            return NAUTILUS_QUERY_RECURSIVE_ALWAYS;
-        }
-        break;
-
-        case NAUTILUS_SPEED_TRADEOFF_LOCAL_ONLY:
-        {
-            return NAUTILUS_QUERY_RECURSIVE_LOCAL_ONLY;
-        }
-        break;
-
-        case NAUTILUS_SPEED_TRADEOFF_NEVER:
-        {
-            return NAUTILUS_QUERY_RECURSIVE_NEVER;
-        }
-        break;
-    }
-
-    return NAUTILUS_QUERY_RECURSIVE_ALWAYS;
-}
-
-NautilusQueryRecursive
-location_settings_search_get_recursive_for_location (GFile *location)
-{
-    NautilusQueryRecursive recursive = location_settings_search_get_recursive ();
-
-    g_return_val_if_fail (location, recursive);
-
-    if (recursive == NAUTILUS_QUERY_RECURSIVE_LOCAL_ONLY)
-    {
-        g_autoptr (NautilusFile) file = nautilus_file_get_existing (location);
-
-        g_return_val_if_fail (file != NULL, recursive);
-
-        if (nautilus_file_is_remote (file))
-        {
-            recursive = NAUTILUS_QUERY_RECURSIVE_NEVER;
-        }
-    }
-
-    return recursive;
-}
-
 /* check_schema_available() was copied from GNOME Settings */
 gboolean
 check_schema_available (const gchar *schema_id)
