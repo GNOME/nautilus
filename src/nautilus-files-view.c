@@ -9044,12 +9044,11 @@ metadata_for_directory_as_file_ready_callback (NautilusFile *file,
 
     g_assert (NAUTILUS_IS_FILES_VIEW (view));
     priv = nautilus_files_view_get_instance_private (view);
-    g_assert (priv->directory_as_file == file);
-    g_assert (priv->metadata_for_directory_as_file_pending);
-
-    priv->metadata_for_directory_as_file_pending = FALSE;
-
-    finish_loading_if_all_metadata_loaded (view);
+    if (priv->directory_as_file == file && priv->metadata_for_directory_as_file_pending)
+    {
+        priv->metadata_for_directory_as_file_pending = FALSE;
+        finish_loading_if_all_metadata_loaded (view);
+    }
 }
 
 static void
@@ -9064,12 +9063,11 @@ metadata_for_files_in_directory_ready_callback (NautilusDirectory *directory,
 
     g_assert (NAUTILUS_IS_FILES_VIEW (view));
     priv = nautilus_files_view_get_instance_private (view);
-    g_assert (priv->directory == directory);
-    g_assert (priv->metadata_for_files_in_directory_pending);
-
-    priv->metadata_for_files_in_directory_pending = FALSE;
-
-    finish_loading_if_all_metadata_loaded (view);
+    if (priv->directory == directory && priv->metadata_for_files_in_directory_pending)
+    {
+        priv->metadata_for_files_in_directory_pending = FALSE;
+        finish_loading_if_all_metadata_loaded (view);
+    }
 }
 
 static void
