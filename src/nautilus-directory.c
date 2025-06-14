@@ -664,7 +664,6 @@ nautilus_directory_new_file_from_filename (NautilusDirectory *directory,
 {
     g_assert (NAUTILUS_IS_DIRECTORY (directory));
     g_assert (filename != NULL);
-    g_assert (filename[0] != '\0');
 
     return NAUTILUS_DIRECTORY_CLASS (G_OBJECT_GET_CLASS (directory))->new_file_from_filename (directory,
                                                                                               filename,
