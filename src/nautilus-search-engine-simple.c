@@ -313,7 +313,6 @@ visit_directory (GFile            *dir,
         g_autoptr (GDateTime) mtime = NULL;
         g_autoptr (GDateTime) atime = NULL;
         g_autoptr (GDateTime) ctime = NULL;
-        gboolean recursive = FALSE;
 
         display_name = g_file_info_get_display_name (info);
         if (display_name == NULL)
@@ -423,29 +422,8 @@ visit_directory (GFile            *dir,
             send_batch_in_idle (data);
         }
 
-        if (recursive_flag != NAUTILUS_QUERY_RECURSIVE_NEVER &&
+        if (recursive_flag == NAUTILUS_QUERY_RECURSIVE_ALWAYS &&
             g_file_info_get_file_type (info) == G_FILE_TYPE_DIRECTORY)
-        {
-            if (recursive_flag == NAUTILUS_QUERY_RECURSIVE_ALWAYS)
-            {
-                recursive = TRUE;
-            }
-            else if (recursive_flag == NAUTILUS_QUERY_RECURSIVE_LOCAL_ONLY)
-            {
-                g_autoptr (GFileInfo) file_system_info = NULL;
-
-                file_system_info = g_file_query_filesystem_info (child,
-                                                                 G_FILE_ATTRIBUTE_FILESYSTEM_REMOTE,
-                                                                 NULL, NULL);
-                if (file_system_info != NULL)
-                {
-                    recursive = !g_file_info_get_attribute_boolean (file_system_info,
-                                                                    G_FILE_ATTRIBUTE_FILESYSTEM_REMOTE);
-                }
-            }
-        }
-
-        if (recursive)
         {
             id = g_file_info_get_attribute_string (info, G_FILE_ATTRIBUTE_ID_FILE);
             visited = FALSE;
