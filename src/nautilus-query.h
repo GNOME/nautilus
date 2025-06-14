@@ -26,13 +26,6 @@
 #include <glib-object.h>
 #include <gio/gio.h>
 
-typedef enum {
-        NAUTILUS_QUERY_RECURSIVE_NEVER,
-        NAUTILUS_QUERY_RECURSIVE_ALWAYS,
-        NAUTILUS_QUERY_RECURSIVE_LOCAL_ONLY,
-        NAUTILUS_QUERY_RECURSIVE_INDEXED_ONLY,
-} NautilusQueryRecursive;
-
 #define NAUTILUS_TYPE_QUERY		(nautilus_query_get_type ())
 
 G_DECLARE_FINAL_TYPE (NautilusQuery, nautilus_query, NAUTILUS, QUERY, GObject)
@@ -53,9 +46,12 @@ void           nautilus_query_set_location       (NautilusQuery *query,
 GPtrArray *    nautilus_query_get_mime_types     (NautilusQuery *query);
 void           nautilus_query_set_mime_types     (NautilusQuery *query, GPtrArray *mime_types);
 
-gboolean       nautilus_query_get_search_content (NautilusQuery *query);
-void           nautilus_query_set_search_content (NautilusQuery *query,
-                                                  gboolean       search_content);
+gboolean
+nautilus_query_can_search_content (NautilusQuery *self);
+gboolean
+nautilus_query_get_search_content (NautilusQuery *query);
+gboolean
+nautilus_query_update_search_content (NautilusQuery *self);
 
 NautilusSearchTimeType nautilus_query_get_search_type (NautilusQuery *query);
 void                   nautilus_query_set_search_type (NautilusQuery           *query,
@@ -65,9 +61,12 @@ GPtrArray*     nautilus_query_get_date_range     (NautilusQuery *query);
 void           nautilus_query_set_date_range     (NautilusQuery *query,
                                                   GPtrArray     *date_range);
 
-NautilusQueryRecursive nautilus_query_get_recursive (NautilusQuery *query);
-void                   nautilus_query_set_recursive (NautilusQuery          *query,
-                                                     NautilusQueryRecursive  recursive);
+gboolean
+nautilus_query_recursive (NautilusQuery *self);
+gboolean
+nautilus_query_recursive_local_only (NautilusQuery *self);
+gboolean
+nautilus_query_update_recursive_setting (NautilusQuery *self);
 
 gdouble        nautilus_query_matches_string     (NautilusQuery *query, const gchar *string);
 

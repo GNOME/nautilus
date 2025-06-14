@@ -271,7 +271,6 @@ visit_directory (GFile            *dir,
 {
     g_autoptr (GPtrArray) date_range = NULL;
     NautilusSearchTimeType type;
-    NautilusQueryRecursive recursive_flag;
     GFileEnumerator *enumerator;
     GFileInfo *info;
     GFile *child;
@@ -301,8 +300,10 @@ visit_directory (GFile            *dir,
     }
 
     type = nautilus_query_get_search_type (data->query);
-    recursive_flag = nautilus_query_get_recursive (data->query);
     date_range = nautilus_query_get_date_range (data->query);
+
+    gboolean recursion_enabled = nautilus_query_recursive (data->query);
+    gboolean per_location_recursive_check = nautilus_query_recursive_local_only (data->query);
 
     while ((info = g_file_enumerator_next_file (enumerator, data->cancellable, NULL)) != NULL)
     {
@@ -424,14 +425,10 @@ visit_directory (GFile            *dir,
             send_batch_in_idle (data);
         }
 
-        if (recursive_flag != NAUTILUS_QUERY_RECURSIVE_NEVER &&
+        if (recursion_enabled &&
             g_file_info_get_file_type (info) == G_FILE_TYPE_DIRECTORY)
         {
-            if (recursive_flag == NAUTILUS_QUERY_RECURSIVE_ALWAYS)
-            {
-                recursive = TRUE;
-            }
-            else if (recursive_flag == NAUTILUS_QUERY_RECURSIVE_LOCAL_ONLY)
+            if (per_location_recursive_check)
             {
                 g_autoptr (GFileInfo) file_system_info = NULL;
 
@@ -443,6 +440,10 @@ visit_directory (GFile            *dir,
                     recursive = !g_file_info_get_attribute_boolean (file_system_info,
                                                                     G_FILE_ATTRIBUTE_FILESYSTEM_REMOTE);
                 }
+            }
+            else
+            {
+                recursive = TRUE;
             }
         }
 
