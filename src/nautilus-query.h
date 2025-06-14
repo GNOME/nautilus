@@ -69,8 +69,8 @@ void           nautilus_query_set_date_range     (NautilusQuery *query,
                                                   GPtrArray     *date_range);
 
 NautilusQueryRecursive nautilus_query_get_recursive (const NautilusQuery *query);
-void                   nautilus_query_set_recursive (NautilusQuery          *query,
-                                                     NautilusQueryRecursive  recursive);
+gboolean
+nautilus_query_update_recursive_setting (NautilusQuery *self);
 
 gdouble        nautilus_query_matches_string     (const NautilusQuery *query, const gchar *string);
 

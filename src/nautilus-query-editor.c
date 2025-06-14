@@ -226,10 +226,8 @@ recursive_search_preferences_changed (GSettings           *settings,
         return;
     }
 
-    NautilusQueryRecursive recursive = location_settings_search_get_recursive (editor->location);
-    if (recursive != nautilus_query_get_recursive (editor->query))
+    if (nautilus_query_update_recursive_setting (editor->query))
     {
-        nautilus_query_set_recursive (editor->query, recursive);
         nautilus_query_editor_changed (editor);
     }
 
@@ -460,9 +458,6 @@ create_query (NautilusQueryEditor *editor)
 
     nautilus_query_set_text (query, gtk_editable_get_text (GTK_EDITABLE (editor->text)));
     nautilus_query_set_location (query, editor->location);
-
-    NautilusQueryRecursive recursive = location_settings_search_get_recursive (editor->location);
-    nautilus_query_set_recursive (query, recursive);
 
     nautilus_query_editor_set_query (editor, query);
 }

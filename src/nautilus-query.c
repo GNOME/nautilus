@@ -62,6 +62,37 @@ struct _NautilusQuery
 
 G_DEFINE_TYPE (NautilusQuery, nautilus_query, G_TYPE_OBJECT);
 
+static NautilusQueryRecursive
+get_recursive_setting (GFile *location)
+{
+    NautilusSpeedTradeoffValue tradeoff =
+        g_settings_get_enum (nautilus_preferences, "recursive-search");
+
+    if (tradeoff == NAUTILUS_SPEED_TRADEOFF_NEVER)
+    {
+        return NAUTILUS_QUERY_RECURSIVE_NEVER;
+    }
+    else if (tradeoff == NAUTILUS_SPEED_TRADEOFF_ALWAYS)
+    {
+        return NAUTILUS_QUERY_RECURSIVE_ALWAYS;
+    }
+    else if (tradeoff == NAUTILUS_SPEED_TRADEOFF_LOCAL_ONLY &&
+             location != NULL)
+    {
+        g_autoptr (NautilusFile) file = nautilus_file_get_existing (location);
+
+        g_return_val_if_fail (file != NULL, FALSE);
+
+        return nautilus_file_is_remote (file)
+               ? NAUTILUS_QUERY_RECURSIVE_NEVER
+               : NAUTILUS_QUERY_RECURSIVE_INDEXED_ONLY;
+    }
+    else
+    {
+        return NAUTILUS_QUERY_RECURSIVE_INDEXED_ONLY;
+    }
+}
+
 static void
 finalize (GObject *object)
 {
@@ -235,7 +266,10 @@ nautilus_query_set_location (NautilusQuery *query,
 {
     g_return_if_fail (NAUTILUS_IS_QUERY (query));
 
-    g_set_object (&query->location, location);
+    if (g_set_object (&query->location, location))
+    {
+        query->recursive = get_recursive_setting (query->location);
+    }
 }
 
 /**
@@ -379,13 +413,17 @@ nautilus_query_get_recursive (const NautilusQuery *query)
     return query->recursive;
 }
 
-void
-nautilus_query_set_recursive (NautilusQuery          *query,
-                              NautilusQueryRecursive  recursive)
+/**
+ * Returns: Whether the query has changed
+ */
+gboolean
+nautilus_query_update_recursive_setting (NautilusQuery *self)
 {
-    g_return_if_fail (NAUTILUS_IS_QUERY (query));
+    NautilusQueryRecursive old_recursive = self->recursive;
 
-    query->recursive = recursive;
+    self->recursive = get_recursive_setting (self->location);
+
+    return old_recursive != self->recursive;
 }
 
 gboolean
