@@ -100,7 +100,7 @@ update_fts_sensitivity (NautilusQueryEditor *editor)
 
         fts_sensitive = !g_file_has_uri_scheme (editor->location, SCHEME_NETWORK) &&
                         !(nautilus_file_is_remote (file) &&
-                          location_settings_search_get_recursive (editor->location) == NAUTILUS_QUERY_RECURSIVE_NEVER);
+                          nautilus_query_get_recursive (editor->query) == NAUTILUS_QUERY_RECURSIVE_NEVER);
         nautilus_search_popover_set_fts_sensitive (NAUTILUS_SEARCH_POPOVER (editor->popover),
                                                    fts_sensitive);
     }
@@ -139,8 +139,7 @@ find_enclosing_mount_cb (GObject      *source_object,
         g_autoptr (NautilusFile) file = nautilus_file_get (editor->location);
 
         /* Subfolders are disabled */
-        if (location_settings_search_get_recursive (editor->location)
-            == NAUTILUS_QUERY_RECURSIVE_NEVER)
+        if (nautilus_query_get_recursive (editor->query) == NAUTILUS_QUERY_RECURSIVE_NEVER)
         {
             adw_status_page_set_description (ADW_STATUS_PAGE (editor->status_page),
                                              _("Search may be slow and will not include "
@@ -183,8 +182,7 @@ find_enclosing_mount_cb (GObject      *source_object,
 
 
             /* Subfolders are disabled */
-            if (location_settings_search_get_recursive (editor->location)
-                == NAUTILUS_QUERY_RECURSIVE_NEVER)
+            if (nautilus_query_get_recursive (editor->query) == NAUTILUS_QUERY_RECURSIVE_NEVER)
             {
                 adw_status_page_set_description (ADW_STATUS_PAGE (editor->status_page),
                                                  _("Some subfolders will not be included "
