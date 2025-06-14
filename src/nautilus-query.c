@@ -21,8 +21,6 @@
 
 #include "nautilus-query.h"
 
-#include <glib/gi18n.h>
-
 #include "nautilus-enum-types.h"
 #include "nautilus-file.h"
 #include "nautilus-global-preferences.h"
@@ -342,17 +340,6 @@ nautilus_query_set_show_hidden_files (NautilusQuery *query,
     g_return_if_fail (NAUTILUS_IS_QUERY (query));
 
     query->show_hidden = show_hidden;
-}
-
-char *
-nautilus_query_to_readable_string (NautilusQuery *query)
-{
-    if (query == NULL || query->text == NULL)
-    {
-        return g_strdup (_("Search"));
-    }
-
-    return g_strdup_printf (_("Search for “%s”"), query->text);
 }
 
 gboolean
