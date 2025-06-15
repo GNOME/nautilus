@@ -107,10 +107,8 @@ create_test_data (TrackerSparqlConnection *connection,
 
 static void
 hits_added_cb (NautilusSearchEngine *engine,
-               GPtrArray            *transferred_hits)
+               GPtrArray            *hits)
 {
-    g_autoptr (GPtrArray) hits = transferred_hits;
-
     g_print ("Hits added for search engine localsearch!\n");
     for (guint i = 0; i < hits->len; i++)
     {
@@ -120,9 +118,7 @@ hits_added_cb (NautilusSearchEngine *engine,
 }
 
 static void
-finished_cb (NautilusSearchEngine         *engine,
-             NautilusSearchProviderStatus  status,
-             gpointer                      user_data)
+finished_cb (gpointer user_data)
 {
     g_print ("\nNautilus search engine localsearch finished!\n");
 
@@ -168,8 +164,7 @@ main (int   argc,
     NautilusSearchEngine *engine = nautilus_search_engine_new (NAUTILUS_SEARCH_TYPE_LOCALSEARCH);
     g_signal_connect (engine, "hits-added",
                       G_CALLBACK (hits_added_cb), NULL);
-    g_signal_connect (engine, "finished",
-                      G_CALLBACK (finished_cb), loop);
+    g_signal_connect_swapped (engine, "search-finished", G_CALLBACK (finished_cb), loop);
 
     query = nautilus_query_new ();
     nautilus_query_set_text (query, "target");
@@ -178,7 +173,7 @@ main (int   argc,
     directory = nautilus_directory_get (location);
     nautilus_query_set_location (query, location);
 
-    nautilus_search_provider_start (NAUTILUS_SEARCH_PROVIDER (engine), query);
+    nautilus_search_engine_start (engine, query);
 
     g_main_loop_run (loop);
 

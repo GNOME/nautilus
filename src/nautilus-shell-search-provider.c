@@ -105,18 +105,14 @@ cancel_current_search (NautilusShellSearchProvider *self)
 {
     if (self->current_search != NULL)
     {
-        NautilusSearchProvider *engine;
-
         g_debug ("*** Cancel current search");
 
-        engine = NAUTILUS_SEARCH_PROVIDER (self->current_search->engine);
         /* The finish signal may be emitted during the call to nautilus_search_provider_stop
          * which causes shell_search_provider to free the engine. Increase
          * the ref count to prevent use after free issues.
          */
-        g_object_ref (engine);
-        nautilus_search_provider_stop (engine);
-        g_object_unref (engine);
+        g_autoptr (NautilusSearchEngine) engine = g_object_ref (self->current_search->engine);
+        nautilus_search_engine_stop (engine);
     }
 }
 
@@ -134,20 +130,18 @@ cancel_current_search_ignoring_partial_results (NautilusShellSearchProvider *sel
 
 static void
 search_hits_added_cb (NautilusSearchEngine *engine,
-                      GPtrArray            *transferred_hits,
+                      GPtrArray            *hits,
                       gpointer              user_data)
 {
-    g_autoptr (GPtrArray) hits = transferred_hits;
     PendingSearch *search = user_data;
     const gchar *hit_uri;
     g_autoptr (GDateTime) now = g_date_time_new_now_local ();
 
     g_debug ("*** Search engine hits added");
 
-    while (hits->len > 0)
+    for (guint i = 0; i < hits->len; i += 1)
     {
-        guint index = hits->len - 1;
-        NautilusSearchHit *hit = hits->pdata[index];
+        NautilusSearchHit *hit = hits->pdata[i];
 
         nautilus_search_hit_compute_scores (hit, now, NULL);
         hit_uri = nautilus_search_hit_get_uri (hit);
@@ -155,7 +149,7 @@ search_hits_added_cb (NautilusSearchEngine *engine,
 
         g_hash_table_replace (search->hits,
                               g_strdup (hit_uri),
-                              g_ptr_array_steal_index (hits, index));
+                              g_object_ref (g_ptr_array_index (hits, i)));
     }
 }
 
@@ -185,11 +179,8 @@ search_hit_compare_relevance (gconstpointer a,
 }
 
 static void
-search_finished_cb (NautilusSearchEngine         *engine,
-                    NautilusSearchProviderStatus  status,
-                    gpointer                      user_data)
+search_finished_cb (PendingSearch *search)
 {
-    PendingSearch *search = user_data;
     g_autoptr (GPtrArray) hits = NULL;
     NautilusSearchHit *hit;
     GVariantBuilder builder;
@@ -445,8 +436,8 @@ execute_search (NautilusShellSearchProvider  *self,
 
     g_signal_connect (pending_search->engine, "hits-added",
                       G_CALLBACK (search_hits_added_cb), pending_search);
-    g_signal_connect (pending_search->engine, "finished",
-                      G_CALLBACK (search_finished_cb), pending_search);
+    g_signal_connect_swapped (pending_search->engine, "finished",
+                              G_CALLBACK (search_finished_cb), pending_search);
 
     self->current_search = pending_search;
     g_application_hold (g_application_get_default ());
@@ -455,8 +446,7 @@ execute_search (NautilusShellSearchProvider  *self,
 
     /* start searching */
     g_debug ("*** Search engine search started");
-    nautilus_search_provider_start (NAUTILUS_SEARCH_PROVIDER (pending_search->engine),
-                                    query);
+    nautilus_search_engine_start (pending_search->engine, query);
 }
 
 static gboolean
