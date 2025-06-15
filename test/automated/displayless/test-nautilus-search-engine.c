@@ -17,15 +17,14 @@ hits_added_cb (NautilusSearchEngine *engine,
 }
 
 static void
-finished_cb (NautilusSearchEngine         *engine,
-             NautilusSearchProviderStatus  status,
-             gpointer                      user_data)
+finished_cb (GMainLoop  *loop,
+             const char *error_message)
 {
     g_print ("\nNautilus search engine finished!\n");
 
     delete_search_file_hierarchy ("all_engines");
 
-    g_main_loop_quit (user_data);
+    g_main_loop_quit (loop);
 }
 
 int
@@ -51,8 +50,8 @@ main (int   argc,
     engine = nautilus_search_engine_new (NAUTILUS_SEARCH_TYPE_ALL);
     g_signal_connect (engine, "hits-added",
                       G_CALLBACK (hits_added_cb), NULL);
-    g_signal_connect (engine, "finished",
-                      G_CALLBACK (finished_cb), loop);
+    g_signal_connect_swapped (engine, "search-finished",
+                              G_CALLBACK (finished_cb), loop);
 
     query = nautilus_query_new ();
     nautilus_query_set_text (query, "engine_all_engines");
@@ -63,7 +62,7 @@ main (int   argc,
 
     create_search_file_hierarchy ("all_engines");
 
-    nautilus_search_provider_start (NAUTILUS_SEARCH_PROVIDER (engine), query);
+    nautilus_search_engine_start (engine, query);
 
     g_main_loop_run (loop);
 
