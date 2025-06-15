@@ -481,6 +481,12 @@ nautilus_application_open_location (NautilusApplication *self,
     NautilusWindow *window;
     NautilusWindowSlot *slot;
     GList *sel_list = NULL;
+    g_autofree char *location_uri = g_file_get_uri (location);
+
+    if (location_uri[0] == '\0')
+    {
+        return;
+    }
 
     if (selection != NULL)
     {
