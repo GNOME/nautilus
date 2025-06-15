@@ -336,14 +336,14 @@ recent_thread_func (gpointer user_data)
     return NULL;
 }
 
-static void
+static gboolean
 search_engine_recent_start (NautilusSearchProvider *provider,
                             NautilusQuery          *query)
 {
     NautilusSearchEngineRecent *self = NAUTILUS_SEARCH_ENGINE_RECENT (provider);
     g_autoptr (GThread) thread = NULL;
 
-    g_return_if_fail (self->cancellable == NULL);
+    g_return_val_if_fail (self->cancellable == NULL, FALSE);
 
     g_set_object (&self->query, query);
     g_debug ("Recent engine start");
@@ -352,8 +352,9 @@ search_engine_recent_start (NautilusSearchProvider *provider,
     self->cancellable = g_cancellable_new ();
     thread = g_thread_new ("nautilus-search-recent", recent_thread_func,
                            g_object_ref (self));
-}
 
+    return TRUE;
+}
 static void
 nautilus_search_engine_recent_stop (NautilusSearchProvider *provider)
 {
