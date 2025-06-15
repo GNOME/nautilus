@@ -21,10 +21,9 @@
 
 #pragma once
 
-#include <glib-object.h>
+#include "nautilus-types.h"
 
-#include "nautilus-directory.h"
-#include "nautilus-search-provider.h"
+#include <glib-object.h>
 
 G_BEGIN_DECLS
 
@@ -48,11 +47,24 @@ typedef enum {
 
 G_DECLARE_FINAL_TYPE (NautilusSearchEngine, nautilus_search_engine, NAUTILUS, SEARCH_ENGINE, GObject)
 
+typedef void (* EngineHitsAddedCallback) (GPtrArray *transferred_hits,
+                                          gpointer   callback_data);
+typedef void (* EngineFinishedCallback) (gpointer callback_data);
+
 NautilusSearchEngine *
-nautilus_search_engine_new (NautilusSearchType search_type);
+nautilus_search_engine_new (NautilusSearchType      search_type,
+                            EngineHitsAddedCallback added_callback,
+                            EngineFinishedCallback  finished_callback,
+                            gpointer                callback_data);
 
 void
 nautilus_search_engine_set_search_type (NautilusSearchEngine *self,
                                         NautilusSearchType search_type);
+
+void
+nautilus_search_engine_start (NautilusSearchEngine *self,
+                              NautilusQuery        *query);
+void
+nautilus_search_engine_stop (NautilusSearchEngine *self);
 
 G_END_DECLS

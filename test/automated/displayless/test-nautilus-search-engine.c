@@ -8,8 +8,8 @@
 static guint total_hits = 0;
 
 static void
-hits_added_cb (NautilusSearchEngine *engine,
-               GPtrArray            *transferred_hits)
+hits_added_cb (GPtrArray *transferred_hits,
+               gpointer   user_data)
 {
     g_autoptr (GPtrArray) hits = transferred_hits;
 
@@ -22,9 +22,7 @@ hits_added_cb (NautilusSearchEngine *engine,
 }
 
 static void
-finished_cb (NautilusSearchEngine         *engine,
-             NautilusSearchProviderStatus  status,
-             gpointer                      user_data)
+finished_cb (gpointer user_data)
 {
     g_print ("\nNautilus search engine finished!\n");
 
@@ -38,7 +36,6 @@ main (int   argc,
       char *argv[])
 {
     g_autoptr (GMainLoop) loop = NULL;
-    NautilusSearchEngine *engine;
     g_autoptr (NautilusDirectory) directory = NULL;
     g_autoptr (NautilusQuery) query = NULL;
     g_autoptr (GFile) location = NULL;
@@ -53,11 +50,11 @@ main (int   argc,
      */
     nautilus_global_preferences_init ();
 
-    engine = nautilus_search_engine_new (NAUTILUS_SEARCH_TYPE_ALL);
-    g_signal_connect (engine, "hits-added",
-                      G_CALLBACK (hits_added_cb), NULL);
-    g_signal_connect (engine, "finished",
-                      G_CALLBACK (finished_cb), loop);
+    g_autoptr (NautilusSearchEngine) engine =
+        nautilus_search_engine_new (NAUTILUS_SEARCH_TYPE_LOCALSEARCH,
+                                    hits_added_cb,
+                                    finished_cb,
+                                    loop);
 
     query = nautilus_query_new ();
     nautilus_query_set_text (query, "engine_all_engines");
@@ -68,7 +65,7 @@ main (int   argc,
 
     create_search_file_hierarchy ("all_engines");
 
-    nautilus_search_provider_start (NAUTILUS_SEARCH_PROVIDER (engine), query);
+    nautilus_search_engine_start (engine, query);
 
     g_main_loop_run (loop);
 

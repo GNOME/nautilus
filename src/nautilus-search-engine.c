@@ -48,6 +48,10 @@ struct _NautilusSearchEngine
     NautilusQuery *query;
     gboolean running;
     gboolean restart;
+
+    EngineHitsAddedCallback hits_added_callback;
+    EngineFinishedCallback finished_callback;
+    gpointer callback_data;
 };
 
 enum
@@ -59,13 +63,7 @@ enum
 };
 static GParamSpec *properties[N_PROPERTIES];
 
-static void nautilus_search_provider_init (NautilusSearchProviderInterface *iface);
-
-G_DEFINE_TYPE_WITH_CODE (NautilusSearchEngine,
-                         nautilus_search_engine,
-                         G_TYPE_OBJECT,
-                         G_IMPLEMENT_INTERFACE (NAUTILUS_TYPE_SEARCH_PROVIDER,
-                                                nautilus_search_provider_init))
+G_DEFINE_FINAL_TYPE (NautilusSearchEngine, nautilus_search_engine, G_TYPE_OBJECT)
 
 static void
 search_engine_start_provider (NautilusSearchProvider *provider,
@@ -97,15 +95,13 @@ search_engine_start_real (NautilusSearchEngine *self)
     search_engine_start_provider (self->simple, self);
 }
 
-static gboolean
-nautilus_search_engine_start (NautilusSearchProvider *provider,
-                              NautilusQuery          *query)
+void
+nautilus_search_engine_start (NautilusSearchEngine *self,
+                              NautilusQuery        *query)
 {
-    g_return_val_if_fail (query != NULL, FALSE);
+    g_return_if_fail (query != NULL);
 
     g_autoptr (NautilusQuery) query_to_copy = g_object_ref (query);
-
-    NautilusSearchEngine *self = NAUTILUS_SEARCH_ENGINE (provider);
 
     g_debug ("Search engine start");
     guint num_finished = self->providers_finished;
@@ -121,7 +117,7 @@ nautilus_search_engine_start (NautilusSearchProvider *provider,
             search_engine_start_real (self);
         }
 
-        return TRUE;
+        return;
     }
 
     self->running = TRUE;
@@ -136,15 +132,11 @@ nautilus_search_engine_start (NautilusSearchProvider *provider,
     {
         search_engine_start_real (self);
     }
-
-    return TRUE;
 }
 
-static void
-nautilus_search_engine_stop (NautilusSearchProvider *provider)
+void
+nautilus_search_engine_stop (NautilusSearchEngine *self)
 {
-    NautilusSearchEngine *self = NAUTILUS_SEARCH_ENGINE (provider);
-
     g_debug ("Search engine stop");
 
     if (self->localsearch != NULL)
@@ -199,8 +191,7 @@ search_provider_hits_added (NautilusSearchProvider *provider,
 
     if (added->len > 0)
     {
-        nautilus_search_provider_hits_added (NAUTILUS_SEARCH_PROVIDER (self),
-                                             g_steal_pointer (&added));
+        self->hits_added_callback (self->callback_data, g_steal_pointer (&added));
     }
 }
 
@@ -224,9 +215,8 @@ check_providers_status (NautilusSearchEngine *self)
     {
         g_debug ("Search engine finished");
     }
-    nautilus_search_provider_finished (NAUTILUS_SEARCH_PROVIDER (self),
-                                       self->restart ? NAUTILUS_SEARCH_PROVIDER_STATUS_RESTARTING :
-                                                       NAUTILUS_SEARCH_PROVIDER_STATUS_NORMAL);
+
+    self->finished_callback (self->callback_data);
 
     self->running = FALSE;
     g_object_notify (G_OBJECT (self), "running");
@@ -235,7 +225,7 @@ check_providers_status (NautilusSearchEngine *self)
 
     if (self->restart)
     {
-        nautilus_search_engine_start (NAUTILUS_SEARCH_PROVIDER (self), self->query);
+        nautilus_search_engine_start (self, self->query);
     }
 
     g_object_unref (self);
@@ -300,13 +290,6 @@ nautilus_search_engine_set_search_type (NautilusSearchEngine *self,
                     (CreateFunc) nautilus_search_engine_recent_new);
     setup_provider (self, &self->simple, NAUTILUS_SEARCH_TYPE_SIMPLE,
                     (CreateFunc) nautilus_search_engine_simple_new);
-}
-
-static void
-nautilus_search_provider_init (NautilusSearchProviderInterface *iface)
-{
-    iface->start = nautilus_search_engine_start;
-    iface->stop = nautilus_search_engine_stop;
 }
 
 static void
@@ -411,9 +394,21 @@ nautilus_search_engine_init (NautilusSearchEngine *self)
 }
 
 NautilusSearchEngine *
-nautilus_search_engine_new (NautilusSearchType search_type)
+nautilus_search_engine_new (NautilusSearchType      search_type,
+                            EngineHitsAddedCallback hits_added_callback,
+                            EngineFinishedCallback  finished_callback,
+                            gpointer                callback_data)
 {
-    return g_object_new (NAUTILUS_TYPE_SEARCH_ENGINE,
-                         "search-type", search_type,
-                         NULL);
+    g_assert_nonnull (hits_added_callback);
+    g_assert_nonnull (finished_callback);
+
+    NautilusSearchEngine *engine = g_object_new (NAUTILUS_TYPE_SEARCH_ENGINE,
+                                                 "search-type", search_type,
+                                                 NULL);
+
+    engine->hits_added_callback = hits_added_callback;
+    engine->finished_callback = finished_callback;
+    engine->callback_data = callback_data;
+
+    return engine;
 }

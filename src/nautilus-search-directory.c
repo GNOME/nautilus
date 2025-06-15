@@ -32,7 +32,7 @@
 #include "nautilus-scheme.h"
 #include "nautilus-search-directory-file.h"
 #include "nautilus-search-engine.h"
-#include "nautilus-search-provider.h"
+#include "nautilus-search-hit.h"
 
 struct _NautilusSearchDirectory
 {
@@ -181,8 +181,7 @@ start_search (NautilusSearchDirectory *self)
                                           is_monitoring_hidden_files (self));
 
     reset_file_list (self);
-    nautilus_search_provider_start (NAUTILUS_SEARCH_PROVIDER (self->engine),
-                                    self->query);
+    nautilus_search_engine_start (self->engine, self->query);
 }
 
 static void
@@ -194,7 +193,7 @@ stop_search (NautilusSearchDirectory *self)
     }
 
     self->search_running = FALSE;
-    nautilus_search_provider_stop (NAUTILUS_SEARCH_PROVIDER (self->engine));
+    nautilus_search_engine_stop (self->engine);
 
     reset_file_list (self);
 }
@@ -573,10 +572,10 @@ on_search_directory_search_ready_and_valid (NautilusSearchDirectory *self)
 }
 
 static void
-search_engine_hits_added (NautilusSearchEngine    *engine,
-                          GPtrArray               *transferred_hits,
-                          NautilusSearchDirectory *self)
+search_engine_hits_added (GPtrArray *transferred_hits,
+                          gpointer   user_data)
 {
+    NautilusSearchDirectory *self = user_data;
     g_autoptr (GPtrArray) hits = transferred_hits;
     GList *file_list;
     NautilusFile *file;
@@ -626,29 +625,11 @@ search_engine_hits_added (NautilusSearchEngine    *engine,
 }
 
 static void
-search_engine_finished (NautilusSearchEngine         *engine,
-                        NautilusSearchProviderStatus  status,
-                        NautilusSearchDirectory      *self)
+search_engine_finished (NautilusSearchDirectory *self)
 {
-    /* If the search engine is going to restart means it finished an old search
-     * that was stopped or cancelled.
-     * Don't emit the done loading signal in this case, since this means the search
-     * directory tried to start a new search before all the search providers were finished
-     * in the search engine.
-     * If we emit the done-loading signal in this situation the client will think
-     * that it finished the current search, not an old one like it's actually
-     * happening. */
-    if (status == NAUTILUS_SEARCH_PROVIDER_STATUS_NORMAL)
-    {
-        on_search_directory_search_ready_and_valid (self);
-        nautilus_directory_emit_done_loading (NAUTILUS_DIRECTORY (self));
-    }
-    else if (status == NAUTILUS_SEARCH_PROVIDER_STATUS_RESTARTING)
-    {
-        /* Remove file monitors of the files from an old search that just
-         * actually finished */
-        reset_file_list (self);
-    }
+    /* This function gets called when the search engine stops and in-between restarts. */
+    on_search_directory_search_ready_and_valid (self);
+    nautilus_directory_emit_done_loading (NAUTILUS_DIRECTORY (self));
 }
 
 static NautilusFile *
@@ -797,28 +778,6 @@ clear_base_model (NautilusSearchDirectory *self)
 }
 
 static void
-search_connect_engine (NautilusSearchDirectory *self)
-{
-    g_signal_connect (self->engine, "hits-added",
-                      G_CALLBACK (search_engine_hits_added),
-                      self);
-    g_signal_connect (self->engine, "finished",
-                      G_CALLBACK (search_engine_finished),
-                      self);
-}
-
-static void
-search_disconnect_engine (NautilusSearchDirectory *self)
-{
-    g_signal_handlers_disconnect_by_func (self->engine,
-                                          search_engine_hits_added,
-                                          self);
-    g_signal_handlers_disconnect_by_func (self->engine,
-                                          search_engine_finished,
-                                          self);
-}
-
-static void
 search_dispose (GObject *object)
 {
     NautilusSearchDirectory *self;
@@ -861,7 +820,6 @@ search_dispose (GObject *object)
 
     g_clear_object (&self->query);
     stop_search (self);
-    search_disconnect_engine (self);
 
     g_clear_object (&self->engine);
 
@@ -886,8 +844,10 @@ nautilus_search_directory_init (NautilusSearchDirectory *self)
     self->query = NULL;
     self->files_hash = g_hash_table_new (g_direct_hash, g_direct_equal);
 
-    self->engine = nautilus_search_engine_new (NAUTILUS_SEARCH_TYPE_FOLDER);
-    search_connect_engine (self);
+    self->engine = nautilus_search_engine_new (NAUTILUS_SEARCH_TYPE_FOLDER,
+                                               search_engine_hits_added,
+                                               (EngineFinishedCallback) search_engine_finished,
+                                               self);
 }
 
 static void
