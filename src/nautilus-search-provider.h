@@ -36,8 +36,11 @@ struct _NautilusSearchProviderInterface {
         GTypeInterface g_iface;
 
         /* VTable */
-        void (*start) (NautilusSearchProvider *provider,
-                       NautilusQuery          *query);
+        /**
+         * Returns: Whether search provider was started
+         */
+        gboolean (*start) (NautilusSearchProvider *provider,
+                           NautilusQuery          *query);
         void (*stop) (NautilusSearchProvider *provider);
 
         /* Signals */
@@ -81,7 +84,7 @@ struct _NautilusSearchProviderInterface {
 GType          nautilus_search_provider_get_type        (void) G_GNUC_CONST;
 
 /* Interface Functions */
-void           nautilus_search_provider_start           (NautilusSearchProvider *provider,
+gboolean       nautilus_search_provider_start           (NautilusSearchProvider *provider,
                                                          NautilusQuery *query);
 void           nautilus_search_provider_stop            (NautilusSearchProvider *provider);
 

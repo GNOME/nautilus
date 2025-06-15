@@ -308,18 +308,6 @@ query_callback (GObject      *object,
     }
 }
 
-static gboolean
-search_finished_idle (gpointer user_data)
-{
-    NautilusSearchEngineLocalsearch *self = user_data;
-
-    g_debug ("Tracker engine finished idle");
-
-    search_finished (self, NULL);
-
-    return FALSE;
-}
-
 static TrackerSparqlStatement *
 create_statement (NautilusSearchProvider *provider,
                   SearchFeatures          features)
@@ -463,7 +451,7 @@ create_statement (NautilusSearchProvider *provider,
     return stmt;
 }
 
-static void
+static gboolean
 search_engine_localsearch_start (NautilusSearchProvider *provider,
                                  NautilusQuery          *query)
 {
@@ -479,18 +467,18 @@ search_engine_localsearch_start (NautilusSearchProvider *provider,
 
     if (self->query_pending)
     {
-        return;
+        return FALSE;
+    }
+
+    if (self->connection == NULL)
+    {
+        g_warning ("Localsearch search engine has no connection");
+        return FALSE;
     }
 
     g_debug ("Tracker engine start");
     g_object_ref (self);
     self->query_pending = TRUE;
-
-    if (self->connection == NULL)
-    {
-        g_idle_add (search_finished_idle, provider);
-        return;
-    }
 
     g_autoptr (GFile) location = nautilus_query_get_location (self->query);
 
@@ -610,6 +598,8 @@ search_engine_localsearch_start (NautilusSearchProvider *provider,
                                             self->cancellable,
                                             query_callback,
                                             self);
+
+    return TRUE;
 }
 
 static void

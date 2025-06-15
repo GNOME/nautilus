@@ -231,7 +231,7 @@ model_directory_ready_cb (NautilusDirectory *directory,
     search_finished (model);
 }
 
-static void
+static gboolean
 search_engine_model_start (NautilusSearchProvider *provider,
                            NautilusQuery          *query)
 {
@@ -247,7 +247,11 @@ search_engine_model_start (NautilusSearchProvider *provider,
 
     if (model->query_pending)
     {
-        return;
+        return FALSE;
+    }
+    if (model->directory == NULL)
+    {
+        return FALSE;
     }
 
     g_debug ("Model engine start");
@@ -255,16 +259,11 @@ search_engine_model_start (NautilusSearchProvider *provider,
     g_object_ref (model);
     model->query_pending = TRUE;
 
-    if (model->directory == NULL)
-    {
-        g_warning ("Started model search engine without model");
-        search_finished_idle (model);
-        return;
-    }
-
     nautilus_directory_call_when_ready (model->directory,
                                         NAUTILUS_FILE_ATTRIBUTE_INFO,
                                         TRUE, model_directory_ready_cb, model);
+
+    return TRUE;
 }
 
 static void

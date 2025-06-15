@@ -528,13 +528,12 @@ create_thread_timeout (gpointer user_data)
     thread = g_thread_new ("nautilus-search-simple", search_thread_func, simple->active_search);
 }
 
-static void
+static gboolean
 search_engine_simple_start (NautilusSearchProvider *provider,
                             NautilusQuery          *query)
 {
     NautilusSearchEngineSimple *simple;
     SearchThreadData *data;
-    g_autoptr (GFile) location = NULL;
 
     simple = NAUTILUS_SEARCH_ENGINE_SIMPLE (provider);
 
@@ -542,7 +541,13 @@ search_engine_simple_start (NautilusSearchProvider *provider,
 
     if (simple->active_search != NULL)
     {
-        return;
+        return FALSE;
+    }
+
+    g_autoptr (GFile) location = nautilus_query_get_location (simple->query);
+    if (location == NULL)
+    {
+        return FALSE;
     }
 
     g_debug ("Simple engine start");
@@ -551,19 +556,13 @@ search_engine_simple_start (NautilusSearchProvider *provider,
 
     simple->active_search = data;
 
-    location = nautilus_query_get_location (simple->query);
-    if (location == NULL)
-    {
-        /* Global search. Nothing for this engine to do.*/
-        finish_search_thread (data);
-        return;
-    }
-
     g_queue_push_tail (data->directories, g_steal_pointer (&location));
 
     simple->create_thread_timeout_id = g_timeout_add_once (CREATE_THREAD_DELAY_MS,
                                                            create_thread_timeout,
                                                            simple);
+
+    return TRUE;
 }
 
 static void

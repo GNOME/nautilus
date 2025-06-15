@@ -83,42 +83,35 @@ search_engine_start_real_setup (NautilusSearchEngine *self)
 }
 
 static void
-search_engine_start_real (NautilusSearchEngine *self)
+search_engine_start_provider (NautilusSearchProvider *provider,
+                              NautilusSearchEngine   *self)
 {
-    search_engine_start_real_setup (self);
-
-    g_autoptr (GFile) query_location = nautilus_query_get_location (self->query);
-
-    if (self->localsearch != NULL)
+    if (provider == NULL)
     {
-        self->providers_running++;
-        nautilus_search_provider_start (self->localsearch, self->query);
+        return;
     }
-
-    if (self->recent != NULL)
+    else if (nautilus_search_provider_start (provider, self->query))
     {
         self->providers_running++;
-        nautilus_search_provider_start (self->recent, self->query);
-    }
-
-    if (self->model != NULL && query_location != NULL)
-    {
-        self->providers_running++;
-        nautilus_search_provider_start (self->model, self->query);
-    }
-
-    if (self->simple && query_location != NULL)
-    {
-        self->providers_running++;
-        nautilus_search_provider_start (self->simple, self->query);
     }
 }
 
 static void
+search_engine_start_real (NautilusSearchEngine *self)
+{
+    search_engine_start_real_setup (self);
+
+    search_engine_start_provider (self->localsearch, self);
+    search_engine_start_provider (self->model, self);
+    search_engine_start_provider (self->recent, self);
+    search_engine_start_provider (self->simple, self);
+}
+
+static gboolean
 nautilus_search_engine_start (NautilusSearchProvider *provider,
                               NautilusQuery          *query)
 {
-    g_return_if_fail (query != NULL);
+    g_return_val_if_fail (query != NULL, FALSE);
 
     g_autoptr (NautilusQuery) query_to_copy = g_object_ref (query);
 
@@ -138,7 +131,7 @@ nautilus_search_engine_start (NautilusSearchProvider *provider,
             search_engine_start_real (self);
         }
 
-        return;
+        return TRUE;
     }
 
     self->running = TRUE;
@@ -153,6 +146,8 @@ nautilus_search_engine_start (NautilusSearchProvider *provider,
     {
         search_engine_start_real (self);
     }
+
+    return TRUE;
 }
 
 static void

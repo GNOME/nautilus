@@ -65,15 +65,15 @@ nautilus_search_provider_default_init (NautilusSearchProviderInterface *iface)
                                    G_TYPE_STRING);
 }
 
-void
+gboolean
 nautilus_search_provider_start (NautilusSearchProvider *provider,
                                 NautilusQuery          *query)
 {
-    g_return_if_fail (NAUTILUS_IS_SEARCH_PROVIDER (provider));
-    g_return_if_fail (NAUTILUS_SEARCH_PROVIDER_GET_IFACE (provider)->start != NULL);
-    g_return_if_fail (NAUTILUS_IS_QUERY (query));
+    g_return_val_if_fail (NAUTILUS_IS_SEARCH_PROVIDER (provider), FALSE);
+    g_return_val_if_fail (NAUTILUS_SEARCH_PROVIDER_GET_IFACE (provider)->start != NULL, FALSE);
+    g_return_val_if_fail (NAUTILUS_IS_QUERY (query), FALSE);
 
-    NAUTILUS_SEARCH_PROVIDER_GET_IFACE (provider)->start (provider, query);
+    return NAUTILUS_SEARCH_PROVIDER_GET_IFACE (provider)->start (provider, query);
 }
 
 void
