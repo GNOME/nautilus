@@ -33,7 +33,6 @@
 #include "nautilus-search-directory-file.h"
 #include "nautilus-search-engine.h"
 #include "nautilus-search-hit.h"
-#include "nautilus-search-provider.h"
 
 struct _NautilusSearchDirectory
 {
@@ -182,8 +181,7 @@ start_search (NautilusSearchDirectory *self)
                                           is_monitoring_hidden_files (self));
 
     reset_file_list (self);
-    nautilus_search_provider_start (NAUTILUS_SEARCH_PROVIDER (self->engine),
-                                    self->query);
+    nautilus_search_engine_start (self->engine, self->query);
 }
 
 static void
@@ -195,7 +193,7 @@ stop_search (NautilusSearchDirectory *self)
     }
 
     self->search_running = FALSE;
-    nautilus_search_provider_stop (NAUTILUS_SEARCH_PROVIDER (self->engine));
+    nautilus_search_engine_stop (self->engine);
 
     reset_file_list (self);
 }
@@ -571,10 +569,9 @@ on_search_directory_search_ready_and_valid (NautilusSearchDirectory *self)
 
 static void
 search_engine_hits_added (NautilusSearchEngine    *engine,
-                          GPtrArray               *transferred_hits,
+                          GPtrArray               *hits,
                           NautilusSearchDirectory *self)
 {
-    g_autoptr (GPtrArray) hits = transferred_hits;
     GList *file_list;
     NautilusFile *file;
     g_autoptr (GDateTime) now = g_date_time_new_now_local ();
@@ -623,23 +620,11 @@ search_engine_hits_added (NautilusSearchEngine    *engine,
 }
 
 static void
-search_engine_finished (NautilusSearchEngine         *engine,
-                        NautilusSearchProviderStatus  status,
-                        NautilusSearchDirectory      *self)
+search_engine_finished (NautilusSearchDirectory *self)
 {
-    /* If the search engine is going to restart means it finished an old search
-     * that was stopped or cancelled.
-     * Don't emit the done loading signal in this case, since this means the search
-     * directory tried to start a new search before all the search providers were finished
-     * in the search engine.
-     * If we emit the done-loading signal in this situation the client will think
-     * that it finished the current search, not an old one like it's actually
-     * happening. */
-    if (status == NAUTILUS_SEARCH_PROVIDER_STATUS_NORMAL)
-    {
-        on_search_directory_search_ready_and_valid (self);
-        nautilus_directory_emit_done_loading (NAUTILUS_DIRECTORY (self));
-    }
+    /* This function does not get called when the search engine is restarted. */
+    on_search_directory_search_ready_and_valid (self);
+    nautilus_directory_emit_done_loading (NAUTILUS_DIRECTORY (self));
 }
 
 static NautilusFile *
@@ -781,9 +766,9 @@ search_connect_engine (NautilusSearchDirectory *self)
     g_signal_connect (self->engine, "hits-added",
                       G_CALLBACK (search_engine_hits_added),
                       self);
-    g_signal_connect (self->engine, "finished",
-                      G_CALLBACK (search_engine_finished),
-                      self);
+    g_signal_connect_swapped (self->engine, "search-finished",
+                              G_CALLBACK (search_engine_finished),
+                              self);
 }
 
 static void
