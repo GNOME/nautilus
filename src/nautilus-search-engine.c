@@ -30,6 +30,13 @@
 #include "nautilus-search-engine-recent.h"
 #include "nautilus-search-engine-simple.h"
 
+typedef struct
+{
+    guint timeout_id;
+    NautilusSearchProvider *provider;
+    NautilusSearchEngine *engine;
+} Delay;
+
 struct _NautilusSearchEngine
 {
     GObject parent_instance;
@@ -50,6 +57,7 @@ struct _NautilusSearchEngine
     NautilusQuery *running_query;
     gboolean running;
     gboolean restart;
+    GPtrArray *delays;
 };
 
 enum
@@ -154,11 +162,20 @@ nautilus_search_engine_start (NautilusSearchProvider *provider,
 }
 
 static void
+stop_delayed_start (Delay *delay)
+{
+    g_clear_handle_id (&delay->timeout_id, g_source_remove);
+    g_ptr_array_remove_fast (delay->engine->delays, delay);
+}
+
+static void
 nautilus_search_engine_stop (NautilusSearchProvider *provider)
 {
     NautilusSearchEngine *self = NAUTILUS_SEARCH_ENGINE (provider);
 
     g_debug ("Search engine stop");
+
+    g_ptr_array_foreach (self->delays, (GFunc) stop_delayed_start, NULL);
 
     if (self->localsearch != NULL)
     {
@@ -359,6 +376,7 @@ nautilus_search_engine_finalize (GObject *object)
     g_clear_object (&self->model);
     g_clear_object (&self->simple);
     g_clear_object (&self->query);
+    g_clear_pointer (&self->delays, g_ptr_array_unref);
 
     G_OBJECT_CLASS (nautilus_search_engine_parent_class)->finalize (object);
 }
@@ -445,6 +463,7 @@ nautilus_search_engine_class_init (NautilusSearchEngineClass *class)
 static void
 nautilus_search_engine_init (NautilusSearchEngine *self)
 {
+    self->delays = g_ptr_array_new_full (1, g_free);
     self->uris = g_hash_table_new_full (g_str_hash, g_str_equal, g_free, NULL);
 }
 
