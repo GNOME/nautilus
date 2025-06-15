@@ -30,6 +30,13 @@
 #include "nautilus-search-engine-recent.h"
 #include "nautilus-search-engine-simple.h"
 
+typedef struct
+{
+    guint timeout_id;
+    NautilusSearchProvider *provider;
+    NautilusSearchEngine *engine;
+} Delay;
+
 struct _NautilusSearchEngine
 {
     GObject parent_instance;
@@ -47,6 +54,7 @@ struct _NautilusSearchEngine
     guint providers_error;
 
     NautilusQuery *query;
+    GPtrArray *delays;
     gboolean running;
     gboolean restart;
 };
@@ -81,12 +89,38 @@ search_engine_start_real_setup (NautilusSearchEngine *self)
 }
 
 static void
+delayed_provider_start (Delay *delay)
+{
+    NautilusSearchEngine *self = delay->engine;
+
+    if (nautilus_search_provider_start (delay->provider, self->query))
+    {
+        self->providers_running += 1;
+    }
+
+    g_ptr_array_remove_fast (self->delays, delay);
+}
+
+static void
 search_engine_start_provider (NautilusSearchProvider *provider,
+                              guint                   delay_ms,
                               NautilusSearchEngine   *self)
 {
     if (provider == NULL)
     {
         return;
+    }
+    else if (delay_ms != 0)
+    {
+        Delay *delay = g_new0 (Delay, 1);
+        delay->provider = provider;
+        delay->engine = self;
+
+        guint timeout_id = g_timeout_add_once (
+            delay_ms, (GSourceOnceFunc) delayed_provider_start, NULL);
+        delay->timeout_id = timeout_id;
+
+        g_ptr_array_add (self->delays, delay);
     }
     else if (nautilus_search_provider_start (provider, self->query))
     {
@@ -101,10 +135,10 @@ search_engine_start_real (NautilusSearchEngine *self)
 
     g_autoptr (GFile) query_location = nautilus_query_get_location (self->query);
 
-    search_engine_start_provider (self->localsearch, self);
-    search_engine_start_provider (self->model, self);
-    search_engine_start_provider (self->recent, self);
-    search_engine_start_provider (self->simple, self);
+    search_engine_start_provider (self->localsearch, 0, self);
+    search_engine_start_provider (self->model, 0, self);
+    search_engine_start_provider (self->recent, 0, self);
+    search_engine_start_provider (self->simple, 500, self);
 }
 
 void
@@ -143,10 +177,19 @@ nautilus_search_engine_start (NautilusSearchEngine *self,
     }
 }
 
+static void
+stop_delayed_start (Delay *delay)
+{
+    g_clear_handle_id (&delay->timeout_id, g_source_remove);
+    g_ptr_array_remove_fast (delay->engine->delays, delay);
+}
+
 void
 nautilus_search_engine_stop (NautilusSearchEngine *self)
 {
     g_debug ("Search engine stop");
+
+    g_ptr_array_foreach (self->delays, (GFunc) stop_delayed_start, NULL);
 
     if (self->localsearch != NULL)
     {
@@ -340,6 +383,7 @@ nautilus_search_engine_finalize (GObject *object)
     g_clear_object (&self->model);
     g_clear_object (&self->simple);
     g_clear_object (&self->query);
+    g_clear_pointer (&self->delays, g_ptr_array_unref);
 
     G_OBJECT_CLASS (nautilus_search_engine_parent_class)->finalize (object);
 }
@@ -426,6 +470,7 @@ nautilus_search_engine_class_init (NautilusSearchEngineClass *class)
 static void
 nautilus_search_engine_init (NautilusSearchEngine *self)
 {
+    self->delays = g_ptr_array_new_full (1, g_free);
     self->uris = g_hash_table_new_full (g_str_hash, g_str_equal, g_free, NULL);
 }
 

@@ -32,7 +32,6 @@
 #include <gio/gio.h>
 
 #define BATCH_SIZE 500
-#define CREATE_THREAD_DELAY_MS 500
 
 typedef struct
 {
@@ -64,7 +63,6 @@ struct _NautilusSearchEngineSimple
 {
     GObject parent_instance;
     NautilusQuery *query;
-    guint create_thread_timeout_id;
 
     SearchThreadData *active_search;
 };
@@ -82,7 +80,6 @@ finalize (GObject *object)
 {
     NautilusSearchEngineSimple *simple = NAUTILUS_SEARCH_ENGINE_SIMPLE (object);
     g_clear_object (&simple->query);
-    g_clear_handle_id (&simple->create_thread_timeout_id, g_source_remove);
 
     G_OBJECT_CLASS (nautilus_search_engine_simple_parent_class)->finalize (object);
 }
@@ -494,16 +491,6 @@ search_thread_func (gpointer user_data)
     return NULL;
 }
 
-static void
-create_thread_timeout (gpointer user_data)
-{
-    NautilusSearchEngineSimple *simple = user_data;
-    g_autoptr (GThread) thread = NULL;
-
-    simple->create_thread_timeout_id = 0;
-    thread = g_thread_new ("nautilus-search-simple", search_thread_func, simple->active_search);
-}
-
 static gboolean
 search_engine_simple_start (NautilusSearchProvider *provider,
                             NautilusQuery          *query)
@@ -535,9 +522,8 @@ search_engine_simple_start (NautilusSearchProvider *provider,
 
     g_queue_push_tail (data->directories, g_steal_pointer (&location));
 
-    simple->create_thread_timeout_id = g_timeout_add_once (CREATE_THREAD_DELAY_MS,
-                                                           create_thread_timeout,
-                                                           simple);
+    g_autoptr (GThread) thread =
+        g_thread_new ("nautilus-search-simple", search_thread_func, simple->active_search);
 
     return TRUE;
 }
@@ -551,14 +537,6 @@ nautilus_search_engine_simple_stop (NautilusSearchProvider *provider)
     {
         g_debug ("Simple engine stop");
         g_cancellable_cancel (simple->active_search->cancellable);
-
-        if (simple->create_thread_timeout_id != 0)
-        {
-            /* Thread wasn't started, so we must call this directly from here.*/
-            finish_search_thread (simple->active_search);
-
-            g_clear_handle_id (&simple->create_thread_timeout_id, g_source_remove);
-        }
     }
 }
 
