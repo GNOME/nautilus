@@ -21,10 +21,9 @@
 
 #pragma once
 
-#include <glib-object.h>
+#include "nautilus-types.h"
 
-#include "nautilus-directory.h"
-#include "nautilus-search-provider.h"
+#include <glib-object.h>
 
 G_BEGIN_DECLS
 
@@ -54,5 +53,11 @@ nautilus_search_engine_new (NautilusSearchType search_type);
 void
 nautilus_search_engine_set_search_type (NautilusSearchEngine *self,
                                         NautilusSearchType search_type);
+
+void
+nautilus_search_engine_start (NautilusSearchEngine *self,
+                              NautilusQuery        *query);
+void
+nautilus_search_engine_stop (NautilusSearchEngine *self);
 
 G_END_DECLS

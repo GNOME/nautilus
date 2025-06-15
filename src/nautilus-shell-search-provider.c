@@ -30,9 +30,10 @@
 
 #include "nautilus-file.h"
 #include "nautilus-file-utilities.h"
+#include "nautilus-query.h"
 #include "nautilus-scheme.h"
 #include "nautilus-search-engine.h"
-#include "nautilus-search-provider.h"
+#include "nautilus-search-hit.h"
 #include "nautilus-ui-utilities.h"
 
 #include "nautilus-application.h"
@@ -150,18 +151,14 @@ cancel_current_search (NautilusShellSearchProvider *self)
 {
     if (self->current_search != NULL)
     {
-        NautilusSearchProvider *engine;
-
         g_debug ("*** Cancel current search");
 
-        engine = NAUTILUS_SEARCH_PROVIDER (self->current_search->engine);
         /* The finish signal may be emitted during the call to nautilus_search_provider_stop
          * which causes shell_search_provider to free the engine. Increase
          * the ref count to prevent use after free issues.
          */
-        g_object_ref (engine);
-        nautilus_search_provider_stop (engine);
-        g_object_unref (engine);
+        g_autoptr (NautilusSearchEngine) engine = g_object_ref (self->current_search->engine);
+        nautilus_search_engine_stop (engine);
     }
 }
 
@@ -230,13 +227,20 @@ search_hit_compare_relevance (gconstpointer a,
 }
 
 static void
-search_finished_cb (NautilusSearchEngine         *engine,
-                    NautilusSearchProviderStatus  status,
-                    gpointer                      user_data)
+search_finished_cb (PendingSearch *search,
+                    const gchar   *error_message)
 {
-    PendingSearch *search = user_data;
     g_autoptr (GPtrArray) hits = NULL;
     NautilusSearchHit *hit;
+
+    if (error_message != NULL)
+    {
+        g_debug ("Shell search error %s", error_message);
+        pending_search_finish (search, search->invocation,
+                               g_variant_new ("(as)", NULL));
+        return;
+    }
+
     GVariantBuilder builder;
     gint64 current_time;
 
@@ -490,8 +494,8 @@ execute_search (NautilusShellSearchProvider  *self,
 
     g_signal_connect (pending_search->engine, "hits-added",
                       G_CALLBACK (search_hits_added_cb), pending_search);
-    g_signal_connect (pending_search->engine, "finished",
-                      G_CALLBACK (search_finished_cb), pending_search);
+    g_signal_connect_swapped (pending_search->engine, "search-finished",
+                              G_CALLBACK (search_finished_cb), pending_search);
 
     self->current_search = pending_search;
     g_application_hold (g_application_get_default ());
@@ -500,8 +504,7 @@ execute_search (NautilusShellSearchProvider  *self,
 
     /* start searching */
     g_debug ("*** Search engine search started");
-    nautilus_search_provider_start (NAUTILUS_SEARCH_PROVIDER (pending_search->engine),
-                                    query);
+    nautilus_search_engine_start (pending_search->engine, query);
 }
 
 static gboolean
