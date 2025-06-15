@@ -81,35 +81,30 @@ search_engine_start_real_setup (NautilusSearchEngine *self)
 }
 
 static void
+search_engine_start_provider (NautilusSearchProvider *provider,
+                              NautilusSearchEngine   *self)
+{
+    if (provider == NULL)
+    {
+        return;
+    }
+    else if (nautilus_search_provider_start (provider, self->query))
+    {
+        self->providers_running++;
+    }
+}
+
+static void
 search_engine_start_real (NautilusSearchEngine *self)
 {
     search_engine_start_real_setup (self);
 
     g_autoptr (GFile) query_location = nautilus_query_get_location (self->query);
 
-    if (self->localsearch != NULL)
-    {
-        self->providers_running++;
-        nautilus_search_provider_start (self->localsearch, self->query);
-    }
-
-    if (self->recent != NULL)
-    {
-        self->providers_running++;
-        nautilus_search_provider_start (self->recent, self->query);
-    }
-
-    if (self->model != NULL && query_location != NULL)
-    {
-        self->providers_running++;
-        nautilus_search_provider_start (self->model, self->query);
-    }
-
-    if (self->simple && query_location != NULL)
-    {
-        self->providers_running++;
-        nautilus_search_provider_start (self->simple, self->query);
-    }
+    search_engine_start_provider (self->localsearch, self);
+    search_engine_start_provider (self->model, self);
+    search_engine_start_provider (self->recent, self);
+    search_engine_start_provider (self->simple, self);
 }
 
 void
