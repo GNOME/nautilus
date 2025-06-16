@@ -14,6 +14,138 @@
             <property name="margin-bottom">20</property>
             <property name="margin-start">20</property>
             <property name="margin-end">20</property>
+
+            <!-- File Type Filter -->
+            <child>
+              <object class="GtkBox">
+                <property name="orientation">vertical</property>
+                <property name="spacing">10</property>
+                <child>
+                  <object class="GtkLabel">
+                    <property name="label" translatable="yes">File Types</property>
+                    <property name="hexpand">True</property>
+                    <property name="xalign">0</property>
+                    <style>
+                      <class name="heading"/>
+                    </style>
+                  </object>
+                </child>
+                <child>
+                  <object class="AdwWrapBox">
+                    <property name="child-spacing">8</property>
+                    <property name="line-spacing">8</property>
+                    <property name="natural-line-length">400</property>
+                    <child>
+                      <object class="GtkButton" id="audio_button">
+                        <property name="child">
+                          <object class="AdwButtonContent">
+                            <property name="icon-name">audio-x-generic-symbolic</property>
+                            <property name="label" translatable="yes">_Audio</property>
+                            <property name="use_underline">True</property>
+                          </object>
+                        </property>
+                        <signal name="clicked" handler="file_types_button_clicked" object="NautilusSearchPopover" swapped="yes"/>
+                      </object>
+                    </child>
+                    <child>
+                      <object class="GtkButton" id="documents_button">
+                        <property name="child">
+                          <object class="AdwButtonContent">
+                            <property name="icon-name">rich-text-symbolic</property>
+                            <property name="label" translatable="yes">_Documents</property>
+                            <property name="use_underline">True</property>
+                          </object>
+                        </property>
+                        <signal name="clicked" handler="file_types_button_clicked" object="NautilusSearchPopover" swapped="yes"/>
+                      </object>
+                    </child>
+                    <child>
+                      <object class="GtkButton" id="folders_button">
+                        <property name="child">
+                          <object class="AdwButtonContent">
+                            <property name="icon-name">folder-symbolic</property>
+                            <property name="label" translatable="yes">_Folders</property>
+                            <property name="use_underline">True</property>
+                          </object>
+                        </property>
+                        <signal name="clicked" handler="file_types_button_clicked" object="NautilusSearchPopover" swapped="yes"/>
+                      </object>
+                    </child>
+                    <child>
+                      <object class="GtkButton" id="images_button">
+                        <property name="child">
+                          <object class="AdwButtonContent">
+                            <property name="icon-name">image-print-symbolic</property>
+                            <property name="label" translatable="yes">_Images</property>
+                            <property name="use_underline">True</property>
+                          </object>
+                        </property>
+                        <signal name="clicked" handler="file_types_button_clicked" object="NautilusSearchPopover" swapped="yes"/>
+                      </object>
+                    </child>
+                    <child>
+                      <object class="GtkButton" id="pdf_button">
+                        <property name="child">
+                          <object class="AdwButtonContent">
+                            <property name="icon-name">rich-text-symbolic</property>
+                            <property name="label" translatable="yes">_PDF</property>
+                            <property name="use_underline">True</property>
+                          </object>
+                        </property>
+                        <signal name="clicked" handler="file_types_button_clicked" object="NautilusSearchPopover" swapped="yes"/>
+                      </object>
+                    </child>
+                    <child>
+                      <object class="GtkButton" id="spreadsheets_button">
+                        <property name="child">
+                          <object class="AdwButtonContent">
+                            <property name="icon-name">x-office-spreadsheet-symbolic</property>
+                            <property name="label" translatable="yes">_Spreadsheets</property>
+                            <property name="use_underline">True</property>
+                          </object>
+                        </property>
+                        <signal name="clicked" handler="file_types_button_clicked" object="NautilusSearchPopover" swapped="yes"/>
+                      </object>
+                    </child>
+                    <child>
+                      <object class="GtkButton" id="text_button">
+                        <property name="child">
+                          <object class="AdwButtonContent">
+                            <property name="icon-name">paper-symbolic</property>
+                            <property name="label" translatable="yes">Te_xt</property>
+                            <property name="use_underline">True</property>
+                          </object>
+                        </property>
+                        <signal name="clicked" handler="file_types_button_clicked" object="NautilusSearchPopover" swapped="yes"/>
+                      </object>
+                    </child>
+                    <child>
+                      <object class="GtkButton" id="videos_button">
+                        <property name="child">
+                          <object class="AdwButtonContent">
+                            <property name="icon-name">camera-video-symbolic</property>
+                            <property name="label" translatable="yes">_Videos</property>
+                            <property name="use_underline">True</property>
+                          </object>
+                        </property>
+                        <signal name="clicked" handler="file_types_button_clicked" object="NautilusSearchPopover" swapped="yes"/>
+                      </object>
+                    </child>
+                    <child>
+                      <object class="GtkButton" id="other_types_button">
+                        <property name="icon-name">view-more-horizontal-symbolic</property>
+                        <property name="tooltip-text" translatable="yes">Specific Type</property>
+                        <signal name="clicked" handler="file_types_button_clicked" object="NautilusSearchPopover" swapped="yes"/>
+                        <style>
+                          <class name="circular"/>
+                        </style>
+                      </object>
+                    </child>
+                  </object>
+                </child>
+              </object>
+            </child>
+
             <child>
               <object class="GtkLabel" id="when_dim_label">
                 <property name="label" translatable="yes">When</property>
@@ -163,73 +295,6 @@
               </object>
             </child>
             <child>
-              <object class="GtkLabel" id="what_dim_label">
-                <property name="margin_top">10</property>
-                <property name="label" translatable="yes">What</property>
-                <property name="xalign">0</property>
-                <style>
-                  <class name="dim-label"/>
-                </style>
-              </object>
-            </child>
-            <child>
-              <object class="GtkStack" id="type_stack">
-                <property name="vhomogeneous">False</property>
-                <property name="transition_type">crossfade</property>
-                <property name="transition_duration">250</property>
-                <child>
-                  <object class="GtkStackPage">
-                    <property name="name">type-button</property>
-                    <property name="child">
-                      <object class="GtkButton" id="select_type_button">
-                        <accessibility>
-                          <relation name="labelled-by">type_label</relation>
-                        </accessibility>
-                        <signal name="clicked" handler="select_type_button_clicked" object="NautilusSearchPopover" swapped="no"/>
-                        <child>
-                          <object class="GtkBox">
-                            <child>
-                              <object class="GtkLabel" id="type_label">
-                                <property name="hexpand">True</property>
-                                <property name="label" translatable="yes">_Anything</property>
-                                <property name="use-underline">True</property>
-                                <property name="width_chars">30</property>
-                                <property name="xalign">0</property>
-                              </object>
-                            </child>
-                            <child>
-                              <object class="GtkImage">
-                                <property name="icon_name">pan-down-symbolic</property>
-                              </object>
-                            </child>
-                          </object>
-                        </child>
-                      </object>
-                    </property>
-                  </object>
-                </child>
-                <child>
-                  <object class="GtkStackPage">
-                    <property name="name">type-list</property>
-                    <property name="child">
-                      <object class="GtkScrolledWindow">
-                        <property name="height_request">250</property>
-                        <property name="child">
-                          <object class="GtkViewport">
-                            <property name="child">
-                              <object class="GtkListBox" id="type_listbox">
-                                <signal name="row-activated" handler="types_listbox_row_activated" object="NautilusSearchPopover" swapped="no"/>
-                              </object>
-                            </property>
-                          </object>
-                        </property>
-                      </object>
-                    </property>
-                  </object>
-                </child>
-              </object>
-            </child>
-            <child>
               <object class="GtkLabel" id="search_dim_label">
                 <property name="margin_top">10</property>
                 <property name="label" translatable="yes">Search</property>
@@ -287,7 +352,6 @@
       <widget name="search_dim_label"/>
       <widget name="when_dim_label"/>
       <widget name="around_dim_label"/>
-      <widget name="what_dim_label"/>
     </widgets>
   </object>
 </interface>
