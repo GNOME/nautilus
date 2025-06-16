@@ -7,13 +7,13 @@
         <property name="propagate-natural-height">true</property>
         <property name="propagate-natural-width">true</property>
         <property name="child">
-          <object class="GtkGrid">
+          <object class="GtkBox">
+            <property name="orientation">vertical</property>
+            <property name="spacing">8</property>
             <property name="margin-top">20</property>
             <property name="margin-bottom">20</property>
             <property name="margin-start">20</property>
             <property name="margin-end">20</property>
-            <property name="row_spacing">8</property>
-            <property name="column_spacing">18</property>
             <child>
               <object class="GtkLabel" id="when_dim_label">
                 <property name="label" translatable="yes">When</property>
@@ -21,11 +21,6 @@
                 <style>
                   <class name="dim-label"/>
                 </style>
-                <layout>
-                  <property name="column">0</property>
-                  <property name="row">0</property>
-                  <property name="column-span">2</property>
-                </layout>
               </object>
             </child>
             <child>
@@ -81,19 +76,14 @@
                     </property>
                   </object>
                 </child>
-                <layout>
-                  <property name="column">0</property>
-                  <property name="row">1</property>
-                  <property name="column-span">2</property>
-                </layout>
               </object>
             </child>
             <child>
               <object class="GtkRevealer" id="around_revealer">
                 <property name="child">
-                  <object class="GtkGrid">
-                    <property name="row_spacing">8</property>
-                    <property name="column_spacing">12</property>
+                  <object class="GtkBox">
+                    <property name="orientation">vertical</property>
+                    <property name="spacing">8</property>
                     <child>
                       <object class="GtkLabel" id="around_dim_label">
                         <property name="margin_top">10</property>
@@ -102,11 +92,6 @@
                         <style>
                           <class name="dim-label"/>
                         </style>
-                        <layout>
-                          <property name="column">0</property>
-                          <property name="row">0</property>
-                          <property name="column-span">2</property>
-                        </layout>
                       </object>
                     </child>
                     <child>
@@ -147,11 +132,6 @@
                             </property>
                           </object>
                         </child>
-                        <layout>
-                          <property name="column">0</property>
-                          <property name="row">1</property>
-                          <property name="column-span">2</property>
-                        </layout>
                       </object>
                     </child>
                     <child>
@@ -160,10 +140,6 @@
                         <property name="use_underline">True</property>
                         <property name="active">True</property>
                         <signal name="toggled" handler="search_time_type_changed" object="NautilusSearchPopover" swapped="no"/>
-                        <layout>
-                          <property name="column">0</property>
-                          <property name="row">2</property>
-                        </layout>
                       </object>
                     </child>
                     <child>
@@ -172,10 +148,6 @@
                         <property name="use_underline">True</property>
                         <property name="group">last_modified_button</property>
                         <signal name="toggled" handler="search_time_type_changed" object="NautilusSearchPopover" swapped="no"/>
-                        <layout>
-                          <property name="column">0</property>
-                          <property name="row">3</property>
-                        </layout>
                       </object>
                     </child>
                     <child>
@@ -184,19 +156,10 @@
                         <property name="use-underline">True</property>
                         <property name="group">last_modified_button</property>
                         <signal name="toggled" handler="search_time_type_changed" object="NautilusSearchPopover" swapped="no"/>
-                        <layout>
-                          <property name="column">0</property>
-                          <property name="row">4</property>
-                        </layout>
                       </object>
                     </child>
                   </object>
                 </property>
-                <layout>
-                  <property name="column">0</property>
-                  <property name="row">2</property>
-                  <property name="column-span">2</property>
-                </layout>
               </object>
             </child>
             <child>
@@ -207,11 +170,6 @@
                 <style>
                   <class name="dim-label"/>
                 </style>
-                <layout>
-                  <property name="column">0</property>
-                  <property name="row">3</property>
-                  <property name="column-span">2</property>
-                </layout>
               </object>
             </child>
             <child>
@@ -269,11 +227,6 @@
                     </property>
                   </object>
                 </child>
-                <layout>
-                  <property name="column">0</property>
-                  <property name="row">4</property>
-                  <property name="column-span">2</property>
-                </layout>
               </object>
             </child>
             <child>
@@ -284,11 +237,6 @@
                 <style>
                   <class name="dim-label"/>
                 </style>
-                <layout>
-                  <property name="column">0</property>
-                  <property name="row">5</property>
-                  <property name="column-span">2</property>
-                </layout>
               </object>
             </child>
             <child>
@@ -318,11 +266,6 @@
                 <style>
                   <class name="linked"/>
                 </style>
-                <layout>
-                  <property name="column">0</property>
-                  <property name="row">6</property>
-                  <property name="column-span">2</property>
-                </layout>
               </object>
             </child>
           </object>
