@@ -73,6 +73,9 @@ workflow:
         FDO_DISTRIBUTION_VERSION: rawhide
         FDO_DISTRIBUTION_TAG: '2025-02-28'
         FDO_DISTRIBUTION_COMPRESSION_FORMAT: zstd:chunked
+    needs:
+      - job: "update image"
+        optional: true
 
 
 flatpak@x86_64:
@@ -125,17 +128,18 @@ update image:
     - .fdo.container-build@fedora
     - .nautilus.fedora
     stage: image
+    needs: []
     variables:
         GIT_STRATEGY: none
         FDO_DISTRIBUTION_PACKAGES: $DEPENDENCIES
         FDO_DISTRIBUTION_EXEC: ".gitlab/image-script.sh"
         CFLAGS: "-fno-omit-frame-pointer"
-    when: manual
     rules:
+        - changes:
+            - .gitlab-ci.yml
+            - .gitlab/**/*
         - if: $CI_PROJECT_NAMESPACE != "GNOME"
           when: never
-        - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
-        - if: $CI_PIPELINE_SOURCE == "web"
 
 asan:
     extends:
