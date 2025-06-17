@@ -517,7 +517,7 @@ search_engine_localsearch_start (NautilusSearchProvider *provider,
     date_range = nautilus_query_get_date_range (self->query);
     type = nautilus_query_get_search_type (self->query);
 
-    if (*query_text)
+    if (query_text != NULL)
     {
         features |= SEARCH_FEATURE_TERMS;
     }
@@ -570,7 +570,7 @@ search_engine_localsearch_start (NautilusSearchProvider *provider,
         tracker_sparql_statement_bind_string (stmt, "location", location_uri);
     }
 
-    if (*query_text)
+    if (query_text != NULL)
     {
         tracker_sparql_statement_bind_string (stmt, "match", query_text);
     }

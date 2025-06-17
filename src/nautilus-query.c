@@ -118,9 +118,9 @@ nautilus_query_matches_string (NautilusQuery *query,
     gdouble retval;
     gint nonexact_malus = 0;
 
-    if (!query->text)
+    if (query->text == NULL)
     {
-        return -1;
+        return 0;
     }
 
     prepared_string = prepare_string_for_compare (string);
@@ -178,15 +178,19 @@ nautilus_query_set_text (NautilusQuery *query,
 {
     g_return_val_if_fail (NAUTILUS_IS_QUERY (query), FALSE);
 
+    /* This is the only place that sets a query text.
+     * Treat empty strings as setting NULL. */
     g_autofree gchar *stripped_text = g_strstrip (g_strdup (text));
+    const char *settable_text = (stripped_text == NULL || stripped_text[0] == '\0')
+                                ? NULL : stripped_text;
 
-    if (!g_set_str (&query->text, stripped_text))
+    if (!g_set_str (&query->text, settable_text))
     {
         return FALSE;
     }
 
     GPtrArray *prepared_words = NULL;
-    if (stripped_text != NULL && stripped_text[0] != '\0')
+    if (query->text != NULL)
     {
         g_autofree gchar *prepared_query = prepare_string_for_compare (query->text);
         g_auto (GStrv) split_query = g_strsplit (prepared_query, " ", -1);
@@ -295,7 +299,7 @@ nautilus_query_set_show_hidden_files (NautilusQuery *query,
 char *
 nautilus_query_to_readable_string (NautilusQuery *query)
 {
-    if (!query || !query->text || query->text[0] == '\0')
+    if (query == NULL || query->text == NULL)
     {
         return g_strdup (_("Search"));
     }
@@ -403,7 +407,7 @@ nautilus_query_is_empty (NautilusQuery *query)
     }
 
     if (!query->date_range &&
-        (!query->text || (query->text && query->text[0] == '\0')) &&
+        query->text == NULL &&
         query->mime_types->len == 0)
     {
         return TRUE;
