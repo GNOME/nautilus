@@ -185,16 +185,19 @@ nautilus_query_set_text (NautilusQuery *query,
         return FALSE;
     }
 
-    g_autofree gchar *prepared_query = prepare_string_for_compare (query->text);
-    g_auto (GStrv) split_query = g_strsplit (prepared_query, " ", -1);
-    guint split_num = g_strv_length (split_query);
-
-    GPtrArray *prepared_words =
-        g_ptr_array_new_full (split_num, (GDestroyNotify) prepared_word_free);
-    for (guint i = 0; i < split_num; i += 1)
+    GPtrArray *prepared_words = NULL;
+    if (stripped_text != NULL && stripped_text[0] != '\0')
     {
-        GString *word = g_string_new (split_query[i]);
-        g_ptr_array_add (prepared_words, word);
+        g_autofree gchar *prepared_query = prepare_string_for_compare (query->text);
+        g_auto (GStrv) split_query = g_strsplit (prepared_query, " ", -1);
+        guint split_num = g_strv_length (split_query);
+
+        prepared_words = g_ptr_array_new_full (split_num, (GDestroyNotify) prepared_word_free);
+        for (guint i = 0; i < split_num; i += 1)
+        {
+            GString *word = g_string_new (split_query[i]);
+            g_ptr_array_add (prepared_words, word);
+        }
     }
 
     g_rw_lock_writer_lock (&query->prepared_words_rwlock);
