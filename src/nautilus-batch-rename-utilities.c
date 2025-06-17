@@ -760,7 +760,10 @@ on_cursor_callback (GObject      *object,
         return;
     }
 
-    creation_datetime = tracker_sparql_cursor_get_datetime (cursor, CREATION_DATE_INDEX);
+    if (tracker_sparql_cursor_get_value_type (cursor, CREATION_DATE_INDEX) == TRACKER_SPARQL_VALUE_TYPE_DATETIME)
+    {
+        creation_datetime = tracker_sparql_cursor_get_datetime (cursor, CREATION_DATE_INDEX);
+    }
     equipment = tracker_sparql_cursor_get_string (cursor, CAMERA_MODEL_INDEX, NULL);
     season_number = tracker_sparql_cursor_get_string (cursor, SEASON_INDEX, NULL);
     episode_number = tracker_sparql_cursor_get_string (cursor, EPISODE_NUMBER_INDEX, NULL);
