@@ -682,16 +682,6 @@ cursor_next (QueryData           *query_data,
                                       query_data);
 }
 
-static GString *
-format_date_time (GDateTime *date_time)
-{
-    g_autoptr (GString) formated_date = g_string_new_take (g_date_time_format (date_time, "%x"));
-
-    g_string_replace (formated_date, "/", "-", -1);
-
-    return g_steal_pointer (&formated_date);
-}
-
 static void
 on_cursor_callback (GObject      *object,
                     GAsyncResult *result,
@@ -866,7 +856,8 @@ on_cursor_callback (GObject      *object,
                                      g_strdup (file_uri),
                                      GINT_TO_POINTER (g_hash_table_size (query_data->date_order_hash_table)));
 
-                file_metadata->metadata[metadata_type] = format_date_time (creation_datetime);
+                file_metadata->metadata[metadata_type] =
+                    g_string_new_take (g_date_time_format (creation_datetime, "%F"));
             }
             else
             {
