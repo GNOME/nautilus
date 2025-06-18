@@ -44,7 +44,7 @@ struct _NautilusSearchEngineRecent
     gboolean running;
     GCancellable *cancellable;
     GtkRecentManager *recent_manager;
-    GList *hits;
+    GPtrArray *hits;
     guint add_hits_idle_id;
 };
 
@@ -72,7 +72,7 @@ nautilus_search_engine_recent_finalize (GObject *object)
 
     g_clear_object (&self->query);
     g_clear_object (&self->cancellable);
-    g_list_free_full (self->hits, g_object_unref);
+    g_clear_pointer (&self->hits, g_ptr_array_unref);
 
     G_OBJECT_CLASS (nautilus_search_engine_recent_parent_class)->finalize (object);
 }
@@ -81,25 +81,19 @@ static gboolean
 search_thread_add_hits_idle (gpointer user_data)
 {
     g_autoptr (NautilusSearchEngineRecent) self = user_data;
-    g_autoptr (GPtrArray) hits = g_ptr_array_new_with_free_func (g_object_unref);
     NautilusSearchProvider *provider = NAUTILUS_SEARCH_PROVIDER (self);
 
     self->add_hits_idle_id = 0;
-
-    for (GList *l = self->hits; l != NULL; l = l->next)
+    if (self->hits->len > 0 &&
+        !g_cancellable_is_cancelled (self->cancellable))
     {
-        g_ptr_array_add (hits, l->data);
-    }
-    g_clear_pointer (&self->hits, g_list_free);
-
-    if (!g_cancellable_is_cancelled (self->cancellable))
-    {
-        nautilus_search_provider_hits_added (provider, g_steal_pointer (&hits));
+        nautilus_search_provider_hits_added (provider, g_steal_pointer (&self->hits));
         g_debug ("Recent engine add hits");
     }
 
     self->running = FALSE;
     g_clear_object (&self->cancellable);
+    g_clear_pointer (&self->hits, g_ptr_array_unref);
 
     g_debug ("Recent engine finished");
     nautilus_search_provider_finished (provider,
@@ -110,11 +104,12 @@ search_thread_add_hits_idle (gpointer user_data)
 
 static void
 search_add_hits_idle (NautilusSearchEngineRecent *self,
-                      GList                      *hits)
+                      GPtrArray                  *hits)
 {
     if (self->add_hits_idle_id != 0)
     {
-        g_list_free_full (hits, g_object_unref);
+        g_clear_pointer (&hits, g_ptr_array_unref);
+
         return;
     }
 
@@ -189,12 +184,11 @@ recent_thread_func (gpointer user_data)
     g_autoptr (GFile) query_location = NULL;
     g_autoptr (GPtrArray) mime_types = NULL;
     GList *recent_items;
-    GList *hits;
+    GPtrArray *hits = g_ptr_array_new_with_free_func (g_object_unref);
     GList *l;
 
     g_return_val_if_fail (self->query, NULL);
 
-    hits = NULL;
     recent_items = gtk_recent_manager_get_items (self->recent_manager);
     mime_types = nautilus_query_get_mime_types (self->query);
     date_range = nautilus_query_get_date_range (self->query);
@@ -331,7 +325,7 @@ recent_thread_func (gpointer user_data)
             nautilus_search_hit_set_access_time (hit, atime);
             nautilus_search_hit_set_creation_time (hit, ctime);
 
-            hits = g_list_prepend (hits, hit);
+            g_ptr_array_add (hits, hit);
         }
     }
 
