@@ -470,8 +470,7 @@ create_query (NautilusQueryEditor *editor)
 }
 
 static void
-entry_activate_cb (GtkWidget           *entry,
-                   NautilusQueryEditor *editor)
+entry_activate_cb (NautilusQueryEditor *editor)
 {
     g_signal_emit (editor, signals[ACTIVATED], 0);
 }
@@ -499,8 +498,7 @@ entry_changed_internal (NautilusQueryEditor *editor)
 }
 
 static void
-entry_changed_cb (GtkWidget           *entry,
-                  NautilusQueryEditor *editor)
+entry_changed_cb (NautilusQueryEditor *editor)
 {
     const gchar *text = gtk_editable_get_text (GTK_EDITABLE (editor->text));
 
@@ -549,14 +547,9 @@ create_tag (NautilusQueryEditor *self,
 }
 
 static void
-search_popover_date_range_changed_cb (NautilusSearchPopover *popover,
-                                      GPtrArray             *date_range,
-                                      gpointer               user_data)
+search_popover_date_range_changed_cb (NautilusQueryEditor *editor,
+                                      GPtrArray           *date_range)
 {
-    NautilusQueryEditor *editor;
-
-    editor = NAUTILUS_QUERY_EDITOR (user_data);
-
     if (editor->query == NULL)
     {
         create_query (editor);
@@ -587,15 +580,11 @@ search_popover_date_range_changed_cb (NautilusSearchPopover *popover,
 }
 
 static void
-search_popover_mime_type_changed_cb (NautilusSearchPopover *popover,
-                                     gint                   mimetype_group,
-                                     const gchar           *mimetype,
-                                     gpointer               user_data)
+search_popover_mime_type_changed_cb (NautilusQueryEditor *editor,
+                                     gint                 mimetype_group,
+                                     const gchar         *mimetype)
 {
-    NautilusQueryEditor *editor;
     g_autoptr (GPtrArray) mimetypes = NULL;
-
-    editor = NAUTILUS_QUERY_EDITOR (user_data);
 
     if (editor->query == NULL)
     {
@@ -642,14 +631,9 @@ search_popover_mime_type_changed_cb (NautilusSearchPopover *popover,
 }
 
 static void
-search_popover_time_type_changed_cb (NautilusSearchPopover   *popover,
-                                     NautilusQuerySearchType  data,
-                                     gpointer                 user_data)
+search_popover_time_type_changed_cb (NautilusQueryEditor     *editor,
+                                     NautilusQuerySearchType  data)
 {
-    NautilusQueryEditor *editor;
-
-    editor = NAUTILUS_QUERY_EDITOR (user_data);
-
     if (editor->query == NULL)
     {
         create_query (editor);
@@ -661,13 +645,11 @@ search_popover_time_type_changed_cb (NautilusSearchPopover   *popover,
 }
 
 static void
-search_popover_fts_changed_cb (GObject    *popover,
-                               GParamSpec *pspec,
-                               gpointer    user_data)
+search_popover_fts_changed_cb (NautilusQueryEditor   *editor,
+                               GParamSpec            *pspec,
+                               NautilusSearchPopover *popover)
 {
-    NautilusQueryEditor *editor;
-
-    editor = NAUTILUS_QUERY_EDITOR (user_data);
+    g_assert (NAUTILUS_IS_SEARCH_POPOVER (popover));
 
     if (editor->query == NULL)
     {
@@ -675,7 +657,7 @@ search_popover_fts_changed_cb (GObject    *popover,
     }
 
     nautilus_query_set_search_content (editor->query,
-                                       nautilus_search_popover_get_fts_enabled (NAUTILUS_SEARCH_POPOVER (popover)));
+                                       nautilus_search_popover_get_fts_enabled (popover));
 
     nautilus_query_editor_changed (editor);
 }
@@ -784,18 +766,18 @@ nautilus_query_editor_init (NautilusQueryEditor *editor)
     gtk_widget_set_visible (editor->search_info_button, FALSE);
     gtk_widget_set_parent (editor->search_info_button, GTK_WIDGET (editor));
 
-    g_signal_connect (editor->text, "activate",
-                      G_CALLBACK (entry_activate_cb), editor);
-    g_signal_connect (editor->text, "changed",
-                      G_CALLBACK (entry_changed_cb), editor);
-    g_signal_connect (editor->popover, "date-range",
-                      G_CALLBACK (search_popover_date_range_changed_cb), editor);
-    g_signal_connect (editor->popover, "mime-type",
-                      G_CALLBACK (search_popover_mime_type_changed_cb), editor);
-    g_signal_connect (editor->popover, "time-type",
-                      G_CALLBACK (search_popover_time_type_changed_cb), editor);
-    g_signal_connect (editor->popover, "notify::fts-enabled",
-                      G_CALLBACK (search_popover_fts_changed_cb), editor);
+    g_signal_connect_swapped (editor->text, "activate",
+                              G_CALLBACK (entry_activate_cb), editor);
+    g_signal_connect_swapped (editor->text, "changed",
+                              G_CALLBACK (entry_changed_cb), editor);
+    g_signal_connect_swapped (editor->popover, "date-range",
+                              G_CALLBACK (search_popover_date_range_changed_cb), editor);
+    g_signal_connect_swapped (editor->popover, "mime-type",
+                              G_CALLBACK (search_popover_mime_type_changed_cb), editor);
+    g_signal_connect_swapped (editor->popover, "time-type",
+                              G_CALLBACK (search_popover_time_type_changed_cb), editor);
+    g_signal_connect_swapped (editor->popover, "notify::fts-enabled",
+                              G_CALLBACK (search_popover_fts_changed_cb), editor);
 }
 
 static void
