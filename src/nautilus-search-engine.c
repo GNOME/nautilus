@@ -184,10 +184,10 @@ nautilus_search_engine_stop (NautilusSearchProvider *provider)
 
 static void
 search_provider_hits_added (NautilusSearchProvider *provider,
-                            GList                  *transferred_hits,
+                            GPtrArray              *transferred_hits,
                             NautilusSearchEngine   *self)
 {
-    g_autolist (NautilusSearchHit) hits = transferred_hits;
+    g_autoptr (GPtrArray) hits = transferred_hits;
 
     if (!self->running || self->restart)
     {
@@ -196,22 +196,21 @@ search_provider_hits_added (NautilusSearchProvider *provider,
         return;
     }
 
-    GList *added = NULL;
-    for (GList *l = hits; l != NULL; l = l->next)
+    g_autoptr (GPtrArray) added = g_ptr_array_new_with_free_func (g_object_unref);
+    for (guint i = 0; i < hits->len; i++)
     {
-        NautilusSearchHit *hit = l->data;
+        NautilusSearchHit *hit = hits->pdata[i];
         const char *uri = nautilus_search_hit_get_uri (hit);
 
         if (!g_hash_table_contains (self->uris, uri))
         {
             g_hash_table_add (self->uris, g_strdup (uri));
-            added = g_list_prepend (added, g_steal_pointer (&l->data));
+            g_ptr_array_add (added, g_object_ref (hit));
         }
     }
 
-    if (added != NULL)
+    if (added->len > 0)
     {
-        added = g_list_reverse (added);
         nautilus_search_provider_hits_added (NAUTILUS_SEARCH_PROVIDER (self),
                                              g_steal_pointer (&added));
     }

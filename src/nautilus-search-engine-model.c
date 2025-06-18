@@ -39,7 +39,7 @@ struct _NautilusSearchEngineModel
 
     NautilusQuery *query;
 
-    GList *hits;
+    GPtrArray *hits;
     NautilusDirectory *directory;
 
     gboolean query_pending;
@@ -61,11 +61,7 @@ finalize (GObject *object)
 
     model = NAUTILUS_SEARCH_ENGINE_MODEL (object);
 
-    if (model->hits != NULL)
-    {
-        g_list_free_full (model->hits, g_object_unref);
-        model->hits = NULL;
-    }
+    g_clear_pointer (&model->hits, g_ptr_array_unref);
 
     if (model->finished_id != 0)
     {
@@ -120,7 +116,8 @@ model_directory_ready_cb (NautilusDirectory *directory,
     NautilusSearchEngineModel *model = user_data;
     g_autoptr (GPtrArray) mime_types = NULL;
     gchar *uri;
-    GList *files, *hits, *l;
+    GList *files, *l;
+    GPtrArray *hits = g_ptr_array_new_with_free_func (g_object_unref);
     NautilusFile *file;
     gdouble match;
     gboolean found;
@@ -131,7 +128,6 @@ model_directory_ready_cb (NautilusDirectory *directory,
 
     files = nautilus_directory_get_file_list (directory);
     mime_types = nautilus_query_get_mime_types (model->query);
-    hits = NULL;
 
     for (l = files; l != NULL; l = l->next)
     {
@@ -223,7 +219,7 @@ model_directory_ready_cb (NautilusDirectory *directory,
             nautilus_search_hit_set_access_time (hit, atime);
             nautilus_search_hit_set_creation_time (hit, ctime);
 
-            hits = g_list_prepend (hits, hit);
+            g_ptr_array_add (hits, hit);
 
             g_free (uri);
         }

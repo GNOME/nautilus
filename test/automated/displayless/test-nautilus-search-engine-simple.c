@@ -4,14 +4,14 @@ static guint total_hits = 0;
 
 static void
 hits_added_cb (NautilusSearchEngine *engine,
-               GList                *transferred_hits)
+               GPtrArray            *transferred_hits)
 {
-    g_autolist (NautilusSearchHit) hits = transferred_hits;
+    g_autoptr (GPtrArray) hits = transferred_hits;
 
     g_print ("Hits added for search engine simple!\n");
-    for (gint hit_number = 0; hits != NULL; hits = hits->next, hit_number++)
+    for (guint i = 0; i < hits->len; i++)
     {
-        g_print ("Hit %i: %s\n", hit_number, nautilus_search_hit_get_uri (hits->data));
+        g_print ("Hit %i: %s\n", i, nautilus_search_hit_get_uri (hits->pdata[i]));
         total_hits += 1;
     }
 }

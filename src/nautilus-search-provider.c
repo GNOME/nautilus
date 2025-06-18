@@ -92,7 +92,7 @@ nautilus_search_provider_stop (NautilusSearchProvider *provider)
  */
 void
 nautilus_search_provider_hits_added (NautilusSearchProvider *provider,
-                                     GList                  *hits)
+                                     GPtrArray              *hits)
 {
     g_return_if_fail (NAUTILUS_IS_SEARCH_PROVIDER (provider));
 
