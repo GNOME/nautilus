@@ -47,7 +47,7 @@ typedef struct
     GHashTable *visited;
 
     gint n_processed_files;
-    GList *hits;
+    GPtrArray *hits;
 
     NautilusQuery *query;
     gint processing_id;
@@ -112,8 +112,6 @@ search_thread_data_new (NautilusSearchEngineSimple *engine,
 static void
 search_thread_data_free (SearchThreadData *data)
 {
-    GList *hits;
-
     g_queue_foreach (data->directories,
                      (GFunc) g_object_unref, NULL);
     g_queue_free (data->directories);
@@ -121,13 +119,14 @@ search_thread_data_free (SearchThreadData *data)
     g_object_unref (data->cancellable);
     g_object_unref (data->query);
     g_clear_pointer (&data->mime_types, g_ptr_array_unref);
-    g_list_free_full (data->hits, g_object_unref);
+    g_clear_pointer (&data->hits, g_ptr_array_unref);
     g_object_unref (data->engine);
     g_mutex_clear (&data->idle_mutex);
 
+    GPtrArray *hits;
     while ((hits = g_queue_pop_head (data->idle_queue)))
     {
-        g_list_free_full (hits, g_object_unref);
+        g_ptr_array_unref (hits);
     }
     g_queue_free (data->idle_queue);
 
@@ -158,7 +157,7 @@ search_thread_done (SearchThreadData *data)
 
 static void
 search_thread_process_hits_idle (SearchThreadData *data,
-                                 GList            *hits)
+                                 GPtrArray        *hits)
 {
     if (hits == NULL)
     {
@@ -167,27 +166,20 @@ search_thread_process_hits_idle (SearchThreadData *data,
 
     if (!g_cancellable_is_cancelled (data->cancellable))
     {
-        g_autoptr (GPtrArray) hits_array = g_ptr_array_new_with_free_func (g_object_unref);
-
         g_debug ("Simple engine add hits");
 
-        for (GList *l = hits; l != NULL; l = l->next)
-        {
-            g_ptr_array_add (hits_array, g_object_ref (l->data));
-        }
-
         nautilus_search_provider_hits_added (NAUTILUS_SEARCH_PROVIDER (data->engine),
-                                             g_steal_pointer (&hits_array));
+                                             g_steal_pointer (&hits));
     }
 
-    g_list_free_full (hits, g_object_unref);
+    g_clear_pointer (&hits, g_ptr_array_unref);
 }
 
 static gboolean
 search_thread_process_idle (gpointer user_data)
 {
     SearchThreadData *thread_data;
-    GList *hits;
+    g_autoptr (GPtrArray) hits = NULL;
 
     thread_data = user_data;
 
@@ -205,10 +197,6 @@ search_thread_process_idle (gpointer user_data)
         {
             g_mutex_unlock (&thread_data->idle_mutex);
 
-            if (hits)
-            {
-                g_list_free_full (hits, g_object_unref);
-            }
             search_thread_done (thread_data);
 
             return G_SOURCE_REMOVE;
@@ -217,7 +205,7 @@ search_thread_process_idle (gpointer user_data)
 
     g_mutex_unlock (&thread_data->idle_mutex);
 
-    search_thread_process_hits_idle (thread_data, hits);
+    search_thread_process_hits_idle (thread_data, g_steal_pointer (&hits));
 
     return G_SOURCE_CONTINUE;
 }
@@ -240,7 +228,7 @@ finish_search_thread (SearchThreadData *thread_data)
 
 static void
 process_batch_in_idle (SearchThreadData *thread_data,
-                       GList            *hits)
+                       GPtrArray        *hits)
 {
     g_return_if_fail (hits != NULL);
 
@@ -422,7 +410,12 @@ visit_directory (GFile            *dir,
             nautilus_search_hit_set_access_time (hit, atime);
             nautilus_search_hit_set_creation_time (hit, ctime);
 
-            data->hits = g_list_prepend (data->hits, hit);
+            if (G_UNLIKELY (data->hits == NULL))
+            {
+                data->hits = g_ptr_array_new_with_free_func (g_object_unref);
+            }
+
+            g_ptr_array_add (data->hits, hit);
         }
 
         data->n_processed_files++;
