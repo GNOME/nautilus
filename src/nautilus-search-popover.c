@@ -815,6 +815,8 @@ nautilus_search_popover_dispose (GObject *obj)
     gtk_popover_set_child (GTK_POPOVER (obj), NULL);
     gtk_widget_dispose_template (GTK_WIDGET (self), NAUTILUS_TYPE_SEARCH_POPOVER);
 
+    g_clear_object (&self->query);
+
     G_OBJECT_CLASS (nautilus_search_popover_parent_class)->dispose (obj);
 }
 
