@@ -451,14 +451,10 @@ nautilus_query_editor_class_init (NautilusQueryEditorClass *class)
 static void
 create_query (NautilusQueryEditor *editor)
 {
-    NautilusQuery *query;
-    gboolean fts_enabled;
-
     g_return_if_fail (editor->query == NULL);
 
-    fts_enabled = nautilus_search_popover_get_fts_enabled (NAUTILUS_SEARCH_POPOVER (editor->popover));
-
-    query = nautilus_query_new ();
+    g_autoptr (NautilusQuery) query = nautilus_query_new ();
+    gboolean fts_enabled = nautilus_search_popover_get_fts_enabled (NAUTILUS_SEARCH_POPOVER (editor->popover));
 
     nautilus_query_set_search_content (query, fts_enabled);
 
