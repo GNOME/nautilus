@@ -47,7 +47,7 @@ struct _NautilusSearchProviderInterface {
          *
          * Provider emits this signal when adding search hits
          */
-        void (*hits_added) (NautilusSearchProvider *provider, GList *hits);
+        void (*hits_added) (NautilusSearchProvider *provider, GPtrArray *hits);
         /* This signal has a status parameter because it's necesary to discern
          * when the search engine finished normally or wheter it finished in a
          * different situation that will cause the engine to do some action after
@@ -86,7 +86,7 @@ void           nautilus_search_provider_start           (NautilusSearchProvider 
 void           nautilus_search_provider_stop            (NautilusSearchProvider *provider);
 
 void           nautilus_search_provider_hits_added      (NautilusSearchProvider *provider,
-                                                         GList *hits);
+                                                         GPtrArray              *hits);
 void           nautilus_search_provider_finished        (NautilusSearchProvider       *provider,
                                                          NautilusSearchProviderStatus  status);
 void           nautilus_search_provider_error           (NautilusSearchProvider *provider,

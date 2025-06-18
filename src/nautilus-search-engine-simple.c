@@ -167,9 +167,17 @@ search_thread_process_hits_idle (SearchThreadData *data,
 
     if (!g_cancellable_is_cancelled (data->cancellable))
     {
+        g_autoptr (GPtrArray) hits_array = g_ptr_array_new_with_free_func (g_object_unref);
+
         g_debug ("Simple engine add hits");
+
+        for (GList *l = hits; l != NULL; l = l->next)
+        {
+            g_ptr_array_add (hits_array, g_object_ref (l->data));
+        }
+
         nautilus_search_provider_hits_added (NAUTILUS_SEARCH_PROVIDER (data->engine),
-                                             g_steal_pointer (&hits));
+                                             g_steal_pointer (&hits_array));
     }
 
     g_list_free_full (hits, g_object_unref);

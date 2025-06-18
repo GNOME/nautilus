@@ -95,24 +95,27 @@ static void
 check_pending_hits (NautilusSearchEngineLocalsearch *self,
                     gboolean                         force_send)
 {
-    GList *hits = NULL;
-    NautilusSearchHit *hit;
-
-    g_debug ("Localsearch engine add hits");
-
     if (!force_send &&
         g_queue_get_length (self->hits_pending) < BATCH_SIZE)
     {
         return;
     }
 
+    NautilusSearchHit *hit;
+    g_autoptr (GPtrArray) hits = g_ptr_array_new_with_free_func (g_object_unref);
+
+    g_debug ("Localsearch engine add hits");
+
     while ((hit = g_queue_pop_head (self->hits_pending)))
     {
-        hits = g_list_prepend (hits, hit);
+        g_ptr_array_add (hits, hit);
     }
 
-    nautilus_search_provider_hits_added (NAUTILUS_SEARCH_PROVIDER (self),
-                                         g_steal_pointer (&hits));
+    if (hits->len > 0)
+    {
+        nautilus_search_provider_hits_added (NAUTILUS_SEARCH_PROVIDER (self),
+                                             g_steal_pointer (&hits));
+    }
 }
 
 static void

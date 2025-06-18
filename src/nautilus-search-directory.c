@@ -574,11 +574,10 @@ on_search_directory_search_ready_and_valid (NautilusSearchDirectory *self)
 
 static void
 search_engine_hits_added (NautilusSearchEngine    *engine,
-                          GList                   *transferred_hits,
+                          GPtrArray               *transferred_hits,
                           NautilusSearchDirectory *self)
 {
-    g_autolist (NautilusSearchHit) hits = transferred_hits;
-    GList *hit_list;
+    g_autoptr (GPtrArray) hits = transferred_hits;
     GList *file_list;
     NautilusFile *file;
     g_autoptr (GDateTime) now = g_date_time_new_now_local ();
@@ -587,9 +586,9 @@ search_engine_hits_added (NautilusSearchEngine    *engine,
 
     file_list = NULL;
 
-    for (hit_list = hits; hit_list != NULL; hit_list = hit_list->next)
+    for (guint i = 0; i < hits->len; i++)
     {
-        NautilusSearchHit *hit = hit_list->data;
+        NautilusSearchHit *hit = hits->pdata[i];
         const char *uri;
 
         uri = nautilus_search_hit_get_uri (hit);
