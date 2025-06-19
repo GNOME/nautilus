@@ -16,6 +16,7 @@ variables:
         meson
         libasan
         uncrustify
+        gcovr
         glibc-devel
         glib2-devel
         gtk4-devel
@@ -164,6 +165,31 @@ asan:
         reports:
             junit: $MESON_BUILD_DIR/meson-logs/testlog.junit.xml
         expire_in: 7 days
+
+coverage:
+    extends:
+        - .fdo.distribution-image@fedora
+        - .nautilus.fedora
+    stage: analyze
+    rules:
+        - when: manual
+          allow_failure: true
+    script:
+        - meson setup -Dextensions=false -Db_coverage=true -Dtests=all $MESON_BUILD_DIR
+        - meson compile -C $MESON_BUILD_DIR
+        - meson test -C $MESON_BUILD_DIR || true
+        - ninja coverage -C $MESON_BUILD_DIR
+    artifacts:
+        name: 'Test Coverage Report'
+        paths:
+          - $MESON_BUILD_DIR/meson-logs/coveragereport/**/*
+          - $MESON_BUILD_DIR/meson-logs/coverage.xml
+        reports:
+            coverage_report:
+                coverage_format: cobertura
+                path: $MESON_BUILD_DIR/meson-logs/coverage.xml
+        expire_in: 2 weeks
+    coverage: '/^\s*lines:\s+([\d.]+\%)\s*/'
 
 pages:
     extends:
