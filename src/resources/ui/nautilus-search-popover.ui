@@ -152,154 +152,66 @@
               </object>
             </child>
 
+            <!-- Date Filter -->
             <child>
-              <object class="GtkLabel" id="when_dim_label">
-                <property name="label" translatable="yes">When</property>
-                <property name="xalign">0</property>
-                <style>
-                  <class name="dim-label"/>
-                </style>
-              </object>
-            </child>
-            <child>
-              <object class="GtkStack" id="date_stack">
-                <property name="transition_type">crossfade</property>
-                <property name="transition_duration">250</property>
+              <object class="GtkBox">
+                <property name="orientation">vertical</property>
+                <property name="spacing">10</property>
                 <child>
-                  <object class="GtkStackPage">
-                    <property name="name">date-button</property>
-                    <property name="child">
-                      <object class="GtkBox">
-                        <child>
-                          <object class="GtkButton" id="select_date_button">
-                            <property name="hexpand">True</property>
-                            <accessibility>
-                              <relation name="labelled-by">select_date_button_label</relation>
-                            </accessibility>
-                            <child>
-                              <object class="GtkLabel" id="select_date_button_label">
-                                <property name="label" translatable="yes">Select _Dates…</property>
-                                <property name="use-underline">True</property>
-                                <property name="xalign">0</property>
-                              </object>
-                            </child>
-                            <signal name="clicked" handler="select_date_button_clicked" object="NautilusSearchPopover" swapped="no"/>
-                          </object>
-                        </child>
-                        <child>
-                          <object class="GtkButton" id="clear_date_button">
-                            <property name="visible">False</property>
-                            <property name="tooltip_text" translatable="yes">Clear Date Filter</property>
-                            <property name="icon_name">edit-clear-symbolic</property>
-                            <signal name="clicked" handler="clear_date_button_clicked" object="NautilusSearchPopover" swapped="no"/>
-                          </object>
-                        </child>
-                        <style>
-                          <class name="linked"/>
-                        </style>
-                      </object>
-                    </property>
+                  <object class="GtkLabel">
+                    <property name="label" translatable="yes">Last Modified</property>
+                    <property name="hexpand">true</property>
+                    <property name="xalign">0</property>
+                    <style>
+                      <class name="heading"/>
+                    </style>
                   </object>
                 </child>
                 <child>
-                  <object class="GtkStackPage">
-                    <property name="name">date-entry</property>
-                    <property name="child">
-                      <object class="GtkEntry" id="date_entry">
-                        <property name="secondary_icon_name">x-office-calendar-symbolic</property>
-                        <property name="secondary_icon_tooltip_text" translatable="yes">Use Calendar</property>
-                        <signal name="icon-release" handler="toggle_calendar_icon_clicked" object="NautilusSearchPopover" swapped="no"/>
-                        <signal name="activate" handler="date_entry_activate" object="NautilusSearchPopover" swapped="no"/>
+                  <object class="AdwWrapBox">
+                    <property name="child-spacing">8</property>
+                    <property name="line-spacing">8</property>
+                    <property name="natural-line-length">400</property>
+                    <child>
+                      <object class="GtkButton" id="today_button">
+                        <property name="label" translatable="yes">_Today</property>
+                        <property name="use_underline">True</property>
+                        <signal name="clicked" handler="date_button_clicked" object="NautilusSearchPopover" swapped="yes"/>
                       </object>
-                    </property>
+                    </child>
+                    <child>
+                      <object class="GtkButton" id="yesterday_button">
+                        <property name="label" translatable="yes">_Yesterday</property>
+                        <property name="use_underline">True</property>
+                        <signal name="clicked" handler="date_button_clicked" object="NautilusSearchPopover" swapped="yes"/>
+                      </object>
+                    </child>
+                    <child>
+                      <object class="GtkButton" id="week_button">
+                        <property name="label" translatable="yes">Past _Week</property>
+                        <property name="use_underline">True</property>
+                        <signal name="clicked" handler="date_button_clicked" object="NautilusSearchPopover" swapped="yes"/>
+                      </object>
+                    </child>
+                    <child>
+                      <object class="GtkButton" id="month_button">
+                        <property name="label" translatable="yes">Past _Month</property>
+                        <property name="use_underline">True</property>
+                        <signal name="clicked" handler="date_button_clicked" object="NautilusSearchPopover" swapped="yes"/>
+                      </object>
+                    </child>
+                    <child>
+                      <object class="GtkButton" id="year_button">
+                        <property name="label" translatable="yes">Past Y_ear</property>
+                        <property name="use_underline">True</property>
+                        <signal name="clicked" handler="date_button_clicked" object="NautilusSearchPopover" swapped="yes"/>
+                      </object>
+                    </child>
                   </object>
                 </child>
               </object>
             </child>
-            <child>
-              <object class="GtkRevealer" id="around_revealer">
-                <property name="child">
-                  <object class="GtkBox">
-                    <property name="orientation">vertical</property>
-                    <property name="spacing">8</property>
-                    <child>
-                      <object class="GtkLabel" id="around_dim_label">
-                        <property name="margin_top">10</property>
-                        <property name="label" translatable="yes">Since…</property>
-                        <property name="xalign">0</property>
-                        <style>
-                          <class name="dim-label"/>
-                        </style>
-                      </object>
-                    </child>
-                    <child>
-                      <object class="GtkStack" id="around_stack">
-                        <property name="vhomogeneous">False</property>
-                        <property name="transition_type">crossfade</property>
-                        <property name="transition_duration">250</property>
-                        <child>
-                          <object class="GtkStackPage">
-                            <property name="name">date-list</property>
-                            <property name="child">
-                              <object class="GtkScrolledWindow">
-                                <property name="height_request">200</property>
-                                <property name="hexpand">True</property>
-                                <property name="child">
-                                  <object class="GtkViewport">
-                                    <property name="child">
-                                      <object class="GtkListBox" id="dates_listbox">
-                                        <property name="selection_mode">none</property>
-                                        <signal name="row-activated" handler="dates_listbox_row_activated" object="NautilusSearchPopover" swapped="no"/>
-                                      </object>
-                                    </property>
-                                  </object>
-                                </property>
-                              </object>
-                            </property>
-                          </object>
-                        </child>
-                        <child>
-                          <object class="GtkStackPage">
-                            <property name="name">date-calendar</property>
-                            <property name="child">
-                              <object class="GtkCalendar" id="calendar">
-                                <property name="valign">start</property>
-                                <property name="show_week_numbers">True</property>
-                                <signal name="day-selected" handler="calendar_day_selected" object="NautilusSearchPopover" swapped="no" />
-                              </object>
-                            </property>
-                          </object>
-                        </child>
-                      </object>
-                    </child>
-                    <child>
-                      <object class="GtkCheckButton" id="last_modified_button">
-                        <property name="label" translatable="yes">Last _modified</property>
-                        <property name="use_underline">True</property>
-                        <property name="active">True</property>
-                        <signal name="toggled" handler="search_time_type_changed" object="NautilusSearchPopover" swapped="no"/>
-                      </object>
-                    </child>
-                    <child>
-                      <object class="GtkCheckButton" id="last_used_button">
-                        <property name="label" translatable="yes">Last _used</property>
-                        <property name="use_underline">True</property>
-                        <property name="group">last_modified_button</property>
-                        <signal name="toggled" handler="search_time_type_changed" object="NautilusSearchPopover" swapped="no"/>
-                      </object>
-                    </child>
-                    <child>
-                      <object class="GtkCheckButton" id="created_button">
-                        <property name="label" translatable="yes">_Created</property>
-                        <property name="use-underline">True</property>
-                        <property name="group">last_modified_button</property>
-                        <signal name="toggled" handler="search_time_type_changed" object="NautilusSearchPopover" swapped="no"/>
-                      </object>
-                    </child>
-                  </object>
-                </property>
-              </object>
-            </child>
+
             <child>
               <object class="GtkLabel" id="search_dim_label">
                 <property name="margin_top">10</property>
@@ -349,15 +261,6 @@
     <widgets>
       <widget name="full_text_search_button"/>
       <widget name="filename_search_button"/>
-      <widget name="select_date_button"/>
-      <widget name="clear_date_button"/>
-    </widgets>
-  </object>
-  <object class="GtkSizeGroup">
-    <widgets>
-      <widget name="search_dim_label"/>
-      <widget name="when_dim_label"/>
-      <widget name="around_dim_label"/>
     </widgets>
   </object>
 </interface>

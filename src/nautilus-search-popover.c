@@ -56,18 +56,15 @@ struct _NautilusSearchPopover
 
     GtkButton *active_type_button;
 
-    GtkWidget *around_revealer;
-    GtkWidget *around_stack;
-    GtkWidget *calendar;
-    GtkWidget *clear_date_button;
-    GtkWidget *dates_listbox;
-    GtkWidget *date_entry;
-    GtkWidget *date_stack;
-    GtkWidget *select_date_button;
-    GtkWidget *select_date_button_label;
-    GtkWidget *last_used_button;
-    GtkWidget *last_modified_button;
-    GtkWidget *created_button;
+    /* Date Filter */
+    GtkButton *today_button;
+    GtkButton *yesterday_button;
+    GtkButton *week_button;
+    GtkButton *month_button;
+    GtkButton *year_button;
+
+    GtkButton *active_date_button;
+
     GtkWidget *full_text_search_button;
     GtkWidget *filename_search_button;
 
@@ -77,13 +74,7 @@ struct _NautilusSearchPopover
     GtkSingleSelection *other_types_model;
 };
 
-static void          show_date_selection_widgets (NautilusSearchPopover *popover,
-                                                  gboolean               visible);
-
 static void          show_other_types_dialog (NautilusSearchPopover *popover);
-
-static void          update_date_label (NautilusSearchPopover *popover,
-                                        GPtrArray             *date_range);
 
 G_DEFINE_TYPE (NautilusSearchPopover, nautilus_search_popover, GTK_TYPE_POPOVER)
 
@@ -118,122 +109,29 @@ set_active_button (GtkButton **active_button_pointer,
 /* Callbacks */
 
 static void
-calendar_day_selected (GtkCalendar           *calendar,
-                       NautilusSearchPopover *popover)
+date_button_clicked (NautilusSearchPopover *popover,
+                     GtkButton             *button)
 {
-    GDateTime *date;
-    GPtrArray *date_range;
-
-    date = gtk_calendar_get_date (calendar);
-
-    date_range = g_ptr_array_new_full (2, (GDestroyNotify) g_date_time_unref);
-    g_ptr_array_add (date_range, g_date_time_ref (date));
-    g_ptr_array_add (date_range, g_date_time_ref (date));
-    update_date_label (popover, date_range);
-    g_signal_emit_by_name (popover, "date-range", date_range);
-
-    g_ptr_array_unref (date_range);
-    g_date_time_unref (date);
-}
-
-/* Range on dates are partially implemented. For now just use it for differentation
- * between a exact day or a range of a first day until now.
- */
-static void
-setup_date (NautilusSearchPopover *popover,
-            GPtrArray             *date_range)
-{
-    GDateTime *date_initial;
-
-    if (date_range)
+    if (button == popover->active_date_button)
     {
-        date_initial = g_ptr_array_index (date_range, 0);
-
-        g_signal_handlers_block_by_func (popover->calendar, calendar_day_selected, popover);
-
-        gtk_calendar_select_day (GTK_CALENDAR (popover->calendar), date_initial);
-
-        update_date_label (popover, date_range);
-
-        g_signal_handlers_unblock_by_func (popover->calendar, calendar_day_selected, popover);
+        set_active_button (&popover->active_date_button, NULL);
+        g_signal_emit_by_name (popover, "date-range", NULL);
+        return;
     }
-}
 
-static void
-clear_date_button_clicked (GtkButton             *button,
-                           NautilusSearchPopover *popover)
-{
-    nautilus_search_popover_reset_date_range (popover);
-}
-
-static void
-date_entry_activate (GtkEntry              *entry,
-                     NautilusSearchPopover *popover)
-{
-    if (gtk_entry_get_text_length (entry) > 0)
-    {
-        GDateTime *now;
-        GDateTime *date_time;
-        GDate *date;
-
-        date = g_date_new ();
-        g_date_set_parse (date, gtk_editable_get_text (GTK_EDITABLE (entry)));
-
-        /* Invalid date silently does nothing */
-        if (!g_date_valid (date))
-        {
-            g_date_free (date);
-            return;
-        }
-
-        now = g_date_time_new_now_local ();
-        date_time = g_date_time_new_local (g_date_get_year (date),
-                                           g_date_get_month (date),
-                                           g_date_get_day (date),
-                                           0,
-                                           0,
-                                           0);
-
-        /* Future dates also silently fails */
-        if (g_date_time_compare (date_time, now) != 1)
-        {
-            GPtrArray *date_range;
-
-            date_range = g_ptr_array_new_full (2, (GDestroyNotify) g_date_time_unref);
-            g_ptr_array_add (date_range, g_date_time_ref (date_time));
-            g_ptr_array_add (date_range, g_date_time_ref (date_time));
-            update_date_label (popover, date_range);
-            show_date_selection_widgets (popover, FALSE);
-            g_signal_emit_by_name (popover, "date-range", date_range);
-
-            g_ptr_array_unref (date_range);
-        }
-
-        g_date_time_unref (now);
-        g_date_time_unref (date_time);
-        g_date_free (date);
-    }
-}
-
-static void
-dates_listbox_row_activated (GtkListBox            *listbox,
-                             GtkListBoxRow         *row,
-                             NautilusSearchPopover *popover)
-{
     GDateTime *date;
     GDateTime *now;
     GPtrArray *date_range = NULL;
 
     now = g_date_time_new_now_local ();
-    date = g_object_get_data (G_OBJECT (row), "date");
+    date = g_object_get_data (G_OBJECT (button), "date");
     if (date)
     {
         date_range = g_ptr_array_new_full (2, (GDestroyNotify) g_date_time_unref);
         g_ptr_array_add (date_range, g_date_time_ref (date));
         g_ptr_array_add (date_range, g_date_time_ref (now));
     }
-    update_date_label (popover, date_range);
-    show_date_selection_widgets (popover, FALSE);
+    set_active_button (&popover->active_date_button, button);
     g_signal_emit_by_name (popover, "date-range", date_range);
 
     if (date_range)
@@ -241,62 +139,6 @@ dates_listbox_row_activated (GtkListBox            *listbox,
         g_ptr_array_unref (date_range);
     }
     g_date_time_unref (now);
-}
-
-static void
-listbox_header_func (GtkListBoxRow         *row,
-                     GtkListBoxRow         *before,
-                     NautilusSearchPopover *popover)
-{
-    gboolean show_separator;
-
-    show_separator = GPOINTER_TO_INT (g_object_get_data (G_OBJECT (row), "show-separator"));
-
-    if (show_separator)
-    {
-        GtkWidget *separator;
-
-        separator = gtk_separator_new (GTK_ORIENTATION_HORIZONTAL);
-
-        gtk_list_box_row_set_header (row, separator);
-    }
-}
-
-static void
-select_date_button_clicked (GtkButton             *button,
-                            NautilusSearchPopover *popover)
-{
-    show_date_selection_widgets (popover, TRUE);
-}
-
-static void
-toggle_calendar_icon_clicked (GtkEntry              *entry,
-                              GtkEntryIconPosition   position,
-                              NautilusSearchPopover *popover)
-{
-    const gchar *current_visible_child;
-    const gchar *child;
-    const gchar *icon_name;
-    const gchar *tooltip;
-
-    current_visible_child = gtk_stack_get_visible_child_name (GTK_STACK (popover->around_stack));
-
-    if (g_strcmp0 (current_visible_child, "date-list") == 0)
-    {
-        child = "date-calendar";
-        icon_name = "view-list-symbolic";
-        tooltip = _("Show Time Ranges");
-    }
-    else
-    {
-        child = "date-list";
-        icon_name = "x-office-calendar-symbolic";
-        tooltip = _("Use Calendar");
-    }
-
-    gtk_stack_set_visible_child_name (GTK_STACK (popover->around_stack), child);
-    gtk_entry_set_icon_from_icon_name (entry, GTK_ENTRY_ICON_SECONDARY, icon_name);
-    gtk_entry_set_icon_tooltip_text (entry, GTK_ENTRY_ICON_SECONDARY, tooltip);
 }
 
 static void
@@ -340,19 +182,6 @@ search_time_type_changed (GtkCheckButton        *button,
 {
     NautilusSearchTimeType type = -1;
 
-    if (gtk_check_button_get_active (GTK_CHECK_BUTTON (popover->last_modified_button)))
-    {
-        type = NAUTILUS_SEARCH_TIME_TYPE_LAST_MODIFIED;
-    }
-    else if (gtk_check_button_get_active (GTK_CHECK_BUTTON (popover->last_used_button)))
-    {
-        type = NAUTILUS_SEARCH_TIME_TYPE_LAST_ACCESS;
-    }
-    else
-    {
-        type = NAUTILUS_SEARCH_TIME_TYPE_CREATED;
-    }
-
     g_settings_set_enum (nautilus_preferences, "search-filter-time-type", type);
 
     g_signal_emit_by_name (popover, "time-type", type, NULL);
@@ -377,137 +206,6 @@ search_fts_mode_changed (GtkToggleButton       *button,
 }
 
 /* Auxiliary methods */
-
-static GtkWidget *
-create_row_for_label (const gchar *text,
-                      gboolean     show_separator)
-{
-    GtkWidget *row;
-    GtkWidget *label;
-
-    row = gtk_list_box_row_new ();
-
-    g_object_set_data (G_OBJECT (row), "show-separator", GINT_TO_POINTER (show_separator));
-
-    label = g_object_new (GTK_TYPE_LABEL,
-                          "label", text,
-                          "hexpand", TRUE,
-                          "xalign", 0.0,
-                          "margin-start", 6,
-                          "height-request", 24,
-                          NULL);
-
-    gtk_list_box_row_set_child (GTK_LIST_BOX_ROW (row), label);
-
-    return row;
-}
-
-static void
-fill_fuzzy_dates_listbox (NautilusSearchPopover *popover)
-{
-    GDateTime *maximum_dt, *now;
-    GtkWidget *row;
-    GDateTime *current_date;
-    GPtrArray *date_range;
-    gint days, max_days;
-
-    days = 1;
-    maximum_dt = g_date_time_new_from_unix_local (0);
-    now = g_date_time_new_now_local ();
-    max_days = SEARCH_FILTER_MAX_YEARS * 365;
-
-    /* Add the no date filter element first */
-    row = create_row_for_label (_("Any time"), TRUE);
-    gtk_list_box_insert (GTK_LIST_BOX (popover->dates_listbox), row, -1);
-
-    /* This is a tricky loop. The main intention here is that each
-     * timeslice (day, week, month) have 2 or 3 entries.
-     *
-     * For the first appearance of each timeslice, there is made a
-     * check in order to be sure that there is no offset added to days.
-     */
-    while (days <= max_days)
-    {
-        gchar *label;
-        gint normalized;
-        gint step;
-
-        if (days < 7)
-        {
-            /* days */
-            normalized = days;
-            step = 2;
-        }
-        else if (days < 30)
-        {
-            /* weeks */
-            normalized = days / 7;
-            if (normalized == 1)
-            {
-                days = 7;
-            }
-            step = 7;
-        }
-        else if (days < 365)
-        {
-            /* months */
-            normalized = days / 30;
-            if (normalized == 1)
-            {
-                days = 30;
-            }
-            step = 90;
-        }
-        else
-        {
-            /* years */
-            normalized = days / 365;
-            if (normalized == 1)
-            {
-                days = 365;
-            }
-            step = 365;
-        }
-
-        current_date = g_date_time_add_days (now, -days);
-        date_range = g_ptr_array_new_full (2, (GDestroyNotify) g_date_time_unref);
-        g_ptr_array_add (date_range, g_date_time_ref (current_date));
-        g_ptr_array_add (date_range, g_date_time_ref (now));
-        label = get_text_for_date_range (date_range, FALSE);
-        row = create_row_for_label (label, normalized == 1);
-        g_object_set_data_full (G_OBJECT (row),
-                                "date",
-                                g_date_time_ref (current_date),
-                                (GDestroyNotify) g_date_time_unref);
-
-        gtk_list_box_insert (GTK_LIST_BOX (popover->dates_listbox), row, -1);
-
-        g_free (label);
-        g_date_time_unref (current_date);
-        g_ptr_array_unref (date_range);
-
-        days += step;
-    }
-
-    g_date_time_unref (maximum_dt);
-    g_date_time_unref (now);
-}
-
-static void
-show_date_selection_widgets (NautilusSearchPopover *popover,
-                             gboolean               visible)
-{
-    gtk_stack_set_visible_child_name (GTK_STACK (popover->date_stack),
-                                      visible ? "date-entry" : "date-button");
-    gtk_stack_set_visible_child_name (GTK_STACK (popover->around_stack), "date-list");
-    gtk_entry_set_icon_from_icon_name (GTK_ENTRY (popover->date_entry),
-                                       GTK_ENTRY_ICON_SECONDARY,
-                                       "x-office-calendar-symbolic");
-
-    gtk_widget_set_visible (popover->around_revealer, visible);
-
-    gtk_revealer_set_reveal_child (GTK_REVEALER (popover->around_revealer), visible);
-}
 
 static void
 on_other_types_dialog_response (NautilusSearchPopover *popover)
@@ -651,57 +349,12 @@ show_other_types_dialog (NautilusSearchPopover *popover)
     adw_dialog_present (popover->type_dialog, GTK_WIDGET (toplevel));
 }
 
-static void
-update_date_label (NautilusSearchPopover *popover,
-                   GPtrArray             *date_range)
-{
-    if (date_range)
-    {
-        gint days;
-        GDateTime *initial_date;
-        GDateTime *end_date;
-        GDateTime *now;
-        gchar *label;
-
-        now = g_date_time_new_now_local ();
-        initial_date = g_ptr_array_index (date_range, 0);
-        end_date = g_ptr_array_index (date_range, 0);
-        days = g_date_time_difference (end_date, initial_date) / G_TIME_SPAN_DAY;
-
-        label = get_text_for_date_range (date_range, TRUE);
-
-        gtk_editable_set_text (GTK_EDITABLE (popover->date_entry), days < 1 ? label : "");
-
-        gtk_widget_set_visible (popover->clear_date_button, TRUE);
-        gtk_label_set_label (GTK_LABEL (popover->select_date_button_label), label);
-
-        g_date_time_unref (now);
-        g_free (label);
-    }
-    else
-    {
-        gtk_label_set_label (GTK_LABEL (popover->select_date_button_label),
-                             _("Select Dates…"));
-        gtk_editable_set_text (GTK_EDITABLE (popover->date_entry), "");
-        gtk_widget_set_visible (popover->clear_date_button, FALSE);
-    }
-}
-
 void
 nautilus_search_popover_set_fts_sensitive (NautilusSearchPopover *popover,
                                            gboolean               sensitive)
 {
     gtk_widget_set_sensitive (popover->full_text_search_button, sensitive);
     gtk_widget_set_sensitive (popover->filename_search_button, sensitive);
-}
-
-static void
-nautilus_search_popover_closed (GtkPopover *popover)
-{
-    NautilusSearchPopover *self = NAUTILUS_SEARCH_POPOVER (popover);
-
-    /* Always switch back to the initial states */
-    show_date_selection_widgets (self, FALSE);
 }
 
 static void
@@ -720,13 +373,10 @@ nautilus_search_popover_dispose (GObject *obj)
 static void
 nautilus_search_popover_class_init (NautilusSearchPopoverClass *klass)
 {
-    GtkPopoverClass *popover_class = GTK_POPOVER_CLASS (klass);
     GtkWidgetClass *widget_class = GTK_WIDGET_CLASS (klass);
     GObjectClass *object_class = G_OBJECT_CLASS (klass);
 
     object_class->dispose = nautilus_search_popover_dispose;
-
-    popover_class->closed = nautilus_search_popover_closed;
 
     signals[DATE_RANGE] = g_signal_new ("date-range",
                                         NAUTILUS_TYPE_SEARCH_POPOVER,
@@ -782,28 +432,17 @@ nautilus_search_popover_class_init (NautilusSearchPopoverClass *klass)
     gtk_widget_class_bind_template_child (widget_class, NautilusSearchPopover, specific_type_button);
     gtk_widget_class_bind_template_child (widget_class, NautilusSearchPopover, other_types_button);
 
-    gtk_widget_class_bind_template_child (widget_class, NautilusSearchPopover, around_revealer);
-    gtk_widget_class_bind_template_child (widget_class, NautilusSearchPopover, around_stack);
-    gtk_widget_class_bind_template_child (widget_class, NautilusSearchPopover, clear_date_button);
-    gtk_widget_class_bind_template_child (widget_class, NautilusSearchPopover, calendar);
-    gtk_widget_class_bind_template_child (widget_class, NautilusSearchPopover, dates_listbox);
-    gtk_widget_class_bind_template_child (widget_class, NautilusSearchPopover, date_entry);
-    gtk_widget_class_bind_template_child (widget_class, NautilusSearchPopover, date_stack);
-    gtk_widget_class_bind_template_child (widget_class, NautilusSearchPopover, select_date_button);
-    gtk_widget_class_bind_template_child (widget_class, NautilusSearchPopover, select_date_button_label);
-    gtk_widget_class_bind_template_child (widget_class, NautilusSearchPopover, last_used_button);
-    gtk_widget_class_bind_template_child (widget_class, NautilusSearchPopover, last_modified_button);
-    gtk_widget_class_bind_template_child (widget_class, NautilusSearchPopover, created_button);
+    gtk_widget_class_bind_template_child (widget_class, NautilusSearchPopover, today_button);
+    gtk_widget_class_bind_template_child (widget_class, NautilusSearchPopover, yesterday_button);
+    gtk_widget_class_bind_template_child (widget_class, NautilusSearchPopover, week_button);
+    gtk_widget_class_bind_template_child (widget_class, NautilusSearchPopover, month_button);
+    gtk_widget_class_bind_template_child (widget_class, NautilusSearchPopover, year_button);
+
     gtk_widget_class_bind_template_child (widget_class, NautilusSearchPopover, full_text_search_button);
     gtk_widget_class_bind_template_child (widget_class, NautilusSearchPopover, filename_search_button);
 
-    gtk_widget_class_bind_template_callback (widget_class, calendar_day_selected);
-    gtk_widget_class_bind_template_callback (widget_class, clear_date_button_clicked);
-    gtk_widget_class_bind_template_callback (widget_class, date_entry_activate);
-    gtk_widget_class_bind_template_callback (widget_class, dates_listbox_row_activated);
-    gtk_widget_class_bind_template_callback (widget_class, select_date_button_clicked);
-    gtk_widget_class_bind_template_callback (widget_class, toggle_calendar_icon_clicked);
     gtk_widget_class_bind_template_callback (widget_class, file_types_button_clicked);
+    gtk_widget_class_bind_template_callback (widget_class, date_button_clicked);
     gtk_widget_class_bind_template_callback (widget_class, search_time_type_changed);
     gtk_widget_class_bind_template_callback (widget_class, search_fts_mode_changed);
 }
@@ -840,10 +479,16 @@ mime_tag_set_data (GtkButton *mime_tag,
 }
 
 static void
+date_tag_set_data (GtkButton *date_tag,
+                   GDateTime *time)
+{
+    g_object_set_data_full (G_OBJECT (date_tag), "date",
+                            time, (GDestroyNotify) g_date_time_unref);
+}
+
+static void
 nautilus_search_popover_init (NautilusSearchPopover *self)
 {
-    NautilusSearchTimeType filter_time_type;
-
     gtk_widget_init_template (GTK_WIDGET (self));
 
     /* File Type Filter */
@@ -872,33 +517,20 @@ nautilus_search_popover_init (NautilusSearchPopover *self)
     g_ptr_array_sort (mime_type_array, (GCompareFunc) sort_mime_type_tag);
     g_ptr_array_foreach (mime_type_array, (GFunc) reposition_mime_type_tag, self);
 
-    /* Fuzzy dates listbox */
-    gtk_list_box_set_header_func (GTK_LIST_BOX (self->dates_listbox),
-                                  (GtkListBoxUpdateHeaderFunc) listbox_header_func,
-                                  self,
-                                  NULL);
+    /* Date Filter */
+    g_autoptr (GDateTime) now = g_date_time_new_now_local ();
+    g_autoptr (GDateTime) today =
+        g_date_time_new_local (g_date_time_get_year (now),
+                               g_date_time_get_month (now),
+                               g_date_time_get_day_of_month (now),
+                               0, 0, 0);
 
-    fill_fuzzy_dates_listbox (self);
-
-    filter_time_type = g_settings_get_enum (nautilus_preferences, "search-filter-time-type");
-    if (filter_time_type == NAUTILUS_SEARCH_TIME_TYPE_LAST_MODIFIED)
-    {
-        gtk_check_button_set_active (GTK_CHECK_BUTTON (self->last_modified_button), TRUE);
-        gtk_check_button_set_active (GTK_CHECK_BUTTON (self->last_used_button), FALSE);
-        gtk_check_button_set_active (GTK_CHECK_BUTTON (self->created_button), FALSE);
-    }
-    else if (filter_time_type == NAUTILUS_SEARCH_TIME_TYPE_LAST_ACCESS)
-    {
-        gtk_check_button_set_active (GTK_CHECK_BUTTON (self->last_modified_button), FALSE);
-        gtk_check_button_set_active (GTK_CHECK_BUTTON (self->last_used_button), TRUE);
-        gtk_check_button_set_active (GTK_CHECK_BUTTON (self->created_button), FALSE);
-    }
-    else
-    {
-        gtk_check_button_set_active (GTK_CHECK_BUTTON (self->last_modified_button), FALSE);
-        gtk_check_button_set_active (GTK_CHECK_BUTTON (self->last_used_button), FALSE);
-        gtk_check_button_set_active (GTK_CHECK_BUTTON (self->created_button), TRUE);
-    }
+    date_tag_set_data (self->today_button, g_date_time_add_days (today, 0));
+    date_tag_set_data (self->yesterday_button, g_date_time_add_days (today, -1));
+    date_tag_set_data (self->week_button, g_date_time_add_weeks (today, -1));
+    date_tag_set_data (self->month_button, g_date_time_add_months (today, -1));
+    date_tag_set_data (self->year_button, g_date_time_add_years (today, -1));
+    set_active_button (&self->active_date_button, NULL);
 
     if (g_settings_get_boolean (nautilus_preferences, NAUTILUS_PREFERENCES_FTS_ENABLED))
     {
@@ -934,7 +566,8 @@ nautilus_search_popover_set_date_range (NautilusSearchPopover *popover,
 
     if (date_range != NULL)
     {
-        setup_date (popover, date_range);
+        set_active_button (&popover->active_date_button, NULL);
+        g_signal_emit_by_name (popover, "date-range", date_range);
     }
     else
     {
@@ -947,16 +580,6 @@ nautilus_search_popover_reset_date_range (NautilusSearchPopover *popover)
 {
     g_return_if_fail (NAUTILUS_IS_SEARCH_POPOVER (popover));
 
-    /* Reselect today at the calendar */
-    g_autoptr (GDateTime) now = g_date_time_new_now_local ();
-    g_signal_handlers_block_by_func (popover->calendar, calendar_day_selected, popover);
-    gtk_calendar_select_day (GTK_CALENDAR (popover->calendar), now);
-    g_signal_handlers_unblock_by_func (popover->calendar, calendar_day_selected, popover);
-
-    gtk_list_box_select_row (GTK_LIST_BOX (popover->dates_listbox),
-                             gtk_list_box_get_row_at_index (GTK_LIST_BOX (popover->dates_listbox), 0));
-
-    update_date_label (popover, NULL);
-    show_date_selection_widgets (popover, FALSE);
+    set_active_button (&popover->active_date_button, NULL);
     g_signal_emit_by_name (popover, "date-range", NULL);
 }
