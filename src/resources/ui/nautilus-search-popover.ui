@@ -213,6 +213,16 @@
                         <signal name="clicked" handler="date_button_clicked" object="NautilusSearchPopover" swapped="yes"/>
                       </object>
                     </child>
+                    <child>
+                      <object class="GtkButton">
+                        <property name="icon-name">view-more-horizontal-symbolic</property>
+                        <property name="tooltip-text" translatable="yes">Custom Date Range</property>
+                        <signal name="clicked" handler="show_date_range_dialog_cb" object="NautilusSearchPopover" swapped="yes"/>
+                        <style>
+                          <class name="circular"/>
+                        </style>
+                      </object>
+                    </child>
                   </object>
                 </child>
               </object>

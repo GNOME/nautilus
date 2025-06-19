@@ -19,6 +19,7 @@
 #include <gtk/gtk.h>
 #include <adwaita.h>
 
+#include "nautilus-date-range-dialog.h"
 #include "nautilus-date-utilities.h"
 #include "nautilus-enum-types.h"
 #include "nautilus-enums.h"
@@ -150,6 +151,31 @@ date_button_clicked (NautilusSearchPopover *popover,
         g_ptr_array_unref (date_range);
     }
     g_date_time_unref (now);
+}
+
+static void
+date_range_dialog_selected_cb (NautilusSearchPopover *self,
+                               GPtrArray             *date_range)
+{
+    g_set_ptr_array (&self->specific_date_range, date_range);
+    gtk_widget_set_visible (GTK_WIDGET (self->specific_date_button), TRUE);
+    date_button_clicked (self, self->specific_date_button);
+    g_signal_emit_by_name (self, "date-range", date_range);
+}
+
+static void
+show_date_range_dialog_cb (NautilusSearchPopover *self)
+{
+    GtkWindow *window = GTK_WINDOW (gtk_widget_get_root (GTK_WIDGET (self)));
+
+    NautilusDateRangeDialog *dialog = nautilus_date_range_dialog_new (self->specific_date_range);
+    adw_dialog_present (ADW_DIALOG (dialog), GTK_WIDGET (window));
+
+    g_signal_connect_object (dialog, "date-range",
+                             G_CALLBACK (date_range_dialog_selected_cb),
+                             self, G_CONNECT_SWAPPED);
+
+    gtk_popover_popdown (GTK_POPOVER (self));
 }
 
 static void
@@ -455,6 +481,7 @@ nautilus_search_popover_class_init (NautilusSearchPopoverClass *klass)
 
     gtk_widget_class_bind_template_callback (widget_class, file_types_button_clicked);
     gtk_widget_class_bind_template_callback (widget_class, date_button_clicked);
+    gtk_widget_class_bind_template_callback (widget_class, show_date_range_dialog_cb);
     gtk_widget_class_bind_template_callback (widget_class, search_time_type_changed);
     gtk_widget_class_bind_template_callback (widget_class, search_fts_mode_changed);
 }
