@@ -71,6 +71,8 @@ libnautilus_sources = [
   'nautilus-app-chooser.h',
   'nautilus-bookmark-list.c',
   'nautilus-bookmark-list.h',
+  'nautilus-date-entry-row.c',
+  'nautilus-date-entry-row.h',
   'nautilus-date-utilities.c',
   'nautilus-date-utilities.h',
   'nautilus-dbus-manager.c',
