@@ -44,6 +44,7 @@ struct _NautilusSearchEngineRecent
     gboolean running;
     GCancellable *cancellable;
     GtkRecentManager *recent_manager;
+    GList *hits;
     guint add_hits_idle_id;
 };
 
@@ -71,31 +72,25 @@ nautilus_search_engine_recent_finalize (GObject *object)
 
     g_clear_object (&self->query);
     g_clear_object (&self->cancellable);
+    g_list_free_full (self->hits, g_object_unref);
 
     G_OBJECT_CLASS (nautilus_search_engine_recent_parent_class)->finalize (object);
 }
 
-typedef struct
-{
-    NautilusSearchEngineRecent *recent;
-    GList *hits;
-} SearchHitsData;
-
-
 static gboolean
 search_thread_add_hits_idle (gpointer user_data)
 {
-    SearchHitsData *search_hits = user_data;
-    g_autoptr (NautilusSearchEngineRecent) self = search_hits->recent;
+    g_autoptr (NautilusSearchEngineRecent) self = user_data;
     g_autoptr (GPtrArray) hits = g_ptr_array_new_with_free_func (g_object_unref);
     NautilusSearchProvider *provider = NAUTILUS_SEARCH_PROVIDER (self);
 
     self->add_hits_idle_id = 0;
 
-    for (GList *l = search_hits->hits; l != NULL; l = l->next)
+    for (GList *l = self->hits; l != NULL; l = l->next)
     {
         g_ptr_array_add (hits, l->data);
     }
+    g_clear_pointer (&self->hits, g_list_free);
 
     if (!g_cancellable_is_cancelled (self->cancellable))
     {
@@ -105,7 +100,6 @@ search_thread_add_hits_idle (gpointer user_data)
 
     self->running = FALSE;
     g_clear_object (&self->cancellable);
-    g_free (search_hits);
 
     g_debug ("Recent engine finished");
     nautilus_search_provider_finished (provider,
@@ -118,19 +112,14 @@ static void
 search_add_hits_idle (NautilusSearchEngineRecent *self,
                       GList                      *hits)
 {
-    SearchHitsData *search_hits;
-
     if (self->add_hits_idle_id != 0)
     {
         g_list_free_full (hits, g_object_unref);
         return;
     }
 
-    search_hits = g_new0 (SearchHitsData, 1);
-    search_hits->recent = g_object_ref (self);
-    search_hits->hits = hits;
-
-    self->add_hits_idle_id = g_idle_add (search_thread_add_hits_idle, search_hits);
+    self->hits = hits;
+    self->add_hits_idle_id = g_idle_add (search_thread_add_hits_idle, g_object_ref (self));
 }
 
 static gboolean
