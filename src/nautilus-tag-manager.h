@@ -34,16 +34,25 @@ NautilusTagManager* nautilus_tag_manager_get                (void);
 
 GList*              nautilus_tag_manager_get_starred_files (NautilusTagManager *self);
 
+void                nautilus_tag_manager_announce_unstarred_cb (GObject      *object,
+                                                                GAsyncResult *result,
+                                                                gpointer      user_data);
+void                nautilus_tag_manager_announce_starred_cb   (GObject      *object,
+                                                                GAsyncResult *result,
+                                                                gpointer      user_data);
+
 void                nautilus_tag_manager_star_files         (NautilusTagManager  *self,
                                                              GObject             *object,
                                                              GList               *selection,
                                                              GAsyncReadyCallback  callback,
+                                                             gpointer             user_data,
                                                              GCancellable        *cancellable);
 
 void                nautilus_tag_manager_unstar_files       (NautilusTagManager  *self,
                                                              GObject             *object,
                                                              GList               *selection,
                                                              GAsyncReadyCallback  callback,
+                                                             gpointer             user_data,
                                                              GCancellable        *cancellable);
 
 

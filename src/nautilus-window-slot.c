@@ -1234,7 +1234,7 @@ action_star_current_directory (GSimpleAction *action,
     NautilusWindowSlot *self = NAUTILUS_WINDOW_SLOT (user_data);
 
     nautilus_tag_manager_star_files (nautilus_tag_manager_get (), G_OBJECT (self),
-                                     &(GList){ .data = self->viewed_file }, NULL, NULL);
+                                     &(GList){ .data = self->viewed_file }, NULL, NULL, NULL);
 }
 
 static void
@@ -1245,7 +1245,7 @@ action_unstar_current_directory (GSimpleAction *action,
     NautilusWindowSlot *self = NAUTILUS_WINDOW_SLOT (user_data);
 
     nautilus_tag_manager_unstar_files (nautilus_tag_manager_get (), G_OBJECT (self),
-                                       &(GList){ .data = self->viewed_file }, NULL, NULL);
+                                       &(GList){ .data = self->viewed_file }, NULL, NULL, NULL);
 }
 
 const GActionEntry slot_entries[] =

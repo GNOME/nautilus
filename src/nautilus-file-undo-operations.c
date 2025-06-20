@@ -1463,6 +1463,7 @@ starred_redo_func (NautilusFileUndoInfo           *info,
                                          G_OBJECT (info),
                                          self->files,
                                          on_undo_starred_tags_updated,
+                                         NULL,
                                          NULL);
     }
     else
@@ -1471,6 +1472,7 @@ starred_redo_func (NautilusFileUndoInfo           *info,
                                            G_OBJECT (info),
                                            self->files,
                                            on_undo_starred_tags_updated,
+                                           NULL,
                                            NULL);
     }
 }
@@ -1488,6 +1490,7 @@ starred_undo_func (NautilusFileUndoInfo           *info,
                                            G_OBJECT (info),
                                            self->files,
                                            on_undo_starred_tags_updated,
+                                           NULL,
                                            NULL);
     }
     else
@@ -1496,6 +1499,7 @@ starred_undo_func (NautilusFileUndoInfo           *info,
                                          G_OBJECT (info),
                                          self->files,
                                          on_undo_starred_tags_updated,
+                                         NULL,
                                          NULL);
     }
 }

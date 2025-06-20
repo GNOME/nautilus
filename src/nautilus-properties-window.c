@@ -713,13 +713,20 @@ star_clicked (NautilusPropertiesWindow *self)
     if (nautilus_tag_manager_file_is_starred (tag_manager, uri))
     {
         nautilus_tag_manager_unstar_files (tag_manager, G_OBJECT (self),
-                                           &(GList){ .data = file }, NULL, NULL);
+                                           &(GList){ .data = file },
+                                           (GAsyncReadyCallback) nautilus_tag_manager_announce_unstarred_cb,
+                                           self,
+                                           NULL);
         gtk_widget_remove_css_class (self->star_button, "starred");
     }
     else
     {
-        nautilus_tag_manager_star_files (tag_manager, G_OBJECT (self),
-                                         &(GList){ .data = file }, NULL, NULL);
+        nautilus_tag_manager_star_files (
+            tag_manager, G_OBJECT (self),
+            &(GList){ .data = file },
+            (GAsyncReadyCallback) nautilus_tag_manager_announce_starred_cb,
+            self,
+            NULL);
         gtk_widget_add_css_class (self->star_button, "starred");
     }
     gtk_widget_add_css_class (self->star_button, "interacted");

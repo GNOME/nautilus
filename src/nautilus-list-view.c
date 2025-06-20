@@ -348,11 +348,11 @@ setup_row (GtkSignalListItemFactory *factory,
     GtkExpression *expression;
 
     /* Use file display name as accessible label. Explaining in pseudo-code:
-     * columnviewrow:accessible-name :- columnviewrow:item:item:file:display-name */
+     * columnviewrow:accessible-name :- columnviewrow:item:item:file:a11y-name */
     expression = gtk_property_expression_new (GTK_TYPE_LIST_ITEM, NULL, "item");
     expression = gtk_property_expression_new (GTK_TYPE_TREE_LIST_ROW, expression, "item");
     expression = gtk_property_expression_new (NAUTILUS_TYPE_VIEW_ITEM, expression, "file");
-    expression = gtk_property_expression_new (NAUTILUS_TYPE_FILE, expression, "display-name");
+    expression = gtk_property_expression_new (NAUTILUS_TYPE_FILE, expression, "a11y-name");
     gtk_expression_bind (expression, columnviewrow, "accessible-label", columnviewrow);
 }
 

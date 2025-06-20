@@ -38,7 +38,8 @@ toggle_star (NautilusStarCell *self)
         nautilus_tag_manager_unstar_files (tag_manager,
                                            G_OBJECT (item),
                                            &(GList){ .data = file },
-                                           NULL,
+                                           (GAsyncReadyCallback) nautilus_tag_manager_announce_unstarred_cb,
+                                           self->star,
                                            NULL);
         gtk_widget_remove_css_class (GTK_WIDGET (self->star), "starred");
     }
@@ -47,7 +48,8 @@ toggle_star (NautilusStarCell *self)
         nautilus_tag_manager_star_files (tag_manager,
                                          G_OBJECT (item),
                                          &(GList){ .data = file },
-                                         NULL,
+                                         (GAsyncReadyCallback) nautilus_tag_manager_announce_starred_cb,
+                                         self->star,
                                          NULL);
         gtk_widget_add_css_class (GTK_WIDGET (self->star), "starred");
     }

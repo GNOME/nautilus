@@ -25,6 +25,7 @@
 #include "nautilus-localsearch-utilities.h"
 
 #include <tracker-sparql.h>
+#include <glib/gi18n.h>
 
 #include "config.h"
 
@@ -193,6 +194,26 @@ nautilus_tag_manager_get_starred_files (NautilusTagManager *self)
     }
 
     return starred_files;
+}
+
+void
+nautilus_tag_manager_announce_starred_cb (GObject      *object,
+                                          GAsyncResult *result,
+                                          gpointer      user_data)
+{
+    GtkAccessible *accessible = user_data;
+    gtk_accessible_announce (accessible, _("starred"),
+                             GTK_ACCESSIBLE_ANNOUNCEMENT_PRIORITY_MEDIUM);
+}
+
+void
+nautilus_tag_manager_announce_unstarred_cb (GObject      *object,
+                                            GAsyncResult *result,
+                                            gpointer      user_data)
+{
+    GtkAccessible *accessible = user_data;
+    gtk_accessible_announce (accessible, _("unstarred"),
+                             GTK_ACCESSIBLE_ANNOUNCEMENT_PRIORITY_MEDIUM);
 }
 
 static void
@@ -368,6 +389,7 @@ nautilus_tag_manager_star_files (NautilusTagManager  *self,
                                  GObject             *object,
                                  GList               *selection,
                                  GAsyncReadyCallback  callback,
+                                 gpointer             user_data,
                                  GCancellable        *cancellable)
 {
     GString *query;
@@ -380,7 +402,7 @@ nautilus_tag_manager_star_files (NautilusTagManager  *self,
         g_debug ("Starring %i files", g_list_length (selection));
     }
 
-    task = g_task_new (object, cancellable, callback, NULL);
+    task = g_task_new (object, cancellable, callback, user_data);
 
     query = nautilus_tag_manager_insert_tag (self, selection);
 
@@ -405,6 +427,7 @@ nautilus_tag_manager_unstar_files (NautilusTagManager  *self,
                                    GObject             *object,
                                    GList               *selection,
                                    GAsyncReadyCallback  callback,
+                                   gpointer             user_data,
                                    GCancellable        *cancellable)
 {
     GString *query;
@@ -416,7 +439,7 @@ nautilus_tag_manager_unstar_files (NautilusTagManager  *self,
         g_debug ("Unstarring %i files", g_list_length (selection));
     }
 
-    task = g_task_new (object, cancellable, callback, NULL);
+    task = g_task_new (object, cancellable, callback, user_data);
 
     query = nautilus_tag_manager_delete_tag (self, selection);
 
@@ -490,6 +513,7 @@ on_tracker_notifier_events (TrackerNotifier *notifier,
             {
                 g_debug ("Added %s to starred files list", file_url);
                 changed_file = nautilus_file_get_by_uri (file_url);
+                g_object_notify (G_OBJECT (changed_file), "a11y-name");
             }
         }
         else
@@ -500,6 +524,7 @@ on_tracker_notifier_events (TrackerNotifier *notifier,
             {
                 g_debug ("Removed %s from starred files list", file_url);
                 changed_file = nautilus_file_get_by_uri (file_url);
+                g_object_notify (G_OBJECT (changed_file), "a11y-name");
             }
         }
 

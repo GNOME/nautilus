@@ -1767,7 +1767,8 @@ action_star (GSimpleAction *action,
     nautilus_tag_manager_star_files (nautilus_tag_manager_get (),
                                      G_OBJECT (view),
                                      selection,
-                                     NULL,
+                                     (GAsyncReadyCallback) nautilus_tag_manager_announce_starred_cb,
+                                     view,
                                      priv->starred_cancellable);
 }
 
@@ -1787,7 +1788,8 @@ action_unstar (GSimpleAction *action,
     nautilus_tag_manager_unstar_files (nautilus_tag_manager_get (),
                                        G_OBJECT (view),
                                        selection,
-                                       NULL,
+                                       (GAsyncReadyCallback) nautilus_tag_manager_announce_unstarred_cb,
+                                       view,
                                        priv->starred_cancellable);
 }
 

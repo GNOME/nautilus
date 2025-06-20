@@ -189,6 +189,7 @@ enum
     PROP_0,
     PROP_DIRECTORY,
     PROP_DISPLAY_NAME,
+    PROP_A11Y_NAME,
     N_PROPS
 };
 
@@ -285,6 +286,7 @@ nautilus_file_set_display_name (NautilusFile *file,
         file->details->display_name_collation_key = g_utf8_collate_key_for_filename (display_name, -1);
 
         g_object_notify_by_pspec (G_OBJECT (file), properties[PROP_DISPLAY_NAME]);
+        g_object_notify_by_pspec (G_OBJECT (file), properties[PROP_A11Y_NAME]);
     }
 
     if (g_strcmp0 (file->details->edit_name, edit_name) != 0)
@@ -8607,6 +8609,27 @@ nautilus_file_get_property (GObject    *object,
         }
         break;
 
+        case PROP_A11Y_NAME:
+        {
+            NautilusTagManager *tag_manager = nautilus_tag_manager_get ();
+            if (nautilus_tag_manager_file_is_starred (tag_manager,
+                                                      nautilus_file_get_uri (file)))
+            {
+                /* Translators: A "." is added in between file name and starring
+                 * action description as a useful pause in the screen reader
+                 * announcement. */
+                g_autofree gchar *accessible_name = g_strdup_printf (
+                    _("%s. Starred"),
+                    file->details->display_name);
+                g_value_set_string (value, accessible_name);
+            }
+            else
+            {
+                g_value_set_string (value, file->details->display_name);
+            }
+        }
+        break;
+
         default:
         {
             G_OBJECT_WARN_INVALID_PROPERTY_ID (object, prop_id, pspec);
@@ -8749,6 +8772,9 @@ nautilus_file_class_init (NautilusFileClass *class)
     properties[PROP_DISPLAY_NAME] = g_param_spec_string ("display-name", NULL, NULL,
                                                          "",
                                                          G_PARAM_READABLE | G_PARAM_STATIC_STRINGS);
+    properties[PROP_A11Y_NAME] = g_param_spec_string ("a11y-name", NULL, NULL,
+                                                      "",
+                                                      G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS);
     g_object_class_install_properties (G_OBJECT_CLASS (class), N_PROPS, properties);
 }
 
