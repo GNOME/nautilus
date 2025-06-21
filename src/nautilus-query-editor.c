@@ -89,21 +89,26 @@ static void nautilus_query_editor_changed (NautilusQueryEditor *editor);
 
 G_DEFINE_TYPE (NautilusQueryEditor, nautilus_query_editor, GTK_TYPE_WIDGET);
 
+static gboolean
+fts_is_available (NautilusQueryEditor *self)
+{
+    if (self->location == NULL)
+    {
+        return TRUE;
+    }
+
+    g_autoptr (NautilusFile) file = nautilus_file_get (self->location);
+
+    return !g_file_has_uri_scheme (self->location, SCHEME_NETWORK) &&
+           !(nautilus_file_is_remote (file) &&
+             location_settings_search_get_recursive_for_location (self->location) == NAUTILUS_QUERY_RECURSIVE_NEVER);
+}
+
 static void
 update_fts_sensitivity (NautilusQueryEditor *editor)
 {
-    gboolean fts_sensitive = TRUE;
-
-    if (editor->location)
-    {
-        g_autoptr (NautilusFile) file = nautilus_file_get (editor->location);
-
-        fts_sensitive = !g_file_has_uri_scheme (editor->location, SCHEME_NETWORK) &&
-                        !(nautilus_file_is_remote (file) &&
-                          location_settings_search_get_recursive_for_location (editor->location) == NAUTILUS_QUERY_RECURSIVE_NEVER);
-        nautilus_search_popover_set_fts_sensitive (NAUTILUS_SEARCH_POPOVER (editor->popover),
-                                                   fts_sensitive);
-    }
+    nautilus_search_popover_set_fts_sensitive (NAUTILUS_SEARCH_POPOVER (editor->popover),
+                                               fts_is_available (editor));
 }
 
 static void
@@ -454,7 +459,8 @@ create_query (NautilusQueryEditor *editor)
     g_return_if_fail (editor->query == NULL);
 
     g_autoptr (NautilusQuery) query = nautilus_query_new ();
-    gboolean fts_enabled = nautilus_search_popover_get_fts_enabled (NAUTILUS_SEARCH_POPOVER (editor->popover));
+    gboolean fts_enabled = fts_is_available (editor) &&
+                           g_settings_get_boolean (nautilus_preferences, NAUTILUS_PREFERENCES_FTS_ENABLED);
 
     nautilus_query_set_search_content (query, fts_enabled);
 

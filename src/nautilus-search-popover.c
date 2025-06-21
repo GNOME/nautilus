@@ -1045,9 +1045,3 @@ nautilus_search_popover_reset_date_range (NautilusSearchPopover *popover)
     show_date_selection_widgets (popover, FALSE);
     g_signal_emit_by_name (popover, "date-range", NULL);
 }
-
-gboolean
-nautilus_search_popover_get_fts_enabled (NautilusSearchPopover *popover)
-{
-    return popover->fts_enabled;
-}
