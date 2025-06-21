@@ -179,26 +179,28 @@ cancel_current_search_ignoring_partial_results (NautilusShellSearchProvider *sel
 
 static void
 search_hits_added_cb (NautilusSearchEngine *engine,
-                      GList                *transferred_hits,
+                      GPtrArray            *transferred_hits,
                       gpointer              user_data)
 {
-    g_autolist (NautilusSearchHit) hits = transferred_hits;
+    g_autoptr (GPtrArray) hits = transferred_hits;
     PendingSearch *search = user_data;
-    GList *l;
-    NautilusSearchHit *hit;
     const gchar *hit_uri;
     g_autoptr (GDateTime) now = g_date_time_new_now_local ();
 
     g_debug ("*** Search engine hits added");
 
-    for (l = hits; l != NULL; l = l->next)
+    while (hits->len > 0)
     {
-        hit = l->data;
+        guint index = hits->len - 1;
+        NautilusSearchHit *hit = hits->pdata[index];
+
         nautilus_search_hit_compute_scores (hit, now, search->query);
         hit_uri = nautilus_search_hit_get_uri (hit);
         g_debug ("    %s", hit_uri);
 
-        g_hash_table_replace (search->hits, g_strdup (hit_uri), g_steal_pointer (&hit));
+        g_hash_table_replace (search->hits,
+                              g_strdup (hit_uri),
+                              g_ptr_array_steal_index (hits, index));
     }
 }
 
