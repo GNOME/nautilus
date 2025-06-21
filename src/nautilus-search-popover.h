@@ -42,7 +42,7 @@ nautilus_search_popover_set_date_range (NautilusSearchPopover *popover,
 void                 nautilus_search_popover_reset_date_range    (NautilusSearchPopover *popover);
 void                 nautilus_search_popover_reset_mime_types    (NautilusSearchPopover *popover);
 
-void                 nautilus_search_popover_set_fts_sensitive   (NautilusSearchPopover *popover,
+void                 nautilus_search_popover_set_fts_available   (NautilusSearchPopover *popover,
                                                                   gboolean               sensitive);
 
 G_END_DECLS

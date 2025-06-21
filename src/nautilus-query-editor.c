@@ -107,7 +107,7 @@ fts_is_available (NautilusQueryEditor *self)
 static void
 update_fts_sensitivity (NautilusQueryEditor *editor)
 {
-    nautilus_search_popover_set_fts_sensitive (NAUTILUS_SEARCH_POPOVER (editor->popover),
+    nautilus_search_popover_set_fts_available (NAUTILUS_SEARCH_POPOVER (editor->popover),
                                                fts_is_available (editor));
 }
 

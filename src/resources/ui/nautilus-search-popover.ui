@@ -261,43 +261,58 @@
               </object>
             </child>
 
+            <!-- Other Filter Options -->
             <child>
-              <object class="GtkLabel" id="search_dim_label">
-                <property name="margin_top">10</property>
-                <property name="label" translatable="yes">Search</property>
-                <property name="xalign">0</property>
-                <style>
-                  <class name="dim-label"/>
-                </style>
-              </object>
-            </child>
-            <child>
-              <object class="GtkBox">
-                <property name="hexpand">True</property>
+              <object class="GtkBox" id="other_options_box">
+                <property name="orientation">vertical</property>
+                <property name="spacing">15</property>
                 <child>
-                  <object class="GtkToggleButton" id="full_text_search_button">
-                    <property name="label" translatable="yes">Full _Text</property>
-                    <property name="use-underline">True</property>
-                    <property name="tooltip_text" translatable="yes">Search Inside Files</property>
-                    <property name="hexpand">True</property>
-                    <property name="active">True</property>
-                    <signal name="toggled" handler="search_fts_mode_changed" object="NautilusSearchPopover" swapped="no" />
+                  <object class="GtkBox">
+                    <child>
+                      <object class="GtkLabel">
+                        <property name="label" translatable="yes">Text Matching</property>
+                        <style>
+                          <class name="heading"/>
+                        </style>
+                      </object>
+                    </child>
                   </object>
                 </child>
                 <child>
-                  <object class="GtkToggleButton" id="filename_search_button">
-                    <property name="label" translatable="yes">File _Name</property>
-                    <property name="use-underline">True</property>
-                    <property name="tooltip_text" translatable="yes">Don't Search Inside Files</property>
-                    <property name="hexpand">True</property>
-                    <property name="group">full_text_search_button</property>
-                    <property name="active">True</property>
-                    <signal name="toggled" handler="search_fts_mode_changed" object="NautilusSearchPopover" swapped="no"/>
+                  <object class="AdwWrapBox">
+                    <property name="child-spacing">8</property>
+                    <property name="line-spacing">8</property>
+                    <property name="natural-line-length">400</property>
+                    <child>
+                      <object class="GtkButton" id="content_and_filename_button">
+                        <property name="label" translatable="yes">_Content &amp; Filename</property>
+                        <property name="tooltip_text" translatable="yes">Search Inside Files</property>
+                        <property name="use_underline">True</property>
+                        <property name="sensitive">true</property>
+                        <signal name="clicked" handler="fts_option_clicked" object="NautilusSearchPopover" swapped="yes"/>
+                      </object>
+                    </child>
+                    <child>
+                      <object class="GtkButton" id="filename_only_button">
+                        <property name="label" translatable="yes">_Only Filename</property>
+                        <property name="tooltip_text" translatable="yes">Don't Search Inside Files</property>
+                        <property name="use_underline">True</property>
+                        <property name="sensitive">true</property>
+                        <signal name="clicked" handler="fts_option_clicked" object="NautilusSearchPopover" swapped="yes"/>
+                      </object>
+                    </child>
+                    <child>
+                      <object class="GtkButton" id="content_only_button">
+                        <!-- TODO This is not implemented yet, so it's hidden -->
+                        <property name="visible">False</property>
+                        <property name="label" translatable="yes">Only Co_ntents</property>
+                        <property name="use_underline">True</property>
+                        <property name="sensitive">true</property>
+                        <signal name="clicked" handler="fts_option_clicked" object="NautilusSearchPopover" swapped="yes"/>
+                      </object>
+                    </child>
                   </object>
                 </child>
-                <style>
-                  <class name="linked"/>
-                </style>
               </object>
             </child>
           </object>
@@ -305,11 +320,4 @@
       </object>
     </property>
   </template>
-  <object class="GtkSizeGroup">
-    <property name="mode">vertical</property>
-    <widgets>
-      <widget name="full_text_search_button"/>
-      <widget name="filename_search_button"/>
-    </widgets>
-  </object>
 </interface>
