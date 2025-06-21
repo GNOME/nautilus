@@ -60,8 +60,6 @@ struct _NautilusSearchPopover
 
     NautilusQuery *query;
     GtkSingleSelection *other_types_model;
-
-    gboolean fts_enabled;
 };
 
 static void          show_date_selection_widgets (NautilusSearchPopover *popover,
@@ -360,19 +358,17 @@ static void
 search_fts_mode_changed (GtkToggleButton       *button,
                          NautilusSearchPopover *popover)
 {
-    if (gtk_toggle_button_get_active (GTK_TOGGLE_BUTTON (popover->full_text_search_button)) &&
-        popover->fts_enabled == FALSE)
+    gboolean fts_active =
+        gtk_toggle_button_get_active (GTK_TOGGLE_BUTTON (popover->full_text_search_button));
+    gboolean fts_was_active = g_settings_get_boolean (nautilus_preferences,
+                                                      NAUTILUS_PREFERENCES_FTS_ENABLED);
+
+    if (fts_active != fts_was_active)
     {
-        popover->fts_enabled = TRUE;
-        g_settings_set_boolean (nautilus_preferences, NAUTILUS_PREFERENCES_FTS_ENABLED, TRUE);
-        g_signal_emit_by_name (popover, "fts-changed", popover->fts_enabled);
-    }
-    else if (gtk_toggle_button_get_active (GTK_TOGGLE_BUTTON (popover->filename_search_button)) &&
-             popover->fts_enabled == TRUE)
-    {
-        popover->fts_enabled = FALSE;
-        g_settings_set_boolean (nautilus_preferences, NAUTILUS_PREFERENCES_FTS_ENABLED, FALSE);
-        g_signal_emit_by_name (popover, "fts-changed", popover->fts_enabled);
+        g_settings_set_boolean (nautilus_preferences,
+                                NAUTILUS_PREFERENCES_FTS_ENABLED,
+                                fts_active);
+        g_signal_emit_by_name (popover, "fts-changed", fts_active);
     }
 }
 
@@ -953,9 +949,7 @@ nautilus_search_popover_init (NautilusSearchPopover *self)
         gtk_check_button_set_active (GTK_CHECK_BUTTON (self->created_button), TRUE);
     }
 
-    self->fts_enabled = g_settings_get_boolean (nautilus_preferences,
-                                                NAUTILUS_PREFERENCES_FTS_ENABLED);
-    if (self->fts_enabled)
+    if (g_settings_get_boolean (nautilus_preferences, NAUTILUS_PREFERENCES_FTS_ENABLED))
     {
         gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (self->full_text_search_button), TRUE);
     }
