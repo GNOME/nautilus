@@ -235,7 +235,7 @@ search_finished_cb (NautilusSearchEngine         *engine,
                     gpointer                      user_data)
 {
     PendingSearch *search = user_data;
-    GList *hits, *l;
+    g_autoptr (GPtrArray) hits = NULL;
     NautilusSearchHit *hit;
     GVariantBuilder builder;
     gint64 current_time;
@@ -244,18 +244,17 @@ search_finished_cb (NautilusSearchEngine         *engine,
     g_debug ("*** Search engine search finished - time elapsed %dms",
              (gint) ((current_time - search->start_time) / 1000));
 
-    hits = g_hash_table_get_values (search->hits);
-    hits = g_list_sort (hits, search_hit_compare_relevance);
+    hits = g_hash_table_get_values_as_ptr_array (search->hits);
+    g_ptr_array_sort_values (hits, search_hit_compare_relevance);
 
     g_variant_builder_init (&builder, G_VARIANT_TYPE ("as"));
 
-    for (l = hits; l != NULL; l = l->next)
+    for (uint i = 0; i < hits->len; i++)
     {
-        hit = l->data;
+        hit = hits->pdata[i];
         g_variant_builder_add (&builder, "s", nautilus_search_hit_get_uri (hit));
     }
 
-    g_list_free (hits);
     pending_search_finish (search, search->invocation,
                            g_variant_new ("(as)", &builder));
 }
