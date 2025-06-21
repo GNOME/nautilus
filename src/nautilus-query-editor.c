@@ -645,19 +645,15 @@ search_popover_time_type_changed_cb (NautilusQueryEditor    *editor,
 }
 
 static void
-search_popover_fts_changed_cb (NautilusQueryEditor   *editor,
-                               GParamSpec            *pspec,
-                               NautilusSearchPopover *popover)
+search_popover_fts_changed_cb (NautilusQueryEditor *editor,
+                               gboolean             fts_enabled)
 {
-    g_assert (NAUTILUS_IS_SEARCH_POPOVER (popover));
-
     if (editor->query == NULL)
     {
         create_query (editor);
     }
 
-    nautilus_query_set_search_content (editor->query,
-                                       nautilus_search_popover_get_fts_enabled (popover));
+    nautilus_query_set_search_content (editor->query, fts_enabled);
 
     nautilus_query_editor_changed (editor);
 }
@@ -776,7 +772,7 @@ nautilus_query_editor_init (NautilusQueryEditor *editor)
                               G_CALLBACK (search_popover_mime_type_changed_cb), editor);
     g_signal_connect_swapped (editor->popover, "time-type",
                               G_CALLBACK (search_popover_time_type_changed_cb), editor);
-    g_signal_connect_swapped (editor->popover, "notify::fts-enabled",
+    g_signal_connect_swapped (editor->popover, "fts-changed",
                               G_CALLBACK (search_popover_fts_changed_cb), editor);
 }
 
