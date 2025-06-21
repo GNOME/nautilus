@@ -21,14 +21,10 @@
 
 #pragma once
 
+#include "nautilus-enums.h"
+
 #include <glib-object.h>
 #include <gio/gio.h>
-
-typedef enum {
-        NAUTILUS_QUERY_SEARCH_TYPE_LAST_ACCESS,
-        NAUTILUS_QUERY_SEARCH_TYPE_LAST_MODIFIED,
-        NAUTILUS_QUERY_SEARCH_TYPE_CREATED
-} NautilusQuerySearchType;
 
 typedef enum {
         NAUTILUS_QUERY_RECURSIVE_NEVER,
@@ -60,9 +56,9 @@ gboolean       nautilus_query_get_search_content (NautilusQuery *query);
 void           nautilus_query_set_search_content (NautilusQuery *query,
                                                   gboolean       search_content);
 
-NautilusQuerySearchType nautilus_query_get_search_type (NautilusQuery *query);
-void                    nautilus_query_set_search_type (NautilusQuery           *query,
-                                                        NautilusQuerySearchType  type);
+NautilusSearchTimeType nautilus_query_get_search_type (NautilusQuery *query);
+void                   nautilus_query_set_search_type (NautilusQuery           *query,
+                                                       NautilusSearchTimeType   type);
 
 GPtrArray*     nautilus_query_get_date_range     (NautilusQuery *query);
 void           nautilus_query_set_date_range     (NautilusQuery *query,

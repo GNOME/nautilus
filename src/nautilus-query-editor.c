@@ -631,8 +631,8 @@ search_popover_mime_type_changed_cb (NautilusQueryEditor *editor,
 }
 
 static void
-search_popover_time_type_changed_cb (NautilusQueryEditor     *editor,
-                                     NautilusQuerySearchType  data)
+search_popover_time_type_changed_cb (NautilusQueryEditor    *editor,
+                                     NautilusSearchTimeType  data)
 {
     if (editor->query == NULL)
     {

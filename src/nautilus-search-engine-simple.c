@@ -270,7 +270,7 @@ visit_directory (GFile            *dir,
                  SearchThreadData *data)
 {
     g_autoptr (GPtrArray) date_range = NULL;
-    NautilusQuerySearchType type;
+    NautilusSearchTimeType type;
     NautilusQueryRecursive recursive_flag;
     GFileEnumerator *enumerator;
     GFileInfo *info;
@@ -369,19 +369,19 @@ visit_directory (GFile            *dir,
 
             switch (type)
             {
-                case NAUTILUS_QUERY_SEARCH_TYPE_LAST_ACCESS:
+                case NAUTILUS_SEARCH_TIME_TYPE_LAST_ACCESS:
                 {
                     target_date = atime;
                 }
                 break;
 
-                case NAUTILUS_QUERY_SEARCH_TYPE_LAST_MODIFIED:
+                case NAUTILUS_SEARCH_TIME_TYPE_LAST_MODIFIED:
                 {
                     target_date = mtime;
                 }
                 break;
 
-                case NAUTILUS_QUERY_SEARCH_TYPE_CREATED:
+                case NAUTILUS_SEARCH_TIME_TYPE_CREATED:
                 {
                     target_date = ctime;
                 }

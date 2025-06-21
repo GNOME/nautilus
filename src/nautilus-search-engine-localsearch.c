@@ -490,7 +490,7 @@ search_engine_localsearch_start (NautilusSearchProvider *provider,
     g_autofree gchar *query_text = NULL;
     g_autoptr (GPtrArray) mimetypes = NULL;
     g_autoptr (GPtrArray) date_range = NULL;
-    NautilusQuerySearchType type;
+    NautilusSearchTimeType type;
     TrackerSparqlStatement *stmt;
     SearchFeatures features = 0;
 
@@ -539,15 +539,15 @@ search_engine_localsearch_start (NautilusSearchProvider *provider,
 
     if (date_range)
     {
-        if (type == NAUTILUS_QUERY_SEARCH_TYPE_LAST_ACCESS)
+        if (type == NAUTILUS_SEARCH_TIME_TYPE_LAST_ACCESS)
         {
             features |= SEARCH_FEATURE_ATIME;
         }
-        else if (type == NAUTILUS_QUERY_SEARCH_TYPE_LAST_MODIFIED)
+        else if (type == NAUTILUS_SEARCH_TIME_TYPE_LAST_MODIFIED)
         {
             features |= SEARCH_FEATURE_MTIME;
         }
-        else if (type == NAUTILUS_QUERY_SEARCH_TYPE_CREATED)
+        else if (type == NAUTILUS_SEARCH_TIME_TYPE_CREATED)
         {
             features |= SEARCH_FEATURE_CTIME;
         }

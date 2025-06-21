@@ -171,7 +171,7 @@ model_directory_ready_cb (NautilusDirectory *directory,
         date_range = nautilus_query_get_date_range (model->query);
         if (found && date_range != NULL)
         {
-            NautilusQuerySearchType type;
+            NautilusSearchTimeType type;
             GDateTime *target_date;
 
             type = nautilus_query_get_search_type (model->query);
@@ -180,19 +180,19 @@ model_directory_ready_cb (NautilusDirectory *directory,
 
             switch (type)
             {
-                case NAUTILUS_QUERY_SEARCH_TYPE_LAST_ACCESS:
+                case NAUTILUS_SEARCH_TIME_TYPE_LAST_ACCESS:
                 {
                     target_date = atime;
                 }
                 break;
 
-                case NAUTILUS_QUERY_SEARCH_TYPE_LAST_MODIFIED:
+                case NAUTILUS_SEARCH_TIME_TYPE_LAST_MODIFIED:
                 {
                     target_date = mtime;
                 }
                 break;
 
-                case NAUTILUS_QUERY_SEARCH_TYPE_CREATED:
+                case NAUTILUS_SEARCH_TIME_TYPE_CREATED:
                 {
                     target_date = ctime;
                 }
