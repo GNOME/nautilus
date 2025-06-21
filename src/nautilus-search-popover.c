@@ -20,6 +20,7 @@
 #include <adwaita.h>
 
 #include "nautilus-enum-types.h"
+#include "nautilus-enums.h"
 #include "nautilus-search-popover.h"
 #include "nautilus-mime-actions.h"
 
@@ -335,19 +336,19 @@ static void
 search_time_type_changed (GtkCheckButton        *button,
                           NautilusSearchPopover *popover)
 {
-    NautilusQuerySearchType type = -1;
+    NautilusSearchTimeType type = -1;
 
     if (gtk_check_button_get_active (GTK_CHECK_BUTTON (popover->last_modified_button)))
     {
-        type = NAUTILUS_QUERY_SEARCH_TYPE_LAST_MODIFIED;
+        type = NAUTILUS_SEARCH_TIME_TYPE_LAST_MODIFIED;
     }
     else if (gtk_check_button_get_active (GTK_CHECK_BUTTON (popover->last_used_button)))
     {
-        type = NAUTILUS_QUERY_SEARCH_TYPE_LAST_ACCESS;
+        type = NAUTILUS_SEARCH_TIME_TYPE_LAST_ACCESS;
     }
     else
     {
-        type = NAUTILUS_QUERY_SEARCH_TYPE_CREATED;
+        type = NAUTILUS_SEARCH_TIME_TYPE_CREATED;
     }
 
     g_settings_set_enum (nautilus_preferences, "search-filter-time-type", type);
@@ -923,7 +924,7 @@ nautilus_search_popover_class_init (NautilusSearchPopoverClass *klass)
 static void
 nautilus_search_popover_init (NautilusSearchPopover *self)
 {
-    NautilusQuerySearchType filter_time_type;
+    NautilusSearchTimeType filter_time_type;
 
     gtk_widget_init_template (GTK_WIDGET (self));
 
@@ -947,13 +948,13 @@ nautilus_search_popover_init (NautilusSearchPopover *self)
                              gtk_list_box_get_row_at_index (GTK_LIST_BOX (self->type_listbox), 0));
 
     filter_time_type = g_settings_get_enum (nautilus_preferences, "search-filter-time-type");
-    if (filter_time_type == NAUTILUS_QUERY_SEARCH_TYPE_LAST_MODIFIED)
+    if (filter_time_type == NAUTILUS_SEARCH_TIME_TYPE_LAST_MODIFIED)
     {
         gtk_check_button_set_active (GTK_CHECK_BUTTON (self->last_modified_button), TRUE);
         gtk_check_button_set_active (GTK_CHECK_BUTTON (self->last_used_button), FALSE);
         gtk_check_button_set_active (GTK_CHECK_BUTTON (self->created_button), FALSE);
     }
-    else if (filter_time_type == NAUTILUS_QUERY_SEARCH_TYPE_LAST_ACCESS)
+    else if (filter_time_type == NAUTILUS_SEARCH_TIME_TYPE_LAST_ACCESS)
     {
         gtk_check_button_set_active (GTK_CHECK_BUTTON (self->last_modified_button), FALSE);
         gtk_check_button_set_active (GTK_CHECK_BUTTON (self->last_used_button), TRUE);

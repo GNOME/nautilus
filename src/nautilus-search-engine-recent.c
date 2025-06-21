@@ -276,7 +276,7 @@ recent_thread_func (gpointer user_data)
 
             if (date_range != NULL)
             {
-                NautilusQuerySearchType type;
+                NautilusSearchTimeType type;
                 GDateTime *target_date;
                 GDateTime *initial_date;
                 GDateTime *end_date;
@@ -287,19 +287,19 @@ recent_thread_func (gpointer user_data)
 
                 switch (type)
                 {
-                    case NAUTILUS_QUERY_SEARCH_TYPE_LAST_ACCESS:
+                    case NAUTILUS_SEARCH_TIME_TYPE_LAST_ACCESS:
                     {
                         target_date = atime;
                     }
                     break;
 
-                    case NAUTILUS_QUERY_SEARCH_TYPE_LAST_MODIFIED:
+                    case NAUTILUS_SEARCH_TIME_TYPE_LAST_MODIFIED:
                     {
                         target_date = mtime;
                     }
                     break;
 
-                    case NAUTILUS_QUERY_SEARCH_TYPE_CREATED:
+                    case NAUTILUS_SEARCH_TIME_TYPE_CREATED:
                     {
                         target_date = ctime;
                     }

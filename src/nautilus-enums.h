@@ -90,3 +90,9 @@ typedef enum
     NAUTILUS_OPEN_FLAG_NEW_TAB          = 1 << 2,
     NAUTILUS_OPEN_FLAG_DONT_MAKE_ACTIVE = 1 << 3,
 } NautilusOpenFlags;
+
+typedef enum {
+    NAUTILUS_SEARCH_TIME_TYPE_LAST_ACCESS,
+    NAUTILUS_SEARCH_TIME_TYPE_LAST_MODIFIED,
+    NAUTILUS_SEARCH_TIME_TYPE_CREATED,
+} NautilusSearchTimeType;

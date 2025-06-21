@@ -48,7 +48,7 @@ struct _NautilusQuery
     gboolean show_hidden;
     GPtrArray *date_range;
     NautilusQueryRecursive recursive;
-    NautilusQuerySearchType search_type;
+    NautilusSearchTimeType search_type;
     gboolean search_content;
 
     GPtrArray *prepared_words;
@@ -324,7 +324,7 @@ nautilus_query_set_search_content (NautilusQuery *query,
     query->search_content = search_content;
 }
 
-NautilusQuerySearchType
+NautilusSearchTimeType
 nautilus_query_get_search_type (NautilusQuery *query)
 {
     g_return_val_if_fail (NAUTILUS_IS_QUERY (query), -1);
@@ -333,8 +333,8 @@ nautilus_query_get_search_type (NautilusQuery *query)
 }
 
 void
-nautilus_query_set_search_type (NautilusQuery           *query,
-                                NautilusQuerySearchType  type)
+nautilus_query_set_search_type (NautilusQuery          *query,
+                                NautilusSearchTimeType  type)
 {
     g_return_if_fail (NAUTILUS_IS_QUERY (query));
 
