@@ -78,12 +78,12 @@ enum
 {
     PROP_0,
     PROP_QUERY,
-    PROP_FTS_ENABLED,
     LAST_PROP
 };
 
 enum
 {
+    FTS_CHANGED,
     MIME_TYPE,
     TIME_TYPE,
     DATE_RANGE,
@@ -365,14 +365,14 @@ search_fts_mode_changed (GtkToggleButton       *button,
     {
         popover->fts_enabled = TRUE;
         g_settings_set_boolean (nautilus_preferences, NAUTILUS_PREFERENCES_FTS_ENABLED, TRUE);
-        g_object_notify (G_OBJECT (popover), "fts-enabled");
+        g_signal_emit_by_name (popover, "fts-changed", popover->fts_enabled);
     }
     else if (gtk_toggle_button_get_active (GTK_TOGGLE_BUTTON (popover->filename_search_button)) &&
              popover->fts_enabled == TRUE)
     {
         popover->fts_enabled = FALSE;
         g_settings_set_boolean (nautilus_preferences, NAUTILUS_PREFERENCES_FTS_ENABLED, FALSE);
-        g_object_notify (G_OBJECT (popover), "fts-enabled");
+        g_signal_emit_by_name (popover, "fts-changed", popover->fts_enabled);
     }
 }
 
@@ -764,12 +764,6 @@ nautilus_search_popover_get_property (GObject    *object,
         }
         break;
 
-        case PROP_FTS_ENABLED:
-        {
-            g_value_set_boolean (value, self->fts_enabled);
-        }
-        break;
-
         default:
         {
             G_OBJECT_WARN_INVALID_PROPERTY_ID (object, prop_id, pspec);
@@ -792,12 +786,6 @@ nautilus_search_popover_set_property (GObject      *object,
         case PROP_QUERY:
         {
             nautilus_search_popover_set_query (self, g_value_get_object (value));
-        }
-        break;
-
-        case PROP_FTS_ENABLED:
-        {
-            self->fts_enabled = g_value_get_boolean (value);
         }
         break;
 
@@ -845,6 +833,12 @@ nautilus_search_popover_class_init (NautilusSearchPopoverClass *klass)
                                         1,
                                         G_TYPE_PTR_ARRAY);
 
+    signals[FTS_CHANGED] = g_signal_new ("fts-changed",
+                                         NAUTILUS_TYPE_SEARCH_POPOVER,
+                                         G_SIGNAL_RUN_LAST, 0, NULL, NULL,
+                                         g_cclosure_marshal_generic,
+                                         G_TYPE_NONE, 1, G_TYPE_BOOLEAN);
+
     signals[MIME_TYPE] = g_signal_new ("mime-type",
                                        NAUTILUS_TYPE_SEARCH_POPOVER,
                                        G_SIGNAL_RUN_LAST,
@@ -880,14 +874,6 @@ nautilus_search_popover_class_init (NautilusSearchPopoverClass *klass)
                                                           "The current query being edited",
                                                           NAUTILUS_TYPE_QUERY,
                                                           G_PARAM_READWRITE));
-
-    g_object_class_install_property (object_class,
-                                     PROP_FTS_ENABLED,
-                                     g_param_spec_boolean ("fts-enabled",
-                                                           "fts enabled",
-                                                           "fts enabled",
-                                                           FALSE,
-                                                           G_PARAM_READWRITE));
 
     gtk_widget_class_set_template_from_resource (widget_class, "/org/gnome/nautilus/ui/nautilus-search-popover.ui");
 
