@@ -38,6 +38,8 @@ struct _NautilusSearchPopover
     GtkPopover parent;
 
     /* File Type Filter */
+    AdwWrapBox *type_wrap_box;
+
     GtkButton *audio_button;
     GtkButton *documents_button;
     GtkButton *folders_button;
@@ -754,6 +756,7 @@ nautilus_search_popover_class_init (NautilusSearchPopoverClass *klass)
 
     gtk_widget_class_set_template_from_resource (widget_class, "/org/gnome/nautilus/ui/nautilus-search-popover.ui");
 
+    gtk_widget_class_bind_template_child (widget_class, NautilusSearchPopover, type_wrap_box);
     gtk_widget_class_bind_template_child (widget_class, NautilusSearchPopover, audio_button);
     gtk_widget_class_bind_template_child (widget_class, NautilusSearchPopover, documents_button);
     gtk_widget_class_bind_template_child (widget_class, NautilusSearchPopover, folders_button);
@@ -790,6 +793,29 @@ nautilus_search_popover_class_init (NautilusSearchPopoverClass *klass)
     gtk_widget_class_bind_template_callback (widget_class, search_fts_mode_changed);
 }
 
+static gint
+sort_mime_type_tag (GtkButton **button_ptr1,
+                    GtkButton **button_ptr2)
+{
+    g_return_val_if_fail (GTK_IS_BUTTON (*button_ptr1), -1);
+
+    AdwButtonContent *content1 = (AdwButtonContent *) gtk_button_get_child (*button_ptr1);
+    AdwButtonContent *content2 = (AdwButtonContent *) gtk_button_get_child (*button_ptr2);
+
+    const char *text1 = adw_button_content_get_label (content1);
+    const char *text2 = adw_button_content_get_label (content2);
+
+    /* Buttons get placed in reverse, so give inverted sort results */
+    return -1 * g_utf8_collate (text1, text2);
+}
+
+static void
+reposition_mime_type_tag (GtkWidget             *type_tag,
+                          NautilusSearchPopover *self)
+{
+    adw_wrap_box_reorder_child_after (self->type_wrap_box, type_tag, NULL);
+}
+
 static void
 mime_tag_set_data (GtkButton *mime_tag,
                    gint       mime_group)
@@ -816,6 +842,20 @@ nautilus_search_popover_init (NautilusSearchPopover *self)
     mime_tag_set_data (self->videos_button, 11);
     mime_tag_set_data (self->other_types_button, -1);
     set_active_button (&self->active_type_button, NULL);
+
+    /* sort type buttons alphabetically */
+    g_autoptr (GPtrArray) mime_type_array = g_ptr_array_new ();
+    g_ptr_array_add (mime_type_array, self->audio_button);
+    g_ptr_array_add (mime_type_array, self->documents_button);
+    g_ptr_array_add (mime_type_array, self->folders_button);
+    g_ptr_array_add (mime_type_array, self->images_button);
+    g_ptr_array_add (mime_type_array, self->pdf_button);
+    g_ptr_array_add (mime_type_array, self->spreadsheets_button);
+    g_ptr_array_add (mime_type_array, self->text_button);
+    g_ptr_array_add (mime_type_array, self->videos_button);
+
+    g_ptr_array_sort (mime_type_array, (GCompareFunc) sort_mime_type_tag);
+    g_ptr_array_foreach (mime_type_array, (GFunc) reposition_mime_type_tag, self);
 
     /* Fuzzy dates listbox */
     gtk_list_box_set_header_func (GTK_LIST_BOX (self->dates_listbox),
