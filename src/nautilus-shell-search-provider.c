@@ -194,7 +194,7 @@ search_hits_added_cb (NautilusSearchEngine *engine,
     for (l = hits; l != NULL; l = l->next)
     {
         hit = l->data;
-        nautilus_search_hit_compute_scores (hit, now, search->query);
+        nautilus_search_hit_compute_scores (hit, now, NULL);
         hit_uri = nautilus_search_hit_get_uri (hit);
         g_debug ("    %s", hit_uri);
 
@@ -447,7 +447,7 @@ search_add_volumes_and_bookmarks (PendingSearch *search)
         {
             hit = nautilus_search_hit_new (candidate->uri);
             nautilus_search_hit_set_fts_rank (hit, match);
-            nautilus_search_hit_compute_scores (hit, now, search->query);
+            nautilus_search_hit_compute_scores (hit, now, NULL);
             g_hash_table_replace (search->hits, g_strdup (candidate->uri), hit);
         }
     }
