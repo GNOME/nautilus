@@ -5991,7 +5991,7 @@ action_open_scripts_folder (GSimpleAction *action,
     }
 
     nautilus_application_open_location_full (NAUTILUS_APPLICATION (g_application_get_default ()),
-                                             location, 0, NULL, NULL, NULL);
+                                             location, 0, NULL, NULL, NULL, NULL);
 }
 
 static GFile *

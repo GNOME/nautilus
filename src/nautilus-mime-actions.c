@@ -1654,7 +1654,7 @@ activate_files_internal (ActivateParameters *parameters)
             if (parameters->flags & (NAUTILUS_OPEN_FLAG_NEW_WINDOW | NAUTILUS_OPEN_FLAG_NEW_TAB))
             {
                 nautilus_application_open_location_full (NAUTILUS_APPLICATION (g_application_get_default ()),
-                                                         location_with_permissions, parameters->flags, NULL, NULL, parameters->slot);
+                                                         location_with_permissions, parameters->flags, NULL, NULL, parameters->slot, NULL);
             }
             else
             {
