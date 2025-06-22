@@ -335,14 +335,16 @@ nautilus_application_open_location_full (NautilusApplication *self,
                                          NautilusOpenFlags    flags,
                                          GList               *selection,
                                          NautilusWindow      *target_window,
-                                         NautilusWindowSlot  *target_slot)
+                                         NautilusWindowSlot  *target_slot,
+                                         const char          *startup_id)
 {
     NAUTILUS_APPLICATION_CLASS (G_OBJECT_GET_CLASS (self))->open_location_full (self,
                                                                                 location,
                                                                                 flags,
                                                                                 selection,
                                                                                 target_window,
-                                                                                target_slot);
+                                                                                target_slot,
+                                                                                startup_id);
 }
 
 static void
@@ -351,7 +353,8 @@ real_open_location_full (NautilusApplication *self,
                          NautilusOpenFlags    flags,
                          GList               *selection,
                          NautilusWindow      *target_window,
-                         NautilusWindowSlot  *target_slot)
+                         NautilusWindowSlot  *target_slot,
+                         const char          *startup_id)
 {
     NautilusWindowSlot *active_slot = NULL;
     NautilusWindow *active_window;
@@ -447,7 +450,7 @@ real_open_location_full (NautilusApplication *self,
     /* Application is the one that manages windows, so this flag shouldn't use
      * it anymore by any client */
     flags &= ~NAUTILUS_OPEN_FLAG_NEW_WINDOW;
-    nautilus_window_open_location_full (target_window, location, flags, selection, target_slot);
+    nautilus_window_open_location_full (target_window, location, flags, selection, target_slot, startup_id);
 }
 
 static NautilusWindow *
@@ -458,13 +461,13 @@ open_window (NautilusApplication *self,
 
     if (location != NULL)
     {
-        nautilus_application_open_location_full (self, location, 0, NULL, window, NULL);
+        nautilus_application_open_location_full (self, location, 0, NULL, window, NULL, NULL);
     }
     else
     {
         GFile *home;
         home = g_file_new_for_path (g_get_home_dir ());
-        nautilus_application_open_location_full (self, home, 0, NULL, window, NULL);
+        nautilus_application_open_location_full (self, home, 0, NULL, window, NULL, NULL);
 
         g_object_unref (home);
     }
@@ -504,7 +507,7 @@ nautilus_application_open_location (NautilusApplication *self,
         window = get_nautilus_window_containing_slot (slot);
     }
 
-    nautilus_application_open_location_full (self, location, 0, sel_list, window, slot);
+    nautilus_application_open_location_full (self, location, 0, sel_list, window, slot, startup_id);
 
     if (sel_list != NULL)
     {
@@ -549,7 +552,7 @@ nautilus_application_open (GApplication  *app,
         else
         {
             /* We open the location again to update any possible selection */
-            nautilus_application_open_location_full (NAUTILUS_APPLICATION (app), file, 0, NULL, NULL, slot);
+            nautilus_application_open_location_full (NAUTILUS_APPLICATION (app), file, 0, NULL, NULL, slot, NULL);
         }
     }
 }
@@ -652,7 +655,7 @@ action_new_window (GSimpleAction *action,
 
     nautilus_application_open_location_full (application, home,
                                              NAUTILUS_OPEN_FLAG_NEW_WINDOW,
-                                             NULL, NULL, NULL);
+                                             NULL, NULL, NULL, NULL);
 }
 
 static void
@@ -694,7 +697,7 @@ action_clone_window (GSimpleAction *action,
     }
 
     nautilus_application_open_location_full (NAUTILUS_APPLICATION (application), location,
-                                             NAUTILUS_OPEN_FLAG_NEW_WINDOW, NULL, NULL, NULL);
+                                             NAUTILUS_OPEN_FLAG_NEW_WINDOW, NULL, NULL, NULL, NULL);
 }
 
 static void

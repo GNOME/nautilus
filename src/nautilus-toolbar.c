@@ -173,7 +173,7 @@ on_path_bar_open_location (NautilusPathBar   *path_bar,
     if (open_flags & (NAUTILUS_OPEN_FLAG_NEW_WINDOW | NAUTILUS_OPEN_FLAG_NEW_TAB))
     {
         nautilus_application_open_location_full (NAUTILUS_APPLICATION (g_application_get_default ()),
-                                                 location, open_flags, NULL, NULL, NULL);
+                                                 location, open_flags, NULL, NULL, NULL, NULL);
     }
     else
     {
