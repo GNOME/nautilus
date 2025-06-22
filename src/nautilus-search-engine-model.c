@@ -78,13 +78,14 @@ finalize (GObject *object)
 static gboolean
 search_finished (NautilusSearchEngineModel *model)
 {
+    g_autoptr (GPtrArray) hits = g_steal_pointer (&model->hits);
     model->finished_id = 0;
 
-    if (model->hits != NULL)
+    if (hits != NULL && hits->len > 0)
     {
         g_debug ("Model engine hits added");
         nautilus_search_provider_hits_added (NAUTILUS_SEARCH_PROVIDER (model),
-                                             g_steal_pointer (&model->hits));
+                                             g_steal_pointer (&hits));
     }
 
     model->query_pending = FALSE;
