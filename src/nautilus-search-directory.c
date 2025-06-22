@@ -585,6 +585,9 @@ search_engine_hits_added (NautilusSearchEngine    *engine,
     GList *monitor_list;
 
     file_list = NULL;
+    g_autoptr (GFile) query_location = self->query != NULL
+                                       ? nautilus_query_get_location (self->query)
+                                       : NULL;
 
     for (guint i = 0; i < hits->len; i++)
     {
@@ -593,7 +596,7 @@ search_engine_hits_added (NautilusSearchEngine    *engine,
 
         uri = nautilus_search_hit_get_uri (hit);
 
-        nautilus_search_hit_compute_scores (hit, now, self->query);
+        nautilus_search_hit_compute_scores (hit, now, query_location);
 
         file = nautilus_file_get_by_uri (uri);
         nautilus_file_set_search_relevance (file, nautilus_search_hit_get_relevance (hit));
