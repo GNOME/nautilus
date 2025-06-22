@@ -24,7 +24,6 @@
 #include <gio/gio.h>
 
 #include "nautilus-search-hit.h"
-#include "nautilus-query.h"
 
 struct _NautilusSearchHit
 {
@@ -58,9 +57,8 @@ G_DEFINE_TYPE (NautilusSearchHit, nautilus_search_hit, G_TYPE_OBJECT)
 void
 nautilus_search_hit_compute_scores (NautilusSearchHit *hit,
                                     GDateTime         *now,
-                                    NautilusQuery     *query)
+                                    GFile             *query_location)
 {
-    g_autoptr (GFile) query_location = NULL;
     guint dir_count = 0;
     GTimeSpan m_diff = G_MAXINT64;
     GTimeSpan a_diff = G_MAXINT64;
@@ -68,8 +66,6 @@ nautilus_search_hit_compute_scores (NautilusSearchHit *hit,
     gdouble recent_bonus = 0.0;
     gdouble proximity_bonus = 0.0;
     gdouble match_bonus = 0.0;
-
-    query_location = nautilus_query_get_location (query);
 
     if (query_location != NULL)
     {
