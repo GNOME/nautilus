@@ -194,7 +194,7 @@ action_go_home (GSimpleAction *action,
     window = NAUTILUS_WINDOW (user_data);
     home = g_file_new_for_path (g_get_home_dir ());
 
-    nautilus_window_open_location_full (window, home, 0, NULL, NULL);
+    nautilus_window_open_location_full (window, home, 0, NULL, NULL, NULL);
 
     g_object_unref (home);
 }
@@ -437,7 +437,8 @@ nautilus_window_open_location_full (NautilusWindow     *window,
                                     GFile              *location,
                                     NautilusOpenFlags   flags,
                                     GList              *selection,
-                                    NautilusWindowSlot *target_slot)
+                                    NautilusWindowSlot *target_slot,
+                                    const char         *startup_id)
 {
     NautilusWindowSlot *active_slot;
 
@@ -459,6 +460,10 @@ nautilus_window_open_location_full (NautilusWindow     *window,
      * opposite, since it's the most usual use case */
     if (!(flags & NAUTILUS_OPEN_FLAG_DONT_MAKE_ACTIVE))
     {
+        if (startup_id)
+        {
+            gtk_window_set_startup_id (GTK_WINDOW (window), startup_id);
+        }
         gtk_window_present (GTK_WINDOW (window));
         nautilus_window_set_active_slot (window, target_slot);
     }
@@ -519,7 +524,7 @@ nautilus_window_new_tab (NautilusWindow *window)
 
         nautilus_window_open_location_full (window, location,
                                             NAUTILUS_OPEN_FLAG_NEW_TAB,
-                                            NULL, NULL);
+                                            NULL, NULL, NULL);
         g_object_unref (location);
     }
 }
