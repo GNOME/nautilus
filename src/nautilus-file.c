@@ -8615,10 +8615,10 @@ nautilus_file_get_property (GObject    *object,
             if (nautilus_tag_manager_file_is_starred (tag_manager,
                                                       nautilus_file_get_uri (file)))
             {
-                /* Translators: A "." is added in between file name and starring
-                 * action description as a useful pause in the screen reader
-                 * announcement. */
                 g_autofree gchar *accessible_name = g_strdup_printf (
+                    /* Translators: A "." is added in between file name and starring
+                     * action description as a useful pause in the screen reader
+                     * announcement. */
                     _("%s. Starred"),
                     file->details->display_name);
                 g_value_set_string (value, accessible_name);
