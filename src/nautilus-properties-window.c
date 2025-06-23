@@ -744,8 +744,7 @@ update_star (NautilusPropertiesWindow *self,
 
     gtk_button_set_icon_name (GTK_BUTTON (self->star_button),
                               is_starred ? "starred-symbolic" : "non-starred-symbolic");
-    /* Translators: This is a verb for tagging or untagging a file with a star. */
-    gtk_widget_set_tooltip_text (self->star_button, is_starred ? _("Unstar") : _("Star"));
+    gtk_widget_set_tooltip_text (self->star_button, is_starred ? _("Unstar") : C_("Verb", "Star"));
 }
 
 static void
