@@ -65,7 +65,7 @@ update_star (GtkButton    *star,
     g_autofree gchar *file_uri = nautilus_file_get_uri (file);
     gboolean is_starred = nautilus_tag_manager_file_is_starred (nautilus_tag_manager_get (),
                                                                 file_uri);
-    const gchar *tooltip = is_starred ? _("Unstar") : _("Star");
+    const gchar *tooltip = is_starred ? _("Unstar") : C_("Verb", "Star");
 
     /* Setting the tooltip is somewhat expensive as it involves system calls, so only
      * update UI on change. */
