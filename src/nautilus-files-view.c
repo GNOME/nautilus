@@ -5923,7 +5923,7 @@ get_dialog_initial_location (NautilusFilesView *view,
     {
         NautilusSearchDirectory *search = NAUTILUS_SEARCH_DIRECTORY (priv->directory);
 
-        location = nautilus_query_get_location (nautilus_search_directory_get_query (search));
+        location = nautilus_search_directory_get_search_location (search);
     }
     else if (showing_starred_directory (view))
     {

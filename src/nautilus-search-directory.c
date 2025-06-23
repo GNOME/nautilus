@@ -585,9 +585,7 @@ search_engine_hits_added (NautilusSearchEngine    *engine,
     GList *monitor_list;
 
     file_list = NULL;
-    g_autoptr (GFile) query_location = self->query != NULL
-                                       ? nautilus_query_get_location (self->query)
-                                       : NULL;
+    g_autoptr (GFile) query_location = nautilus_search_directory_get_search_location (self);
 
     for (guint i = 0; i < hits->len; i++)
     {
@@ -949,10 +947,9 @@ nautilus_search_directory_class_init (NautilusSearchDirectoryClass *class)
 static void
 update_base_model (NautilusSearchDirectory *self)
 {
-    g_autoptr (GFile) query_location = NULL;
+    g_autoptr (GFile) query_location = nautilus_search_directory_get_search_location (self);
     g_autoptr (NautilusDirectory) base_model = NULL;
 
-    query_location = self->query != NULL ? nautilus_query_get_location (self->query) : NULL;
     base_model = nautilus_directory_get (query_location);
 
     if (self->base_model == base_model)
@@ -1010,4 +1007,17 @@ NautilusQuery *
 nautilus_search_directory_get_query (NautilusSearchDirectory *self)
 {
     return self->query;
+}
+
+GFile *
+nautilus_search_directory_get_search_location (NautilusSearchDirectory *self)
+{
+    if (self->query != NULL)
+    {
+        return nautilus_query_get_location (self->query);
+    }
+    else
+    {
+        return NULL;
+    }
 }

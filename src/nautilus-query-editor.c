@@ -754,7 +754,7 @@ nautilus_query_editor_set_location (NautilusQueryEditor *editor,
         NautilusSearchDirectory *search = NAUTILUS_SEARCH_DIRECTORY (directory);
         g_autoptr (GFile) real_location = NULL;
 
-        real_location = nautilus_query_get_location (nautilus_search_directory_get_query (search));
+        real_location = nautilus_search_directory_get_search_location (search);
 
         should_notify = g_set_object (&editor->location, real_location);
     }
