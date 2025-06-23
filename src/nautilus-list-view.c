@@ -140,7 +140,7 @@ apply_columns_settings (NautilusListView  *self,
 
     if (self->search_directory != NULL)
     {
-        location = nautilus_query_get_location (nautilus_search_directory_get_query (self->search_directory));
+        location = nautilus_search_directory_get_search_location (self->search_directory);
     }
 
     if (location == NULL)
@@ -316,7 +316,7 @@ get_base_location (NautilusListView *self)
     {
         g_autoptr (GFile) location = NULL;
 
-        location = nautilus_query_get_location (nautilus_search_directory_get_query (self->search_directory));
+        location = nautilus_search_directory_get_search_location (self->search_directory);
 
         if (location != NULL &&
             !g_file_has_uri_scheme (location, SCHEME_RECENT) &&
