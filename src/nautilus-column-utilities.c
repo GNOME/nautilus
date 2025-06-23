@@ -156,7 +156,7 @@ get_builtin_columns (void)
                              g_object_new (NAUTILUS_TYPE_COLUMN,
                                            "name", "starred",
                                            "attribute", "starred",
-                                           "label", _("Star"),
+                                           "label", "",
                                            "description", _("Shows if file is starred."),
                                            "default-sort-order", GTK_SORT_DESCENDING,
                                            "xalign", 0.5,
