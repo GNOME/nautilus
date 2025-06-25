@@ -7,19 +7,6 @@ GNOME, internally known by its historical name `nautilus`.
 ## Supported version
 Only the latest version of Files as provided upstream is supported. Try out the [Flatpak nightly](https://welcome.gnome.org/en/app/Nautilus/#installing-a-nightly-build) installation before filling issues to ensure the installation is reproducible and doesn't have downstream changes on it. In case you cannot reproduce in the nightly installation, don't hesitate to file an issue in your distribution. This is to ensure the issue is well triaged and reaches the proper people.
 
-### Update default branch
-
-The default development branch of nautilus has been renamed to `main`. To
-update your local checkout, use:
-```sh
-git checkout master
-git branch -m master main
-git fetch
-git branch --unset-upstream
-git branch -u origin/main
-git symbolic-ref refs/remotes/origin/HEAD refs/remotes/origin/main
-```
-
 ## Runtime dependencies
 - [Bubblewrap](https://github.com/projectatomic/bubblewrap) installed. Used for security reasons.
 - [LocalSearch](https://gitlab.gnome.org/GNOME/localsearch) properly set up and with all features enabled. Used for fast search and metadata extraction, starred files and batch renaming.
