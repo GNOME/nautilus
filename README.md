@@ -23,3 +23,17 @@ Documentation for the libnautilus-extension API is available [here](https://gnom
 ## How to report issues
 
 Report issues to the GNOME [issue tracking system](https://gitlab.gnome.org/GNOME/nautilus/issues).
+
+## Feature requests
+
+Files is a core compoment of the GNOME desktop experience. As such, any changes in behavior or appearance only happen in accordance with the [GNOME design team][design-team].
+
+For major changes, it is best to start a discussion on [discourse] and reach out on the [#gnome-design matrix room][design-room], and only involve the issue tracker once agreement has been reached.
+
+In particular mockups must be approved by the design team to be considered for implementation.
+
+For enhancements that are limited in scope and well-defined, it is acceptable to directly open an issue using the shortcoming template.
+
+[design-team]: https://gitlab.gnome.org/Teams/Design
+[discourse]: https://discourse.gnome.org/tag/nautilus
+[design-room]: https://matrix.to/#/#gnome-design:gnome.org
