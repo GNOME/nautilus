@@ -13,7 +13,7 @@ It can be installed alongside the regular version with these instructions:
 
 # Affected Version
 - Version: <!-- Note: Versions older than a year are not supported. -->
-- Distribution: <!-- Example: Ubuntu 23.10 -->
+- Distribution: <!-- Example: Ubuntu 24.04 -->
 - Also happens with development version: Yes / No
 
 # Steps to reproduce <!-- Explain in detail how the issue can be reproduced. -->
