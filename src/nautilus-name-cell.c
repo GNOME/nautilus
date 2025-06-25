@@ -346,6 +346,26 @@ popover_show_cb (NautilusNameCell *self)
                              GTK_ACCESSIBLE_ANNOUNCEMENT_PRIORITY_MEDIUM);
 }
 
+static gboolean
+on_label_query_tooltip (GtkWidget  *widget,
+                        int         x,
+                        int         y,
+                        gboolean    keyboard_tip,
+                        GtkTooltip *tooltip,
+                        gpointer    user_data)
+{
+    GtkLabel *label = GTK_LABEL (widget);
+
+    if (pango_layout_is_ellipsized (gtk_label_get_layout (label)))
+    {
+        gtk_tooltip_set_text (tooltip, gtk_label_get_text (label));
+
+        return TRUE;
+    }
+
+    return FALSE;
+}
+
 static void
 nautilus_name_cell_init (NautilusNameCell *self)
 {
@@ -421,6 +441,7 @@ nautilus_name_cell_class_init (NautilusNameCellClass *klass)
     gtk_widget_class_bind_template_child (widget_class, NautilusNameCell, snippet);
     gtk_widget_class_bind_template_child (widget_class, NautilusNameCell, path);
 
+    gtk_widget_class_bind_template_callback (widget_class, on_label_query_tooltip);
     gtk_widget_class_bind_template_callback (widget_class, popover_show_cb);
 }
 
