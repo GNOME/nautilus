@@ -47,6 +47,7 @@ struct _NautilusSearchEngine
     guint providers_error;
 
     NautilusQuery *query;
+    NautilusQuery *running_query;
     gboolean running;
     gboolean restart;
 };
@@ -86,6 +87,8 @@ static void
 search_engine_start_real (NautilusSearchEngine *self)
 {
     search_engine_start_real_setup (self);
+
+    self->running_query = g_object_ref (self->query);
 
     g_autoptr (GFile) query_location = nautilus_query_get_location (self->query);
 
@@ -253,6 +256,7 @@ check_providers_status (NautilusSearchEngine *self)
     g_object_notify (G_OBJECT (self), "running");
 
     g_hash_table_remove_all (self->uris);
+    g_clear_object (&self->running_query);
 
     if (self->restart)
     {
