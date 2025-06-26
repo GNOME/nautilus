@@ -44,7 +44,6 @@ struct _NautilusQueryEditor
     GtkWidget parent_instance;
 
     GtkWidget *prefix_icon;
-    GtkWidget *tags_box;
     GtkWidget *text;
     GtkWidget *clear_icon;
     GtkWidget *popover;
@@ -52,9 +51,6 @@ struct _NautilusQueryEditor
     GtkWidget *search_info_button;
     GtkWidget *status_page;
     GtkWidget *search_settings_button;
-
-    GtkWidget *mime_types_tag;
-    GtkWidget *date_range_tag;
 
     GCancellable *cancellable;
 
@@ -271,7 +267,6 @@ nautilus_query_editor_dispose (GObject *object)
     g_clear_handle_id (&editor->search_changed_idle_id, g_source_remove);
 
     gtk_widget_unparent (gtk_widget_get_first_child (GTK_WIDGET (editor)));
-    g_clear_pointer (&editor->tags_box, gtk_widget_unparent);
     g_clear_pointer (&editor->text, gtk_widget_unparent);
     g_clear_pointer (&editor->dropdown_button, gtk_widget_unparent);
     g_clear_pointer (&editor->search_info_button, gtk_widget_unparent);
@@ -536,36 +531,6 @@ entry_changed_cb (NautilusQueryEditor *editor)
                                                       editor);
 }
 
-static GtkWidget *
-create_tag (NautilusQueryEditor *self,
-            const gchar         *text,
-            GCallback            reset_callback)
-{
-    GtkWidget *tag;
-    GtkWidget *label;
-    GtkWidget *button;
-
-    tag = gtk_box_new (GTK_ORIENTATION_HORIZONTAL, 6);
-    gtk_widget_set_margin_end (tag, 6);
-    gtk_widget_set_name (tag, "NautilusQueryEditorTag");
-
-    label = gtk_label_new (text);
-    gtk_widget_add_css_class (label, "caption-heading");
-    gtk_widget_set_margin_start (label, 12);
-    gtk_box_append (GTK_BOX (tag), label);
-
-    button = gtk_button_new ();
-    gtk_button_set_icon_name (GTK_BUTTON (button), "window-close-symbolic");
-    gtk_widget_add_css_class (button, "flat");
-    gtk_widget_add_css_class (button, "circular");
-    gtk_widget_set_tooltip_text (button, _("Remove Filter"));
-    g_signal_connect_object (button, "clicked",
-                             reset_callback, self->popover, G_CONNECT_SWAPPED);
-    gtk_box_append (GTK_BOX (tag), button);
-
-    return tag;
-}
-
 static void
 search_popover_date_range_changed_cb (NautilusQueryEditor *editor,
                                       GPtrArray           *date_range)
@@ -575,29 +540,10 @@ search_popover_date_range_changed_cb (NautilusQueryEditor *editor,
         create_query (editor);
     }
 
-    if (editor->date_range_tag != NULL)
-    {
-        gtk_box_remove (GTK_BOX (editor->tags_box), editor->date_range_tag);
-        editor->date_range_tag = NULL;
-    }
-
-    if (date_range)
-    {
-        g_autofree gchar *text_for_date_range = NULL;
-
-        text_for_date_range = get_text_for_date_range (date_range, TRUE);
-        editor->date_range_tag = create_tag (editor,
-                                             text_for_date_range,
-                                             G_CALLBACK (nautilus_search_popover_reset_date_range));
-        gtk_box_append (GTK_BOX (editor->tags_box), editor->date_range_tag);
-    }
-
     nautilus_query_set_date_range (editor->query, date_range);
 
     update_filter_button (editor);
     nautilus_query_editor_changed (editor);
-    gtk_widget_set_visible (editor->tags_box,
-                            (gtk_widget_get_first_child (editor->tags_box) != NULL));
 }
 
 static void
@@ -612,12 +558,6 @@ search_popover_mime_type_changed_cb (NautilusQueryEditor *editor,
         create_query (editor);
     }
 
-    if (editor->mime_types_tag != NULL)
-    {
-        gtk_box_remove (GTK_BOX (editor->tags_box), editor->mime_types_tag);
-        editor->mime_types_tag = NULL;
-    }
-
     /* group 0 is anything */
     if (mimetype_group == 0)
     {
@@ -626,30 +566,16 @@ search_popover_mime_type_changed_cb (NautilusQueryEditor *editor,
     else if (mimetype_group > 0)
     {
         mimetypes = nautilus_mime_types_group_get_mimetypes (mimetype_group);
-        editor->mime_types_tag = create_tag (editor,
-                                             nautilus_mime_types_group_get_name (mimetype_group),
-                                             G_CALLBACK (nautilus_search_popover_reset_mime_types));
-        gtk_box_append (GTK_BOX (editor->tags_box), editor->mime_types_tag);
     }
     else
     {
-        g_autofree gchar *display_name = NULL;
-
         mimetypes = g_ptr_array_new_full (1, g_free);
         g_ptr_array_add (mimetypes, g_strdup (mimetype));
-
-        display_name = g_content_type_get_description (mimetype);
-        editor->mime_types_tag = create_tag (editor,
-                                             display_name,
-                                             G_CALLBACK (nautilus_search_popover_reset_mime_types));
-        gtk_box_append (GTK_BOX (editor->tags_box), editor->mime_types_tag);
     }
     nautilus_query_set_mime_types (editor->query, mimetypes);
 
     update_filter_button (editor);
     nautilus_query_editor_changed (editor);
-    gtk_widget_set_visible (editor->tags_box,
-                            (gtk_widget_get_first_child (editor->tags_box) != NULL));
 }
 
 static void
@@ -724,10 +650,6 @@ nautilus_query_editor_init (NautilusQueryEditor *editor)
     gtk_widget_set_margin_start (editor->prefix_icon, 4);
     gtk_widget_set_margin_end (editor->prefix_icon, 6);
     gtk_widget_set_parent (editor->prefix_icon, GTK_WIDGET (editor));
-
-    editor->tags_box = gtk_box_new (GTK_ORIENTATION_HORIZONTAL, 0);
-    gtk_widget_set_visible (editor->tags_box, FALSE);
-    gtk_widget_set_parent (editor->tags_box, GTK_WIDGET (editor));
 
     editor->text = gtk_text_new ();
     gtk_widget_set_hexpand (editor->text, TRUE);
