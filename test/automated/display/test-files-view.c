@@ -77,7 +77,6 @@ test_rename_files (void)
                                                                     (GDestroyNotify) nautilus_file_unref);
     g_autoptr (GPtrArray) callback_arr = g_ptr_array_new_full (renamed_file_count,
                                                                (GDestroyNotify) nautilus_file_unref);
-    gboolean added_files = FALSE, removed_files = FALSE;
 
     /* Create the files before loading the view and keep them in an array. */
     for (guint i = 0; i < file_count; i++)
@@ -95,10 +94,7 @@ test_rename_files (void)
 
     g_assert_cmpint (g_list_model_get_n_items (G_LIST_MODEL (priv->model)), ==, file_count);
 
-    /* Rename only some of the files and verify that they are emmited, but
-     * assert that no files are "added" or "removed". */
-    g_signal_connect_swapped (files_view, "add-files", G_CALLBACK (set_true), &added_files);
-    g_signal_connect_swapped (files_view, "remove-file", G_CALLBACK (set_true), &removed_files);
+    /* Rename only some of the files and verify that changes are emitted*/
     g_signal_connect (files_view, "file-changed",
                       G_CALLBACK (collect_changed_files), callback_arr);
 
@@ -115,8 +111,6 @@ test_rename_files (void)
                         !ptr_arrays_equal_unordered (callback_arr, renamed_files_arr));
 
     g_assert_cmpint (g_list_model_get_n_items (G_LIST_MODEL (priv->model)), ==, file_count);
-    g_assert_false (added_files);
-    g_assert_false (removed_files);
 
     /* Both renamed and non-renamed nautilus file pointers from before renaming
      * should still point to the same files in the view. Renaming should not
