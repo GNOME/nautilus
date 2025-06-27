@@ -179,7 +179,7 @@ test_remove_files (void)
     g_assert_cmpint (g_list_model_get_n_items (G_LIST_MODEL (priv->model)), ==, file_count);
 
 
-    /* Delete only some of the files and verify that they are emmited */
+    /* Delete only some of the files and verify that they are emitted */
     g_signal_connect (files_view, "remove-file",
                       G_CALLBACK (collect_removed_files_cb), callback_arr);
 
