@@ -57,7 +57,7 @@ test_init_config_dir (void)
         g_autoptr (GFileOutputStream) stream = g_file_replace (bookmarks_file,
                                                                NULL,
                                                                FALSE,
-                                                               G_FILE_CREATE_REPLACE_DESTINATION,
+                                                               G_FILE_CREATE_NONE,
                                                                NULL, &error);
         g_assert_no_error (error);
         g_output_stream_close (G_OUTPUT_STREAM (stream), NULL, &error);
