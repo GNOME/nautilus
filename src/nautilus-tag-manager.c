@@ -86,6 +86,19 @@ enum
 static guint signals[LAST_SIGNAL];
 
 static void
+inform_no_localsearch_connection_once (void)
+{
+    static gboolean done = FALSE;
+
+    if (G_UNLIKELY (!done))
+    {
+        done = TRUE;
+
+        g_message ("nautilus-tag-manager: No Localsearch connection");
+    }
+}
+
+static void
 start_query_or_update (TrackerSparqlConnection *db,
                        GString                 *query,
                        GAsyncReadyCallback      callback,
@@ -97,7 +110,7 @@ start_query_or_update (TrackerSparqlConnection *db,
 
     if (!db)
     {
-        g_message ("nautilus-tag-manager: No Localsearch connection");
+        inform_no_localsearch_connection_once ();
         return;
     }
 
@@ -311,7 +324,7 @@ nautilus_tag_manager_query_starred_files (NautilusTagManager *self,
 {
     if (!self->database_ok)
     {
-        g_message ("nautilus-tag-manager: No Localsearch connection");
+        inform_no_localsearch_connection_once ();
         return;
     }
 
@@ -790,7 +803,7 @@ nautilus_tag_manager_update_moved_uris (NautilusTagManager *self,
 
     if (!self->database_ok)
     {
-        g_message ("nautilus-tag-manager: No Localsearch connection");
+        inform_no_localsearch_connection_once ();
         return;
     }
 
