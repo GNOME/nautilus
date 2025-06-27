@@ -97,7 +97,7 @@ start_query_or_update (TrackerSparqlConnection *db,
 
     if (!db)
     {
-        g_message ("nautilus-tag-manager: No Tracker connection");
+        g_message ("nautilus-tag-manager: No Localsearch connection");
         return;
     }
 
@@ -311,7 +311,7 @@ nautilus_tag_manager_query_starred_files (NautilusTagManager *self,
 {
     if (!self->database_ok)
     {
-        g_message ("nautilus-tag-manager: No Tracker connection");
+        g_message ("nautilus-tag-manager: No Localsearch connection");
         return;
     }
 
@@ -790,7 +790,7 @@ nautilus_tag_manager_update_moved_uris (NautilusTagManager *self,
 
     if (!self->database_ok)
     {
-        g_message ("nautilus-tag-manager: No Tracker connection");
+        g_message ("nautilus-tag-manager: No Localsearch connection");
         return;
     }
 
