@@ -20,6 +20,9 @@ test_clear_tmp_dir (void)
 {
     if (nautilus_tmp_dir != NULL)
     {
+        g_autoptr (GFile) tmp_dir = g_file_new_for_path (nautilus_tmp_dir);
+
+        empty_directory_by_prefix (tmp_dir, "");
         rmdir (nautilus_tmp_dir);
         g_clear_pointer (&nautilus_tmp_dir, g_free);
     }
