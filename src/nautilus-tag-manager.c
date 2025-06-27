@@ -94,7 +94,7 @@ inform_no_localsearch_connection_once (void)
     {
         done = TRUE;
 
-        g_message ("nautilus-tag-manager: No Localsearch connection");
+        g_message ("No Localsearch connection");
     }
 }
 
