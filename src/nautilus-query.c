@@ -115,35 +115,35 @@ gdouble
 nautilus_query_matches_string (NautilusQuery *query,
                                const gchar   *string)
 {
-    g_autofree gchar *prepared_string = NULL;
-    gchar *ptr = NULL;
-    gboolean found = TRUE;
-    gdouble retval;
-    gint nonexact_malus = 0;
-
     if (query->text == NULL)
     {
         return 0;
     }
 
-    prepared_string = prepare_string_for_compare (string);
+    g_autofree gchar *prepared_string = prepare_string_for_compare (string);
+    guint prepared_string_len = strlen (prepared_string);
+
+    gint prefix_malus = 0;
+    gint suffix_malus = 0;
 
     for (guint idx = 0; idx < query->prepared_words->len; idx++)
     {
         GString *word = query->prepared_words->pdata[idx];
 
-        if ((ptr = strstr (prepared_string, word->str)) == NULL)
+        char *match = strstr (prepared_string, word->str);
+        if (match == NULL)
         {
-            found = FALSE;
-            break;
+            return -1;
         }
 
-        nonexact_malus += strlen (ptr) - word->len;
-    }
+        guint before_match = match - prepared_string;
+        gchar *prev_space = g_utf8_strrchr (prepared_string, before_match, ' ');
+        prefix_malus += match - prev_space;
 
-    if (!found)
-    {
-        return -1;
+        char *match_end = match + word->len;
+        guint after_match = prepared_string_len - before_match - word->len;
+        gchar *next_space = g_utf8_strchr (match_end, after_match, ' ');
+        suffix_malus += next_space - match_end;
     }
 
     /* The rank value depends on the numbers of letters before and after the match.
@@ -151,9 +151,10 @@ nautilus_query_matches_string (NautilusQuery *query,
      * after the match is divided by a factor, so that it decreases the rank by a
      * smaller amount.
      */
-    retval = MAX (MIN_RANK, MAX_RANK - (gdouble) (ptr - prepared_string) - (gdouble) nonexact_malus / RANK_SCALE_FACTOR);
+    gdouble combined_malus = (gdouble) prefix_malus - (gdouble) suffix_malus / RANK_SCALE_FACTOR;
 
-    return retval;
+    /* The malus grows per word, so scale by amount of words */
+    return MAX (MIN_RANK, MAX_RANK - combined_malus / query->prepared_words->len);
 }
 
 NautilusQuery *
