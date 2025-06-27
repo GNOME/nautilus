@@ -105,6 +105,19 @@ fts_is_available (NautilusQueryEditor *self)
 }
 
 static void
+update_filter_button (NautilusQueryEditor *self)
+{
+    if (nautilus_query_has_active_filter (self->query))
+    {
+        gtk_widget_add_css_class (self->dropdown_button, "accent");
+    }
+    else
+    {
+        gtk_widget_remove_css_class (self->dropdown_button, "accent");
+    }
+}
+
+static void
 update_fts_sensitivity (NautilusQueryEditor *editor)
 {
     nautilus_search_popover_set_fts_available (NAUTILUS_SEARCH_POPOVER (editor->popover),
@@ -239,6 +252,7 @@ recursive_search_preferences_changed (GSettings           *settings,
     if (recursive != nautilus_query_get_recursive (editor->query))
     {
         nautilus_query_set_recursive (editor->query, recursive);
+        update_filter_button (editor);
         nautilus_query_editor_changed (editor);
     }
 
@@ -580,6 +594,7 @@ search_popover_date_range_changed_cb (NautilusQueryEditor *editor,
 
     nautilus_query_set_date_range (editor->query, date_range);
 
+    update_filter_button (editor);
     nautilus_query_editor_changed (editor);
     gtk_widget_set_visible (editor->tags_box,
                             (gtk_widget_get_first_child (editor->tags_box) != NULL));
@@ -631,6 +646,7 @@ search_popover_mime_type_changed_cb (NautilusQueryEditor *editor,
     }
     nautilus_query_set_mime_types (editor->query, mimetypes);
 
+    update_filter_button (editor);
     nautilus_query_editor_changed (editor);
     gtk_widget_set_visible (editor->tags_box,
                             (gtk_widget_get_first_child (editor->tags_box) != NULL));
@@ -647,6 +663,7 @@ search_popover_time_type_changed_cb (NautilusQueryEditor    *editor,
 
     nautilus_query_set_search_type (editor->query, data);
 
+    update_filter_button (editor);
     nautilus_query_editor_changed (editor);
 }
 
@@ -661,6 +678,7 @@ search_popover_fts_changed_cb (NautilusQueryEditor *editor,
 
     nautilus_query_set_search_content (editor->query, fts_enabled);
 
+    update_filter_button (editor);
     nautilus_query_editor_changed (editor);
 }
 

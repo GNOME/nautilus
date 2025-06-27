@@ -399,6 +399,14 @@ nautilus_query_set_recursive (NautilusQuery          *query,
 }
 
 gboolean
+nautilus_query_has_active_filter (NautilusQuery *self)
+{
+    return self->date_range != NULL ||
+           self->mime_types->len > 0 ||
+           !self->search_content;
+}
+
+gboolean
 nautilus_query_is_empty (NautilusQuery *query)
 {
     if (!query)
