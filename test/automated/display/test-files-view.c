@@ -106,8 +106,8 @@ test_rename_files (void)
         nautilus_file_rename (file, file_name, collect_renamed_files, renamed_files_arr);
     }
 
-    ITER_CONTEXT_WHILE (callback_arr->len != renamed_file_count &&
-                        renamed_files_arr->len != renamed_file_count &&
+    ITER_CONTEXT_WHILE (callback_arr->len != renamed_file_count ||
+                        renamed_files_arr->len != renamed_file_count ||
                         !ptr_arrays_equal_unordered (callback_arr, renamed_files_arr));
 
     g_assert_cmpint (g_list_model_get_n_items (G_LIST_MODEL (priv->model)), ==, file_count);
@@ -118,6 +118,13 @@ test_rename_files (void)
     for (guint i = 0; i < file_arr->len; i++)
     {
         NautilusFile *file = file_arr->pdata[i];
+        NautilusViewItem *item = nautilus_view_model_get_item_for_file (priv->model, file);
+
+        g_assert_nonnull (item);
+    }
+    for (guint i = 0; i < renamed_files_arr->len; i++)
+    {
+        NautilusFile *file = renamed_files_arr->pdata[i];
         NautilusViewItem *item = nautilus_view_model_get_item_for_file (priv->model, file);
 
         g_assert_nonnull (item);
