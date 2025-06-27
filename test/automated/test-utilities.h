@@ -14,7 +14,7 @@
 #define ITER_CONTEXT_WHILE(CONDITION) \
     for (guint context_iter = 0; \
          context_iter < MAX_CONTEXT_ITERATIONS && \
-         CONDITION; \
+         (CONDITION); \
          context_iter++) \
     { \
         g_main_context_iteration (NULL, TRUE); \
