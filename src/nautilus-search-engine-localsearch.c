@@ -472,7 +472,12 @@ search_engine_localsearch_start (NautilusSearchProvider *provider,
 
     if (self->connection == NULL)
     {
-        g_warning ("Localsearch search engine has no connection");
+        static gboolean warned = FALSE;
+        if (G_UNLIKELY (!warned))
+        {
+            g_warning ("Localsearch search engine has no connection");
+            warned = TRUE;
+        }
         return FALSE;
     }
 
