@@ -26,7 +26,6 @@ cd glib \
     && rm -rf glib
 
 dnf builddep -y --allowerasing gtk4 \
-    && dnf install -y glslc \
     && git clone --depth 1 https://gitlab.gnome.org/GNOME/gtk.git \
     && cd gtk \
     && meson setup _build -Dbuild-tests=false -Dbuild-testsuite=false -Dbuild-demos=false -Dbuild-examples=false --prefix /usr \
