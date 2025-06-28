@@ -18,6 +18,8 @@ variables:
         libasan
         uncrustify
         gcovr
+        xwayland-run
+        mutter
         glibc-devel
         glib2-devel
         gtk4-devel
@@ -73,7 +75,7 @@ workflow:
 .nautilus.fedora:
     variables:
         FDO_DISTRIBUTION_VERSION: rawhide
-        FDO_DISTRIBUTION_TAG: '2025-06-19'
+        FDO_DISTRIBUTION_TAG: '2025-06-30.1'
         FDO_DISTRIBUTION_COMPRESSION_FORMAT: zstd:chunked
     needs:
       - job: "update image"
@@ -173,12 +175,16 @@ coverage:
         - .nautilus.fedora
     stage: analyze
     rules:
-        - when: manual
-          allow_failure: true
+        - allow_failure: true
     script:
+        # This line is needed for mutter to not err while starting XWayland,
+        # which we currently can't disable.
+        - mkdir -m 1777 /tmp/.X11-unix
         - meson setup -Dextensions=false -Db_coverage=true -Dtests=all $MESON_BUILD_DIR
         - meson compile -C $MESON_BUILD_DIR
-        - meson test -C $MESON_BUILD_DIR || true
+        # Run the tests inside a headless wayland compositor, and ignore errors
+        # from the return code.
+        - wlheadless-run -c mutter -- meson test --suite display --suite displayless -C $MESON_BUILD_DIR || true
         - ninja coverage -C $MESON_BUILD_DIR
     artifacts:
         name: 'Test Coverage Report'
