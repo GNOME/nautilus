@@ -69,20 +69,6 @@ G_DEFINE_TYPE_WITH_CODE (NautilusSearchEngine,
                                                 nautilus_search_provider_init))
 
 static void
-search_engine_start_real_setup (NautilusSearchEngine *self)
-{
-    self->providers_running = 0;
-    self->providers_finished = 0;
-    self->providers_error = 0;
-
-    self->restart = FALSE;
-
-    g_debug ("Search engine start real setup");
-
-    g_object_ref (self);
-}
-
-static void
 search_engine_start_provider (NautilusSearchProvider *provider,
                               NautilusSearchEngine   *self)
 {
@@ -99,7 +85,13 @@ search_engine_start_provider (NautilusSearchProvider *provider,
 static void
 search_engine_start_real (NautilusSearchEngine *self)
 {
-    search_engine_start_real_setup (self);
+    g_object_ref (self);
+
+    self->providers_running = 0;
+    self->providers_finished = 0;
+    self->providers_error = 0;
+
+    self->restart = FALSE;
 
     search_engine_start_provider (self->localsearch, self);
     search_engine_start_provider (self->model, self);
