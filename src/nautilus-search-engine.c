@@ -151,6 +151,19 @@ stop_delayed_start (Delay *delay)
 }
 
 static void
+search_engine_stop_provider (NautilusSearchProvider *provider)
+{
+    if (provider == NULL)
+    {
+        return;
+    }
+    else
+    {
+        nautilus_search_provider_stop (provider);
+    }
+}
+
+static void
 nautilus_search_engine_stop (NautilusSearchProvider *provider)
 {
     NautilusSearchEngine *self = NAUTILUS_SEARCH_ENGINE (provider);
@@ -161,22 +174,10 @@ nautilus_search_engine_stop (NautilusSearchProvider *provider)
 
     g_ptr_array_foreach (self->delays, (GFunc) stop_delayed_start, NULL);
 
-    if (self->localsearch != NULL)
-    {
-        nautilus_search_provider_stop (self->localsearch);
-    }
-    if (self->model != NULL)
-    {
-        nautilus_search_provider_stop (self->model);
-    }
-    if (self->recent != NULL)
-    {
-        nautilus_search_provider_stop (self->recent);
-    }
-    if (self->simple != NULL)
-    {
-        nautilus_search_provider_stop (self->simple);
-    }
+    search_engine_stop_provider (self->localsearch);
+    search_engine_stop_provider (self->model);
+    search_engine_stop_provider (self->recent);
+    search_engine_stop_provider (self->simple);
 }
 
 static void
