@@ -264,6 +264,11 @@ send_batch_in_idle (SearchThreadData *thread_data)
         G_FILE_ATTRIBUTE_TIME_CREATED "," \
         G_FILE_ATTRIBUTE_ID_FILE
 
+#define STD_ATTRIBUTES_WITH_CONTENT_TYPE \
+        STD_ATTRIBUTES "," \
+        G_FILE_ATTRIBUTE_STANDARD_CONTENT_TYPE "," \
+        G_FILE_ATTRIBUTE_STANDARD_FAST_CONTENT_TYPE
+
 static void
 visit_directory (GFile            *dir,
                  SearchThreadData *data)
@@ -284,9 +289,7 @@ visit_directory (GFile            *dir,
 
     enumerator = g_file_enumerate_children (dir,
                                             data->mime_types->len > 0 ?
-                                            STD_ATTRIBUTES ","
-                                            G_FILE_ATTRIBUTE_STANDARD_CONTENT_TYPE ","
-                                            G_FILE_ATTRIBUTE_STANDARD_FAST_CONTENT_TYPE
+                                            STD_ATTRIBUTES_WITH_CONTENT_TYPE
                                             :
                                             STD_ATTRIBUTES
                                             ,
