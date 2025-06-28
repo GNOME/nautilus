@@ -277,74 +277,57 @@ static void
 visit_directory (GFile            *dir,
                  SearchThreadData *data)
 {
-    g_autoptr (GPtrArray) date_range = NULL;
-    NautilusSearchTimeType type;
-    GFileEnumerator *enumerator;
-    GFileInfo *info;
-    GFile *child;
-    const char *mime_type, *display_name;
-    gdouble match;
-    gboolean is_hidden, found;
-    const char *id;
-    gboolean visited;
-    GDateTime *initial_date;
-    GDateTime *end_date;
-    gchar *uri;
-
-    enumerator = g_file_enumerate_children (dir,
-                                            data->mime_types->len > 0 ?
-                                            STD_ATTRIBUTES_WITH_CONTENT_TYPE
-                                            :
-                                            STD_ATTRIBUTES
-                                            ,
-                                            G_FILE_QUERY_INFO_NOFOLLOW_SYMLINKS,
-                                            data->cancellable, NULL);
+    g_autoptr (GFileEnumerator) enumerator = g_file_enumerate_children (
+        dir,
+        data->mime_types->len > 0 ? STD_ATTRIBUTES_WITH_CONTENT_TYPE : STD_ATTRIBUTES,
+        G_FILE_QUERY_INFO_NOFOLLOW_SYMLINKS,
+        data->cancellable, NULL);
 
     if (enumerator == NULL)
     {
         return;
     }
 
-    type = nautilus_query_get_search_type (data->query);
-    date_range = nautilus_query_get_date_range (data->query);
-
+    NautilusSearchTimeType type = nautilus_query_get_search_type (data->query);
+    g_autoptr (GPtrArray) date_range = nautilus_query_get_date_range (data->query);
+    gboolean show_hidden = nautilus_query_get_show_hidden_files (data->query);
     gboolean recursion_enabled = nautilus_query_recursive (data->query);
     gboolean per_location_recursive_check = nautilus_query_recursive_local_only (data->query);
 
-    while ((info = g_file_enumerator_next_file (enumerator, data->cancellable, NULL)) != NULL)
+    while (TRUE)
     {
+        GFileInfo *info = g_file_enumerator_next_file (enumerator, data->cancellable, NULL);
+
+        if (info == NULL)
+        {
+            break;
+        }
+
         g_autoptr (GDateTime) mtime = NULL;
         g_autoptr (GDateTime) atime = NULL;
         g_autoptr (GDateTime) ctime = NULL;
-        gboolean recursive = FALSE;
 
-        display_name = g_file_info_get_display_name (info);
+        const char *display_name = g_file_info_get_display_name (info);
         if (display_name == NULL)
         {
-            goto next;
+            continue;
         }
 
-        if (!nautilus_query_get_show_hidden_files (data->query))
+        if (!show_hidden &&
+            (g_file_info_get_attribute_boolean (info, G_FILE_ATTRIBUTE_STANDARD_IS_HIDDEN) ||
+             g_file_info_get_attribute_boolean (info, G_FILE_ATTRIBUTE_STANDARD_IS_BACKUP)))
         {
-            is_hidden = g_file_info_get_attribute_boolean (info,
-                                                           G_FILE_ATTRIBUTE_STANDARD_IS_HIDDEN) ||
-                        g_file_info_get_attribute_boolean (info,
-                                                           G_FILE_ATTRIBUTE_STANDARD_IS_BACKUP);
-
-            if (is_hidden)
-            {
-                goto next;
-            }
+            continue;
         }
 
-        child = g_file_get_child (dir, g_file_info_get_name (info));
-        match = nautilus_query_matches_string (data->query, display_name);
-        found = (match > -1);
+        g_autoptr (GFile) child = g_file_get_child (dir, g_file_info_get_name (info));
+        gdouble match = nautilus_query_matches_string (data->query, display_name);
+        gboolean found = (match > -1);
 
         if (found && data->mime_types->len > 0)
         {
-            mime_type = g_file_info_get_attribute_string (info,
-                                                          G_FILE_ATTRIBUTE_STANDARD_CONTENT_TYPE);
+            const char *mime_type = g_file_info_get_attribute_string (
+                info, G_FILE_ATTRIBUTE_STANDARD_CONTENT_TYPE);
             if (mime_type == NULL)
             {
                 mime_type = g_file_info_get_attribute_string (info,
@@ -371,8 +354,8 @@ visit_directory (GFile            *dir,
         {
             GDateTime *target_date;
 
-            initial_date = g_ptr_array_index (date_range, 0);
-            end_date = g_ptr_array_index (date_range, 1);
+            GDateTime *initial_date = g_ptr_array_index (date_range, 0);
+            GDateTime *end_date = g_ptr_array_index (date_range, 1);
 
             switch (type)
             {
@@ -407,11 +390,9 @@ visit_directory (GFile            *dir,
 
         if (found)
         {
-            NautilusSearchHit *hit;
+            g_autofree gchar *uri = g_file_get_uri (child);
+            NautilusSearchHit *hit = nautilus_search_hit_new (uri);
 
-            uri = g_file_get_uri (child);
-            hit = nautilus_search_hit_new (uri);
-            g_free (uri);
             nautilus_search_hit_set_fts_rank (hit, match);
             nautilus_search_hit_set_modification_time (hit, mtime);
             nautilus_search_hit_set_access_time (hit, atime);
@@ -431,6 +412,7 @@ visit_directory (GFile            *dir,
             send_batch_in_idle (data);
         }
 
+        gboolean recursive = FALSE;
         if (recursion_enabled &&
             g_file_info_get_file_type (info) == G_FILE_TYPE_DIRECTORY)
         {
@@ -455,9 +437,9 @@ visit_directory (GFile            *dir,
 
         if (recursive)
         {
-            id = g_file_info_get_attribute_string (info, G_FILE_ATTRIBUTE_ID_FILE);
-            visited = FALSE;
-            if (id)
+            const char *id = g_file_info_get_attribute_string (info, G_FILE_ATTRIBUTE_ID_FILE);
+            gboolean visited = FALSE;
+            if (id != NULL)
             {
                 if (g_hash_table_lookup_extended (data->visited,
                                                   id, NULL, NULL))
@@ -472,16 +454,10 @@ visit_directory (GFile            *dir,
 
             if (!visited)
             {
-                g_queue_push_tail (data->directories, g_object_ref (child));
+                g_queue_push_tail (data->directories, g_steal_pointer (&child));
             }
         }
-
-        g_object_unref (child);
-next:
-        g_object_unref (info);
     }
-
-    g_object_unref (enumerator);
 }
 
 
