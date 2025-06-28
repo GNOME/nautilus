@@ -92,12 +92,10 @@ search_engine_start_provider (NautilusSearchProvider *provider,
 static void
 search_engine_start_real (NautilusSearchEngine *self)
 {
-    g_object_ref (self);
+    g_return_if_fail (self->running);
 
     self->providers_running = 0;
     self->providers_finished = 0;
-
-    self->restart = FALSE;
 
     self->starting = TRUE;
     search_engine_start_provider (self->localsearch, self);
@@ -120,35 +118,22 @@ nautilus_search_engine_start (NautilusSearchProvider *provider,
 
     NautilusSearchEngine *self = NAUTILUS_SEARCH_ENGINE (provider);
 
-    g_debug ("Search engine start");
-    guint num_finished = self->providers_finished;
-
     g_clear_object (&self->query);
     self->query = nautilus_query_copy (query_to_copy);
 
     if (self->running)
     {
-        if (num_finished == self->providers_running &&
-            self->restart)
-        {
-            search_engine_start_real (self);
-        }
-
+        self->restart = TRUE;
         return TRUE;
     }
 
+    /* Keep reference on self while running */
+    g_object_ref (self);
     self->running = TRUE;
-
     g_object_notify (G_OBJECT (self), "running");
 
-    if (num_finished < self->providers_running)
-    {
-        self->restart = TRUE;
-    }
-    else
-    {
-        search_engine_start_real (self);
-    }
+    g_debug ("Search engine start");
+    search_engine_start_real (self);
 
     return TRUE;
 }
@@ -177,10 +162,7 @@ nautilus_search_engine_stop (NautilusSearchProvider *provider)
         nautilus_search_provider_stop (self->simple);
     }
 
-    self->running = FALSE;
     self->restart = FALSE;
-
-    g_object_notify (G_OBJECT (self), "running");
 }
 
 static void
@@ -220,6 +202,8 @@ search_provider_hits_added (NautilusSearchProvider *provider,
 static void
 check_providers_status (NautilusSearchEngine *self)
 {
+    g_assert (self->running);
+
     if (self->starting || self->providers_finished < self->providers_running)
     {
         return;
@@ -237,17 +221,21 @@ check_providers_status (NautilusSearchEngine *self)
                                        self->restart ? NAUTILUS_SEARCH_PROVIDER_STATUS_RESTARTING :
                                                        NAUTILUS_SEARCH_PROVIDER_STATUS_NORMAL);
 
-    self->running = FALSE;
-    g_object_notify (G_OBJECT (self), "running");
-
     g_hash_table_remove_all (self->uris);
 
     if (self->restart)
     {
-        nautilus_search_engine_start (NAUTILUS_SEARCH_PROVIDER (self), self->query);
+        self->restart = FALSE;
+        g_debug ("Search engine restarting");
+        search_engine_start_real (self);
     }
+    else
+    {
+        self->running = FALSE;
+        g_object_notify (G_OBJECT (self), "running");
 
-    g_object_unref (self);
+        g_object_unref (self);
+    }
 }
 
 static void
