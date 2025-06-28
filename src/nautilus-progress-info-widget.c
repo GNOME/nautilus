@@ -52,7 +52,7 @@ info_finished (NautilusProgressInfoWidget *self)
     gtk_widget_set_sensitive (self->priv->button, FALSE);
     if (!nautilus_progress_info_get_is_cancelled (self->priv->info))
     {
-        gtk_button_set_icon_name (GTK_BUTTON (self->priv->button), "emblem-ok-symbolic");
+        gtk_button_set_icon_name (GTK_BUTTON (self->priv->button), "file-operation-finished-symbolic");
         /* Translators: This describes an operation, such as copying or compressing files, as being completed. */
         gtk_widget_set_tooltip_text (GTK_WIDGET (self->priv->button), _("Operation Completed"));
     }
