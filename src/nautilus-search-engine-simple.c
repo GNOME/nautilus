@@ -113,9 +113,7 @@ search_thread_data_new (NautilusSearchEngineSimple *engine,
 static void
 search_thread_data_free (SearchThreadData *data)
 {
-    g_queue_foreach (data->directories,
-                     (GFunc) g_object_unref, NULL);
-    g_queue_free (data->directories);
+    g_queue_free_full (data->directories, (GDestroyNotify) g_object_unref);
     g_hash_table_destroy (data->visited);
     g_object_unref (data->cancellable);
     g_object_unref (data->query);
@@ -123,13 +121,7 @@ search_thread_data_free (SearchThreadData *data)
     g_clear_pointer (&data->hits, g_ptr_array_unref);
     g_object_unref (data->engine);
     g_mutex_clear (&data->idle_mutex);
-
-    GPtrArray *hits;
-    while ((hits = g_queue_pop_head (data->idle_queue)))
-    {
-        g_ptr_array_unref (hits);
-    }
-    g_queue_free (data->idle_queue);
+    g_queue_free_full (data->idle_queue, (GDestroyNotify) g_ptr_array_unref);
 
     g_free (data);
 }
