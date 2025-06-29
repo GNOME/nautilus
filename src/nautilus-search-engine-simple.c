@@ -452,34 +452,28 @@ visit_directory (GFile            *dir,
 static gpointer
 search_thread_func (gpointer user_data)
 {
-    SearchThreadData *data;
-    GFile *dir;
-    GFileInfo *info;
-    const char *id;
+    SearchThreadData *data = user_data;
 
-    data = user_data;
     /* Insert id for toplevel directory into visited */
-    dir = g_queue_peek_head (data->directories);
-    info = g_file_query_info (dir, G_FILE_ATTRIBUTE_ID_FILE, 0, data->cancellable, NULL);
-    if (info)
+    g_autoptr (GFile) toplevel = nautilus_query_get_location (data->query);
+    g_autoptr (GFileInfo) info = g_file_query_info (
+        toplevel, G_FILE_ATTRIBUTE_ID_FILE, 0, data->cancellable, NULL);
+
+    if (info != NULL)
     {
-        id = g_file_info_get_attribute_string (info, G_FILE_ATTRIBUTE_ID_FILE);
-        if (id)
+        const char *id = g_file_info_get_attribute_string (info, G_FILE_ATTRIBUTE_ID_FILE);
+
+        if (id != NULL)
         {
             g_hash_table_insert (data->visited, g_strdup (id), NULL);
         }
-        g_object_unref (info);
     }
 
-    while (!g_cancellable_is_cancelled (data->cancellable) &&
-           (dir = g_queue_pop_head (data->directories)) != NULL)
-    {
-        visit_directory (dir, data);
-        g_object_unref (dir);
-    }
+    visit_directory (toplevel, data);
 
     if (!g_cancellable_is_cancelled (data->cancellable))
     {
+        /* Send remaining non-batch sized results */
         send_batch_in_idle (data);
     }
 
@@ -492,10 +486,7 @@ static gboolean
 search_engine_simple_start (NautilusSearchProvider *provider,
                             NautilusQuery          *query)
 {
-    NautilusSearchEngineSimple *simple;
-    SearchThreadData *data;
-
-    simple = NAUTILUS_SEARCH_ENGINE_SIMPLE (provider);
+    NautilusSearchEngineSimple *simple = NAUTILUS_SEARCH_ENGINE_SIMPLE (provider);
 
     g_set_object (&simple->query, query);
 
@@ -512,11 +503,8 @@ search_engine_simple_start (NautilusSearchProvider *provider,
 
     g_debug ("Simple engine start");
 
-    data = search_thread_data_new (simple, simple->query);
-
-    simple->active_search = data;
-
-    g_queue_push_tail (data->directories, g_steal_pointer (&location));
+    /* Prepare thread data */
+    simple->active_search = search_thread_data_new (simple, simple->query);
 
     g_autoptr (GThread) thread = g_thread_new (
         "nautilus-search-simple", search_thread_func, simple->active_search);
