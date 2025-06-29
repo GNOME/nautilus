@@ -450,34 +450,40 @@ visit_directory (GFile            *dir,
 static gpointer
 search_thread_func (gpointer user_data)
 {
-    SearchThreadData *data;
-    GFile *dir;
-    GFileInfo *info;
-    const char *id;
+    SearchThreadData *data = user_data;
 
-    data = user_data;
     /* Insert id for toplevel directory into visited */
-    dir = g_queue_peek_head (data->directories);
-    info = g_file_query_info (dir, G_FILE_ATTRIBUTE_ID_FILE, 0, data->cancellable, NULL);
-    if (info)
+    g_autoptr (GFile) toplevel = nautilus_query_get_location (data->query);
+    g_autoptr (GFileInfo) info = g_file_query_info (
+        toplevel, G_FILE_ATTRIBUTE_ID_FILE, 0, data->cancellable, NULL);
+
+    if (info != NULL)
     {
-        id = g_file_info_get_attribute_string (info, G_FILE_ATTRIBUTE_ID_FILE);
-        if (id)
+        const char *id = g_file_info_get_attribute_string (info, G_FILE_ATTRIBUTE_ID_FILE);
+
+        if (id != NULL)
         {
             g_hash_table_insert (data->visited, g_strdup (id), NULL);
         }
-        g_object_unref (info);
     }
 
-    while (!g_cancellable_is_cancelled (data->cancellable) &&
-           (dir = g_queue_pop_head (data->directories)) != NULL)
+    visit_directory (toplevel, data);
+
+    while (!g_cancellable_is_cancelled (data->cancellable))
     {
+        g_autoptr (GFile) dir = g_queue_pop_head (data->directories);
+
+        if (dir == NULL)
+        {
+            break;
+        }
+
         visit_directory (dir, data);
-        g_object_unref (dir);
     }
 
     if (!g_cancellable_is_cancelled (data->cancellable))
     {
+        /* Send remaining non-batch sized results */
         send_batch_in_idle (data);
     }
 
@@ -523,8 +529,6 @@ search_engine_simple_start (NautilusSearchProvider *provider,
     data = search_thread_data_new (simple, simple->query);
 
     simple->active_search = data;
-
-    g_queue_push_tail (data->directories, g_steal_pointer (&location));
 
     simple->create_thread_timeout_id = g_timeout_add_once (CREATE_THREAD_DELAY_MS,
                                                            create_thread_timeout,
