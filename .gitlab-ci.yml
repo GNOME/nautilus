@@ -18,6 +18,7 @@ variables:
         libasan
         uncrustify
         gcovr
+        mutter
         glibc-devel
         glib2-devel
         gtk4-devel
@@ -73,7 +74,7 @@ workflow:
 .nautilus.fedora:
     variables:
         FDO_DISTRIBUTION_VERSION: rawhide
-        FDO_DISTRIBUTION_TAG: '2025-06-28.0'
+        FDO_DISTRIBUTION_TAG: '2025-06-30.0'
         FDO_DISTRIBUTION_COMPRESSION_FORMAT: zstd:chunked
     needs:
       - job: "update image"
