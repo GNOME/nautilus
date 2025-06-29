@@ -95,6 +95,7 @@ search_thread_data_new (NautilusSearchEngineSimple *engine,
     data->engine = g_object_ref (engine);
     data->directories = g_queue_new ();
     data->visited = g_hash_table_new_full (g_str_hash, g_str_equal, g_free, NULL);
+    data->hits = g_ptr_array_new_with_free_func (g_object_unref);
     data->query = g_object_ref (query);
     data->mime_types = nautilus_query_get_mime_types (query);
 
@@ -234,13 +235,16 @@ process_batch_in_idle (SearchThreadData *thread_data,
 static void
 send_batch_in_idle (SearchThreadData *thread_data)
 {
+    if (thread_data->hits->len == 0)
+    {
+        return;
+    }
+
+    GPtrArray *hits = thread_data->hits;
+    thread_data->hits = g_ptr_array_new_with_free_func (g_object_unref);
     thread_data->n_processed_files = 0;
 
-    if (thread_data->hits)
-    {
-        process_batch_in_idle (thread_data, thread_data->hits);
-    }
-    thread_data->hits = NULL;
+    process_batch_in_idle (thread_data, hits);
 }
 
 #define STD_ATTRIBUTES \
@@ -385,11 +389,6 @@ visit_directory (GFile            *dir,
             nautilus_search_hit_set_modification_time (hit, mtime);
             nautilus_search_hit_set_access_time (hit, atime);
             nautilus_search_hit_set_creation_time (hit, ctime);
-
-            if (G_UNLIKELY (data->hits == NULL))
-            {
-                data->hits = g_ptr_array_new_with_free_func (g_object_unref);
-            }
 
             g_ptr_array_add (data->hits, hit);
         }
