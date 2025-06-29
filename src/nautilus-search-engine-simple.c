@@ -424,22 +424,11 @@ visit_directory (GFile            *dir,
         if (recursive)
         {
             const char *id = g_file_info_get_attribute_string (info, G_FILE_ATTRIBUTE_ID_FILE);
-            gboolean visited = FALSE;
-            if (id != NULL)
-            {
-                if (g_hash_table_lookup_extended (data->visited,
-                                                  id, NULL, NULL))
-                {
-                    visited = TRUE;
-                }
-                else
-                {
-                    g_hash_table_insert (data->visited, g_strdup (id), NULL);
-                }
-            }
 
-            if (!visited)
+            if (id != NULL &&
+                !g_hash_table_contains (data->visited, id))
             {
+                g_hash_table_add (data->visited, g_strdup (id));
                 g_queue_push_tail (data->directories, g_steal_pointer (&child));
             }
         }
