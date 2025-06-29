@@ -1,3 +1,75 @@
+Major Changes in 49.alpha
+=========================
+* Enhancements:
+- Use dashed border and scissor icon for cut files (Khalid Abu Shawarib)
+- Use transparency for hidden files (Khalid Abu Shawarib)
+- Modernize and make batch rename dialog adaptive (Markus Göllnitz)
+- Use ICU for date formatting (Khalid Abu Shawarib)
+- Use AdwDialog for app chooser dialog (Automeris naranja)
+- Replace long press touch gesture with enhanced folder menu (Christopher Davis)
+- Add "Ctrl + dot" shortcut for opening current dir in console (Sid)
+- Announce file star state with a11y (nteodosio)
+- Add test coverage job to CI (Khalid Abu Shawarib)
+- Sort local mounts in the sidebar by device name (Khalid Abu Shawarib)
+- Hide rename in sidebar when not available (Khalid Abu Shawarib)
+- Add tooltip to the stop button in floating bar (Lukáš Tyrychtr)
+- New icon for finished operations (Fernando Gouveia Lima)
+
+* Bugfixes:
+- Don't assume that file chooser choice IDs are usable as action names (Khalid Abu Shawarib)
+
+* Cleanups:
+- Batch rename refactoring and performance improvements (Khalid Abu Shawarib)
+- Use fixed size Gtk layout for grid view (Sergey Bugaev, Khalid Abu Shawarib)
+- View refactoring and performance improvements (Khalid Abu Shawarib)
+- Cleanup and fixes related to file moving (Corey Berla, Khalid Abu Shawarib)
+- Cleanup and refactoring of sidebar code (Khalid Abu Shawarib)
+- Search engine refactoring and performance improvements (Khalid Abu Shawarib, Peter Eisenmann)
+- Un-round popover buttons (Khalid Abu Shawarib)
+- Various performance optimizations (Khalid Abu Shawarib, Laurent Lyaudet)
+- Corrections in files-view tests (Khalid Abu Shawarib)
+- Don't use ratio as time separator (Khalid Abu Shawarib)
+
+* Translation updates (GNOME Translation Project contributors)
+
+Major Changes in 48.3
+=====================
+* Bugfixes:
+- Inhibit logout during file operations (Ignacy Kuchciński)
+- Allow opening current diretroy in multiple-dir mode (Michael Terry)
+- Prevent crash in location entry completions (Lukáš Tyrychtr)
+- Fix focusing window from other apps via DBus (Sebastian Keller)
+- Correctly close wait dialogs (Lukáš Tyrychtr)
+- Prevent file chooser crash on opening an empty location (Nelson Ben)
+- Use existing replacement for icon removed from theme (Peter Eisenmann)
+- Fix file leaking in directory (Corey Berla)
+
+* Translation updates (GNOME Translation Project contributors)
+
+Major Changes in 48.2
+=====================
+* Bugfixes:
+- Load directory before thumbnail attributes are ready (Khalid Abu Shawarib)
+- Fix trash banner visibiltiy (Alessandro Astone)
+- Fix sporadic crash when loading new view (Khalid Abu Shawarib)
+- Improve container-related media property handling (Khalid Abu Shawarib)
+
+* Translation updates (GNOME Translation Project contributors)
+
+Major Changes in 48.1
+=====================
+* Bugfixes:
+- Fix switching from tree view to grid (Khalid Abu Shawarib)
+- Fix opening new window of starred folder (Lukáš Tyrychtr)
+- Fix selecting Google Drive files with file chooser (Khalid Abu Shawarib)
+- Run script files in their location (Peter Eisenmann)
+- Disallow duplicate bookmarks (Cole Stowell)
+
+* Cleanups:
+- Update screenshots (Khalid Abu Shawarib)
+
+* Translation updates (GNOME Translation Project contributors)
+
 Major Changes in 48
 ===================
 * Reversals:
