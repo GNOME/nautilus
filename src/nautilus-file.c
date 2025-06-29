@@ -1808,11 +1808,16 @@ rename_get_info_callback (GObject      *source_object,
          * directory and it is not the same file that we are
          * renaming, mark it gone.
          */
-        existing_file = g_object_ref (nautilus_directory_find_file_by_name (directory, new_name));
-        if (existing_file != NULL && existing_file != op->file)
+        existing_file = nautilus_directory_find_file_by_name (directory, new_name);
+        if (existing_file != NULL)
         {
-            nautilus_file_mark_gone (existing_file);
-            nautilus_file_changed (existing_file);
+            g_object_ref (existing_file);
+
+            if (existing_file != op->file)
+            {
+                nautilus_file_mark_gone (existing_file);
+                nautilus_file_changed (existing_file);
+            }
         }
 
         old_location = nautilus_file_get_location (op->file);
