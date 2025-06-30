@@ -49,6 +49,8 @@ struct _NautilusSearchEngine
     NautilusSearchProvider *simple;
 
     GHashTable *uris;
+    guint current_run_id;
+    guint next_run_id;
     guint providers_running;
     guint providers_finished;
     guint providers_error;
@@ -93,7 +95,7 @@ search_engine_start_provider (NautilusSearchProvider *provider,
     {
         return;
     }
-    else if (nautilus_search_provider_start (provider, self->query))
+    else if (nautilus_search_provider_start (provider, self->query, self->current_run_id))
     {
         self->providers_running++;
     }
@@ -106,6 +108,8 @@ search_engine_start_real (NautilusSearchEngine *self)
     self->providers_finished = 0;
     self->providers_error = 0;
     self->running_query = g_object_ref (self->query);
+    self->current_run_id = self->next_run_id;
+    self->next_run_id++;
 
     self->startup_done = FALSE;
     search_engine_start_provider (self->localsearch, self);
@@ -179,12 +183,17 @@ nautilus_search_engine_stop (NautilusSearchEngine *self)
 }
 
 static void
-search_provider_hits_added (NautilusSearchProvider *provider,
-                            GPtrArray              *transferred_hits,
-                            NautilusSearchEngine   *self)
+search_provider_hits_added (NautilusSearchEngine *self,
+                            GPtrArray            *transferred_hits,
+                            guint                 run_id)
 {
     g_autoptr (GPtrArray) hits = transferred_hits;
 
+    if (run_id != self->current_run_id)
+    {
+        g_debug ("Ignore search hits from old run with ID %d", run_id);
+        return;
+    }
     if (!self->running || self->restart)
     {
         g_debug ("Ignoring hits-added, since engine is %s",
@@ -260,8 +269,15 @@ check_providers_status (NautilusSearchEngine *self)
 
 static void
 search_provider_finished (NautilusSearchEngine *self,
-                          gboolean              with_error)
+                          gboolean              with_error,
+                          guint                 run_id)
 {
+    if (run_id != self->current_run_id)
+    {
+        /* Ignore */
+        return;
+    }
+
     if (with_error)
     {
         self->providers_error++;
@@ -288,9 +304,9 @@ setup_provider (NautilusSearchEngine    *self,
         {
             *provider_pointer = create_func ();
 
-            g_signal_connect (*provider_pointer, "hits-added",
-                              G_CALLBACK (search_provider_hits_added),
-                              self);
+            g_signal_connect_swapped (*provider_pointer, "hits-added",
+                                      G_CALLBACK (search_provider_hits_added),
+                                      self);
             g_signal_connect_swapped (*provider_pointer, "provider-finished",
                                       G_CALLBACK (search_provider_finished),
                                       self);
@@ -434,6 +450,7 @@ nautilus_search_engine_class_init (NautilusSearchEngineClass *class)
 static void
 nautilus_search_engine_init (NautilusSearchEngine *self)
 {
+    self->next_run_id = 1;
     self->delays = g_ptr_array_new_full (1, g_free);
     self->uris = g_hash_table_new_full (g_str_hash, g_str_equal, g_free, NULL);
 }
