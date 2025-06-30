@@ -436,7 +436,7 @@ execute_search (NautilusShellSearchProvider  *self,
 
     g_signal_connect (pending_search->engine, "hits-added",
                       G_CALLBACK (search_hits_added_cb), pending_search);
-    g_signal_connect_swapped (pending_search->engine, "finished",
+    g_signal_connect_swapped (pending_search->engine, "search-finished",
                               G_CALLBACK (search_finished_cb), pending_search);
 
     self->current_search = pending_search;
