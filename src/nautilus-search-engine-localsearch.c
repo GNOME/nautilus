@@ -139,12 +139,11 @@ search_finished (NautilusSearchEngineLocalsearch *self,
     if (error && !g_error_matches (error, G_IO_ERROR, G_IO_ERROR_CANCELLED))
     {
         g_debug ("Tracker engine error %s", error->message);
-        nautilus_search_provider_error (NAUTILUS_SEARCH_PROVIDER (self), error->message);
+        nautilus_search_provider_error (NAUTILUS_SEARCH_PROVIDER (self));
     }
     else
     {
-        nautilus_search_provider_finished (NAUTILUS_SEARCH_PROVIDER (self),
-                                           NAUTILUS_SEARCH_PROVIDER_STATUS_NORMAL);
+        nautilus_search_provider_finished (NAUTILUS_SEARCH_PROVIDER (self));
         if (g_error_matches (error, G_IO_ERROR, G_IO_ERROR_CANCELLED))
         {
             g_debug ("Tracker engine finished and cancelled");
