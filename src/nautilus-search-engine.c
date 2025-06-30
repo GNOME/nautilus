@@ -56,6 +56,7 @@ struct _NautilusSearchEngine
     NautilusQuery *query;
     NautilusQuery *running_query;
     gboolean running;
+    gboolean startup_done;
     gboolean restart;
     GPtrArray *delays;
 };
@@ -76,6 +77,9 @@ G_DEFINE_TYPE_WITH_CODE (NautilusSearchEngine,
                          G_TYPE_OBJECT,
                          G_IMPLEMENT_INTERFACE (NAUTILUS_TYPE_SEARCH_PROVIDER,
                                                 nautilus_search_provider_init))
+
+static void
+check_providers_status (NautilusSearchEngine *self);
 
 static void
 search_engine_start_real_setup (NautilusSearchEngine *self)
@@ -112,10 +116,15 @@ search_engine_start_real (NautilusSearchEngine *self)
 
     self->running_query = g_object_ref (self->query);
 
+    self->startup_done = FALSE;
     search_engine_start_provider (self->localsearch, self);
     search_engine_start_provider (self->model, self);
     search_engine_start_provider (self->recent, self);
     search_engine_start_provider (self->simple, self);
+    self->startup_done = TRUE;
+
+    /* Providers could already be finished */
+    check_providers_status (self);
 }
 
 static gboolean
@@ -241,7 +250,7 @@ check_providers_status (NautilusSearchEngine *self)
 
     num_finished = self->providers_error + self->providers_finished;
 
-    if (num_finished < self->providers_running)
+    if (!self->startup_done || num_finished < self->providers_running)
     {
         return;
     }
