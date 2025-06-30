@@ -21,8 +21,6 @@ finished_cb (NautilusSearchEngine         *engine,
              NautilusSearchProviderStatus  status,
              gpointer                      user_data)
 {
-    nautilus_search_provider_stop (NAUTILUS_SEARCH_PROVIDER (engine));
-
     g_print ("\nNautilus search engine simple finished!\n");
 
     delete_search_file_hierarchy ("simple");
