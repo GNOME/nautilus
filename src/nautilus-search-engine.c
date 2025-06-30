@@ -184,6 +184,8 @@ nautilus_search_engine_stop (NautilusSearchProvider *provider)
 
     g_debug ("Search engine stop");
 
+    self->restart = FALSE;
+
     g_ptr_array_foreach (self->delays, (GFunc) stop_delayed_start, NULL);
 
     if (self->localsearch != NULL)
@@ -202,11 +204,6 @@ nautilus_search_engine_stop (NautilusSearchProvider *provider)
     {
         nautilus_search_provider_stop (self->simple);
     }
-
-    self->running = FALSE;
-    self->restart = FALSE;
-
-    g_object_notify (G_OBJECT (self), "running");
 }
 
 static void
