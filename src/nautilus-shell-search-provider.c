@@ -219,8 +219,7 @@ search_error_cb (NautilusSearchEngine *engine,
                  const gchar          *error_message,
                  gpointer              user_data)
 {
-    NautilusShellSearchProvider *self = user_data;
-    PendingSearch *search = self->current_search;
+    PendingSearch *search = user_data;
 
     g_debug ("*** Search engine search error");
     pending_search_finish (search, search->invocation,
