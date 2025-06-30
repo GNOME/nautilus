@@ -96,8 +96,7 @@ search_thread_add_hits_idle (gpointer user_data)
     g_clear_pointer (&self->hits, g_ptr_array_unref);
 
     g_debug ("Recent engine finished");
-    nautilus_search_provider_finished (provider,
-                                       NAUTILUS_SEARCH_PROVIDER_STATUS_NORMAL);
+    nautilus_search_provider_finished (provider);
 
     return FALSE;
 }

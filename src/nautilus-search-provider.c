@@ -45,14 +45,11 @@ nautilus_search_provider_default_init (NautilusSearchProviderInterface *iface)
                                         G_TYPE_NONE, 1,
                                         G_TYPE_POINTER);
 
-    signals[FINISHED] = g_signal_new ("finished",
-                                      NAUTILUS_TYPE_SEARCH_PROVIDER,
-                                      G_SIGNAL_RUN_LAST,
-                                      G_STRUCT_OFFSET (NautilusSearchProviderInterface, finished),
+    signals[FINISHED] = g_signal_new ("provider-finished", NAUTILUS_TYPE_SEARCH_PROVIDER,
+                                      G_SIGNAL_RUN_LAST, 0,
                                       NULL, NULL,
-                                      g_cclosure_marshal_VOID__ENUM,
-                                      G_TYPE_NONE, 1,
-                                      NAUTILUS_TYPE_SEARCH_PROVIDER_STATUS);
+                                      g_cclosure_marshal_VOID__VOID,
+                                      G_TYPE_NONE, 0);
 }
 
 gboolean
@@ -90,10 +87,9 @@ nautilus_search_provider_hits_added (NautilusSearchProvider *provider,
 }
 
 void
-nautilus_search_provider_finished (NautilusSearchProvider       *provider,
-                                   NautilusSearchProviderStatus  status)
+nautilus_search_provider_finished (NautilusSearchProvider *provider)
 {
     g_return_if_fail (NAUTILUS_IS_SEARCH_PROVIDER (provider));
 
-    g_signal_emit (provider, signals[FINISHED], 0, status);
+    g_signal_emit (provider, signals[FINISHED], 0);
 }
