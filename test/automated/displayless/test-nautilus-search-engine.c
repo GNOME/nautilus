@@ -1,5 +1,10 @@
 #include "test-utilities.h"
 
+#include "nautilus-directory.h"
+#include "nautilus-query.h"
+#include "nautilus-search-engine.h"
+#include "nautilus-search-hit.h"
+
 static guint total_hits = 0;
 
 static void
