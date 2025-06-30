@@ -41,27 +41,25 @@ nautilus_search_provider_default_init (NautilusSearchProviderInterface *iface)
                                         NAUTILUS_TYPE_SEARCH_PROVIDER,
                                         G_SIGNAL_RUN_LAST,
                                         G_STRUCT_OFFSET (NautilusSearchProviderInterface, hits_added),
-                                        NULL, NULL,
-                                        g_cclosure_marshal_VOID__POINTER,
-                                        G_TYPE_NONE, 1,
-                                        G_TYPE_POINTER);
+                                        NULL, NULL, NULL,
+                                        G_TYPE_NONE, 2, G_TYPE_POINTER, G_TYPE_UINT);
 
     signals[FINISHED] = g_signal_new ("provider-finished", NAUTILUS_TYPE_SEARCH_PROVIDER,
                                       G_SIGNAL_RUN_LAST, 0,
-                                      NULL, NULL,
-                                      g_cclosure_marshal_VOID__BOOLEAN,
-                                      G_TYPE_NONE, 1, G_TYPE_BOOLEAN);
+                                      NULL, NULL, NULL,
+                                      G_TYPE_NONE, 2, G_TYPE_BOOLEAN, G_TYPE_UINT);
 }
 
 gboolean
 nautilus_search_provider_start (NautilusSearchProvider *provider,
-                                NautilusQuery          *query)
+                                NautilusQuery          *query,
+                                guint                   run_id)
 {
     g_return_val_if_fail (NAUTILUS_IS_SEARCH_PROVIDER (provider), FALSE);
     g_return_val_if_fail (NAUTILUS_SEARCH_PROVIDER_GET_IFACE (provider)->start != NULL, FALSE);
     g_return_val_if_fail (NAUTILUS_IS_QUERY (query), FALSE);
 
-    return NAUTILUS_SEARCH_PROVIDER_GET_IFACE (provider)->start (provider, query);
+    return NAUTILUS_SEARCH_PROVIDER_GET_IFACE (provider)->start (provider, query, run_id);
 }
 
 void
@@ -80,25 +78,28 @@ nautilus_search_provider_stop (NautilusSearchProvider *provider)
  */
 void
 nautilus_search_provider_hits_added (NautilusSearchProvider *provider,
-                                     GPtrArray              *hits)
+                                     GPtrArray              *hits,
+                                     guint                   run_id)
 {
     g_return_if_fail (NAUTILUS_IS_SEARCH_PROVIDER (provider));
 
-    g_signal_emit (provider, signals[HITS_ADDED], 0, hits);
+    g_signal_emit (provider, signals[HITS_ADDED], 0, hits, run_id);
 }
 
 void
-nautilus_search_provider_finished (NautilusSearchProvider *provider)
+nautilus_search_provider_finished (NautilusSearchProvider *provider,
+                                   guint                   run_id)
 {
     g_return_if_fail (NAUTILUS_IS_SEARCH_PROVIDER (provider));
 
-    g_signal_emit (provider, signals[FINISHED], 0, FALSE);
+    g_signal_emit (provider, signals[FINISHED], 0, FALSE, run_id);
 }
 
 void
-nautilus_search_provider_error (NautilusSearchProvider *provider)
+nautilus_search_provider_error (NautilusSearchProvider *provider,
+                                guint                   run_id)
 {
     g_return_if_fail (NAUTILUS_IS_SEARCH_PROVIDER (provider));
 
-    g_signal_emit (provider, signals[FINISHED], 0, TRUE);
+    g_signal_emit (provider, signals[FINISHED], 0, TRUE, run_id);
 }

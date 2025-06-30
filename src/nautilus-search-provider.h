@@ -35,38 +35,49 @@ struct _NautilusSearchProviderInterface {
          * Returns: Whether search provider was started
          */
         gboolean (*start) (NautilusSearchProvider *provider,
-                           NautilusQuery          *query);
+                           NautilusQuery          *query,
+                           guint                   run_id);
         void (*stop) (NautilusSearchProvider *provider);
 
         /* Signals */
         /**
          * @provider: search provider
          * @hits: (transfer full): list of #NautilusSearchHit
+         * @run_id: run ID that yielded the results
          *
          * Provider emits this signal when adding search hits
          */
-        void (*hits_added) (NautilusSearchProvider *provider, GPtrArray *hits);
+        void (*hits_added) (NautilusSearchProvider *provider,
+                            GPtrArray *hits,
+                            guint run_id);
         /**
          * @provider: search provider
          * @with_error: whether provider ran into an error
          */
         void (*provider_finished) (NautilusSearchProvider *provider,
-                                   gboolean                with_error);
+                                   gboolean                with_error,
+                                   guint                   run_id);
 };
 
 GType          nautilus_search_provider_get_type        (void) G_GNUC_CONST;
 
 /* Interface Functions */
-gboolean       nautilus_search_provider_start           (NautilusSearchProvider *provider,
-                                                         NautilusQuery *query);
-void           nautilus_search_provider_stop            (NautilusSearchProvider *provider);
-
-void           nautilus_search_provider_hits_added      (NautilusSearchProvider *provider,
-                                                         GPtrArray              *hits);
+gboolean
+nautilus_search_provider_start (NautilusSearchProvider *provider,
+                                NautilusQuery          *query,
+                                guint                   run_id);
+void
+nautilus_search_provider_stop (NautilusSearchProvider *provider);
 
 void
-nautilus_search_provider_finished (NautilusSearchProvider *provider);
+nautilus_search_provider_hits_added (NautilusSearchProvider *provider,
+                                     GPtrArray              *hits,
+                                     guint                   run_id);
 void
-nautilus_search_provider_error (NautilusSearchProvider *provider);
+nautilus_search_provider_finished (NautilusSearchProvider *provider,
+                                   guint                   run_id);
+void
+nautilus_search_provider_error (NautilusSearchProvider *provider,
+                                guint                   run_id);
 
 G_END_DECLS

@@ -38,6 +38,7 @@ typedef struct
 {
     NautilusSearchEngineSimple *engine;
     GCancellable *cancellable;
+    guint run_id;
 
     GPtrArray *mime_types;
     GList *found_list;
@@ -89,13 +90,15 @@ finalize (GObject *object)
 
 static SearchThreadData *
 search_thread_data_new (NautilusSearchEngineSimple *engine,
-                        NautilusQuery              *query)
+                        NautilusQuery              *query,
+                        guint                       run_id)
 {
     SearchThreadData *data;
 
     data = g_new0 (SearchThreadData, 1);
 
     data->engine = g_object_ref (engine);
+    data->run_id = run_id;
     data->directories = g_queue_new ();
     data->visited = g_hash_table_new_full (g_str_hash, g_str_equal, g_free, NULL);
     data->query = g_object_ref (query);
@@ -147,7 +150,7 @@ search_thread_done (SearchThreadData *data)
         g_debug ("Simple engine finished");
     }
     engine->active_search = NULL;
-    nautilus_search_provider_finished (NAUTILUS_SEARCH_PROVIDER (engine));
+    nautilus_search_provider_finished (NAUTILUS_SEARCH_PROVIDER (engine), data->run_id);
 
     search_thread_data_free (data);
 
@@ -168,7 +171,8 @@ search_thread_process_hits_idle (SearchThreadData *data,
         g_debug ("Simple engine add hits");
 
         nautilus_search_provider_hits_added (NAUTILUS_SEARCH_PROVIDER (data->engine),
-                                             g_steal_pointer (&hits));
+                                             g_steal_pointer (&hits),
+                                             data->run_id);
     }
 
     g_clear_pointer (&hits, g_ptr_array_unref);
@@ -529,7 +533,8 @@ create_thread_timeout (gpointer user_data)
 
 static gboolean
 search_engine_simple_start (NautilusSearchProvider *provider,
-                            NautilusQuery          *query)
+                            NautilusQuery          *query,
+                            guint                   run_id)
 {
     NautilusSearchEngineSimple *simple;
     SearchThreadData *data;
@@ -551,7 +556,7 @@ search_engine_simple_start (NautilusSearchProvider *provider,
 
     g_debug ("Simple engine start");
 
-    data = search_thread_data_new (simple, simple->query);
+    data = search_thread_data_new (simple, simple->query, run_id);
 
     simple->active_search = data;
 

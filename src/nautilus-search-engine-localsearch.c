@@ -51,6 +51,7 @@ struct _NautilusSearchEngineLocalsearch
 
     TrackerSparqlConnection *connection;
     NautilusQuery *query;
+    guint run_id;
     GHashTable *statements;
 
     gboolean query_pending;
@@ -114,7 +115,8 @@ check_pending_hits (NautilusSearchEngineLocalsearch *self,
     if (hits->len > 0)
     {
         nautilus_search_provider_hits_added (NAUTILUS_SEARCH_PROVIDER (self),
-                                             g_steal_pointer (&hits));
+                                             g_steal_pointer (&hits),
+                                             self->run_id);
     }
 }
 
@@ -139,11 +141,11 @@ search_finished (NautilusSearchEngineLocalsearch *self,
     if (error && !g_error_matches (error, G_IO_ERROR, G_IO_ERROR_CANCELLED))
     {
         g_debug ("Tracker engine error %s", error->message);
-        nautilus_search_provider_error (NAUTILUS_SEARCH_PROVIDER (self));
+        nautilus_search_provider_error (NAUTILUS_SEARCH_PROVIDER (self), self->run_id);
     }
     else
     {
-        nautilus_search_provider_finished (NAUTILUS_SEARCH_PROVIDER (self));
+        nautilus_search_provider_finished (NAUTILUS_SEARCH_PROVIDER (self), self->run_id);
         if (g_error_matches (error, G_IO_ERROR, G_IO_ERROR_CANCELLED))
         {
             g_debug ("Tracker engine finished and cancelled");
@@ -452,7 +454,8 @@ create_statement (NautilusSearchProvider *provider,
 
 static gboolean
 search_engine_localsearch_start (NautilusSearchProvider *provider,
-                                 NautilusQuery          *query)
+                                 NautilusQuery          *query,
+                                 guint                   run_id)
 {
     NautilusSearchEngineLocalsearch *self = NAUTILUS_SEARCH_ENGINE_LOCALSEARCH (provider);
     g_autofree gchar *query_text = NULL;
@@ -477,6 +480,7 @@ search_engine_localsearch_start (NautilusSearchProvider *provider,
 
     g_debug ("Tracker engine start");
     g_object_ref (self);
+    self->run_id = run_id;
     self->query_pending = TRUE;
 
     g_autoptr (GFile) location = nautilus_query_get_location (self->query);

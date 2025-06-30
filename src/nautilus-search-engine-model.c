@@ -38,6 +38,7 @@ struct _NautilusSearchEngineModel
     GObject parent;
 
     NautilusQuery *query;
+    guint run_id;
 
     GPtrArray *hits;
     NautilusDirectory *directory;
@@ -85,13 +86,14 @@ search_finished (NautilusSearchEngineModel *model)
     {
         g_debug ("Model engine hits added");
         nautilus_search_provider_hits_added (NAUTILUS_SEARCH_PROVIDER (model),
-                                             g_steal_pointer (&hits));
+                                             g_steal_pointer (&hits),
+                                             model->run_id);
     }
 
     model->query_pending = FALSE;
 
     g_debug ("Model engine finished");
-    nautilus_search_provider_finished (NAUTILUS_SEARCH_PROVIDER (model));
+    nautilus_search_provider_finished (NAUTILUS_SEARCH_PROVIDER (model), model->run_id);
     g_object_unref (model);
 
     return FALSE;
@@ -233,7 +235,8 @@ model_directory_ready_cb (NautilusDirectory *directory,
 
 static gboolean
 search_engine_model_start (NautilusSearchProvider *provider,
-                           NautilusQuery          *query)
+                           NautilusQuery          *query,
+                           guint                   run_id)
 {
     NautilusSearchEngineModel *model;
 
@@ -258,6 +261,7 @@ search_engine_model_start (NautilusSearchProvider *provider,
 
     g_object_ref (model);
     model->query_pending = TRUE;
+    model->run_id = run_id;
 
     nautilus_directory_call_when_ready (model->directory,
                                         NAUTILUS_FILE_ATTRIBUTE_INFO,
