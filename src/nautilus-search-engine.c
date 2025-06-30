@@ -51,6 +51,7 @@ struct _NautilusSearchEngine
 
     NautilusQuery *query;
     gboolean running;
+    gboolean starting;
     gboolean restart;
 };
 
@@ -70,6 +71,9 @@ G_DEFINE_TYPE_WITH_CODE (NautilusSearchEngine,
                          G_TYPE_OBJECT,
                          G_IMPLEMENT_INTERFACE (NAUTILUS_TYPE_SEARCH_PROVIDER,
                                                 nautilus_search_provider_init))
+
+static void
+check_providers_status (NautilusSearchEngine *self);
 
 static void
 search_engine_start_provider (NautilusSearchProvider *provider,
@@ -95,10 +99,15 @@ search_engine_start_real (NautilusSearchEngine *self)
 
     self->restart = FALSE;
 
+    self->starting = TRUE;
     search_engine_start_provider (self->localsearch, self);
     search_engine_start_provider (self->model, self);
     search_engine_start_provider (self->recent, self);
     search_engine_start_provider (self->simple, self);
+    self->starting = FALSE;
+
+    /* Providers could already be finished */
+    check_providers_status (self);
 }
 
 static gboolean
@@ -211,11 +220,7 @@ search_provider_hits_added (NautilusSearchProvider *provider,
 static void
 check_providers_status (NautilusSearchEngine *self)
 {
-    guint num_finished;
-
-    num_finished = self->providers_finished;
-
-    if (num_finished < self->providers_running)
+    if (self->starting || self->providers_finished < self->providers_running)
     {
         return;
     }
