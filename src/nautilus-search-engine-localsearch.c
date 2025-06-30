@@ -137,25 +137,20 @@ search_finished (NautilusSearchEngineLocalsearch *self,
 
     self->query_pending = FALSE;
 
-    if (error && !g_error_matches (error, G_IO_ERROR, G_IO_ERROR_CANCELLED))
+    if (g_error_matches (error, G_IO_ERROR, G_IO_ERROR_CANCELLED))
+    {
+        g_debug ("Localsearch engine was cancelled");
+    }
+    else if (error != NULL)
     {
         g_warning ("Localsearch search engine error %s", error->message);
-        nautilus_search_provider_finished (NAUTILUS_SEARCH_PROVIDER (self),
-                                           NAUTILUS_SEARCH_PROVIDER_STATUS_NORMAL);
     }
     else
     {
-        nautilus_search_provider_finished (NAUTILUS_SEARCH_PROVIDER (self),
-                                           NAUTILUS_SEARCH_PROVIDER_STATUS_NORMAL);
-        if (g_error_matches (error, G_IO_ERROR, G_IO_ERROR_CANCELLED))
-        {
-            g_debug ("Tracker engine finished and cancelled");
-        }
-        else
-        {
-            g_debug ("Tracker engine finished correctly");
-        }
+        g_debug ("Tracker engine finished correctly");
     }
+
+    nautilus_search_provider_finished (NAUTILUS_SEARCH_PROVIDER (self));
 
     g_object_unref (self);
 }

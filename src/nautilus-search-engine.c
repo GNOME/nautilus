@@ -233,9 +233,7 @@ check_providers_status (NautilusSearchEngine *self)
 }
 
 static void
-search_provider_finished (NautilusSearchProvider       *provider,
-                          NautilusSearchProviderStatus  status,
-                          NautilusSearchEngine         *self)
+search_provider_finished (NautilusSearchEngine *self)
 {
     g_debug ("Search provider finished");
 
@@ -261,9 +259,9 @@ setup_provider (NautilusSearchEngine    *self,
             g_signal_connect (*provider_pointer, "hits-added",
                               G_CALLBACK (search_provider_hits_added),
                               self);
-            g_signal_connect (*provider_pointer, "finished",
-                              G_CALLBACK (search_provider_finished),
-                              self);
+            g_signal_connect_swapped (*provider_pointer, "provider-finished",
+                                      G_CALLBACK (search_provider_finished),
+                                      self);
         }
     }
     else
