@@ -18,11 +18,13 @@
 
 #pragma once
 
+#include "nautilus-types.h"
+
+#include <adwaita.h>
 #include <glib.h>
 #include <glib/gprintf.h>
 #include <glib/gi18n.h>
 #include <gtk/gtk.h>
-#include "nautilus-files-view.h"
 
 G_BEGIN_DECLS
 

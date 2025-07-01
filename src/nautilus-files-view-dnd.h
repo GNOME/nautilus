@@ -26,7 +26,9 @@
 
 #pragma once
 
-#include "nautilus-files-view.h"
+#include "nautilus-types.h"
+
+#include <gtk/gtk.h>
 
 void nautilus_files_view_handle_text_drop         (NautilusFilesView *view,
                                                    const char        *text,

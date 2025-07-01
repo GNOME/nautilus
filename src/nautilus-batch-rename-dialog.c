@@ -21,6 +21,7 @@
 
 #include "nautilus-batch-rename-dialog.h"
 #include "nautilus-batch-rename-item.h"
+#include "nautilus-directory.h"
 #include "nautilus-file.h"
 #include "nautilus-error-reporting.h"
 #include "nautilus-batch-rename-utilities.h"
