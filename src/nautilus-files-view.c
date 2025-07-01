@@ -203,6 +203,7 @@ typedef struct
 
     GList *pending_selection;
     GHashTable *pending_reveal;
+    GHashTable *awaiting_acknowledge;
 
     /* whether we are in the active slot */
     gboolean active;
@@ -2024,9 +2025,7 @@ new_folder_done (GFile    *new_folder,
     }
     else
     {
-        g_hash_table_insert (priv->pending_reveal,
-                             file,
-                             GUINT_TO_POINTER (TRUE));
+        g_hash_table_add (priv->pending_reveal, file);
     }
 
     nautilus_file_unref (file);
@@ -2078,9 +2077,7 @@ rename_file_popover_callback (NautilusFile *target_file,
     NautilusFilesViewPrivate *priv = nautilus_files_view_get_instance_private (view);
 
     /* Put it on the queue for reveal after the view acknowledges the change */
-    g_hash_table_insert (priv->pending_reveal,
-                         target_file,
-                         GUINT_TO_POINTER (FALSE));
+    g_hash_table_add (priv->awaiting_acknowledge, target_file);
 
     nautilus_rename_file (target_file, new_name, NULL, NULL);
 }
@@ -2239,9 +2236,7 @@ compress_done (GFile    *new_file,
     }
     else
     {
-        g_hash_table_insert (priv->pending_reveal,
-                             file,
-                             GUINT_TO_POINTER (TRUE));
+        g_hash_table_add (priv->pending_reveal, file);
     }
 
     uri = nautilus_file_get_uri (file);
@@ -3509,7 +3504,8 @@ nautilus_files_view_finalize (GObject *object)
 
     g_free (priv->toolbar_menu_sections);
 
-    g_hash_table_destroy (priv->pending_reveal);
+    g_hash_table_unref (priv->pending_reveal);
+    g_hash_table_unref (priv->awaiting_acknowledge);
 
     g_clear_object (&priv->clipboard_cancellable);
 
@@ -4223,26 +4219,12 @@ real_end_file_changes (NautilusFilesView *view)
     /* Reveal files that were pending to be revealed, only if all of them
      * were acknowledged by the view
      */
-    if (g_hash_table_size (priv->pending_reveal) > 0)
+    if (g_hash_table_size (priv->pending_reveal) > 0 &&
+        g_hash_table_size (priv->awaiting_acknowledge) == 0)
     {
-        GList *keys;
-        GList *l;
-        gboolean all_files_acknowledged = TRUE;
-
-        keys = g_hash_table_get_keys (priv->pending_reveal);
-        for (l = keys; l && all_files_acknowledged; l = l->next)
-        {
-            all_files_acknowledged = GPOINTER_TO_UINT (g_hash_table_lookup (priv->pending_reveal,
-                                                                            l->data));
-        }
-
-        if (all_files_acknowledged)
-        {
-            nautilus_files_view_set_selection (NAUTILUS_VIEW (view), keys);
-            g_hash_table_remove_all (priv->pending_reveal);
-        }
-
-        g_list_free (keys);
+        GList *selection = g_hash_table_get_keys (priv->pending_reveal);
+        nautilus_files_view_set_selection (NAUTILUS_VIEW (view), selection);
+        g_hash_table_remove_all (priv->pending_reveal);
     }
 }
 
@@ -4397,19 +4379,14 @@ process_pending_files (NautilusFilesView *view)
             }
 
             /* Acknowledge the files that were pending to be revealed */
-            if (g_hash_table_contains (priv->pending_reveal, pending->file))
+            if (g_hash_table_contains (priv->awaiting_acknowledge, pending->file))
             {
                 if (should_add_file)
                 {
-                    g_hash_table_insert (priv->pending_reveal,
-                                         pending->file,
-                                         GUINT_TO_POINTER (TRUE));
+                    g_hash_table_add (priv->pending_reveal, pending->file);
                 }
-                else
-                {
-                    g_hash_table_remove (priv->pending_reveal,
-                                         pending->file);
-                }
+
+                g_hash_table_remove (priv->awaiting_acknowledge, pending->file);
             }
         }
         pending_additions = g_list_reverse (pending_additions);
@@ -4439,19 +4416,14 @@ process_pending_files (NautilusFilesView *view)
             }
 
             /* Acknowledge the files that were pending to be revealed */
-            if (g_hash_table_contains (priv->pending_reveal, pending->file))
+            if (g_hash_table_contains (priv->awaiting_acknowledge, pending->file))
             {
                 if (should_show_file)
                 {
-                    g_hash_table_insert (priv->pending_reveal,
-                                         pending->file,
-                                         GUINT_TO_POINTER (TRUE));
+                    g_hash_table_add (priv->pending_reveal, pending->file);
                 }
-                else
-                {
-                    g_hash_table_remove (priv->pending_reveal,
-                                         pending->file);
-                }
+
+                g_hash_table_remove (priv->awaiting_acknowledge, pending->file);
             }
         }
 
@@ -6353,9 +6325,14 @@ extract_done (GList    *outputs,
             acknowledged = g_hash_table_contains (data->added_locations,
                                                   l->data);
 
-            g_hash_table_insert (priv->pending_reveal,
-                                 file,
-                                 GUINT_TO_POINTER (acknowledged));
+            if (acknowledged)
+            {
+                g_hash_table_add (priv->pending_reveal, file);
+            }
+            else
+            {
+                g_hash_table_add (priv->awaiting_acknowledge, file);
+            }
         }
     }
 out:
@@ -9843,6 +9820,7 @@ nautilus_files_view_init (NautilusFilesView *view)
                       view);
 
     priv->pending_reveal = g_hash_table_new (NULL, NULL);
+    priv->awaiting_acknowledge = g_hash_table_new (NULL, NULL);
 
     if (set_up_scripts_directory_global ())
     {
