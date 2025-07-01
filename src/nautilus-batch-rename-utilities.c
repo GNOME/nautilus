@@ -18,6 +18,7 @@
 
 #include "nautilus-batch-rename-dialog.h"
 #include "nautilus-batch-rename-utilities.h"
+#include "nautilus-directory.h"
 #include "nautilus-file.h"
 #include "nautilus-filename-utilities.h"
 #include "nautilus-localsearch-utilities.h"

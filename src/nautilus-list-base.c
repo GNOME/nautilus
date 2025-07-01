@@ -7,6 +7,7 @@
 #include "nautilus-list-base-private.h"
 
 #include "nautilus-application.h"
+#include "nautilus-directory.h"
 #include "nautilus-dnd.h"
 #include "nautilus-view-cell.h"
 #include "nautilus-view-item.h"

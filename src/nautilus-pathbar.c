@@ -35,6 +35,7 @@
 #include "nautilus-scheme.h"
 #include "nautilus-trash-monitor.h"
 #include "nautilus-ui-utilities.h"
+#include "nautilus-window-slot.h"
 
 #ifdef GDK_WINDOWING_X11
 #include <gdk/x11/gdkx.h>
@@ -881,7 +882,7 @@ on_drag_drop (GtkDropTarget *target,
     }
 
     target_location = nautilus_file_get_location (button_data->file);
-    target_view = NAUTILUS_FILES_VIEW (nautilus_window_slot_get_current_view (self->slot));
+    target_view = (NautilusFilesView *) nautilus_window_slot_get_current_view (self->slot);
     action = gdk_drop_get_actions (gtk_drop_target_get_current_drop (target));
 
     #ifdef GDK_WINDOWING_X11
