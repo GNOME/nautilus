@@ -10,6 +10,9 @@ tests = [
   ['test-file-metadata', [
     'test-file-metadata.c'
   ]],
+  ['test-file-operations-archive', [
+    'test-file-operations-archive.c'
+  ]],
   ['test-file-operations-copy-files', [
     'test-file-operations-copy-files.c'
   ]],
