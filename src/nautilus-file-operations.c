@@ -1092,11 +1092,22 @@ static void
 inhibit_power_manager (CommonJob  *job,
                        const char *message)
 {
-    job->inhibit_cookie = gtk_application_inhibit (GTK_APPLICATION (g_application_get_default ()),
-                                                   GTK_WINDOW (job->parent_window),
-                                                   GTK_APPLICATION_INHIBIT_LOGOUT |
-                                                   GTK_APPLICATION_INHIBIT_SUSPEND,
-                                                   message);
+    /* Since we never initiate the app (in the case of
+     * testing), we can't inhibit its power manager.
+     * This would terminate the testing. So we avoid
+     * doing this by checking if the RUNNING_TESTS
+     * environment variable is set to "TRUE".
+     */
+    if (g_strcmp0 (g_getenv ("RUNNING_TESTS"), "TRUE") != 0)
+    {
+        GtkApplication *app = GTK_APPLICATION (g_application_get_default ());
+
+        job->inhibit_cookie = gtk_application_inhibit (app,
+                                                       GTK_WINDOW (job->parent_window),
+                                                       GTK_APPLICATION_INHIBIT_LOGOUT |
+                                                       GTK_APPLICATION_INHIBIT_SUSPEND,
+                                                       message);
+    }
 }
 
 static void
@@ -2163,16 +2174,13 @@ setup_delete_job (GList                          *files,
     job->done_callback = done_callback;
     job->done_callback_data = done_callback_data;
 
-    if (g_strcmp0 (g_getenv ("RUNNING_TESTS"), "TRUE"))
+    if (try_trash)
     {
-        if (try_trash)
-        {
-            inhibit_power_manager ((CommonJob *) job, _("Trashing Files"));
-        }
-        else
-        {
-            inhibit_power_manager ((CommonJob *) job, _("Deleting Files"));
-        }
+        inhibit_power_manager ((CommonJob *) job, _("Trashing Files"));
+    }
+    else
+    {
+        inhibit_power_manager ((CommonJob *) job, _("Deleting Files"));
     }
 
     if (!nautilus_file_undo_manager_is_operating () && try_trash)
@@ -5543,10 +5551,7 @@ nautilus_file_operations_copy (GTask        *task,
     job = task_data;
     common = &job->common;
 
-    if (g_strcmp0 (g_getenv ("RUNNING_TESTS"), "TRUE"))
-    {
-        inhibit_power_manager ((CommonJob *) job, _("Copying Files"));
-    }
+    inhibit_power_manager ((CommonJob *) job, _("Copying Files"));
 
     if (!nautilus_file_undo_manager_is_operating ())
     {
@@ -6242,16 +6247,7 @@ nautilus_file_operations_move (GTask        *task,
 
     job = task_data;
 
-    /* Since we never initiate the app (in the case of
-     * testing), we can't inhibit its power manager.
-     * This would terminate the testing. So we avoid
-     * doing this by checking if the RUNNING_TESTS
-     * environment variable is set to "TRUE".
-     */
-    if (g_strcmp0 (g_getenv ("RUNNING_TESTS"), "TRUE"))
-    {
-        inhibit_power_manager ((CommonJob *) job, _("Moving Files"));
-    }
+    inhibit_power_manager ((CommonJob *) job, _("Moving Files"));
 
     if (!nautilus_file_undo_manager_is_operating ())
     {
