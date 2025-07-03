@@ -132,6 +132,12 @@
                       </object>
                     </child>
                     <child>
+                      <object class="GtkButton" id="specific_type_button">
+                        <property name="visible">False</property>
+                        <signal name="clicked" handler="file_types_button_clicked" object="NautilusSearchPopover" swapped="yes"/>
+                      </object>
+                    </child>
+                    <child>
                       <object class="GtkButton" id="other_types_button">
                         <property name="icon-name">view-more-horizontal-symbolic</property>
                         <property name="tooltip-text" translatable="yes">Specific Type</property>

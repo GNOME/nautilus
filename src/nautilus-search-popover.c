@@ -50,6 +50,10 @@ struct _NautilusSearchPopover
     GtkButton *videos_button;
     GtkButton *other_types_button;
 
+    /* Specific type only gets shown when set */
+    GtkButton *specific_type_button;
+    char *specific_mimetype;
+
     GtkButton *active_type_button;
 
     GtkWidget *around_revealer;
@@ -306,6 +310,11 @@ file_types_button_clicked (NautilusSearchPopover *popover,
         set_active_button (&popover->active_type_button, NULL);
         g_signal_emit_by_name (popover, "mime-type", 0, NULL);
     }
+    else if (button == popover->specific_type_button)
+    {
+        set_active_button (&popover->active_type_button, popover->specific_type_button);
+        g_signal_emit_by_name (popover, "mime-type", -1, popover->specific_mimetype);
+    }
     else
     {
         gint group = GPOINTER_TO_INT (g_object_get_data (G_OBJECT (button), "mimetype-group"));
@@ -506,7 +515,12 @@ on_other_types_dialog_response (NautilusSearchPopover *popover)
     NautilusMinimalCell *item = gtk_single_selection_get_selected_item (popover->other_types_model);
     const gchar *mimetype = nautilus_minimal_cell_get_subtitle (item);
 
-    set_active_button (&popover->active_type_button, NULL);
+    g_autofree gchar *display_name = g_content_type_get_description (mimetype);
+    gtk_button_set_label (popover->specific_type_button, display_name);
+    gtk_widget_set_visible (GTK_WIDGET (popover->specific_type_button), TRUE);
+    g_set_str (&popover->specific_mimetype, mimetype);
+    set_active_button (&popover->active_type_button, popover->specific_type_button);
+
     g_signal_emit_by_name (popover, "mime-type", -1, mimetype);
 
     g_clear_object (&popover->other_types_model);
@@ -765,6 +779,7 @@ nautilus_search_popover_class_init (NautilusSearchPopoverClass *klass)
     gtk_widget_class_bind_template_child (widget_class, NautilusSearchPopover, spreadsheets_button);
     gtk_widget_class_bind_template_child (widget_class, NautilusSearchPopover, text_button);
     gtk_widget_class_bind_template_child (widget_class, NautilusSearchPopover, videos_button);
+    gtk_widget_class_bind_template_child (widget_class, NautilusSearchPopover, specific_type_button);
     gtk_widget_class_bind_template_child (widget_class, NautilusSearchPopover, other_types_button);
 
     gtk_widget_class_bind_template_child (widget_class, NautilusSearchPopover, around_revealer);
