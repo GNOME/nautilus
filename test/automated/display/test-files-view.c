@@ -81,7 +81,7 @@ create_hidden_files (void)
     const gchar *content = "my_indirectly_hidden_file\n";
     g_autoptr (GError) error = NULL;
 
-    create_hierarchy_from_template (hidden_files_hierarchy, "");
+    file_hierarchy_create (hidden_files_hierarchy, "");
 
     g_file_replace_contents (hidden_list_file,
                              content,
