@@ -207,6 +207,12 @@
                         <signal name="clicked" handler="date_button_clicked" object="NautilusSearchPopover" swapped="yes"/>
                       </object>
                     </child>
+                    <child>
+                      <object class="GtkButton" id="specific_date_button">
+                        <property name="visible">False</property>
+                        <signal name="clicked" handler="date_button_clicked" object="NautilusSearchPopover" swapped="yes"/>
+                      </object>
+                    </child>
                   </object>
                 </child>
               </object>

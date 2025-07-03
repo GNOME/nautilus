@@ -19,6 +19,7 @@
 #include <gtk/gtk.h>
 #include <adwaita.h>
 
+#include "nautilus-date-utilities.h"
 #include "nautilus-enum-types.h"
 #include "nautilus-enums.h"
 #include "nautilus-search-popover.h"
@@ -62,6 +63,10 @@ struct _NautilusSearchPopover
     GtkButton *week_button;
     GtkButton *month_button;
     GtkButton *year_button;
+
+    /* Specific date range only gets shown when set */
+    GtkButton *specific_date_button;
+    GPtrArray *specific_date_range;
 
     GtkButton *active_date_button;
 
@@ -116,6 +121,12 @@ date_button_clicked (NautilusSearchPopover *popover,
     {
         set_active_button (&popover->active_date_button, NULL);
         g_signal_emit_by_name (popover, "date-range", NULL);
+        return;
+    }
+    else if (button == popover->specific_date_button)
+    {
+        set_active_button (&popover->active_date_button, popover->specific_date_button);
+        g_signal_emit_by_name (popover, "date-range", popover->specific_date_range);
         return;
     }
 
@@ -437,6 +448,7 @@ nautilus_search_popover_class_init (NautilusSearchPopoverClass *klass)
     gtk_widget_class_bind_template_child (widget_class, NautilusSearchPopover, week_button);
     gtk_widget_class_bind_template_child (widget_class, NautilusSearchPopover, month_button);
     gtk_widget_class_bind_template_child (widget_class, NautilusSearchPopover, year_button);
+    gtk_widget_class_bind_template_child (widget_class, NautilusSearchPopover, specific_date_button);
 
     gtk_widget_class_bind_template_child (widget_class, NautilusSearchPopover, full_text_search_button);
     gtk_widget_class_bind_template_child (widget_class, NautilusSearchPopover, filename_search_button);
@@ -566,7 +578,9 @@ nautilus_search_popover_set_date_range (NautilusSearchPopover *popover,
 
     if (date_range != NULL)
     {
-        set_active_button (&popover->active_date_button, NULL);
+        g_set_ptr_array (&popover->specific_date_range, date_range);
+        gtk_widget_set_visible (GTK_WIDGET (popover->specific_date_button), TRUE);
+        set_active_button (&popover->active_date_button, popover->specific_date_button);
         g_signal_emit_by_name (popover, "date-range", date_range);
     }
     else
