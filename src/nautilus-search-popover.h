@@ -21,8 +21,6 @@
 #include <glib.h>
 #include <gtk/gtk.h>
 
-#include "nautilus-query.h"
-
 G_BEGIN_DECLS
 
 typedef enum {
@@ -38,10 +36,6 @@ G_DECLARE_FINAL_TYPE (NautilusSearchPopover, nautilus_search_popover, NAUTILUS, 
 
 GtkWidget*           nautilus_search_popover_new                 (void);
 
-NautilusQuery*       nautilus_search_popover_get_query           (NautilusSearchPopover *popover);
-
-void                 nautilus_search_popover_set_query           (NautilusSearchPopover *popover,
-                                                                  NautilusQuery         *query);
 void
 nautilus_search_popover_set_date_range (NautilusSearchPopover *popover,
                                         GPtrArray             *date_range);
