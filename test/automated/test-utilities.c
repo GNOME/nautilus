@@ -128,6 +128,8 @@ file_hierarchy_create (const GStrv  hier,
             g_autoptr (GFileOutputStream) stream = g_file_create (file, G_FILE_CREATE_NONE,
                                                                   NULL, NULL);
         }
+
+        g_assert_true (g_file_query_exists (file, NULL));
     }
 }
 
