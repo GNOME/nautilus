@@ -4,98 +4,75 @@
 static void
 test_move_one_file (void)
 {
-    g_autoptr (GFile) root = NULL;
-    g_autoptr (GFile) first_dir = NULL;
-    g_autoptr (GFile) second_dir = NULL;
-    g_autoptr (GFile) file = NULL;
-    g_autoptr (GFile) result_file = NULL;
-    g_autolist (GFile) files = NULL;
+    g_autoptr (GFile) file = g_file_new_build_filename (test_get_tmp_dir (),
+                                                        "move_first_dir",
+                                                        "move_first_dir_child",
+                                                        NULL);
+    g_autoptr (GFile) second_dir = g_file_new_build_filename (test_get_tmp_dir (),
+                                                              "move_second_dir",
+                                                              NULL);
+    g_autoptr (GFile) result_file = g_file_new_build_filename (test_get_tmp_dir (),
+                                                               "move_second_dir",
+                                                               "move_first_dir_child",
+                                                               NULL);
+    g_autolist (GFile) files = g_list_prepend (NULL, g_object_ref (file));
 
     create_one_file ("move");
 
-    root = g_file_new_for_path (test_get_tmp_dir ());
-    g_assert_true (g_file_query_exists (root, NULL));
-
-    first_dir = g_file_get_child (root, "move_first_dir");
-    g_assert_true (g_file_query_exists (first_dir, NULL));
-
-    file = g_file_get_child (first_dir, "move_first_dir_child");
-    g_assert_true (g_file_query_exists (file, NULL));
-    files = g_list_prepend (files, g_object_ref (file));
-
-    second_dir = g_file_get_child (root, "move_second_dir");
-    g_assert_true (g_file_query_exists (second_dir, NULL));
-
     nautilus_file_operations_move_sync (files,
                                         second_dir);
-
-    result_file = g_file_get_child (second_dir, "move_first_dir_child");
 
     g_assert_true (g_file_query_exists (result_file, NULL));
     g_assert_false (g_file_query_exists (file, NULL));
 
     test_operation_undo ();
 
-    result_file = g_file_get_child (second_dir, "move_first_dir_child");
-
     g_assert_false (g_file_query_exists (result_file, NULL));
     g_assert_true (g_file_query_exists (file, NULL));
 
     test_operation_redo ();
 
-    result_file = g_file_get_child (second_dir, "move_first_dir_child");
-
     g_assert_true (g_file_query_exists (result_file, NULL));
     g_assert_false (g_file_query_exists (file, NULL));
 
-    empty_directory_by_prefix (root, "move");
+    test_clear_tmp_dir ();
 }
 
 static void
 test_move_one_empty_directory (void)
 {
-    g_autoptr (GFile) root = NULL;
-    g_autoptr (GFile) first_dir = NULL;
-    g_autoptr (GFile) second_dir = NULL;
-    g_autoptr (GFile) file = NULL;
-    g_autoptr (GFile) result_file = NULL;
-    g_autolist (GFile) files = NULL;
+    g_autoptr (GFile) file = g_file_new_build_filename (test_get_tmp_dir (),
+                                                        "move_first_dir",
+                                                        "move_first_dir_child",
+                                                        NULL);
+    g_autoptr (GFile) second_dir = g_file_new_build_filename (test_get_tmp_dir (),
+                                                              "move_second_dir",
+                                                              NULL);
+    g_autoptr (GFile) result_file = g_file_new_build_filename (test_get_tmp_dir (),
+                                                               "move_second_dir",
+                                                               "move_first_dir_child",
+                                                               NULL);
+    g_autolist (GFile) files = g_list_prepend (NULL, g_object_ref (file));
 
     create_one_empty_directory ("move");
-
-    root = g_file_new_for_path (test_get_tmp_dir ());
-    g_assert_true (g_file_query_exists (root, NULL));
-
-    first_dir = g_file_get_child (root, "move_first_dir");
-    g_assert_true (g_file_query_exists (first_dir, NULL));
-
-    file = g_file_get_child (first_dir, "move_first_dir_child");
-    g_assert_true (g_file_query_exists (file, NULL));
-    files = g_list_prepend (files, g_object_ref (file));
-
-    second_dir = g_file_get_child (root, "move_second_dir");
-    g_assert_true (g_file_query_exists (second_dir, NULL));
 
     nautilus_file_operations_move_sync (files,
                                         second_dir);
 
-    result_file = g_file_get_child (second_dir, "move_first_dir_child");
     g_assert_true (g_file_query_exists (result_file, NULL));
     g_assert_false (g_file_query_exists (file, NULL));
 
     test_operation_undo ();
 
-    result_file = g_file_get_child (second_dir, "move_first_dir_child");
     g_assert_false (g_file_query_exists (result_file, NULL));
     g_assert_true (g_file_query_exists (file, NULL));
 
     test_operation_redo ();
 
-    result_file = g_file_get_child (second_dir, "move_first_dir_child");
     g_assert_true (g_file_query_exists (result_file, NULL));
     g_assert_false (g_file_query_exists (file, NULL));
 
-    empty_directory_by_prefix (root, "move");
+    test_clear_tmp_dir ();
 }
 
 static void
@@ -344,59 +321,44 @@ test_move_directories_large (void)
 static void
 test_move_full_directory (void)
 {
-    g_autoptr (GFile) root = NULL;
-    g_autoptr (GFile) first_dir = NULL;
-    g_autoptr (GFile) second_dir = NULL;
-    g_autoptr (GFile) file = NULL;
-    g_autoptr (GFile) result_file = NULL;
-    g_autolist (GFile) files = NULL;
+    const GStrv before_move_hierarchy = (char *[])
+    {
+        "%s_first_dir/",
+        "%s_first_dir/%s_first_dir_child",
+        NULL
+    };
+    const GStrv after_move_hierarchy = (char *[])
+    {
+        "%s_second_dir/%s_first_dir/",
+        "%s_second_dir/%s_first_dir/%s_first_dir_child",
+        NULL
+    };
+    g_autoptr (GFile) first_dir = g_file_new_build_filename (test_get_tmp_dir (),
+                                                             "move_first_dir",
+                                                             NULL);
+    g_autoptr (GFile) second_dir = g_file_new_build_filename (test_get_tmp_dir (),
+                                                              "move_second_dir",
+                                                              NULL);
 
     create_one_file ("move");
 
-    root = g_file_new_for_path (test_get_tmp_dir ());
-    g_assert_true (g_file_query_exists (root, NULL));
-
-    first_dir = g_file_get_child (root, "move_first_dir");
-    files = g_list_prepend (files, g_object_ref (first_dir));
-    g_assert_true (g_file_query_exists (first_dir, NULL));
-
-    second_dir = g_file_get_child (root, "move_second_dir");
-    g_assert_true (g_file_query_exists (second_dir, NULL));
-
-    nautilus_file_operations_move_sync (files,
+    nautilus_file_operations_move_sync (&(GList){ .data = first_dir },
                                         second_dir);
 
-    result_file = g_file_get_child (second_dir, "move_first_dir");
-    g_assert_true (g_file_query_exists (result_file, NULL));
-    file = g_file_get_child (result_file, "move_first_dir_child");
-    g_assert_true (g_file_query_exists (file, NULL));
-
-    file = g_file_get_child (first_dir, "move_first_dir_child");
-    g_assert_false (g_file_query_exists (file, NULL));
-    g_assert_false (g_file_query_exists (first_dir, NULL));
+    file_hierarchy_assert_exists (before_move_hierarchy, "move", FALSE);
+    file_hierarchy_assert_exists (after_move_hierarchy, "move", TRUE);
 
     test_operation_undo ();
 
-    result_file = g_file_get_child (second_dir, "move_first_dir");
-    g_assert_false (g_file_query_exists (result_file, NULL));
-    file = g_file_get_child (result_file, "move_first_dir_child");
-    g_assert_false (g_file_query_exists (file, NULL));
-
-    file = g_file_get_child (first_dir, "move_first_dir_child");
-    g_assert_true (g_file_query_exists (file, NULL));
+    file_hierarchy_assert_exists (before_move_hierarchy, "move", TRUE);
+    file_hierarchy_assert_exists (after_move_hierarchy, "move", FALSE);
 
     test_operation_redo ();
 
-    result_file = g_file_get_child (second_dir, "move_first_dir");
-    g_assert_true (g_file_query_exists (result_file, NULL));
-    file = g_file_get_child (result_file, "move_first_dir_child");
-    g_assert_true (g_file_query_exists (file, NULL));
+    file_hierarchy_assert_exists (before_move_hierarchy, "move", FALSE);
+    file_hierarchy_assert_exists (after_move_hierarchy, "move", TRUE);
 
-    file = g_file_get_child (first_dir, "move_first_dir_child");
-    g_assert_false (g_file_query_exists (file, NULL));
-    g_assert_false (g_file_query_exists (first_dir, NULL));
-
-    empty_directory_by_prefix (root, "move");
+    test_clear_tmp_dir ();
 }
 
 /* The hierarchy looks like this:
@@ -408,81 +370,47 @@ test_move_full_directory (void)
 static void
 test_move_first_hierarchy (void)
 {
-    g_autoptr (GFile) root = NULL;
-    g_autoptr (GFile) first_dir = NULL;
-    g_autoptr (GFile) second_dir = NULL;
-    g_autoptr (GFile) file = NULL;
-    g_autoptr (GFile) result_file = NULL;
-    g_autolist (GFile) files = NULL;
+    const GStrv before_move_hierarchy = (char *[])
+    {
+        "%s_first_dir/",
+        "%s_first_dir/%s_first_child/",
+        "%s_first_dir/%s_second_child/",
+        NULL
+    };
+    const GStrv after_move_hierarchy = (char *[])
+    {
+        "%s_second_dir/%s_first_dir/",
+        "%s_second_dir/%s_first_dir/%s_first_child/",
+        "%s_second_dir/%s_first_dir/%s_second_child/",
+        NULL
+    };
+    g_autoptr (GFile) first_dir = g_file_new_build_filename (test_get_tmp_dir (),
+                                                             "move_first_dir",
+                                                             NULL);
+    g_autoptr (GFile) second_dir = g_file_new_build_filename (test_get_tmp_dir (),
+                                                              "move_second_dir",
+                                                              NULL);
+    g_autolist (GFile) files = g_list_prepend (NULL, g_object_ref (first_dir));
 
     create_first_hierarchy ("move");
-
-    root = g_file_new_for_path (test_get_tmp_dir ());
-    g_assert_true (g_file_query_exists (root, NULL));
-
-    first_dir = g_file_get_child (root, "move_first_dir");
-    files = g_list_prepend (files, g_object_ref (first_dir));
-    g_assert_true (g_file_query_exists (first_dir, NULL));
-
-    second_dir = g_file_get_child (root, "move_second_dir");
-    g_assert_true (g_file_query_exists (second_dir, NULL));
 
     nautilus_file_operations_move_sync (files,
                                         second_dir);
 
-    result_file = g_file_get_child (second_dir, "move_first_dir");
-    g_assert_true (g_file_query_exists (result_file, NULL));
-    file = g_file_get_child (result_file, "move_first_child");
-    g_assert_true (g_file_query_exists (file, NULL));
-
-    file = g_file_get_child (result_file, "move_second_child");
-    g_assert_true (g_file_query_exists (file, NULL));
-
-    file = g_file_get_child (first_dir, "move_first_child");
-    g_assert_false (g_file_query_exists (file, NULL));
-
-    file = g_file_get_child (first_dir, "move_second_child");
-    g_assert_false (g_file_query_exists (file, NULL));
-
-    g_assert_false (g_file_query_exists (first_dir, NULL));
+    file_hierarchy_assert_exists (before_move_hierarchy, "move", FALSE);
+    file_hierarchy_assert_exists (after_move_hierarchy, "move", TRUE);
 
     test_operation_undo ();
 
-    result_file = g_file_get_child (second_dir, "move_first_dir");
-    g_assert_false (g_file_query_exists (result_file, NULL));
-    file = g_file_get_child (result_file, "move_first_child");
-    g_assert_false (g_file_query_exists (file, NULL));
-
-    file = g_file_get_child (result_file, "move_second_child");
-    g_assert_false (g_file_query_exists (file, NULL));
-
-    file = g_file_get_child (first_dir, "move_first_child");
-    g_assert_true (g_file_query_exists (file, NULL));
-
-    file = g_file_get_child (first_dir, "move_second_child");
-    g_assert_true (g_file_query_exists (file, NULL));
-
-    g_assert_true (g_file_query_exists (first_dir, NULL));
+    file_hierarchy_assert_exists (before_move_hierarchy, "move", TRUE);
+    file_hierarchy_assert_exists (after_move_hierarchy, "move", FALSE);
 
     test_operation_redo ();
 
-    result_file = g_file_get_child (second_dir, "move_first_dir");
-    g_assert_true (g_file_query_exists (result_file, NULL));
-    file = g_file_get_child (result_file, "move_first_child");
-    g_assert_true (g_file_query_exists (file, NULL));
+    file_hierarchy_assert_exists (before_move_hierarchy, "move", FALSE);
+    file_hierarchy_assert_exists (after_move_hierarchy, "move", TRUE);
 
-    file = g_file_get_child (result_file, "move_second_child");
-    g_assert_true (g_file_query_exists (file, NULL));
-
-    file = g_file_get_child (first_dir, "move_first_child");
-    g_assert_false (g_file_query_exists (file, NULL));
-
-    file = g_file_get_child (first_dir, "move_second_child");
-    g_assert_false (g_file_query_exists (file, NULL));
-
-    g_assert_false (g_file_query_exists (first_dir, NULL));
-
-    empty_directory_by_prefix (root, "move");
+    test_clear_tmp_dir ();
 }
 
 /* The hierarchy looks like this:
@@ -493,86 +421,46 @@ test_move_first_hierarchy (void)
 static void
 test_move_second_hierarchy (void)
 {
-    g_autoptr (GFile) root = NULL;
-    g_autoptr (GFile) first_dir = NULL;
-    g_autoptr (GFile) second_dir = NULL;
-    g_autoptr (GFile) file = NULL;
-    g_autoptr (GFile) result_file = NULL;
-    g_autolist (GFile) files = NULL;
+    const GStrv before_move_hierarchy = (char *[])
+    {
+        "%s_first_dir/",
+        "%s_first_dir/%s_first_child/",
+        "%s_first_dir/%s_first_child/%s_second_child/",
+        NULL
+    };
+    const GStrv after_move_hierarchy = (char *[])
+    {
+        "%s_second_dir/%s_first_dir/",
+        "%s_second_dir/%s_first_dir/%s_first_child/",
+        "%s_second_dir/%s_first_dir/%s_first_child/%s_second_child/",
+        NULL
+    };
+    g_autoptr (GFile) first_dir = g_file_new_build_filename (test_get_tmp_dir (),
+                                                             "move_first_dir",
+                                                             NULL);
+    g_autoptr (GFile) second_dir = g_file_new_build_filename (test_get_tmp_dir (),
+                                                              "move_second_dir",
+                                                              NULL);
 
     create_second_hierarchy ("move");
 
-    root = g_file_new_for_path (test_get_tmp_dir ());
-    g_assert_true (g_file_query_exists (root, NULL));
-
-    first_dir = g_file_get_child (root, "move_first_dir");
-    files = g_list_prepend (files, g_object_ref (first_dir));
-    g_assert_true (g_file_query_exists (first_dir, NULL));
-
-    second_dir = g_file_get_child (root, "move_second_dir");
-    g_assert_true (g_file_query_exists (second_dir, NULL));
-
-    nautilus_file_operations_move_sync (files,
+    nautilus_file_operations_move_sync (&(GList){ .data = first_dir },
                                         second_dir);
 
-    result_file = g_file_get_child (second_dir, "move_first_dir");
-    g_assert_true (g_file_query_exists (result_file, NULL));
-    file = g_file_get_child (result_file, "move_first_child");
-    g_assert_true (g_file_query_exists (file, NULL));
-
-    file = g_file_get_child (file, "move_second_child");
-    g_assert_true (g_file_query_exists (file, NULL));
-
-    file = g_file_get_child (result_file, "move_first_child");
-    g_assert_true (g_file_query_exists (file, NULL));
-
-    file = g_file_get_child (first_dir, "move_first_child");
-    g_assert_false (g_file_query_exists (file, NULL));
-    file = g_file_get_child (file, "move_second_child");
-    g_assert_false (g_file_query_exists (file, NULL));
-
-    g_assert_false (g_file_query_exists (first_dir, NULL));
+    file_hierarchy_assert_exists (before_move_hierarchy, "move", FALSE);
+    file_hierarchy_assert_exists (after_move_hierarchy, "move", TRUE);
 
     test_operation_undo ();
 
-    result_file = g_file_get_child (second_dir, "move_first_dir");
-    g_assert_false (g_file_query_exists (result_file, NULL));
-    file = g_file_get_child (result_file, "move_first_child");
-    g_assert_false (g_file_query_exists (file, NULL));
-
-    file = g_file_get_child (file, "move_second_child");
-    g_assert_false (g_file_query_exists (file, NULL));
-
-    file = g_file_get_child (first_dir, "move_first_child");
-    file = g_file_get_child (file, "move_second_child");
-    g_assert_true (g_file_query_exists (file, NULL));
-
-    file = g_file_get_child (first_dir, "move_first_child");
-    g_assert_true (g_file_query_exists (file, NULL));
-
-    g_assert_true (g_file_query_exists (first_dir, NULL));
+    file_hierarchy_assert_exists (before_move_hierarchy, "move", TRUE);
+    file_hierarchy_assert_exists (after_move_hierarchy, "move", FALSE);
 
     test_operation_redo ();
 
-    result_file = g_file_get_child (second_dir, "move_first_dir");
-    g_assert_true (g_file_query_exists (result_file, NULL));
-    file = g_file_get_child (result_file, "move_first_child");
-    g_assert_true (g_file_query_exists (file, NULL));
+    file_hierarchy_assert_exists (before_move_hierarchy, "move", FALSE);
+    file_hierarchy_assert_exists (after_move_hierarchy, "move", TRUE);
 
-    file = g_file_get_child (file, "move_second_child");
-    g_assert_true (g_file_query_exists (file, NULL));
-
-    file = g_file_get_child (result_file, "move_first_child");
-    g_assert_true (g_file_query_exists (file, NULL));
-
-    file = g_file_get_child (first_dir, "move_first_child");
-    g_assert_false (g_file_query_exists (file, NULL));
-    file = g_file_get_child (file, "move_second_child");
-    g_assert_false (g_file_query_exists (file, NULL));
-
-    g_assert_false (g_file_query_exists (first_dir, NULL));
-
-    empty_directory_by_prefix (root, "move");
+    test_clear_tmp_dir ();
 }
 
 /* The hierarchy looks like this:
@@ -584,118 +472,52 @@ test_move_second_hierarchy (void)
 static void
 test_move_third_hierarchy (void)
 {
-    g_autoptr (GFile) root = NULL;
-    g_autoptr (GFile) first_dir = NULL;
-    g_autoptr (GFile) second_dir = NULL;
-    g_autoptr (GFile) file = NULL;
-    g_autoptr (GFile) result_file = NULL;
-    g_autolist (GFile) files = NULL;
+    const GStrv before_move_hierarchy = (char *[])
+    {
+        "%s_first_dir/",
+        "%s_first_dir/%s_first_dir_dir1/",
+        "%s_first_dir/%s_first_dir_dir1/%s_dir1_child/",
+
+        "%s_first_dir/%s_first_dir_dir2/",
+        "%s_first_dir/%s_first_dir_dir2/%s_dir2_child",
+        NULL
+    };
+    const GStrv after_move_hierarchy = (char *[])
+    {
+        "%s_second_dir/%s_first_dir/",
+        "%s_second_dir/%s_first_dir/%s_first_dir_dir1/",
+        "%s_second_dir/%s_first_dir/%s_first_dir_dir1/%s_dir1_child/",
+
+        "%s_second_dir/%s_first_dir/%s_first_dir_dir2/",
+        "%s_second_dir/%s_first_dir/%s_first_dir_dir2/%s_dir2_child",
+        NULL
+    };
+    g_autoptr (GFile) first_dir = g_file_new_build_filename (test_get_tmp_dir (),
+                                                             "move_first_dir",
+                                                             NULL);
+    g_autoptr (GFile) second_dir = g_file_new_build_filename (test_get_tmp_dir (),
+                                                              "move_second_dir",
+                                                              NULL);
 
     create_third_hierarchy ("move");
 
-    root = g_file_new_for_path (test_get_tmp_dir ());
-    g_assert_true (g_file_query_exists (root, NULL));
-
-    first_dir = g_file_get_child (root, "move_first_dir");
-    files = g_list_prepend (files, g_object_ref (first_dir));
-    g_assert_true (g_file_query_exists (first_dir, NULL));
-
-    second_dir = g_file_get_child (root, "move_second_dir");
-    g_assert_true (g_file_query_exists (second_dir, NULL));
-
-    nautilus_file_operations_move_sync (files,
+    nautilus_file_operations_move_sync (&(GList){ .data = first_dir },
                                         second_dir);
 
-    result_file = g_file_get_child (second_dir, "move_first_dir");
-
-    g_assert_true (g_file_query_exists (result_file, NULL));
-    file = g_file_get_child (result_file, "move_first_dir_dir1");
-    g_assert_true (g_file_query_exists (file, NULL));
-    file = g_file_get_child (file, "move_dir1_child");
-    file = g_file_get_child (result_file, "move_first_dir_dir1");
-
-    file = g_file_get_child (result_file, "move_first_dir_dir2");
-    g_assert_true (g_file_query_exists (file, NULL));
-    file = g_file_get_child (file, "move_dir2_child");
-    g_assert_true (g_file_query_exists (file, NULL));
-    file = g_file_get_child (result_file, "move_first_dir_dir2");
-
-    file = g_file_get_child (first_dir, "move_first_dir_dir1");
-    g_assert_false (g_file_query_exists (file, NULL));
-    file = g_file_get_child (file, "move_dir1_child");
-    g_assert_false (g_file_query_exists (file, NULL));
-    file = g_file_get_child (first_dir, "move_first_dir_dir1");
-
-    file = g_file_get_child (first_dir, "move_first_dir_dir2");
-    g_assert_false (g_file_query_exists (file, NULL));
-    file = g_file_get_child (file, "move_dir2_child");
-    g_assert_false (g_file_query_exists (file, NULL));
-    file = g_file_get_child (first_dir, "move_first_dir_dir2");
-    g_assert_false (g_file_query_exists (file, NULL));
-
-    g_assert_false (g_file_query_exists (first_dir, NULL));
+    file_hierarchy_assert_exists (before_move_hierarchy, "move", FALSE);
+    file_hierarchy_assert_exists (after_move_hierarchy, "move", TRUE);
 
     test_operation_undo ();
 
-    result_file = g_file_get_child (second_dir, "move_first_dir");
-
-    g_assert_false (g_file_query_exists (result_file, NULL));
-    file = g_file_get_child (result_file, "move_first_dir_dir1");
-    g_assert_false (g_file_query_exists (file, NULL));
-    file = g_file_get_child (file, "move_dir1_child");
-    g_assert_false (g_file_query_exists (file, NULL));
-
-    file = g_file_get_child (result_file, "move_first_dir_dir2");
-    g_assert_false (g_file_query_exists (file, NULL));
-    file = g_file_get_child (file, "move_dir2_child");
-    g_assert_false (g_file_query_exists (file, NULL));
-
-    file = g_file_get_child (first_dir, "move_first_dir_dir1");
-    g_assert_true (g_file_query_exists (file, NULL));
-    file = g_file_get_child (file, "move_dir1_child");
-    g_assert_true (g_file_query_exists (file, NULL));
-    file = g_file_get_child (first_dir, "move_first_dir_dir1");
-
-    file = g_file_get_child (first_dir, "move_first_dir_dir2");
-    g_assert_true (g_file_query_exists (file, NULL));
-    file = g_file_get_child (file, "move_dir2_child");
-    g_assert_true (g_file_query_exists (file, NULL));
-    file = g_file_get_child (first_dir, "move_first_dir_dir2");
-
-    g_assert_true (g_file_query_exists (first_dir, NULL));
+    file_hierarchy_assert_exists (before_move_hierarchy, "move", TRUE);
+    file_hierarchy_assert_exists (after_move_hierarchy, "move", FALSE);
 
     test_operation_redo ();
 
-    result_file = g_file_get_child (second_dir, "move_first_dir");
+    file_hierarchy_assert_exists (before_move_hierarchy, "move", FALSE);
+    file_hierarchy_assert_exists (after_move_hierarchy, "move", TRUE);
 
-    g_assert_true (g_file_query_exists (result_file, NULL));
-    file = g_file_get_child (result_file, "move_first_dir_dir1");
-    g_assert_true (g_file_query_exists (file, NULL));
-    file = g_file_get_child (file, "move_dir1_child");
-    file = g_file_get_child (result_file, "move_first_dir_dir1");
-
-    file = g_file_get_child (result_file, "move_first_dir_dir2");
-    g_assert_true (g_file_query_exists (file, NULL));
-    file = g_file_get_child (file, "move_dir2_child");
-    g_assert_true (g_file_query_exists (file, NULL));
-    file = g_file_get_child (result_file, "move_first_dir_dir2");
-
-    file = g_file_get_child (first_dir, "move_first_dir_dir1");
-    g_assert_false (g_file_query_exists (file, NULL));
-    file = g_file_get_child (file, "move_dir1_child");
-    g_assert_false (g_file_query_exists (file, NULL));
-    file = g_file_get_child (first_dir, "move_first_dir_dir1");
-
-    file = g_file_get_child (first_dir, "move_first_dir_dir2");
-    g_assert_false (g_file_query_exists (file, NULL));
-    file = g_file_get_child (file, "move_dir2_child");
-    g_assert_false (g_file_query_exists (file, NULL));
-    file = g_file_get_child (first_dir, "move_first_dir_dir2");
-    g_assert_false (g_file_query_exists (file, NULL));
-
-    g_assert_false (g_file_query_exists (first_dir, NULL));
-
-    empty_directory_by_prefix (root, "move");
+    test_clear_tmp_dir ();
 }
 
 /* The hierarchy looks like this:
@@ -707,90 +529,57 @@ test_move_third_hierarchy (void)
 static void
 test_move_fourth_hierarchy (void)
 {
-    g_autoptr (GFile) root = NULL;
-    g_autoptr (GFile) first_dir = NULL;
-    g_autoptr (GFile) second_dir = NULL;
-    g_autoptr (GFile) third_dir = NULL;
-    g_autoptr (GFile) file = NULL;
-    g_autoptr (GFile) result_file = NULL;
+    const GStrv before_move_hierarchy = (char *[])
+    {
+        "%s_first_dir/",
+        "%s_first_dir/%s_first_dir_child/",
+
+        "%s_second_dir/",
+        "%s_second_dir/%s_second_dir_child/",
+        NULL
+    };
+    const GStrv after_move_hierarchy = (char *[])
+    {
+        "%s_third_dir/%s_first_dir/",
+        "%s_third_dir/%s_first_dir/%s_first_dir_child/",
+
+        "%s_third_dir/%s_second_dir/",
+        "%s_third_dir/%s_second_dir/%s_second_dir_child/",
+
+        NULL
+    };
+    g_autoptr (GFile) first_dir = g_file_new_build_filename (test_get_tmp_dir (),
+                                                             "move_first_dir",
+                                                             NULL);
+    g_autoptr (GFile) second_dir = g_file_new_build_filename (test_get_tmp_dir (),
+                                                              "move_second_dir",
+                                                              NULL);
+    g_autoptr (GFile) third_dir = g_file_new_build_filename (test_get_tmp_dir (),
+                                                             "move_third_dir",
+                                                             NULL);
     g_autolist (GFile) files = NULL;
 
     create_fourth_hierarchy ("move");
 
-    root = g_file_new_for_path (test_get_tmp_dir ());
-    first_dir = g_file_get_child (root, "move_first_dir");
     files = g_list_prepend (files, g_object_ref (first_dir));
-    g_assert_true (g_file_query_exists (first_dir, NULL));
-
-    second_dir = g_file_get_child (root, "move_second_dir");
     files = g_list_prepend (files, g_object_ref (second_dir));
-    g_assert_true (g_file_query_exists (second_dir, NULL));
 
-    third_dir = g_file_get_child (root, "move_third_dir");
-    g_assert_true (g_file_query_exists (third_dir, NULL));
+    nautilus_file_operations_move_sync (files, third_dir);
 
-    nautilus_file_operations_move_sync (files,
-                                        third_dir);
-
-    result_file = g_file_get_child (third_dir, "move_first_dir");
-    g_assert_true (g_file_query_exists (result_file, NULL));
-    file = g_file_get_child (result_file, "move_first_dir_child");
-    g_assert_true (g_file_query_exists (file, NULL));
-
-    result_file = g_file_get_child (third_dir, "move_second_dir");
-    g_assert_true (g_file_query_exists (result_file, NULL));
-    file = g_file_get_child (result_file, "move_second_dir_child");
-    g_assert_true (g_file_query_exists (file, NULL));
-
-    file = g_file_get_child (first_dir, "move_first_dir_child");
-    g_assert_false (g_file_query_exists (file, NULL));
-    g_assert_false (g_file_query_exists (first_dir, NULL));
-
-    file = g_file_get_child (second_dir, "move_second_dir_child");
-    g_assert_false (g_file_query_exists (file, NULL));
-    g_assert_false (g_file_query_exists (second_dir, NULL));
+    file_hierarchy_assert_exists (before_move_hierarchy, "move", FALSE);
+    file_hierarchy_assert_exists (after_move_hierarchy, "move", TRUE);
 
     test_operation_undo ();
 
-    result_file = g_file_get_child (third_dir, "move_first_dir");
-    g_assert_false (g_file_query_exists (result_file, NULL));
-    file = g_file_get_child (result_file, "move_first_dir_child");
-    g_assert_false (g_file_query_exists (file, NULL));
-
-    result_file = g_file_get_child (third_dir, "move_second_dir");
-    g_assert_false (g_file_query_exists (result_file, NULL));
-    file = g_file_get_child (result_file, "move_second_dir_child");
-    g_assert_false (g_file_query_exists (file, NULL));
-
-    file = g_file_get_child (first_dir, "move_first_dir_child");
-    g_assert_true (g_file_query_exists (file, NULL));
-    g_assert_true (g_file_query_exists (first_dir, NULL));
-
-    file = g_file_get_child (second_dir, "move_second_dir_child");
-    g_assert_true (g_file_query_exists (file, NULL));
-    g_assert_true (g_file_query_exists (second_dir, NULL));
+    file_hierarchy_assert_exists (before_move_hierarchy, "move", TRUE);
+    file_hierarchy_assert_exists (after_move_hierarchy, "move", FALSE);
 
     test_operation_redo ();
 
-    result_file = g_file_get_child (third_dir, "move_first_dir");
-    g_assert_true (g_file_query_exists (result_file, NULL));
-    file = g_file_get_child (result_file, "move_first_dir_child");
-    g_assert_true (g_file_query_exists (file, NULL));
+    file_hierarchy_assert_exists (before_move_hierarchy, "move", FALSE);
+    file_hierarchy_assert_exists (after_move_hierarchy, "move", TRUE);
 
-    result_file = g_file_get_child (third_dir, "move_second_dir");
-    g_assert_true (g_file_query_exists (result_file, NULL));
-    file = g_file_get_child (result_file, "move_second_dir_child");
-    g_assert_true (g_file_query_exists (file, NULL));
-
-    file = g_file_get_child (first_dir, "move_first_dir_child");
-    g_assert_false (g_file_query_exists (file, NULL));
-    g_assert_false (g_file_query_exists (first_dir, NULL));
-
-    file = g_file_get_child (second_dir, "move_second_dir_child");
-    g_assert_false (g_file_query_exists (file, NULL));
-    g_assert_false (g_file_query_exists (second_dir, NULL));
-
-    empty_directory_by_prefix (root, "move");
+    test_clear_tmp_dir ();
 }
 
 static void
