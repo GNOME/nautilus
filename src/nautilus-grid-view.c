@@ -294,6 +294,7 @@ real_preview_selection_event (NautilusListBase *list_base,
     /* If the hack fails (GTK may change it's internal behavior), fallback. */
     if (!success)
     {
+        g_warning_once ("GTK shortcut behavior has changed, manual shortcut method failed");
         NAUTILUS_LIST_BASE_CLASS (nautilus_grid_view_parent_class)->preview_selection_event (list_base, direction);
     }
 }
