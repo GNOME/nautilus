@@ -38,6 +38,7 @@ void quit_loop_callback (NautilusFileUndoManager *undo_manager,
                          GMainLoop               *loop);
 void test_operation_undo_redo (void);
 void test_operation_undo (void);
+void test_operation_redo (void);
 
 void create_one_file (gchar *prefix);
 void create_one_empty_directory (gchar *prefix);

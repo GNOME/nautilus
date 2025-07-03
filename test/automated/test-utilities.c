@@ -206,6 +206,32 @@ test_operation_undo (void)
                                  handler_id);
 }
 
+void
+test_operation_redo (void)
+{
+    g_autoptr (GMainLoop) loop = NULL;
+    g_autoptr (GMainContext) context = NULL;
+    gulong handler_id;
+
+    context = g_main_context_new ();
+    g_main_context_push_thread_default (context);
+    loop = g_main_loop_new (context, FALSE);
+
+    handler_id = g_signal_connect_swapped (nautilus_file_undo_manager_get (),
+                                           "undo-changed",
+                                           G_CALLBACK (g_main_loop_quit),
+                                           loop);
+
+    nautilus_file_undo_manager_redo (NULL, NULL);
+
+    g_main_loop_run (loop);
+
+    g_main_context_pop_thread_default (context);
+
+    g_signal_handler_disconnect (nautilus_file_undo_manager_get (),
+                                 handler_id);
+}
+
 /* This undoes and redoes the last move operation blocking the current main thread. */
 void
 test_operation_undo_redo (void)
