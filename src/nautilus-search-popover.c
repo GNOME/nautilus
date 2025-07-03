@@ -117,12 +117,9 @@ calendar_day_selected (GtkCalendar           *calendar,
  */
 static void
 setup_date (NautilusSearchPopover *popover,
-            NautilusQuery         *query)
+            GPtrArray             *date_range)
 {
-    GPtrArray *date_range;
     GDateTime *date_initial;
-
-    date_range = nautilus_query_get_date_range (query);
 
     if (date_range)
     {
@@ -1003,7 +1000,7 @@ nautilus_search_popover_set_query (NautilusSearchPopover *popover,
         if (query)
         {
             /* Date */
-            setup_date (popover, query);
+            setup_date (popover, nautilus_query_get_date_range (query));
         }
         else
         {
@@ -1025,6 +1022,22 @@ nautilus_search_popover_reset_mime_types (NautilusSearchPopover *popover)
                          nautilus_mime_types_group_get_name (0));
     g_signal_emit_by_name (popover, "mime-type", 0, NULL);
     gtk_stack_set_visible_child_name (GTK_STACK (popover->type_stack), "type-button");
+}
+
+void
+nautilus_search_popover_set_date_range (NautilusSearchPopover *popover,
+                                        GPtrArray             *date_range)
+{
+    g_return_if_fail (NAUTILUS_IS_SEARCH_POPOVER (popover));
+
+    if (date_range != NULL)
+    {
+        setup_date (popover, date_range);
+    }
+    else
+    {
+        nautilus_search_popover_reset_date_range (popover);
+    }
 }
 
 void
