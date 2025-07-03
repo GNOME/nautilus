@@ -428,9 +428,7 @@ test_move_files_large (void)
 
     move_multiple_files ("move_file", root, dir, 500);
 
-    test_operation_undo ();
-
-    verify_multiple_files_moved ("move_file", root, dir, 500, FALSE);
+    verify_multiple_files_moved ("move_file", root, dir, 500, TRUE);
 
     g_assert_true (g_file_query_exists (dir, NULL));
 
@@ -453,9 +451,9 @@ test_move_files_large_undo (void)
 
     move_multiple_files ("move_file", root, dir, 500);
 
-    test_operation_undo_redo ();
+    test_operation_undo ();
 
-    verify_multiple_files_moved ("move_file", root, dir, 500, TRUE);
+    verify_multiple_files_moved ("move_file", root, dir, 500, FALSE);
 
     g_assert_true (g_file_query_exists (dir, NULL));
 
