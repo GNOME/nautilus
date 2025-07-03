@@ -58,7 +58,6 @@ struct _NautilusSearchPopover
     AdwDialog *type_dialog;
     GtkStack *type_dialog_stack;
 
-    NautilusQuery *query;
     GtkSingleSelection *other_types_model;
 };
 
@@ -71,13 +70,6 @@ static void          update_date_label (NautilusSearchPopover *popover,
                                         GPtrArray             *date_range);
 
 G_DEFINE_TYPE (NautilusSearchPopover, nautilus_search_popover, GTK_TYPE_POPOVER)
-
-enum
-{
-    PROP_0,
-    PROP_QUERY,
-    LAST_PROP
-};
 
 enum
 {
@@ -715,78 +707,10 @@ static void
 nautilus_search_popover_closed (GtkPopover *popover)
 {
     NautilusSearchPopover *self = NAUTILUS_SEARCH_POPOVER (popover);
-    GDateTime *now;
 
     /* Always switch back to the initial states */
     gtk_stack_set_visible_child_name (GTK_STACK (self->type_stack), "type-button");
     show_date_selection_widgets (self, FALSE);
-
-    /* If we're closing an ongoing query, the popover must not
-     * clear the current settings.
-     */
-    if (self->query)
-    {
-        return;
-    }
-
-    now = g_date_time_new_now_local ();
-
-    /* Reselect today at the calendar */
-    g_signal_handlers_block_by_func (self->calendar, calendar_day_selected, self);
-
-    gtk_calendar_select_day (GTK_CALENDAR (self->calendar), now);
-
-    g_signal_handlers_unblock_by_func (self->calendar, calendar_day_selected, self);
-}
-
-static void
-nautilus_search_popover_get_property (GObject    *object,
-                                      guint       prop_id,
-                                      GValue     *value,
-                                      GParamSpec *pspec)
-{
-    NautilusSearchPopover *self;
-
-    self = NAUTILUS_SEARCH_POPOVER (object);
-
-    switch (prop_id)
-    {
-        case PROP_QUERY:
-        {
-            g_value_set_object (value, self->query);
-        }
-        break;
-
-        default:
-        {
-            G_OBJECT_WARN_INVALID_PROPERTY_ID (object, prop_id, pspec);
-        }
-    }
-}
-
-static void
-nautilus_search_popover_set_property (GObject      *object,
-                                      guint         prop_id,
-                                      const GValue *value,
-                                      GParamSpec   *pspec)
-{
-    NautilusSearchPopover *self;
-
-    self = NAUTILUS_SEARCH_POPOVER (object);
-
-    switch (prop_id)
-    {
-        case PROP_QUERY:
-        {
-            nautilus_search_popover_set_query (self, g_value_get_object (value));
-        }
-        break;
-
-        default:
-        {
-            G_OBJECT_WARN_INVALID_PROPERTY_ID (object, prop_id, pspec);
-        }
-    }
 }
 
 static void
@@ -796,8 +720,6 @@ nautilus_search_popover_dispose (GObject *obj)
 
     gtk_popover_set_child (GTK_POPOVER (obj), NULL);
     gtk_widget_dispose_template (GTK_WIDGET (self), NAUTILUS_TYPE_SEARCH_POPOVER);
-
-    g_clear_object (&self->query);
 
     G_OBJECT_CLASS (nautilus_search_popover_parent_class)->dispose (obj);
 }
@@ -809,8 +731,6 @@ nautilus_search_popover_class_init (NautilusSearchPopoverClass *klass)
     GtkWidgetClass *widget_class = GTK_WIDGET_CLASS (klass);
     GObjectClass *object_class = G_OBJECT_CLASS (klass);
 
-    object_class->get_property = nautilus_search_popover_get_property;
-    object_class->set_property = nautilus_search_popover_set_property;
     object_class->dispose = nautilus_search_popover_dispose;
 
     popover_class->closed = nautilus_search_popover_closed;
@@ -854,19 +774,6 @@ nautilus_search_popover_class_init (NautilusSearchPopoverClass *klass)
                                        G_TYPE_NONE,
                                        1,
                                        G_TYPE_INT);
-
-    /**
-     * NautilusSearchPopover::query:
-     *
-     * The current #NautilusQuery being edited.
-     */
-    g_object_class_install_property (object_class,
-                                     PROP_QUERY,
-                                     g_param_spec_object ("query",
-                                                          "Query of the popover",
-                                                          "The current query being edited",
-                                                          NAUTILUS_TYPE_QUERY,
-                                                          G_PARAM_READWRITE));
 
     gtk_widget_class_set_template_from_resource (widget_class, "/org/gnome/nautilus/ui/nautilus-search-popover.ui");
 
@@ -962,54 +869,6 @@ nautilus_search_popover_new (void)
     return g_object_new (NAUTILUS_TYPE_SEARCH_POPOVER, NULL);
 }
 
-/**
- * nautilus_search_popover_get_query:
- * @popover: a #NautilusSearchPopover
- *
- * Gets the current query for @popover.
- *
- * Returns: (transfer none): the current #NautilusQuery from @popover.
- */
-NautilusQuery *
-nautilus_search_popover_get_query (NautilusSearchPopover *popover)
-{
-    g_return_val_if_fail (NAUTILUS_IS_SEARCH_POPOVER (popover), NULL);
-
-    return popover->query;
-}
-
-/**
- * nautilus_search_popover_set_query:
- * @popover: a #NautilusSearchPopover
- * @query (nullable): a #NautilusQuery
- *
- * Sets the current query for @popover.
- *
- * Returns:
- */
-void
-nautilus_search_popover_set_query (NautilusSearchPopover *popover,
-                                   NautilusQuery         *query)
-{
-    g_return_if_fail (NAUTILUS_IS_SEARCH_POPOVER (popover));
-
-    if (popover->query != query)
-    {
-        g_set_object (&popover->query, query);
-
-        if (query)
-        {
-            /* Date */
-            setup_date (popover, nautilus_query_get_date_range (query));
-        }
-        else
-        {
-            nautilus_search_popover_reset_mime_types (popover);
-            nautilus_search_popover_reset_date_range (popover);
-        }
-    }
-}
-
 void
 nautilus_search_popover_reset_mime_types (NautilusSearchPopover *popover)
 {
@@ -1044,6 +903,12 @@ void
 nautilus_search_popover_reset_date_range (NautilusSearchPopover *popover)
 {
     g_return_if_fail (NAUTILUS_IS_SEARCH_POPOVER (popover));
+
+    /* Reselect today at the calendar */
+    GDateTime *now = g_date_time_new_now_local ();
+    g_signal_handlers_block_by_func (popover->calendar, calendar_day_selected, popover);
+    gtk_calendar_select_day (GTK_CALENDAR (popover->calendar), now);
+    g_signal_handlers_unblock_by_func (popover->calendar, calendar_day_selected, popover);
 
     gtk_list_box_select_row (GTK_LIST_BOX (popover->dates_listbox),
                              gtk_list_box_get_row_at_index (GTK_LIST_BOX (popover->dates_listbox), 0));
