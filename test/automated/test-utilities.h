@@ -28,8 +28,21 @@ void test_init_config_dir (void);
 void empty_directory_by_prefix (GFile *parent,
                                 gchar *prefix);
 
-void create_hierarchy_from_template (const GStrv  hier,
-                                     const gchar *substitution);
+typedef void (*HierarchyCallback) (GFile    *file,
+                                   gpointer  user_data);
+void file_hierarchy_create (const GStrv  hier,
+                     const gchar *substitution);
+void file_hierarchy_foreach (const GStrv        hier,
+                             const gchar       *substitution,
+                             HierarchyCallback  func,
+                             gpointer           user_data);
+GList * file_hierarchy_get_files_list (const GStrv  hier,
+                                       const gchar *substitution);
+void file_hierarchy_assert_exists (const GStrv  hier,
+                                   const gchar *substitution,
+                                   gboolean     exists);
+void file_hierarchy_delete (const GStrv  hier,
+                            const gchar *substitution);
 
 void create_search_file_hierarchy (gchar *search_engine);
 void delete_search_file_hierarchy (gchar *search_engine);

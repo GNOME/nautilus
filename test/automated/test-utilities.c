@@ -103,8 +103,8 @@ empty_directory_by_prefix (GFile *parent,
 }
 
 void
-create_hierarchy_from_template (const GStrv  hier,
-                                const gchar *substitution)
+file_hierarchy_create (const GStrv  hier,
+                       const gchar *substitution)
 {
     const gchar *root_path = test_get_tmp_dir ();
 
@@ -131,9 +131,82 @@ create_hierarchy_from_template (const GStrv  hier,
     }
 }
 
+void
+file_hierarchy_foreach (const GStrv        hier,
+                        const gchar       *substitution,
+                        HierarchyCallback  func,
+                        gpointer           user_data)
+{
+    const gchar *root_path = test_get_tmp_dir ();
+    guint len = g_strv_length (hier);
+
+    for (guint i = 0; i < len; i++)
+    {
+        g_autoptr (GFile) file = NULL;
+        g_autoptr (GString) file_path = g_string_new (hier[i]);
+
+        g_string_replace (file_path, "%s", substitution, 0);
+        g_string_prepend (file_path, G_DIR_SEPARATOR_S);
+        g_string_prepend (file_path, root_path);
+        file = g_file_new_for_path (file_path->str);
+
+        func (G_FILE (file), user_data);
+    }
+}
+
 static void
-delete_hierarchy_from_template (const GStrv  hier,
-                                const gchar *substitution)
+append_file_to_list (GFile    *file,
+                     gpointer  user_data)
+{
+    GList **files = user_data;
+
+    *files = g_list_append (*files, g_object_ref (file));
+}
+
+GList *
+file_hierarchy_get_files_list (const GStrv  hier,
+                               const gchar *substitution)
+{
+    GList *files = NULL;
+
+    file_hierarchy_foreach (hier,
+                            substitution,
+                            append_file_to_list,
+                            &files);
+
+    return files;
+}
+
+static void
+assert_file_exist (GFile    *location,
+                   gpointer  user_data)
+{
+    gboolean *should_exist = user_data;
+
+    if (*should_exist)
+    {
+        g_assert_true (g_file_query_exists (location, NULL));
+    }
+    else
+    {
+        g_assert_false (g_file_query_exists (location, NULL));
+    }
+}
+
+void
+file_hierarchy_assert_exists (const GStrv  hier,
+                              const gchar *substitution,
+                              gboolean     exists)
+{
+    file_hierarchy_foreach (hier,
+                            substitution,
+                            assert_file_exist,
+                            (gpointer) & exists);
+}
+
+void
+file_hierarchy_delete (const GStrv  hier,
+                       const gchar *substitution)
 {
     const gchar *root_path = test_get_tmp_dir ();
     guint len = g_strv_length (hier);
@@ -170,13 +243,13 @@ const GStrv search_hierarchy = (char *[])
 void
 create_search_file_hierarchy (gchar *search_engine)
 {
-    create_hierarchy_from_template (search_hierarchy, search_engine);
+    file_hierarchy_create (search_hierarchy, search_engine);
 }
 
 void
 delete_search_file_hierarchy (gchar *search_engine)
 {
-    delete_hierarchy_from_template (search_hierarchy, search_engine);
+    file_hierarchy_delete (search_hierarchy, search_engine);
 }
 
 /* This undoes the last operation blocking the current main thread. */
@@ -449,7 +522,7 @@ create_first_hierarchy (gchar *prefix)
         NULL
     };
 
-    create_hierarchy_from_template (first_hierarchy, prefix);
+    file_hierarchy_create (first_hierarchy, prefix);
 }
 
 void
@@ -465,7 +538,7 @@ create_second_hierarchy (gchar *prefix)
         NULL
     };
 
-    create_hierarchy_from_template (second_hierarchy, prefix);
+    file_hierarchy_create (second_hierarchy, prefix);
 }
 
 void
@@ -484,7 +557,7 @@ create_third_hierarchy (gchar *prefix)
         NULL
     };
 
-    create_hierarchy_from_template (third_hierarchy, prefix);
+    file_hierarchy_create (third_hierarchy, prefix);
 }
 
 void
@@ -502,7 +575,7 @@ create_fourth_hierarchy (gchar *prefix)
         NULL
     };
 
-    create_hierarchy_from_template (fourth_hierarchy, prefix);
+    file_hierarchy_create (fourth_hierarchy, prefix);
 }
 
 void
