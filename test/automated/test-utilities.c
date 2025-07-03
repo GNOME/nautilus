@@ -334,73 +334,32 @@ test_operation_undo_redo (void)
                                  handler_id);
 }
 
-/* Creates the following hierarchy:
- * /tmp/`prefix`_first_dir/`prefix`_first_dir_child
- * /tmp/`prefix`_second_dir/
- */
 void
 create_one_file (gchar *prefix)
 {
-    g_autoptr (GFile) root = NULL;
-    g_autoptr (GFile) first_dir = NULL;
-    g_autoptr (GFile) second_dir = NULL;
-    g_autoptr (GFile) file = NULL;
-    GFileOutputStream *out;
-    gchar *file_name;
+    const GStrv files_hier = (char *[])
+    {
+        "%s_first_dir/",
+        "%s_first_dir/%s_first_dir_child",
+        "%s_second_dir/",
+        NULL
+    };
 
-    root = g_file_new_for_path (test_get_tmp_dir ());
-    g_assert_true (g_file_query_exists (root, NULL));
-
-    file_name = g_strdup_printf ("%s_first_dir", prefix);
-    first_dir = g_file_get_child (root, file_name);
-    g_free (file_name);
-
-    g_file_make_directory (first_dir, NULL, NULL);
-
-    file_name = g_strdup_printf ("%s_first_dir_child", prefix);
-    file = g_file_get_child (first_dir, file_name);
-    g_free (file_name);
-
-    out = g_file_create (file, G_FILE_CREATE_NONE, NULL, NULL);
-    g_object_unref (out);
-
-    file_name = g_strdup_printf ("%s_second_dir", prefix);
-    second_dir = g_file_get_child (root, file_name);
-    g_free (file_name);
-
-    g_file_make_directory (second_dir, NULL, NULL);
+    file_hierarchy_create (files_hier, prefix);
 }
 
-/* Creates the same hierarchy as above, but all files being directories. */
 void
 create_one_empty_directory (gchar *prefix)
 {
-    g_autoptr (GFile) root = NULL;
-    g_autoptr (GFile) first_dir = NULL;
-    g_autoptr (GFile) second_dir = NULL;
-    g_autoptr (GFile) file = NULL;
-    gchar *file_name;
+    const GStrv files_hier = (char *[])
+    {
+        "%s_first_dir/",
+        "%s_first_dir/%s_first_dir_child/",
+        "%s_second_dir/",
+        NULL
+    };
 
-    root = g_file_new_for_path (test_get_tmp_dir ());
-    g_assert_true (g_file_query_exists (root, NULL));
-
-    file_name = g_strdup_printf ("%s_first_dir", prefix);
-    first_dir = g_file_get_child (root, file_name);
-    g_free (file_name);
-
-    g_file_make_directory (first_dir, NULL, NULL);
-
-    file_name = g_strdup_printf ("%s_first_dir_child", prefix);
-    file = g_file_get_child (first_dir, file_name);
-    g_free (file_name);
-
-    g_file_make_directory (file, NULL, NULL);
-
-    file_name = g_strdup_printf ("%s_second_dir", prefix);
-    second_dir = g_file_get_child (root, file_name);
-    g_free (file_name);
-
-    g_file_make_directory (second_dir, NULL, NULL);
+    file_hierarchy_create (files_hier, prefix);
 }
 
 static void
