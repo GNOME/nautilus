@@ -42,6 +42,9 @@ NautilusQuery*       nautilus_search_popover_get_query           (NautilusSearch
 
 void                 nautilus_search_popover_set_query           (NautilusSearchPopover *popover,
                                                                   NautilusQuery         *query);
+void
+nautilus_search_popover_set_date_range (NautilusSearchPopover *popover,
+                                        GPtrArray             *date_range);
 void                 nautilus_search_popover_reset_date_range    (NautilusSearchPopover *popover);
 void                 nautilus_search_popover_reset_mime_types    (NautilusSearchPopover *popover);
 
