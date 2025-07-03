@@ -735,10 +735,6 @@ nautilus_query_editor_init (NautilusQueryEditor *editor)
     g_signal_connect_swapped (editor->popover, "closed",
                               G_CALLBACK (gtk_widget_grab_focus), editor);
 
-    g_object_bind_property (editor, "query",
-                            editor->popover, "query",
-                            G_BINDING_DEFAULT);
-
     GtkWidget *search_info_popover = gtk_popover_new ();
     editor->status_page = adw_status_page_new ();
     /* translators: This opens the search panel in the Settings app. */
@@ -851,6 +847,7 @@ nautilus_query_editor_set_location (NautilusQueryEditor *editor,
     }
 }
 
+/* Note: This function does not forward mime types to the popover. */
 void
 nautilus_query_editor_set_query (NautilusQueryEditor *self,
                                  NautilusQuery       *query)
@@ -882,6 +879,18 @@ nautilus_query_editor_set_query (NautilusQueryEditor *self,
 
     if (g_set_object (&self->query, query))
     {
+        if (query == NULL)
+        {
+            nautilus_search_popover_reset_mime_types (NAUTILUS_SEARCH_POPOVER (self->popover));
+            nautilus_search_popover_reset_date_range (NAUTILUS_SEARCH_POPOVER (self->popover));
+        }
+        else
+        {
+            nautilus_search_popover_set_date_range (NAUTILUS_SEARCH_POPOVER (self->popover),
+                                                    nautilus_query_get_date_range (self->query));
+        }
+        update_fts_sensitivity (self);
+
         g_object_notify (G_OBJECT (self), "query");
     }
 
