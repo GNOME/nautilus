@@ -1078,11 +1078,9 @@ test_move_second_hierarchy_undo_redo (void)
     first_dir = g_file_get_child (root, "move_first_dir");
     files = g_list_prepend (files, g_object_ref (first_dir));
     g_assert_true (g_file_query_exists (first_dir, NULL));
-    g_file_make_directory (first_dir, NULL, NULL);
 
     second_dir = g_file_get_child (root, "move_second_dir");
     g_assert_true (g_file_query_exists (second_dir, NULL));
-    g_file_make_directory (second_dir, NULL, NULL);
 
     nautilus_file_operations_move_sync (files,
                                         second_dir);
