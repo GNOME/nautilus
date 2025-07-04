@@ -1850,13 +1850,10 @@ rename_callback (GObject      *source_object,
                  GAsyncResult *res,
                  gpointer      callback_data)
 {
-    NautilusFileOperation *op;
-    GFile *new_file;
-    GError *error;
+    NautilusFileOperation *op = callback_data;
+    g_autoptr (GFile) new_file = NULL;
+    g_autoptr (GError) error = NULL;
 
-    op = callback_data;
-
-    error = NULL;
     new_file = g_file_set_display_name_finish (G_FILE (source_object),
                                                res, &error);
 
@@ -1877,7 +1874,6 @@ rename_callback (GObject      *source_object,
     else
     {
         nautilus_file_operation_complete (op, NULL, error);
-        g_error_free (error);
     }
 }
 
