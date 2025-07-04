@@ -232,6 +232,11 @@ nautilus_rename_file_popover_show_for_file (NautilusRenameFilePopover *self,
 
     gtk_popover_set_pointing_to (GTK_POPOVER (self), pointing_to);
     gtk_popover_popup (GTK_POPOVER (self));
+    if (!gtk_widget_get_mapped (GTK_WIDGET (self)))
+    {
+        /* The compositor rejected the popover and it was closed */
+        return;
+    }
 
     if (nautilus_file_is_regular_file (self->target_file))
     {
