@@ -304,8 +304,8 @@ test_trash_first_hierarchy (void)
 {
     g_autoptr (GFile) root = NULL;
     g_autoptr (GFile) first_dir = NULL;
-    g_autoptr (GFile) file = NULL;
     g_autolist (GFile) files = NULL;
+    GFile *file;
 
     create_first_hierarchy ("trash_or_delete");
 
@@ -320,9 +320,11 @@ test_trash_first_hierarchy (void)
 
     file = g_file_get_child (first_dir, "trash_or_delete_first_dir_child");
     g_assert_false (g_file_query_exists (file, NULL));
+    g_clear_object (&file);
 
     file = g_file_get_child (first_dir, "trash_or_delete_second_dir_child");
     g_assert_false (g_file_query_exists (file, NULL));
+    g_clear_object (&file);
 
     g_assert_false (g_file_query_exists (first_dir, NULL));
 
@@ -408,6 +410,7 @@ test_delete_first_hierarchy (void)
 
     file = g_file_get_child (first_dir, "delete_first_dir_child");
     g_assert_false (g_file_query_exists (file, NULL));
+    g_clear_object (&file);
 
     file = g_file_get_child (first_dir, "delete_second_dir_child");
     g_assert_false (g_file_query_exists (file, NULL));
