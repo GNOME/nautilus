@@ -92,14 +92,7 @@
     {
       "name": "localsearch",
       "buildsystem": "meson",
-      "cleanup": [
-        "/etc",
-        "/libexec/localsearch-3",
-        "/share/dbus-1/services/org.freedesktop.Tracker3.Miner.Files.service",
-        "/share/dbus-1/services/org.freedesktop.Tracker3.Miner.Files.Control.service",
-        "/share/dbus-1/services/org.freedesktop.LocalSearch3.service",
-        "/share/dbus-1/services/org.freedesktop.LocalSearch3.Control.service"
-      ],
+      "cleanup": [ "/bin", "/etc" ],
       "config-opts": [
         "-Dfunctional_tests=false",
         "-Dsandbox_tests=false",
