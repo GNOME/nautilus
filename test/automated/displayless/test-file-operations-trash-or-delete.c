@@ -320,6 +320,7 @@ test_trash_first_hierarchy (void)
 
     file = g_file_get_child (first_dir, "trash_or_delete_first_dir_child");
     g_assert_false (g_file_query_exists (file, NULL));
+    g_clear_object (&file);
 
     file = g_file_get_child (first_dir, "trash_or_delete_second_dir_child");
     g_assert_false (g_file_query_exists (file, NULL));
@@ -408,6 +409,7 @@ test_delete_first_hierarchy (void)
 
     file = g_file_get_child (first_dir, "delete_first_dir_child");
     g_assert_false (g_file_query_exists (file, NULL));
+    g_clear_object (&file);
 
     file = g_file_get_child (first_dir, "delete_second_dir_child");
     g_assert_false (g_file_query_exists (file, NULL));
