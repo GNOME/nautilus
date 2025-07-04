@@ -58,6 +58,9 @@ struct _NautilusSearchPopover
 
     GtkButton *active_type_button;
 
+    /* Time Type */
+    GtkLabel *time_type_label;
+
     /* Date Filter */
     GtkButton *today_button;
     GtkButton *yesterday_button;
@@ -158,9 +161,13 @@ date_range_dialog_selected_cb (NautilusSearchPopover *self,
                                GPtrArray             *date_range)
 {
     g_set_ptr_array (&self->specific_date_range, date_range);
+
+    g_autofree char *description = get_text_for_date_range (self->specific_date_range, FALSE);
+    gtk_button_set_label (self->specific_date_button, description);
     gtk_widget_set_visible (GTK_WIDGET (self->specific_date_button), TRUE);
-    date_button_clicked (self, self->specific_date_button);
-    g_signal_emit_by_name (self, "date-range", date_range);
+    set_active_button (&self->active_date_button, self->specific_date_button);
+
+    g_signal_emit_by_name (self, "date-range", self->specific_date_range);
 }
 
 static void
@@ -211,17 +218,6 @@ file_types_button_clicked (NautilusSearchPopover *popover,
             g_signal_emit_by_name (popover, "mime-type", group, NULL);
         }
     }
-}
-
-static void
-search_time_type_changed (GtkCheckButton        *button,
-                          NautilusSearchPopover *popover)
-{
-    NautilusSearchTimeType type = -1;
-
-    g_settings_set_enum (nautilus_preferences, "search-filter-time-type", type);
-
-    g_signal_emit_by_name (popover, "time-type", type, NULL);
 }
 
 static void
@@ -469,6 +465,8 @@ nautilus_search_popover_class_init (NautilusSearchPopoverClass *klass)
     gtk_widget_class_bind_template_child (widget_class, NautilusSearchPopover, specific_type_button);
     gtk_widget_class_bind_template_child (widget_class, NautilusSearchPopover, other_types_button);
 
+    gtk_widget_class_bind_template_child (widget_class, NautilusSearchPopover, time_type_label);
+
     gtk_widget_class_bind_template_child (widget_class, NautilusSearchPopover, today_button);
     gtk_widget_class_bind_template_child (widget_class, NautilusSearchPopover, yesterday_button);
     gtk_widget_class_bind_template_child (widget_class, NautilusSearchPopover, week_button);
@@ -482,7 +480,6 @@ nautilus_search_popover_class_init (NautilusSearchPopoverClass *klass)
     gtk_widget_class_bind_template_callback (widget_class, file_types_button_clicked);
     gtk_widget_class_bind_template_callback (widget_class, date_button_clicked);
     gtk_widget_class_bind_template_callback (widget_class, show_date_range_dialog_cb);
-    gtk_widget_class_bind_template_callback (widget_class, search_time_type_changed);
     gtk_widget_class_bind_template_callback (widget_class, search_fts_mode_changed);
 }
 
@@ -525,6 +522,46 @@ date_tag_set_data (GtkButton *date_tag,
                             time, (GDestroyNotify) g_date_time_unref);
 }
 
+static const char *
+time_type_to_label (NautilusSearchTimeType time_type)
+{
+    if (time_type == NAUTILUS_SEARCH_TIME_TYPE_LAST_ACCESS)
+    {
+        return _("Date Used");
+    }
+    else if (time_type == NAUTILUS_SEARCH_TIME_TYPE_CREATED)
+    {
+        return _("Date Created");
+    }
+    else /* time_type == NAUTILUS_SEARCH_TIME_TYPE_LAST_MODIFIED */
+    {
+        return _("Date Modified");
+    }
+}
+
+static void
+time_type_changed (GAction               *action,
+                   GVariant              *value,
+                   NautilusSearchPopover *self)
+{
+    NautilusSearchTimeType time_type = g_variant_get_uint16 (value);
+    NautilusSearchTimeType old_time_type = g_settings_get_enum (nautilus_preferences,
+                                                                "search-filter-time-type");
+
+    if (time_type == old_time_type)
+    {
+        return;
+    }
+
+    g_simple_action_set_state (G_SIMPLE_ACTION (action), value);
+
+    g_settings_set_enum (nautilus_preferences, "search-filter-time-type", time_type);
+    const char *label = time_type_to_label (time_type);
+    gtk_label_set_label (self->time_type_label, label);
+
+    g_signal_emit_by_name (self, "time-type", time_type);
+}
+
 static void
 nautilus_search_popover_init (NautilusSearchPopover *self)
 {
@@ -555,6 +592,21 @@ nautilus_search_popover_init (NautilusSearchPopover *self)
 
     g_ptr_array_sort (mime_type_array, (GCompareFunc) sort_mime_type_tag);
     g_ptr_array_foreach (mime_type_array, (GFunc) reposition_mime_type_tag, self);
+
+    /* Time Type */
+    NautilusSearchTimeType time_type = g_settings_get_enum (nautilus_preferences,
+                                                            "search-filter-time-type");
+    const char *label = time_type_to_label (time_type);
+    gtk_label_set_label (self->time_type_label, label);
+
+    g_autoptr (GSimpleAction) action = g_simple_action_new_stateful (
+        "time-type-changed", G_VARIANT_TYPE_UINT16, g_variant_new_uint16 (time_type));
+    g_simple_action_set_enabled (action, TRUE);
+    g_signal_connect_object (action, "change-state", G_CALLBACK (time_type_changed), self, 0);
+
+    GSimpleActionGroup *action_group = g_simple_action_group_new ();
+    g_action_map_add_action (G_ACTION_MAP (action_group), G_ACTION (action));
+    gtk_widget_insert_action_group (GTK_WIDGET (self), "search-popover", G_ACTION_GROUP (action_group));
 
     /* Date Filter */
     g_autoptr (GDateTime) now = g_date_time_new_now_local ();
