@@ -157,9 +157,13 @@ asan:
         - when: manual
           allow_failure: true
     script:
+        # This line is needed for mutter to not err while starting XWayland,
+        # which we currently can't disable.
+        - mkdir -m 1777 /tmp/.X11-unix
         - meson setup -Db_sanitize=address -Dextensions=false -Dintrospection=false -Dtests=all $MESON_BUILD_DIR
         - meson compile -C $MESON_BUILD_DIR
-        - meson test --suite display --suite displayless -C $MESON_BUILD_DIR
+        # Run the tests inside a headless wayland compositor.
+        - wlheadless-run -c mutter -- meson test --suite display --suite displayless -C $MESON_BUILD_DIR
     artifacts:
         name: 'Address Sanitizer-built test results'
         when: on_failure
