@@ -5864,7 +5864,7 @@ retry:
     {
         if (debuting_files)
         {
-            g_hash_table_replace (debuting_files, g_object_ref (dest), GINT_TO_POINTER (TRUE));
+            g_hash_table_replace (debuting_files, dest, GINT_TO_POINTER (TRUE));
         }
 
         nautilus_file_changes_queue_file_moved (src, dest);
