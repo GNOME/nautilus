@@ -60,7 +60,7 @@ libnautilus_extension = shared_library(
   ],
   dependencies: libnautilus_extension_deps,
   include_directories: nautilus_include_dirs,
-  soversion: nautilus_extension_version,
+  version: nautilus_extension_version,
   install: true
 )
 
@@ -74,7 +74,7 @@ if get_option('introspection')
       '-DNAUTILUS_COMPILATION'
     ],
     sources: libnautilus_extension_sources,
-    nsversion: nautilus_extension_version + '.0',
+    nsversion: nautilus_extension_version,
     namespace: 'Nautilus',
     includes: [
       'Gio-2.0',
@@ -94,7 +94,7 @@ nautilus_extension = declare_dependency(
 
 pkgconfig.generate(
   description: 'A library to create Nautilus view extensions',
-  filebase: 'libnautilus-extension-' + nautilus_extension_version,
+  filebase: 'libnautilus-extension-' + nautilus_extension_major_version,
   libraries: [
     libnautilus_extension
   ],
@@ -108,8 +108,8 @@ pkgconfig.generate(
   ],
   variables: [
     'exec_prefix=${prefix}',
-    'extensiondir=${libdir}/nautilus/extensions-' + nautilus_extension_version,
-    'extensions_api_version=' + nautilus_extension_version
+    'extensiondir=${libdir}/nautilus/extensions-' + nautilus_extension_major_version,
+    'extensions_api_version=' + nautilus_extension_major_version
   ],
   version: meson.project_version()
 )

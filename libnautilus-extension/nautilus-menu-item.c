@@ -348,7 +348,7 @@ nautilus_menu_item_class_init (NautilusMenuItemClass *class)
      *
      * This property has no effect.
      *
-     * Deprecated: 43
+     * Deprecated: 4.1
      */
     g_object_class_install_property (G_OBJECT_CLASS (class),
                                      PROP_TIP,
@@ -362,7 +362,7 @@ nautilus_menu_item_class_init (NautilusMenuItemClass *class)
      *
      * This property has no effect.
      *
-     * Deprecated: 43
+     * Deprecated: 4.1
      */
     g_object_class_install_property (G_OBJECT_CLASS (class),
                                      PROP_ICON,
@@ -389,7 +389,7 @@ nautilus_menu_item_class_init (NautilusMenuItemClass *class)
      *
      * This property has no effect.
      *
-     * Deprecated: 43
+     * Deprecated: 4.1
      */
     g_object_class_install_property (G_OBJECT_CLASS (class),
                                      PROP_PRIORITY,
