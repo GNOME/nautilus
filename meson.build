@@ -9,7 +9,8 @@ project('nautilus', 'c',
   license: 'GPL-3.0-or-later'
 )
 
-nautilus_extension_version = '4'
+nautilus_extension_version = '4.1'
+nautilus_extension_major_version = nautilus_extension_version.split('.')[0]
 
 ###############
 # Directories #
@@ -24,7 +25,7 @@ includedir = get_option('includedir')
 libdir = get_option('libdir')
 localedir = get_option('localedir')
 docdir = datadir / 'doc'
-extensiondir = join_paths(libdir, 'nautilus', 'extensions-' + nautilus_extension_version)
+extensiondir = join_paths(libdir, 'nautilus', 'extensions-' + nautilus_extension_major_version)
 servicedir = join_paths(datadir, 'dbus-1', 'services')
 
 ###################
