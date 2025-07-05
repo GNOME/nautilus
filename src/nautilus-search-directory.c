@@ -1008,3 +1008,9 @@ nautilus_search_directory_get_query (NautilusSearchDirectory *self)
 {
     return self->query;
 }
+
+gboolean
+nautilus_search_directory_is_global (NautilusSearchDirectory *self)
+{
+    return self->base_model == NULL;
+}

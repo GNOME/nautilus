@@ -8825,7 +8825,7 @@ load_directory (NautilusFilesView *view,
      */
     if (NAUTILUS_IS_SEARCH_DIRECTORY (directory) &&
         (NAUTILUS_IS_SEARCH_DIRECTORY (priv->directory) ||
-         (priv->search_query != NULL && !nautilus_query_is_global (priv->search_query))))
+         !nautilus_search_directory_is_global (NAUTILUS_SEARCH_DIRECTORY (directory))))
     {
         search_transition_schedule_delayed_signals (view);
     }

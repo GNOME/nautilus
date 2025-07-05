@@ -33,6 +33,9 @@ G_DECLARE_FINAL_TYPE (NautilusSearchDirectory, nautilus_search_directory,
 
 char   *nautilus_search_directory_generate_new_uri     (void);
 
+gboolean
+nautilus_search_directory_is_global (NautilusSearchDirectory *self);
+
 NautilusQuery *nautilus_search_directory_get_query       (NautilusSearchDirectory *self);
 void           nautilus_search_directory_set_query       (NautilusSearchDirectory *self,
 							  NautilusQuery           *query);
