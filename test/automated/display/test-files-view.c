@@ -317,7 +317,7 @@ test_load_dir (void)
     g_assert_true (loading_ended);
 
     /* Verify that files exist exist in the model */
-    g_autoptr (GFileEnumerator) enumerator;
+    g_autoptr (GFileEnumerator) enumerator = NULL;
     g_autoptr (GError) error = NULL;
     GFile *child;
     guint counter = 0;
