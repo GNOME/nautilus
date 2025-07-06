@@ -1010,35 +1010,6 @@ nautilus_files_view_get_toolbar_menu_sections (NautilusView *view)
     return priv->toolbar_menu_sections;
 }
 
-static GMenuModel *
-nautilus_files_view_get_templates_menu (NautilusView *self)
-{
-    GMenuModel *menu;
-
-    g_object_get (self, "templates-menu", &menu, NULL);
-
-    return menu;
-}
-
-static GMenuModel *
-real_get_templates_menu (NautilusView *view)
-{
-    NautilusFilesViewPrivate *priv;
-
-    g_return_val_if_fail (NAUTILUS_IS_FILES_VIEW (view), NULL);
-
-    priv = nautilus_files_view_get_instance_private (NAUTILUS_FILES_VIEW (view));
-
-    return priv->templates_menu;
-}
-
-static void
-nautilus_files_view_set_templates_menu (NautilusView *self,
-                                        GMenuModel   *menu)
-{
-    g_object_set (self, "templates-menu", menu, NULL);
-}
-
 static void
 real_set_extensions_background_menu (NautilusFilesView *self,
                                      GMenuModel        *menu)
@@ -1054,16 +1025,17 @@ real_set_extensions_background_menu (NautilusFilesView *self,
 }
 
 static void
-real_set_templates_menu (NautilusView *view,
-                         GMenuModel   *menu)
+real_set_templates_menu (NautilusFilesView *self,
+                         GMenuModel        *menu)
 {
-    NautilusFilesViewPrivate *priv;
+    g_return_if_fail (NAUTILUS_IS_FILES_VIEW (self));
 
-    g_return_if_fail (NAUTILUS_IS_FILES_VIEW (view));
+    NautilusFilesViewPrivate *priv = nautilus_files_view_get_instance_private (self);
 
-    priv = nautilus_files_view_get_instance_private (NAUTILUS_FILES_VIEW (view));
-
-    g_set_object (&priv->templates_menu, menu);
+    if (g_set_object (&priv->templates_menu, menu))
+    {
+        g_object_notify_by_pspec (G_OBJECT (self), properties[PROP_TEMPLATES_MENU]);
+    }
 }
 
 static gboolean
@@ -5868,7 +5840,7 @@ update_templates_menu (NautilusFilesView *view,
 
     if (!nautilus_should_use_templates_directory ())
     {
-        nautilus_view_set_templates_menu (NAUTILUS_VIEW (view), NULL);
+        real_set_templates_menu (view, NULL);
         return;
     }
 
@@ -5888,7 +5860,7 @@ update_templates_menu (NautilusFilesView *view,
     directory = nautilus_directory_get_by_uri (templates_directory_uri);
     submenu = update_directory_in_templates_menu (view, directory);
 
-    nautilus_view_set_templates_menu (NAUTILUS_VIEW (view), submenu);
+    real_set_templates_menu (view, submenu);
 }
 
 
@@ -8381,7 +8353,7 @@ update_background_menu (NautilusFilesView *view,
     {
         /* This is necessary because the pathbar menu relies on it being NULL
          * to hide the submenu. */
-        nautilus_view_set_templates_menu (NAUTILUS_VIEW (view), NULL);
+        real_set_templates_menu (view, NULL);
 
         /* And this is necessary to regenerate the templates menu when we go
          * back to a normal folder. */
@@ -9277,8 +9249,7 @@ nautilus_files_view_get_property (GObject    *object,
 
         case PROP_TEMPLATES_MENU:
         {
-            g_value_set_object (value,
-                                real_get_templates_menu (NAUTILUS_VIEW (view)));
+            g_value_set_object (value, priv->templates_menu);
         }
         break;
 
@@ -9339,7 +9310,7 @@ nautilus_files_view_set_property (GObject      *object,
 
         case PROP_TEMPLATES_MENU:
         {
-            real_set_templates_menu (NAUTILUS_VIEW (directory_view),
+            real_set_templates_menu (directory_view,
                                      g_value_get_object (value));
         }
         break;
@@ -9530,8 +9501,6 @@ nautilus_files_view_iface_init (NautilusViewInterface *iface)
     iface->is_searching = nautilus_files_view_is_searching;
     iface->is_loading = nautilus_files_view_is_loading;
     iface->get_view_id = nautilus_files_view_get_view_id;
-    iface->get_templates_menu = nautilus_files_view_get_templates_menu;
-    iface->set_templates_menu = nautilus_files_view_set_templates_menu;
 }
 
 static void
