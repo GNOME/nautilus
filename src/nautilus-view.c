@@ -194,24 +194,6 @@ nautilus_view_get_toolbar_menu_sections (NautilusView *view)
 }
 
 GMenuModel *
-nautilus_view_get_extensions_background_menu (NautilusView *view)
-{
-    g_return_val_if_fail (NAUTILUS_VIEW_GET_IFACE (view)->get_extensions_background_menu, NULL);
-
-    return NAUTILUS_VIEW_GET_IFACE (view)->get_extensions_background_menu (view);
-}
-
-/* Protected */
-void
-nautilus_view_set_extensions_background_menu (NautilusView *view,
-                                              GMenuModel   *menu)
-{
-    g_return_if_fail (NAUTILUS_VIEW_GET_IFACE (view)->set_extensions_background_menu);
-
-    NAUTILUS_VIEW_GET_IFACE (view)->set_extensions_background_menu (view, menu);
-}
-
-GMenuModel *
 nautilus_view_get_templates_menu (NautilusView *view)
 {
     g_return_val_if_fail (NAUTILUS_VIEW_GET_IFACE (view)->get_templates_menu, NULL);

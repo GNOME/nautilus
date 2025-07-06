@@ -1021,28 +1021,6 @@ nautilus_files_view_get_templates_menu (NautilusView *self)
 }
 
 static GMenuModel *
-nautilus_files_view_get_extensions_background_menu (NautilusView *self)
-{
-    GMenuModel *menu;
-
-    g_object_get (self, "extensions-background-menu", &menu, NULL);
-
-    return menu;
-}
-
-static GMenuModel *
-real_get_extensions_background_menu (NautilusView *view)
-{
-    NautilusFilesViewPrivate *priv;
-
-    g_return_val_if_fail (NAUTILUS_IS_FILES_VIEW (view), NULL);
-
-    priv = nautilus_files_view_get_instance_private (NAUTILUS_FILES_VIEW (view));
-
-    return priv->extensions_background_menu;
-}
-
-static GMenuModel *
 real_get_templates_menu (NautilusView *view)
 {
     NautilusFilesViewPrivate *priv;
@@ -1062,23 +1040,17 @@ nautilus_files_view_set_templates_menu (NautilusView *self,
 }
 
 static void
-nautilus_files_view_set_extensions_background_menu (NautilusView *self,
-                                                    GMenuModel   *menu)
+real_set_extensions_background_menu (NautilusFilesView *self,
+                                     GMenuModel        *menu)
 {
-    g_object_set (self, "extensions-background-menu", menu, NULL);
-}
+    g_return_if_fail (NAUTILUS_IS_FILES_VIEW (self));
 
-static void
-real_set_extensions_background_menu (NautilusView *view,
-                                     GMenuModel   *menu)
-{
-    NautilusFilesViewPrivate *priv;
+    NautilusFilesViewPrivate *priv = nautilus_files_view_get_instance_private (self);
 
-    g_return_if_fail (NAUTILUS_IS_FILES_VIEW (view));
-
-    priv = nautilus_files_view_get_instance_private (NAUTILUS_FILES_VIEW (view));
-
-    g_set_object (&priv->extensions_background_menu, menu);
+    if (g_set_object (&priv->extensions_background_menu, menu))
+    {
+        g_object_notify_by_pspec (G_OBJECT (self), properties[PROP_EXTENSIONS_BACKGROUND_MENU]);
+    }
 }
 
 static void
@@ -5214,7 +5186,7 @@ update_extensions_menus (NautilusFilesView *view,
         nautilus_menu_item_list_free (background_items);
     }
 
-    nautilus_view_set_extensions_background_menu (NAUTILUS_VIEW (view), background_menu);
+    real_set_extensions_background_menu (view, background_menu);
 }
 
 static char *
@@ -9299,8 +9271,7 @@ nautilus_files_view_get_property (GObject    *object,
 
         case PROP_EXTENSIONS_BACKGROUND_MENU:
         {
-            g_value_set_object (value,
-                                real_get_extensions_background_menu (NAUTILUS_VIEW (view)));
+            g_value_set_object (value, priv->extensions_background_menu);
         }
         break;
 
@@ -9361,7 +9332,7 @@ nautilus_files_view_set_property (GObject      *object,
 
         case PROP_EXTENSIONS_BACKGROUND_MENU:
         {
-            real_set_extensions_background_menu (NAUTILUS_VIEW (directory_view),
+            real_set_extensions_background_menu (directory_view,
                                                  g_value_get_object (value));
         }
         break;
@@ -9561,8 +9532,6 @@ nautilus_files_view_iface_init (NautilusViewInterface *iface)
     iface->get_view_id = nautilus_files_view_get_view_id;
     iface->get_templates_menu = nautilus_files_view_get_templates_menu;
     iface->set_templates_menu = nautilus_files_view_set_templates_menu;
-    iface->get_extensions_background_menu = nautilus_files_view_get_extensions_background_menu;
-    iface->set_extensions_background_menu = nautilus_files_view_set_extensions_background_menu;
 }
 
 static void

@@ -43,13 +43,6 @@ struct _NautilusViewInterface
         NautilusToolbarMenuSections *   (*get_toolbar_menu_sections) (NautilusView         *view);
 
         /*
-         * Returns the menu for the background click of extensions.
-         */
-        GMenuModel *   (*get_extensions_background_menu) (NautilusView         *view);
-
-        void     (*set_extensions_background_menu) (NautilusView *view,
-                                                    GMenuModel   *menu);
-        /*
          * Returns the menu for templates.
          */
         GMenuModel *   (*get_templates_menu) (NautilusView         *view);
@@ -108,8 +101,5 @@ gboolean                       nautilus_view_is_searching              (Nautilus
 void                           nautilus_view_set_templates_menu        (NautilusView *view,
                                                                         GMenuModel   *menu);
 GMenuModel *                   nautilus_view_get_templates_menu        (NautilusView *view);
-void                           nautilus_view_set_extensions_background_menu (NautilusView *view,
-                                                                             GMenuModel   *menu);
-GMenuModel *                   nautilus_view_get_extensions_background_menu (NautilusView *view);
 
 G_END_DECLS
