@@ -58,11 +58,10 @@ main (int   argc,
 
     if (getuid () == 0)
     {
-        g_warning (_("\n========================================================"
-                     "\nThis app cannot work correctly if run as root (not even"
-                     "\nwith sudo). Consider running `nautilus admin:/` instead."
-                     "\n========================================================"));
-        sleep (7);
+        g_warning (_("Running as root is not supported. "
+                     "Consider running `nautilus admin:///` instead."));
+
+        exit (ENOTSUP);
     }
 
     nautilus_register_resource ();
