@@ -187,10 +187,10 @@ coverage:
         - wlheadless-run -c mutter -- meson test --suite display --suite displayless -C $MESON_BUILD_DIR || true
         - ninja coverage -C $MESON_BUILD_DIR
     artifacts:
-        name: 'Test Coverage Report'
+        expose_as: 'Coverage'
         paths:
-          - $MESON_BUILD_DIR/meson-logs/coveragereport/**/*
-          - $MESON_BUILD_DIR/meson-logs/coverage.xml
+          - $MESON_BUILD_DIR/meson-logs/coveragereport/index.html
+          - $MESON_BUILD_DIR/meson-logs/coveragereport
         reports:
             coverage_report:
                 coverage_format: cobertura
