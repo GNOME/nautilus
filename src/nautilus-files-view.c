@@ -3697,7 +3697,7 @@ static void
 nautilus_files_view_send_selection_change (NautilusFilesView *view)
 {
     g_signal_emit (view, signals[SELECTION_CHANGED], 0);
-    g_object_notify (G_OBJECT (view), "selection");
+    g_object_notify_by_pspec (G_OBJECT (view), properties[PROP_SELECTION]);
 }
 
 static void
@@ -3888,7 +3888,7 @@ done_loading (NautilusFilesView *view,
     priv->loading = FALSE;
     g_clear_handle_id (&priv->search_transition_timeout_id, g_source_remove);
     g_signal_emit (view, signals[END_LOADING], 0, all_files_seen);
-    g_object_notify (G_OBJECT (view), "loading");
+    g_object_notify_by_pspec (G_OBJECT (view), properties[PROP_LOADING]);
 
     if (!priv->in_destruction)
     {
@@ -8833,9 +8833,9 @@ load_directory (NautilusFilesView *view,
     g_clear_object (&priv->location);
     priv->location = nautilus_directory_get_location (directory);
 
-    g_object_notify (G_OBJECT (view), "location");
-    g_object_notify (G_OBJECT (view), "loading");
-    g_object_notify (G_OBJECT (view), "searching");
+    g_object_notify_by_pspec (G_OBJECT (view), properties[PROP_LOCATION]);
+    g_object_notify_by_pspec (G_OBJECT (view), properties[PROP_LOADING]);
+    g_object_notify_by_pspec (G_OBJECT (view), properties[PROP_SEARCHING]);
 
     /* FIXME bugzilla.gnome.org 45062: In theory, we also need to monitor metadata here (as
      * well as doing a call when ready), in case external forces
@@ -9410,7 +9410,7 @@ nautilus_files_view_set_search_query (NautilusView  *view,
 
             load_directory (files_view, directory);
 
-            g_object_notify (G_OBJECT (view), "searching");
+            g_object_notify_by_pspec (G_OBJECT (view), properties[PROP_SEARCHING]);
 
             nautilus_directory_unref (directory);
             g_free (uri);
