@@ -222,7 +222,6 @@ nautilus_window_slot_get_navigation_state (NautilusWindowSlot *self)
     NautilusNavigationState *data;
     GList *back_list;
     GList *forward_list;
-    NautilusView *view = nautilus_window_slot_get_current_view (self);
 
     if (self->location == NULL)
     {
@@ -245,7 +244,7 @@ nautilus_window_slot_get_navigation_state (NautilusWindowSlot *self)
     data->back_list = back_list;
     data->forward_list = forward_list;
     g_set_object (&data->current_location_bookmark, self->current_location_bookmark);
-    g_set_object (&data->current_search_query, nautilus_view_get_search_query (view));
+    g_set_object (&data->current_search_query, nautilus_view_get_search_query (self->content_view));
 
     return data;
 }
@@ -254,16 +253,14 @@ static void
 nautilus_window_slot_set_view_id (NautilusWindowSlot *self,
                                   guint               view_id)
 {
-    NautilusView *view = nautilus_window_slot_get_current_view (self);
-
-    g_return_if_fail (NAUTILUS_IS_FILES_VIEW (view));
+    g_return_if_fail (NAUTILUS_IS_FILES_VIEW (self->content_view));
 
     if (nautilus_view_get_view_id (self->content_view) == view_id)
     {
         return;
     }
 
-    nautilus_files_view_change (NAUTILUS_FILES_VIEW (view), view_id);
+    nautilus_files_view_change (NAUTILUS_FILES_VIEW (self->content_view), view_id);
 
     g_object_notify_by_pspec (G_OBJECT (self), properties[PROP_ICON_NAME]);
     g_object_notify_by_pspec (G_OBJECT (self), properties[PROP_TOOLBAR_MENU_SECTIONS]);
@@ -302,13 +299,11 @@ nautilus_window_slot_get_view_id_for_location (NautilusWindowSlot *self,
 static void
 update_search_visible (NautilusWindowSlot *self)
 {
-    NautilusView *view = nautilus_window_slot_get_current_view (self);
-
     /* If we changed location just to another search location, for example,
      * when changing the query, just keep the search visible.
      * Make sure the search is visible though, since we could be returning
      * from a previous search location when using the history */
-    if (nautilus_view_is_searching (view))
+    if (nautilus_view_is_searching (self->content_view))
     {
         nautilus_window_slot_set_search_visible (self, TRUE);
         return;
@@ -323,7 +318,6 @@ update_search_visible (NautilusWindowSlot *self)
 static void
 nautilus_window_slot_sync_actions (NautilusWindowSlot *self)
 {
-    NautilusView *view;
     gboolean is_network_view;
     GAction *action;
     GVariant *variant;
@@ -344,13 +338,13 @@ nautilus_window_slot_sync_actions (NautilusWindowSlot *self)
     update_search_visible (self);
 
     /* Files view mode */
-    view = nautilus_window_slot_get_current_view (self);
-    is_network_view = nautilus_view_get_view_id (view) == NAUTILUS_VIEW_NETWORK_ID;
+    guint view_id = nautilus_view_get_view_id (self->content_view);
+    is_network_view = view_id == NAUTILUS_VIEW_NETWORK_ID;
     action = g_action_map_lookup_action (G_ACTION_MAP (self->slot_action_group), "files-view-mode");
     g_simple_action_set_enabled (G_SIMPLE_ACTION (action), !is_network_view);
     if (g_action_get_enabled (action))
     {
-        variant = g_variant_new_uint32 (nautilus_view_get_view_id (view));
+        variant = g_variant_new_uint32 (view_id);
         g_action_change_state (action, variant);
     }
     action = g_action_map_lookup_action (G_ACTION_MAP (self->slot_action_group), "files-view-mode-toggle");
@@ -393,12 +387,10 @@ query_editor_changed_callback (NautilusQueryEditor *editor,
                                gboolean             reload,
                                NautilusWindowSlot  *self)
 {
-    NautilusView *view = nautilus_window_slot_get_current_view (self);
-
-    nautilus_view_set_search_query (view, query);
+    nautilus_view_set_search_query (self->content_view, query);
 
     /* Setting search query may cause the view to load a new location. */
-    GFile *location = nautilus_view_get_location (view);
+    GFile *location = nautilus_view_get_location (self->content_view);
     guint view_id = nautilus_window_slot_get_view_id_for_location (self, location);
 
     nautilus_window_slot_set_location (self, location);
@@ -408,9 +400,7 @@ query_editor_changed_callback (NautilusQueryEditor *editor,
 static void
 hide_query_editor (NautilusWindowSlot *self)
 {
-    NautilusView *view;
-
-    view = nautilus_window_slot_get_current_view (self);
+    NautilusView *view = self->content_view;
 
     g_signal_handlers_disconnect_by_data (self->query_editor, self);
 
@@ -462,19 +452,16 @@ nautilus_window_slot_get_current_location (NautilusWindowSlot *self)
 static void
 show_query_editor (NautilusWindowSlot *self)
 {
-    NautilusView *view;
-
-    view = nautilus_window_slot_get_current_view (self);
-    if (view == NULL)
+    if (self->content_view == NULL)
     {
         return;
     }
 
-    if (nautilus_view_is_searching (view))
+    if (nautilus_view_is_searching (self->content_view))
     {
         NautilusQuery *query;
 
-        query = nautilus_view_get_search_query (view);
+        query = nautilus_view_get_search_query (self->content_view);
 
         if (query != NULL)
         {
@@ -545,19 +532,16 @@ void
 nautilus_window_slot_search (NautilusWindowSlot *self,
                              NautilusQuery      *query)
 {
-    NautilusView *view;
-
     g_clear_object (&self->pending_search_query);
 
-    view = nautilus_window_slot_get_current_view (self);
     /* We could call this when the location is still being checked in the
      * window slot. For that, save the search we want to do for once we have
      * a view set up */
-    if (view)
+    if (self->content_view != NULL)
     {
         nautilus_window_slot_set_search_visible (self, TRUE);
         nautilus_query_editor_set_query (self->query_editor, query);
-        nautilus_view_set_search_query (view, query);
+        nautilus_view_set_search_query (self->content_view, query);
     }
     else
     {
@@ -1062,8 +1046,7 @@ action_search_visible (GSimpleAction *action,
     {
         if (search_visible)
         {
-            NautilusView *view = nautilus_window_slot_get_current_view (self);
-            if (view != NULL && nautilus_view_is_searching (view))
+            if (self->content_view != NULL && nautilus_view_is_searching (self->content_view))
             {
                 gtk_stack_set_visible_child (GTK_STACK (self->stack), self->vbox);
             }
@@ -1171,7 +1154,7 @@ action_files_view_mode (GSimpleAction *action,
     view_id = g_variant_get_uint32 (value);
     self = NAUTILUS_WINDOW_SLOT (user_data);
 
-    if (!NAUTILUS_IS_FILES_VIEW (nautilus_window_slot_get_current_view (self)))
+    if (!NAUTILUS_IS_FILES_VIEW (self->content_view))
     {
         return;
     }
@@ -2245,8 +2228,7 @@ nautilus_window_slot_back_or_forward (NautilusWindowSlot *self,
     if (back)
     {
         /* While searching, maybe the user means to go "back" to no search. */
-        NautilusView *view = nautilus_window_slot_get_current_view (self);
-        if (nautilus_view_is_searching (view))
+        if (nautilus_view_is_searching (self->content_view))
         {
             nautilus_window_slot_set_search_visible (self, FALSE);
             return;
@@ -3204,13 +3186,11 @@ nautilus_window_slot_get_tooltip (NautilusWindowSlot *self)
 NautilusToolbarMenuSections *
 nautilus_window_slot_get_toolbar_menu_sections (NautilusWindowSlot *self)
 {
-    NautilusView *view;
-
     g_return_val_if_fail (NAUTILUS_IS_WINDOW_SLOT (self), NULL);
 
-    view = nautilus_window_slot_get_current_view (self);
-
-    return view ? nautilus_view_get_toolbar_menu_sections (view) : NULL;
+    return self->content_view != NULL
+           ? nautilus_view_get_toolbar_menu_sections (self->content_view)
+           : NULL;
 }
 
 gboolean
