@@ -74,18 +74,6 @@ nautilus_view_default_init (NautilusViewInterface *iface)
                                                                G_PARAM_READWRITE));
 
     /**
-     * NautilusView::search-query:
-     *
-     * The search query being performed, or NULL.
-     */
-    g_object_interface_install_property (iface,
-                                         g_param_spec_object ("search-query",
-                                                              "Search query being performed",
-                                                              "The search query being performed on the view",
-                                                              NAUTILUS_TYPE_QUERY,
-                                                              G_PARAM_READWRITE));
-
-    /**
      * NautilusView::extensions-background-menu:
      *
      * Menu for the background click of extensions

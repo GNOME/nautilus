@@ -135,7 +135,6 @@ enum
     PROP_LOADING,
     PROP_SELECTION,
     PROP_LOCATION,
-    PROP_SEARCH_QUERY,
     PROP_EXTENSIONS_BACKGROUND_MENU,
     PROP_TEMPLATES_MENU,
     NUM_PROPERTIES
@@ -9235,12 +9234,6 @@ nautilus_files_view_get_property (GObject    *object,
         }
         break;
 
-        case PROP_SEARCH_QUERY:
-        {
-            g_value_set_object (value, priv->search_query);
-        }
-        break;
-
         case PROP_EXTENSIONS_BACKGROUND_MENU:
         {
             g_value_set_object (value, priv->extensions_background_menu);
@@ -9286,12 +9279,6 @@ nautilus_files_view_set_property (GObject      *object,
         case PROP_LOCATION:
         {
             nautilus_view_set_location (NAUTILUS_VIEW (directory_view), g_value_get_object (value));
-        }
-        break;
-
-        case PROP_SEARCH_QUERY:
-        {
-            nautilus_view_set_search_query (NAUTILUS_VIEW (directory_view), g_value_get_object (value));
         }
         break;
 
@@ -9385,10 +9372,7 @@ nautilus_files_view_set_search_query (NautilusView  *view,
 
     priv = nautilus_files_view_get_instance_private (files_view);
 
-    if (g_set_object (&priv->search_query, query))
-    {
-        g_object_notify (G_OBJECT (view), "search-query");
-    }
+    g_set_object (&priv->search_query, query);
 
     if (!nautilus_query_is_empty (query))
     {
@@ -9652,7 +9636,6 @@ nautilus_files_view_class_init (NautilusFilesViewClass *klass)
     g_object_class_override_property (oclass, PROP_SEARCHING, "searching");
     g_object_class_override_property (oclass, PROP_LOCATION, "location");
     g_object_class_override_property (oclass, PROP_SELECTION, "selection");
-    g_object_class_override_property (oclass, PROP_SEARCH_QUERY, "search-query");
     g_object_class_override_property (oclass, PROP_EXTENSIONS_BACKGROUND_MENU, "extensions-background-menu");
     g_object_class_override_property (oclass, PROP_TEMPLATES_MENU, "templates-menu");
 
