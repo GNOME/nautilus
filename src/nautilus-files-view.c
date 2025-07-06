@@ -140,6 +140,7 @@ enum
     NUM_PROPERTIES
 };
 
+static GParamSpec *properties[NUM_PROPERTIES];
 static guint signals[LAST_SIGNAL];
 
 static char *scripts_directory_uri = NULL;
@@ -9537,6 +9538,81 @@ nautilus_files_view_class_init (NautilusFilesViewClass *klass)
 
     widget_class->grab_focus = nautilus_files_view_grab_focus;
 
+    /**
+     * NautilusFilesView::loading:
+     *
+     * %TRUE if the view is loading the location, %FALSE otherwise.
+     */
+    properties[PROP_LOADING] =
+        g_param_spec_boolean ("loading",
+                              "Current view is loading",
+                              "Whether the current view is loading the location or not",
+                              FALSE,
+                              G_PARAM_READABLE);
+    /**
+     * NautilusFilesView::location:
+     *
+     * The current location of the view.
+     */
+    properties[PROP_LOCATION] =
+        g_param_spec_object ("location",
+                             "Location displayed by the view",
+                             "The current location displayed by the view",
+                             G_TYPE_FILE,
+                             G_PARAM_READWRITE);
+    /**
+     * NautilusFilesView::selection:
+     *
+     * The current selection of the view.
+     */
+    properties[PROP_SELECTION] =
+        g_param_spec_pointer ("selection",
+                              "Selection of the view",
+                              "The current selection of the view",
+                              G_PARAM_READWRITE);
+    /**
+     * NautilusFilesView::searching:
+     *
+     * %TRUE if the view is searching, %FALSE otherwise.
+     */
+    properties[PROP_SEARCHING] =
+        g_param_spec_boolean ("searching",
+                              "Current view is searching",
+                              "Whether the current view is searching or not",
+                              FALSE,
+                              G_PARAM_READABLE);
+
+    /**
+     * NautilusFilesView::extensions-background-menu:
+     *
+     * Menu for the background click of extensions
+     */
+    properties[PROP_EXTENSIONS_BACKGROUND_MENU] =
+        g_param_spec_object ("extensions-background-menu",
+                             "Menu for the background click of extensions",
+                             "Menu for the background click of extensions",
+                             G_TYPE_MENU_MODEL,
+                             G_PARAM_READWRITE);
+    /**
+     * NautilusFilesView::templates-menu:
+     *
+     * Menu of templates
+     */
+    properties[PROP_TEMPLATES_MENU] =
+        g_param_spec_object ("templates-menu",
+                             "Menu of templates",
+                             "Menu of templates",
+                             G_TYPE_MENU_MODEL,
+                             G_PARAM_READWRITE);
+
+    properties[PROP_WINDOW_SLOT] =
+        g_param_spec_object ("window-slot",
+                             "Window Slot",
+                             "The parent window slot reference",
+                             NAUTILUS_TYPE_WINDOW_SLOT,
+                             G_PARAM_WRITABLE | G_PARAM_CONSTRUCT_ONLY);
+
+    g_object_class_install_properties (oclass, NUM_PROPERTIES, properties);
 
     signals[ADD_FILES] =
         g_signal_new ("add-files",
@@ -9621,23 +9697,6 @@ nautilus_files_view_class_init (NautilusFilesViewClass *klass)
     klass->update_context_menus = real_update_context_menus;
     klass->update_actions_state = real_update_actions_state;
     klass->check_empty_states = real_check_empty_states;
-
-    g_object_class_install_property (
-        oclass,
-        PROP_WINDOW_SLOT,
-        g_param_spec_object ("window-slot",
-                             "Window Slot",
-                             "The parent window slot reference",
-                             NAUTILUS_TYPE_WINDOW_SLOT,
-                             G_PARAM_WRITABLE |
-                             G_PARAM_CONSTRUCT_ONLY));
-
-    g_object_class_override_property (oclass, PROP_LOADING, "loading");
-    g_object_class_override_property (oclass, PROP_SEARCHING, "searching");
-    g_object_class_override_property (oclass, PROP_LOCATION, "location");
-    g_object_class_override_property (oclass, PROP_SELECTION, "selection");
-    g_object_class_override_property (oclass, PROP_EXTENSIONS_BACKGROUND_MENU, "extensions-background-menu");
-    g_object_class_override_property (oclass, PROP_TEMPLATES_MENU, "templates-menu");
 
     gtk_widget_class_set_template_from_resource (widget_class,
                                                  "/org/gnome/nautilus/ui/nautilus-files-view.ui");
