@@ -43,6 +43,5 @@ typedef struct  NautilusMonitor             NautilusMonitor;
 typedef struct _NautilusQuery               NautilusQuery;
 typedef struct _NautilusQueryEditor         NautilusQueryEditor;
 typedef struct _NautilusToolbarMenuSections NautilusToolbarMenuSections;
-typedef struct _NautilusView                NautilusView;
 typedef struct _NautilusWindow              NautilusWindow;
 typedef struct _NautilusWindowSlot          NautilusWindowSlot;

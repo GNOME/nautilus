@@ -51,6 +51,7 @@
 #include "nautilus-file-operations.h"
 #include "nautilus-file-undo-manager.h"
 #include "nautilus-file-utilities.h"
+#include "nautilus-files-view.h"
 #include "nautilus-freedesktop-dbus.h"
 #include "nautilus-global-preferences.h"
 #include "nautilus-icon-info.h"
@@ -66,7 +67,6 @@
 #include "nautilus-localsearch-utilities.h"
 #include "nautilus-trash-monitor.h"
 #include "nautilus-ui-utilities.h"
-#include "nautilus-view.h"
 #include "nautilus-window-slot.h"
 #include "nautilus-window.h"
 
@@ -667,14 +667,13 @@ action_clone_window (GSimpleAction *action,
     NautilusWindow *active_window = NULL;
     GtkApplication *application = user_data;
     g_autoptr (GFile) location = NULL;
-    NautilusView *current_view;
+    NautilusFilesView *current_view = nautilus_window_slot_get_current_view (active_slot);
 
     active_window = NAUTILUS_WINDOW (gtk_application_get_active_window (application));
     active_slot = nautilus_window_get_active_slot (active_window);
-    current_view = nautilus_window_slot_get_current_view (active_slot);
 
     if (current_view != NULL &&
-        nautilus_view_is_searching (current_view))
+        nautilus_files_view_is_searching (current_view))
     {
         location = g_file_new_for_path (g_get_home_dir ());
     }

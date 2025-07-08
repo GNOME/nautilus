@@ -353,16 +353,16 @@ previewer_selection_event (GDBusConnection *connection,
         return;
     }
 
-    NautilusView *view = nautilus_window_slot_get_current_view (current_slot);
+    NautilusFilesView *view = nautilus_window_slot_get_current_view (current_slot);
     GtkDirectionType direction;
 
-    if (!NAUTILUS_IS_FILES_VIEW (view))
+    if (view == NULL)
     {
         return;
     }
 
     g_variant_get (parameters, "(u)", &direction);
-    nautilus_files_view_preview_selection_event (NAUTILUS_FILES_VIEW (view), direction);
+    nautilus_files_view_preview_selection_event (view, direction);
 }
 
 void

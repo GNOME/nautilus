@@ -89,7 +89,7 @@ test_rename_files (void)
         g_ptr_array_add (file_arr, nautilus_file_get (file));
     }
 
-    nautilus_view_set_location (NAUTILUS_VIEW (files_view), tmp_location);
+    nautilus_files_view_set_location (files_view, tmp_location);
     ITER_CONTEXT_WHILE (nautilus_files_view_get_loading (files_view));
 
     g_assert_cmpint (g_list_model_get_n_items (G_LIST_MODEL (priv->model)), ==, file_count);
@@ -171,12 +171,12 @@ test_remove_files (void)
         g_ptr_array_add (file_arr, nautilus_file_get (file));
     }
 
-    nautilus_view_set_location (NAUTILUS_VIEW (files_view), tmp_location);
+    nautilus_files_view_set_location (files_view, tmp_location);
 
     ITER_CONTEXT_WHILE (nautilus_files_view_get_loading (files_view));
 
     g_assert_true (g_file_equal (tmp_location,
-                                 nautilus_view_get_location (NAUTILUS_VIEW (files_view))));
+                                 nautilus_files_view_get_location (files_view)));
     g_assert_cmpint (g_list_model_get_n_items (G_LIST_MODEL (priv->model)), ==, file_count);
 
 
@@ -243,12 +243,12 @@ test_add_files (void)
     g_autoptr (GPtrArray) callback_arr = g_ptr_array_new_full (file_count,
                                                                (GDestroyNotify) nautilus_file_unref);
 
-    nautilus_view_set_location (NAUTILUS_VIEW (files_view), tmp_location);
+    nautilus_files_view_set_location (files_view, tmp_location);
 
     ITER_CONTEXT_WHILE (nautilus_files_view_get_loading (files_view));
 
     g_assert_true (g_file_equal (tmp_location,
-                                 nautilus_view_get_location (NAUTILUS_VIEW (files_view))));
+                                 nautilus_files_view_get_location (files_view)));
     g_assert_cmpint (g_list_model_get_n_items (G_LIST_MODEL (priv->model)), ==, 0);
 
     /* Keep a list of NautilusFiles */
@@ -300,7 +300,7 @@ test_load_dir (void)
     create_multiple_files ("view_test", file_count);
 
     /* Verify loading signals and location */
-    nautilus_view_set_location (NAUTILUS_VIEW (files_view), tmp_location);
+    nautilus_files_view_set_location (files_view, tmp_location);
     g_signal_connect_swapped (files_view, "begin-loading", G_CALLBACK (set_true), &loading_started);
     g_signal_connect_swapped (files_view, "end-loading", G_CALLBACK (set_true), &loading_ended);
 
@@ -311,7 +311,7 @@ test_load_dir (void)
     g_autofree gchar *view_uri = nautilus_files_view_get_uri (files_view);
 
     g_assert_true (g_file_equal (tmp_location,
-                                 nautilus_view_get_location (NAUTILUS_VIEW (files_view))));
+                                 nautilus_files_view_get_location (files_view)));
     g_assert_cmpstr (view_uri, ==, uri);
     g_assert_true (loading_started);
     g_assert_true (loading_ended);
