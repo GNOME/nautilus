@@ -1,5 +1,8 @@
 #include "test-utilities.h"
 
+#include <src/nautilus-file-undo-manager.h>
+#include <src/nautilus-file-utilities.h>
+
 #define ASYNC_FILE_LIMIT 100
 
 static gchar *nautilus_tmp_dir = NULL;

@@ -1,4 +1,8 @@
 #include "test-utilities.h"
+
+#include <src/nautilus-file-operations.h>
+#include <src/nautilus-file-undo-manager.h>
+#include <src/nautilus-file-utilities.h>
 #include <src/nautilus-tag-manager.h>
 
 static void
