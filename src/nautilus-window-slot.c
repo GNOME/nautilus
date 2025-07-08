@@ -36,7 +36,7 @@
 #include "nautilus-scheme.h"
 #include "nautilus-tag-manager.h"
 #include "nautilus-toolbar.h"
-#include "nautilus-view.h"
+#include "nautilus-view-info.h"
 #include "nautilus-x-content-bar.h"
 
 #include <glib/gi18n.h>
@@ -106,7 +106,7 @@ struct _NautilusWindowSlot
     NautilusFdHolder *fd_holder;
 
     /* Viewed file */
-    NautilusView *content_view;
+    NautilusFilesView *content_view;
     NautilusFile *viewed_file;
     gboolean viewed_file_seen;
     gboolean viewed_file_in_trash;
@@ -244,7 +244,7 @@ nautilus_window_slot_get_navigation_state (NautilusWindowSlot *self)
     data->back_list = back_list;
     data->forward_list = forward_list;
     g_set_object (&data->current_location_bookmark, self->current_location_bookmark);
-    g_set_object (&data->current_search_query, nautilus_view_get_search_query (self->content_view));
+    g_set_object (&data->current_search_query, nautilus_files_view_get_search_query (self->content_view));
 
     return data;
 }
@@ -255,12 +255,12 @@ nautilus_window_slot_set_view_id (NautilusWindowSlot *self,
 {
     g_return_if_fail (NAUTILUS_IS_FILES_VIEW (self->content_view));
 
-    if (nautilus_view_get_view_id (self->content_view) == view_id)
+    if (nautilus_files_view_get_view_id (self->content_view) == view_id)
     {
         return;
     }
 
-    nautilus_files_view_change (NAUTILUS_FILES_VIEW (self->content_view), view_id);
+    nautilus_files_view_change (self->content_view, view_id);
 
     g_object_notify_by_pspec (G_OBJECT (self), properties[PROP_ICON_NAME]);
     g_object_notify_by_pspec (G_OBJECT (self), properties[PROP_TOOLBAR_MENU_SECTIONS]);
@@ -275,7 +275,7 @@ nautilus_window_slot_get_view_id_for_location (NautilusWindowSlot *self,
 
     if (self->content_view != NULL)
     {
-        NautilusQuery *query = nautilus_view_get_search_query (self->content_view);
+        NautilusQuery *query = nautilus_files_view_get_search_query (self->content_view);
 
         if (query != NULL)
         {
@@ -303,7 +303,7 @@ update_search_visible (NautilusWindowSlot *self)
      * when changing the query, just keep the search visible.
      * Make sure the search is visible though, since we could be returning
      * from a previous search location when using the history */
-    if (nautilus_view_is_searching (self->content_view))
+    if (nautilus_files_view_is_searching (self->content_view))
     {
         nautilus_window_slot_set_search_visible (self, TRUE);
         return;
@@ -338,7 +338,7 @@ nautilus_window_slot_sync_actions (NautilusWindowSlot *self)
     update_search_visible (self);
 
     /* Files view mode */
-    guint view_id = nautilus_view_get_view_id (self->content_view);
+    guint view_id = nautilus_files_view_get_view_id (self->content_view);
     is_network_view = view_id == NAUTILUS_VIEW_NETWORK_ID;
     action = g_action_map_lookup_action (G_ACTION_MAP (self->slot_action_group), "files-view-mode");
     g_simple_action_set_enabled (G_SIMPLE_ACTION (action), !is_network_view);
@@ -364,10 +364,7 @@ query_editor_activated_callback (NautilusQueryEditor *editor,
 {
     if (self->content_view != NULL)
     {
-        if (NAUTILUS_IS_FILES_VIEW (self->content_view))
-        {
-            nautilus_files_view_activate_selection (NAUTILUS_FILES_VIEW (self->content_view), 0);
-        }
+        nautilus_files_view_activate_selection (self->content_view, 0);
     }
 }
 
@@ -387,10 +384,10 @@ query_editor_changed_callback (NautilusQueryEditor *editor,
                                gboolean             reload,
                                NautilusWindowSlot  *self)
 {
-    nautilus_view_set_search_query (self->content_view, query);
+    nautilus_files_view_set_search_query (self->content_view, query);
 
     /* Setting search query may cause the view to load a new location. */
-    GFile *location = nautilus_view_get_location (self->content_view);
+    GFile *location = nautilus_files_view_get_location (self->content_view);
     guint view_id = nautilus_window_slot_get_view_id_for_location (self, location);
 
     nautilus_window_slot_set_location (self, location);
@@ -400,13 +397,13 @@ query_editor_changed_callback (NautilusQueryEditor *editor,
 static void
 hide_query_editor (NautilusWindowSlot *self)
 {
-    NautilusView *view = self->content_view;
+    NautilusFilesView *view = self->content_view;
 
     g_signal_handlers_disconnect_by_data (self->query_editor, self);
 
     nautilus_query_editor_set_query (self->query_editor, NULL);
 
-    if (nautilus_view_is_searching (view))
+    if (nautilus_files_view_is_searching (view))
     {
         g_autolist (NautilusFile) selection = NULL;
 
@@ -414,22 +411,22 @@ hide_query_editor (NautilusWindowSlot *self)
          * This allows finding a file from current folder using search, then
          * press [Esc], and have the selected search result still selected and
          * revealed in the unfiltered folder view. */
-        selection = nautilus_view_get_selection (view);
+        selection = nautilus_files_view_get_selection (view);
 
         /* Now that we have saved the search, clear the view's query. The view
          * will immediately clear its model model and load the previous location
          */
-        nautilus_view_set_search_query (view, NULL);
+        nautilus_files_view_set_search_query (view, NULL);
 
         /* The view location has changed, update the slot location. */
-        GFile *location = nautilus_view_get_location (view);
+        GFile *location = nautilus_files_view_get_location (view);
         guint view_id = nautilus_window_slot_get_view_id_for_location (self, location);
 
         nautilus_window_slot_set_location (self, location);
         nautilus_window_slot_set_view_id (self, view_id);
 
         /* Apply the saved selection */
-        nautilus_view_set_selection (view, selection);
+        nautilus_files_view_set_selection (view, selection);
     }
 
     if (nautilus_window_slot_get_active (self))
@@ -457,11 +454,9 @@ show_query_editor (NautilusWindowSlot *self)
         return;
     }
 
-    if (nautilus_view_is_searching (self->content_view))
+    if (nautilus_files_view_is_searching (self->content_view))
     {
-        NautilusQuery *query;
-
-        query = nautilus_view_get_search_query (self->content_view);
+        NautilusQuery *query = nautilus_files_view_get_search_query (self->content_view);
 
         if (query != NULL)
         {
@@ -541,7 +536,7 @@ nautilus_window_slot_search (NautilusWindowSlot *self,
     {
         nautilus_window_slot_set_search_visible (self, TRUE);
         nautilus_query_editor_set_query (self->query_editor, query);
-        nautilus_view_set_search_query (self->content_view, query);
+        nautilus_files_view_set_search_query (self->content_view, query);
     }
     else
     {
@@ -1046,7 +1041,7 @@ action_search_visible (GSimpleAction *action,
     {
         if (search_visible)
         {
-            if (self->content_view != NULL && nautilus_view_is_searching (self->content_view))
+            if (self->content_view != NULL && nautilus_files_view_is_searching (self->content_view))
             {
                 gtk_stack_set_visible_child (GTK_STACK (self->stack), self->vbox);
             }
@@ -1074,14 +1069,14 @@ action_search_global (GSimpleAction *action,
 
         if (search_global)
         {
-            NautilusQuery *query = nautilus_view_get_search_query (self->content_view);
+            NautilusQuery *query = nautilus_files_view_get_search_query (self->content_view);
             if (query != NULL)
             {
                 nautilus_query_set_location (query, NULL);
-                nautilus_view_set_search_query (self->content_view, query);
+                nautilus_files_view_set_search_query (self->content_view, query);
 
                 /* The view location has changed, update the view id. */
-                GFile *location = nautilus_view_get_location (self->content_view);
+                GFile *location = nautilus_files_view_get_location (self->content_view);
                 guint view_id = nautilus_window_slot_get_view_id_for_location (self, location);
 
                 nautilus_window_slot_set_location (self, location);
@@ -1132,7 +1127,7 @@ action_files_view_mode_toggle (GSimpleAction *action,
         return;
     }
 
-    current_view_id = nautilus_view_get_view_id (self->content_view);
+    current_view_id = nautilus_files_view_get_view_id (self->content_view);
     if (current_view_id == NAUTILUS_VIEW_LIST_ID)
     {
         change_files_view_mode (self, NAUTILUS_VIEW_GRID_ID);
@@ -1434,7 +1429,7 @@ nautilus_window_slot_open_location_full (NautilusWindowSlot *self,
     {
         if (self->content_view != NULL && new_selection != NULL)
         {
-            nautilus_view_set_selection (self->content_view, new_selection);
+            nautilus_files_view_set_selection (self->content_view, new_selection);
         }
 
         return;
@@ -1523,10 +1518,9 @@ save_selection_for_history (NautilusWindowSlot *self)
 {
     /* Set current_bookmark scroll pos */
     if (self->current_location_bookmark != NULL &&
-        self->content_view != NULL &&
-        NAUTILUS_IS_FILES_VIEW (self->content_view))
+        self->content_view != NULL)
     {
-        g_autolist (NautilusFile) selection = nautilus_view_get_selection (NAUTILUS_VIEW (self->content_view));
+        g_autolist (NautilusFile) selection = nautilus_files_view_get_selection (self->content_view);
         g_autoptr (GStrvBuilder) selected_uris = g_strv_builder_new ();
 
         for (GList *l = selection; l != NULL; l = l->next)
@@ -2152,14 +2146,13 @@ done:
 static void
 apply_pending_location_and_selection_on_view (NautilusWindowSlot *self)
 {
-    nautilus_view_set_location (self->content_view, self->pending_location);
-    nautilus_view_set_selection (self->content_view, self->pending_selection);
+    nautilus_files_view_set_location (self->content_view, self->pending_location);
+    nautilus_files_view_set_selection (self->content_view, self->pending_selection);
 
     nautilus_file_list_free (self->pending_selection);
     self->pending_selection = NULL;
 
-    if (self->pending_file_to_activate != NULL &&
-        NAUTILUS_IS_FILES_VIEW (self->content_view))
+    if (self->pending_file_to_activate != NULL)
     {
         g_autoptr (GAppInfo) app_info = NULL;
         const gchar *app_id;
@@ -2168,7 +2161,7 @@ apply_pending_location_and_selection_on_view (NautilusWindowSlot *self)
         app_id = g_app_info_get_id (app_info);
         if (g_strcmp0 (app_id, NAUTILUS_DESKTOP_ID) == 0)
         {
-            nautilus_files_view_activate_file (NAUTILUS_FILES_VIEW (self->content_view),
+            nautilus_files_view_activate_file (self->content_view,
                                                self->pending_file_to_activate, 0);
         }
     }
@@ -2228,7 +2221,7 @@ nautilus_window_slot_back_or_forward (NautilusWindowSlot *self,
     if (back)
     {
         /* While searching, maybe the user means to go "back" to no search. */
-        if (nautilus_view_is_searching (self->content_view))
+        if (nautilus_files_view_is_searching (self->content_view))
         {
             nautilus_window_slot_set_search_visible (self, FALSE);
             return;
@@ -2294,7 +2287,7 @@ nautilus_window_slot_force_reload (NautilusWindowSlot *self)
 
     if (self->content_view)
     {
-        selection = nautilus_view_get_selection (self->content_view);
+        selection = nautilus_files_view_get_selection (self->content_view);
     }
     begin_location_change (self, location, location, selection, NAUTILUS_LOCATION_CHANGE_RELOAD, 0);
     g_object_unref (location);
@@ -2312,7 +2305,7 @@ nautilus_window_slot_queue_reload (NautilusWindowSlot *self)
 
     if (self->pending_location != NULL
         || self->content_view == NULL
-        || nautilus_view_is_loading (self->content_view))
+        || nautilus_files_view_is_loading (self->content_view))
     {
         /* there is a reload in flight */
         self->needs_reload = TRUE;
@@ -2642,7 +2635,7 @@ nautilus_window_slot_update_for_new_location (NautilusWindowSlot *self)
 
 static void
 view_started_loading (NautilusWindowSlot *self,
-                      NautilusView       *view)
+                      NautilusFilesView  *view)
 {
     if (view == self->content_view)
     {
@@ -2654,7 +2647,7 @@ view_started_loading (NautilusWindowSlot *self,
 
 static void
 view_ended_loading (NautilusWindowSlot *self,
-                    NautilusView       *view)
+                    NautilusFilesView  *view)
 {
     if (view == self->content_view)
     {
@@ -2677,11 +2670,9 @@ view_is_loading_changed_cb (GObject            *object,
                             GParamSpec         *pspec,
                             NautilusWindowSlot *self)
 {
-    NautilusView *view;
+    NautilusFilesView *view = NAUTILUS_FILES_VIEW (object);
 
-    view = NAUTILUS_VIEW (object);
-
-    if (nautilus_view_is_loading (view))
+    if (nautilus_files_view_is_loading (view))
     {
         view_started_loading (self, view);
     }
@@ -2729,7 +2720,7 @@ static void
 create_and_bind_new_content_view (NautilusWindowSlot *self,
                                   guint               view_id)
 {
-    self->content_view = NAUTILUS_VIEW (nautilus_files_view_new (view_id, self));
+    self->content_view = nautilus_files_view_new (view_id, self);
 
     GtkWidget *widget = GTK_WIDGET (self->content_view);
     gtk_box_append (GTK_BOX (self->vbox), widget);
@@ -3047,33 +3038,32 @@ nautilus_window_slot_stop_loading (NautilusWindowSlot *self)
     location = nautilus_window_slot_get_location (self);
     directory = nautilus_directory_get (self->location);
 
-    if (NAUTILUS_IS_FILES_VIEW (self->content_view))
+    if (self->content_view != NULL)
     {
-        nautilus_files_view_stop_loading (NAUTILUS_FILES_VIEW (self->content_view));
+        nautilus_files_view_stop_loading (self->content_view);
     }
 
     nautilus_directory_unref (directory);
 
     if (self->pending_location != NULL &&
         location != NULL &&
-        self->content_view != NULL &&
-        NAUTILUS_IS_FILES_VIEW (self->content_view))
+        self->content_view != NULL)
     {
         /* No need to tell the new view - either it is the
          * same as the old view, in which case it will already
          * be told, or it is the very pending change we wish
          * to cancel.
          */
-        g_autolist (NautilusFile) selection = nautilus_view_get_selection (self->content_view);
+        g_autolist (NautilusFile) selection = nautilus_files_view_get_selection (self->content_view);
 
-        nautilus_view_set_location (self->content_view, location);
-        nautilus_view_set_selection (self->content_view, selection);
+        nautilus_files_view_set_location (self->content_view, location);
+        nautilus_files_view_set_selection (self->content_view, selection);
     }
 
     end_location_change (self);
 }
 
-NautilusView *
+NautilusFilesView *
 nautilus_window_slot_get_current_view (NautilusWindowSlot *self)
 {
     return self->content_view;
@@ -3115,9 +3105,7 @@ nautilus_window_slot_get_icon_name (NautilusWindowSlot *self)
         return "";
     }
 
-    g_return_val_if_fail (NAUTILUS_IS_FILES_VIEW (self->content_view), NULL);
-
-    return nautilus_files_view_get_toggle_icon_name (NAUTILUS_FILES_VIEW (self->content_view));
+    return nautilus_files_view_get_toggle_icon_name (self->content_view);
 }
 
 const gchar *
@@ -3130,9 +3118,7 @@ nautilus_window_slot_get_tooltip (NautilusWindowSlot *self)
         return NULL;
     }
 
-    g_return_val_if_fail (NAUTILUS_IS_FILES_VIEW (self->content_view), NULL);
-
-    return nautilus_files_view_get_toggle_tooltip (NAUTILUS_FILES_VIEW (self->content_view));
+    return nautilus_files_view_get_toggle_tooltip (self->content_view);
 }
 
 NautilusToolbarMenuSections *
@@ -3141,7 +3127,7 @@ nautilus_window_slot_get_toolbar_menu_sections (NautilusWindowSlot *self)
     g_return_val_if_fail (NAUTILUS_IS_WINDOW_SLOT (self), NULL);
 
     return self->content_view != NULL
-           ? nautilus_view_get_toolbar_menu_sections (self->content_view)
+           ? nautilus_files_view_get_toolbar_menu_sections (self->content_view)
            : NULL;
 }
 

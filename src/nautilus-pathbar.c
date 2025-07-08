@@ -29,6 +29,7 @@
 #include "nautilus-enums.h"
 #include "nautilus-enum-types.h"
 #include "nautilus-file.h"
+#include "nautilus-files-view.h"
 #include "nautilus-file-utilities.h"
 #include "nautilus-global-preferences.h"
 #include "nautilus-icon-names.h"
@@ -882,7 +883,7 @@ on_drag_drop (GtkDropTarget *target,
     }
 
     target_location = nautilus_file_get_location (button_data->file);
-    target_view = (NautilusFilesView *) nautilus_window_slot_get_current_view (self->slot);
+    target_view = nautilus_window_slot_get_current_view (self->slot);
     action = gdk_drop_get_actions (gtk_drop_target_get_current_drop (target));
 
     #ifdef GDK_WINDOWING_X11

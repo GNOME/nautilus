@@ -133,8 +133,6 @@ libnautilus_sources = [
   'nautilus-toolbar.c',
   'nautilus-toolbar.h',
   'nautilus-toolbar-menu-sections.h',
-  'nautilus-view.c',
-  'nautilus-view.h',
   'nautilus-view-cell.c',
   'nautilus-view-cell.h',
   'nautilus-view-controls.c',

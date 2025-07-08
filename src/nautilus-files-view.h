@@ -1,4 +1,4 @@
-/* nautilus-view.h
+/* nautilus-files-view.h
  *
  * Copyright (C) 1999, 2000  Free Software Foundaton
  * Copyright (C) 2000, 2001  Eazel, Inc.
@@ -29,8 +29,7 @@
 
 #include "nautilus-directory.h"
 #include "nautilus-file.h"
-
-#include "nautilus-view.h"
+#include "nautilus-types.h"
 #include "nautilus-window-slot.h"
 
 G_BEGIN_DECLS
@@ -113,6 +112,9 @@ struct _NautilusFilesViewClass {
 
 NautilusFilesView *      nautilus_files_view_new                         (guint               id,
                                                                           NautilusWindowSlot *slot);
+
+guint
+nautilus_files_view_get_view_id (NautilusFilesView *self);
 void                nautilus_files_view_change                           (NautilusFilesView  *self,
                                                                           guint               id);
 
@@ -120,6 +122,29 @@ const char *
 nautilus_files_view_get_toggle_icon_name (NautilusFilesView *self);
 const char *
 nautilus_files_view_get_toggle_tooltip (NautilusFilesView *self);
+
+GFile *
+nautilus_files_view_get_location (NautilusFilesView *self);
+void
+nautilus_files_view_set_location (NautilusFilesView *self,
+                                  GFile             *location);
+
+NautilusQuery *
+nautilus_files_view_get_search_query (NautilusFilesView *self);
+void
+nautilus_files_view_set_search_query (NautilusFilesView *self,
+                                      NautilusQuery     *query);
+
+GList *
+nautilus_files_view_get_selection (NautilusFilesView *self);
+void
+nautilus_files_view_set_selection (NautilusFilesView *self,
+                                   GList             *selection);
+
+gboolean
+nautilus_files_view_is_loading (NautilusFilesView *self);
+gboolean
+nautilus_files_view_is_searching (NautilusFilesView *self);
 
 /* Wrappers for signal emitters. These are normally called
  * only by NautilusFilesView itself. They have corresponding signals
@@ -162,6 +187,9 @@ void              nautilus_files_view_activate_selection         (NautilusFilesV
 void              nautilus_files_view_preview_selection_event    (NautilusFilesView      *view,
                                                                   GtkDirectionType        direction);
 void              nautilus_files_view_stop_loading               (NautilusFilesView      *view);
+
+NautilusToolbarMenuSections *
+nautilus_files_view_get_toolbar_menu_sections (NautilusFilesView *self);
 
 void              nautilus_files_view_update_context_menus       (NautilusFilesView      *view);
 void              nautilus_files_view_update_toolbar_menus       (NautilusFilesView      *view);
