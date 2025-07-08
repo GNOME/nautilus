@@ -1,5 +1,9 @@
-#include "nautilus-localsearch-utilities.h"
 #include "test-utilities.h"
+
+#include <src/nautilus-file-utilities.h>
+#include <src/nautilus-global-preferences.h>
+#include <src/nautilus-localsearch-utilities.h>
+#include <src/nautilus-search-engine.h>
 
 /* Time in seconds we allow for localsearch Miners to index the file */
 #define LOCALSEARCH_MINERS_AWAIT_TIMEOUT 1000
