@@ -3108,7 +3108,6 @@ nautilus_window_slot_new (NautilusMode mode)
 const gchar *
 nautilus_window_slot_get_icon_name (NautilusWindowSlot *self)
 {
-    guint current_view_id;
     g_return_val_if_fail (NAUTILUS_IS_WINDOW_SLOT (self), NULL);
 
     if (self->content_view == NULL)
@@ -3116,38 +3115,14 @@ nautilus_window_slot_get_icon_name (NautilusWindowSlot *self)
         return "";
     }
 
-    current_view_id = nautilus_view_get_view_id (NAUTILUS_VIEW (self->content_view));
-    switch (current_view_id)
-    {
-        case NAUTILUS_VIEW_LIST_ID:
-        {
-            return nautilus_view_get_icon_name (NAUTILUS_VIEW_GRID_ID);
-        }
-        break;
+    g_return_val_if_fail (NAUTILUS_IS_FILES_VIEW (self->content_view), NULL);
 
-        case NAUTILUS_VIEW_GRID_ID:
-        {
-            return nautilus_view_get_icon_name (NAUTILUS_VIEW_LIST_ID);
-        }
-        break;
-
-        case NAUTILUS_VIEW_NETWORK_ID:
-        {
-            return nautilus_view_get_icon_name (NAUTILUS_VIEW_NETWORK_ID);
-        }
-        break;
-
-        default:
-        {
-            return NULL;
-        }
-    }
+    return nautilus_files_view_get_toggle_icon_name (NAUTILUS_FILES_VIEW (self->content_view));
 }
 
 const gchar *
 nautilus_window_slot_get_tooltip (NautilusWindowSlot *self)
 {
-    guint current_view_id;
     g_return_val_if_fail (NAUTILUS_IS_WINDOW_SLOT (self), NULL);
 
     if (self->content_view == NULL)
@@ -3155,32 +3130,9 @@ nautilus_window_slot_get_tooltip (NautilusWindowSlot *self)
         return NULL;
     }
 
-    current_view_id = nautilus_view_get_view_id (NAUTILUS_VIEW (self->content_view));
-    switch (current_view_id)
-    {
-        case NAUTILUS_VIEW_LIST_ID:
-        {
-            return nautilus_view_get_tooltip (NAUTILUS_VIEW_GRID_ID);
-        }
-        break;
+    g_return_val_if_fail (NAUTILUS_IS_FILES_VIEW (self->content_view), NULL);
 
-        case NAUTILUS_VIEW_GRID_ID:
-        {
-            return nautilus_view_get_tooltip (NAUTILUS_VIEW_LIST_ID);
-        }
-        break;
-
-        case NAUTILUS_VIEW_NETWORK_ID:
-        {
-            return nautilus_view_get_tooltip (NAUTILUS_VIEW_NETWORK_ID);
-        }
-        break;
-
-        default:
-        {
-            return NULL;
-        }
-    }
+    return nautilus_files_view_get_toggle_tooltip (NAUTILUS_FILES_VIEW (self->content_view));
 }
 
 NautilusToolbarMenuSections *

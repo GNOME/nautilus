@@ -64,10 +64,6 @@ struct _NautilusViewInterface
         gboolean                        (*is_searching)              (NautilusView         *view);
 };
 
-const gchar *                  nautilus_view_get_icon_name             (guint                 view_id);
-
-const gchar *                        nautilus_view_get_tooltip               (guint                 view_id);
-
 guint                          nautilus_view_get_view_id               (NautilusView         *view);
 
 NautilusToolbarMenuSections *  nautilus_view_get_toolbar_menu_sections (NautilusView         *view);
