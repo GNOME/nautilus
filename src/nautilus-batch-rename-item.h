@@ -18,10 +18,10 @@
 
 #pragma once
 
+#include "nautilus-types.h"
+
 #include <glib.h>
 #include <glib-object.h>
-
-#include "nautilus-batch-rename-dialog.h"
 
 G_BEGIN_DECLS
 

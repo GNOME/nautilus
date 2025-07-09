@@ -6,11 +6,11 @@
 
 #pragma once
 
+#include "nautilus-types.h"
+
 #include <glib.h>
 #include <gtk/gtk.h>
 #include <adwaita.h>
-
-#include "nautilus-directory.h"
 
 typedef void (*NewFolderCallback) (const char *new_name,
                                    gboolean    from_selection,

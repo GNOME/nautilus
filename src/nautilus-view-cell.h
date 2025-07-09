@@ -7,7 +7,8 @@
 #pragma once
 
 #include "nautilus-types.h"
-#include "nautilus-view-item.h"
+
+#include <gtk/gtk.h>
 
 G_BEGIN_DECLS
 

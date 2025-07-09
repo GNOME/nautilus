@@ -32,6 +32,7 @@
 #include "nautilus-global-preferences.h"
 #include "nautilus-hash-queue.h"
 #include "nautilus-metadata.h"
+#include "nautilus-monitor.h"
 #include "nautilus-scheme.h"
 #include "nautilus-vfs-directory.h"
 #include "nautilus-vfs-file.h"

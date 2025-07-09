@@ -47,17 +47,18 @@
 
 #include "nautilus-error-reporting.h"
 #include "nautilus-fd-holder.h"
-#include "nautilus-operations-ui-manager.h"
 #include "nautilus-file-changes-queue.h"
 #include "nautilus-file-conflict-dialog.h"
+#include "nautilus-file-operations-dbus-data.h"
 #include "nautilus-file-private.h"
+#include "nautilus-file-undo-manager.h"
+#include "nautilus-file-undo-operations.h"
+#include "nautilus-file-utilities.h"
 #include "nautilus-filename-utilities.h"
+#include "nautilus-operations-ui-manager.h"
+#include "nautilus-scheme.h"
 #include "nautilus-tag-manager.h"
 #include "nautilus-trash-monitor.h"
-#include "nautilus-file-utilities.h"
-#include "nautilus-file-undo-operations.h"
-#include "nautilus-file-undo-manager.h"
-#include "nautilus-scheme.h"
 #include "nautilus-ui-utilities.h"
 
 #ifdef GDK_WINDOWING_X11

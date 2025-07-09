@@ -5,7 +5,11 @@
  */
 
 #include "nautilus-star-cell.h"
+
+#include "nautilus-file.h"
 #include "nautilus-tag-manager.h"
+#include "nautilus-view-cell.h"
+#include "nautilus-view-item.h"
 
 #include <glib/gi18n.h>
 

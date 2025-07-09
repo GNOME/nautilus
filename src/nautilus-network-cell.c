@@ -9,8 +9,10 @@
 #include <glib/gi18n.h>
 
 #include "nautilus-directory.h"
+#include "nautilus-file.h"
 #include "nautilus-file-utilities.h"
 #include "nautilus-scheme.h"
+#include "nautilus-view-item.h"
 
 struct _NautilusNetworkCell
 {

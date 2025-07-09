@@ -21,11 +21,13 @@
 
 #pragma once
 
-#include <gio/gio.h>
-#include <nautilus-extension.h>
+#include "nautilus-types.h"
 
 #include "nautilus-directory.h"
 #include "nautilus-file.h"
+
+#include <gio/gio.h>
+#include <nautilus-extension.h>
 
 typedef struct FileMonitors FileMonitors;
 typedef struct DirectoryLoadState DirectoryLoadState;

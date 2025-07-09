@@ -21,12 +21,12 @@
 
 #pragma once
 
+#include "nautilus-types.h"
+
 #include <glib.h>
 #include <glib-object.h>
 #include <gtk/gtk.h>
 #include <gio/gio.h>
-
-#include "nautilus-file-undo-operations.h"
 
 #define NAUTILUS_TYPE_FILE_UNDO_MANAGER\
 	(nautilus_file_undo_manager_get_type())

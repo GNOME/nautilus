@@ -4,10 +4,13 @@
  * SPDX-License-Identifier: GPL-2.0-or-later
  */
 
-#include <glib/gi18n.h>
-
 #include "nautilus-filename-validator.h"
+
+#include "nautilus-directory.h"
+#include "nautilus-file.h"
 #include "nautilus-file-utilities.h"
+
+#include <glib/gi18n.h>
 
 #define FILE_NAME_DUPLICATED_LABEL_TIMEOUT 500
 

@@ -5,7 +5,9 @@
  */
 
 #include "nautilus-view-cell.h"
+
 #include "nautilus-list-base.h"
+#include "nautilus-view-item.h"
 
 /**
  * NautilusViewCell:

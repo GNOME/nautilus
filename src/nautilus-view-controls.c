@@ -7,6 +7,7 @@
 #include "nautilus-view-controls.h"
 
 #include "nautilus-toolbar-menu-sections.h"
+#include "nautilus-window-slot.h"
 
 struct _NautilusViewControls
 {

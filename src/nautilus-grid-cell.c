@@ -6,11 +6,14 @@
 
 #include "nautilus-grid-cell.h"
 
+#include "nautilus-file.h"
 #include "nautilus-global-preferences.h"
 #include "nautilus-icon-info.h"
 #include "nautilus-tag-manager.h"
 #include "nautilus-thumbnails.h"
 #include "nautilus-ui-utilities.h"
+#include "nautilus-view-item.h"
+#include "nautilus-view-cell.h"
 
 struct _NautilusGridCell
 {

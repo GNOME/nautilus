@@ -8,7 +8,8 @@
 
 #pragma once
 
-#include "nautilus-view-cell.h"
+#include <gdk/gdk.h>
+#include <glib-object.h>
 
 G_BEGIN_DECLS
 

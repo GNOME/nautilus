@@ -25,6 +25,7 @@
 #include "nautilusgtksidebarrowprivate.h"
 #include "gdk/gdkkeysyms.h"
 #include "nautilus-application.h"
+#include "nautilus-bookmark.h"
 #include "nautilus-bookmark-list.h"
 #include "nautilus-dnd.h"
 #include "nautilus-dbus-launcher.h"

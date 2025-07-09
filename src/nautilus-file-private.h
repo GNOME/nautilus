@@ -21,10 +21,9 @@
 
 #pragma once
 
-#include "nautilus-directory.h"
+#include "nautilus-types.h"
+
 #include "nautilus-file.h"
-#include "nautilus-monitor.h"
-#include "nautilus-file-undo-operations.h"
 
 #define NAUTILUS_FILE_DEFAULT_ATTRIBUTES				\
 	"standard::*,access::*,mountable::*,time::*,unix::*,owner::*,selinux::*,id::filesystem,trash::orig-path,trash::deletion-date,metadata::*,recent::*,preview::icon"

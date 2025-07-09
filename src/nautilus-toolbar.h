@@ -26,7 +26,7 @@
 #include <adwaita.h>
 #include <gtk/gtk.h>
 
-#include "nautilus-window-slot.h"
+#include "nautilus-types.h"
 
 G_BEGIN_DECLS
 

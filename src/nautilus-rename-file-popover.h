@@ -6,10 +6,10 @@
 
 #pragma once
 
+#include "nautilus-types.h"
+
 #include <glib.h>
 #include <gtk/gtk.h>
-
-#include "nautilus-file.h"
 
 typedef void (*NautilusRenameCallback) (NautilusFile *target_file,
                                         const char   *new_name,

@@ -25,6 +25,7 @@
 #include <config.h>
 #include "nautilus-bookmark-list.h"
 
+#include "nautilus-bookmark.h"
 #include "nautilus-file-utilities.h"
 #include "nautilus-file.h"
 #include "nautilus-icon-names.h"

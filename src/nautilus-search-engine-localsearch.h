@@ -23,6 +23,8 @@
 
 #include "nautilus-search-provider.h"
 
+#include <glib-object.h>
+
 #define NAUTILUS_TYPE_SEARCH_ENGINE_LOCALSEARCH (nautilus_search_engine_localsearch_get_type ())
 G_DECLARE_FINAL_TYPE (NautilusSearchEngineLocalsearch, nautilus_search_engine_localsearch, NAUTILUS, SEARCH_ENGINE_LOCALSEARCH, GObject)
 

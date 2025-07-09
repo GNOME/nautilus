@@ -23,6 +23,7 @@
 #include <config.h>
 #include "nautilus-search-engine-simple.h"
 
+#include "nautilus-query.h"
 #include "nautilus-search-hit.h"
 #include "nautilus-search-provider.h"
 #include "nautilus-ui-utilities.h"

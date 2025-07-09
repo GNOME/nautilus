@@ -28,10 +28,11 @@
 
 #include <glib/gi18n.h>
 #include "nautilus-file.h"
+#include "nautilus-global-preferences.h"
 #include "nautilus-icon-info.h"
 #include "nautilus-minimal-cell.h"
+#include "nautilus-query.h"
 #include "nautilus-ui-utilities.h"
-#include "nautilus-global-preferences.h"
 
  #define SEARCH_FILTER_MAX_YEARS 5
 

@@ -1,8 +1,10 @@
 #pragma once
 
+#include "nautilus-types.h"
+
 #include <glib.h>
-#include "nautilus-file.h"
-#include "nautilus-view-item.h"
+#include <glib-object.h>
+#include <gtk/gtk.h>
 
 G_BEGIN_DECLS
 

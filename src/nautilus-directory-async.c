@@ -31,6 +31,7 @@
 #include "nautilus-global-preferences.h"
 #include "nautilus-hash-queue.h"
 #include "nautilus-metadata.h"
+#include "nautilus-monitor.h"
 #include "nautilus-signaller.h"
 
 /* turn this on to check if async. job calls are balanced */

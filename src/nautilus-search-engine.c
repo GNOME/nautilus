@@ -24,11 +24,15 @@
 #include "nautilus-search-engine.h"
 
 #include "nautilus-file-utilities.h"
+#include "nautilus-query.h"
 #include "nautilus-search-engine-model.h"
-#include <glib/gi18n.h>
 #include "nautilus-search-engine-localsearch.h"
 #include "nautilus-search-engine-recent.h"
 #include "nautilus-search-engine-simple.h"
+#include "nautilus-search-hit.h"
+#include "nautilus-search-provider.h"
+
+#include <glib/gi18n.h>
 
 struct _NautilusSearchEngine
 {

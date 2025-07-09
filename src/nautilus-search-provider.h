@@ -17,9 +17,9 @@
 
 #pragma once
 
+#include "nautilus-types.h"
+
 #include <glib-object.h>
-#include "nautilus-query.h"
-#include "nautilus-search-hit.h"
 
 G_BEGIN_DECLS
 

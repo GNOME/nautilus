@@ -23,9 +23,9 @@
 
 #pragma once
 
-#include <gtk/gtk.h>
+#include "nautilus-types.h"
 
-#include "nautilus-progress-info.h"
+#include <gtk/gtk.h>
 
 #define NAUTILUS_TYPE_PROGRESS_INFO_WIDGET nautilus_progress_info_widget_get_type()
 #define NAUTILUS_PROGRESS_INFO_WIDGET(obj) \

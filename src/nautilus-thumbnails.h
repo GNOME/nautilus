@@ -21,8 +21,9 @@
 
 #pragma once
 
+#include "nautilus-types.h"
+
 #include <gdk-pixbuf/gdk-pixbuf.h>
-#include "nautilus-file.h"
 
 /* Returns NULL if there's no thumbnail yet. */
 void       nautilus_create_thumbnail                (NautilusFile *file);

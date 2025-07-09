@@ -27,6 +27,7 @@
 #include "nautilus-application.h"
 #include "nautilus-bookmark.h"
 #include "nautilus-bookmark-list.h"
+#include "nautilus-directory.h"
 #include "nautilus-enum-types.h"
 #include "nautilus-fd-holder.h"
 #include "nautilus-files-view.h"

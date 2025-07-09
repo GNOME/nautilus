@@ -22,17 +22,20 @@
  */
 
 #include <config.h>
+#include "nautilus-search-provider.h"
 
 #include <gio/gio.h>
 #include <string.h>
 #include <glib/gi18n.h>
 #include <gdk/gdk.h>
 
+#include "nautilus-bookmark.h"
 #include "nautilus-file.h"
 #include "nautilus-file-utilities.h"
+#include "nautilus-query.h"
 #include "nautilus-scheme.h"
 #include "nautilus-search-engine.h"
-#include "nautilus-search-provider.h"
+#include "nautilus-search-hit.h"
 #include "nautilus-ui-utilities.h"
 
 #include "nautilus-application.h"

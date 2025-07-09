@@ -4,6 +4,7 @@
  * SPDX-License-Identifier: GPL-3.0-or-later
  */
 
+#include "nautilus-list-base.h"
 #include "nautilus-list-base-private.h"
 
 #include "nautilus-application.h"
