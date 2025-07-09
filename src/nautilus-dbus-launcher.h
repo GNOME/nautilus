@@ -6,10 +6,10 @@
 
 #pragma once
 
+#include "nautilus-types.h"
+
 #include <glib.h>
 #include <gtk/gtk.h>
-
-#include "nautilus-file.h"
 
 #define NAUTILUS_TYPE_DBUS_LAUNCHER (nautilus_dbus_launcher_get_type())
 

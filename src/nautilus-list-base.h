@@ -6,11 +6,11 @@
 
 #pragma once
 
-#include <adwaita.h>
+#include "nautilus-types.h"
 
 #include "nautilus-view-info.h"
-#include "nautilus-view-item.h"
-#include "nautilus-view-model.h"
+
+#include <adwaita.h>
 
 G_BEGIN_DECLS
 

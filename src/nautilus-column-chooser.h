@@ -22,10 +22,10 @@
 
 #pragma once
 
-#include <gtk/gtk.h>
-#include "nautilus-file.h"
+#include "nautilus-types.h"
 
 #include <adwaita.h>
+#include <gtk/gtk.h>
 
 #define NAUTILUS_TYPE_COLUMN_CHOOSER nautilus_column_chooser_get_type()
 

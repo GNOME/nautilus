@@ -29,6 +29,7 @@
 #include <glib/gi18n.h>
 
 #include <nautilus-extension.h>
+#include "nautilus-file.h"
 #include "nautilus-global-preferences.h"
 #include "nautilus-metadata.h"
 

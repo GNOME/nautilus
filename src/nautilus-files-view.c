@@ -84,7 +84,9 @@
 #include "nautilus-trash-monitor.h"
 #include "nautilus-ui-utilities.h"
 #include "nautilus-view-info.h"
+#include "nautilus-view-item.h"
 #include "nautilus-view-model.h"
+#include "nautilus-window-slot.h"
 
 /* Minimum starting update interval */
 #define UPDATE_INTERVAL_MIN 100

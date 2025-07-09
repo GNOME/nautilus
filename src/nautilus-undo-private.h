@@ -21,8 +21,8 @@
 
 #pragma once
 
-#include "nautilus-undo.h"
-#include "nautilus-undo-manager.h"
+#include "nautilus-types.h"
+
 #include <glib-object.h>
 
 NautilusUndoManager * nautilus_undo_get_undo_manager    (GObject               *attached_object);

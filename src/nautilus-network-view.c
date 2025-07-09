@@ -4,14 +4,17 @@
  * SPDX-License-Identifier: GPL-3.0-or-later
  */
 
-#include "nautilus-list-base-private.h"
 #include "nautilus-network-view.h"
 
 #include <glib/gi18n.h>
 
+#include "nautilus-file.h"
 #include "nautilus-global-preferences.h"
+#include "nautilus-list-base-private.h"
 #include "nautilus-network-cell.h"
 #include "nautilus-scheme.h"
+#include "nautilus-view-item.h"
+#include "nautilus-view-model.h"
 
 struct _NautilusNetworkView
 {

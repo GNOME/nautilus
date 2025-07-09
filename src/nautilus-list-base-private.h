@@ -6,9 +6,9 @@
 
 #pragma once
 
-#include "nautilus-list-base.h"
-#include "nautilus-view-model.h"
-#include "nautilus-view-cell.h"
+#include "nautilus-types.h"
+
+#include <gtk/gtk.h>
 
 /*
  * Private header to be included only by subclasses.

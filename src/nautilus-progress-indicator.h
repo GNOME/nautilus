@@ -9,8 +9,6 @@
 #include <adwaita.h>
 #include <gtk/gtk.h>
 
-#include "nautilus-window-slot.h"
-
 G_BEGIN_DECLS
 
 #define NAUTILUS_TYPE_PROGRESS_INDICATOR (nautilus_progress_indicator_get_type())

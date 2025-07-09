@@ -19,7 +19,9 @@
 
 #pragma once
 
-#include "nautilus-file.h"
+#include "nautilus-types.h"
+
+#include <glib.h>
 
 /** Function to create a hashable key from an item. */
 typedef gpointer (* KeyCreateFunc) (gpointer item);

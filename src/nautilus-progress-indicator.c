@@ -7,6 +7,7 @@
 #include "nautilus-progress-indicator.h"
 
 #include "nautilus-file-operations.h"
+#include "nautilus-progress-info.h"
 #include "nautilus-progress-info-manager.h"
 #include "nautilus-progress-info-widget.h"
 #include "nautilus-progress-paintable.h"

@@ -21,10 +21,9 @@
 
 #pragma once
 
-#include <glib-object.h>
+#include "nautilus-types.h"
 
-#include "nautilus-directory.h"
-#include "nautilus-search-provider.h"
+#include <glib-object.h>
 
 G_BEGIN_DECLS
 

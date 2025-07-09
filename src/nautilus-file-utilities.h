@@ -27,6 +27,8 @@
 
 #include <config.h>
 
+#include "nautilus-types.h"
+
 #include "nautilus-query.h"
 
 #define NAUTILUS_DESKTOP_ID APPLICATION_ID ".desktop"

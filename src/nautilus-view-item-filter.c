@@ -7,9 +7,10 @@
 
 #include "nautilus-view-item-filter.h"
 
-#include <gio/gio.h>
-
+#include "nautilus-file.h"
 #include "nautilus-view-item.h"
+
+#include <gio/gio.h>
 
 enum
 {

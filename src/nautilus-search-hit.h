@@ -19,8 +19,9 @@
 
 #pragma once
 
+#include "nautilus-types.h"
+
 #include <glib-object.h>
-#include "nautilus-query.h"
 
 G_BEGIN_DECLS
 
