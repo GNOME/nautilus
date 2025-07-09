@@ -29,56 +29,6 @@ nautilus_view_default_init (NautilusViewInterface *iface)
 }
 
 /**
- * nautilus_view_get_icon_name:
- * @view: a #NautilusView
- *
- * Retrieves the icon name that represents @view.
- *
- * Returns: (transfer none): an icon name
- */
-const gchar *
-nautilus_view_get_icon_name (guint view_id)
-{
-    if (view_id == NAUTILUS_VIEW_GRID_ID)
-    {
-        return "view-grid-symbolic";
-    }
-    else if (view_id == NAUTILUS_VIEW_LIST_ID || view_id == NAUTILUS_VIEW_NETWORK_ID)
-    {
-        return "view-list-symbolic";
-    }
-    else
-    {
-        return NULL;
-    }
-}
-
-/**
- * nautilus_view_get_tooltip:
- * @view: a #NautilusView
- *
- * Retrieves the static string that represents @view.
- *
- * Returns: (transfer none): a static string
- */
-const gchar *
-nautilus_view_get_tooltip (guint view_id)
-{
-    if (view_id == NAUTILUS_VIEW_GRID_ID)
-    {
-        return _("Grid View");
-    }
-    else if (view_id == NAUTILUS_VIEW_LIST_ID || view_id == NAUTILUS_VIEW_NETWORK_ID)
-    {
-        return _("List View");
-    }
-    else
-    {
-        return NULL;
-    }
-}
-
-/**
  * nautilus_view_get_view_id:
  * @view: a #NautilusView
  *

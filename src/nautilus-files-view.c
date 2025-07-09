@@ -9965,6 +9965,74 @@ create_inner_view (NautilusFilesView *self,
     gtk_overlay_set_child (GTK_OVERLAY (priv->overlay), GTK_WIDGET (priv->list_base));
 }
 
+/**
+ * nautilus_files_view_get_toggle_icon_name:
+ * @self: a #NautilusFilesView
+ *
+ * Returns: (transfer none): icon name to toggle @self
+ */
+const char *
+nautilus_files_view_get_toggle_icon_name (NautilusFilesView *self)
+{
+    NautilusFilesViewPrivate *priv = nautilus_files_view_get_instance_private (self);
+    guint view_id = nautilus_list_base_get_view_info (priv->list_base).view_id;
+
+    switch (view_id)
+    {
+        case NAUTILUS_VIEW_LIST_ID:
+        {
+            return "view-grid-symbolic";
+        }
+        break;
+
+        case NAUTILUS_VIEW_NETWORK_ID:
+        case NAUTILUS_VIEW_GRID_ID:
+        {
+            return "view-list-symbolic";
+        }
+        break;
+
+        default:
+        {
+            g_assert_not_reached ();
+        }
+    }
+}
+
+/**
+ * nautilus_files_view_get_toggle_tooltip:
+ * @self: a #NautilusFilesView
+ *
+ * Returns: (transfer none): a translated tooltip explanation to toggle @self
+ */
+const char *
+nautilus_files_view_get_toggle_tooltip (NautilusFilesView *self)
+{
+    NautilusFilesViewPrivate *priv = nautilus_files_view_get_instance_private (self);
+    guint view_id = nautilus_list_base_get_view_info (priv->list_base).view_id;
+
+    switch (view_id)
+    {
+        case NAUTILUS_VIEW_LIST_ID:
+        {
+            return _("Grid View");
+        }
+        break;
+
+        case NAUTILUS_VIEW_NETWORK_ID:
+        case NAUTILUS_VIEW_GRID_ID:
+        {
+            return _("List View");
+        }
+        break;
+
+        default:
+        {
+            g_assert_not_reached ();
+        }
+    }
+}
+
 void
 nautilus_files_view_change (NautilusFilesView *self,
                             guint              id)

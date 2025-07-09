@@ -115,6 +115,12 @@ NautilusFilesView *      nautilus_files_view_new                         (guint 
                                                                           NautilusWindowSlot *slot);
 void                nautilus_files_view_change                           (NautilusFilesView  *self,
                                                                           guint               id);
+
+const char *
+nautilus_files_view_get_toggle_icon_name (NautilusFilesView *self);
+const char *
+nautilus_files_view_get_toggle_tooltip (NautilusFilesView *self);
+
 /* Wrappers for signal emitters. These are normally called
  * only by NautilusFilesView itself. They have corresponding signals
  * that observers might want to connect with.
