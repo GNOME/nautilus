@@ -22,7 +22,9 @@
 
 #pragma once
 
-#include "nautilus-file.h"
+#include "nautilus-types.h"
+
+#include <glib.h>
 
 GList *nautilus_get_all_columns       (void);
 GList *nautilus_get_common_columns    (void);

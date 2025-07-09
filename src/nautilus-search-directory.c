@@ -32,6 +32,7 @@
 #include "nautilus-scheme.h"
 #include "nautilus-search-directory-file.h"
 #include "nautilus-search-engine.h"
+#include "nautilus-search-hit.h"
 #include "nautilus-search-provider.h"
 
 struct _NautilusSearchDirectory

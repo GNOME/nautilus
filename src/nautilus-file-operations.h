@@ -23,11 +23,11 @@
 
 #pragma once
 
+#include "nautilus-types.h"
+
 #include <gtk/gtk.h>
 #include <gio/gio.h>
 #include <gnome-autoar/gnome-autoar.h>
-
-#include "nautilus-file-operations-dbus-data.h"
 
 #define SECONDS_NEEDED_FOR_APROXIMATE_TRANSFER_RATE 1
 

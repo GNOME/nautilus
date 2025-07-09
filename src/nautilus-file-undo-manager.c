@@ -26,8 +26,9 @@
 
 #include "nautilus-file-undo-manager.h"
 
-#include "nautilus-file-operations.h"
 #include "nautilus-file.h"
+#include "nautilus-file-operations.h"
+#include "nautilus-file-undo-operations.h"
 #include "nautilus-trash-monitor.h"
 
 #include <glib/gi18n.h>

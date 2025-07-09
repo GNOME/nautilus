@@ -9,6 +9,7 @@
 #include "nautilus-minimal-cell.h"
 
 #include <glib.h>
+#include <gdk/gdk.h>
 #include <gtk/gtk.h>
 
 struct _NautilusMinimalCell

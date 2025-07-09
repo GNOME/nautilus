@@ -25,12 +25,13 @@
 
 #include "nautilus-error-reporting.h"
 
+#include "nautilus-file.h"
+#include "nautilus-ui-utilities.h"
+
 #include <string.h>
 #include <glib/gi18n.h>
 #include "nautilus-file.h"
 #include <eel/eel-stock-dialogs.h>
-
-#include "nautilus-ui-utilities.h"
 
 #define NEW_NAME_TAG "Nautilus: new name"
 

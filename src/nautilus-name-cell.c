@@ -7,10 +7,12 @@
 #include "nautilus-name-cell.h"
 
 #include "nautilus-directory.h"
-#include "nautilus-icon-info.h"
+#include "nautilus-file.h"
 #include "nautilus-file-utilities.h"
+#include "nautilus-icon-info.h"
 #include "nautilus-thumbnails.h"
 #include "nautilus-ui-utilities.h"
+#include "nautilus-view-item.h"
 
 #define SPINNER_DELAY_MS 200
 

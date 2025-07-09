@@ -20,6 +20,8 @@
 
 #include <config.h>
 
+#include "nautilus-batch-rename-dialog.h"
+
 #include <glib.h>
 
 struct _NautilusBatchRenameItem

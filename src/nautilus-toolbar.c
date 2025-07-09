@@ -33,6 +33,7 @@
 #include "nautilus-pathbar.h"
 #include "nautilus-view-controls.h"
 #include "nautilus-ui-utilities.h"
+#include "nautilus-window-slot.h"
 
 struct _NautilusToolbar
 {

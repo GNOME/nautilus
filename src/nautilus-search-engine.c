@@ -29,6 +29,8 @@
 #include "nautilus-search-engine-localsearch.h"
 #include "nautilus-search-engine-recent.h"
 #include "nautilus-search-engine-simple.h"
+#include "nautilus-search-hit.h"
+#include "nautilus-search-provider.h"
 
 struct _NautilusSearchEngine
 {

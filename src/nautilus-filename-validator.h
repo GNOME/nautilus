@@ -6,10 +6,10 @@
 
 #pragma once
 
-#include <glib.h>
+#include "nautilus-types.h"
 
-#include "nautilus-file.h"
-#include "nautilus-directory.h"
+#include <glib.h>
+#include <glib-object.h>
 
 #define NAUTILUS_TYPE_FILENAME_VALIDATOR nautilus_filename_validator_get_type ()
 G_DECLARE_FINAL_TYPE (NautilusFilenameValidator, nautilus_filename_validator, NAUTILUS, FILENAME_VALIDATOR, GObject)

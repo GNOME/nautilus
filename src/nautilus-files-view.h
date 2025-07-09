@@ -24,13 +24,11 @@
 
 #pragma once
 
+#include "nautilus-types.h"
+
+#include <adwaita.h>
 #include <gtk/gtk.h>
 #include <gio/gio.h>
-
-#include "nautilus-directory.h"
-#include "nautilus-file.h"
-#include "nautilus-types.h"
-#include "nautilus-window-slot.h"
 
 G_BEGIN_DECLS
 

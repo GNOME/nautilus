@@ -18,10 +18,10 @@
 
 #pragma once
 
+#include "nautilus-types.h"
+
 #include <glib.h>
 #include <gtk/gtk.h>
-
-#include "nautilus-query.h"
 
 G_BEGIN_DECLS
 

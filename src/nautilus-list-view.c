@@ -27,6 +27,8 @@
 #include "nautilus-search-directory.h"
 #include "nautilus-star-cell.h"
 #include "nautilus-tag-manager.h"
+#include "nautilus-view-item.h"
+#include "nautilus-view-model.h"
 
 /* We wait two seconds after row is collapsed to unload the subdirectory */
 #define COLLAPSE_TO_UNLOAD_DELAY 2

@@ -24,6 +24,7 @@
 #include "nautilus-search-engine-localsearch.h"
 
 #include "nautilus-file.h"
+#include "nautilus-query.h"
 #include "nautilus-search-hit.h"
 #include "nautilus-search-provider.h"
 #include "nautilus-localsearch-utilities.h"

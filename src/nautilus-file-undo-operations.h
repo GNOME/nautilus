@@ -24,11 +24,11 @@
 
 #pragma once
 
+#include "nautilus-types.h"
+
 #include <gio/gio.h>
 #include <gtk/gtk.h>
 #include <gnome-autoar/gnome-autoar.h>
-
-#include "nautilus-file-operations-dbus-data.h"
 
 typedef enum
 {

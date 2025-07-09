@@ -25,7 +25,8 @@
 
 #pragma once
 
-#include "nautilus-bookmark.h"
+#include "nautilus-types.h"
+
 #include <gio/gio.h>
 
 G_BEGIN_DECLS
