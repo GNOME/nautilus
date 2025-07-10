@@ -147,12 +147,14 @@ conf = configuration_data()
 
 profile = get_option('profile')
 name_suffix = ''
+app_id_suffix = ''
 
 if get_option('profile') == 'Devel'
+  app_id_suffix = '.Devel'
   name_suffix = ' (Development Snapshot)'
 endif
 
-application_id = 'org.gnome.Nautilus' + profile
+application_id = 'org.gnome.Nautilus' + app_id_suffix
 
 if profile == ''
   # Example: 40.0
