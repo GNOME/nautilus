@@ -100,6 +100,7 @@ posix_locale_to_icu (const gchar *posix_locale)
 static char *icu_locale;
 static URelativeDateTimeFormatter *relative_formatter;
 static UCalendar gregorian_cal;
+static UDateFormat *date_only_formatter;
 static UDateFormat *time_12_hour_formatter;
 static UDateFormat *time_24_hour_formatter;
 static UDateFormat *datetime_short_12_hour_formatter;
@@ -175,6 +176,7 @@ ensure_formatters (GTimeZone *new_tz)
     if (g_set_str (&tz_id, g_time_zone_get_identifier (new_tz)))
     {
         g_clear_pointer (&gregorian_cal, ucal_close);
+        g_clear_pointer (&date_only_formatter, udat_close);
         g_clear_pointer (&time_12_hour_formatter, udat_close);
         g_clear_pointer (&time_24_hour_formatter, udat_close);
         g_clear_pointer (&datetime_short_12_hour_formatter, udat_close);
@@ -200,6 +202,8 @@ ensure_formatters (GTimeZone *new_tz)
             UDateFormatStyle date_style;
         } formatter_setup[] =
         {
+            /* Date only */
+            {&date_only_formatter, u"yMd", UDAT_PATTERN, UDAT_PATTERN},
             /* Time formatters, 12 and 24 hours */
             {&time_12_hour_formatter, u"hm", UDAT_PATTERN, UDAT_NONE},
             {&time_24_hour_formatter, u"Hm", UDAT_PATTERN, UDAT_NONE},
@@ -291,7 +295,8 @@ get_relative_day_month_year (GTimeSpan   timespan,
 static char *
 date_to_str (GDateTime *timestamp,
              gboolean   use_short_format,
-             gboolean   detailed_date)
+             gboolean   detailed_date,
+             gboolean   with_time)
 {
     UErrorCode status = U_ZERO_ERROR;
     g_autofree char *formatted_utf8 = NULL;
@@ -326,7 +331,7 @@ date_to_str (GDateTime *timestamp,
             GTimeSpan midnight_difference = g_date_time_difference (today_midnight, date_midnight);
             UChar relative_date_buf[128];
             /* Show time on Today/yesterday/tomorrow. */
-            gboolean add_time = llabs (midnight_difference) < (2 * G_TIME_SPAN_DAY);
+            gboolean add_time = with_time && llabs (midnight_difference) < (2 * G_TIME_SPAN_DAY);
 
             /* Use explicit day boundary */
             gint32 relative_date_len = get_relative_day_month_year (midnight_difference,
@@ -378,13 +383,15 @@ date_to_str (GDateTime *timestamp,
         }
         else /* Long or short detailed format */
         {
-            UDateFormat *formatter = use_short_format
-                                     ? (use_24_hour
-                                        ? datetime_short_24_hour_formatter
-                                        : datetime_short_12_hour_formatter)
-                                     : (use_24_hour
-                                        ? datetime_detailed_24_hour_formatter
-                                        : datetime_detailed_12_hour_formatter);
+            UDateFormat *formatter = with_time
+                                     ? use_short_format
+                                       ? (use_24_hour
+                                          ? datetime_short_24_hour_formatter
+                                          : datetime_short_12_hour_formatter)
+                                       : (use_24_hour
+                                          ? datetime_detailed_24_hour_formatter
+                                          : datetime_detailed_12_hour_formatter)
+                                     : date_only_formatter;
             gint64 timestamp_ms = g_date_time_to_unix_usec (timestamp) / 1000;
             UChar result_buffer[512];
             guint32 result_buffer_len;
@@ -424,12 +431,12 @@ char *
 nautilus_date_to_str (GDateTime *timestamp,
                       gboolean   use_short_format)
 {
-    return date_to_str (timestamp, use_short_format, use_detailed_date_format);
+    return date_to_str (timestamp, use_short_format, use_detailed_date_format, TRUE);
 }
 
 char *
 nautilus_date_preview_detailed_format (GDateTime *timestamp,
                                        gboolean   use_detailed)
 {
-    return date_to_str (timestamp, TRUE, use_detailed);
+    return date_to_str (timestamp, TRUE, use_detailed, TRUE);
 }
