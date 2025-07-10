@@ -11,6 +11,7 @@
 
 #include <gdesktop-enums.h>
 #include <glib.h>
+#include <glib/gi18n.h>
 #include <locale.h>
 #include <time.h>
 
@@ -432,6 +433,51 @@ nautilus_date_to_str (GDateTime *timestamp,
                       gboolean   use_short_format)
 {
     return date_to_str (timestamp, use_short_format, use_detailed_date_format, TRUE);
+}
+
+static gboolean
+equal_date (GDateTime *datetime_a,
+            GDateTime *datetime_b)
+{
+    return g_date_time_get_year (datetime_a) == g_date_time_get_year (datetime_b) &&
+           g_date_time_get_month (datetime_a) == g_date_time_get_month (datetime_b) &&
+           g_date_time_get_day_of_month (datetime_a) == g_date_time_get_day_of_month (datetime_b);
+}
+
+char *
+nautilus_date_range_to_str (GPtrArray *date_range,
+                            gboolean   use_short_format)
+{
+    if (!date_range)
+    {
+        return NULL;
+    }
+
+    GDateTime *start_date = g_ptr_array_index (date_range, 0);
+    GDateTime *end_date = g_ptr_array_index (date_range, 1);
+
+    gint days = g_date_time_difference (end_date, start_date) / G_TIME_SPAN_DAY;
+    if (days < 1)
+    {
+        return date_to_str (start_date, use_short_format, FALSE, FALSE);
+    }
+
+    g_autoptr (GDateTime) now = g_date_time_new_now_local ();
+    g_autofree char *start = date_to_str (start_date, use_short_format, FALSE, FALSE);
+
+    if (equal_date (start_date, end_date))
+    {
+        return g_steal_pointer (&start);
+    }
+    else if (equal_date (now, end_date))
+    {
+        return g_strdup_printf (_("Since %s"), start);
+    }
+    else
+    {
+        g_autofree char *end = date_to_str (end_date, use_short_format, FALSE, FALSE);
+        return g_strdup_printf ("%s - %s", start, end);
+    }
 }
 
 char *

@@ -69,8 +69,6 @@ void        nautilus_ui_draw_symbolic_icon          (GtkSnapshot           *snap
 gboolean    nautilus_date_time_is_between_dates     (GDateTime         *date,
                                                      GDateTime         *initial_date,
                                                      GDateTime         *end_date);
-gchar     * get_text_for_date_range                 (GPtrArray         *date_range,
-                                                     gboolean           prefix_with_since);
 
 AdwMessageDialog * show_dialog                      (const gchar       *primary_text,
                                                      const gchar       *secondary_text,

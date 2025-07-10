@@ -18,6 +18,10 @@ nautilus_date_to_str (GDateTime *timestamp,
                       gboolean   use_short_format);
 
 char *
+nautilus_date_range_to_str (GPtrArray *date_range,
+                            gboolean   use_short_format);
+
+char *
 nautilus_date_preview_detailed_format (GDateTime *timestamp,
                                        gboolean   use_detailed);
 

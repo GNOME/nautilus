@@ -169,7 +169,7 @@ date_range_dialog_selected_cb (NautilusSearchPopover *self,
 {
     g_set_ptr_array (&self->specific_date_range, date_range);
 
-    g_autofree char *description = get_text_for_date_range (self->specific_date_range, FALSE);
+    g_autofree char *description = nautilus_date_range_to_str (self->specific_date_range, FALSE);
     gtk_button_set_label (self->specific_date_button, description);
     gtk_widget_set_visible (GTK_WIDGET (self->specific_date_button), TRUE);
     set_active_button (&self->active_date_button, self->specific_date_button);
