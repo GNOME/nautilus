@@ -65,3 +65,6 @@ void create_first_hierarchy (gchar *prefix);
 void create_second_hierarchy (gchar *prefix);
 void create_third_hierarchy (gchar *prefix);
 void create_fourth_hierarchy (gchar *prefix);
+
+void create_random_file (GFile *file,
+                         gsize size);
