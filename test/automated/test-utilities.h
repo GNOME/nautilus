@@ -37,7 +37,8 @@ void file_hierarchy_foreach (const GStrv        hier,
                              HierarchyCallback  func,
                              gpointer           user_data);
 GList * file_hierarchy_get_files_list (const GStrv  hier,
-                                       const gchar *substitution);
+                                       const gchar *substitution,
+                                       gboolean     shallow);
 void file_hierarchy_assert_exists (const GStrv  hier,
                                    const gchar *substitution,
                                    gboolean     exists);

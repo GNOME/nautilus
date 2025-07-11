@@ -156,25 +156,48 @@ file_hierarchy_foreach (const GStrv        hier,
     }
 }
 
+typedef struct
+{
+    GList **files;
+    gboolean shallow;
+} TestFileListData;
+
 static void
 append_file_to_list (GFile    *file,
                      gpointer  user_data)
 {
-    GList **files = user_data;
+    TestFileListData *data = user_data;
+    GList **files = data->files;
+
+    if (data->shallow)
+    {
+        g_autoptr (GFile) tmp_root = g_file_new_for_path (test_get_tmp_dir ());
+
+        if (!g_file_has_parent (file, tmp_root))
+        {
+            return;
+        }
+    }
 
     *files = g_list_append (*files, g_object_ref (file));
 }
 
 GList *
 file_hierarchy_get_files_list (const GStrv  hier,
-                               const gchar *substitution)
+                               const gchar *substitution,
+                               gboolean     shallow)
 {
     GList *files = NULL;
+    TestFileListData data =
+    {
+        .files = &files,
+        .shallow = shallow,
+    };
 
     file_hierarchy_foreach (hier,
                             substitution,
                             append_file_to_list,
-                            &files);
+                            &data);
 
     return files;
 }
