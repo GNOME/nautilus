@@ -21,7 +21,7 @@
                 <property name="orientation">vertical</property>
                 <property name="spacing">10</property>
                 <child>
-                  <object class="GtkLabel">
+                  <object class="GtkLabel" id="type_header">
                     <property name="label" translatable="yes">File Types</property>
                     <property name="hexpand">True</property>
                     <property name="xalign">0</property>
@@ -158,7 +158,7 @@
                 <property name="orientation">vertical</property>
                 <property name="spacing">10</property>
                 <child>
-                  <object class="GtkBox">
+                  <object class="GtkBox" id="date_header">
                     <property name="spacing">6</property>
                     <child>
                       <object class="GtkLabel" id="time_type_label">
@@ -267,7 +267,7 @@
                 <property name="orientation">vertical</property>
                 <property name="spacing">15</property>
                 <child>
-                  <object class="GtkBox">
+                  <object class="GtkBox" id="fts_header">
                     <child>
                       <object class="GtkLabel">
                         <property name="label" translatable="yes">Text Matching</property>
@@ -320,4 +320,12 @@
       </object>
     </property>
   </template>
+  <object class="GtkSizeGroup">
+    <property name="mode">vertical</property>
+    <widgets>
+      <widget name="type_header"/>
+      <widget name="date_header"/>
+      <widget name="fts_header"/>
+    </widgets>
+  </object>
 </interface>
