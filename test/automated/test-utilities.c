@@ -1,5 +1,7 @@
 #include "test-utilities.h"
 
+#include <sys/random.h>
+
 #define ASYNC_FILE_LIMIT 100
 
 static gchar *nautilus_tmp_dir = NULL;
@@ -587,5 +589,33 @@ create_multiple_full_directories (gchar *prefix,
         g_free (file_name);
 
         g_file_make_directory_with_parents (file, NULL, NULL);
+    }
+}
+
+void
+create_random_file (GFile *file,
+                    gsize  size)
+{
+    const gsize max_chunk_size = 4096;
+    gchar random_buffer[max_chunk_size];
+    g_autoptr (GError) error = NULL;
+    g_autoptr (GFileOutputStream) stream = g_file_create (file,
+                                                          G_FILE_CREATE_NONE,
+                                                          NULL,
+                                                          &error);
+    g_assert_no_error (error);
+
+    for (gsize chunk_size = size >= max_chunk_size ? max_chunk_size : size;
+         chunk_size > 0;
+         chunk_size = size >= max_chunk_size ? max_chunk_size : size)
+    {
+        gssize written_size = getrandom (random_buffer, chunk_size, 0);
+
+        g_assert_cmpint (written_size, >, 0);
+
+        g_output_stream_write (G_OUTPUT_STREAM (stream), random_buffer, written_size, NULL, &error);
+        g_assert_no_error (error);
+
+        size -= written_size;
     }
 }
