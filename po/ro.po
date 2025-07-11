@@ -12,8 +12,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: nautilus.HEAD.ro\n"
 "Report-Msgid-Bugs-To: https://gitlab.gnome.org/GNOME/nautilus/issues\n"
-"POT-Creation-Date: 2025-05-25 09:33+0000\n"
-"PO-Revision-Date: 2025-06-02 18:10+0200\n"
+"POT-Creation-Date: 2025-06-29 20:54+0000\n"
+"PO-Revision-Date: 2025-07-11 19:24+0200\n"
 "Last-Translator: Antonio Marin <gnmer.6qxyg@slmail.me>\n"
 "Language-Team: Romanian <gnomero-list@lists.sourceforge.net>\n"
 "Language: ro\n"
@@ -466,8 +466,8 @@ msgstr "Acestă operațiune poate fi oprită apăsând pe „Anulează”."
 
 #: eel/eel-stock-dialogs.c:196 src/nautilus-autorun-software.c:223
 #: src/nautilus-file-chooser.c:240 src/nautilus-file-operations.c:274
-#: src/nautilus-mime-actions.c:610 src/nautilus-mime-actions.c:1024
-#: src/nautilus-mime-actions.c:1336 src/resources/ui/nautilus-app-chooser.ui:90
+#: src/nautilus-mime-actions.c:722 src/nautilus-mime-actions.c:1136
+#: src/nautilus-mime-actions.c:1448 src/resources/ui/nautilus-app-chooser.ui:90
 #: src/resources/ui/nautilus-batch-rename-dialog.ui:106
 #: src/resources/ui/nautilus-compress-dialog.ui:17
 #: src/resources/ui/nautilus-file-conflict-dialog.ui:15
@@ -778,24 +778,24 @@ msgstr ""
 "stabilite permisiunile în așa fel încât acestea să poată fi create:\n"
 "%s"
 
-#: src/nautilus-application.c:592
+#: src/nautilus-application.c:601
 msgid "--quit cannot be used with URIs."
 msgstr "--quit nu poate fi folosită cu URI-uri."
 
-#: src/nautilus-application.c:601
+#: src/nautilus-application.c:610
 msgid "--select must be used with at least an URI."
 msgstr "--select trebuie să fie folosită cu cel puțin un URI."
 
-#: src/nautilus-application.c:744
+#: src/nautilus-application.c:753
 msgid "There was an error displaying help"
 msgstr "A apărut o eroare la afișarea ajutorului"
 
-#: src/nautilus-application.c:745 src/nautilus-autorun-software.c:161
-#: src/nautilus-mime-actions.c:1195 src/nautilus-ui-utilities.c:437
+#: src/nautilus-application.c:754 src/nautilus-autorun-software.c:161
+#: src/nautilus-mime-actions.c:1307 src/nautilus-ui-utilities.c:437
 msgid "_OK"
 msgstr "_Bine"
 
-#: src/nautilus-application.c:864
+#: src/nautilus-application.c:873
 #, c-format
 msgid ""
 "“%s” is an internal protocol. Opening this location directly is not "
@@ -804,23 +804,23 @@ msgstr ""
 "„%s” este un protocol intern. Deschiderea directă a acestui loc nu este "
 "implementată."
 
-#: src/nautilus-application.c:954
+#: src/nautilus-application.c:963
 msgid "Show the version of the program."
 msgstr "Arată versiunea programului."
 
-#: src/nautilus-application.c:958
+#: src/nautilus-application.c:967
 msgid "Always open a new window for browsing specified URIs"
 msgstr "Deschide totdeauna o fereastră pentru a explora URI-urile specificate"
 
-#: src/nautilus-application.c:962
+#: src/nautilus-application.c:971
 msgid "Quit Nautilus."
 msgstr "Închide Nautilus."
 
-#: src/nautilus-application.c:966
+#: src/nautilus-application.c:975
 msgid "Select specified URI in parent folder."
 msgstr "Selecționează URI-ul specificat în dosarul părinte."
 
-#: src/nautilus-application.c:968
+#: src/nautilus-application.c:977
 msgid "[URI…]"
 msgstr "[URI…]"
 
@@ -1301,7 +1301,7 @@ msgid "_Link Here"
 msgstr "_Leagă aici"
 
 #: src/nautilus-dnd.c:126 src/nautilus-file-operations.c:2514
-#: src/nautilus-mime-actions.c:621
+#: src/nautilus-mime-actions.c:733
 #: src/resources/ui/nautilus-progress-info-widget.ui:39
 #: src/resources/ui/nautilus-toolbar.ui:41
 msgid "Cancel"
@@ -1571,7 +1571,7 @@ msgstr "Evidențiere"
 msgid "Text"
 msgstr "Text"
 
-#: src/nautilus-file.c:6868 src/nautilus-mime-actions.c:245
+#: src/nautilus-file.c:6868 src/nautilus-mime-actions.c:301
 msgid "Video"
 msgstr "Video"
 
@@ -1587,11 +1587,11 @@ msgstr "Calendar"
 msgid "Document"
 msgstr "Document"
 
-#: src/nautilus-file.c:6872 src/nautilus-mime-actions.c:206
+#: src/nautilus-file.c:6872 src/nautilus-mime-actions.c:262
 msgid "Presentation"
 msgstr "Prezentare"
 
-#: src/nautilus-file.c:6873 src/nautilus-mime-actions.c:218
+#: src/nautilus-file.c:6873 src/nautilus-mime-actions.c:274
 msgid "Spreadsheet"
 msgstr "Foaie de calcul"
 
@@ -2852,7 +2852,7 @@ msgstr "Tragerea nu este acceptată."
 msgid "An invalid drag type was used."
 msgstr "A fost folosit un tip greșit de tragere."
 
-#: src/nautilus-file-undo-operations.c:177 src/nautilus-window.c:895
+#: src/nautilus-file-undo-operations.c:177 src/nautilus-window.c:900
 msgid "Undo"
 msgstr "Anulează"
 
@@ -3460,11 +3460,11 @@ msgstr "Goleșt_e coșul…"
 msgid "_Trash Settings"
 msgstr "Opțiuni Coș de _gunoi"
 
-#: src/nautilus-location-entry.c:706 src/nautilus-query-editor.c:740
+#: src/nautilus-location-entry.c:713 src/nautilus-query-editor.c:740
 msgid "Clear Entry"
 msgstr "Șterge elementul"
 
-#: src/nautilus-location-entry.c:715
+#: src/nautilus-location-entry.c:722
 msgid "Go to Location"
 msgstr "Du-te la acest loc"
 
@@ -3502,49 +3502,49 @@ msgstr "Ilustrație"
 msgid "Music"
 msgstr "Muzică"
 
-#: src/nautilus-mime-actions.c:173
+#: src/nautilus-mime-actions.c:229
 msgid "PDF / PostScript"
 msgstr "PDF / PostScript"
 
-#: src/nautilus-mime-actions.c:184
+#: src/nautilus-mime-actions.c:240
 msgid "Picture"
 msgstr "Imagine"
 
-#: src/nautilus-mime-actions.c:237
+#: src/nautilus-mime-actions.c:293
 msgid "Text File"
 msgstr "Fișier text"
 
-#: src/nautilus-mime-actions.c:595
+#: src/nautilus-mime-actions.c:707
 msgid "This link cannot be used because it has no target."
 msgstr ""
 "Această legătură nu poate fi folosită, deoarece nu are nicio destinație."
 
-#: src/nautilus-mime-actions.c:599
+#: src/nautilus-mime-actions.c:711
 #, c-format
 msgid "This link cannot be used because its target “%s” doesn’t exist."
 msgstr ""
 "Această legătură nu poate fi folosită deoarece destinația ei „%s” nu există."
 
-#: src/nautilus-mime-actions.c:607
+#: src/nautilus-mime-actions.c:719
 #, c-format
 msgid "The link “%s” is broken. Move it to Trash?"
 msgstr "Legătura „%s” este întreruptă. Să fie mutată în coșul de gunoi?"
 
-#: src/nautilus-mime-actions.c:611
+#: src/nautilus-mime-actions.c:723
 #: src/resources/ui/nautilus-files-view-context-menus.ui:226
 msgid "Mo_ve to Trash"
 msgstr "Mută în coșul de _gunoi"
 
-#: src/nautilus-mime-actions.c:618
+#: src/nautilus-mime-actions.c:730
 #, c-format
 msgid "The link “%s” is broken."
 msgstr "Legătura „%s” este întreruptă."
 
-#: src/nautilus-mime-actions.c:1004
+#: src/nautilus-mime-actions.c:1116
 msgid "Are you sure you want to open all files?"
 msgstr "Se dorește deschiderea tuturor fișierelor?"
 
-#: src/nautilus-mime-actions.c:1008
+#: src/nautilus-mime-actions.c:1120
 #, c-format
 msgid "This will open %d separate tab and window."
 msgid_plural "This will open %d separate tabs and windows."
@@ -3552,7 +3552,7 @@ msgstr[0] "Aceasta va deschide o filă și o fereastră separate."
 msgstr[1] "Aceasta va deschide %d file și ferestre separate."
 msgstr[2] "Aceasta va deschide %d de file și ferestre separate."
 
-#: src/nautilus-mime-actions.c:1013
+#: src/nautilus-mime-actions.c:1125
 #, c-format
 msgid "This will open %d separate tab."
 msgid_plural "This will open %d separate tabs."
@@ -3560,7 +3560,7 @@ msgstr[0] "Aceasta va deschide o filă separată."
 msgstr[1] "Aceasta va deschide %d file separate."
 msgstr[2] "Aceasta va deschide %d de file separate."
 
-#: src/nautilus-mime-actions.c:1018
+#: src/nautilus-mime-actions.c:1130
 #, c-format
 msgid "This will open %d separate window."
 msgid_plural "This will open %d separate windows."
@@ -3568,41 +3568,41 @@ msgstr[0] "Aceasta va deschide o fereastră separată."
 msgstr[1] "Aceasta va deschide %d ferestre separate."
 msgstr[2] "Aceasta va deschide %d de ferestre separate."
 
-#: src/nautilus-mime-actions.c:1025
+#: src/nautilus-mime-actions.c:1137
 msgid "_Open All"
 msgstr "_Deschide toate"
 
-#: src/nautilus-mime-actions.c:1086
+#: src/nautilus-mime-actions.c:1198
 #, c-format
 msgid "Could Not Display “%s”"
 msgstr "Nu s-a putut afișa „%s”"
 
-#: src/nautilus-mime-actions.c:1184
+#: src/nautilus-mime-actions.c:1296
 msgid "The file is of an unknown type"
 msgstr "Fișierul este de un tip necunoscut"
 
-#: src/nautilus-mime-actions.c:1189
+#: src/nautilus-mime-actions.c:1301
 #, c-format
 msgid "There is no app installed for “%s” files"
 msgstr "Nicio aplicație instalată pentru fișierele „%s”"
 
-#: src/nautilus-mime-actions.c:1194
+#: src/nautilus-mime-actions.c:1306
 msgid "_Select App"
 msgstr "_Alege aplicația"
 
-#: src/nautilus-mime-actions.c:1230
+#: src/nautilus-mime-actions.c:1342
 msgid "There was an internal error trying to search for apps:"
 msgstr "A apărut o eroare internă la căutarea aplicațiilor:"
 
-#: src/nautilus-mime-actions.c:1232
+#: src/nautilus-mime-actions.c:1344
 msgid "Unable to search for app"
 msgstr "Nu se poate căuta aplicația"
 
-#: src/nautilus-mime-actions.c:1337
+#: src/nautilus-mime-actions.c:1449
 msgid "_Search in Software"
 msgstr "_Caută în Aplicații"
 
-#: src/nautilus-mime-actions.c:1340
+#: src/nautilus-mime-actions.c:1452
 #, c-format
 msgid ""
 "There is no app installed for “%s” files. Do you want to search for an app "
@@ -3612,21 +3612,21 @@ msgstr ""
 "căutarea unei aplicații pentru a deschide acest fișier?"
 
 #. if it wasn't cancelled show a dialog
-#: src/nautilus-mime-actions.c:1737 src/nautilus-mime-actions.c:2036
+#: src/nautilus-mime-actions.c:1849 src/nautilus-mime-actions.c:2148
 #: src/nautilus-network-address-bar.c:80
 msgid "Unable to access location"
 msgstr "Nu s-a putut accesa locul"
 
-#: src/nautilus-mime-actions.c:2127
+#: src/nautilus-mime-actions.c:2239
 msgid "Unable to start location"
 msgstr "Nu s-a putut porni locul"
 
-#: src/nautilus-mime-actions.c:2220
+#: src/nautilus-mime-actions.c:2332
 #, c-format
 msgid "Opening “%s”."
 msgstr "Se deschide „%s”."
 
-#: src/nautilus-mime-actions.c:2224
+#: src/nautilus-mime-actions.c:2336
 #, c-format
 msgid "Opening %d item."
 msgid_plural "Opening %d items."
@@ -4043,7 +4043,7 @@ msgstr "Doar acces"
 msgid "Custom icon removed"
 msgstr "Simbolul personalizat a fost eliminat"
 
-#: src/nautilus-properties-window.c:643 src/nautilus-window.c:807
+#: src/nautilus-properties-window.c:643 src/nautilus-window.c:812
 #: src/resources/ui/nautilus-window.ui:22
 msgid "_Undo"
 msgstr "An_ulează"
@@ -4307,14 +4307,14 @@ msgid "Close current view"
 msgstr "Închide vederea actuală"
 
 #. Translators: only one item has been moved to trash and %s is its name.
-#: src/nautilus-window.c:730
+#: src/nautilus-window.c:735
 #, c-format
 msgid "“%s” moved to trash"
 msgstr "„%s” mutat în gunoi"
 
 #. Translators: one or more items might have been moved to trash, and %d
 #. * is the count.
-#: src/nautilus-window.c:737
+#: src/nautilus-window.c:742
 #, c-format
 msgid "%d file moved to trash"
 msgid_plural "%d files moved to trash"
@@ -4323,14 +4323,14 @@ msgstr[1] "%d fișiere mutate în gunoi"
 msgstr[2] "%d de fișiere mutate în gunoi"
 
 #. Translators: one item has been unstarred and %s is its name.
-#: src/nautilus-window.c:756
+#: src/nautilus-window.c:761
 #, c-format
 msgid "“%s” unstarred"
 msgstr "„%s” fără stea"
 
 #. Translators: one or more items have been unstarred, and %d
 #. * is the count.
-#: src/nautilus-window.c:762
+#: src/nautilus-window.c:767
 #, c-format
 msgid "%d file unstarred"
 msgid_plural "%d files unstarred"
@@ -4338,37 +4338,37 @@ msgstr[0] "Un fișier fără stea"
 msgstr[1] "%d fișiere fără stea"
 msgstr[2] "%d de fișiere fără stea"
 
-#: src/nautilus-window.c:817 src/resources/ui/nautilus-window.ui:26
+#: src/nautilus-window.c:822 src/resources/ui/nautilus-window.ui:26
 msgid "_Redo"
 msgstr "_Refă"
 
 #. translators: %s is the name of a cloud provider for files
-#: src/nautilus-window.c:938 src/gtk/nautilusgtkplacessidebar.c:584
+#: src/nautilus-window.c:943 src/gtk/nautilusgtkplacessidebar.c:584
 #, c-format
 msgid "Open %s"
 msgstr "Deschide %s"
 
-#: src/nautilus-window.c:1724 src/nautilus-window.c:1729
-#: src/nautilus-window.c:1734
+#: src/nautilus-window.c:1729 src/nautilus-window.c:1734
+#: src/nautilus-window.c:1739
 msgid "The GNOME Project"
 msgstr "Proiectul GNOME"
 
-#: src/nautilus-window.c:1741
+#: src/nautilus-window.c:1746
 msgid "No plugins currently installed."
 msgstr "Niciun modul instalat."
 
-#: src/nautilus-window.c:1745
+#: src/nautilus-window.c:1750
 msgid "Currently installed plugins:"
 msgstr "Module instalate:"
 
-#: src/nautilus-window.c:1747
+#: src/nautilus-window.c:1752
 msgid "For bug testing only, the following command can be used:"
 msgstr ""
 "Doar pentru testarea defecțiunilor, următoarea comandă poate fi utilizată:"
 
 #. Translators should localize the following string which will be displayed at the bottom of
 #. * the about box to give credit to the translator(s).
-#: src/nautilus-window.c:1762
+#: src/nautilus-window.c:1767
 msgid "translator-credits"
 msgstr ""
 "Marius Andreiana <marius galuna.ro>\n"
@@ -5055,7 +5055,7 @@ msgstr "Deschide _cu…"
 #: src/resources/ui/nautilus-files-view-context-menus.ui:115
 #: src/resources/ui/nautilus-pathbar-context-menu.ui:34
 msgid "Open in Consol_e"
-msgstr "D_eschide în consolă"
+msgstr "D_eschide în terminal"
 
 #: src/resources/ui/nautilus-files-view-context-menus.ui:27
 msgid "_Paste"
