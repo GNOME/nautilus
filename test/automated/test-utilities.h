@@ -9,7 +9,7 @@
 
 #pragma once
 
-#define MAX_CONTEXT_ITERATIONS 100
+#define MAX_CONTEXT_ITERATIONS 1000
 
 #define ITER_CONTEXT_WHILE(CONDITION) \
     for (guint context_iter = 0; \
