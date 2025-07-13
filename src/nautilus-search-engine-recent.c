@@ -38,7 +38,7 @@
 
 struct _NautilusSearchEngineRecent
 {
-    GObject parent_instance;
+    NautilusSearchProvider parent_instance;
 
     NautilusQuery *query;
     gboolean running;
@@ -48,13 +48,9 @@ struct _NautilusSearchEngineRecent
     guint add_hits_idle_id;
 };
 
-static void nautilus_search_provider_init (NautilusSearchProviderInterface *iface);
-
-G_DEFINE_TYPE_WITH_CODE (NautilusSearchEngineRecent,
-                         nautilus_search_engine_recent,
-                         G_TYPE_OBJECT,
-                         G_IMPLEMENT_INTERFACE (NAUTILUS_TYPE_SEARCH_PROVIDER,
-                                                nautilus_search_provider_init))
+G_DEFINE_FINAL_TYPE (NautilusSearchEngineRecent,
+                     nautilus_search_engine_recent,
+                     NAUTILUS_TYPE_SEARCH_PROVIDER)
 
 NautilusSearchEngineRecent *
 nautilus_search_engine_recent_new (void)
@@ -353,18 +349,14 @@ nautilus_search_engine_recent_stop (NautilusSearchProvider *provider)
 }
 
 static void
-nautilus_search_provider_init (NautilusSearchProviderInterface *iface)
-{
-    iface->start = search_engine_recent_start;
-    iface->stop = nautilus_search_engine_recent_stop;
-}
-
-static void
 nautilus_search_engine_recent_class_init (NautilusSearchEngineRecentClass *klass)
 {
     GObjectClass *object_class = G_OBJECT_CLASS (klass);
-
     object_class->finalize = nautilus_search_engine_recent_finalize;
+
+    NautilusSearchProviderClass *search_provider_class = NAUTILUS_SEARCH_PROVIDER_CLASS (klass);
+    search_provider_class->start = search_engine_recent_start;
+    search_provider_class->stop = nautilus_search_engine_recent_stop;
 }
 
 static void
