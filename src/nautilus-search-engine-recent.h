@@ -20,13 +20,15 @@
 
 #pragma once
 
+#include "nautilus-search-provider.h"
+
 #include <glib-object.h>
 
 G_BEGIN_DECLS
 
 #define NAUTILUS_TYPE_SEARCH_ENGINE_RECENT (nautilus_search_engine_recent_get_type ())
-
-G_DECLARE_FINAL_TYPE (NautilusSearchEngineRecent, nautilus_search_engine_recent, NAUTILUS, SEARCH_ENGINE_RECENT, GObject);
+G_DECLARE_FINAL_TYPE (NautilusSearchEngineRecent, nautilus_search_engine_recent,
+                      NAUTILUS, SEARCH_ENGINE_RECENT, NautilusSearchProvider);
 
 NautilusSearchEngineRecent *nautilus_search_engine_recent_new (void);
 
