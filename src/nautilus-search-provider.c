@@ -24,6 +24,13 @@
 
 #include <glib-object.h>
 
+typedef struct
+{
+    void *dummy;
+} NautilusSearchProviderPrivate;
+
+G_DEFINE_TYPE_WITH_PRIVATE (NautilusSearchProvider, nautilus_search_provider, G_TYPE_OBJECT)
+
 enum
 {
     HITS_ADDED,
@@ -33,10 +40,8 @@ enum
 
 static guint signals[LAST_SIGNAL];
 
-G_DEFINE_INTERFACE (NautilusSearchProvider, nautilus_search_provider, G_TYPE_OBJECT)
-
 static void
-nautilus_search_provider_default_init (NautilusSearchProviderInterface *iface)
+setup_signals (void)
 {
     /**
      * NautilusSearchProvider::hits-added:
@@ -67,23 +72,25 @@ nautilus_search_provider_default_init (NautilusSearchProviderInterface *iface)
 }
 
 gboolean
-nautilus_search_provider_start (NautilusSearchProvider *provider,
+nautilus_search_provider_start (NautilusSearchProvider *self,
                                 NautilusQuery          *query)
 {
-    g_return_val_if_fail (NAUTILUS_IS_SEARCH_PROVIDER (provider), FALSE);
-    g_return_val_if_fail (NAUTILUS_SEARCH_PROVIDER_GET_IFACE (provider)->start != NULL, FALSE);
+    g_return_val_if_fail (NAUTILUS_IS_SEARCH_PROVIDER (self), FALSE);
     g_return_val_if_fail (NAUTILUS_IS_QUERY (query), FALSE);
 
-    return NAUTILUS_SEARCH_PROVIDER_GET_IFACE (provider)->start (provider, query);
+    NautilusSearchProviderClass *klass = NAUTILUS_SEARCH_PROVIDER_CLASS (G_OBJECT_GET_CLASS (self));
+
+    return klass->start (self, query);
 }
 
 void
-nautilus_search_provider_stop (NautilusSearchProvider *provider)
+nautilus_search_provider_stop (NautilusSearchProvider *self)
 {
-    g_return_if_fail (NAUTILUS_IS_SEARCH_PROVIDER (provider));
-    g_return_if_fail (NAUTILUS_SEARCH_PROVIDER_GET_IFACE (provider)->stop != NULL);
+    g_return_if_fail (NAUTILUS_IS_SEARCH_PROVIDER (self));
 
-    NAUTILUS_SEARCH_PROVIDER_GET_IFACE (provider)->stop (provider);
+    NautilusSearchProviderClass *klass = NAUTILUS_SEARCH_PROVIDER_CLASS (G_OBJECT_GET_CLASS (self));
+
+    return klass->stop (self);
 }
 
 /**
@@ -106,4 +113,25 @@ nautilus_search_provider_finished (NautilusSearchProvider *provider)
     g_return_if_fail (NAUTILUS_IS_SEARCH_PROVIDER (provider));
 
     g_signal_emit (provider, signals[FINISHED], 0);
+}
+
+static void
+nautilus_search_provider_init (NautilusSearchProvider *self)
+{
+}
+
+static void
+search_provider_dispose (GObject *object)
+{
+    G_OBJECT_CLASS (nautilus_search_provider_parent_class)->dispose (object);
+}
+
+static void
+nautilus_search_provider_class_init (NautilusSearchProviderClass *klass)
+{
+    GObjectClass *object_class = G_OBJECT_CLASS (klass);
+
+    object_class->dispose = search_provider_dispose;
+
+    setup_signals ();
 }

@@ -60,20 +60,17 @@ typedef struct
 
 struct _NautilusSearchEngineSimple
 {
-    GObject parent_instance;
+    NautilusSearchProvider parent_instance;
+
     NautilusQuery *query;
     guint create_thread_timeout_id;
 
     SearchThreadData *active_search;
 };
 
-static void nautilus_search_provider_init (NautilusSearchProviderInterface *iface);
-
-G_DEFINE_TYPE_WITH_CODE (NautilusSearchEngineSimple,
-                         nautilus_search_engine_simple,
-                         G_TYPE_OBJECT,
-                         G_IMPLEMENT_INTERFACE (NAUTILUS_TYPE_SEARCH_PROVIDER,
-                                                nautilus_search_provider_init))
+G_DEFINE_FINAL_TYPE (NautilusSearchEngineSimple,
+                     nautilus_search_engine_simple,
+                     NAUTILUS_TYPE_SEARCH_PROVIDER)
 
 static void
 finalize (GObject *object)
@@ -519,19 +516,14 @@ nautilus_search_engine_simple_stop (NautilusSearchProvider *provider)
 }
 
 static void
-nautilus_search_provider_init (NautilusSearchProviderInterface *iface)
-{
-    iface->start = search_engine_simple_start;
-    iface->stop = nautilus_search_engine_simple_stop;
-}
-
-static void
 nautilus_search_engine_simple_class_init (NautilusSearchEngineSimpleClass *class)
 {
-    GObjectClass *gobject_class;
+    GObjectClass *gobject_class = G_OBJECT_CLASS (class);
+    NautilusSearchProviderClass *search_provider_class = NAUTILUS_SEARCH_PROVIDER_CLASS (class);
 
-    gobject_class = G_OBJECT_CLASS (class);
     gobject_class->finalize = finalize;
+    search_provider_class->start = search_engine_simple_start;
+    search_provider_class->stop = nautilus_search_engine_simple_stop;
 }
 
 static void
