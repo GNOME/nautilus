@@ -24,11 +24,12 @@
 G_BEGIN_DECLS
 
 #define NAUTILUS_TYPE_SEARCH_PROVIDER (nautilus_search_provider_get_type ())
+G_DECLARE_DERIVABLE_TYPE (NautilusSearchProvider, nautilus_search_provider,
+                          NAUTILUS, SEARCH_PROVIDER, GObject)
 
-G_DECLARE_INTERFACE (NautilusSearchProvider, nautilus_search_provider, NAUTILUS, SEARCH_PROVIDER, GObject)
-
-struct _NautilusSearchProviderInterface {
-        GTypeInterface g_iface;
+struct _NautilusSearchProviderClass
+{
+        GObjectClass parent_class;
 
         /**
          * Returns: Whether search provider was started
@@ -37,8 +38,6 @@ struct _NautilusSearchProviderInterface {
                            NautilusQuery          *query);
         void (*stop) (NautilusSearchProvider *provider);
 };
-
-GType          nautilus_search_provider_get_type        (void) G_GNUC_CONST;
 
 /* Interface Functions */
 gboolean       nautilus_search_provider_start           (NautilusSearchProvider *provider,
