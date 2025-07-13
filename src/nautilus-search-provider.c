@@ -22,6 +22,13 @@
 
 #include <glib-object.h>
 
+typedef struct
+{
+    GCancellable *cancellable;
+} NautilusSearchProviderPrivate;
+
+G_DEFINE_TYPE_WITH_PRIVATE (NautilusSearchProvider, nautilus_search_provider, G_TYPE_OBJECT)
+
 enum
 {
     HITS_ADDED,
@@ -32,43 +39,27 @@ enum
 
 static guint signals[LAST_SIGNAL];
 
-G_DEFINE_INTERFACE (NautilusSearchProvider, nautilus_search_provider, G_TYPE_OBJECT)
-
-static void
-nautilus_search_provider_default_init (NautilusSearchProviderInterface *iface)
-{
-    signals[HITS_ADDED] = g_signal_new ("hits-added",
-                                        NAUTILUS_TYPE_SEARCH_PROVIDER,
-                                        G_SIGNAL_RUN_LAST,
-                                        G_STRUCT_OFFSET (NautilusSearchProviderInterface, hits_added),
-                                        NULL, NULL, NULL,
-                                        G_TYPE_NONE, 2, G_TYPE_POINTER, G_TYPE_UINT);
-
-    signals[FINISHED] = g_signal_new ("provider-finished", NAUTILUS_TYPE_SEARCH_PROVIDER,
-                                      G_SIGNAL_RUN_LAST, 0,
-                                      NULL, NULL, NULL,
-                                      G_TYPE_NONE, 2, G_TYPE_BOOLEAN, G_TYPE_UINT);
-}
-
 gboolean
-nautilus_search_provider_start (NautilusSearchProvider *provider,
+nautilus_search_provider_start (NautilusSearchProvider *self,
                                 NautilusQuery          *query,
                                 guint                   run_id)
 {
-    g_return_val_if_fail (NAUTILUS_IS_SEARCH_PROVIDER (provider), FALSE);
-    g_return_val_if_fail (NAUTILUS_SEARCH_PROVIDER_GET_IFACE (provider)->start != NULL, FALSE);
+    g_return_val_if_fail (NAUTILUS_IS_SEARCH_PROVIDER (self), FALSE);
     g_return_val_if_fail (NAUTILUS_IS_QUERY (query), FALSE);
 
-    return NAUTILUS_SEARCH_PROVIDER_GET_IFACE (provider)->start (provider, query, run_id);
+    NautilusSearchProviderClass *klass = NAUTILUS_SEARCH_PROVIDER_CLASS (G_OBJECT_GET_CLASS (self));
+
+    return klass->start (self, query, run_id);
 }
 
 void
-nautilus_search_provider_stop (NautilusSearchProvider *provider)
+nautilus_search_provider_stop (NautilusSearchProvider *self)
 {
-    g_return_if_fail (NAUTILUS_IS_SEARCH_PROVIDER (provider));
-    g_return_if_fail (NAUTILUS_SEARCH_PROVIDER_GET_IFACE (provider)->stop != NULL);
+    g_return_if_fail (NAUTILUS_IS_SEARCH_PROVIDER (self));
 
-    NAUTILUS_SEARCH_PROVIDER_GET_IFACE (provider)->stop (provider);
+    NautilusSearchProviderClass *klass = NAUTILUS_SEARCH_PROVIDER_CLASS (G_OBJECT_GET_CLASS (self));
+
+    return klass->stop (self);
 }
 
 /**
@@ -102,4 +93,37 @@ nautilus_search_provider_error (NautilusSearchProvider *provider,
     g_return_if_fail (NAUTILUS_IS_SEARCH_PROVIDER (provider));
 
     g_signal_emit (provider, signals[FINISHED], 0, TRUE, run_id);
+}
+
+static void
+nautilus_search_provider_init (NautilusSearchProvider *self)
+{
+}
+
+static void
+search_provider_dispose (GObject *object)
+{
+    NautilusSearchProvider *self = NAUTILUS_SEARCH_PROVIDER (object);
+    NautilusSearchProviderPrivate *priv = nautilus_search_provider_get_instance_private (self);
+
+    g_clear_object (&priv->cancellable);
+}
+
+static void
+nautilus_search_provider_class_init (NautilusSearchProviderClass *klass)
+{
+    GObjectClass *object_class = G_OBJECT_CLASS (klass);
+
+    object_class->dispose = search_provider_dispose;
+
+    signals[HITS_ADDED] = g_signal_new ("hits-added",
+                                        NAUTILUS_TYPE_SEARCH_PROVIDER,
+                                        G_SIGNAL_RUN_LAST, 0,
+                                        NULL, NULL, NULL,
+                                        G_TYPE_NONE, 2, G_TYPE_POINTER, G_TYPE_UINT);
+
+    signals[FINISHED] = g_signal_new ("provider-finished", NAUTILUS_TYPE_SEARCH_PROVIDER,
+                                      G_SIGNAL_RUN_LAST, 0,
+                                      NULL, NULL, NULL,
+                                      G_TYPE_NONE, 2, G_TYPE_BOOLEAN, G_TYPE_UINT);
 }

@@ -35,7 +35,7 @@
 
 struct _NautilusSearchEngineModel
 {
-    GObject parent;
+    NautilusSearchProvider parent_instance;
 
     NautilusQuery *query;
     guint run_id;
@@ -47,13 +47,9 @@ struct _NautilusSearchEngineModel
     guint finished_id;
 };
 
-static void nautilus_search_provider_init (NautilusSearchProviderInterface *iface);
-
-G_DEFINE_TYPE_WITH_CODE (NautilusSearchEngineModel,
-                         nautilus_search_engine_model,
-                         G_TYPE_OBJECT,
-                         G_IMPLEMENT_INTERFACE (NAUTILUS_TYPE_SEARCH_PROVIDER,
-                                                nautilus_search_provider_init))
+G_DEFINE_FINAL_TYPE (NautilusSearchEngineModel,
+                     nautilus_search_engine_model,
+                     NAUTILUS_TYPE_SEARCH_PROVIDER)
 
 static void
 finalize (GObject *object)
@@ -290,19 +286,14 @@ nautilus_search_engine_model_stop (NautilusSearchProvider *provider)
 }
 
 static void
-nautilus_search_provider_init (NautilusSearchProviderInterface *iface)
-{
-    iface->start = search_engine_model_start;
-    iface->stop = nautilus_search_engine_model_stop;
-}
-
-static void
 nautilus_search_engine_model_class_init (NautilusSearchEngineModelClass *class)
 {
-    GObjectClass *gobject_class;
-
-    gobject_class = G_OBJECT_CLASS (class);
+    GObjectClass *gobject_class = G_OBJECT_CLASS (class);
     gobject_class->finalize = finalize;
+
+    NautilusSearchProviderClass *search_provider_class = NAUTILUS_SEARCH_PROVIDER_CLASS (class);
+    search_provider_class->start = search_engine_model_start;
+    search_provider_class->stop = nautilus_search_engine_model_stop;
 }
 
 static void

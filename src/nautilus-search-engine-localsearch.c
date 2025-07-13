@@ -47,7 +47,7 @@ typedef enum
 
 struct _NautilusSearchEngineLocalsearch
 {
-    GObject parent_instance;
+    NautilusSearchProvider parent_instance;
 
     TrackerSparqlConnection *connection;
     NautilusQuery *query;
@@ -62,13 +62,9 @@ struct _NautilusSearchEngineLocalsearch
     GCancellable *cancellable;
 };
 
-static void nautilus_search_provider_init (NautilusSearchProviderInterface *iface);
-
-G_DEFINE_TYPE_WITH_CODE (NautilusSearchEngineLocalsearch,
-                         nautilus_search_engine_localsearch,
-                         G_TYPE_OBJECT,
-                         G_IMPLEMENT_INTERFACE (NAUTILUS_TYPE_SEARCH_PROVIDER,
-                                                nautilus_search_provider_init))
+G_DEFINE_FINAL_TYPE (NautilusSearchEngineLocalsearch,
+                     nautilus_search_engine_localsearch,
+                     NAUTILUS_TYPE_SEARCH_PROVIDER)
 
 static void
 finalize (GObject *object)
@@ -620,19 +616,13 @@ nautilus_search_engine_localsearch_stop (NautilusSearchProvider *provider)
 }
 
 static void
-nautilus_search_provider_init (NautilusSearchProviderInterface *iface)
-{
-    iface->start = search_engine_localsearch_start;
-    iface->stop = nautilus_search_engine_localsearch_stop;
-}
-
-static void
 nautilus_search_engine_localsearch_class_init (NautilusSearchEngineLocalsearchClass *class)
 {
-    GObjectClass *gobject_class;
-
-    gobject_class = G_OBJECT_CLASS (class);
+    GObjectClass *gobject_class = G_OBJECT_CLASS (class);
     gobject_class->finalize = finalize;
+    NautilusSearchProviderClass *search_provider_class = NAUTILUS_SEARCH_PROVIDER_CLASS (class);
+    search_provider_class->start = search_engine_localsearch_start;
+    search_provider_class->stop = nautilus_search_engine_localsearch_stop;
 }
 
 static void
