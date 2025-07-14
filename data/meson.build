@@ -60,7 +60,7 @@ python = find_program('python3', required: false)
 if python.found()
   args = '''exec("import re\nprint(re.sub(r'^(.+)(\\.)([a-z]+.*)$', r'\\1~\\3', '@0@'))")'''
   args = args.format(meson.project_version())
-  release_version = run_command(python, '-c', args).stdout().strip()
+  release_version = run_command(python, '-c', args, check: true).stdout().strip()
 endif
 appdata_conf.set('release-version', release_version)
 
