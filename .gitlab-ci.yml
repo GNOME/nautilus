@@ -107,7 +107,7 @@ potfile:
         - .nautilus.fedora
     stage: review
     script:
-        - data/check-potfiles.sh
+        - build-aux/check-potfiles.sh
 
 style check:
     extends:
