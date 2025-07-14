@@ -1,5 +1,8 @@
 project('nautilus', 'c',
-  default_options: ['c_std=c11'],
+  default_options: [
+    'c_std=c11',
+    'warning_level=2',
+  ],
 
   # Do not forget when releasing:
   #  * Set release date in data/org.gnome.Nautilus.metainfo.xml.in.in
@@ -44,7 +47,6 @@ cc = meson.get_compiler('c')
 
 add_project_arguments(
   cc.get_supported_arguments([
-    '-Wall',
     '-Wduplicated-branches',
     '-Wduplicated-cond',
     '-Wlogical-op',
@@ -68,7 +70,6 @@ add_project_arguments(
     # We want the general warnings in Wextra, but as GLib functions commonly accept additional
     # user data, warnings for function casts are not feasible. Neither are warnings for unused
     # parameters, as parameters in callbacks commonly aren't used.
-    '-Wextra',
     '-Wno-cast-function-type',
     '-Wno-unused-parameter',
     # Context: https://gitlab.com/freedesktop-sdk/freedesktop-sdk/commit/ce54a2527555e51e4ebf4cce9cbb6259cafa89a4
