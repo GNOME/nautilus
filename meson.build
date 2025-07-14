@@ -103,12 +103,6 @@ glib_ver = '>= 2.79.0'
 
 libm = cc.find_library('m')
 
-if get_option('extensions')
-  gexiv = dependency('gexiv2', version: '>= 0.14.2')
-  gdkpixbuf = dependency('gdk-pixbuf-2.0', version: '>= 2.30.0')
-  gst_tag_dep = dependency('gstreamer-tag-1.0')
-  gst_pbutils_dep = dependency('gstreamer-pbutils-1.0')
-endif
 gio = dependency('gio-2.0', version: glib_ver)
 gio_unix = dependency('gio-unix-2.0', version: glib_ver)
 glib = dependency('glib-2.0', version: glib_ver)
@@ -116,26 +110,25 @@ gmodule = dependency('gmodule-no-export-2.0', version: glib_ver)
 gnome_autoar = dependency('gnome-autoar-0', version: '>= 0.4.4')
 gnome_desktop = dependency('gnome-desktop-4', version: '>= 43')
 gtk = dependency('gtk4', version: '>= 4.17.5')
-gtk_x11 = dependency('gtk4-x11', required: false)
-gtk_wayland = dependency('gtk4-wayland', required: false)
-if gtk_wayland.found()
-  dependency('wayland-client')
-endif
 libadwaita = dependency('libadwaita-1', version: '>= 1.6.beta')
 libportal = dependency('libportal', version: '>= 0.7')
 libportal_gtk4 = dependency('libportal-gtk4', version: '>= 0.5')
-selinux = []
-if get_option('selinux')
-  selinux = dependency('libselinux', version: '>= 2.0')
-endif
 tracker_sparql = dependency('tracker-sparql-3.0', version: '>= 3.2')
-cloudproviders = []
-if get_option('cloudproviders')
-  cloudproviders = dependency('cloudproviders', version: '>= 0.3.1')
-endif
-gi_docgen = find_program('gi-docgen', required: get_option('docs'))
 icu_dep = dependency('icu-uc', version: '>=56')
 icu_i18n_dep = dependency('icu-i18n', version: '>=56')
+
+gi_docgen = find_program('gi-docgen', required: get_option('docs'))
+gtk_x11 = dependency('gtk4-x11', required: false)
+gtk_wayland = dependency('gtk4-wayland', required: false)
+dependency('wayland-client', required: gtk_wayland.found())
+selinux = dependency('libselinux', version: '>= 2.0', required: get_option('selinux'))
+cloudproviders = dependency('cloudproviders', version: '>= 0.3.1', required: get_option('cloudproviders'))
+if get_option('extensions')
+  gexiv = dependency('gexiv2', version: '>= 0.14.2')
+  gdkpixbuf = dependency('gdk-pixbuf-2.0', version: '>= 2.30.0')
+  gst_tag_dep = dependency('gstreamer-tag-1.0')
+  gst_pbutils_dep = dependency('gstreamer-pbutils-1.0')
+endif
 
 ####################
 # End dependencies #
