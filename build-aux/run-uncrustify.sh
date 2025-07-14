@@ -1,5 +1,5 @@
 #!/bin/bash
-DATA=$(dirname "$BASH_SOURCE")
+BUILD_AUX=$(dirname "$BASH_SOURCE")
 UNCRUSTIFY=$(command -v uncrustify)
 
 if [ -z "$UNCRUSTIFY" ];
@@ -8,19 +8,19 @@ then
     exit 1
 fi
 
-if [ ! -x "$DATA/lineup-parameters" ];
+if [ ! -x "$BUILD_AUX/lineup-parameters" ];
 then
     echo "Script lineup-parameters does not exists."
     exit 1
 fi
 
-for DIR in "$DATA/../"{src,test,libnautilus-extension,eel,extensions}
+for DIR in "$BUILD_AUX/../"{src,test,libnautilus-extension,eel,extensions}
 do
     for FILE in $(find "$DIR" -name "*.c" -not -path "*/gtk/*")
     do
         # Aligning prototypes is not working yet, so avoid headers
-        "$UNCRUSTIFY" -c "$DATA/uncrustify.cfg" --no-backup "$FILE" &&
-        "$DATA/lineup-parameters" "$FILE" > "$FILE.temp" && mv "$FILE.temp" "$FILE" &
+        "$UNCRUSTIFY" -c "$BUILD_AUX/uncrustify.cfg" --no-backup "$FILE" &&
+        "$BUILD_AUX/lineup-parameters" "$FILE" > "$FILE.temp" && mv "$FILE.temp" "$FILE" &
    done
 done
 

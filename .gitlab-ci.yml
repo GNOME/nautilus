@@ -122,7 +122,7 @@ style check:
             - 'uncrustify.diff'
         expire_in: 14 days
     script:
-        - LANG=C.utf8 data/run-uncrustify.sh
+        - LANG=C.utf8 build-aux/run-uncrustify.sh
         - git diff --exit-code | tee uncrustify.diff
     rules:
         - if: $CI_COMMIT_BRANCH !~ /^gnome-.*$/
