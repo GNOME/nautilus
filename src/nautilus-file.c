@@ -4975,6 +4975,17 @@ nautilus_file_has_thumbnail (NautilusFile *file)
            file->details->thumbnail != NULL;
 }
 
+static gboolean
+nautilus_file_should_create_thumbnail (NautilusFile *file)
+{
+    return file->details->thumbnail_info_is_up_to_date &&
+           file->details->thumbnail_path == NULL &&
+           file->details->can_read &&
+           !file->details->is_thumbnailing &&
+           !file->details->thumbnailing_failed &&
+           nautilus_can_thumbnail (file);
+}
+
 static NautilusIconInfo *
 nautilus_file_get_thumbnail_icon (NautilusFile          *file,
                                   int                    size,
@@ -5027,12 +5038,7 @@ nautilus_file_get_thumbnail_icon (NautilusFile          *file,
 
         paintable = gtk_snapshot_to_paintable (snapshot, NULL);
     }
-    else if (file->details->thumbnail_info_is_up_to_date &&
-             file->details->thumbnail_path == NULL &&
-             file->details->can_read &&
-             !file->details->is_thumbnailing &&
-             !file->details->thumbnailing_failed &&
-             nautilus_can_thumbnail (file))
+    else if (nautilus_file_should_create_thumbnail (file))
     {
         nautilus_create_thumbnail (file);
     }
