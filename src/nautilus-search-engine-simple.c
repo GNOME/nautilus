@@ -24,7 +24,7 @@
 #include "nautilus-search-engine-simple.h"
 
 #include "nautilus-search-hit.h"
-#include "nautilus-search-provider.h"
+#include "nautilus-search-provider-private.h"
 #include "nautilus-ui-utilities.h"
 
 #include <string.h>

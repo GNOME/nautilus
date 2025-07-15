@@ -24,40 +24,7 @@
 G_BEGIN_DECLS
 
 #define NAUTILUS_TYPE_SEARCH_PROVIDER (nautilus_search_provider_get_type ())
-G_DECLARE_DERIVABLE_TYPE (NautilusSearchProvider, nautilus_search_provider, NAUTILUS, SEARCH_PROVIDER, GObject)
-
-struct _NautilusSearchProviderClass
-{
-        GObjectClass parent_class;
-
-        /* VTable */
-        /**
-         * Returns: Whether search provider was started
-         */
-        gboolean (*start) (NautilusSearchProvider *provider,
-                           NautilusQuery          *query,
-                           guint                   run_id);
-        void (*stop) (NautilusSearchProvider *provider);
-
-        /* Signals */
-        /**
-         * @provider: search provider
-         * @hits: (transfer full): list of #NautilusSearchHit
-         * @run_id: run ID that yielded the results
-         *
-         * Provider emits this signal when adding search hits
-         */
-        void (*hits_added) (NautilusSearchProvider *provider,
-                            GPtrArray *hits,
-                            guint run_id);
-        /**
-         * @provider: search provider
-         * @with_error: whether provider ran into an error
-         */
-        void (*provider_finished) (NautilusSearchProvider *provider,
-                                   gboolean                with_error,
-                                   guint                   run_id);
-};
+GDK_DECLARE_INTERNAL_TYPE (NautilusSearchProvider, nautilus_search_provider, NAUTILUS, SEARCH_PROVIDER, GObject)
 
 /* Interface Functions */
 gboolean

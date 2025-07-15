@@ -22,7 +22,7 @@
 
 #include <config.h>
 #include "nautilus-search-hit.h"
-#include "nautilus-search-provider.h"
+#include "nautilus-search-provider-private.h"
 #include "nautilus-search-engine-model.h"
 #include "nautilus-directory.h"
 #include "nautilus-directory-private.h"
