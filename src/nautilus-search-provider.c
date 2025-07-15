@@ -17,17 +17,12 @@
  */
 
 #include <config.h>
-#include "nautilus-search-provider.h"
+#include "nautilus-search-provider-private.h"
 #include "nautilus-enum-types.h"
 
 #include <glib-object.h>
 
-typedef struct
-{
-    GCancellable *cancellable;
-} NautilusSearchProviderPrivate;
-
-G_DEFINE_TYPE_WITH_PRIVATE (NautilusSearchProvider, nautilus_search_provider, G_TYPE_OBJECT)
+G_DEFINE_TYPE (NautilusSearchProvider, nautilus_search_provider, G_TYPE_OBJECT)
 
 enum
 {
@@ -104,9 +99,7 @@ static void
 search_provider_dispose (GObject *object)
 {
     NautilusSearchProvider *self = NAUTILUS_SEARCH_PROVIDER (object);
-    NautilusSearchProviderPrivate *priv = nautilus_search_provider_get_instance_private (self);
-
-    g_clear_object (&priv->cancellable);
+    g_clear_object (&self->cancellable);
 }
 
 static void

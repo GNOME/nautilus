@@ -23,41 +23,33 @@
 
 G_BEGIN_DECLS
 
+/* This macro is copied from GDK_DECLARE_INTERNAL_TYPE (gdk/gdktypes.h) and
+ * should be replaced once GLib gains an equivalent one.
+ * See: https://gitlab.gnome.org/GNOME/glib/-/merge_requests/1288
+ */
+#define DECLARE_INTERNAL_TYPE(ModuleObjName, module_obj_name, MODULE, OBJ_NAME, ParentName) \
+  GType module_obj_name##_get_type (void);                                                               \
+  G_GNUC_BEGIN_IGNORE_DEPRECATIONS                                                                       \
+  typedef struct _##ModuleObjName ModuleObjName;                                                         \
+  typedef struct _##ModuleObjName##Class ModuleObjName##Class;                                           \
+                                                                                                         \
+  _GLIB_DEFINE_AUTOPTR_CHAINUP (ModuleObjName, ParentName)                                               \
+  G_DEFINE_AUTOPTR_CLEANUP_FUNC (ModuleObjName##Class, g_type_class_unref)                               \
+                                                                                                         \
+  G_GNUC_UNUSED static inline ModuleObjName * MODULE##_##OBJ_NAME (gpointer ptr) {                       \
+    return G_TYPE_CHECK_INSTANCE_CAST (ptr, module_obj_name##_get_type (), ModuleObjName); }             \
+  G_GNUC_UNUSED static inline ModuleObjName##Class * MODULE##_##OBJ_NAME##_CLASS (gpointer ptr) {        \
+    return G_TYPE_CHECK_CLASS_CAST (ptr, module_obj_name##_get_type (), ModuleObjName##Class); }         \
+  G_GNUC_UNUSED static inline gboolean MODULE##_IS_##OBJ_NAME (gpointer ptr) {                           \
+    return G_TYPE_CHECK_INSTANCE_TYPE (ptr, module_obj_name##_get_type ()); }                            \
+  G_GNUC_UNUSED static inline gboolean MODULE##_IS_##OBJ_NAME##_CLASS (gpointer ptr) {                   \
+    return G_TYPE_CHECK_CLASS_TYPE (ptr, module_obj_name##_get_type ()); }                               \
+  G_GNUC_UNUSED static inline ModuleObjName##Class * MODULE##_##OBJ_NAME##_GET_CLASS (gpointer ptr) {    \
+    return G_TYPE_INSTANCE_GET_CLASS (ptr, module_obj_name##_get_type (), ModuleObjName##Class); }       \
+  G_GNUC_END_IGNORE_DEPRECATIONS
+
 #define NAUTILUS_TYPE_SEARCH_PROVIDER (nautilus_search_provider_get_type ())
-G_DECLARE_DERIVABLE_TYPE (NautilusSearchProvider, nautilus_search_provider, NAUTILUS, SEARCH_PROVIDER, GObject)
-
-struct _NautilusSearchProviderClass
-{
-        GObjectClass parent_class;
-
-        /* VTable */
-        /**
-         * Returns: Whether search provider was started
-         */
-        gboolean (*start) (NautilusSearchProvider *provider,
-                           NautilusQuery          *query,
-                           guint                   run_id);
-        void (*stop) (NautilusSearchProvider *provider);
-
-        /* Signals */
-        /**
-         * @provider: search provider
-         * @hits: (transfer full): list of #NautilusSearchHit
-         * @run_id: run ID that yielded the results
-         *
-         * Provider emits this signal when adding search hits
-         */
-        void (*hits_added) (NautilusSearchProvider *provider,
-                            GPtrArray *hits,
-                            guint run_id);
-        /**
-         * @provider: search provider
-         * @with_error: whether provider ran into an error
-         */
-        void (*provider_finished) (NautilusSearchProvider *provider,
-                                   gboolean                with_error,
-                                   guint                   run_id);
-};
+DECLARE_INTERNAL_TYPE (NautilusSearchProvider, nautilus_search_provider, NAUTILUS, SEARCH_PROVIDER, GObject)
 
 /* Interface Functions */
 gboolean

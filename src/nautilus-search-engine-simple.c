@@ -21,10 +21,11 @@
 #define G_LOG_DOMAIN "nautilus-search"
 
 #include <config.h>
+/* Keep provider-private include before own header */
+#include "nautilus-search-provider-private.h"
 #include "nautilus-search-engine-simple.h"
 
 #include "nautilus-search-hit.h"
-#include "nautilus-search-provider.h"
 #include "nautilus-ui-utilities.h"
 
 #include <string.h>
