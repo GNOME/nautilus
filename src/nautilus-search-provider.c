@@ -24,6 +24,7 @@
 
 typedef struct
 {
+    guint run_id;
 } NautilusSearchProviderPrivate;
 
 G_DEFINE_TYPE_WITH_PRIVATE (NautilusSearchProvider, nautilus_search_provider, G_TYPE_OBJECT)
@@ -44,38 +45,42 @@ setup_signals (void)
      * NautilusSearchProvider::hits-added:
      * @provider: the provider that found search hits
      * @hits: (transfer full): #GPtrArray of #NautilusSearchHit
+     * @run_id: run ID that yielded the results
      *
      * This signal is emitted when the provider has search hits.
      */
     signals[HITS_ADDED] = g_signal_new ("hits-added",
                                         NAUTILUS_TYPE_SEARCH_PROVIDER,
                                         G_SIGNAL_RUN_LAST, 0,
-                                        NULL, NULL,
-                                        g_cclosure_marshal_VOID__POINTER,
-                                        G_TYPE_NONE, 1,
-                                        G_TYPE_POINTER);
+                                        NULL, NULL, NULL,
+                                        G_TYPE_NONE, 2, G_TYPE_POINTER, G_TYPE_UINT);
 
     /**
      * NautilusSearchProvider::provider-finished:
      * @provider: the provider that finished searching
+     * @run_id: run ID that finished
      *
      * This signal is emitted when the provider finishes searching.
      */
     signals[FINISHED] = g_signal_new ("provider-finished", NAUTILUS_TYPE_SEARCH_PROVIDER,
                                       G_SIGNAL_RUN_LAST, 0,
                                       NULL, NULL,
-                                      g_cclosure_marshal_VOID__VOID,
-                                      G_TYPE_NONE, 0);
+                                      g_cclosure_marshal_VOID__UINT,
+                                      G_TYPE_NONE, 1, G_TYPE_UINT);
 }
 
 gboolean
 nautilus_search_provider_start (NautilusSearchProvider *self,
-                                NautilusQuery          *query)
+                                NautilusQuery          *query,
+                                guint                   run_id)
 {
     g_return_val_if_fail (NAUTILUS_IS_SEARCH_PROVIDER (self), FALSE);
     g_return_val_if_fail (NAUTILUS_IS_QUERY (query), FALSE);
 
     NautilusSearchProviderClass *klass = NAUTILUS_SEARCH_PROVIDER_CLASS (G_OBJECT_GET_CLASS (self));
+    NautilusSearchProviderPrivate *priv = nautilus_search_provider_get_instance_private (self);
+
+    priv->run_id = run_id;
 
     return klass->start (self, query);
 }
@@ -100,15 +105,19 @@ nautilus_search_provider_hits_added (NautilusSearchProvider *provider,
 {
     g_return_if_fail (NAUTILUS_IS_SEARCH_PROVIDER (provider));
 
-    g_signal_emit (provider, signals[HITS_ADDED], 0, hits);
+    NautilusSearchProviderPrivate *priv = nautilus_search_provider_get_instance_private (provider);
+
+    g_signal_emit (provider, signals[HITS_ADDED], 0, hits, priv->run_id);
 }
 
 void
-nautilus_search_provider_finished (NautilusSearchProvider *provider)
+nautilus_search_provider_finished (NautilusSearchProvider *self)
 {
-    g_return_if_fail (NAUTILUS_IS_SEARCH_PROVIDER (provider));
+    g_return_if_fail (NAUTILUS_IS_SEARCH_PROVIDER (self));
 
-    g_signal_emit (provider, signals[FINISHED], 0);
+    NautilusSearchProviderPrivate *priv = nautilus_search_provider_get_instance_private (self);
+
+    g_signal_emit (self, signals[FINISHED], 0, priv->run_id);
 }
 
 static void

@@ -40,9 +40,12 @@ struct _NautilusSearchProviderClass
 };
 
 /* Interface Functions */
-gboolean       nautilus_search_provider_start           (NautilusSearchProvider *provider,
-                                                         NautilusQuery *query);
-void           nautilus_search_provider_stop            (NautilusSearchProvider *provider);
+gboolean
+nautilus_search_provider_start (NautilusSearchProvider *provider,
+                                NautilusQuery          *query,
+                                guint                   run_id);
+void
+nautilus_search_provider_stop (NautilusSearchProvider *provider);
 
 void           nautilus_search_provider_hits_added      (NautilusSearchProvider *provider,
                                                          GPtrArray              *hits);
