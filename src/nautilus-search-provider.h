@@ -19,6 +19,7 @@
 
 #include "nautilus-types.h"
 
+#include <gio/gio.h>
 #include <glib-object.h>
 
 G_BEGIN_DECLS
@@ -43,6 +44,13 @@ struct _NautilusSearchProviderClass
 gboolean       nautilus_search_provider_start           (NautilusSearchProvider *provider,
                                                          NautilusQuery *query);
 void           nautilus_search_provider_stop            (NautilusSearchProvider *provider);
+
+/* Protected methods, generic type for convenience */
+
+gboolean
+nautilus_search_provider_should_stop (gpointer self);
+GCancellable *
+nautilus_search_provider_get_cancellable (gpointer self);
 
 void           nautilus_search_provider_hits_added      (NautilusSearchProvider *provider,
                                                          GPtrArray              *hits);

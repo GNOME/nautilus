@@ -22,11 +22,13 @@
 #include "nautilus-enum-types.h"
 #include "nautilus-query.h"
 
+#include <gio/gio.h>
 #include <glib-object.h>
 
 typedef struct
 {
-    void *dummy;
+    /* Thread-safe variables */
+    GCancellable *cancellable;
 } NautilusSearchProviderPrivate;
 
 G_DEFINE_TYPE_WITH_PRIVATE (NautilusSearchProvider, nautilus_search_provider, G_TYPE_OBJECT)
@@ -79,6 +81,12 @@ nautilus_search_provider_start (NautilusSearchProvider *self,
     g_return_val_if_fail (NAUTILUS_IS_QUERY (query), FALSE);
 
     NautilusSearchProviderClass *klass = NAUTILUS_SEARCH_PROVIDER_CLASS (G_OBJECT_GET_CLASS (self));
+    NautilusSearchProviderPrivate *priv = nautilus_search_provider_get_instance_private (self);
+
+    /* Can't start provider again before it finished */
+    g_return_val_if_fail (priv->cancellable == NULL, FALSE);
+
+    priv->cancellable = g_cancellable_new ();
 
     return klass->start (self, query);
 }
@@ -87,6 +95,15 @@ void
 nautilus_search_provider_stop (NautilusSearchProvider *self)
 {
     g_return_if_fail (NAUTILUS_IS_SEARCH_PROVIDER (self));
+
+    if (nautilus_search_provider_should_stop (self))
+    {
+        return;
+    }
+
+    NautilusSearchProviderPrivate *priv = nautilus_search_provider_get_instance_private (self);
+
+    g_cancellable_cancel (priv->cancellable);
 
     NautilusSearchProviderClass *klass = NAUTILUS_SEARCH_PROVIDER_CLASS (G_OBJECT_GET_CLASS (self));
 
@@ -102,17 +119,49 @@ void
 nautilus_search_provider_hits_added (NautilusSearchProvider *provider,
                                      GPtrArray              *hits)
 {
+    g_autoptr (GPtrArray) transferred_hits = hits;
+
     g_return_if_fail (NAUTILUS_IS_SEARCH_PROVIDER (provider));
 
-    g_signal_emit (provider, signals[HITS_ADDED], 0, hits);
+    NautilusSearchProviderPrivate *priv = nautilus_search_provider_get_instance_private (provider);
+
+    if (g_cancellable_is_cancelled (priv->cancellable))
+    {
+        return;
+    }
+
+    g_signal_emit (provider, signals[HITS_ADDED], 0,
+                   g_steal_pointer (&transferred_hits));
 }
 
 void
-nautilus_search_provider_finished (NautilusSearchProvider *provider)
+nautilus_search_provider_finished (NautilusSearchProvider *self)
 {
-    g_return_if_fail (NAUTILUS_IS_SEARCH_PROVIDER (provider));
+    g_return_if_fail (NAUTILUS_IS_SEARCH_PROVIDER (self));
 
-    g_signal_emit (provider, signals[FINISHED], 0);
+    NautilusSearchProviderPrivate *priv = nautilus_search_provider_get_instance_private (self);
+
+    g_clear_object (&priv->cancellable);
+
+    g_signal_emit (self, signals[FINISHED], 0);
+}
+
+/** Protected methods, generic type for convenience */
+
+gboolean
+nautilus_search_provider_should_stop (gpointer self)
+{
+    NautilusSearchProviderPrivate *priv = nautilus_search_provider_get_instance_private (self);
+
+    return priv->cancellable == NULL || g_cancellable_is_cancelled (priv->cancellable);
+}
+
+GCancellable *
+nautilus_search_provider_get_cancellable (gpointer self)
+{
+    NautilusSearchProviderPrivate *priv = nautilus_search_provider_get_instance_private (self);
+
+    return priv->cancellable;
 }
 
 static void
@@ -123,6 +172,11 @@ nautilus_search_provider_init (NautilusSearchProvider *self)
 static void
 search_provider_dispose (GObject *object)
 {
+    NautilusSearchProvider *self = NAUTILUS_SEARCH_PROVIDER (object);
+    NautilusSearchProviderPrivate *priv = nautilus_search_provider_get_instance_private (self);
+
+    g_clear_object (&priv->cancellable);
+
     G_OBJECT_CLASS (nautilus_search_provider_parent_class)->dispose (object);
 }
 
