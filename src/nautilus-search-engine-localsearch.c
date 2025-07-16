@@ -58,8 +58,6 @@ struct _NautilusSearchEngineLocalsearch
     GQueue *hits_pending;
 
     gboolean fts_enabled;
-
-    GCancellable *cancellable;
 };
 
 G_DEFINE_FINAL_TYPE (NautilusSearchEngineLocalsearch,
@@ -70,12 +68,6 @@ static void
 finalize (GObject *object)
 {
     NautilusSearchEngineLocalsearch *self = NAUTILUS_SEARCH_ENGINE_LOCALSEARCH (object);
-
-    if (self->cancellable)
-    {
-        g_cancellable_cancel (self->cancellable);
-        g_clear_object (&self->cancellable);
-    }
 
     g_clear_object (&self->query);
     g_queue_free_full (self->hits_pending, g_object_unref);
@@ -160,7 +152,7 @@ cursor_next (NautilusSearchEngineLocalsearch *self,
              TrackerSparqlCursor             *cursor)
 {
     tracker_sparql_cursor_next_async (cursor,
-                                      self->cancellable,
+                                      nautilus_search_provider_get_cancellable (self),
                                       cursor_callback,
                                       self);
 }
@@ -567,9 +559,8 @@ search_engine_localsearch_start (NautilusSearchProvider *provider,
                                               end_date_format);
     }
 
-    self->cancellable = g_cancellable_new ();
     tracker_sparql_statement_execute_async (stmt,
-                                            self->cancellable,
+                                            nautilus_search_provider_get_cancellable (self),
                                             query_callback,
                                             self);
 
@@ -584,8 +575,6 @@ nautilus_search_engine_localsearch_stop (NautilusSearchProvider *provider)
     if (self->query_pending)
     {
         g_debug ("Tracker engine stop");
-        g_cancellable_cancel (self->cancellable);
-        g_clear_object (&self->cancellable);
         self->query_pending = FALSE;
     }
 }
