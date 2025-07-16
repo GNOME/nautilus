@@ -478,8 +478,6 @@ nautilus_grid_cell_init (NautilusGridCell *self)
     self->item_signal_group = g_signal_group_new (NAUTILUS_TYPE_VIEW_ITEM);
     g_signal_group_connect_swapped (self->item_signal_group, "notify::is-cut",
                                     (GCallback) update_icon, self);
-    g_signal_group_connect_swapped (self->item_signal_group, "notify::is-cut",
-                                    (GCallback) gtk_widget_queue_draw, self);
     g_signal_group_connect_swapped (self->item_signal_group, "file-changed",
                                     (GCallback) on_file_changed, self);
     g_signal_connect_object (self->item_signal_group, "bind",
