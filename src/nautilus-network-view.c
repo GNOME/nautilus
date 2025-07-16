@@ -231,8 +231,7 @@ setup_cell (GtkSignalListItemFactory *factory,
 
     cell = nautilus_network_cell_new (NAUTILUS_LIST_BASE (self));
     gtk_list_item_set_child (listitem, GTK_WIDGET (cell));
-    setup_cell_common (G_OBJECT (listitem), cell);
-    setup_cell_hover (cell);
+    setup_cell_common (G_OBJECT (listitem), cell, GTK_WIDGET (cell));
 
     g_object_bind_property (self, "icon-size",
                             cell, "icon-size",
