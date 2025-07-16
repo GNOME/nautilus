@@ -42,7 +42,6 @@ struct _NautilusSearchEngineRecent
 
     NautilusQuery *query;
     gboolean running;
-    GCancellable *cancellable;
     GtkRecentManager *recent_manager;
     GPtrArray *hits;
     guint add_hits_idle_id;
@@ -64,10 +63,8 @@ nautilus_search_engine_recent_finalize (GObject *object)
     NautilusSearchEngineRecent *self = NAUTILUS_SEARCH_ENGINE_RECENT (object);
 
     g_clear_handle_id (&self->add_hits_idle_id, g_source_remove);
-    g_cancellable_cancel (self->cancellable);
 
     g_clear_object (&self->query);
-    g_clear_object (&self->cancellable);
     g_clear_pointer (&self->hits, g_ptr_array_unref);
 
     G_OBJECT_CLASS (nautilus_search_engine_recent_parent_class)->finalize (object);
@@ -81,14 +78,13 @@ search_thread_add_hits_idle (gpointer user_data)
 
     self->add_hits_idle_id = 0;
     if (self->hits->len > 0 &&
-        !g_cancellable_is_cancelled (self->cancellable))
+        !nautilus_search_provider_should_stop (self))
     {
         nautilus_search_provider_hits_added (provider, g_steal_pointer (&self->hits));
         g_debug ("Recent engine add hits");
     }
 
     self->running = FALSE;
-    g_clear_object (&self->cancellable);
     g_clear_pointer (&self->hits, g_ptr_array_unref);
 
     g_debug ("Recent engine finished");
@@ -124,7 +120,7 @@ is_file_valid_recursive (NautilusSearchEngineRecent  *self,
 
     file_info = g_file_query_info (file, FILE_ATTRIBS,
                                    G_FILE_QUERY_INFO_NONE,
-                                   self->cancellable, error);
+                                   nautilus_search_provider_get_cancellable (self), error);
     if (*error != NULL)
     {
         return FALSE;
@@ -203,7 +199,7 @@ recent_thread_func (gpointer user_data)
             continue;
         }
 
-        if (g_cancellable_is_cancelled (self->cancellable))
+        if (nautilus_search_provider_should_stop (self))
         {
             break;
         }
@@ -322,13 +318,10 @@ search_engine_recent_start (NautilusSearchProvider *provider,
     NautilusSearchEngineRecent *self = NAUTILUS_SEARCH_ENGINE_RECENT (provider);
     g_autoptr (GThread) thread = NULL;
 
-    g_return_val_if_fail (self->cancellable == NULL, FALSE);
-
     g_set_object (&self->query, query);
     g_debug ("Recent engine start");
 
     self->running = TRUE;
-    self->cancellable = g_cancellable_new ();
     thread = g_thread_new ("nautilus-search-recent", recent_thread_func,
                            g_object_ref (self));
 
@@ -338,12 +331,6 @@ static void
 nautilus_search_engine_recent_stop (NautilusSearchProvider *provider)
 {
     NautilusSearchEngineRecent *self = NAUTILUS_SEARCH_ENGINE_RECENT (provider);
-
-    if (self->cancellable != NULL)
-    {
-        g_debug ("Recent engine stop");
-        g_cancellable_cancel (self->cancellable);
-    }
 
     self->running = FALSE;
 }

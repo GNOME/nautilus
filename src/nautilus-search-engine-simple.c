@@ -37,7 +37,6 @@
 typedef struct
 {
     NautilusSearchEngineSimple *engine;
-    GCancellable *cancellable;
 
     GList *found_list;
 
@@ -96,8 +95,6 @@ search_thread_data_new (NautilusSearchEngineSimple *engine,
     data->visited = g_hash_table_new_full (g_str_hash, g_str_equal, g_free, NULL);
     data->query = g_object_ref (query);
 
-    data->cancellable = g_cancellable_new ();
-
     g_mutex_init (&data->idle_mutex);
     data->idle_queue = g_queue_new ();
 
@@ -109,7 +106,6 @@ search_thread_data_free (SearchThreadData *data)
 {
     g_queue_free_full (data->directories, (GDestroyNotify) g_object_unref);
     g_hash_table_destroy (data->visited);
-    g_object_unref (data->cancellable);
     g_object_unref (data->query);
     g_clear_pointer (&data->hits, g_ptr_array_unref);
     g_object_unref (data->engine);
@@ -124,7 +120,7 @@ search_thread_done (SearchThreadData *data)
 {
     NautilusSearchEngineSimple *engine = data->engine;
 
-    if (g_cancellable_is_cancelled (data->cancellable))
+    if (nautilus_search_provider_should_stop (engine))
     {
         g_debug ("Simple engine finished and cancelled");
     }
@@ -144,12 +140,12 @@ static void
 search_thread_process_hits_idle (SearchThreadData *data,
                                  GPtrArray        *hits)
 {
-    if (hits == NULL)
+    if (hits == NULL || hits->len == 0)
     {
         return;
     }
 
-    if (!g_cancellable_is_cancelled (data->cancellable))
+    if (!nautilus_search_provider_should_stop (data->engine))
     {
         g_debug ("Simple engine add hits");
 
@@ -178,7 +174,7 @@ search_thread_process_idle (gpointer user_data)
      */
     if (thread_data->finished)
     {
-        if (hits == NULL || g_cancellable_is_cancelled (thread_data->cancellable))
+        if (hits == NULL || nautilus_search_provider_should_stop (thread_data->engine))
         {
             g_mutex_unlock (&thread_data->idle_mutex);
 
@@ -271,12 +267,13 @@ visit_directory (GFile            *dir,
 {
     const char *attributes = nautilus_query_has_mime_types (data->query)
                              ? STD_ATTRIBUTES_WITH_CONTENT_TYPE : STD_ATTRIBUTES;
+    GCancellable *cancellable = nautilus_search_provider_get_cancellable (data->engine);
 
     g_autoptr (GFileEnumerator) enumerator = g_file_enumerate_children (
         dir,
         attributes,
         G_FILE_QUERY_INFO_NOFOLLOW_SYMLINKS,
-        data->cancellable, NULL);
+        cancellable, NULL);
 
     if (enumerator == NULL)
     {
@@ -291,7 +288,7 @@ visit_directory (GFile            *dir,
 
     while (TRUE)
     {
-        GFileInfo *info = g_file_enumerator_next_file (enumerator, data->cancellable, NULL);
+        GFileInfo *info = g_file_enumerator_next_file (enumerator, cancellable, NULL);
 
         if (info == NULL)
         {
@@ -418,11 +415,12 @@ static gpointer
 search_thread_func (gpointer user_data)
 {
     SearchThreadData *data = user_data;
+    GCancellable *cancellable = nautilus_search_provider_get_cancellable (data->engine);
 
     /* Insert id for toplevel directory into visited */
     g_autoptr (GFile) toplevel = nautilus_query_get_location (data->query);
     g_autoptr (GFileInfo) info = g_file_query_info (
-        toplevel, G_FILE_ATTRIBUTE_ID_FILE, 0, data->cancellable, NULL);
+        toplevel, G_FILE_ATTRIBUTE_ID_FILE, 0, cancellable, NULL);
 
     if (info != NULL)
     {
@@ -436,7 +434,7 @@ search_thread_func (gpointer user_data)
 
     visit_directory (toplevel, data);
 
-    while (!g_cancellable_is_cancelled (data->cancellable))
+    while (!nautilus_search_provider_should_stop (data->engine))
     {
         g_autoptr (GFile) dir = g_queue_pop_head (data->directories);
 
@@ -448,7 +446,7 @@ search_thread_func (gpointer user_data)
         visit_directory (dir, data);
     }
 
-    if (!g_cancellable_is_cancelled (data->cancellable))
+    if (!nautilus_search_provider_should_stop (data->engine))
     {
         /* Send remaining non-batch sized results */
         send_batch_in_idle (data);
@@ -514,7 +512,6 @@ nautilus_search_engine_simple_stop (NautilusSearchProvider *provider)
     if (simple->active_search != NULL)
     {
         g_debug ("Simple engine stop");
-        g_cancellable_cancel (simple->active_search->cancellable);
 
         if (simple->create_thread_timeout_id != 0)
         {

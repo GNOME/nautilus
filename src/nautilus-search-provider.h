@@ -47,6 +47,13 @@ nautilus_search_provider_start (NautilusSearchProvider *provider,
 void
 nautilus_search_provider_stop (NautilusSearchProvider *provider);
 
+/* Protected methods, generic type for convenience */
+
+gboolean
+nautilus_search_provider_should_stop (gpointer self);
+GCancellable *
+nautilus_search_provider_get_cancellable (gpointer self);
+
 void           nautilus_search_provider_hits_added      (NautilusSearchProvider *provider,
                                                          GPtrArray              *hits);
 
