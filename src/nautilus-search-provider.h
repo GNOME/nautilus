@@ -32,6 +32,15 @@ struct _NautilusSearchProviderClass
         GObjectClass parent_class;
 
         /**
+         * @self: object derived from #NautilusSearchProvider
+         * @query: a #NautilusQuery
+         *
+         * Returns: Whether search provider should run for @query
+         */
+        gboolean (*should_search) (NautilusSearchProvider *provider,
+                                   NautilusQuery          *query);
+
+        /**
          * Returns: Whether search provider was started
          */
         gboolean (*start) (NautilusSearchProvider *provider,

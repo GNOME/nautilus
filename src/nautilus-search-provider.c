@@ -86,6 +86,11 @@ nautilus_search_provider_start (NautilusSearchProvider *self,
     /* Can't start provider again before it finished */
     g_return_val_if_fail (priv->cancellable == NULL, FALSE);
 
+    if (!klass->should_search (self, query))
+    {
+        return FALSE;
+    }
+
     priv->run_id = run_id;
     priv->cancellable = g_cancellable_new ();
 

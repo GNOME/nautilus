@@ -41,7 +41,6 @@ struct _NautilusSearchEngineRecent
     NautilusSearchProvider parent_instance;
 
     NautilusQuery *query;
-    gboolean running;
     GtkRecentManager *recent_manager;
     GPtrArray *hits;
     guint add_hits_idle_id;
@@ -84,7 +83,6 @@ search_thread_add_hits_idle (gpointer user_data)
         g_debug ("Recent engine add hits");
     }
 
-    self->running = FALSE;
     g_clear_pointer (&self->hits, g_ptr_array_unref);
 
     g_debug ("Recent engine finished");
@@ -312,6 +310,13 @@ recent_thread_func (gpointer user_data)
 }
 
 static gboolean
+should_search (NautilusSearchProvider *provider,
+               NautilusQuery          *query)
+{
+    return TRUE;
+}
+
+static gboolean
 search_engine_recent_start (NautilusSearchProvider *provider,
                             NautilusQuery          *query)
 {
@@ -321,7 +326,6 @@ search_engine_recent_start (NautilusSearchProvider *provider,
     g_set_object (&self->query, query);
     g_debug ("Recent engine start");
 
-    self->running = TRUE;
     thread = g_thread_new ("nautilus-search-recent", recent_thread_func,
                            g_object_ref (self));
 
@@ -330,9 +334,6 @@ search_engine_recent_start (NautilusSearchProvider *provider,
 static void
 nautilus_search_engine_recent_stop (NautilusSearchProvider *provider)
 {
-    NautilusSearchEngineRecent *self = NAUTILUS_SEARCH_ENGINE_RECENT (provider);
-
-    self->running = FALSE;
 }
 
 static void
@@ -342,6 +343,7 @@ nautilus_search_engine_recent_class_init (NautilusSearchEngineRecentClass *klass
     object_class->finalize = nautilus_search_engine_recent_finalize;
 
     NautilusSearchProviderClass *search_provider_class = NAUTILUS_SEARCH_PROVIDER_CLASS (klass);
+    search_provider_class->should_search = should_search;
     search_provider_class->start = search_engine_recent_start;
     search_provider_class->stop = nautilus_search_engine_recent_stop;
 }
