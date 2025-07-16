@@ -4,6 +4,7 @@
  * SPDX-License-Identifier: GPL-3.0-or-later
  */
 
+#include "nautilus-name-cell.h"
 #include "nautilus-view-cell.h"
 
 #include "nautilus-list-base.h"
@@ -33,6 +34,7 @@ struct _NautilusViewCellPrivate
     guint position;
 
     gboolean called_once;
+    gboolean setup_called_once;
 };
 
 
@@ -192,6 +194,77 @@ nautilus_view_cell_once (NautilusViewCell *self)
         return FALSE;
     }
     priv->called_once = TRUE;
+
+    return TRUE;
+}
+
+gboolean
+nautilus_view_cell_setup (NautilusViewCell *self,
+                          GCallback         on_item_click_pressed,
+                          GCallback         on_item_click_stopped,
+                          GCallback         on_item_click_released,
+                          GCallback         on_item_longpress_pressed,
+                          GCallback         on_item_drag_prepare,
+                          GCallback         on_item_drag_enter,
+                          GCallback         on_item_drag_value_notify,
+                          GCallback         on_item_drag_leave,
+                          GCallback         on_item_drag_motion,
+                          GCallback         on_item_drop,
+                          GCallback         on_item_drag_hover_enter,
+                          GCallback         on_item_drag_hover_leave,
+                          GCallback         on_item_drag_hover_motion)
+{
+    NautilusViewCellPrivate *priv = nautilus_view_cell_get_instance_private (self);
+
+    if (priv->setup_called_once)
+    {
+        return FALSE;
+    }
+
+    GtkEventController *controller;
+    GtkDropTarget *drop_target;
+    GtkWidget *hover_target = NAUTILUS_IS_NAME_CELL (self)
+                              ? nautilus_name_cell_get_content (NAUTILUS_NAME_CELL (self))
+                              : GTK_WIDGET (self);
+
+    priv->setup_called_once = TRUE;
+
+    controller = GTK_EVENT_CONTROLLER (gtk_gesture_click_new ());
+    gtk_widget_add_controller (GTK_WIDGET (self), controller);
+    gtk_event_controller_set_propagation_phase (controller, GTK_PHASE_BUBBLE);
+    gtk_gesture_single_set_button (GTK_GESTURE_SINGLE (controller), 0);
+    g_signal_connect (controller, "pressed", on_item_click_pressed, self);
+    g_signal_connect (controller, "stopped", on_item_click_stopped, self);
+    g_signal_connect (controller, "released", on_item_click_released, self);
+
+    controller = GTK_EVENT_CONTROLLER (gtk_gesture_long_press_new ());
+    gtk_widget_add_controller (GTK_WIDGET (self), controller);
+    gtk_event_controller_set_propagation_phase (controller, GTK_PHASE_BUBBLE);
+    gtk_gesture_single_set_touch_only (GTK_GESTURE_SINGLE (controller), TRUE);
+    g_signal_connect (controller, "pressed", on_item_longpress_pressed, self);
+
+    controller = GTK_EVENT_CONTROLLER (gtk_drag_source_new ());
+    gtk_widget_add_controller (GTK_WIDGET (self), controller);
+    gtk_event_controller_set_propagation_phase (controller, GTK_PHASE_CAPTURE);
+    g_signal_connect (controller, "prepare", on_item_drag_prepare, self);
+
+    /* TODO: Implement GDK_ACTION_ASK */
+    drop_target = gtk_drop_target_new (G_TYPE_INVALID, GDK_ACTION_ALL);
+    gtk_drop_target_set_preload (drop_target, TRUE);
+    /* TODO: Implement GDK_TYPE_STRING */
+    gtk_drop_target_set_gtypes (drop_target, (GType[3]) { GDK_TYPE_TEXTURE, GDK_TYPE_FILE_LIST, G_TYPE_STRING }, 3);
+    g_signal_connect (drop_target, "enter", on_item_drag_enter, self);
+    g_signal_connect (drop_target, "notify::value", on_item_drag_value_notify, self);
+    g_signal_connect (drop_target, "leave", on_item_drag_leave, self);
+    g_signal_connect (drop_target, "motion", on_item_drag_motion, self);
+    g_signal_connect (drop_target, "drop", on_item_drop, self);
+    gtk_widget_add_controller (GTK_WIDGET (self), GTK_EVENT_CONTROLLER (drop_target));
+
+    controller = gtk_drop_controller_motion_new ();
+    gtk_widget_add_controller (hover_target, controller);
+    g_signal_connect (controller, "enter", on_item_drag_hover_enter, self);
+    g_signal_connect (controller, "leave", on_item_drag_hover_leave, self);
+    g_signal_connect (controller, "motion", on_item_drag_hover_motion, self);
 
     return TRUE;
 }
