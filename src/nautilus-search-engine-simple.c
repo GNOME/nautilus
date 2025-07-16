@@ -269,6 +269,16 @@ send_batch_in_idle (SearchThreadData *thread_data)
         G_FILE_ATTRIBUTE_STANDARD_CONTENT_TYPE "," \
         G_FILE_ATTRIBUTE_STANDARD_FAST_CONTENT_TYPE
 
+static gboolean
+file_is_remote (GFile *file)
+{
+    g_autoptr (GFileInfo) file_system_info = g_file_query_filesystem_info (
+        file, G_FILE_ATTRIBUTE_FILESYSTEM_REMOTE, NULL, NULL);
+
+    return file_system_info != NULL &&
+           g_file_info_get_attribute_boolean (file_system_info, G_FILE_ATTRIBUTE_FILESYSTEM_REMOTE);
+}
+
 static void
 visit_directory (GFile            *dir,
                  SearchThreadData *data)
@@ -408,27 +418,9 @@ visit_directory (GFile            *dir,
             send_batch_in_idle (data);
         }
 
-        gboolean recursive = FALSE;
         if (recursion_enabled &&
-            g_file_info_get_file_type (info) == G_FILE_TYPE_DIRECTORY)
-        {
-            if (per_location_recursive_check)
-            {
-                g_autoptr (GFileInfo) file_system_info = g_file_query_filesystem_info (
-                    child, G_FILE_ATTRIBUTE_FILESYSTEM_REMOTE, NULL, NULL);
-                if (file_system_info != NULL)
-                {
-                    recursive = !g_file_info_get_attribute_boolean (file_system_info,
-                                                                    G_FILE_ATTRIBUTE_FILESYSTEM_REMOTE);
-                }
-            }
-            else
-            {
-                recursive = TRUE;
-            }
-        }
-
-        if (recursive)
+            g_file_info_get_file_type (info) == G_FILE_TYPE_DIRECTORY &&
+            (!per_location_recursive_check || !file_is_remote (child)))
         {
             const char *id = g_file_info_get_attribute_string (info, G_FILE_ATTRIBUTE_ID_FILE);
             if (id != NULL &&
