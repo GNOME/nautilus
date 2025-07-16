@@ -469,7 +469,6 @@ search_engine_localsearch_start (NautilusSearchProvider *provider,
 
     if (self->connection == NULL)
     {
-        g_warning ("Localsearch search engine has no connection");
         return FALSE;
     }
 
@@ -632,17 +631,15 @@ nautilus_search_engine_localsearch_class_init (NautilusSearchEngineLocalsearchCl
 static void
 nautilus_search_engine_localsearch_init (NautilusSearchEngineLocalsearch *engine)
 {
-    GError *error = NULL;
+    g_autoptr (GError) error = NULL;
 
     engine->hits_pending = g_queue_new ();
     engine->statements = g_hash_table_new_full (NULL, NULL, NULL,
                                                 g_object_unref);
-
     engine->connection = nautilus_localsearch_get_miner_fs_connection (&error);
-    if (error)
+    if (error != NULL)
     {
-        g_warning ("Could not establish a connection to Tracker: %s", error->message);
-        g_error_free (error);
+        g_warning ("Could not establish a connection to Localsearch: %s", error->message);
     }
 }
 
