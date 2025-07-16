@@ -9,3 +9,8 @@ leak:xdg_mime_init
 leak:gtk_at_context_create
 leak:libim-ibus.so
 leak:gtk_label_set_mnemonic_widget
+leak:gtk_shortcut_label_rebuild
+leak:gtk_css_value_alloc
+leak:update_accels_cb
+leak:gsk_gpu_lookup_texture
+leak:g_dbus_connection_call_done
