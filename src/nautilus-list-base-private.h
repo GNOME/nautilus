@@ -26,9 +26,7 @@ void               nautilus_list_base_setup_gestures (NautilusListBase *self);
 
 /* Shareable helpers */
 void                          setup_cell_common                 (GObject          *listitem,
-                                                                 NautilusViewCell *cell);
-void                          setup_cell_hover                  (NautilusViewCell *cell);
-void                          setup_cell_hover_inner_target     (NautilusViewCell *cell,
-                                                                 GtkWidget        *target);
+                                                                 NautilusViewCell *cell,
+                                                                 GtkWidget        *hover_target);
 
 G_END_DECLS
