@@ -5064,24 +5064,16 @@ nautilus_file_get_icon (NautilusFile          *file,
                         int                    scale,
                         NautilusFileIconFlags  flags)
 {
-    NautilusIconInfo *icon;
-    GIcon *gicon;
+    g_return_val_if_fail (file != NULL, NULL);
 
-    icon = NULL;
+    g_autoptr (GIcon) custom_gicon = get_custom_icon (file);
 
-    if (file == NULL)
+    if (custom_gicon != NULL)
     {
-        goto out;
+        return nautilus_icon_info_lookup (custom_gicon, size, scale);
     }
 
-    gicon = get_custom_icon (file);
-    if (gicon != NULL)
-    {
-        icon = nautilus_icon_info_lookup (gicon, size, scale);
-        g_object_unref (gicon);
-
-        goto out;
-    }
+    NautilusIconInfo *icon = NULL;
 
     if (g_getenv ("G_MESSAGES_DEBUG") != NULL)
     {
@@ -5097,9 +5089,8 @@ nautilus_file_get_icon (NautilusFile          *file,
 
     if (icon == NULL)
     {
-        gicon = nautilus_file_get_gicon (file, flags);
+        g_autoptr (GIcon) gicon = nautilus_file_get_gicon (file, flags);
         icon = nautilus_icon_info_lookup (gicon, size, scale);
-        g_object_unref (gicon);
 
         if (nautilus_icon_info_is_fallback (icon))
         {
@@ -5108,7 +5099,6 @@ nautilus_file_get_icon (NautilusFile          *file,
         }
     }
 
-out:
     return icon;
 }
 
