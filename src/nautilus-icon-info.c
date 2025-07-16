@@ -162,8 +162,6 @@ static GHashTable *loadable_icon_cache = NULL;
 static GHashTable *themed_icon_cache = NULL;
 static guint reap_cache_timeout = 0;
 
-#define MICROSEC_PER_SEC ((guint64) 1000000L)
-
 static guint64 time_now;
 
 static gboolean
@@ -176,7 +174,7 @@ reap_old_icon (gpointer key,
 
     if (icon->sole_owner)
     {
-        if (time_now - icon->last_use_time > 30 * MICROSEC_PER_SEC)
+        if (time_now - icon->last_use_time > 30 * G_USEC_PER_SEC)
         {
             /* This went unused 30 secs ago. reap */
             return TRUE;

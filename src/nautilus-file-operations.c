@@ -263,8 +263,7 @@ G_DEFINE_AUTO_CLEANUP_CLEAR_FUNC (SourceInfo, source_info_clear)
 
 #define SOURCE_INFO_INIT { 0 }
 #define SECONDS_NEEDED_FOR_RELIABLE_TRANSFER_RATE 8
-#define NSEC_PER_MICROSEC 1000
-#define PROGRESS_NOTIFY_INTERVAL 100 * NSEC_PER_MICROSEC
+#define PROGRESS_NOTIFY_INTERVAL_USEC 100 * 1000
 #define LONG_JOB_THRESHOLD_IN_SECONDS 2
 
 #define MAXIMUM_DISPLAYED_FILE_NAME_LENGTH 50
@@ -1256,7 +1255,7 @@ report_delete_progress (CommonJob    *job,
      * considering this time, since we want to change the status to completed
      * and probably we won't get more calls to this function */
     if (transfer_info->last_report_time != 0 &&
-        ABS ((gint64) (transfer_info->last_report_time - now)) < 100 * NSEC_PER_MICROSEC &&
+        ABS ((gint64) (transfer_info->last_report_time - now)) < PROGRESS_NOTIFY_INTERVAL_USEC &&
         files_left > 0)
     {
         return;
@@ -1691,7 +1690,7 @@ report_trash_progress (CommonJob    *job,
      * considering this time, since we want to change the status to completed
      * and probably we won't get more calls to this function */
     if (transfer_info->last_report_time != 0 &&
-        ABS ((gint64) (transfer_info->last_report_time - now)) < 100 * NSEC_PER_MICROSEC &&
+        ABS ((gint64) (transfer_info->last_report_time - now)) < PROGRESS_NOTIFY_INTERVAL_USEC &&
         files_left > 0)
     {
         return;
@@ -3403,7 +3402,7 @@ retry:
     }
 
     if (!job_aborted (job) &&
-        source_info != NULL && source_info->largest_file_bytes > G_MAXUINT32 &&
+        source_info != NULL && source_info->largest_file_bytes > MAXIMUM_FAT_FILE_SIZE &&
         g_strcmp0 (fs_type, "msdos") == 0)
     {
         primary = g_strdup (_("File too Large for Destination"));
@@ -3484,7 +3483,7 @@ report_copy_progress (CopyMoveJob  *copy_job,
      * considering this time, since we want to change the status to completed
      * and probably we won't get more calls to this function */
     if (transfer_info->last_report_time != 0 &&
-        ABS ((gint64) (transfer_info->last_report_time - now)) < 100 * NSEC_PER_MICROSEC &&
+        ABS ((gint64) (transfer_info->last_report_time - now)) < PROGRESS_NOTIFY_INTERVAL_USEC &&
         files_left > 0)
     {
         return;
@@ -8320,7 +8319,7 @@ extract_task_thread_func (GTask        *task,
                                           extract_job->destination_directory);
 
         autoar_extractor_set_notify_interval (extractor,
-                                              PROGRESS_NOTIFY_INTERVAL);
+                                              PROGRESS_NOTIFY_INTERVAL_USEC);
         g_signal_connect (extractor, "scanned",
                           G_CALLBACK (extract_job_on_scanned),
                           extract_job);
@@ -8762,7 +8761,7 @@ compress_task_thread_func (GTask        *task,
     autoar_compressor_set_output_is_dest (compressor, TRUE);
 
     autoar_compressor_set_notify_interval (compressor,
-                                           PROGRESS_NOTIFY_INTERVAL);
+                                           PROGRESS_NOTIFY_INTERVAL_USEC);
 
     g_signal_connect (compressor, "progress",
                       G_CALLBACK (compress_job_on_progress), compress_job);
