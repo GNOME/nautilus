@@ -454,7 +454,6 @@ search_engine_localsearch_start (NautilusSearchProvider *provider,
 {
     NautilusSearchEngineLocalsearch *self = NAUTILUS_SEARCH_ENGINE_LOCALSEARCH (provider);
     g_autofree gchar *query_text = NULL;
-    g_autoptr (GPtrArray) mimetypes = NULL;
     g_autoptr (GPtrArray) date_range = NULL;
     NautilusSearchTimeType type;
     TrackerSparqlStatement *stmt;
@@ -481,7 +480,6 @@ search_engine_localsearch_start (NautilusSearchProvider *provider,
     self->fts_enabled = nautilus_query_get_search_content (self->query);
 
     query_text = nautilus_query_get_text (self->query);
-    mimetypes = nautilus_query_get_mime_types (self->query);
     date_range = nautilus_query_get_date_range (self->query);
     type = nautilus_query_get_search_type (self->query);
 
@@ -497,7 +495,7 @@ search_engine_localsearch_start (NautilusSearchProvider *provider,
     {
         features |= SEARCH_FEATURE_RECURSIVE;
     }
-    if (mimetypes->len > 0)
+    if (nautilus_query_has_mime_types (self->query))
     {
         features |= SEARCH_FEATURE_MIMETYPE;
     }
@@ -543,27 +541,11 @@ search_engine_localsearch_start (NautilusSearchProvider *provider,
         tracker_sparql_statement_bind_string (stmt, "match", query_text);
     }
 
-    if (mimetypes->len > 0)
+    if (nautilus_query_has_mime_types (self->query))
     {
-        g_autoptr (GString) mimetype_str = NULL;
+        g_autofree char *mimetype_str = nautilus_query_get_mime_type_str (self->query);
 
-        for (guint i = 0; i < mimetypes->len; i++)
-        {
-            const gchar *mimetype;
-
-            mimetype = g_ptr_array_index (mimetypes, i);
-
-            if (!mimetype_str)
-            {
-                mimetype_str = g_string_new (mimetype);
-            }
-            else
-            {
-                g_string_append_printf (mimetype_str, ",%s", mimetype);
-            }
-        }
-
-        tracker_sparql_statement_bind_string (stmt, "mimeTypes", mimetype_str->str);
+        tracker_sparql_statement_bind_string (stmt, "mimeTypes", mimetype_str);
     }
 
     if (date_range)
