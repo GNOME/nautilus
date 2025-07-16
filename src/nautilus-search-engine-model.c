@@ -213,6 +213,19 @@ model_directory_ready_cb (NautilusDirectory *directory,
 }
 
 static gboolean
+should_search (NautilusSearchProvider *provider,
+               NautilusQuery          *query)
+{
+    g_autoptr (GFile) location = nautilus_query_get_location (query);
+    g_autoptr (NautilusDirectory) directory = nautilus_directory_get (location);
+
+    NautilusSearchEngineModel *self = NAUTILUS_SEARCH_ENGINE_MODEL (provider);
+    g_set_object (&self->directory, directory);
+
+    return directory != NULL;
+}
+
+static gboolean
 search_engine_model_start (NautilusSearchProvider *provider,
                            NautilusQuery          *query)
 {
@@ -221,15 +234,6 @@ search_engine_model_start (NautilusSearchProvider *provider,
     model = NAUTILUS_SEARCH_ENGINE_MODEL (provider);
 
     g_set_object (&model->query, query);
-
-    g_autoptr (GFile) query_location = nautilus_query_get_location (model->query);
-    g_autoptr (NautilusDirectory) directory = nautilus_directory_get (query_location);
-    g_set_object (&model->directory, directory);
-
-    if (model->directory == NULL)
-    {
-        return FALSE;
-    }
 
     g_debug ("Model engine start");
 
@@ -265,6 +269,7 @@ nautilus_search_engine_model_class_init (NautilusSearchEngineModelClass *class)
     gobject_class->finalize = finalize;
 
     NautilusSearchProviderClass *search_provider_class = NAUTILUS_SEARCH_PROVIDER_CLASS (class);
+    search_provider_class->should_search = should_search;
     search_provider_class->start = search_engine_model_start;
     search_provider_class->stop = nautilus_search_engine_model_stop;
 }
