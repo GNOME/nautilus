@@ -247,6 +247,22 @@ on_map_changed (GtkWidget *widget,
 }
 
 static void
+real_map (GtkWidget *widget)
+{
+    on_map_changed (widget, GINT_TO_POINTER (TRUE));
+
+    GTK_WIDGET_CLASS (nautilus_grid_cell_parent_class)->map (widget);
+}
+
+static void
+real_unmap (GtkWidget *widget)
+{
+    on_map_changed (widget, GINT_TO_POINTER (FALSE));
+
+    GTK_WIDGET_CLASS (nautilus_grid_cell_parent_class)->unmap (widget);
+}
+
+static void
 nautilus_grid_cell_dispose (GObject *object)
 {
     NautilusGridCell *self = (NautilusGridCell *) object;
@@ -444,6 +460,8 @@ nautilus_grid_cell_class_init (NautilusGridCellClass *klass)
     widget_class->measure = nautilus_grid_cell_measure;
     widget_class->size_allocate = nautilus_grid_cell_size_allocate;
 
+    widget_class->map = real_map;
+    widget_class->unmap = real_unmap;
     widget_class->snapshot = snapshot;
 
     gtk_widget_class_set_template_from_resource (widget_class, "/org/gnome/nautilus/ui/nautilus-grid-cell.ui");
@@ -465,8 +483,6 @@ nautilus_grid_cell_init (NautilusGridCell *self)
 {
     gtk_widget_init_template (GTK_WIDGET (self));
 
-    g_signal_connect (self, "map", G_CALLBACK (on_map_changed), GINT_TO_POINTER (TRUE));
-    g_signal_connect (self, "unmap", G_CALLBACK (on_map_changed), GINT_TO_POINTER (FALSE));
     g_signal_connect (self, "notify::icon-size",
                       G_CALLBACK (on_icon_size_changed), NULL);
 
