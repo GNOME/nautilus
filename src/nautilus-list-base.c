@@ -816,54 +816,30 @@ on_view_drop (GtkDropTarget *target,
 
 void
 setup_cell_common (GObject          *listitem,
-                   NautilusViewCell *cell,
-                   GtkWidget        *hover_target)
+                   NautilusViewCell *cell)
 {
     GtkExpression *expression;
-    GtkEventController *controller;
-    GtkDropTarget *drop_target;
 
     expression = gtk_property_expression_new (GTK_TYPE_LIST_ITEM, NULL, "item");
     expression = gtk_property_expression_new (GTK_TYPE_TREE_LIST_ROW, expression, "item");
     gtk_expression_bind (expression, cell, "item", listitem);
     g_object_bind_property (listitem, "position", cell, "position", G_BINDING_SYNC_CREATE);
 
-    controller = GTK_EVENT_CONTROLLER (gtk_gesture_click_new ());
-    gtk_widget_add_controller (GTK_WIDGET (cell), controller);
-    gtk_event_controller_set_propagation_phase (controller, GTK_PHASE_BUBBLE);
-    gtk_gesture_single_set_button (GTK_GESTURE_SINGLE (controller), 0);
-    g_signal_connect (controller, "pressed", G_CALLBACK (on_item_click_pressed), cell);
-    g_signal_connect (controller, "stopped", G_CALLBACK (on_item_click_stopped), cell);
-    g_signal_connect (controller, "released", G_CALLBACK (on_item_click_released), cell);
 
-    controller = GTK_EVENT_CONTROLLER (gtk_gesture_long_press_new ());
-    gtk_widget_add_controller (GTK_WIDGET (cell), controller);
-    gtk_event_controller_set_propagation_phase (controller, GTK_PHASE_BUBBLE);
-    gtk_gesture_single_set_touch_only (GTK_GESTURE_SINGLE (controller), TRUE);
-    g_signal_connect (controller, "pressed", G_CALLBACK (on_item_longpress_pressed), cell);
-
-    controller = GTK_EVENT_CONTROLLER (gtk_drag_source_new ());
-    gtk_widget_add_controller (GTK_WIDGET (cell), controller);
-    gtk_event_controller_set_propagation_phase (controller, GTK_PHASE_CAPTURE);
-    g_signal_connect (controller, "prepare", G_CALLBACK (on_item_drag_prepare), cell);
-
-    /* TODO: Implement GDK_ACTION_ASK */
-    drop_target = gtk_drop_target_new (G_TYPE_INVALID, GDK_ACTION_ALL);
-    gtk_drop_target_set_preload (drop_target, TRUE);
-    /* TODO: Implement GDK_TYPE_STRING */
-    gtk_drop_target_set_gtypes (drop_target, (GType[3]) { GDK_TYPE_TEXTURE, GDK_TYPE_FILE_LIST, G_TYPE_STRING }, 3);
-    g_signal_connect (drop_target, "enter", G_CALLBACK (on_item_drag_enter), cell);
-    g_signal_connect (drop_target, "notify::value", G_CALLBACK (on_item_drag_value_notify), cell);
-    g_signal_connect (drop_target, "leave", G_CALLBACK (on_item_drag_leave), cell);
-    g_signal_connect (drop_target, "motion", G_CALLBACK (on_item_drag_motion), cell);
-    g_signal_connect (drop_target, "drop", G_CALLBACK (on_item_drop), cell);
-    gtk_widget_add_controller (GTK_WIDGET (cell), GTK_EVENT_CONTROLLER (drop_target));
-
-    controller = gtk_drop_controller_motion_new ();
-    gtk_widget_add_controller (hover_target, controller);
-    g_signal_connect (controller, "enter", G_CALLBACK (on_item_drag_hover_enter), cell);
-    g_signal_connect (controller, "leave", G_CALLBACK (on_item_drag_hover_leave), cell);
-    g_signal_connect (controller, "motion", G_CALLBACK (on_item_drag_hover_motion), cell);
+    nautilus_view_cell_setup (cell,
+                              G_CALLBACK (on_item_click_pressed),
+                              G_CALLBACK (on_item_click_stopped),
+                              G_CALLBACK (on_item_click_released),
+                              G_CALLBACK (on_item_longpress_pressed),
+                              G_CALLBACK (on_item_drag_prepare),
+                              G_CALLBACK (on_item_drag_enter),
+                              G_CALLBACK (on_item_drag_value_notify),
+                              G_CALLBACK (on_item_drag_leave),
+                              G_CALLBACK (on_item_drag_motion),
+                              G_CALLBACK (on_item_drop),
+                              G_CALLBACK (on_item_drag_hover_enter),
+                              G_CALLBACK (on_item_drag_hover_leave),
+                              G_CALLBACK (on_item_drag_hover_motion));
 }
 
 static void
