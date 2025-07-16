@@ -1,4 +1,4 @@
-# Use via environment variable LSAN_OPTIONS=suppressions=data/leak-suppress.txt
+# Use via environment variable LSAN_OPTIONS=suppressions=build-aux/leak-suppress.txt
 # Ignore fontconfig reported leaks, its caches cause false positives.
 leak:libfontconfig.so.1
 leak:libEGL_mesa.so.0

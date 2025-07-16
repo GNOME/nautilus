@@ -151,7 +151,7 @@ asan:
         - .nautilus.fedora
     variables:
         CFLAGS: "-fno-omit-frame-pointer"
-        LSAN_OPTIONS: suppressions=$CI_PROJECT_DIR/data/leak-suppress.txt
+        LSAN_OPTIONS: suppressions=$CI_PROJECT_DIR/build-aux/leak-suppress.txt
     stage: analyze
     rules:
         - when: manual
