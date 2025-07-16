@@ -43,7 +43,13 @@ GFile*         nautilus_query_get_location       (NautilusQuery *query);
 void           nautilus_query_set_location       (NautilusQuery *query,
                                                   GFile         *location);
 
-GPtrArray *    nautilus_query_get_mime_types     (NautilusQuery *query);
+gboolean
+nautilus_query_has_mime_types (NautilusQuery *self);
+gboolean
+nautilus_query_matches_mime_type (NautilusQuery *self,
+                                  const char    *mime_type);
+char *
+nautilus_query_get_mime_type_str (NautilusQuery *query);
 void           nautilus_query_set_mime_types     (NautilusQuery *query, GPtrArray *mime_types);
 
 gboolean

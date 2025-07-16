@@ -181,7 +181,6 @@ recent_thread_func (gpointer user_data)
     g_autoptr (NautilusSearchEngineRecent) self = NAUTILUS_SEARCH_ENGINE_RECENT (user_data);
     g_autoptr (GPtrArray) date_range = NULL;
     g_autoptr (GFile) query_location = NULL;
-    g_autoptr (GPtrArray) mime_types = NULL;
     GList *recent_items;
     GPtrArray *hits = g_ptr_array_new_with_free_func (g_object_unref);
     GList *l;
@@ -189,7 +188,6 @@ recent_thread_func (gpointer user_data)
     g_return_val_if_fail (self->query, NULL);
 
     recent_items = gtk_recent_manager_get_items (self->recent_manager);
-    mime_types = nautilus_query_get_mime_types (self->query);
     date_range = nautilus_query_get_date_range (self->query);
     query_location = nautilus_query_get_location (self->query);
 
@@ -253,24 +251,10 @@ recent_thread_func (gpointer user_data)
                 continue;
             }
 
-            if (mime_types->len > 0)
+            const char *mime_type = gtk_recent_info_get_mime_type (info);
+            if (!nautilus_query_matches_mime_type (self->query, mime_type))
             {
-                const gchar *mime_type = gtk_recent_info_get_mime_type (info);
-                gboolean found = FALSE;
-
-                for (guint i = 0; mime_type != NULL && i < mime_types->len; i++)
-                {
-                    if (g_content_type_is_a (mime_type, g_ptr_array_index (mime_types, i)))
-                    {
-                        found = TRUE;
-                        break;
-                    }
-                }
-
-                if (!found)
-                {
-                    continue;
-                }
+                continue;
             }
 
             if (date_range != NULL)

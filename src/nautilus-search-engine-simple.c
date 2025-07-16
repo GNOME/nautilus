@@ -39,7 +39,6 @@ typedef struct
     NautilusSearchEngineSimple *engine;
     GCancellable *cancellable;
 
-    GPtrArray *mime_types;
     GList *found_list;
 
     GQueue *directories;     /* GFiles */
@@ -99,7 +98,6 @@ search_thread_data_new (NautilusSearchEngineSimple *engine,
     data->directories = g_queue_new ();
     data->visited = g_hash_table_new_full (g_str_hash, g_str_equal, g_free, NULL);
     data->query = g_object_ref (query);
-    data->mime_types = nautilus_query_get_mime_types (query);
 
     data->cancellable = g_cancellable_new ();
 
@@ -116,7 +114,6 @@ search_thread_data_free (SearchThreadData *data)
     g_hash_table_destroy (data->visited);
     g_object_unref (data->cancellable);
     g_object_unref (data->query);
-    g_clear_pointer (&data->mime_types, g_ptr_array_unref);
     g_clear_pointer (&data->hits, g_ptr_array_unref);
     g_object_unref (data->engine);
     g_mutex_clear (&data->idle_mutex);
@@ -275,9 +272,12 @@ static void
 visit_directory (GFile            *dir,
                  SearchThreadData *data)
 {
+    const char *attributes = nautilus_query_has_mime_types (data->query)
+                             ? STD_ATTRIBUTES_WITH_CONTENT_TYPE : STD_ATTRIBUTES;
+
     g_autoptr (GFileEnumerator) enumerator = g_file_enumerate_children (
         dir,
-        data->mime_types->len > 0 ? STD_ATTRIBUTES_WITH_CONTENT_TYPE : STD_ATTRIBUTES,
+        attributes,
         G_FILE_QUERY_INFO_NOFOLLOW_SYMLINKS,
         data->cancellable, NULL);
 
@@ -322,7 +322,7 @@ visit_directory (GFile            *dir,
         gdouble match = nautilus_query_matches_string (data->query, display_name);
         gboolean found = (match > -1);
 
-        if (found && data->mime_types->len > 0)
+        if (found && nautilus_query_has_mime_types (data->query))
         {
             const char *mime_type = g_file_info_get_attribute_string (
                 info, G_FILE_ATTRIBUTE_STANDARD_CONTENT_TYPE);
@@ -332,16 +332,7 @@ visit_directory (GFile            *dir,
                                                               G_FILE_ATTRIBUTE_STANDARD_FAST_CONTENT_TYPE);
             }
 
-            found = FALSE;
-
-            for (guint i = 0; mime_type != NULL && i < data->mime_types->len; i++)
-            {
-                if (g_content_type_is_a (mime_type, g_ptr_array_index (data->mime_types, i)))
-                {
-                    found = TRUE;
-                    break;
-                }
-            }
+            found = nautilus_query_matches_mime_type (data->query, mime_type);
         }
 
         mtime = g_file_info_get_modification_date_time (info);

@@ -21,6 +21,7 @@
 
 #include "nautilus-query.h"
 
+#include "nautilus-date-utilities.h"
 #include "nautilus-enum-types.h"
 #include "nautilus-file.h"
 #include "nautilus-global-preferences.h"
@@ -199,7 +200,7 @@ nautilus_query_copy (NautilusQuery *query)
 
     copy->text = nautilus_query_get_text (query);
     copy->location = nautilus_query_get_location (query);
-    copy->mime_types = nautilus_query_get_mime_types (query);
+    copy->mime_types = g_ptr_array_ref (query->mime_types);
     copy->show_hidden = query->show_hidden;
     copy->date_range = nautilus_query_get_date_range (query);
     copy->recursion_tradeoff = query->recursion_tradeoff;
@@ -285,21 +286,60 @@ nautilus_query_set_location (NautilusQuery *query,
     }
 }
 
-/**
- * nautilus_query_get_mime_type:
- * @query: A #NautilusQuery
- *
- * Retrieves the current MIME Types filter from @query. Its content must not be
- * modified.
- *
- * Returns: (transfer container) A #GPtrArray reference with MIME type name strings.
- */
-GPtrArray *
-nautilus_query_get_mime_types (NautilusQuery *query)
+gboolean
+nautilus_query_has_mime_types (NautilusQuery *self)
 {
-    g_return_val_if_fail (NAUTILUS_IS_QUERY (query), NULL);
+    return self->mime_types->len > 0;
+}
 
-    return g_ptr_array_ref (query->mime_types);
+gboolean
+nautilus_query_matches_mime_type (NautilusQuery *self,
+                                  const char    *mime_type)
+{
+    if (self->mime_types->len == 0)
+    {
+        return TRUE;
+    }
+    if (mime_type == NULL)
+    {
+        return FALSE;
+    }
+
+    for (guint i = 0; i < self->mime_types->len; i++)
+    {
+        if (g_str_equal (mime_type, g_ptr_array_index (self->mime_types, i)))
+        {
+            return TRUE;
+        }
+    }
+
+    return FALSE;
+}
+
+/**
+ * nautilus_query_get_mime_type_str:
+ * @self: A #NautilusQuery
+ *
+ * Returns: (nullable) (transfer full): all current MIME Type filters,
+ *          comma-separated in a string
+ */
+char *
+nautilus_query_get_mime_type_str (NautilusQuery *self)
+{
+    if (!nautilus_query_has_mime_types (self))
+    {
+        return NULL;
+    }
+
+    g_autoptr (GString) mimetype_str = g_string_new (g_ptr_array_index (self->mime_types, 0));
+
+    for (guint i = 1; i < self->mime_types->len; i++)
+    {
+        g_string_append_c (mimetype_str, ',');
+        g_string_append (mimetype_str, g_ptr_array_index (self->mime_types, i));
+    }
+
+    return g_string_free_and_steal (mimetype_str);
 }
 
 /**
@@ -321,8 +361,7 @@ nautilus_query_set_mime_types (NautilusQuery *query,
     g_return_if_fail (NAUTILUS_IS_QUERY (query));
     g_return_if_fail (mime_types != NULL);
 
-    g_clear_pointer (&query->mime_types, g_ptr_array_unref);
-    query->mime_types = g_ptr_array_ref (mime_types);
+    g_set_ptr_array (&query->mime_types, mime_types);
 }
 
 gboolean
