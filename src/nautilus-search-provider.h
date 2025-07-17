@@ -30,28 +30,12 @@ G_DECLARE_INTERFACE (NautilusSearchProvider, nautilus_search_provider, NAUTILUS,
 struct _NautilusSearchProviderInterface {
         GTypeInterface g_iface;
 
-        /* VTable */
         /**
          * Returns: Whether search provider was started
          */
         gboolean (*start) (NautilusSearchProvider *provider,
                            NautilusQuery          *query);
         void (*stop) (NautilusSearchProvider *provider);
-
-        /* Signals */
-        /**
-         * @provider: search provider
-         * @hits: (transfer full): list of #NautilusSearchHit
-         *
-         * Provider emits this signal when adding search hits
-         */
-        void (*hits_added) (NautilusSearchProvider *provider, GPtrArray *hits);
-        /**
-         * @provider: search provider
-         *
-         * Provider emits this signal when it finished
-         */
-        void (*provider_finished) (NautilusSearchProvider *provider);
 };
 
 GType          nautilus_search_provider_get_type        (void) G_GNUC_CONST;
