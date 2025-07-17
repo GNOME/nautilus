@@ -20,6 +20,15 @@ void test_clear_tmp_dir (void);
 
 void test_init_config_dir (void);
 
+#define test_skip_if_no_display() \
+    if (g_getenv ("DISPLAY") == NULL || \
+        g_getenv ("WAYLAND_DISPLAY") == NULL) \
+    { \
+        g_message ("This test requires being run within a display server like " \
+                   "Wayland or X11. Skipping."); \
+        return 77; \
+    }
+
 void empty_directory_by_prefix (GFile *parent,
                                 gchar *prefix);
 

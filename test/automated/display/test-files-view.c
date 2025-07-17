@@ -865,6 +865,8 @@ main (int   argc,
 {
     g_autoptr (NautilusTagManager) tag_manager = NULL;
 
+    test_skip_if_no_display ();
+
     gtk_test_init (&argc, &argv, NULL);
 
     nautilus_register_resource ();
