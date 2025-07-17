@@ -85,7 +85,7 @@ search_thread_data_new (NautilusSearchEngineSimple *engine)
 
     data = g_new0 (SearchThreadData, 1);
 
-    data->engine = g_object_ref (engine);
+    data->engine = engine;
     data->directories = g_queue_new ();
     data->visited = g_hash_table_new_full (g_str_hash, g_str_equal, g_free, NULL);
 
@@ -101,7 +101,6 @@ search_thread_data_free (SearchThreadData *data)
     g_queue_free_full (data->directories, (GDestroyNotify) g_object_unref);
     g_hash_table_destroy (data->visited);
     g_clear_pointer (&data->hits, g_ptr_array_unref);
-    g_object_unref (data->engine);
     g_mutex_clear (&data->idle_mutex);
     g_queue_free_full (data->idle_queue, (GDestroyNotify) g_ptr_array_unref);
 
