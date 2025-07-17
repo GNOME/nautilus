@@ -32,6 +32,9 @@ struct _NautilusSearchProviderClass
 {
         GObjectClass parent_class;
 
+        /** Name for provider implementation. Evaluated once. */
+        const char * (*get_name) (NautilusSearchProvider *provider);
+
         /** Whether a search for given @query should run. Optional. */
         gboolean (*should_search) (NautilusSearchProvider *provider,
                                    NautilusQuery          *query);

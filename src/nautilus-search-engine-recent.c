@@ -79,12 +79,10 @@ search_thread_add_hits_idle (NautilusSearchEngineRecent *self)
         !nautilus_search_provider_should_stop (self))
     {
         nautilus_search_provider_hits_added (provider, g_steal_pointer (&self->hits));
-        g_debug ("Recent engine add hits");
     }
 
     g_clear_pointer (&self->hits, g_ptr_array_unref);
 
-    g_debug ("Recent engine finished");
     nautilus_search_provider_finished (provider);
 
     return FALSE;
@@ -309,13 +307,17 @@ recent_thread_func (NautilusSearchEngineRecent *self)
     return NULL;
 }
 
+static const char *
+get_name (NautilusSearchProvider *provider)
+{
+    return "recent";
+}
+
 static void
 start_search (NautilusSearchProvider *provider)
 {
     NautilusSearchEngineRecent *self = NAUTILUS_SEARCH_ENGINE_RECENT (provider);
     g_autoptr (GThread) thread = NULL;
-
-    g_debug ("Recent engine start");
 
     thread = g_thread_new ("nautilus-search-recent", (GThreadFunc) recent_thread_func, self);
 }
@@ -331,6 +333,7 @@ nautilus_search_engine_recent_class_init (NautilusSearchEngineRecentClass *klass
     NautilusSearchProviderClass *search_provider_class = NAUTILUS_SEARCH_PROVIDER_CLASS (klass);
 
     object_class->finalize = nautilus_search_engine_recent_finalize;
+    search_provider_class->get_name = get_name;
     search_provider_class->start_search = start_search;
     search_provider_class->stop = nautilus_search_engine_recent_stop;
 }
