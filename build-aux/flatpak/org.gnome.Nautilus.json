@@ -113,11 +113,6 @@
         "-Dwriteback=false",
         "-Dbattery_detection=none"
       ],
-      "post-install": [
-        "echo 'Removing quotations from DBus service files'",
-        "ls -alh /app/share/dbus-1/services/org.*",
-        "sed -i 's/\"//g' /app/share/dbus-1/services/org.*"
-      ],
       "sources": [
         {
           "type": "git",
