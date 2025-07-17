@@ -89,8 +89,6 @@ check_pending_hits (NautilusSearchEngineLocalsearch *self,
     NautilusSearchHit *hit;
     g_autoptr (GPtrArray) hits = g_ptr_array_new_with_free_func (g_object_unref);
 
-    g_debug ("Localsearch engine add hits");
-
     while ((hit = g_queue_pop_head (self->hits_pending)))
     {
         g_ptr_array_add (hits, hit);
@@ -107,8 +105,6 @@ static void
 search_finished (NautilusSearchEngineLocalsearch *self,
                  GError                          *error)
 {
-    g_debug ("Tracker engine finished");
-
     if (error == NULL)
     {
         check_pending_hits (self, TRUE);
@@ -127,14 +123,6 @@ search_finished (NautilusSearchEngineLocalsearch *self,
     else
     {
         nautilus_search_provider_finished (NAUTILUS_SEARCH_PROVIDER (self));
-        if (g_error_matches (error, G_IO_ERROR, G_IO_ERROR_CANCELLED))
-        {
-            g_debug ("Tracker engine finished and cancelled");
-        }
-        else
-        {
-            g_debug ("Tracker engine finished correctly");
-        }
     }
 }
 
@@ -431,6 +419,12 @@ create_statement (NautilusSearchProvider *provider,
     return stmt;
 }
 
+static const char*
+get_name (NautilusSearchProvider *provider)
+{
+    return "localsearch";
+}
+
 static gboolean
 should_search (NautilusSearchProvider *provider,
                NautilusQuery          *query)
@@ -448,8 +442,6 @@ start_search (NautilusSearchProvider *provider)
     NautilusSearchTimeType type;
     TrackerSparqlStatement *stmt;
     SearchFeatures features = 0;
-
-    g_debug ("Tracker engine start");
 
     NautilusQuery *query = nautilus_search_provider_get_query (self);
     g_autoptr (GFile) location = nautilus_query_get_location (query);
@@ -556,7 +548,6 @@ start_search (NautilusSearchProvider *provider)
 static void
 nautilus_search_engine_localsearch_stop (NautilusSearchProvider *provider)
 {
-    g_debug ("Tracker engine stop");
 }
 
 static void
@@ -565,6 +556,7 @@ nautilus_search_engine_localsearch_class_init (NautilusSearchEngineLocalsearchCl
     GObjectClass *gobject_class = G_OBJECT_CLASS (class);
     gobject_class->finalize = finalize;
     NautilusSearchProviderClass *search_provider_class = NAUTILUS_SEARCH_PROVIDER_CLASS (class);
+    search_provider_class->get_name = get_name;
     search_provider_class->should_search = should_search;
     search_provider_class->start_search = start_search;
     search_provider_class->stop = nautilus_search_engine_localsearch_stop;

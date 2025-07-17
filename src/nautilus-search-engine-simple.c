@@ -113,14 +113,6 @@ search_thread_done (SearchThreadData *data)
 {
     NautilusSearchEngineSimple *engine = data->engine;
 
-    if (nautilus_search_provider_should_stop (engine))
-    {
-        g_debug ("Simple engine finished and cancelled");
-    }
-    else
-    {
-        g_debug ("Simple engine finished");
-    }
     engine->active_search = NULL;
     nautilus_search_provider_finished (NAUTILUS_SEARCH_PROVIDER (engine));
 
@@ -140,8 +132,6 @@ search_thread_process_hits_idle (SearchThreadData *data,
 
     if (!nautilus_search_provider_should_stop (data->engine))
     {
-        g_debug ("Simple engine add hits");
-
         nautilus_search_provider_hits_added (NAUTILUS_SEARCH_PROVIDER (data->engine),
                                              g_steal_pointer (&hits));
     }
@@ -462,6 +452,12 @@ create_thread_timeout (gpointer user_data)
     thread = g_thread_new ("nautilus-search-simple", search_thread_func, simple->active_search);
 }
 
+static const char*
+get_name (NautilusSearchProvider *provider)
+{
+    return "simple";
+}
+
 static gboolean
 should_search (NautilusSearchProvider *provider,
                NautilusQuery          *query)
@@ -478,8 +474,6 @@ start_search (NautilusSearchProvider *provider)
     SearchThreadData *data;
 
     simple = NAUTILUS_SEARCH_ENGINE_SIMPLE (provider);
-
-    g_debug ("Simple engine start");
 
     data = search_thread_data_new (simple);
 
@@ -500,8 +494,6 @@ nautilus_search_engine_simple_stop (NautilusSearchProvider *provider)
 
     if (simple->active_search != NULL)
     {
-        g_debug ("Simple engine stop");
-
         if (simple->create_thread_timeout_id != 0)
         {
             /* Thread wasn't started, so we must call this directly from here.*/
@@ -519,6 +511,7 @@ nautilus_search_engine_simple_class_init (NautilusSearchEngineSimpleClass *class
     gobject_class->finalize = finalize;
 
     NautilusSearchProviderClass *search_provider_class = NAUTILUS_SEARCH_PROVIDER_CLASS (class);
+    search_provider_class->get_name = get_name;
     search_provider_class->should_search = should_search;
     search_provider_class->start_search = start_search;
     search_provider_class->stop = nautilus_search_engine_simple_stop;

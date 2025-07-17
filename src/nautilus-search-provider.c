@@ -15,6 +15,7 @@
  *  License along with this library; if not, see <http://www.gnu.org/licenses/>.
  *
  */
+#define G_LOG_DOMAIN "nautilus-search"
 
 #include <config.h>
 #include "nautilus-search-provider.h"
@@ -24,6 +25,7 @@
 
 typedef struct
 {
+    const char *name;
     guint run_id;
 
     /* Thread-safe variables */
@@ -73,6 +75,19 @@ setup_signals (void)
                                       G_TYPE_NONE, 1, G_TYPE_UINT);
 }
 
+static const char *
+search_provider_name (NautilusSearchProvider *self)
+{
+    NautilusSearchProviderPrivate *priv = nautilus_search_provider_get_instance_private (self);
+    if (G_UNLIKELY (priv->name == NULL))
+    {
+        NautilusSearchProviderClass *klass = NAUTILUS_SEARCH_PROVIDER_CLASS (G_OBJECT_GET_CLASS (self));
+        priv->name = klass->get_name (self);
+    }
+
+    return priv->name;
+}
+
 gboolean
 nautilus_search_provider_start (NautilusSearchProvider *self,
                                 NautilusQuery          *query,
@@ -98,6 +113,7 @@ nautilus_search_provider_start (NautilusSearchProvider *self,
     /* Keep reference of self while running */
     g_object_ref (self);
 
+    g_debug ("Search provider '%s' starting", search_provider_name (self));
     klass->start_search (self);
     return TRUE;
 }
@@ -114,6 +130,7 @@ nautilus_search_provider_stop (NautilusSearchProvider *self)
 
     NautilusSearchProviderPrivate *priv = nautilus_search_provider_get_instance_private (self);
 
+    g_debug ("Search provider '%s' stopping", search_provider_name (self));
     g_cancellable_cancel (priv->cancellable);
 
     NautilusSearchProviderClass *klass = NAUTILUS_SEARCH_PROVIDER_CLASS (G_OBJECT_GET_CLASS (self));
@@ -140,6 +157,7 @@ nautilus_search_provider_hits_added (NautilusSearchProvider *provider,
         return;
     }
 
+    g_debug ("Search provider '%s' found %d hits", search_provider_name (provider), hits->len);
     g_signal_emit (provider, signals[HITS_ADDED], 0,
                    g_steal_pointer (&transferred_hits), priv->run_id);
 }
@@ -154,6 +172,7 @@ nautilus_search_provider_finished (NautilusSearchProvider *self)
     g_clear_object (&priv->cancellable);
     g_clear_object (&priv->query);
 
+    g_debug ("Search provider '%s' finished", search_provider_name (self));
     g_signal_emit (self, signals[FINISHED], 0, priv->run_id);
 
     /* Release reference of self when done */
