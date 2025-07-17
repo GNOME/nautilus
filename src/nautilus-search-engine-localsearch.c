@@ -136,8 +136,6 @@ search_finished (NautilusSearchEngineLocalsearch *self,
             g_debug ("Tracker engine finished correctly");
         }
     }
-
-    g_object_unref (self);
 }
 
 static void cursor_callback (GObject      *object,
@@ -452,7 +450,6 @@ start_search (NautilusSearchProvider *provider)
     SearchFeatures features = 0;
 
     g_debug ("Tracker engine start");
-    g_object_ref (self);
 
     NautilusQuery *query = nautilus_search_provider_get_query (self);
     g_autoptr (GFile) location = nautilus_query_get_location (query);

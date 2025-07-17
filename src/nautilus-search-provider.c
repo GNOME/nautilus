@@ -95,6 +95,8 @@ nautilus_search_provider_start (NautilusSearchProvider *self,
     priv->run_id = run_id;
     priv->cancellable = g_cancellable_new ();
     g_set_object (&priv->query, query);
+    /* Keep reference of self while running */
+    g_object_ref (self);
 
     klass->start_search (self);
     return TRUE;
@@ -153,6 +155,9 @@ nautilus_search_provider_finished (NautilusSearchProvider *self)
     g_clear_object (&priv->query);
 
     g_signal_emit (self, signals[FINISHED], 0, priv->run_id);
+
+    /* Release reference of self when done */
+    g_object_ref (self);
 }
 
 /** Protected methods, generic type for convenience */
