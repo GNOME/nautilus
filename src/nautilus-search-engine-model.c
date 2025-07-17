@@ -77,12 +77,10 @@ search_finished (NautilusSearchEngineModel *model)
 
     if (hits != NULL && hits->len > 0)
     {
-        g_debug ("Model engine hits added");
         nautilus_search_provider_hits_added (NAUTILUS_SEARCH_PROVIDER (model),
                                              g_steal_pointer (&hits));
     }
 
-    g_debug ("Model engine finished");
     nautilus_search_provider_finished (NAUTILUS_SEARCH_PROVIDER (model));
 
     return FALSE;
@@ -210,6 +208,12 @@ model_directory_ready_cb (NautilusDirectory *directory,
     search_finished (model);
 }
 
+static const char*
+get_name (NautilusSearchProvider *provider)
+{
+    return "current directory";
+}
+
 static gboolean
 should_search (NautilusSearchProvider *provider,
                NautilusQuery          *query)
@@ -230,8 +234,6 @@ start_search (NautilusSearchProvider *provider)
 
     model = NAUTILUS_SEARCH_ENGINE_MODEL (provider);
 
-    g_debug ("Model engine start");
-
     nautilus_directory_call_when_ready (model->directory,
                                         NAUTILUS_FILE_ATTRIBUTE_INFO,
                                         TRUE, model_directory_ready_cb, model);
@@ -243,8 +245,6 @@ nautilus_search_engine_model_stop (NautilusSearchProvider *provider)
     NautilusSearchEngineModel *model;
 
     model = NAUTILUS_SEARCH_ENGINE_MODEL (provider);
-
-    g_debug ("Model engine stop");
 
     nautilus_directory_cancel_callback (model->directory,
                                         model_directory_ready_cb, model);
@@ -260,6 +260,7 @@ nautilus_search_engine_model_class_init (NautilusSearchEngineModelClass *class)
     gobject_class->finalize = finalize;
 
     NautilusSearchProviderClass *search_provider_class = NAUTILUS_SEARCH_PROVIDER_CLASS (class);
+    search_provider_class->get_name = get_name;
     search_provider_class->should_search = should_search;
     search_provider_class->start_search = start_search;
     search_provider_class->stop = nautilus_search_engine_model_stop;

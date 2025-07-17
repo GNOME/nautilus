@@ -32,6 +32,8 @@ struct _NautilusSearchProviderClass
 {
         GObjectClass parent_class;
 
+        const char * (*get_name) (NautilusSearchProvider *provider);
+
         /**
          * @self: object derived from #NautilusSearchProvider
          * @query: a #NautilusQuery
