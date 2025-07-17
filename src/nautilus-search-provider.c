@@ -94,6 +94,8 @@ nautilus_search_provider_start (NautilusSearchProvider *self,
 
     priv->cancellable = g_cancellable_new ();
     g_set_object (&priv->query, query);
+    /* Keep reference on self while running */
+    g_object_ref (self);
     klass->start_search (self);
 
     return TRUE;
@@ -151,6 +153,9 @@ nautilus_search_provider_finished (NautilusSearchProvider *self)
 
     g_clear_object (&priv->cancellable);
     g_clear_object (&priv->query);
+
+    /* Drop self-reference, counterpart to start() */
+    g_object_ref (self);
 
     g_signal_emit (self, signals[FINISHED], 0);
 }

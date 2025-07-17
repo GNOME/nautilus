@@ -70,9 +70,8 @@ nautilus_search_engine_recent_finalize (GObject *object)
 }
 
 static gboolean
-search_thread_add_hits_idle (gpointer user_data)
+search_thread_add_hits_idle (NautilusSearchEngineRecent *self)
 {
-    g_autoptr (NautilusSearchEngineRecent) self = user_data;
     NautilusSearchProvider *provider = NAUTILUS_SEARCH_PROVIDER (self);
 
     self->add_hits_idle_id = 0;
@@ -103,7 +102,7 @@ search_add_hits_idle (NautilusSearchEngineRecent *self,
     }
 
     self->hits = hits;
-    self->add_hits_idle_id = g_idle_add (search_thread_add_hits_idle, g_object_ref (self));
+    self->add_hits_idle_id = g_idle_add ((GSourceFunc) search_thread_add_hits_idle, self);
 }
 
 static gboolean
@@ -167,9 +166,8 @@ is_file_valid_recursive (NautilusSearchEngineRecent  *self,
 }
 
 static gpointer
-recent_thread_func (gpointer user_data)
+recent_thread_func (NautilusSearchEngineRecent *self)
 {
-    g_autoptr (NautilusSearchEngineRecent) self = NAUTILUS_SEARCH_ENGINE_RECENT (user_data);
     g_autoptr (GPtrArray) date_range = NULL;
     g_autoptr (GFile) query_location = NULL;
     GList *recent_items;
@@ -319,8 +317,7 @@ start_search (NautilusSearchProvider *provider)
 
     g_debug ("Recent engine start");
 
-    thread = g_thread_new ("nautilus-search-recent", recent_thread_func,
-                           g_object_ref (self));
+    thread = g_thread_new ("nautilus-search-recent", (GThreadFunc) recent_thread_func, self);
 }
 static void
 nautilus_search_engine_recent_stop (NautilusSearchProvider *provider)
