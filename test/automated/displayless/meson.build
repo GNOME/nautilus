@@ -51,10 +51,6 @@ localsearch_tests = [
   ]],
 ]
 
-# disable localsearch tests for now, until issues with accessing it from
-# within the sandbox are resolved
-localsearch_tests = []
-
 foreach t: tests
   test(
     t[0],
