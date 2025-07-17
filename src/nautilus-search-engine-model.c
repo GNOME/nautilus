@@ -84,7 +84,6 @@ search_finished (NautilusSearchEngineModel *model)
 
     g_debug ("Model engine finished");
     nautilus_search_provider_finished (NAUTILUS_SEARCH_PROVIDER (model));
-    g_object_unref (model);
 
     return FALSE;
 }
@@ -234,8 +233,6 @@ start_search (NautilusSearchProvider *provider)
     g_set_object (&model->directory, directory);
 
     g_debug ("Model engine start");
-
-    g_object_ref (model);
 
     nautilus_directory_call_when_ready (model->directory,
                                         NAUTILUS_FILE_ATTRIBUTE_INFO,
