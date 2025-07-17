@@ -51,7 +51,6 @@ struct _NautilusSearchEngineLocalsearch
     NautilusSearchProvider parent_instance;
 
     TrackerSparqlConnection *connection;
-    NautilusQuery *query;
     GHashTable *statements;
 
     GQueue *hits_pending;
@@ -68,7 +67,6 @@ finalize (GObject *object)
 {
     NautilusSearchEngineLocalsearch *self = NAUTILUS_SEARCH_ENGINE_LOCALSEARCH (object);
 
-    g_clear_object (&self->query);
     g_queue_free_full (self->hits_pending, g_object_unref);
     g_clear_pointer (&self->statements, g_hash_table_unref);
     /* This is a singleton, no need to unref. */
@@ -196,7 +194,7 @@ cursor_callback (GObject      *object,
     basename = g_path_get_basename (uri);
 
     hit = nautilus_search_hit_new (uri);
-    match = nautilus_query_matches_string (self->query, basename);
+    match = nautilus_query_matches_string (nautilus_search_provider_get_query (self), basename);
     nautilus_search_hit_set_fts_rank (hit, rank + match);
     g_free (basename);
 
@@ -442,9 +440,8 @@ should_search (NautilusSearchProvider *provider,
     return self->connection != NULL;
 }
 
-static gboolean
-search_engine_localsearch_start (NautilusSearchProvider *provider,
-                                 NautilusQuery          *query)
+static void
+start_search (NautilusSearchProvider *provider)
 {
     NautilusSearchEngineLocalsearch *self = NAUTILUS_SEARCH_ENGINE_LOCALSEARCH (provider);
     g_autofree gchar *query_text = NULL;
@@ -453,18 +450,17 @@ search_engine_localsearch_start (NautilusSearchProvider *provider,
     TrackerSparqlStatement *stmt;
     SearchFeatures features = 0;
 
-    g_set_object (&self->query, query);
-
     g_debug ("Tracker engine start");
     g_object_ref (self);
 
-    g_autoptr (GFile) location = nautilus_query_get_location (self->query);
+    NautilusQuery *query = nautilus_search_provider_get_query (self);
+    g_autoptr (GFile) location = nautilus_query_get_location (query);
 
-    self->fts_enabled = nautilus_query_get_search_content (self->query);
+    self->fts_enabled = nautilus_query_get_search_content (query);
 
-    query_text = nautilus_query_get_text (self->query);
-    date_range = nautilus_query_get_date_range (self->query);
-    type = nautilus_query_get_search_type (self->query);
+    query_text = nautilus_query_get_text (query);
+    date_range = nautilus_query_get_date_range (query);
+    type = nautilus_query_get_search_type (query);
 
     if (query_text != NULL)
     {
@@ -474,11 +470,11 @@ search_engine_localsearch_start (NautilusSearchProvider *provider,
     {
         features |= SEARCH_FEATURE_CONTENT;
     }
-    if (nautilus_query_recursive (self->query))
+    if (nautilus_query_recursive (query))
     {
         features |= SEARCH_FEATURE_RECURSIVE;
     }
-    if (nautilus_query_has_mime_types (self->query))
+    if (nautilus_query_has_mime_types (query))
     {
         features |= SEARCH_FEATURE_MIMETYPE;
     }
@@ -524,9 +520,9 @@ search_engine_localsearch_start (NautilusSearchProvider *provider,
         tracker_sparql_statement_bind_string (stmt, "match", query_text);
     }
 
-    if (nautilus_query_has_mime_types (self->query))
+    if (nautilus_query_has_mime_types (query))
     {
-        g_autofree char *mimetype_str = nautilus_query_get_mime_type_str (self->query);
+        g_autofree char *mimetype_str = nautilus_query_get_mime_type_str (query);
 
         tracker_sparql_statement_bind_string (stmt, "mimeTypes", mimetype_str);
     }
@@ -558,8 +554,6 @@ search_engine_localsearch_start (NautilusSearchProvider *provider,
                                             nautilus_search_provider_get_cancellable (self),
                                             query_callback,
                                             self);
-
-    return TRUE;
 }
 
 static void
@@ -576,7 +570,7 @@ nautilus_search_engine_localsearch_class_init (NautilusSearchEngineLocalsearchCl
 
     gobject_class->finalize = finalize;
     search_provider_class->should_search = should_search;
-    search_provider_class->start = search_engine_localsearch_start;
+    search_provider_class->start_search = start_search;
     search_provider_class->stop = nautilus_search_engine_localsearch_stop;
 }
 
