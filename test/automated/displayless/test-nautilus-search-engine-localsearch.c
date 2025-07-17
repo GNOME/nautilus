@@ -150,7 +150,7 @@ main (int   argc,
                  "to ensure a private Localsearch indexer daemon is used.");
     }
 
-    connection = nautilus_tracker_get_miner_fs_connection (&error);
+    connection = nautilus_localsearch_get_miner_fs_connection (&error);
 
     g_assert_no_error (error);
 
