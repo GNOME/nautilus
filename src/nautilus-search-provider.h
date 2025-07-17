@@ -40,11 +40,7 @@ struct _NautilusSearchProviderClass
         gboolean (*should_search) (NautilusSearchProvider *provider,
                                    NautilusQuery          *query);
 
-        /**
-         * Returns: Whether search provider was started
-         */
-        gboolean (*start) (NautilusSearchProvider *provider,
-                           NautilusQuery          *query);
+        void (*start_search) (NautilusSearchProvider *provider);
         void (*stop) (NautilusSearchProvider *provider);
 };
 
@@ -62,6 +58,8 @@ gboolean
 nautilus_search_provider_should_stop (gpointer self);
 GCancellable *
 nautilus_search_provider_get_cancellable (gpointer self);
+NautilusQuery *
+nautilus_search_provider_get_query (gpointer self);
 
 void           nautilus_search_provider_hits_added      (NautilusSearchProvider *provider,
                                                          GPtrArray              *hits);

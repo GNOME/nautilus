@@ -28,6 +28,7 @@ typedef struct
 
     /* Thread-safe variables */
     GCancellable *cancellable;
+    NautilusQuery *query;
 } NautilusSearchProviderPrivate;
 
 G_DEFINE_TYPE_WITH_PRIVATE (NautilusSearchProvider, nautilus_search_provider, G_TYPE_OBJECT)
@@ -93,8 +94,10 @@ nautilus_search_provider_start (NautilusSearchProvider *self,
 
     priv->run_id = run_id;
     priv->cancellable = g_cancellable_new ();
+    g_set_object (&priv->query, query);
 
-    return klass->start (self, query);
+    klass->start_search (self);
+    return TRUE;
 }
 
 void
@@ -147,6 +150,7 @@ nautilus_search_provider_finished (NautilusSearchProvider *self)
     NautilusSearchProviderPrivate *priv = nautilus_search_provider_get_instance_private (self);
 
     g_clear_object (&priv->cancellable);
+    g_clear_object (&priv->query);
 
     g_signal_emit (self, signals[FINISHED], 0, priv->run_id);
 }
@@ -167,6 +171,14 @@ nautilus_search_provider_get_cancellable (gpointer self)
     NautilusSearchProviderPrivate *priv = nautilus_search_provider_get_instance_private (self);
 
     return priv->cancellable;
+}
+
+NautilusQuery *
+nautilus_search_provider_get_query (gpointer self)
+{
+    NautilusSearchProviderPrivate *priv = nautilus_search_provider_get_instance_private (self);
+
+    return priv->query;
 }
 
 static void

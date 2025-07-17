@@ -47,7 +47,6 @@ typedef struct
     gint n_processed_files;
     GPtrArray *hits;
 
-    NautilusQuery *query;
     gint processing_id;
     GMutex idle_mutex;
     /* The following data can be accessed from different threads
@@ -62,7 +61,6 @@ struct _NautilusSearchEngineSimple
 {
     NautilusSearchProvider parent_instance;
 
-    NautilusQuery *query;
     guint create_thread_timeout_id;
 
     SearchThreadData *active_search;
@@ -76,15 +74,13 @@ static void
 finalize (GObject *object)
 {
     NautilusSearchEngineSimple *simple = NAUTILUS_SEARCH_ENGINE_SIMPLE (object);
-    g_clear_object (&simple->query);
     g_clear_handle_id (&simple->create_thread_timeout_id, g_source_remove);
 
     G_OBJECT_CLASS (nautilus_search_engine_simple_parent_class)->finalize (object);
 }
 
 static SearchThreadData *
-search_thread_data_new (NautilusSearchEngineSimple *engine,
-                        NautilusQuery              *query)
+search_thread_data_new (NautilusSearchEngineSimple *engine)
 {
     SearchThreadData *data;
 
@@ -93,7 +89,6 @@ search_thread_data_new (NautilusSearchEngineSimple *engine,
     data->engine = g_object_ref (engine);
     data->directories = g_queue_new ();
     data->visited = g_hash_table_new_full (g_str_hash, g_str_equal, g_free, NULL);
-    data->query = g_object_ref (query);
 
     g_mutex_init (&data->idle_mutex);
     data->idle_queue = g_queue_new ();
@@ -106,7 +101,6 @@ search_thread_data_free (SearchThreadData *data)
 {
     g_queue_free_full (data->directories, (GDestroyNotify) g_object_unref);
     g_hash_table_destroy (data->visited);
-    g_object_unref (data->query);
     g_clear_pointer (&data->hits, g_ptr_array_unref);
     g_object_unref (data->engine);
     g_mutex_clear (&data->idle_mutex);
@@ -265,7 +259,8 @@ static void
 visit_directory (GFile            *dir,
                  SearchThreadData *data)
 {
-    const char *attributes = nautilus_query_has_mime_types (data->query)
+    NautilusQuery *query = nautilus_search_provider_get_query (data->engine);
+    const char *attributes = nautilus_query_has_mime_types (query)
                              ? STD_ATTRIBUTES_WITH_CONTENT_TYPE : STD_ATTRIBUTES;
     GCancellable *cancellable = nautilus_search_provider_get_cancellable (data->engine);
 
@@ -280,11 +275,11 @@ visit_directory (GFile            *dir,
         return;
     }
 
-    NautilusSearchTimeType type = nautilus_query_get_search_type (data->query);
-    g_autoptr (GPtrArray) date_range = nautilus_query_get_date_range (data->query);
-    gboolean show_hidden = nautilus_query_get_show_hidden_files (data->query);
-    gboolean recursion_enabled = nautilus_query_recursive (data->query);
-    gboolean per_location_recursive_check = nautilus_query_recursive_local_only (data->query);
+    NautilusSearchTimeType type = nautilus_query_get_search_type (query);
+    g_autoptr (GPtrArray) date_range = nautilus_query_get_date_range (query);
+    gboolean show_hidden = nautilus_query_get_show_hidden_files (query);
+    gboolean recursion_enabled = nautilus_query_recursive (query);
+    gboolean per_location_recursive_check = nautilus_query_recursive_local_only (query);
 
     while (TRUE)
     {
@@ -313,10 +308,10 @@ visit_directory (GFile            *dir,
         }
 
         g_autoptr (GFile) child = g_file_get_child (dir, g_file_info_get_name (info));
-        gdouble match = nautilus_query_matches_string (data->query, display_name);
+        gdouble match = nautilus_query_matches_string (query, display_name);
         gboolean found = (match > -1);
 
-        if (found && nautilus_query_has_mime_types (data->query))
+        if (found && nautilus_query_has_mime_types (query))
         {
             const char *mime_type = g_file_info_get_attribute_string (
                 info, G_FILE_ATTRIBUTE_STANDARD_CONTENT_TYPE);
@@ -326,7 +321,7 @@ visit_directory (GFile            *dir,
                                                               G_FILE_ATTRIBUTE_STANDARD_FAST_CONTENT_TYPE);
             }
 
-            found = nautilus_query_matches_mime_type (data->query, mime_type);
+            found = nautilus_query_matches_mime_type (query, mime_type);
         }
 
         mtime = g_file_info_get_modification_date_time (info);
@@ -416,9 +411,10 @@ search_thread_func (gpointer user_data)
 {
     SearchThreadData *data = user_data;
     GCancellable *cancellable = nautilus_search_provider_get_cancellable (data->engine);
+    NautilusQuery *query = nautilus_search_provider_get_query (data->engine);
 
     /* Insert id for toplevel directory into visited */
-    g_autoptr (GFile) toplevel = nautilus_query_get_location (data->query);
+    g_autoptr (GFile) toplevel = nautilus_query_get_location (query);
     g_autoptr (GFileInfo) info = g_file_query_info (
         toplevel, G_FILE_ATTRIBUTE_ID_FILE, 0, cancellable, NULL);
 
@@ -476,30 +472,26 @@ should_search (NautilusSearchProvider *provider,
     return location != NULL;
 }
 
-static gboolean
-search_engine_simple_start (NautilusSearchProvider *provider,
-                            NautilusQuery          *query)
+static void
+start_search (NautilusSearchProvider *provider)
 {
     NautilusSearchEngineSimple *simple;
     SearchThreadData *data;
 
     simple = NAUTILUS_SEARCH_ENGINE_SIMPLE (provider);
 
-    g_set_object (&simple->query, query);
-
     g_debug ("Simple engine start");
 
-    data = search_thread_data_new (simple, simple->query);
+    data = search_thread_data_new (simple);
 
     simple->active_search = data;
 
-    g_queue_push_tail (data->directories, nautilus_query_get_location (simple->query));
+    NautilusQuery *query = nautilus_search_provider_get_query (provider);
+    g_queue_push_tail (data->directories, nautilus_query_get_location (query));
 
     simple->create_thread_timeout_id = g_timeout_add_once (CREATE_THREAD_DELAY_MS,
                                                            create_thread_timeout,
                                                            simple);
-
-    return TRUE;
 }
 
 static void
@@ -529,14 +521,13 @@ nautilus_search_engine_simple_class_init (NautilusSearchEngineSimpleClass *class
 
     NautilusSearchProviderClass *search_provider_class = NAUTILUS_SEARCH_PROVIDER_CLASS (class);
     search_provider_class->should_search = should_search;
-    search_provider_class->start = search_engine_simple_start;
+    search_provider_class->start_search = start_search;
     search_provider_class->stop = nautilus_search_engine_simple_stop;
 }
 
 static void
 nautilus_search_engine_simple_init (NautilusSearchEngineSimple *engine)
 {
-    engine->query = NULL;
     engine->active_search = NULL;
 }
 
