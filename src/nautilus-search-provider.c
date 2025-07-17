@@ -38,15 +38,27 @@ G_DEFINE_INTERFACE (NautilusSearchProvider, nautilus_search_provider, G_TYPE_OBJ
 static void
 nautilus_search_provider_default_init (NautilusSearchProviderInterface *iface)
 {
+    /**
+     * NautilusSearchProvider::hits-added:
+     * @provider: the provider that found search hits
+     * @hits: (transfer full): #GPtrArray of #NautilusSearchHit
+     *
+     * This signal is emitted when the provider has search hits.
+     */
     signals[HITS_ADDED] = g_signal_new ("hits-added",
                                         NAUTILUS_TYPE_SEARCH_PROVIDER,
-                                        G_SIGNAL_RUN_LAST,
-                                        G_STRUCT_OFFSET (NautilusSearchProviderInterface, hits_added),
+                                        G_SIGNAL_RUN_LAST, 0,
                                         NULL, NULL,
                                         g_cclosure_marshal_VOID__POINTER,
                                         G_TYPE_NONE, 1,
                                         G_TYPE_POINTER);
 
+    /**
+     * NautilusSearchProvider::provider-finished:
+     * @provider: the provider that finished searching
+     *
+     * This signal is emitted when the provider finishes searching.
+     */
     signals[FINISHED] = g_signal_new ("provider-finished", NAUTILUS_TYPE_SEARCH_PROVIDER,
                                       G_SIGNAL_RUN_LAST, 0,
                                       NULL, NULL,
