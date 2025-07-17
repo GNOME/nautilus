@@ -42,7 +42,6 @@ struct _NautilusSearchEngineRecent
 {
     NautilusSearchProvider parent_instance;
 
-    NautilusQuery *query;
     GtkRecentManager *recent_manager;
     GPtrArray *hits;
     guint add_hits_idle_id;
@@ -65,7 +64,6 @@ nautilus_search_engine_recent_finalize (GObject *object)
 
     g_clear_handle_id (&self->add_hits_idle_id, g_source_remove);
 
-    g_clear_object (&self->query);
     g_clear_pointer (&self->hits, g_ptr_array_unref);
 
     G_OBJECT_CLASS (nautilus_search_engine_recent_parent_class)->finalize (object);
@@ -111,6 +109,7 @@ search_add_hits_idle (NautilusSearchEngineRecent *self,
 static gboolean
 is_file_valid_recursive (NautilusSearchEngineRecent  *self,
                          GFile                       *file,
+                         gboolean                     show_hidden,
                          GDateTime                  **mtime,
                          GDateTime                  **atime,
                          GDateTime                  **ctime,
@@ -139,7 +138,7 @@ is_file_valid_recursive (NautilusSearchEngineRecent  *self,
         *ctime = g_file_info_get_creation_date_time (file_info);
     }
 
-    if (!nautilus_query_get_show_hidden_files (self->query))
+    if (!show_hidden)
     {
         gboolean is_hidden;
 
@@ -153,7 +152,7 @@ is_file_valid_recursive (NautilusSearchEngineRecent  *self,
 
             if (parent)
             {
-                return is_file_valid_recursive (self, parent,
+                return is_file_valid_recursive (self, parent, show_hidden,
                                                 NULL, NULL, NULL,
                                                 error);
             }
@@ -175,13 +174,13 @@ recent_thread_func (gpointer user_data)
     g_autoptr (GFile) query_location = NULL;
     GList *recent_items;
     GPtrArray *hits = g_ptr_array_new_with_free_func (g_object_unref);
+    NautilusQuery *query = nautilus_search_provider_get_query (self);
+    gboolean show_hidden = nautilus_query_get_show_hidden_files (query);
     GList *l;
 
-    g_return_val_if_fail (self->query, NULL);
-
     recent_items = gtk_recent_manager_get_items (self->recent_manager);
-    date_range = nautilus_query_get_date_range (self->query);
-    query_location = nautilus_query_get_location (self->query);
+    date_range = nautilus_query_get_date_range (query);
+    query_location = nautilus_query_get_location (query);
 
     for (l = recent_items; l != NULL; l = l->next)
     {
@@ -205,12 +204,12 @@ recent_thread_func (gpointer user_data)
         }
 
         name = gtk_recent_info_get_display_name (info);
-        rank = nautilus_query_matches_string (self->query, name);
+        rank = nautilus_query_matches_string (query, name);
 
         if (rank <= 0)
         {
             g_autofree char *short_name = gtk_recent_info_get_short_name (info);
-            rank = nautilus_query_matches_string (self->query, short_name);
+            rank = nautilus_query_matches_string (query, short_name);
         }
 
         if (rank > 0)
@@ -226,7 +225,7 @@ recent_thread_func (gpointer user_data)
                 continue;
             }
 
-            if (!is_file_valid_recursive (self, file, &mtime, &atime, &ctime, &error))
+            if (!is_file_valid_recursive (self, file, show_hidden, &mtime, &atime, &ctime, &error))
             {
                 if (g_error_matches (error, G_IO_ERROR, G_IO_ERROR_CANCELLED))
                 {
@@ -245,7 +244,7 @@ recent_thread_func (gpointer user_data)
 
             const char *mime_type = gtk_recent_info_get_mime_type (info);
 
-            if (!nautilus_query_matches_mime_type (self->query, mime_type))
+            if (!nautilus_query_matches_mime_type (query, mime_type))
             {
                 continue;
             }
@@ -259,7 +258,7 @@ recent_thread_func (gpointer user_data)
 
                 initial_date = g_ptr_array_index (date_range, 0);
                 end_date = g_ptr_array_index (date_range, 1);
-                type = nautilus_query_get_search_type (self->query);
+                type = nautilus_query_get_search_type (query);
 
                 switch (type)
                 {
@@ -312,20 +311,16 @@ recent_thread_func (gpointer user_data)
     return NULL;
 }
 
-static gboolean
-search_engine_recent_start (NautilusSearchProvider *provider,
-                            NautilusQuery          *query)
+static void
+start_search (NautilusSearchProvider *provider)
 {
     NautilusSearchEngineRecent *self = NAUTILUS_SEARCH_ENGINE_RECENT (provider);
     g_autoptr (GThread) thread = NULL;
 
-    g_set_object (&self->query, query);
     g_debug ("Recent engine start");
 
     thread = g_thread_new ("nautilus-search-recent", recent_thread_func,
                            g_object_ref (self));
-
-    return TRUE;
 }
 static void
 nautilus_search_engine_recent_stop (NautilusSearchProvider *provider)
@@ -339,7 +334,7 @@ nautilus_search_engine_recent_class_init (NautilusSearchEngineRecentClass *klass
     NautilusSearchProviderClass *search_provider_class = NAUTILUS_SEARCH_PROVIDER_CLASS (klass);
 
     object_class->finalize = nautilus_search_engine_recent_finalize;
-    search_provider_class->start = search_engine_recent_start;
+    search_provider_class->start_search = start_search;
     search_provider_class->stop = nautilus_search_engine_recent_stop;
 }
 

@@ -39,8 +39,6 @@ struct _NautilusSearchEngineModel
 {
     NautilusSearchProvider parent_instance;
 
-    NautilusQuery *query;
-
     GPtrArray *hits;
     NautilusDirectory *directory;
 
@@ -67,7 +65,6 @@ finalize (GObject *object)
     }
 
     g_clear_object (&model->directory);
-    g_clear_object (&model->query);
 
     G_OBJECT_CLASS (nautilus_search_engine_model_parent_class)->finalize (object);
 }
@@ -119,6 +116,7 @@ model_directory_ready_cb (NautilusDirectory *directory,
     GDateTime *initial_date;
     GDateTime *end_date;
     GPtrArray *date_range;
+    NautilusQuery *query = nautilus_search_provider_get_query (model);
 
     files = nautilus_directory_get_file_list (directory);
 
@@ -131,7 +129,7 @@ model_directory_ready_cb (NautilusDirectory *directory,
 
         file = l->data;
 
-        match = nautilus_query_matches_string (model->query,
+        match = nautilus_query_matches_string (query,
                                                nautilus_file_get_display_name (file));
         found = (match > -1);
         if (!found)
@@ -141,7 +139,7 @@ model_directory_ready_cb (NautilusDirectory *directory,
 
         const char *mime_type = nautilus_file_get_mime_type (file);
 
-        if (!nautilus_query_matches_mime_type (model->query, mime_type))
+        if (!nautilus_query_matches_mime_type (query, mime_type))
         {
             continue;
         }
@@ -150,13 +148,13 @@ model_directory_ready_cb (NautilusDirectory *directory,
         atime = g_date_time_new_from_unix_local (nautilus_file_get_atime (file));
         ctime = g_date_time_new_from_unix_local (nautilus_file_get_btime (file));
 
-        date_range = nautilus_query_get_date_range (model->query);
+        date_range = nautilus_query_get_date_range (query);
         if (found && date_range != NULL)
         {
             NautilusSearchTimeType type;
             GDateTime *target_date;
 
-            type = nautilus_query_get_search_type (model->query);
+            type = nautilus_query_get_search_type (query);
             initial_date = g_ptr_array_index (date_range, 0);
             end_date = g_ptr_array_index (date_range, 1);
 
@@ -223,17 +221,15 @@ should_search (NautilusSearchProvider *provider,
     return directory != NULL;
 }
 
-static gboolean
-search_engine_model_start (NautilusSearchProvider *provider,
-                           NautilusQuery          *query)
+static void
+start_search (NautilusSearchProvider *provider)
 {
+    NautilusQuery *query = nautilus_search_provider_get_query (provider);
     NautilusSearchEngineModel *model;
 
     model = NAUTILUS_SEARCH_ENGINE_MODEL (provider);
 
-    g_set_object (&model->query, query);
-
-    g_autoptr (GFile) query_location = nautilus_query_get_location (model->query);
+    g_autoptr (GFile) query_location = nautilus_query_get_location (query);
     g_autoptr (NautilusDirectory) directory = nautilus_directory_get (query_location);
     g_set_object (&model->directory, directory);
 
@@ -244,8 +240,6 @@ search_engine_model_start (NautilusSearchProvider *provider,
     nautilus_directory_call_when_ready (model->directory,
                                         NAUTILUS_FILE_ATTRIBUTE_INFO,
                                         TRUE, model_directory_ready_cb, model);
-
-    return TRUE;
 }
 
 static void
@@ -272,7 +266,7 @@ nautilus_search_engine_model_class_init (NautilusSearchEngineModelClass *class)
 
     gobject_class->finalize = finalize;
     search_provider_class->should_search = should_search;
-    search_provider_class->start = search_engine_model_start;
+    search_provider_class->start_search = start_search;
     search_provider_class->stop = nautilus_search_engine_model_stop;
 }
 
