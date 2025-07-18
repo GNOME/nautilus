@@ -27,6 +27,7 @@ struct _NautilusGridCell
     GtkWidget *icon;
     GtkWidget *emblems_box;
     GtkWidget *labels_box;
+    GtkWidget *label;
     GtkWidget *first_caption;
     GtkWidget *second_caption;
     GtkWidget *third_caption;
@@ -106,6 +107,9 @@ update_captions (NautilusGridCell *self)
     item = nautilus_view_cell_get_item (NAUTILUS_VIEW_CELL (self));
     g_return_if_fail (item != NULL);
     file = nautilus_view_item_get_file (item);
+
+    gtk_label_set_label (GTK_LABEL (self->label), nautilus_file_get_display_name (file));
+
     for (guint i = 0; i < NAUTILUS_GRID_CELL_N_CAPTIONS; i++)
     {
         GQuark attribute_q = self->caption_attributes[i];
@@ -449,6 +453,7 @@ nautilus_grid_cell_class_init (NautilusGridCellClass *klass)
     gtk_widget_class_bind_template_child (widget_class, NautilusGridCell, icon);
     gtk_widget_class_bind_template_child (widget_class, NautilusGridCell, emblems_box);
     gtk_widget_class_bind_template_child (widget_class, NautilusGridCell, labels_box);
+    gtk_widget_class_bind_template_child (widget_class, NautilusGridCell, label);
     gtk_widget_class_bind_template_child (widget_class, NautilusGridCell, first_caption);
     gtk_widget_class_bind_template_child (widget_class, NautilusGridCell, second_caption);
     gtk_widget_class_bind_template_child (widget_class, NautilusGridCell, third_caption);

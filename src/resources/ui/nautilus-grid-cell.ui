@@ -36,13 +36,6 @@
             <property name="wrap-mode">word-char</property>
             <property name="attributes">0 -1 insert-hyphens false</property>
             <signal name="query-tooltip" handler="on_label_query_tooltip"/>
-            <binding name="label">
-              <lookup name="display-name" type="NautilusFile">
-                <lookup name="file" type="NautilusViewItem">
-                  <lookup name="item">NautilusGridCell</lookup>
-                </lookup>
-              </lookup>
-            </binding>
           </object>
         </child>
         <child>
