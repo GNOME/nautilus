@@ -119,13 +119,13 @@ nautilus_view_item_set_property (GObject      *object,
 
         case PROP_IS_CUT:
         {
-            self->is_cut = g_value_get_boolean (value);
+            nautilus_view_item_set_cut (self, g_value_get_boolean (value));
         }
         break;
 
         case PROP_DRAG_ACCEPT:
         {
-            self->drag_accept = g_value_get_boolean (value);
+            nautilus_view_item_set_drag_accept (self, g_value_get_boolean (value));
         }
         break;
 
@@ -197,7 +197,12 @@ nautilus_view_item_set_cut (NautilusViewItem *self,
 {
     g_return_if_fail (NAUTILUS_IS_VIEW_ITEM (self));
 
-    g_object_set (self, "is-cut", is_cut, NULL);
+    if (self->is_cut != is_cut)
+    {
+        self->is_cut = is_cut;
+
+        g_object_notify_by_pspec (G_OBJECT (self), properties[PROP_IS_CUT]);
+    }
 }
 
 void
@@ -206,7 +211,12 @@ nautilus_view_item_set_drag_accept (NautilusViewItem *self,
 {
     g_return_if_fail (NAUTILUS_IS_VIEW_ITEM (self));
 
-    g_object_set (self, "drag-accept", drag_accept, NULL);
+    if (self->drag_accept != drag_accept)
+    {
+        self->drag_accept = drag_accept;
+
+        g_object_notify_by_pspec (G_OBJECT (self), properties[PROP_DRAG_ACCEPT]);
+    }
 }
 
 gboolean
