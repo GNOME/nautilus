@@ -60,13 +60,6 @@
                         <property name="halign">start</property>
                         <property name="has-tooltip">true</property>
                         <signal name="query-tooltip" handler="on_label_query_tooltip"/>
-                        <binding name="label">
-                          <lookup name="display-name">
-                            <lookup name="file">
-                              <lookup name="item">NautilusNameCell</lookup>
-                            </lookup>
-                          </lookup>
-                        </binding>
                         <attributes>
                           <attribute name="insert-hyphens" value="false"/>
                         </attributes>
