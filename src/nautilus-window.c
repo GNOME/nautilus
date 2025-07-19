@@ -1479,7 +1479,7 @@ void
 nautilus_window_back_or_forward_in_new_tab (NautilusWindow              *window,
                                             NautilusNavigationDirection  direction)
 {
-    GFile *location;
+    g_autoptr (GFile) location = NULL;
     NautilusWindowSlot *window_slot;
     NautilusWindowSlot *new_slot;
     NautilusNavigationState *state;

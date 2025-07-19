@@ -905,7 +905,7 @@ nautilus_search_popover_reset_date_range (NautilusSearchPopover *popover)
     g_return_if_fail (NAUTILUS_IS_SEARCH_POPOVER (popover));
 
     /* Reselect today at the calendar */
-    GDateTime *now = g_date_time_new_now_local ();
+    g_autoptr (GDateTime) now = g_date_time_new_now_local ();
     g_signal_handlers_block_by_func (popover->calendar, calendar_day_selected, popover);
     gtk_calendar_select_day (GTK_CALENDAR (popover->calendar), now);
     g_signal_handlers_unblock_by_func (popover->calendar, calendar_day_selected, popover);

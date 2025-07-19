@@ -8613,8 +8613,9 @@ nautilus_file_get_property (GObject    *object,
         case PROP_A11Y_NAME:
         {
             NautilusTagManager *tag_manager = nautilus_tag_manager_get ();
-            if (nautilus_tag_manager_file_is_starred (tag_manager,
-                                                      nautilus_file_get_uri (file)))
+            g_autofree gchar *uri = nautilus_file_get_uri (file);
+
+            if (nautilus_tag_manager_file_is_starred (tag_manager, uri))
             {
                 g_autofree gchar *accessible_name = g_strdup_printf (
                     /* Translators: A "." is added in between file name and starring

@@ -363,6 +363,7 @@ nautilus_path_bar_finalize (GObject *object)
 
     self = NAUTILUS_PATH_BAR (object);
 
+    g_clear_object (&self->current_path);
     g_clear_object (&self->current_view_menu);
     g_clear_object (&self->extensions_section);
     g_clear_object (&self->templates_submenu);

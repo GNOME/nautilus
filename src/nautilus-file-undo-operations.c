@@ -1754,7 +1754,8 @@ trash_retrieve_files_to_restore_thread (GTask        *task,
         const char *origpath;
         GFile *origfile;
 
-        while ((info = g_file_enumerator_next_file (enumerator, NULL, &error)) != NULL)
+        while (g_file_enumerator_iterate (enumerator, &info, NULL, NULL, &error) &&
+               info != NULL)
         {
             /* Retrieve the original file uri */
             origpath = g_file_info_get_attribute_byte_string (info, G_FILE_ATTRIBUTE_TRASH_ORIG_PATH);
