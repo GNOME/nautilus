@@ -29,6 +29,7 @@
 typedef struct
 {
     const char *name;
+    guint delayed_timeout_id;
 
     /* Thread-safe variables */
     GCancellable *cancellable;
@@ -91,6 +92,18 @@ search_provider_name (NautilusSearchProvider *self)
     return priv->name;
 }
 
+static void
+actual_start (NautilusSearchProvider *self)
+{
+    NautilusSearchProviderClass *klass = NAUTILUS_SEARCH_PROVIDER_CLASS (G_OBJECT_GET_CLASS (self));
+    NautilusSearchProviderPrivate *priv = nautilus_search_provider_get_instance_private (self);
+
+    priv->delayed_timeout_id = 0;
+
+    g_debug ("Search provider '%s' starting", search_provider_name (self));
+    klass->start_search (self);
+}
+
 gboolean
 nautilus_search_provider_start (NautilusSearchProvider *self,
                                 NautilusQuery          *query)
@@ -114,7 +127,18 @@ nautilus_search_provider_start (NautilusSearchProvider *self,
     /* Keep reference on self while running */
     g_object_ref (self);
 
-    klass->start_search (self);
+    guint delay_ms = klass->search_delay (self);
+    if (delay_ms > 0)
+    {
+        g_debug ("Search provider '%s' delayed", search_provider_name (self));
+        priv->delayed_timeout_id = g_timeout_add_once (delay_ms,
+                                                       (GSourceOnceFunc) actual_start,
+                                                       self);
+    }
+    else
+    {
+        actual_start (self);
+    }
 
     return TRUE;
 }
@@ -129,14 +153,23 @@ nautilus_search_provider_stop (NautilusSearchProvider *self)
         return;
     }
 
+    NautilusSearchProviderClass *klass = NAUTILUS_SEARCH_PROVIDER_CLASS (G_OBJECT_GET_CLASS (self));
     NautilusSearchProviderPrivate *priv = nautilus_search_provider_get_instance_private (self);
 
-    g_debug ("Search provider '%s' stopping", search_provider_name (self));
-    g_cancellable_cancel (priv->cancellable);
+    if (priv->delayed_timeout_id != 0)
+    {
+        g_debug ("Search provider '%s' cancelled before starting", search_provider_name (self));
+        g_clear_handle_id (&priv->delayed_timeout_id, g_source_remove);
 
-    NautilusSearchProviderClass *klass = NAUTILUS_SEARCH_PROVIDER_CLASS (G_OBJECT_GET_CLASS (self));
+        nautilus_search_provider_finished (self);
+    }
+    else
+    {
+        g_debug ("Search provider '%s' stopping", search_provider_name (self));
+        g_cancellable_cancel (priv->cancellable);
 
-    return klass->stop (self);
+        klass->stop (self);
+    }
 }
 
 /**
@@ -231,6 +264,12 @@ default_should_search (NautilusSearchProvider *provider,
     return TRUE;
 }
 
+static guint
+default_search_delay (NautilusSearchProvider *provider)
+{
+    return 0;
+}
+
 static void
 nautilus_search_provider_class_init (NautilusSearchProviderClass *klass)
 {
@@ -239,6 +278,7 @@ nautilus_search_provider_class_init (NautilusSearchProviderClass *klass)
 
     object_class->dispose = search_provider_dispose;
     search_provider_class->should_search = default_should_search;
+    search_provider_class->search_delay = default_search_delay;
 
     setup_signals ();
 }
