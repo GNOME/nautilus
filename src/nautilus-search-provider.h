@@ -42,6 +42,7 @@ struct _NautilusSearchProviderClass
          */
         gboolean (*should_search) (NautilusSearchProvider *provider,
                                    NautilusQuery          *query);
+        guint (*search_delay) (NautilusSearchProvider *provider);
 
         void (*start_search) (NautilusSearchProvider *provider);
         void (*stop) (NautilusSearchProvider *provider);
