@@ -34,6 +34,8 @@ struct _NautilusSearchProviderClass
 
         /** Name for provider implementation. Evaluated once. */
         const char * (*get_name) (NautilusSearchProvider *provider);
+        /** Delay duration in ms. Optional. */
+        guint (*search_delay) (NautilusSearchProvider *provider);
 
         /** Whether a search for given @query should run. Optional. */
         gboolean (*should_search) (NautilusSearchProvider *provider,
