@@ -32,6 +32,7 @@ struct _NautilusSearchProviderClass
         GObjectClass parent_class;
 
         const char * (*get_name) (NautilusSearchProvider *provider);
+        guint (*search_delay) (NautilusSearchProvider *provider);
 
         /**
          * @self: object derived from #NautilusSearchProvider
