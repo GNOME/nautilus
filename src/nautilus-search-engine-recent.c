@@ -43,8 +43,6 @@ struct _NautilusSearchEngineRecent
     NautilusSearchProvider parent_instance;
 
     GtkRecentManager *recent_manager;
-    GPtrArray *hits;
-    guint add_hits_idle_id;
 };
 
 G_DEFINE_FINAL_TYPE (NautilusSearchEngineRecent,
@@ -60,47 +58,7 @@ nautilus_search_engine_recent_new (void)
 static void
 nautilus_search_engine_recent_finalize (GObject *object)
 {
-    NautilusSearchEngineRecent *self = NAUTILUS_SEARCH_ENGINE_RECENT (object);
-
-    g_clear_handle_id (&self->add_hits_idle_id, g_source_remove);
-
-    g_clear_pointer (&self->hits, g_ptr_array_unref);
-
     G_OBJECT_CLASS (nautilus_search_engine_recent_parent_class)->finalize (object);
-}
-
-static gboolean
-search_thread_add_hits_idle (NautilusSearchEngineRecent *self)
-{
-    NautilusSearchProvider *provider = NAUTILUS_SEARCH_PROVIDER (self);
-
-    self->add_hits_idle_id = 0;
-    if (self->hits->len > 0 &&
-        !nautilus_search_provider_should_stop (self))
-    {
-        nautilus_search_provider_hits_added (provider, g_steal_pointer (&self->hits));
-    }
-
-    g_clear_pointer (&self->hits, g_ptr_array_unref);
-
-    nautilus_search_provider_finished (provider);
-
-    return FALSE;
-}
-
-static void
-search_add_hits_idle (NautilusSearchEngineRecent *self,
-                      GPtrArray                  *hits)
-{
-    if (self->add_hits_idle_id != 0)
-    {
-        g_clear_pointer (&hits, g_ptr_array_unref);
-
-        return;
-    }
-
-    self->hits = hits;
-    self->add_hits_idle_id = g_idle_add ((GSourceFunc) search_thread_add_hits_idle, self);
 }
 
 static gboolean
@@ -169,7 +127,6 @@ recent_thread_func (NautilusSearchEngineRecent *self)
     g_autoptr (GPtrArray) date_range = NULL;
     g_autoptr (GFile) query_location = NULL;
     GList *recent_items;
-    GPtrArray *hits = g_ptr_array_new_with_free_func (g_object_unref);
     NautilusQuery *query = nautilus_search_provider_get_query (self);
     gboolean show_hidden = nautilus_query_get_show_hidden_files (query);
     GList *l;
@@ -296,11 +253,11 @@ recent_thread_func (NautilusSearchEngineRecent *self)
             nautilus_search_hit_set_access_time (hit, atime);
             nautilus_search_hit_set_creation_time (hit, ctime);
 
-            g_ptr_array_add (hits, hit);
+            nautilus_search_provider_add_hit (self, hit);
         }
     }
 
-    search_add_hits_idle (self, hits);
+    g_idle_add_once ((GSourceOnceFunc) nautilus_search_provider_finished, self);
 
     g_list_free_full (recent_items, (GDestroyNotify) gtk_recent_info_unref);
 
