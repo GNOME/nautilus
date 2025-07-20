@@ -29,6 +29,9 @@ typedef struct
     guint run_id;
     guint delayed_timeout_id;
 
+    GPtrArray *hits;
+    guint batch_timeout_id;
+
     /* Thread-safe variables */
     GCancellable *cancellable;
     NautilusQuery *query;
@@ -123,6 +126,7 @@ nautilus_search_provider_start (NautilusSearchProvider *self,
     priv->run_id = run_id;
     priv->cancellable = g_cancellable_new ();
     g_set_object (&priv->query, query);
+    priv->hits = g_ptr_array_new_with_free_func (g_object_unref);
     /* Keep reference of self while running */
     g_object_ref (self);
 
@@ -172,29 +176,35 @@ nautilus_search_provider_stop (NautilusSearchProvider *self)
     }
 }
 
-/**
- * nautilus_search_provider_hits_added:
- * @provider: search provider
- * @hits: (transfer full): list of #NautilusSearchHit
- */
-void
-nautilus_search_provider_hits_added (NautilusSearchProvider *provider,
-                                     GPtrArray              *hits)
+static void
+search_provider_submit_hits (NautilusSearchProvider *self,
+                             GPtrArray              *hits)
 {
-    g_autoptr (GPtrArray) transferred_hits = hits;
+    NautilusSearchProviderPrivate *priv = nautilus_search_provider_get_instance_private (self);
 
-    g_return_if_fail (NAUTILUS_IS_SEARCH_PROVIDER (provider));
+    g_debug ("Search provider '%s' found %d hits", search_provider_name (self), hits->len);
+    g_signal_emit (self, signals[HITS_ADDED], 0, hits, priv->run_id);
+}
 
-    NautilusSearchProviderPrivate *priv = nautilus_search_provider_get_instance_private (provider);
+static void
+search_provider_submit_batch_idle (NautilusSearchProvider *self)
+{
+    NautilusSearchProviderPrivate *priv = nautilus_search_provider_get_instance_private (self);
 
-    if (g_cancellable_is_cancelled (priv->cancellable))
+    if (nautilus_search_provider_should_stop (self))
     {
         return;
     }
 
-    g_debug ("Search provider '%s' found %d hits", search_provider_name (provider), hits->len);
-    g_signal_emit (provider, signals[HITS_ADDED], 0,
-                   g_steal_pointer (&transferred_hits), priv->run_id);
+    g_autoptr (GPtrArray) new_hits = g_ptr_array_new_with_free_func (g_object_unref);
+    if (!g_atomic_pointer_compare_and_exchange (&priv->hits, priv->hits, new_hits))
+    {
+        return;
+    }
+
+    search_provider_submit_hits (self, g_steal_pointer (&new_hits));
+
+    priv->batch_timeout_id = 0;
 }
 
 void
@@ -204,8 +214,16 @@ nautilus_search_provider_finished (NautilusSearchProvider *self)
 
     NautilusSearchProviderPrivate *priv = nautilus_search_provider_get_instance_private (self);
 
+    /* Handle any remaining hits */
+    g_clear_handle_id (&priv->batch_timeout_id, g_source_remove);
+    if (priv->hits->len > 0 && !nautilus_search_provider_should_stop (self))
+    {
+        search_provider_submit_hits (self, g_steal_pointer (&priv->hits));
+    }
+
     g_clear_object (&priv->cancellable);
     g_clear_object (&priv->query);
+    g_clear_pointer (&priv->hits, g_ptr_array_unref);
 
     g_debug ("Search provider '%s' finished", search_provider_name (self));
     g_signal_emit (self, signals[FINISHED], 0, priv->run_id);
@@ -240,6 +258,23 @@ nautilus_search_provider_get_query (gpointer self)
     return priv->query;
 }
 
+void
+nautilus_search_provider_add_hit (gpointer           self,
+                                  NautilusSearchHit *hit)
+{
+    NautilusSearchProviderPrivate *priv = nautilus_search_provider_get_instance_private (self);
+
+    g_ptr_array_add (priv->hits, hit);
+
+    if (priv->batch_timeout_id == 0)
+    {
+        /* Bundle all results found within a timeframe and sumbit them as batch */
+        guint batch_delay = 100;
+        priv->batch_timeout_id = g_timeout_add_once (
+            batch_delay, (GSourceOnceFunc) search_provider_submit_batch_idle, self);
+    }
+}
+
 static void
 nautilus_search_provider_init (NautilusSearchProvider *self)
 {
@@ -258,6 +293,7 @@ search_provider_dispose (GObject *object)
     NautilusSearchProviderPrivate *priv = nautilus_search_provider_get_instance_private (self);
 
     g_clear_object (&priv->cancellable);
+    g_clear_pointer (&priv->hits, g_ptr_array_unref);
 
     G_OBJECT_CLASS (nautilus_search_provider_parent_class)->dispose (object);
 }

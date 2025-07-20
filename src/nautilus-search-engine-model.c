@@ -37,7 +37,6 @@ struct _NautilusSearchEngineModel
 {
     NautilusSearchProvider parent_instance;
 
-    GPtrArray *hits;
     NautilusDirectory *directory;
 
     guint finished_id;
@@ -54,8 +53,6 @@ finalize (GObject *object)
 
     model = NAUTILUS_SEARCH_ENGINE_MODEL (object);
 
-    g_clear_pointer (&model->hits, g_ptr_array_unref);
-
     if (model->finished_id != 0)
     {
         g_source_remove (model->finished_id);
@@ -70,14 +67,7 @@ finalize (GObject *object)
 static gboolean
 search_finished (NautilusSearchEngineModel *model)
 {
-    g_autoptr (GPtrArray) hits = g_steal_pointer (&model->hits);
     model->finished_id = 0;
-
-    if (hits != NULL && hits->len > 0)
-    {
-        nautilus_search_provider_hits_added (NAUTILUS_SEARCH_PROVIDER (model),
-                                             g_steal_pointer (&hits));
-    }
 
     nautilus_search_provider_finished (NAUTILUS_SEARCH_PROVIDER (model));
 
@@ -103,7 +93,6 @@ model_directory_ready_cb (NautilusDirectory *directory,
     NautilusSearchEngineModel *model = user_data;
     gchar *uri;
     GList *files, *l;
-    GPtrArray *hits = g_ptr_array_new_with_free_func (g_object_unref);
     NautilusFile *file;
     gdouble match;
     gboolean found;
@@ -194,14 +183,13 @@ model_directory_ready_cb (NautilusDirectory *directory,
             nautilus_search_hit_set_access_time (hit, atime);
             nautilus_search_hit_set_creation_time (hit, ctime);
 
-            g_ptr_array_add (hits, hit);
+            nautilus_search_provider_add_hit (model, hit);
 
             g_free (uri);
         }
     }
 
     nautilus_file_list_free (files);
-    model->hits = hits;
 
     search_finished (model);
 }

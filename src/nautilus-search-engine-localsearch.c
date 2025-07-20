@@ -52,8 +52,6 @@ struct _NautilusSearchEngineLocalsearch
     TrackerSparqlConnection *connection;
     GHashTable *statements;
 
-    GQueue *hits_pending;
-
     gboolean fts_enabled;
 };
 
@@ -66,7 +64,6 @@ finalize (GObject *object)
 {
     NautilusSearchEngineLocalsearch *self = NAUTILUS_SEARCH_ENGINE_LOCALSEARCH (object);
 
-    g_queue_free_full (self->hits_pending, g_object_unref);
     g_clear_pointer (&self->statements, g_hash_table_unref);
     /* This is a singleton, no need to unref. */
     self->connection = NULL;
@@ -74,47 +71,10 @@ finalize (GObject *object)
     G_OBJECT_CLASS (nautilus_search_engine_localsearch_parent_class)->finalize (object);
 }
 
-#define BATCH_SIZE 100
-
-static void
-check_pending_hits (NautilusSearchEngineLocalsearch *self,
-                    gboolean                         force_send)
-{
-    if (!force_send &&
-        g_queue_get_length (self->hits_pending) < BATCH_SIZE)
-    {
-        return;
-    }
-
-    NautilusSearchHit *hit;
-    g_autoptr (GPtrArray) hits = g_ptr_array_new_with_free_func (g_object_unref);
-
-    while ((hit = g_queue_pop_head (self->hits_pending)))
-    {
-        g_ptr_array_add (hits, hit);
-    }
-
-    if (hits->len > 0)
-    {
-        nautilus_search_provider_hits_added (NAUTILUS_SEARCH_PROVIDER (self),
-                                             g_steal_pointer (&hits));
-    }
-}
-
 static void
 search_finished (NautilusSearchEngineLocalsearch *self,
                  GError                          *error)
 {
-    if (error == NULL)
-    {
-        check_pending_hits (self, TRUE);
-    }
-    else
-    {
-        g_queue_foreach (self->hits_pending, (GFunc) g_object_unref, NULL);
-        g_queue_clear (self->hits_pending);
-    }
-
     if (error && !g_error_matches (error, G_IO_ERROR, G_IO_ERROR_CANCELLED))
     {
         g_warning ("Localsearch search engine error %s", error->message);
@@ -243,8 +203,7 @@ cursor_callback (GObject      *object,
         nautilus_search_hit_set_creation_time (hit, date);
     }
 
-    g_queue_push_head (self->hits_pending, hit);
-    check_pending_hits (self, FALSE);
+    nautilus_search_provider_add_hit (self, hit);
 
     /* Get next */
     cursor_next (self, cursor);
@@ -565,7 +524,6 @@ nautilus_search_engine_localsearch_class_init (NautilusSearchEngineLocalsearchCl
 static void
 nautilus_search_engine_localsearch_init (NautilusSearchEngineLocalsearch *engine)
 {
-    engine->hits_pending = g_queue_new ();
     engine->statements = g_hash_table_new_full (NULL, NULL, NULL,
                                                 g_object_unref);
 
