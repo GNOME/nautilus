@@ -30,8 +30,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: nautilus main\n"
 "Report-Msgid-Bugs-To: https://gitlab.gnome.org/GNOME/nautilus/issues\n"
-"POT-Creation-Date: 2025-06-28 18:05+0000\n"
-"PO-Revision-Date: 2025-06-29 04:51+0900\n"
+"POT-Creation-Date: 2025-07-14 17:07+0000\n"
+"PO-Revision-Date: 2025-07-15 06:07+0900\n"
 "Last-Translator: Makoto Sakaguchi <ycco34vx@gmail.com>\n"
 "Language-Team: Japanese <https://l10n.gnome.org/teams/ja/>\n"
 "Language: ja\n"
@@ -91,7 +91,7 @@ msgstr "一覧表示"
 #: data/org.gnome.Nautilus.metainfo.xml.in.in:68 src/nautilus-query.c:304
 #: src/nautilus-search-directory-file.c:225
 #: src/nautilus-search-directory-file.c:265
-#: src/resources/ui/nautilus-search-popover.ui:278
+#: src/resources/ui/nautilus-search-popover.ui:235
 msgid "Search"
 msgstr "検索"
 
@@ -740,7 +740,7 @@ msgstr "位置情報"
 msgid "Failed to load image information"
 msgstr "画像情報の読み込みに失敗しました"
 
-#: extensions/image-properties/nautilus-image-properties-model.c:510
+#: extensions/image-properties/nautilus-image-properties-model.c:512
 msgid "Image Properties"
 msgstr "画像のプロパティ"
 
@@ -821,22 +821,22 @@ msgid "Error while setting “%s” as default app: %s"
 msgstr "“%s” をデフォルトのアプリとして設定中にエラーが発生しました: %s"
 
 #. Translators: %s is the filename.  i.e. "Choose an app to open test.jpg"
-#: src/nautilus-app-chooser.c:204
+#: src/nautilus-app-chooser.c:205
 #, c-format
 msgid "Choose an app to open <b>%s</b>"
 msgstr "<b>%s</b> を開くアプリを選択してください"
 
-#: src/nautilus-app-chooser.c:210
+#: src/nautilus-app-chooser.c:211
 msgid "Open Items"
 msgstr "アイテムを開く"
 
 # 開きますにすると見切れる
-#: src/nautilus-app-chooser.c:214
+#: src/nautilus-app-chooser.c:215
 msgid "Open Folder"
 msgstr "フォルダーを開く"
 
 # 開きますにすると見切れる
-#: src/nautilus-app-chooser.c:218 src/resources/ui/nautilus-app-chooser.ui:5
+#: src/nautilus-app-chooser.c:219 src/resources/ui/nautilus-app-chooser.ui:5
 msgid "Open File"
 msgstr "ファイルを開く"
 
@@ -1216,7 +1216,7 @@ msgstr "ここにコピー(_C)"
 msgid "_Link Here"
 msgstr "ここにリンクを作成(_L)"
 
-#: src/nautilus-dnd.c:126 src/nautilus-file-operations.c:2514
+#: src/nautilus-dnd.c:126 src/nautilus-file-operations.c:2523
 #: src/nautilus-mime-actions.c:733
 #: src/resources/ui/nautilus-progress-info-widget.ui:39
 #: src/resources/ui/nautilus-toolbar.ui:41
@@ -1361,164 +1361,164 @@ msgstr "このファイルは起動できません"
 msgid "This file cannot be stopped"
 msgstr "このファイルは停止できません"
 
-#: src/nautilus-file.c:1901
+#: src/nautilus-file.c:1902
 #, c-format
 msgid "Slashes are not allowed in filenames"
 msgstr "スラッシュはファイル名に使用できません"
 
-#: src/nautilus-file.c:1944
+#: src/nautilus-file.c:1945
 #, c-format
 msgid "Toplevel files cannot be renamed"
 msgstr "トップレベルのファイル名を変更できません"
 
-#: src/nautilus-file.c:2024
+#: src/nautilus-file.c:2025
 #, c-format
 msgid "File not found"
 msgstr "ファイルが見つかりませんでした"
 
-#: src/nautilus-file.c:5478
+#: src/nautilus-file.c:5479
 #, c-format
 msgid "Not allowed to set permissions"
 msgstr "アクセス権は指定できません"
 
-#: src/nautilus-file.c:5822
+#: src/nautilus-file.c:5823
 #, c-format
 msgid "Not allowed to set owner"
 msgstr "所有者は指定できません"
 
-#: src/nautilus-file.c:5841
+#: src/nautilus-file.c:5842
 #, c-format
 msgid "Specified owner “%s” doesn’t exist"
 msgstr "指定された所有者 “%s” は存在しません"
 
-#: src/nautilus-file.c:6131
+#: src/nautilus-file.c:6132
 #, c-format
 msgid "Not allowed to set group"
 msgstr "グループは指定できません"
 
-#: src/nautilus-file.c:6150
+#: src/nautilus-file.c:6151
 #, c-format
 msgid "Specified group “%s” doesn’t exist"
 msgstr "指定されたグループ “%s” は存在しません"
 
 #. Translators: This is a username followed by "(You)" to indicate the file is owned by the current user
-#: src/nautilus-file.c:6290
+#: src/nautilus-file.c:6291
 #, c-format
 msgid "%s (You)"
 msgstr "%s (あなた)"
 
-#: src/nautilus-file.c:6322
+#: src/nautilus-file.c:6323
 #, c-format
 msgid "%'u item"
 msgid_plural "%'u items"
 msgstr[0] "%'u 個のアイテム"
 
-#: src/nautilus-file.c:6323
+#: src/nautilus-file.c:6324
 #, c-format
 msgid "%'u folder"
 msgid_plural "%'u folders"
 msgstr[0] "%'u 個のフォルダー"
 
-#: src/nautilus-file.c:6324
+#: src/nautilus-file.c:6325
 #, c-format
 msgid "%'u file"
 msgid_plural "%'u files"
 msgstr[0] "%'u 個のファイル"
 
-#: src/nautilus-file.c:6408 src/nautilus-properties-window.c:2105
+#: src/nautilus-file.c:6409 src/nautilus-properties-window.c:2105
 #, c-format
 msgid "%s byte"
 msgid_plural "%s bytes"
 msgstr[0] "%s バイト"
 
 #. This means no contents at all were readable
-#: src/nautilus-file.c:6812
+#: src/nautilus-file.c:6813
 msgid "? bytes"
 msgstr "? バイト"
 
 #. This means no contents at all were readable
-#: src/nautilus-file.c:6824
+#: src/nautilus-file.c:6825
 msgid "? items"
 msgstr "? 個のアイテム"
 
 #. Translators: This about a file type.
-#: src/nautilus-file.c:6833
+#: src/nautilus-file.c:6834
 msgid "Unknown type"
 msgstr "不明な種類"
 
 #. Fallback, use for both unknown attributes and attributes
 #. * for which we have no more appropriate default.
 #.
-#: src/nautilus-file.c:6864
+#: src/nautilus-file.c:6865
 msgid "Unknown"
 msgstr "不明"
 
-#: src/nautilus-file.c:6901 src/nautilus-file.c:6909 src/nautilus-file.c:6968
+#: src/nautilus-file.c:6902 src/nautilus-file.c:6910 src/nautilus-file.c:6969
 msgid "Program"
 msgstr "プログラム"
 
-#: src/nautilus-file.c:6902
+#: src/nautilus-file.c:6903
 msgid "Audio"
 msgstr "音声"
 
-#: src/nautilus-file.c:6903
+#: src/nautilus-file.c:6904
 msgid "Font"
 msgstr "フォント"
 
-#: src/nautilus-file.c:6904
+#: src/nautilus-file.c:6905
 msgid "Image"
 msgstr "画像"
 
-#: src/nautilus-file.c:6905
+#: src/nautilus-file.c:6906
 msgid "Archive"
 msgstr "アーカイブ"
 
-#: src/nautilus-file.c:6906
+#: src/nautilus-file.c:6907
 msgid "Markup"
 msgstr "マークアップ"
 
-#: src/nautilus-file.c:6907 src/nautilus-file.c:6908
+#: src/nautilus-file.c:6908 src/nautilus-file.c:6909
 msgid "Text"
 msgstr "テキスト"
 
-#: src/nautilus-file.c:6910 src/nautilus-mime-actions.c:301
+#: src/nautilus-file.c:6911 src/nautilus-mime-actions.c:301
 msgid "Video"
 msgstr "動画"
 
-#: src/nautilus-file.c:6911
+#: src/nautilus-file.c:6912
 msgid "Contacts"
 msgstr "連絡先"
 
-#: src/nautilus-file.c:6912
+#: src/nautilus-file.c:6913
 msgid "Calendar"
 msgstr "カレンダー"
 
-#: src/nautilus-file.c:6913
+#: src/nautilus-file.c:6914
 msgid "Document"
 msgstr "ドキュメント"
 
-#: src/nautilus-file.c:6914 src/nautilus-mime-actions.c:262
+#: src/nautilus-file.c:6915 src/nautilus-mime-actions.c:262
 msgid "Presentation"
 msgstr "プレゼンテーション"
 
-#: src/nautilus-file.c:6915 src/nautilus-mime-actions.c:274
+#: src/nautilus-file.c:6916 src/nautilus-mime-actions.c:274
 msgid "Spreadsheet"
 msgstr "表計算"
 
 #. Refers to a file type which is known but not one of the basic types
-#: src/nautilus-file.c:6948
+#: src/nautilus-file.c:6949
 msgid "Other"
 msgstr "その他"
 
-#: src/nautilus-file.c:6970
+#: src/nautilus-file.c:6971
 msgid "Binary"
 msgstr "バイナリ"
 
-#: src/nautilus-file.c:6975
+#: src/nautilus-file.c:6976
 msgid "Folder"
 msgstr "フォルダー"
 
-#: src/nautilus-file.c:7033
+#: src/nautilus-file.c:7034
 msgid "Link"
 msgstr "リンク"
 
@@ -1527,17 +1527,17 @@ msgstr "リンク"
 #. * to that kind of file (e.g. "link to folder").
 #.
 #. Translators: File name for new symlink. %s is target's name
-#: src/nautilus-file.c:7039 src/nautilus-filename-utilities.c:253
+#: src/nautilus-file.c:7040 src/nautilus-filename-utilities.c:253
 #, c-format
 msgid "Link to %s"
 msgstr "%sへのリンク"
 
-#: src/nautilus-file.c:7055 src/nautilus-file.c:7071 src/nautilus-file.c:7087
+#: src/nautilus-file.c:7056 src/nautilus-file.c:7072 src/nautilus-file.c:7088
 msgid "Link (broken)"
 msgstr "リンク切れ"
 
 #. Translators: This refers to available space in a folder; e.g.: 100 MB Free
-#: src/nautilus-file.c:7248
+#: src/nautilus-file.c:7249
 #, c-format
 msgid "%s Free"
 msgstr "%s 空き"
@@ -1545,7 +1545,7 @@ msgstr "%s 空き"
 #. Translators: A "." is added in between file name and starring
 #. * action description as a useful pause in the screen reader
 #. * announcement.
-#: src/nautilus-file.c:8622
+#: src/nautilus-file.c:8623
 #, c-format
 msgid "%s. Starred"
 msgstr "%s. お気に入り"
@@ -1682,72 +1682,72 @@ msgstr[0] "%'d 時間"
 msgid "unknown"
 msgstr "不明"
 
-#: src/nautilus-file-operations.c:1133 src/nautilus-file-operations.c:1194
+#: src/nautilus-file-operations.c:1145 src/nautilus-file-operations.c:1206
 #, c-format
 msgid "Permanently Delete “%s”?"
 msgstr "“%s” を完全に削除しますか?"
 
-#: src/nautilus-file-operations.c:1137 src/nautilus-file-operations.c:1199
+#: src/nautilus-file-operations.c:1149 src/nautilus-file-operations.c:1211
 #, c-format
 msgid "Permanently Delete %'d Selected Item?"
 msgid_plural "Permanently Delete %'d Selected Items?"
 msgstr[0] "選択した %'d 個のアイテムを完全に削除しますか?"
 
-#: src/nautilus-file-operations.c:1145 src/nautilus-file-operations.c:1207
+#: src/nautilus-file-operations.c:1157 src/nautilus-file-operations.c:1219
 msgid "Permanently deleted items can not be restored"
 msgstr "完全に削除されたアイテムは復元できません"
 
-#: src/nautilus-file-operations.c:1160
+#: src/nautilus-file-operations.c:1172
 msgid "Empty Trash?"
 msgstr "ゴミ箱を空にしますか?"
 
-#: src/nautilus-file-operations.c:1164
+#: src/nautilus-file-operations.c:1176
 msgid "All items in the Trash will be permanently deleted"
 msgstr "ゴミ箱内のすべてのアイテムが完全に削除されます"
 
 #. Translators: This action removes a file from Recent
-#: src/nautilus-file-operations.c:1267
+#: src/nautilus-file-operations.c:1279
 #, c-format
 msgid "Cleared “%s”"
 msgstr "“%s” を消去しました"
 
-#: src/nautilus-file-operations.c:1271
+#: src/nautilus-file-operations.c:1283
 #, c-format
 msgid "Deleted “%s”"
 msgstr "“%s” を削除しました"
 
 #. Translators: This action removes a file from Recent
-#: src/nautilus-file-operations.c:1279
+#: src/nautilus-file-operations.c:1291
 #, c-format
 msgid "Clearing “%s”"
 msgstr "“%s” を消去中"
 
-#: src/nautilus-file-operations.c:1283
+#: src/nautilus-file-operations.c:1295
 #, c-format
 msgid "Deleting “%s”"
 msgstr "“%s” を削除中"
 
 #. Translators: This action removes file(s) from Recent
-#: src/nautilus-file-operations.c:1298
+#: src/nautilus-file-operations.c:1310
 #, c-format
 msgid "Cleared %'d file"
 msgid_plural "Cleared %'d files"
 msgstr[0] "%'d 個のファイルを消去しました"
 
-#: src/nautilus-file-operations.c:1304
+#: src/nautilus-file-operations.c:1316
 #, c-format
 msgid "Deleted %'d file"
 msgid_plural "Deleted %'d files"
 msgstr[0] "%'d 個のファイルを削除しました"
 
 #. Translators: This action removes file(s) from Recent
-#: src/nautilus-file-operations.c:1314
+#: src/nautilus-file-operations.c:1326
 #, c-format
 msgid "Clearing %'d file"
 msgid_plural "Clearing %'d files"
 msgstr[0] "%'d 個のファイルを消去中"
 
-#: src/nautilus-file-operations.c:1320
+#: src/nautilus-file-operations.c:1332
 #, c-format
 msgid "Deleting %'d file"
 msgid_plural "Deleting %'d files"
@@ -1755,12 +1755,12 @@ msgstr[0] "%'d 個のファイルを削除中"
 
 #. To translators: %'d is the number of files completed for the operation,
 #. * so it will be something like 2/14.
-#: src/nautilus-file-operations.c:1349 src/nautilus-file-operations.c:1357
-#: src/nautilus-file-operations.c:1397 src/nautilus-file-operations.c:1743
-#: src/nautilus-file-operations.c:1751 src/nautilus-file-operations.c:1791
-#: src/nautilus-file-operations.c:3693 src/nautilus-file-operations.c:3701
-#: src/nautilus-file-operations.c:3772 src/nautilus-file-operations.c:8487
-#: src/nautilus-file-operations.c:8555
+#: src/nautilus-file-operations.c:1361 src/nautilus-file-operations.c:1369
+#: src/nautilus-file-operations.c:1409 src/nautilus-file-operations.c:1755
+#: src/nautilus-file-operations.c:1763 src/nautilus-file-operations.c:1803
+#: src/nautilus-file-operations.c:3702 src/nautilus-file-operations.c:3710
+#: src/nautilus-file-operations.c:3781 src/nautilus-file-operations.c:8484
+#: src/nautilus-file-operations.c:8552
 #, c-format
 msgid "%'d / %'d"
 msgstr "%'d / %'d"
@@ -1770,105 +1770,105 @@ msgstr "%'d / %'d"
 #. *
 #. * The singular/plural form will be used depending on the remaining time (i.e. the %s argument).
 #.
-#: src/nautilus-file-operations.c:1376 src/nautilus-file-operations.c:1770
+#: src/nautilus-file-operations.c:1388 src/nautilus-file-operations.c:1782
 #, c-format
 msgid "%'d / %'d — %s left"
 msgid_plural "%'d / %'d — %s left"
 msgstr[0] "%'d / %'d — 残り %s"
 
-#: src/nautilus-file-operations.c:1380 src/nautilus-file-operations.c:1773
+#: src/nautilus-file-operations.c:1392 src/nautilus-file-operations.c:1785
 #, c-format
 msgid "(%d file/s)"
 msgid_plural "(%d files/s)"
 msgstr[0] "(%d ファイル/秒)"
 
-#: src/nautilus-file-operations.c:1493
+#: src/nautilus-file-operations.c:1505
 #, c-format
 msgid "Failed to delete all child files"
 msgstr "すべての子ファイルを削除できませんでした"
 
-#: src/nautilus-file-operations.c:1546 src/nautilus-file-operations.c:2843
+#: src/nautilus-file-operations.c:1558 src/nautilus-file-operations.c:2852
 msgid "Error while deleting."
 msgstr "削除中にエラーが発生しました。"
 
-#: src/nautilus-file-operations.c:1553
+#: src/nautilus-file-operations.c:1565
 #, c-format
 msgid "You do not have sufficient permissions to delete the folder “%s”."
 msgstr "フォルダー “%s” を削除する権限がありません。"
 
-#: src/nautilus-file-operations.c:1556
+#: src/nautilus-file-operations.c:1568
 #, c-format
 msgid "There was an error deleting the folder “%s”."
 msgstr "フォルダー “%s” の削除中にエラーが発生しました。"
 
-#: src/nautilus-file-operations.c:1563
+#: src/nautilus-file-operations.c:1575
 #, c-format
 msgid "You do not have sufficient permissions to delete the file “%s”."
 msgstr "ファイル “%s” を削除する権限がありません。"
 
-#: src/nautilus-file-operations.c:1566
+#: src/nautilus-file-operations.c:1578
 #, c-format
 msgid "There was an error deleting the file “%s”."
 msgstr "ファイル “%s” の削除中にエラーが発生しました。"
 
-#: src/nautilus-file-operations.c:1693
+#: src/nautilus-file-operations.c:1705
 #, c-format
 msgid "Trashing “%s”"
 msgstr "“%s” をゴミ箱へ移動中"
 
-#: src/nautilus-file-operations.c:1697
+#: src/nautilus-file-operations.c:1709
 #, c-format
 msgid "Trashed “%s”"
 msgstr "“%s” をゴミ箱へ移動しました"
 
-#: src/nautilus-file-operations.c:1708
+#: src/nautilus-file-operations.c:1720
 #, c-format
 msgid "Trashing %'d file"
 msgid_plural "Trashing %'d files"
 msgstr[0] "%'d 個のファイルをゴミ箱へ移動中"
 
-#: src/nautilus-file-operations.c:1714
+#: src/nautilus-file-operations.c:1726
 #, c-format
 msgid "Trashed %'d file"
 msgid_plural "Trashed %'d files"
 msgstr[0] "%'d 個のファイルをゴミ箱へ移動しました"
 
 #. Translators: %s is a file name
-#: src/nautilus-file-operations.c:1863
+#: src/nautilus-file-operations.c:1875
 #, c-format
 msgid "“%s” can’t be put in the trash. Do you want to delete it immediately?"
 msgstr "“%s” をゴミ箱へ移動できません。今すぐ削除しますか?"
 
-#: src/nautilus-file-operations.c:1875
+#: src/nautilus-file-operations.c:1887
 msgid "This remote location does not support sending items to the trash."
 msgstr "このリモートの場所ではアイテムをゴミ箱に移動できません。"
 
-#: src/nautilus-file-operations.c:2170
+#: src/nautilus-file-operations.c:2180
 msgid "Trashing Files"
 msgstr "ファイルをゴミ箱へ移動中"
 
-#: src/nautilus-file-operations.c:2174
+#: src/nautilus-file-operations.c:2184
 msgid "Deleting Files"
 msgstr "ファイルを削除中"
 
 #. Translators: %s is a file name formatted for display
-#: src/nautilus-file-operations.c:2331 src/nautilus-files-view.c:6895
+#: src/nautilus-file-operations.c:2340 src/nautilus-files-view.c:6895
 #: src/gtk/nautilusgtkplacessidebar.c:2310
 #: src/gtk/nautilusgtkplacessidebar.c:2339
 #, c-format
 msgid "Unable to eject “%s”"
 msgstr "“%s” を取り出せません"
 
-#: src/nautilus-file-operations.c:2336
+#: src/nautilus-file-operations.c:2345
 #, c-format
 msgid "Unable to unmount “%s”"
 msgstr "“%s” をアンマウントできません"
 
-#: src/nautilus-file-operations.c:2507
+#: src/nautilus-file-operations.c:2516
 msgid "Empty Trash Before Ejecting?"
 msgstr "取り出す前にゴミ箱を空にしますか?"
 
-#: src/nautilus-file-operations.c:2510
+#: src/nautilus-file-operations.c:2519
 #, c-format
 msgid ""
 "Empty the trash to free up space on “%s”. All trashed items will be "
@@ -1877,73 +1877,73 @@ msgstr ""
 "“%s” の空き容量を増やすためにゴミ箱を空にします。ゴミ箱内のアイテムは完全に削"
 "除されます。"
 
-#: src/nautilus-file-operations.c:2515
+#: src/nautilus-file-operations.c:2524
 msgid "Do _Not Empty"
 msgstr "空にしない(_N)"
 
 #. Translators: This is an action in a dialog to
 #. * clear trashed items.
-#: src/nautilus-file-operations.c:2518
+#: src/nautilus-file-operations.c:2527
 msgid "_Empty"
 msgstr "空にする(_E)"
 
 #. Translators: %s is a file name formatted for display
-#: src/nautilus-file-operations.c:2659 src/nautilus-files-view.c:6845
+#: src/nautilus-file-operations.c:2668 src/nautilus-files-view.c:6845
 #: src/gtk/nautilusgtkplacessidebar.c:1702
 #, c-format
 msgid "Unable to access “%s”"
 msgstr "“%s” にアクセスできません"
 
-#: src/nautilus-file-operations.c:2744
+#: src/nautilus-file-operations.c:2753
 #, c-format
 msgid "Preparing to copy %'d file (%s)"
 msgid_plural "Preparing to copy %'d files (%s)"
 msgstr[0] "%'d 個のファイル (%s) をコピーする準備をしています"
 
-#: src/nautilus-file-operations.c:2757
+#: src/nautilus-file-operations.c:2766
 #, c-format
 msgid "Preparing to move %'d file (%s)"
 msgid_plural "Preparing to move %'d files (%s)"
 msgstr[0] "%'d 個のファイル (%s) を移動する準備をしています"
 
-#: src/nautilus-file-operations.c:2770
+#: src/nautilus-file-operations.c:2779
 #, c-format
 msgid "Preparing to delete %'d file (%s)"
 msgid_plural "Preparing to delete %'d files (%s)"
 msgstr[0] "%'d 個のファイル (%s) を削除する準備をしています"
 
-#: src/nautilus-file-operations.c:2780
+#: src/nautilus-file-operations.c:2789
 #, c-format
 msgid "Preparing to trash %'d file"
 msgid_plural "Preparing to trash %'d files"
 msgstr[0] "%'d 個のファイルをゴミ箱へ移動する準備をしています"
 
-#: src/nautilus-file-operations.c:2789
+#: src/nautilus-file-operations.c:2798
 #, c-format
 msgid "Preparing to compress %'d file"
 msgid_plural "Preparing to compress %'d files"
 msgstr[0] "%'d 個のファイルを圧縮する準備をしています"
 
-#: src/nautilus-file-operations.c:2833 src/nautilus-file-operations.c:4280
-#: src/nautilus-file-operations.c:4472 src/nautilus-file-operations.c:4554
-#: src/nautilus-file-operations.c:4842
+#: src/nautilus-file-operations.c:2842 src/nautilus-file-operations.c:4289
+#: src/nautilus-file-operations.c:4481 src/nautilus-file-operations.c:4563
+#: src/nautilus-file-operations.c:4851
 msgid "Error while copying."
 msgstr "コピー中にエラーが発生しました。"
 
-#: src/nautilus-file-operations.c:2838 src/nautilus-file-operations.c:4468
-#: src/nautilus-file-operations.c:4550 src/nautilus-file-operations.c:4838
+#: src/nautilus-file-operations.c:2847 src/nautilus-file-operations.c:4477
+#: src/nautilus-file-operations.c:4559 src/nautilus-file-operations.c:4847
 msgid "Error while moving."
 msgstr "移動中にエラーが発生しました。"
 
-#: src/nautilus-file-operations.c:2848
+#: src/nautilus-file-operations.c:2857
 msgid "Error while moving files to trash."
 msgstr "ファイルのゴミ箱への移動中にエラーが発生しました。"
 
-#: src/nautilus-file-operations.c:2853
+#: src/nautilus-file-operations.c:2862
 msgid "Error while compressing files."
 msgstr "ファイルの圧縮中にエラーが発生しました。"
 
-#: src/nautilus-file-operations.c:2945
+#: src/nautilus-file-operations.c:2954
 #, c-format
 msgid ""
 "Files in the folder “%s” cannot be handled because you do not have "
@@ -1951,138 +1951,138 @@ msgid ""
 msgstr ""
 "フォルダー “%s” 内のファイルを処理できません。参照する権限がありません。"
 
-#: src/nautilus-file-operations.c:2951 src/nautilus-file-operations.c:4484
+#: src/nautilus-file-operations.c:2960 src/nautilus-file-operations.c:4493
 #, c-format
 msgid ""
 "There was an error getting information about the files in the folder “%s”."
 msgstr "フォルダー “%s” 内のファイル情報の取得中にエラーが発生しました。"
 
-#: src/nautilus-file-operations.c:3006
+#: src/nautilus-file-operations.c:3015
 #, c-format
 msgid ""
 "The folder “%s” cannot be handled because you do not have permissions to "
 "read it."
 msgstr "フォルダー “%s” を処理できません。読み取り権限がありません。"
 
-#: src/nautilus-file-operations.c:3012 src/nautilus-file-operations.c:4566
+#: src/nautilus-file-operations.c:3021 src/nautilus-file-operations.c:4575
 #, c-format
 msgid "There was an error reading the folder “%s”."
 msgstr "フォルダー “%s” の読み取り中にエラーが発生しました。"
 
-#: src/nautilus-file-operations.c:3122
+#: src/nautilus-file-operations.c:3131
 #, c-format
 msgid ""
 "The file “%s” cannot be handled because you do not have permissions to read "
 "it."
 msgstr "ファイル “%s” を処理できません。読み取り権限がありません。"
 
-#: src/nautilus-file-operations.c:3127
+#: src/nautilus-file-operations.c:3136
 #, c-format
 msgid "There was an error getting information about “%s”."
 msgstr "“%s” の情報の取得中にエラーが発生しました。"
 
-#: src/nautilus-file-operations.c:3251 src/nautilus-file-operations.c:3313
-#: src/nautilus-file-operations.c:3368 src/nautilus-file-operations.c:3430
+#: src/nautilus-file-operations.c:3260 src/nautilus-file-operations.c:3322
+#: src/nautilus-file-operations.c:3377 src/nautilus-file-operations.c:3439
 #, c-format
 msgid "Error while copying to “%s”."
 msgstr "“%s” へのコピー中にエラーが発生しました。"
 
-#: src/nautilus-file-operations.c:3256
+#: src/nautilus-file-operations.c:3265
 msgid "You do not have permissions to access the destination folder."
 msgstr "宛先フォルダーへのアクセス権限がありません。"
 
-#: src/nautilus-file-operations.c:3260
+#: src/nautilus-file-operations.c:3269
 msgid "There was an error getting information about the destination."
 msgstr "宛先に関する情報を取得中にエラーが発生しました。"
 
-#: src/nautilus-file-operations.c:3314
+#: src/nautilus-file-operations.c:3323
 msgid "The destination is not a folder."
 msgstr "宛先がフォルダーではありません。"
 
-#: src/nautilus-file-operations.c:3369
+#: src/nautilus-file-operations.c:3378
 msgid ""
 "There is not enough space on the destination. Try to remove files to make "
 "space."
 msgstr "宛先の容量が不足しています。ファイルを削除して容量を確保してください。"
 
-#: src/nautilus-file-operations.c:3373
+#: src/nautilus-file-operations.c:3382
 #, c-format
 msgid "%s more space is required to copy to the destination."
 msgstr "コピー先にコピーするには 、あと %s の容量が必要です。"
 
-#: src/nautilus-file-operations.c:3409
+#: src/nautilus-file-operations.c:3418
 msgid "File too Large for Destination"
 msgstr "ファイルが宛先には大きすぎます"
 
-#: src/nautilus-file-operations.c:3410
+#: src/nautilus-file-operations.c:3419
 msgid "Files bigger than 4.3 GB cannot be copied onto a FAT filesystem."
 msgstr "4.3 GB より大きいファイルは FAT ファイルシステムにコピーできません。"
 
-#: src/nautilus-file-operations.c:3431
+#: src/nautilus-file-operations.c:3440
 msgid "The destination is read-only."
 msgstr "宛先は読み取り専用です。"
 
-#: src/nautilus-file-operations.c:3508
+#: src/nautilus-file-operations.c:3517
 #, c-format
 msgid "Moving “%s” to “%s”"
 msgstr "“%s” から “%s” へ移動中"
 
-#: src/nautilus-file-operations.c:3512
+#: src/nautilus-file-operations.c:3521
 #, c-format
 msgid "Moved “%s” to “%s”"
 msgstr "“%s” から “%s” へ移動しました"
 
-#: src/nautilus-file-operations.c:3519
+#: src/nautilus-file-operations.c:3528
 #, c-format
 msgid "Copying “%s” to “%s”"
 msgstr "“%s” から “%s” にコピー中"
 
-#: src/nautilus-file-operations.c:3523
+#: src/nautilus-file-operations.c:3532
 #, c-format
 msgid "Copied “%s” to “%s”"
 msgstr "“%s” から “%s” にコピーしました"
 
-#: src/nautilus-file-operations.c:3557
+#: src/nautilus-file-operations.c:3566
 #, c-format
 msgid "Duplicating “%s”"
 msgstr "“%s” を複製中"
 
-#: src/nautilus-file-operations.c:3561
+#: src/nautilus-file-operations.c:3570
 #, c-format
 msgid "Duplicated “%s”"
 msgstr "“%s” を複製しました"
 
-#: src/nautilus-file-operations.c:3580
+#: src/nautilus-file-operations.c:3589
 #, c-format
 msgid "Moving %'d file to “%s”"
 msgid_plural "Moving %'d files to “%s”"
 msgstr[0] "%'d 個のファイルを “%s” へ移動中"
 
-#: src/nautilus-file-operations.c:3586
+#: src/nautilus-file-operations.c:3595
 #, c-format
 msgid "Copying %'d file to “%s”"
 msgid_plural "Copying %'d files to “%s”"
 msgstr[0] "%'d 個のファイルを “%s” にコピー中"
 
-#: src/nautilus-file-operations.c:3605
+#: src/nautilus-file-operations.c:3614
 #, c-format
 msgid "Moved %'d file to “%s”"
 msgid_plural "Moved %'d files to “%s”"
 msgstr[0] "%'d 個のファイルを “%s” へ移動しました"
 
-#: src/nautilus-file-operations.c:3611
+#: src/nautilus-file-operations.c:3620
 #, c-format
 msgid "Copied %'d file to “%s”"
 msgid_plural "Copied %'d files to “%s”"
 msgstr[0] "%'d 個のファイルを “%s” にコピーしました"
 
-#: src/nautilus-file-operations.c:3634
+#: src/nautilus-file-operations.c:3643
 #, c-format
 msgid "Duplicating %'d file in “%s”"
 msgid_plural "Duplicating %'d files in “%s”"
 msgstr[0] "%'d 個のファイルを “%s” で複製中"
 
-#: src/nautilus-file-operations.c:3644
+#: src/nautilus-file-operations.c:3653
 #, c-format
 msgid "Duplicated %'d file in “%s”"
 msgid_plural "Duplicated %'d files in “%s”"
@@ -2095,9 +2095,9 @@ msgstr[0] "%'d 個のファイルを “%s” で複製しました"
 #.
 #. To translators: %s will expand to a size like "2 bytes" or "3 MB", so something like "4 kB / 4 MB"
 #. To translators: %s will expand to a size like "2 bytes" or "3 MB".
-#: src/nautilus-file-operations.c:3683 src/nautilus-file-operations.c:3743
-#: src/nautilus-file-operations.c:8000 src/nautilus-file-operations.c:8227
-#: src/nautilus-file-operations.c:8482 src/nautilus-file-operations.c:8525
+#: src/nautilus-file-operations.c:3692 src/nautilus-file-operations.c:3752
+#: src/nautilus-file-operations.c:7997 src/nautilus-file-operations.c:8224
+#: src/nautilus-file-operations.c:8479 src/nautilus-file-operations.c:8522
 #, c-format
 msgid "%s / %s"
 msgstr "%s / %s"
@@ -2120,8 +2120,8 @@ msgstr "%s / %s"
 #. *
 #. * The singular/plural form will be used depending on the remaining time (i.e. the %s argument).
 #.
-#: src/nautilus-file-operations.c:3727 src/nautilus-file-operations.c:8018
-#: src/nautilus-file-operations.c:8514
+#: src/nautilus-file-operations.c:3736 src/nautilus-file-operations.c:8015
+#: src/nautilus-file-operations.c:8511
 #, c-format
 msgid "%s / %s — %s left (%s/s)"
 msgid_plural "%s / %s — %s left (%s/s)"
@@ -2132,25 +2132,25 @@ msgstr[0] "%s / %s — 残り %s (%s/秒)"
 #. *
 #. * The singular/plural form will be used depending on the remaining time (i.e. the %s argument).
 #.
-#: src/nautilus-file-operations.c:3761 src/nautilus-file-operations.c:8544
+#: src/nautilus-file-operations.c:3770 src/nautilus-file-operations.c:8541
 #, c-format
 msgid "%'d / %'d — %s left (%s/s)"
 msgid_plural "%'d / %'d — %s left (%s/s)"
 msgstr[0] "%'d / %'d — 残り %s (%s/秒)"
 
-#: src/nautilus-file-operations.c:4286
+#: src/nautilus-file-operations.c:4295
 #, c-format
 msgid ""
 "The folder “%s” cannot be copied because you do not have permissions to "
 "create it in the destination."
 msgstr "フォルダー “%s” をコピーできません。コピー先での作成権限がありません。"
 
-#: src/nautilus-file-operations.c:4292
+#: src/nautilus-file-operations.c:4301
 #, c-format
 msgid "There was an error creating the folder “%s”."
 msgstr "フォルダー “%s” の作成中にエラーが発生しました。"
 
-#: src/nautilus-file-operations.c:4479
+#: src/nautilus-file-operations.c:4488
 #, c-format
 msgid ""
 "Files in the folder “%s” cannot be copied because you do not have "
@@ -2158,265 +2158,265 @@ msgid ""
 msgstr ""
 "フォルダー “%s” 内のファイルをコピーできません。参照する権限がありません。"
 
-#: src/nautilus-file-operations.c:4495
+#: src/nautilus-file-operations.c:4504
 msgid "_Skip files"
 msgstr "ファイルをスキップ(_S)"
 
-#: src/nautilus-file-operations.c:4561
+#: src/nautilus-file-operations.c:4570
 #, c-format
 msgid ""
 "The folder “%s” cannot be copied because you do not have permissions to read "
 "it."
 msgstr "フォルダー “%s” をコピーできません。読み取り権限がありません。"
 
-#: src/nautilus-file-operations.c:4626 src/nautilus-file-operations.c:5260
-#: src/nautilus-file-operations.c:6009
+#: src/nautilus-file-operations.c:4635 src/nautilus-file-operations.c:5269
+#: src/nautilus-file-operations.c:6015
 #, c-format
 msgid "Error while moving “%s”."
 msgstr "“%s” の移動中にエラーが発生しました。"
 
-#: src/nautilus-file-operations.c:4627
+#: src/nautilus-file-operations.c:4636
 msgid "Could not remove the source folder."
 msgstr "元フォルダーを削除できませんでした。"
 
-#: src/nautilus-file-operations.c:4844
+#: src/nautilus-file-operations.c:4853
 msgid "There was an error getting information about the source."
 msgstr "ソースの情報の取得中にエラーが発生しました。"
 
 #. the run_warning() frees all strings passed in automatically
-#: src/nautilus-file-operations.c:4946 src/nautilus-file-operations.c:5767
+#: src/nautilus-file-operations.c:4955 src/nautilus-file-operations.c:5773
 msgid "You cannot move a folder into itself."
 msgstr "フォルダーを自分自身の中に移動することはできません。"
 
-#: src/nautilus-file-operations.c:4947 src/nautilus-file-operations.c:5768
+#: src/nautilus-file-operations.c:4956 src/nautilus-file-operations.c:5774
 msgid "You cannot copy a folder into itself."
 msgstr "フォルダーを自分自身の中にコピーすることはできません。"
 
-#: src/nautilus-file-operations.c:4948 src/nautilus-file-operations.c:5769
+#: src/nautilus-file-operations.c:4957 src/nautilus-file-operations.c:5775
 msgid "The destination folder is inside the source folder."
 msgstr "宛先フォルダーが元フォルダーの中にあります。"
 
 #. the run_warning() frees all strings passed in automatically
-#: src/nautilus-file-operations.c:4988 src/nautilus-file-operations.c:5810
+#: src/nautilus-file-operations.c:4997 src/nautilus-file-operations.c:5816
 msgid "You cannot move a file over itself."
 msgstr "ファイルを自分自身に移動することはできません。"
 
-#: src/nautilus-file-operations.c:4989 src/nautilus-file-operations.c:5811
+#: src/nautilus-file-operations.c:4998 src/nautilus-file-operations.c:5817
 msgid "You cannot copy a file over itself."
 msgstr "ファイルを自分自身にコピーすることはできません。"
 
-#: src/nautilus-file-operations.c:4990 src/nautilus-file-operations.c:5812
+#: src/nautilus-file-operations.c:4999 src/nautilus-file-operations.c:5818
 msgid "The source file would be overwritten by the destination."
 msgstr "元ファイルが宛先で上書きされます。"
 
-#: src/nautilus-file-operations.c:5264 src/nautilus-file-operations.c:5352
+#: src/nautilus-file-operations.c:5273 src/nautilus-file-operations.c:5361
 #, c-format
 msgid "Error while copying “%s”."
 msgstr "“%s” のコピー中にエラーが発生しました。"
 
-#: src/nautilus-file-operations.c:5267
+#: src/nautilus-file-operations.c:5276
 #, c-format
 msgid "Could not remove the already existing file with the same name in %s."
 msgstr "%s にある同名の既存ファイルを削除できませんでした。"
 
-#: src/nautilus-file-operations.c:5354
+#: src/nautilus-file-operations.c:5363
 #, c-format
 msgid "There was an error copying the file into %s."
 msgstr "%s へのファイルのコピー中にエラーが発生しました。"
 
-#: src/nautilus-file-operations.c:5548
+#: src/nautilus-file-operations.c:5555
 msgid "Copying Files"
 msgstr "ファイルをコピー中"
 
-#: src/nautilus-file-operations.c:5668
+#: src/nautilus-file-operations.c:5674
 #, c-format
 msgid "Preparing to move to “%s”"
 msgstr "“%s” へ移動する準備をしています"
 
-#: src/nautilus-file-operations.c:5672
+#: src/nautilus-file-operations.c:5678
 #, c-format
 msgid "Preparing to move %'d file"
 msgid_plural "Preparing to move %'d files"
 msgstr[0] "%'d 個のファイルを移動する準備をしています"
 
-#: src/nautilus-file-operations.c:6011
+#: src/nautilus-file-operations.c:6017
 #, c-format
 msgid "There was an error moving the file into %s."
 msgstr "%s へのファイルの移動中にエラーが発生しました。"
 
-#: src/nautilus-file-operations.c:6253
+#: src/nautilus-file-operations.c:6251
 msgid "Moving Files"
 msgstr "ファイルを移動中"
 
-#: src/nautilus-file-operations.c:6359
+#: src/nautilus-file-operations.c:6356
 #, c-format
 msgid "Creating links in “%s”"
 msgstr "“%s” にリンクを作成中"
 
-#: src/nautilus-file-operations.c:6363
+#: src/nautilus-file-operations.c:6360
 #, c-format
 msgid "Making link to %'d file"
 msgid_plural "Making links to %'d files"
 msgstr[0] "%'d 個のファイルへのリンクを作成中"
 
-#: src/nautilus-file-operations.c:6513
+#: src/nautilus-file-operations.c:6510
 #, c-format
 msgid "Error while creating link to “%s”."
 msgstr "“%s” へのリンクの作成中にエラーが発生しました。"
 
-#: src/nautilus-file-operations.c:6517
+#: src/nautilus-file-operations.c:6514
 msgid "Symbolic links only supported for local files"
 msgstr "シンボリックリンクはローカルファイルのみサポートされています"
 
-#: src/nautilus-file-operations.c:6522
+#: src/nautilus-file-operations.c:6519
 msgid "The target doesn’t support symbolic links."
 msgstr "リンクの作成先はシンボリックリンクをサポートしていません。"
 
-#: src/nautilus-file-operations.c:6530
+#: src/nautilus-file-operations.c:6527
 #, c-format
 msgid "There was an error creating the symlink in %s."
 msgstr "%s でのシンボリックリンクの作成中にエラーが発生しました。"
 
-#: src/nautilus-file-operations.c:6860
+#: src/nautilus-file-operations.c:6857
 msgid "Setting permissions"
 msgstr "アクセス権を設定中"
 
 #. localizers: the initial name of a new folder
-#: src/nautilus-file-operations.c:7152
+#: src/nautilus-file-operations.c:7149
 msgid "Untitled Folder"
 msgstr "無題のフォルダー"
 
 #. localizers: the initial name of a new empty document
-#: src/nautilus-file-operations.c:7167
+#: src/nautilus-file-operations.c:7164
 msgid "Untitled Document"
 msgstr "無題のドキュメント"
 
-#: src/nautilus-file-operations.c:7393
+#: src/nautilus-file-operations.c:7390
 #, c-format
 msgid "Error while creating directory “%s”."
 msgstr "フォルダー ”%s” の作成中にエラーが発生しました。"
 
-#: src/nautilus-file-operations.c:7398
+#: src/nautilus-file-operations.c:7395
 #, c-format
 msgid "Error while creating file “%s”."
 msgstr "ファイル “%s” の作成中にエラーが発生しました。"
 
-#: src/nautilus-file-operations.c:7402
+#: src/nautilus-file-operations.c:7399
 #, c-format
 msgid "There was an error creating the directory in %s."
 msgstr "%s でのディレクトリの作成中にエラーが発生しました。"
 
-#: src/nautilus-file-operations.c:7503
+#: src/nautilus-file-operations.c:7500
 msgid "Saving image to file"
 msgstr "ファイルに画像を保存中"
 
-#: src/nautilus-file-operations.c:7512
+#: src/nautilus-file-operations.c:7509
 msgid "Successfully saved image to file"
 msgstr "画像をファイルに正常に保存しました"
 
-#: src/nautilus-file-operations.c:7542
+#: src/nautilus-file-operations.c:7539
 msgid "Failed to save image"
 msgstr "画像の保存に失敗しました"
 
 #. Translators: This is used to auto-generate a file name for pasted images from
 #. * the clipboard i.e. "Pasted image.png", "Pasted image 1.png", ...
-#: src/nautilus-file-operations.c:7604
+#: src/nautilus-file-operations.c:7601
 msgid "Pasted image"
 msgstr "貼り付けられた画像"
 
-#: src/nautilus-file-operations.c:7611
+#: src/nautilus-file-operations.c:7608
 msgid "Retrieving clipboard data"
 msgstr "クリップボードのデータを取得中"
 
-#: src/nautilus-file-operations.c:7643
+#: src/nautilus-file-operations.c:7640
 msgid "Retrieving image data"
 msgstr "画像データを取得中"
 
-#: src/nautilus-file-operations.c:7861
+#: src/nautilus-file-operations.c:7858
 msgid "Emptying Trash"
 msgstr "ゴミ箱を空にしています"
 
-#: src/nautilus-file-operations.c:7904
+#: src/nautilus-file-operations.c:7901
 msgid "Verifying destination"
 msgstr "宛先を検証中"
 
-#: src/nautilus-file-operations.c:7958
+#: src/nautilus-file-operations.c:7955
 #, c-format
 msgid "Extracting “%s”"
 msgstr "“%s” を展開中"
 
-#: src/nautilus-file-operations.c:8084 src/nautilus-file-operations.c:8174
+#: src/nautilus-file-operations.c:8081 src/nautilus-file-operations.c:8171
 #, c-format
 msgid "Error extracting “%s”"
 msgstr "“%s” の展開中にエラーが発生しました"
 
-#: src/nautilus-file-operations.c:8091
+#: src/nautilus-file-operations.c:8088
 #, c-format
 msgid "There was an error while extracting “%s”."
 msgstr "“%s” の展開中にエラーが発生しました。"
 
-#: src/nautilus-file-operations.c:8177
+#: src/nautilus-file-operations.c:8174
 #, c-format
 msgid "Not enough free space to extract “%s”"
 msgstr "“%s” を展開するための空き容量が足りません"
 
-#: src/nautilus-file-operations.c:8210
+#: src/nautilus-file-operations.c:8207
 #, c-format
 msgid "Extracted “%s” to “%s”"
 msgstr "“%s” から “%s” へ展開しました"
 
-#: src/nautilus-file-operations.c:8216
+#: src/nautilus-file-operations.c:8213
 #, c-format
 msgid "Extracted %'d file to “%s”"
 msgid_plural "Extracted %'d files to “%s”"
 msgstr[0] "%'d 個のファイルを “%s” へ展開しました"
 
-#: src/nautilus-file-operations.c:8250
+#: src/nautilus-file-operations.c:8247
 msgid "Preparing to extract"
 msgstr "展開を準備しています"
 
-#: src/nautilus-file-operations.c:8378
+#: src/nautilus-file-operations.c:8375
 msgid "Extracting Files"
 msgstr "ファイルを展開中"
 
-#: src/nautilus-file-operations.c:8438
+#: src/nautilus-file-operations.c:8435
 #, c-format
 msgid "Compressing “%s” into “%s”"
 msgstr "“%s” を “%s” に圧縮中"
 
-#: src/nautilus-file-operations.c:8444
+#: src/nautilus-file-operations.c:8441
 #, c-format
 msgid "Compressing %'d file into “%s”"
 msgid_plural "Compressing %'d files into “%s”"
 msgstr[0] "%'d 個のファイルを “%s” に圧縮中"
 
-#: src/nautilus-file-operations.c:8592
+#: src/nautilus-file-operations.c:8589
 #, c-format
 msgid "Error compressing “%s” into “%s”"
 msgstr "“%s” の “%s” への圧縮中にエラーが発生しました"
 
-#: src/nautilus-file-operations.c:8598
+#: src/nautilus-file-operations.c:8595
 #, c-format
 msgid "Error compressing %'d file into “%s”"
 msgid_plural "Error compressing %'d files into “%s”"
 msgstr[0] "%'d 個のファイルの “%s” への圧縮中にエラーが発生しました"
 
-#: src/nautilus-file-operations.c:8608
+#: src/nautilus-file-operations.c:8605
 msgid "There was an error while compressing files."
 msgstr "ファイルの圧縮中にエラーが発生しました。"
 
-#: src/nautilus-file-operations.c:8633
+#: src/nautilus-file-operations.c:8630
 #, c-format
 msgid "Compressed “%s” into “%s”"
 msgstr "“%s” から “%s” に圧縮しました"
 
-#: src/nautilus-file-operations.c:8639
+#: src/nautilus-file-operations.c:8636
 #, c-format
 msgid "Compressed %'d file into “%s”"
 msgid_plural "Compressed %'d files into “%s”"
 msgstr[0] "%'d 個のファイルを “%s” に圧縮しました"
 
-#: src/nautilus-file-operations.c:8758
+#: src/nautilus-file-operations.c:8755
 msgid "Compressing Files"
 msgstr "ファイルを圧縮中"
 
@@ -3243,7 +3243,7 @@ msgstr "ゴミ箱を空にする(_E)…"
 msgid "_Trash Settings"
 msgstr "ゴミ箱の設定(_T)"
 
-#: src/nautilus-location-entry.c:713 src/nautilus-query-editor.c:737
+#: src/nautilus-location-entry.c:713 src/nautilus-query-editor.c:721
 msgid "Clear Entry"
 msgstr "入力内容を消去"
 
@@ -3253,17 +3253,11 @@ msgstr "入力された場所へ移動します"
 
 #: src/nautilus-main.c:61
 msgid ""
-"\n"
-"========================================================\n"
-"This app cannot work correctly if run as root (not even\n"
-"with sudo). Consider running `nautilus admin:/` instead.\n"
-"========================================================"
+"Running as root is not supported. Consider running `nautilus admin:///` "
+"instead."
 msgstr ""
-"\n"
-"========================================================\n"
-"このアプリは root (sudo を含む) では正常に動作しません。\n"
-"代わりに `nautilus admin:/` で実行してみてください。\n"
-"========================================================"
+"root での実行はサポートされていません。代わりに `nautilus admin:///` の実行を"
+"検討してください。"
 
 #: src/nautilus-mime-actions.c:98
 msgid "Anything"
@@ -3903,61 +3897,61 @@ msgstr "カスタムアイコンを選択"
 msgid "Search for “%s”"
 msgstr "“%s” の検索"
 
-#: src/nautilus-query-editor.c:146
+#: src/nautilus-query-editor.c:151
 msgid "Search may be slow and will not include subfolders or file contents"
 msgstr "検索は遅くなる場合があり、サブフォルダーとファイルの内容は含まれません"
 
-#: src/nautilus-query-editor.c:153
+#: src/nautilus-query-editor.c:158
 msgid "Search may be slow and will not include file contents"
 msgstr "検索は遅くなる場合があり、ファイルの内容は含まれません"
 
-#: src/nautilus-query-editor.c:161
+#: src/nautilus-query-editor.c:166
 msgid "Remote Location"
 msgstr "リモートの場所"
 
-#: src/nautilus-query-editor.c:167
+#: src/nautilus-query-editor.c:172
 msgid "External Drive"
 msgstr "外付けドライブ"
 
-#: src/nautilus-query-editor.c:173
+#: src/nautilus-query-editor.c:178
 msgid "Folder Not in Search Locations"
 msgstr "フォルダーは検索対象に含まれません"
 
-#: src/nautilus-query-editor.c:180
+#: src/nautilus-query-editor.c:185
 msgid "Subfolders Not in Search Locations"
 msgstr "サブフォルダーは検索対象に含まれません"
 
-#: src/nautilus-query-editor.c:190
+#: src/nautilus-query-editor.c:195
 msgid "Some subfolders will not be included in search results"
 msgstr "一部のサブフォルダーは検索結果に含まれません"
 
-#: src/nautilus-query-editor.c:197
+#: src/nautilus-query-editor.c:202
 msgid ""
 "Search will be slower and will not include file contents for some folders"
 msgstr "検索は遅くなり、いくつかのサブフォルダーのファイルの内容は含まれません"
 
-#: src/nautilus-query-editor.c:543
+#: src/nautilus-query-editor.c:547
 msgid "Remove Filter"
 msgstr "フィルターを削除"
 
 #. translators: This opens the search panel in the Settings app.
-#: src/nautilus-query-editor.c:761
+#: src/nautilus-query-editor.c:741
 msgid "_Search Settings"
 msgstr "検索の設定(_S)"
 
-#: src/nautilus-query-editor.c:774
+#: src/nautilus-query-editor.c:754
 msgid "Filter Search Results"
 msgstr "検索結果のフィルター"
 
-#: src/nautilus-query-editor.c:781
+#: src/nautilus-query-editor.c:761
 msgid "Search Information"
 msgstr "検索情報"
 
-#: src/nautilus-query-editor.c:861
+#: src/nautilus-query-editor.c:841
 msgid "Search current folder"
 msgstr "現在のフォルダーを検索"
 
-#: src/nautilus-query-editor.c:862
+#: src/nautilus-query-editor.c:842
 msgid "Search everywhere"
 msgstr "すべての場所を検索"
 
@@ -3973,26 +3967,26 @@ msgstr "ファイル名を変更します"
 msgid "Unable to complete the requested search"
 msgstr "要求された検索を完了できません"
 
-#: src/nautilus-search-popover.c:293
+#: src/nautilus-search-popover.c:281
 msgid "Show Time Ranges"
 msgstr "期間を表示"
 
-#: src/nautilus-search-popover.c:299
-#: src/resources/ui/nautilus-search-popover.ui:73
+#: src/nautilus-search-popover.c:287
+#: src/resources/ui/nautilus-search-popover.ui:72
 msgid "Use Calendar"
 msgstr "カレンダーを使用"
 
 #. Add the no date filter element first
-#: src/nautilus-search-popover.c:419
+#: src/nautilus-search-popover.c:405
 msgid "Any time"
 msgstr "指定なし"
 
 #. Other types
-#: src/nautilus-search-popover.c:514
+#: src/nautilus-search-popover.c:500
 msgid "Other Type…"
 msgstr "他の種類…"
 
-#: src/nautilus-search-popover.c:706
+#: src/nautilus-search-popover.c:692
 msgid "Select Dates…"
 msgstr "日付を選択…"
 
@@ -5311,55 +5305,55 @@ msgstr "含まれるファイルのアクセス権限を変更(_E)…"
 msgid "New Filename"
 msgstr "新しいファイル名"
 
-#: src/resources/ui/nautilus-search-popover.ui:15
+#: src/resources/ui/nautilus-search-popover.ui:19
 msgid "When"
 msgstr "日付"
 
-#: src/resources/ui/nautilus-search-popover.ui:44
+#: src/resources/ui/nautilus-search-popover.ui:43
 msgid "Select _Dates…"
 msgstr "日付を選択(_D)…"
 
-#: src/resources/ui/nautilus-search-popover.ui:55
+#: src/resources/ui/nautilus-search-popover.ui:54
 msgid "Clear Date Filter"
 msgstr "日付フィルタを解除"
 
-#: src/resources/ui/nautilus-search-popover.ui:96
+#: src/resources/ui/nautilus-search-popover.ui:90
 msgid "Since…"
 msgstr "期間…"
 
-#: src/resources/ui/nautilus-search-popover.ui:155
+#: src/resources/ui/nautilus-search-popover.ui:139
 msgid "Last _modified"
 msgstr "最終更新日時(_M)"
 
-#: src/resources/ui/nautilus-search-popover.ui:167
+#: src/resources/ui/nautilus-search-popover.ui:147
 msgid "Last _used"
 msgstr "最終使用日時(_U)"
 
-#: src/resources/ui/nautilus-search-popover.ui:179
+#: src/resources/ui/nautilus-search-popover.ui:155
 msgid "_Created"
 msgstr "作成日時(_C)"
 
-#: src/resources/ui/nautilus-search-popover.ui:201
+#: src/resources/ui/nautilus-search-popover.ui:168
 msgid "What"
 msgstr "種類"
 
-#: src/resources/ui/nautilus-search-popover.ui:232
+#: src/resources/ui/nautilus-search-popover.ui:194
 msgid "_Anything"
 msgstr "指定なし(_A)"
 
-#: src/resources/ui/nautilus-search-popover.ui:295
+#: src/resources/ui/nautilus-search-popover.ui:247
 msgid "Full _Text"
 msgstr "フルテキスト(_T)"
 
-#: src/resources/ui/nautilus-search-popover.ui:297
+#: src/resources/ui/nautilus-search-popover.ui:249
 msgid "Search Inside Files"
 msgstr "ファイル内を検索"
 
-#: src/resources/ui/nautilus-search-popover.ui:305
+#: src/resources/ui/nautilus-search-popover.ui:257
 msgid "File _Name"
 msgstr "ファイル名(_N)"
 
-#: src/resources/ui/nautilus-search-popover.ui:307
+#: src/resources/ui/nautilus-search-popover.ui:259
 msgid "Don't Search Inside Files"
 msgstr "ファイル内を検索しない"
 
@@ -5636,6 +5630,19 @@ msgstr "サイドバー"
 #: src/gtk/nautilusgtkplacessidebar.c:3563
 msgid "List of common shortcuts, mountpoints, and bookmarks."
 msgstr "よく使うショートカット、マウントポイント、ブックマークの一覧。"
+
+#~ msgid ""
+#~ "\n"
+#~ "========================================================\n"
+#~ "This app cannot work correctly if run as root (not even\n"
+#~ "with sudo). Consider running `nautilus admin:/` instead.\n"
+#~ "========================================================"
+#~ msgstr ""
+#~ "\n"
+#~ "========================================================\n"
+#~ "このアプリは root (sudo を含む) では正常に動作しません。\n"
+#~ "代わりに `nautilus admin:/` で実行してみてください。\n"
+#~ "========================================================"
 
 #~ msgid "OK"
 #~ msgstr "OK"
