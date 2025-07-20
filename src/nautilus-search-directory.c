@@ -623,20 +623,6 @@ search_engine_hits_added (NautilusSearchEngine    *engine,
 }
 
 static void
-search_engine_error (NautilusSearchEngine    *engine,
-                     const char              *error_message,
-                     NautilusSearchDirectory *self)
-{
-    GError *error;
-
-    error = g_error_new_literal (G_IO_ERROR, G_IO_ERROR_FAILED,
-                                 error_message);
-    nautilus_directory_emit_load_error (NAUTILUS_DIRECTORY (self),
-                                        error);
-    g_error_free (error);
-}
-
-static void
 search_engine_finished (NautilusSearchEngine         *engine,
                         NautilusSearchProviderStatus  status,
                         NautilusSearchDirectory      *self)
@@ -801,9 +787,6 @@ search_connect_engine (NautilusSearchDirectory *self)
     g_signal_connect (self->engine, "hits-added",
                       G_CALLBACK (search_engine_hits_added),
                       self);
-    g_signal_connect (self->engine, "error",
-                      G_CALLBACK (search_engine_error),
-                      self);
     g_signal_connect (self->engine, "finished",
                       G_CALLBACK (search_engine_finished),
                       self);
@@ -814,9 +797,6 @@ search_disconnect_engine (NautilusSearchDirectory *self)
 {
     g_signal_handlers_disconnect_by_func (self->engine,
                                           search_engine_hits_added,
-                                          self);
-    g_signal_handlers_disconnect_by_func (self->engine,
-                                          search_engine_error,
                                           self);
     g_signal_handlers_disconnect_by_func (self->engine,
                                           search_engine_finished,

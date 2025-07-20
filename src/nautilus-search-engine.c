@@ -48,7 +48,6 @@ struct _NautilusSearchEngine
     GHashTable *uris;
     guint providers_running;
     guint providers_finished;
-    guint providers_error;
 
     NautilusQuery *query;
     gboolean running;
@@ -93,7 +92,6 @@ search_engine_start_real (NautilusSearchEngine *self)
 
     self->providers_running = 0;
     self->providers_finished = 0;
-    self->providers_error = 0;
 
     self->restart = FALSE;
 
@@ -114,7 +112,7 @@ nautilus_search_engine_start (NautilusSearchProvider *provider,
     NautilusSearchEngine *self = NAUTILUS_SEARCH_ENGINE (provider);
 
     g_debug ("Search engine start");
-    guint num_finished = self->providers_error + self->providers_finished;
+    guint num_finished = self->providers_finished;
 
     g_clear_object (&self->query);
     self->query = nautilus_query_copy (query_to_copy);
@@ -215,33 +213,24 @@ check_providers_status (NautilusSearchEngine *self)
 {
     guint num_finished;
 
-    num_finished = self->providers_error + self->providers_finished;
+    num_finished = self->providers_finished;
 
     if (num_finished < self->providers_running)
     {
         return;
     }
 
-    if (num_finished == self->providers_error)
+    if (self->restart)
     {
-        g_debug ("Search engine error");
-        nautilus_search_provider_error (NAUTILUS_SEARCH_PROVIDER (self),
-                                        _("Unable to complete the requested search"));
+        g_debug ("Search engine finished and restarting");
     }
     else
     {
-        if (self->restart)
-        {
-            g_debug ("Search engine finished and restarting");
-        }
-        else
-        {
-            g_debug ("Search engine finished");
-        }
-        nautilus_search_provider_finished (NAUTILUS_SEARCH_PROVIDER (self),
-                                           self->restart ? NAUTILUS_SEARCH_PROVIDER_STATUS_RESTARTING :
-                                                           NAUTILUS_SEARCH_PROVIDER_STATUS_NORMAL);
+        g_debug ("Search engine finished");
     }
+    nautilus_search_provider_finished (NAUTILUS_SEARCH_PROVIDER (self),
+                                       self->restart ? NAUTILUS_SEARCH_PROVIDER_STATUS_RESTARTING :
+                                                       NAUTILUS_SEARCH_PROVIDER_STATUS_NORMAL);
 
     self->running = FALSE;
     g_object_notify (G_OBJECT (self), "running");
@@ -254,18 +243,6 @@ check_providers_status (NautilusSearchEngine *self)
     }
 
     g_object_unref (self);
-}
-
-static void
-search_provider_error (NautilusSearchProvider *provider,
-                       const char             *error_message,
-                       NautilusSearchEngine   *self)
-{
-    g_debug ("Search provider error: %s", error_message);
-
-    self->providers_error++;
-
-    check_providers_status (self);
 }
 
 static void
@@ -299,9 +276,6 @@ setup_provider (NautilusSearchEngine    *self,
                               self);
             g_signal_connect (*provider_pointer, "finished",
                               G_CALLBACK (search_provider_finished),
-                              self);
-            g_signal_connect (*provider_pointer, "error",
-                              G_CALLBACK (search_provider_error),
                               self);
         }
     }
