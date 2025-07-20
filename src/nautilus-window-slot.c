@@ -1110,9 +1110,13 @@ change_files_view_mode (NautilusWindowSlot *self,
     g_return_if_fail (view_id == NAUTILUS_VIEW_LIST_ID ||
                       view_id == NAUTILUS_VIEW_GRID_ID);
 
-    self->default_view_id = view_id;
+    if (self->default_view_id != view_id)
+    {
+        self->default_view_id = view_id;
+        g_settings_set_enum (nautilus_preferences, NAUTILUS_PREFERENCES_DEFAULT_FOLDER_VIEWER, view_id);
+    }
+
     nautilus_window_slot_set_view_id (self, view_id);
-    g_settings_set_enum (nautilus_preferences, NAUTILUS_PREFERENCES_DEFAULT_FOLDER_VIEWER, view_id);
 }
 
 static void
