@@ -50,6 +50,7 @@ typedef struct  NautilusMonitor             NautilusMonitor;
 typedef struct _NautilusProgressInfo        NautilusProgressInfo;
 typedef struct _NautilusQuery               NautilusQuery;
 typedef struct _NautilusQueryEditor         NautilusQueryEditor;
+typedef struct _NautilusSearchHit           NautilusSearchHit;
 typedef struct _NautilusSearchProvider      NautilusSearchProvider;
 typedef struct _NautilusToolbarMenuSections NautilusToolbarMenuSections;
 typedef struct _NautilusViewCell            NautilusViewCell;

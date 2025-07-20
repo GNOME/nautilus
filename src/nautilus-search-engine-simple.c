@@ -43,15 +43,6 @@ typedef struct
     GHashTable *visited;
 
     gint n_processed_files;
-    GPtrArray *hits;
-
-    gint processing_id;
-    GMutex idle_mutex;
-    /* The following data can be accessed from different threads
-     * and needs to lock the mutex
-     */
-    GQueue *idle_queue;
-    gboolean finished;
 } SearchThreadData;
 
 
@@ -83,9 +74,6 @@ search_thread_data_new (NautilusSearchEngineSimple *engine)
     data->directories = g_queue_new ();
     data->visited = g_hash_table_new_full (g_str_hash, g_str_equal, g_free, NULL);
 
-    g_mutex_init (&data->idle_mutex);
-    data->idle_queue = g_queue_new ();
-
     return data;
 }
 
@@ -94,14 +82,11 @@ search_thread_data_free (SearchThreadData *data)
 {
     g_queue_free_full (data->directories, (GDestroyNotify) g_object_unref);
     g_hash_table_destroy (data->visited);
-    g_clear_pointer (&data->hits, g_ptr_array_unref);
-    g_mutex_clear (&data->idle_mutex);
-    g_queue_free_full (data->idle_queue, (GDestroyNotify) g_ptr_array_unref);
 
     g_free (data);
 }
 
-static gboolean
+static void
 search_thread_done (SearchThreadData *data)
 {
     NautilusSearchEngineSimple *engine = data->engine;
@@ -110,105 +95,6 @@ search_thread_done (SearchThreadData *data)
     nautilus_search_provider_finished (NAUTILUS_SEARCH_PROVIDER (engine));
 
     search_thread_data_free (data);
-
-    return G_SOURCE_REMOVE;
-}
-
-static void
-search_thread_process_hits_idle (SearchThreadData *data,
-                                 GPtrArray        *hits)
-{
-    if (hits == NULL)
-    {
-        return;
-    }
-
-    if (!nautilus_search_provider_should_stop (data->engine))
-    {
-        nautilus_search_provider_hits_added (NAUTILUS_SEARCH_PROVIDER (data->engine),
-                                             g_steal_pointer (&hits));
-    }
-
-    g_clear_pointer (&hits, g_ptr_array_unref);
-}
-
-static gboolean
-search_thread_process_idle (gpointer user_data)
-{
-    SearchThreadData *thread_data;
-    g_autoptr (GPtrArray) hits = NULL;
-
-    thread_data = user_data;
-
-    g_mutex_lock (&thread_data->idle_mutex);
-    hits = g_queue_pop_head (thread_data->idle_queue);
-    /* Even if the cancellable is cancelled, we need to make sure the search
-     * thread has acknowledge it, and therefore not using the thread data after
-     * freeing it. The search thread will mark as finished whenever the search
-     * is finished or cancelled.
-     * Nonetheless, we should stop yielding results if the search was cancelled
-     */
-    if (thread_data->finished)
-    {
-        if (hits == NULL || nautilus_search_provider_should_stop (thread_data->engine))
-        {
-            g_mutex_unlock (&thread_data->idle_mutex);
-
-            search_thread_done (thread_data);
-
-            return G_SOURCE_REMOVE;
-        }
-    }
-
-    g_mutex_unlock (&thread_data->idle_mutex);
-
-    search_thread_process_hits_idle (thread_data, g_steal_pointer (&hits));
-
-    return G_SOURCE_CONTINUE;
-}
-
-static void
-finish_search_thread (SearchThreadData *thread_data)
-{
-    g_mutex_lock (&thread_data->idle_mutex);
-    thread_data->finished = TRUE;
-    g_mutex_unlock (&thread_data->idle_mutex);
-
-    /* If no results were processed, directly finish the search, in the main
-     * thread.
-     */
-    if (thread_data->processing_id == 0)
-    {
-        g_idle_add (G_SOURCE_FUNC (search_thread_done), thread_data);
-    }
-}
-
-static void
-process_batch_in_idle (SearchThreadData *thread_data,
-                       GPtrArray        *hits)
-{
-    g_return_if_fail (hits != NULL);
-
-    g_mutex_lock (&thread_data->idle_mutex);
-    g_queue_push_tail (thread_data->idle_queue, hits);
-    g_mutex_unlock (&thread_data->idle_mutex);
-
-    if (thread_data->processing_id == 0)
-    {
-        thread_data->processing_id = g_idle_add (search_thread_process_idle, thread_data);
-    }
-}
-
-static void
-send_batch_in_idle (SearchThreadData *thread_data)
-{
-    thread_data->n_processed_files = 0;
-
-    if (thread_data->hits)
-    {
-        process_batch_in_idle (thread_data, thread_data->hits);
-    }
-    thread_data->hits = NULL;
 }
 
 #define STD_ATTRIBUTES \
@@ -349,18 +235,14 @@ visit_directory (GFile            *dir,
             nautilus_search_hit_set_access_time (hit, atime);
             nautilus_search_hit_set_creation_time (hit, ctime);
 
-            if (G_UNLIKELY (data->hits == NULL))
-            {
-                data->hits = g_ptr_array_new_with_free_func (g_object_unref);
-            }
-
-            g_ptr_array_add (data->hits, hit);
+            nautilus_search_provider_add_hit (data->engine, hit);
         }
 
         data->n_processed_files++;
         if (data->n_processed_files > BATCH_SIZE)
         {
-            send_batch_in_idle (data);
+            data->n_processed_files = 0;
+            nautilus_search_provider_flush_hits (data->engine);
         }
 
         if (recursion_enabled &&
@@ -416,13 +298,7 @@ search_thread_func (gpointer user_data)
         visit_directory (dir, data);
     }
 
-    if (!nautilus_search_provider_should_stop (data->engine))
-    {
-        /* Send remaining non-batch sized results */
-        send_batch_in_idle (data);
-    }
-
-    finish_search_thread (data);
+    g_idle_add_once ((GSourceOnceFunc) search_thread_done, data);
 
     return NULL;
 }

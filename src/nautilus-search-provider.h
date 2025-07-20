@@ -62,9 +62,11 @@ GCancellable *
 nautilus_search_provider_get_cancellable (gpointer self);
 NautilusQuery *
 nautilus_search_provider_get_query (gpointer self);
-
-void           nautilus_search_provider_hits_added      (NautilusSearchProvider *provider,
-                                                         GPtrArray              *hits);
+void
+nautilus_search_provider_add_hit (gpointer           self,
+                                  NautilusSearchHit *hit);
+void
+nautilus_search_provider_flush_hits (gpointer self);
 
 void           nautilus_search_provider_finished        (NautilusSearchProvider *provider);
 
