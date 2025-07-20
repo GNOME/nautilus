@@ -78,7 +78,6 @@ struct _NautilusSearchProviderInterface {
          */
         void (*finished) (NautilusSearchProvider       *provider,
                           NautilusSearchProviderStatus  status);
-        void (*error) (NautilusSearchProvider *provider, const char *error_message);
 };
 
 GType          nautilus_search_provider_get_type        (void) G_GNUC_CONST;
@@ -92,7 +91,5 @@ void           nautilus_search_provider_hits_added      (NautilusSearchProvider 
                                                          GPtrArray              *hits);
 void           nautilus_search_provider_finished        (NautilusSearchProvider       *provider,
                                                          NautilusSearchProviderStatus  status);
-void           nautilus_search_provider_error           (NautilusSearchProvider *provider,
-                                                         const char *error_message);
 
 G_END_DECLS
