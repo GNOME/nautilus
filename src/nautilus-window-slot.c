@@ -146,7 +146,7 @@ struct _NautilusWindowSlot
     GCancellable *mount_cancellable;
     GError *mount_error;
     gboolean tried_mount;
-    guint view_id;
+    guint default_view_id;
 
     /* Menus */
     GMenuModel *extensions_background_menu;
@@ -295,7 +295,7 @@ nautilus_window_slot_get_view_id_for_location (NautilusWindowSlot *self,
         return NAUTILUS_VIEW_NETWORK_ID;
     }
 
-    return self->view_id;
+    return self->default_view_id;
 }
 
 static void
@@ -1110,7 +1110,7 @@ change_files_view_mode (NautilusWindowSlot *self,
     g_return_if_fail (view_id == NAUTILUS_VIEW_LIST_ID ||
                       view_id == NAUTILUS_VIEW_GRID_ID);
 
-    self->view_id = view_id;
+    self->default_view_id = view_id;
     nautilus_window_slot_set_view_id (self, view_id);
     g_settings_set_enum (nautilus_preferences, NAUTILUS_PREFERENCES_DEFAULT_FOLDER_VIEWER, view_id);
 }
@@ -1394,14 +1394,14 @@ nautilus_window_slot_init (NautilusWindowSlot *self)
 
     self->fd_holder = nautilus_fd_holder_new ();
 
-    self->view_id = g_settings_get_enum (nautilus_preferences, NAUTILUS_PREFERENCES_DEFAULT_FOLDER_VIEWER);
-    if (G_UNLIKELY (self->view_id != NAUTILUS_VIEW_LIST_ID &&
-                    self->view_id != NAUTILUS_VIEW_GRID_ID))
+    self->default_view_id = g_settings_get_enum (nautilus_preferences, NAUTILUS_PREFERENCES_DEFAULT_FOLDER_VIEWER);
+    if (G_UNLIKELY (self->default_view_id != NAUTILUS_VIEW_LIST_ID &&
+                    self->default_view_id != NAUTILUS_VIEW_GRID_ID))
     {
         g_warning ("Invalid value stored for 'default-folder-viewer' key for "
                    "the 'org.gnome.nautilus.preferences' schemas. Installed "
                    "schemas may be outdated. Falling back to 'list-view'.");
-        self->view_id = NAUTILUS_VIEW_LIST_ID;
+        self->default_view_id = NAUTILUS_VIEW_LIST_ID;
     }
 }
 
