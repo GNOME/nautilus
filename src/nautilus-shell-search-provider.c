@@ -214,18 +214,6 @@ search_finished_cb (NautilusSearchEngine         *engine,
                            g_variant_new ("(as)", &builder));
 }
 
-static void
-search_error_cb (NautilusSearchEngine *engine,
-                 const gchar          *error_message,
-                 gpointer              user_data)
-{
-    PendingSearch *search = user_data;
-
-    g_debug ("*** Search engine search error");
-    pending_search_finish (search, search->invocation,
-                           g_variant_new ("(as)", NULL));
-}
-
 typedef struct
 {
     gchar *uri;
@@ -459,8 +447,6 @@ execute_search (NautilusShellSearchProvider  *self,
                       G_CALLBACK (search_hits_added_cb), pending_search);
     g_signal_connect (pending_search->engine, "finished",
                       G_CALLBACK (search_finished_cb), pending_search);
-    g_signal_connect (pending_search->engine, "error",
-                      G_CALLBACK (search_error_cb), pending_search);
 
     self->current_search = pending_search;
     g_application_hold (g_application_get_default ());
