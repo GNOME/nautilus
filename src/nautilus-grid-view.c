@@ -413,12 +413,11 @@ bind_cell (GtkSignalListItemFactory *factory,
            GtkListItem              *listitem,
            gpointer                  user_data)
 {
-    GtkWidget *cell;
-    g_autoptr (NautilusViewItem) item = NULL;
+    g_autoptr (NautilusViewItem) item = get_view_item (listitem);
 
-    cell = gtk_list_item_get_child (listitem);
-    item = get_view_item (listitem);
     g_return_if_fail (item != NULL);
+
+    GtkWidget *cell = gtk_list_item_get_child (listitem);
 
     nautilus_view_item_set_item_ui (item, cell);
 
