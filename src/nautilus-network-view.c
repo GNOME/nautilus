@@ -12,6 +12,7 @@
 #include "nautilus-global-preferences.h"
 #include "nautilus-network-cell.h"
 #include "nautilus-scheme.h"
+#include "nautilus-view-cell.h"
 
 struct _NautilusNetworkView
 {
@@ -200,6 +201,8 @@ bind_cell (GtkSignalListItemFactory *factory,
     GtkWidget *cell = gtk_list_item_get_child (listitem);
     g_autoptr (NautilusViewItem) item = get_view_item (listitem);
 
+    nautilus_view_cell_bind_common (NAUTILUS_VIEW_CELL (cell), listitem);
+
     nautilus_view_item_set_item_ui (item, cell);
 }
 
@@ -208,7 +211,10 @@ unbind_cell (GtkSignalListItemFactory *factory,
              GtkListItem              *listitem,
              gpointer                  user_data)
 {
+    GtkWidget *cell = gtk_list_item_get_child (listitem);
     g_autoptr (NautilusViewItem) item = get_view_item (listitem);
+
+    nautilus_view_cell_unbind_common (NAUTILUS_VIEW_CELL (cell), listitem);
 
     /* item may be NULL when row has just been destroyed. */
     if (item != NULL)

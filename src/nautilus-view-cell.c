@@ -38,6 +38,9 @@ struct _NautilusViewCellPrivate
 
 G_DEFINE_ABSTRACT_TYPE_WITH_PRIVATE (NautilusViewCell, nautilus_view_cell, GTK_TYPE_WIDGET)
 
+#define get_view_item(li) \
+        (NAUTILUS_VIEW_ITEM (gtk_tree_list_row_get_item (GTK_TREE_LIST_ROW (gtk_list_item_get_item (li)))))
+
 enum
 {
     PROP_0,
@@ -265,6 +268,26 @@ nautilus_view_setup_cell_once (NautilusViewCell *self,
     g_signal_connect (controller, "motion", on_item_drag_hover_motion, self);
 
     return TRUE;
+}
+
+void
+nautilus_view_cell_bind_common (NautilusViewCell *self,
+                                GtkListItem      *listitem)
+{
+    g_object_set (self,
+                  "item", get_view_item (listitem),
+                  "position", gtk_list_item_get_position (listitem),
+                  NULL);
+}
+
+void
+nautilus_view_cell_unbind_common (NautilusViewCell *self,
+                                  GtkListItem      *listitem)
+{
+    g_object_set (self,
+                  "item", NULL,
+                  "position", GTK_INVALID_LIST_POSITION,
+                  NULL);
 }
 
 guint
