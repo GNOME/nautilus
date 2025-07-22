@@ -38,46 +38,6 @@
             <signal name="query-tooltip" handler="on_label_query_tooltip"/>
           </object>
         </child>
-        <child>
-          <object class="GtkLabel" id="first_caption">
-            <property name="ellipsize">end</property>
-            <property name="justify">center</property>
-            <property name="lines">2</property>
-            <property name="wrap">True</property>
-            <property name="wrap-mode">word-char</property>
-            <property name="valign">start</property>
-            <style>
-              <class name="caption"/>
-              <class name="dim-label"/>
-            </style>
-          </object>
-        </child>
-        <child>
-          <object class="GtkLabel" id="second_caption">
-            <property name="ellipsize">end</property>
-            <property name="justify">center</property>
-            <property name="lines">2</property>
-            <property name="wrap">True</property>
-            <property name="wrap-mode">word-char</property>
-            <style>
-              <class name="caption"/>
-              <class name="dim-label"/>
-            </style>
-          </object>
-        </child>
-        <child>
-          <object class="GtkLabel" id="third_caption">
-            <property name="ellipsize">end</property>
-            <property name="justify">center</property>
-            <property name="lines">2</property>
-            <property name="wrap">True</property>
-            <property name="wrap-mode">word-char</property>
-            <style>
-              <class name="caption"/>
-              <class name="dim-label"/>
-            </style>
-          </object>
-        </child>
       </object>
     </child>
   </template>

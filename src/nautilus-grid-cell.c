@@ -28,9 +28,7 @@ struct _NautilusGridCell
     GtkWidget *emblems_box;
     GtkWidget *labels_box;
     GtkWidget *label;
-    GtkWidget *first_caption;
-    GtkWidget *second_caption;
-    GtkWidget *third_caption;
+    GtkWidget *caption_labels[NAUTILUS_GRID_CELL_N_CAPTIONS];
 
     gboolean in_file_change;
 };
@@ -91,18 +89,45 @@ update_icon (NautilusGridCell *self)
     }
 }
 
+static GtkWidget *
+caption_widget_new (void)
+{
+    GtkWidget *caption = gtk_label_new (NULL);
+
+    gtk_widget_set_valign (caption, GTK_ALIGN_START);
+    gtk_widget_add_css_class (caption, "caption");
+    gtk_widget_add_css_class (caption, "dim-label");
+
+    gtk_label_set_ellipsize (GTK_LABEL (caption), PANGO_ELLIPSIZE_END);
+    gtk_label_set_justify (GTK_LABEL (caption), GTK_JUSTIFY_CENTER);
+    gtk_label_set_lines (GTK_LABEL (caption), 2);
+    gtk_label_set_wrap (GTK_LABEL (caption), TRUE);
+    gtk_label_set_wrap_mode (GTK_LABEL (caption), PANGO_WRAP_WORD_CHAR);
+
+    return caption;
+}
+
+static void
+ensure_captions (NautilusGridCell *self)
+{
+    if (self->caption_labels[0] != NULL)
+    {
+        return;
+    }
+
+    for (guint i = 0; i < NAUTILUS_GRID_CELL_N_CAPTIONS; i++)
+    {
+        self->caption_labels[i] = caption_widget_new ();
+
+        gtk_box_append (GTK_BOX (self->labels_box), self->caption_labels[i]);
+    }
+}
+
 static void
 update_captions (NautilusGridCell *self)
 {
     g_autoptr (NautilusViewItem) item = NULL;
     NautilusFile *file;
-    GtkWidget * const caption_labels[] =
-    {
-        self->first_caption,
-        self->second_caption,
-        self->third_caption
-    };
-    G_STATIC_ASSERT (G_N_ELEMENTS (caption_labels) == NAUTILUS_GRID_CELL_N_CAPTIONS);
 
     item = nautilus_view_cell_get_item (NAUTILUS_VIEW_CELL (self));
     g_return_if_fail (item != NULL);
@@ -113,15 +138,23 @@ update_captions (NautilusGridCell *self)
     for (guint i = 0; i < NAUTILUS_GRID_CELL_N_CAPTIONS; i++)
     {
         GQuark attribute_q = self->caption_attributes[i];
-        gboolean show_caption;
+        gboolean show_caption = (attribute_q != 0);
 
-        show_caption = (attribute_q != 0);
-        gtk_widget_set_visible (caption_labels[i], show_caption);
+        if (!show_caption &&
+            self->caption_labels[i] == NULL)
+        {
+            /* No need to create widgets if they will not be shown. */
+            continue;
+        }
+
+        ensure_captions (self);
+
+        gtk_widget_set_visible (self->caption_labels[i], show_caption);
         if (show_caption)
         {
             g_autofree gchar *string = NULL;
             string = nautilus_file_get_string_attribute_q (file, attribute_q);
-            gtk_label_set_text (GTK_LABEL (caption_labels[i]), string);
+            gtk_label_set_text (GTK_LABEL (self->caption_labels[i]), string);
         }
     }
 }
@@ -454,9 +487,6 @@ nautilus_grid_cell_class_init (NautilusGridCellClass *klass)
     gtk_widget_class_bind_template_child (widget_class, NautilusGridCell, emblems_box);
     gtk_widget_class_bind_template_child (widget_class, NautilusGridCell, labels_box);
     gtk_widget_class_bind_template_child (widget_class, NautilusGridCell, label);
-    gtk_widget_class_bind_template_child (widget_class, NautilusGridCell, first_caption);
-    gtk_widget_class_bind_template_child (widget_class, NautilusGridCell, second_caption);
-    gtk_widget_class_bind_template_child (widget_class, NautilusGridCell, third_caption);
 
     gtk_widget_class_bind_template_callback (widget_class, on_label_query_tooltip);
 
