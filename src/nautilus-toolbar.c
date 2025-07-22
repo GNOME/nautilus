@@ -177,7 +177,7 @@ on_path_bar_open_location (NautilusPathBar   *path_bar,
     }
     else
     {
-        nautilus_window_slot_open_location_full (self->window_slot, location, open_flags, NULL);
+        nautilus_window_slot_open_location_full (self->window_slot, location, NULL);
     }
 }
 
@@ -217,7 +217,7 @@ on_location_entry_location_changed (NautilusLocationEntry *entry,
     NautilusToolbar *self = NAUTILUS_TOOLBAR (user_data);
 
     nautilus_toolbar_close_location_entry (self);
-    nautilus_window_slot_open_location_full (self->window_slot, location, 0, NULL);
+    nautilus_window_slot_open_location_full (self->window_slot, location, NULL);
 }
 
 static void

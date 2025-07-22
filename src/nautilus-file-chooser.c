@@ -385,7 +385,7 @@ on_file_drop (GtkDropTarget *target,
         location = g_file_get_parent (locations->data);
     }
 
-    nautilus_window_slot_open_location_full (self->slot, location, 0, selection);
+    nautilus_window_slot_open_location_full (self->slot, location, selection);
 }
 
 static void
@@ -450,7 +450,7 @@ on_filename_undo_button_clicked (NautilusFileChooser *self)
 {
     gtk_editable_set_text (GTK_EDITABLE (self->filename_entry), self->suggested_name);
 
-    nautilus_window_slot_open_location_full (self->slot, nautilus_window_slot_get_location (self->slot), 0, NULL);
+    nautilus_window_slot_open_location_full (self->slot, nautilus_window_slot_get_location (self->slot), NULL);
 }
 
 static void
@@ -926,7 +926,7 @@ nautilus_file_chooser_set_starting_location (NautilusFileChooser *self,
         location_to_open = g_file_new_for_path (g_get_home_dir ());
     }
 
-    nautilus_window_slot_open_location_full (self->slot, location_to_open, 0, NULL);
+    nautilus_window_slot_open_location_full (self->slot, location_to_open, NULL);
 }
 
 void

@@ -50,7 +50,6 @@ NautilusWindowSlot * nautilus_window_slot_new              (NautilusMode        
 
 void nautilus_window_slot_open_location_full               (NautilusWindowSlot *slot,
                                                             GFile              *location,
-                                                            NautilusOpenFlags   flags,
                                                             GList              *new_selection);
 
 GtkFilter *nautilus_window_slot_get_filter                 (NautilusWindowSlot *slot);

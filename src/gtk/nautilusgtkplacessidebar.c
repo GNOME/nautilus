@@ -260,9 +260,9 @@ call_open_location (NautilusGtkPlacesSidebar *self,
   else
     {
       if (!preferred_slot) {
-        nautilus_window_slot_open_location_full (self->window_slot, location, open_flags, NULL);
+        nautilus_window_slot_open_location_full (self->window_slot, location, NULL);
       } else {
-        nautilus_window_slot_open_location_full (preferred_slot, location, open_flags, NULL);
+        nautilus_window_slot_open_location_full (preferred_slot, location, NULL);
       }
 
       GtkWidget *ancestor = gtk_widget_get_ancestor (GTK_WIDGET (self), ADW_TYPE_OVERLAY_SPLIT_VIEW);

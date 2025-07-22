@@ -1435,7 +1435,7 @@ action_open_item_location (GSimpleAction *action,
         selection->data = item;
     }
 
-    nautilus_window_slot_open_location_full (priv->slot, parent_location, 0, selection);
+    nautilus_window_slot_open_location_full (priv->slot, parent_location, selection);
 
     nautilus_file_unref (parent);
     nautilus_file_unref (activation_file);
@@ -9463,7 +9463,7 @@ nautilus_files_view_set_search_query (NautilusFilesView *self,
             {
                 g_warn_if_reached ();
                 location = g_file_new_for_path (g_get_home_dir ());
-                nautilus_window_slot_open_location_full (priv->slot, location, 0, NULL);
+                nautilus_window_slot_open_location_full (priv->slot, location, NULL);
                 return;
             }
 

@@ -367,13 +367,12 @@ disconnect_slot (NautilusWindow     *window,
 }
 
 static NautilusWindowSlot *
-nautilus_window_create_and_init_slot (NautilusWindow    *window,
-                                      NautilusOpenFlags  flags)
+nautilus_window_create_and_init_slot (NautilusWindow *window)
 {
     NautilusWindowSlot *slot;
 
     slot = nautilus_window_slot_new (NAUTILUS_MODE_BROWSE);
-    nautilus_window_initialize_slot (window, slot, flags);
+    nautilus_window_initialize_slot (window, slot);
 
     return slot;
 }
@@ -410,8 +409,7 @@ on_update_page_tooltip (NautilusWindowSlot *slot,
 
 void
 nautilus_window_initialize_slot (NautilusWindow     *window,
-                                 NautilusWindowSlot *slot,
-                                 NautilusOpenFlags   flags)
+                                 NautilusWindowSlot *slot)
 {
     AdwTabPage *page, *current;
 
@@ -453,7 +451,7 @@ nautilus_window_open_location_full (NautilusWindow     *window,
 
     if (target_slot == NULL || (flags & NAUTILUS_OPEN_FLAG_NEW_TAB) != 0)
     {
-        target_slot = nautilus_window_create_and_init_slot (window, flags);
+        target_slot = nautilus_window_create_and_init_slot (window);
     }
 
     /* Make the opened location the one active if we weren't ask for the
@@ -468,7 +466,7 @@ nautilus_window_open_location_full (NautilusWindow     *window,
         nautilus_window_set_active_slot (window, target_slot);
     }
 
-    nautilus_window_slot_open_location_full (target_slot, location, flags, selection);
+    nautilus_window_slot_open_location_full (target_slot, location, selection);
 }
 
 static gboolean
@@ -614,7 +612,6 @@ action_restore_tab (GSimpleAction *action,
                     gpointer       user_data)
 {
     NautilusWindow *window = NAUTILUS_WINDOW (user_data);
-    NautilusOpenFlags flags;
     g_autoptr (GFile) location = NULL;
     NautilusWindowSlot *slot;
     NautilusNavigationState *data;
@@ -624,15 +621,13 @@ action_restore_tab (GSimpleAction *action,
         return;
     }
 
-    flags = NAUTILUS_OPEN_FLAG_NEW_TAB | NAUTILUS_OPEN_FLAG_DONT_MAKE_ACTIVE;
-
     data = g_queue_pop_head (window->tab_data_queue);
 
     location = nautilus_bookmark_get_location (data->current_location_bookmark);
 
-    slot = nautilus_window_create_and_init_slot (window, flags);
+    slot = nautilus_window_create_and_init_slot (window);
 
-    nautilus_window_slot_open_location_full (slot, location, flags, NULL);
+    nautilus_window_slot_open_location_full (slot, location, NULL);
     nautilus_window_slot_restore_navigation_state (slot, data);
 
     free_navigation_state (data);
@@ -1518,8 +1513,8 @@ nautilus_window_back_or_forward_in_new_tab (NautilusWindow              *window,
     }
 
     location = nautilus_bookmark_get_location (state->current_location_bookmark);
-    nautilus_window_initialize_slot (window, new_slot, NAUTILUS_OPEN_FLAG_NEW_TAB);
-    nautilus_window_slot_open_location_full (new_slot, location, 0, NULL);
+    nautilus_window_initialize_slot (window, new_slot);
+    nautilus_window_slot_open_location_full (new_slot, location, NULL);
     nautilus_window_slot_restore_navigation_state (new_slot, state);
 
     free_navigation_state (state);

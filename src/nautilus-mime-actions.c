@@ -1774,7 +1774,6 @@ activate_files_internal (ActivateParameters *parameters)
             {
                 nautilus_window_slot_open_location_full (parameters->slot,
                                                          location_with_permissions,
-                                                         parameters->flags,
                                                          NULL);
             }
         }

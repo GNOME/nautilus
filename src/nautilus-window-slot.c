@@ -935,7 +935,7 @@ action_open_location (GSimpleAction *action,
     NautilusWindowSlot *self = NAUTILUS_WINDOW_SLOT (user_data);
     g_autoptr (GFile) location = g_file_new_for_uri (g_variant_get_string (state, NULL));
 
-    nautilus_window_slot_open_location_full (self, location, NAUTILUS_OPEN_FLAG_NORMAL, NULL);
+    nautilus_window_slot_open_location_full (self, location, NULL);
 }
 
 static void
@@ -1418,7 +1418,6 @@ static void got_file_info_for_view_selection_callback (NautilusFile *file,
 void
 nautilus_window_slot_open_location_full (NautilusWindowSlot *self,
                                          GFile              *location,
-                                         NautilusOpenFlags   flags,
                                          GList              *new_selection)
 {
     GFile *old_location = nautilus_window_slot_get_location (self);
@@ -1694,7 +1693,7 @@ viewed_file_changed_callback (NautilusFile       *file,
             }
             else
             {
-                nautilus_window_slot_open_location_full (self, go_to_file, 0, NULL);
+                nautilus_window_slot_open_location_full (self, go_to_file, NULL);
             }
         }
     }
@@ -1706,15 +1705,14 @@ viewed_file_changed_callback (NautilusFile       *file,
 }
 
 static void
-nautilus_window_slot_go_home (NautilusWindowSlot *self,
-                              NautilusOpenFlags   flags)
+nautilus_window_slot_go_home (NautilusWindowSlot *self)
 {
     GFile *home;
 
     g_return_if_fail (NAUTILUS_IS_WINDOW_SLOT (self));
 
     home = g_file_new_for_path (g_get_home_dir ());
-    nautilus_window_slot_open_location_full (self, home, flags, NULL);
+    nautilus_window_slot_open_location_full (self, home, NULL);
     g_object_unref (home);
 }
 
@@ -2104,13 +2102,13 @@ got_file_info_for_view_selection_callback (NautilusFile *file,
 
             if (!nautilus_is_home_directory (location))
             {
-                nautilus_window_slot_go_home (self, FALSE);
+                nautilus_window_slot_go_home (self);
             }
             else
             {
                 /* the last fallback is to go to a known place that can't be deleted! */
                 g_autoptr (GFile) root = g_file_new_for_path ("/");
-                nautilus_window_slot_open_location_full (self, root, 0, NULL);
+                nautilus_window_slot_open_location_full (self, root, NULL);
             }
         }
         else
@@ -3239,7 +3237,7 @@ nautilus_window_slot_go_up (NautilusWindowSlot *self)
         /* Save the down list from getting flushed by begin_location_change ()*/
         g_autolist (GFile) down_list = g_steal_pointer (&self->down_list);
 
-        nautilus_window_slot_open_location_full (self, parent, 0, NULL);
+        nautilus_window_slot_open_location_full (self, parent, NULL);
 
         down_list = g_list_prepend (down_list, g_object_ref (location));
         self->down_list = g_steal_pointer (&down_list);
@@ -3257,7 +3255,7 @@ nautilus_window_slot_go_down (NautilusWindowSlot *self)
 
     GFile *child = G_FILE (down_list->data);
 
-    nautilus_window_slot_open_location_full (self, child, 0, NULL);
+    nautilus_window_slot_open_location_full (self, child, NULL);
 
     /* Undo ref'ing done in nautilus_window_slot_go_up() */
     g_object_unref (child);

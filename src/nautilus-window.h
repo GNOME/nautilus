@@ -88,8 +88,7 @@ void nautilus_window_search (NautilusWindow *window,
                              NautilusQuery  *query);
 
 void nautilus_window_initialize_slot (NautilusWindow     *window,
-                                      NautilusWindowSlot *slot,
-                                      NautilusOpenFlags   flags);
+                                      NautilusWindowSlot *slot);
 
 void nautilus_window_back_or_forward_in_new_tab (NautilusWindow              *window,
                                                  NautilusNavigationDirection  back);

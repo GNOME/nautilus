@@ -769,7 +769,7 @@ switch_location (ButtonData *button_data)
     g_return_if_fail (self->slot != NULL);
 
     nautilus_window_slot_open_location_full (self->slot,
-                                             location, NAUTILUS_OPEN_FLAG_DONT_MAKE_ACTIVE,
+                                             location,
                                              NULL);
 }
 
