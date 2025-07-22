@@ -66,8 +66,7 @@ void nautilus_window_open_location_full               (NautilusWindow     *windo
                                                        GFile              *location,
                                                        NautilusOpenFlags   flags,
                                                        GList              *selection,
-                                                       NautilusWindowSlot *target_slot,
-                                                       const char         *startup_id);
+                                                       NautilusWindowSlot *target_slot);
 
 void             nautilus_window_new_tab              (NautilusWindow    *window);
 NautilusWindowSlot * nautilus_window_get_active_slot       (NautilusWindow *window);

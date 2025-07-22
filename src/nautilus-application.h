@@ -32,7 +32,9 @@ G_DECLARE_FINAL_TYPE (NautilusApplication, nautilus_application,
 
 NautilusApplication * nautilus_application_new (void);
 
-NautilusWindow *     nautilus_application_create_window (NautilusApplication *application);
+NautilusWindow *
+nautilus_application_create_window (NautilusApplication *self,
+                                    const char          *startup_id);
 
 void nautilus_application_set_accelerator (GApplication *app,
 					   const gchar  *action_name,
