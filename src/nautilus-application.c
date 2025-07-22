@@ -663,14 +663,11 @@ action_clone_window (GSimpleAction *action,
                      GVariant      *parameter,
                      gpointer       user_data)
 {
-    NautilusWindowSlot *active_slot = NULL;
-    NautilusWindow *active_window = NULL;
     GtkApplication *application = user_data;
-    g_autoptr (GFile) location = NULL;
+    NautilusWindow *active_window = NAUTILUS_WINDOW (gtk_application_get_active_window (application));
+    NautilusWindowSlot *active_slot = nautilus_window_get_active_slot (active_window);
     NautilusFilesView *current_view = nautilus_window_slot_get_current_view (active_slot);
-
-    active_window = NAUTILUS_WINDOW (gtk_application_get_active_window (application));
-    active_slot = nautilus_window_get_active_slot (active_window);
+    g_autoptr (GFile) location = NULL;
 
     if (current_view != NULL &&
         nautilus_files_view_is_searching (current_view))
