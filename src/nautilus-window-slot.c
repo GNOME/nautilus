@@ -1200,7 +1200,7 @@ action_bookmark_current_directory (GSimpleAction *action,
     NautilusApplication *app = NAUTILUS_APPLICATION (g_application_get_default ());
 
     nautilus_bookmark_list_append (nautilus_application_get_bookmarks (app),
-                                   nautilus_window_slot_get_bookmark (self));
+                                   self->current_location_bookmark);
 }
 
 static void
@@ -3065,12 +3065,6 @@ NautilusFilesView *
 nautilus_window_slot_get_current_view (NautilusWindowSlot *self)
 {
     return self->content_view;
-}
-
-NautilusBookmark *
-nautilus_window_slot_get_bookmark (NautilusWindowSlot *self)
-{
-    return self->current_location_bookmark;
 }
 
 GList *
