@@ -36,6 +36,9 @@
                     <property name="child-spacing">6</property>
                     <property name="line-spacing">6</property>
                     <property name="natural-line-length">340</property>
+                    <style>
+                      <class name="search-popover-tag-box"/>
+                    </style>
                     <child>
                       <object class="GtkButton" id="audio_button">
                         <property name="child">
@@ -143,9 +146,6 @@
                         <property name="icon-name">view-more-horizontal-symbolic</property>
                         <property name="tooltip-text" translatable="yes">Specific Type</property>
                         <signal name="clicked" handler="file_types_button_clicked" object="NautilusSearchPopover" swapped="yes"/>
-                        <style>
-                          <class name="circular"/>
-                        </style>
                       </object>
                     </child>
                   </object>
@@ -208,6 +208,9 @@
                     <property name="child-spacing">6</property>
                     <property name="line-spacing">6</property>
                     <property name="natural-line-length">340</property>
+                    <style>
+                      <class name="search-popover-tag-box"/>
+                    </style>
                     <child>
                       <object class="GtkButton" id="today_button">
                         <property name="label" translatable="yes">_Today</property>
@@ -254,9 +257,6 @@
                         <property name="icon-name">view-more-horizontal-symbolic</property>
                         <property name="tooltip-text" translatable="yes">Custom Date Range</property>
                         <signal name="clicked" handler="show_date_range_dialog_cb" object="NautilusSearchPopover" swapped="yes"/>
-                        <style>
-                          <class name="circular"/>
-                        </style>
                       </object>
                     </child>
                   </object>
@@ -287,6 +287,9 @@
                     <property name="child-spacing">6</property>
                     <property name="line-spacing">6</property>
                     <property name="natural-line-length">340</property>
+                    <style>
+                      <class name="search-popover-tag-box"/>
+                    </style>
                     <child>
                       <object class="GtkButton" id="content_and_filename_button">
                         <property name="label" translatable="yes">_Content &amp; Filename</property>
