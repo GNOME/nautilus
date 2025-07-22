@@ -9,22 +9,23 @@
         <property name="child">
           <object class="GtkBox">
             <property name="orientation">vertical</property>
-            <property name="spacing">8</property>
-            <property name="margin-top">20</property>
-            <property name="margin-bottom">20</property>
-            <property name="margin-start">20</property>
-            <property name="margin-end">20</property>
+            <property name="spacing">12</property>
+            <property name="margin-top">12</property>
+            <property name="margin-bottom">12</property>
+            <property name="margin-start">12</property>
+            <property name="margin-end">12</property>
 
             <!-- File Type Filter -->
             <child>
               <object class="GtkBox">
                 <property name="orientation">vertical</property>
-                <property name="spacing">10</property>
+                <property name="spacing">6</property>
                 <child>
                   <object class="GtkLabel" id="type_header">
                     <property name="label" translatable="yes">File Types</property>
                     <property name="hexpand">True</property>
                     <property name="xalign">0</property>
+                    <property name="valign">baseline</property>
                     <style>
                       <class name="heading"/>
                     </style>
@@ -32,9 +33,9 @@
                 </child>
                 <child>
                   <object class="AdwWrapBox" id="type_wrap_box">
-                    <property name="child-spacing">8</property>
-                    <property name="line-spacing">8</property>
-                    <property name="natural-line-length">400</property>
+                    <property name="child-spacing">6</property>
+                    <property name="line-spacing">6</property>
+                    <property name="natural-line-length">340</property>
                     <child>
                       <object class="GtkButton" id="audio_button">
                         <property name="child">
@@ -156,7 +157,7 @@
             <child>
               <object class="GtkBox">
                 <property name="orientation">vertical</property>
-                <property name="spacing">10</property>
+                <property name="spacing">6</property>
                 <child>
                   <object class="GtkBox" id="date_header">
                     <property name="spacing">6</property>
@@ -164,6 +165,8 @@
                       <object class="GtkLabel" id="time_type_label">
                         <property name="halign">start</property>
                         <property name="xalign">0</property>
+                        <property name="hexpand">true</property>
+                        <property name="valign">baseline</property>
                         <style>
                           <class name="heading"/>
                         </style>
@@ -202,9 +205,9 @@
                 </child>
                 <child>
                   <object class="AdwWrapBox">
-                    <property name="child-spacing">8</property>
-                    <property name="line-spacing">8</property>
-                    <property name="natural-line-length">400</property>
+                    <property name="child-spacing">6</property>
+                    <property name="line-spacing">6</property>
+                    <property name="natural-line-length">340</property>
                     <child>
                       <object class="GtkButton" id="today_button">
                         <property name="label" translatable="yes">_Today</property>
@@ -265,12 +268,13 @@
             <child>
               <object class="GtkBox" id="other_options_box">
                 <property name="orientation">vertical</property>
-                <property name="spacing">15</property>
+                <property name="spacing">6</property>
                 <child>
                   <object class="GtkBox" id="fts_header">
                     <child>
                       <object class="GtkLabel">
                         <property name="label" translatable="yes">Text Matching</property>
+                        <property name="valign">baseline</property>
                         <style>
                           <class name="heading"/>
                         </style>
@@ -280,9 +284,9 @@
                 </child>
                 <child>
                   <object class="AdwWrapBox">
-                    <property name="child-spacing">8</property>
-                    <property name="line-spacing">8</property>
-                    <property name="natural-line-length">400</property>
+                    <property name="child-spacing">6</property>
+                    <property name="line-spacing">6</property>
+                    <property name="natural-line-length">340</property>
                     <child>
                       <object class="GtkButton" id="content_and_filename_button">
                         <property name="label" translatable="yes">_Content &amp; Filename</property>
