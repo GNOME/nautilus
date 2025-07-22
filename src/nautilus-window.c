@@ -350,31 +350,10 @@ tab_view_notify_selected_page_cb (AdwTabView     *tab_view,
 }
 
 static void
-connect_slot (NautilusWindow     *window,
-              NautilusWindowSlot *slot)
-{
-    g_signal_connect_swapped (slot, "notify::allow-stop",
-                              G_CALLBACK (update_cursor), window);
-    g_signal_connect (slot, "notify::location",
-                      G_CALLBACK (on_slot_location_changed), window);
-}
-
-static void
 disconnect_slot (NautilusWindow     *window,
                  NautilusWindowSlot *slot)
 {
     g_signal_handlers_disconnect_by_data (slot, window);
-}
-
-static NautilusWindowSlot *
-nautilus_window_create_and_init_slot (NautilusWindow *window)
-{
-    NautilusWindowSlot *slot;
-
-    slot = nautilus_window_slot_new (NAUTILUS_MODE_BROWSE);
-    nautilus_window_initialize_slot (window, slot);
-
-    return slot;
 }
 
 static void
@@ -407,19 +386,20 @@ on_update_page_tooltip (NautilusWindowSlot *slot,
     adw_tab_page_set_tooltip (page, escaped_name);
 }
 
-void
-nautilus_window_initialize_slot (NautilusWindow     *window,
-                                 NautilusWindowSlot *slot)
+static NautilusWindowSlot *
+nautilus_window_create_and_init_slot (NautilusWindow *window)
 {
-    AdwTabPage *page, *current;
-
     g_assert (NAUTILUS_IS_WINDOW (window));
-    g_assert (NAUTILUS_IS_WINDOW_SLOT (slot));
 
-    connect_slot (window, slot);
+    NautilusWindowSlot *slot = nautilus_window_slot_new (NAUTILUS_MODE_BROWSE);
 
-    current = get_current_page (window);
-    page = adw_tab_view_add_page (window->tab_view, GTK_WIDGET (slot), current);
+    g_signal_connect_swapped (slot, "notify::allow-stop",
+                              G_CALLBACK (update_cursor), window);
+    g_signal_connect (slot, "notify::location",
+                      G_CALLBACK (on_slot_location_changed), window);
+
+    AdwTabPage *current = get_current_page (window);
+    AdwTabPage *page = adw_tab_view_add_page (window->tab_view, GTK_WIDGET (slot), current);
 
     g_object_bind_property (slot, "allow-stop",
                             page, "loading",
@@ -428,6 +408,8 @@ nautilus_window_initialize_slot (NautilusWindow     *window,
                             page, "title",
                             G_BINDING_SYNC_CREATE);
     g_signal_connect (slot, "notify::title", G_CALLBACK (on_update_page_tooltip), page);
+
+    return slot;
 }
 
 void
