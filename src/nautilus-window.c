@@ -1476,11 +1476,9 @@ nautilus_window_back_or_forward_in_new_tab (NautilusWindow              *window,
 {
     g_autoptr (GFile) location = NULL;
     NautilusWindowSlot *window_slot;
-    NautilusWindowSlot *new_slot;
     NautilusNavigationState *state;
 
     window_slot = nautilus_window_get_active_slot (window);
-    new_slot = nautilus_window_slot_new (NAUTILUS_MODE_BROWSE);
     state = nautilus_window_slot_get_navigation_state (window_slot);
 
     /* Manually fix up the back / forward lists and location.
@@ -1512,8 +1510,9 @@ nautilus_window_back_or_forward_in_new_tab (NautilusWindow              *window,
         }
     }
 
+    NautilusWindowSlot *new_slot = nautilus_window_create_and_init_slot (window);
+
     location = nautilus_bookmark_get_location (state->current_location_bookmark);
-    nautilus_window_initialize_slot (window, new_slot);
     nautilus_window_slot_open_location_full (new_slot, location, NULL);
     nautilus_window_slot_restore_navigation_state (new_slot, state);
 
