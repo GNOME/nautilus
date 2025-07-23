@@ -418,6 +418,11 @@ bind_cell (GtkSignalListItemFactory *factory,
     g_return_if_fail (item != NULL);
 
     GtkWidget *cell = gtk_list_item_get_child (listitem);
+    NautilusFile *file = nautilus_view_item_get_file (item);
+    g_autofree gchar *accessible_label = NULL;
+
+    g_object_get (file, "a11y-name", &accessible_label, NULL);
+    gtk_list_item_set_accessible_label (listitem, accessible_label);
 
     nautilus_view_item_set_item_ui (item, cell);
 
@@ -457,7 +462,6 @@ setup_cell (GtkSignalListItemFactory *factory,
 {
     NautilusGridView *self = NAUTILUS_GRID_VIEW (user_data);
     NautilusGridCell *cell;
-    GtkExpression *expression;
 
     cell = nautilus_grid_cell_new (NAUTILUS_LIST_BASE (self));
     gtk_list_item_set_child (listitem, GTK_WIDGET (cell));
@@ -468,14 +472,6 @@ setup_cell (GtkSignalListItemFactory *factory,
                             G_BINDING_SYNC_CREATE);
 
     nautilus_grid_cell_set_caption_attributes (cell, self->caption_attributes);
-
-    /* Use file display name as accessible label. Explaining in pseudo-code:
-     * listitem:accessible-name :- listitem:item:item:file:a11y-name */
-    expression = gtk_property_expression_new (GTK_TYPE_LIST_ITEM, NULL, "item");
-    expression = gtk_property_expression_new (GTK_TYPE_TREE_LIST_ROW, expression, "item");
-    expression = gtk_property_expression_new (NAUTILUS_TYPE_VIEW_ITEM, expression, "file");
-    expression = gtk_property_expression_new (NAUTILUS_TYPE_FILE, expression, "a11y-name");
-    gtk_expression_bind (expression, listitem, "accessible-label", listitem);
 }
 
 static void
