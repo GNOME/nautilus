@@ -252,7 +252,7 @@ insert_bookmark_internal (NautilusBookmarkList *bookmarks,
         return NULL;
     }
 
-    NautilusBookmark *bookmark = nautilus_bookmark_new (location, NULL);
+    NautilusBookmark *bookmark = nautilus_bookmark_new (location);
 
     bookmarks->list = g_list_insert (bookmarks->list, bookmark, index);
 
