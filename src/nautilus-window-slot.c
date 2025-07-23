@@ -3019,15 +3019,10 @@ nautilus_window_slot_set_allow_stop (NautilusWindowSlot *self,
 void
 nautilus_window_slot_stop_loading (NautilusWindowSlot *self)
 {
-    NautilusDirectory *directory;
-    directory = nautilus_directory_get (self->location);
-
     if (self->content_view != NULL)
     {
         nautilus_files_view_stop_loading (self->content_view);
     }
-
-    nautilus_directory_unref (directory);
 
     if (self->pending_location != NULL &&
         self->location != NULL &&
