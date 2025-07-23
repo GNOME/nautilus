@@ -33,8 +33,8 @@ G_BEGIN_DECLS
 
 G_DECLARE_FINAL_TYPE (NautilusBookmark, nautilus_bookmark, NAUTILUS, BOOKMARK, GObject)
 
-NautilusBookmark *    nautilus_bookmark_new                    (GFile *location,
-                                                                const char *custom_name);
+NautilusBookmark *    nautilus_bookmark_new                    (GFile *location);
+
 const char *          nautilus_bookmark_get_name               (NautilusBookmark      *bookmark);
 GFile *               nautilus_bookmark_get_location           (NautilusBookmark      *bookmark);
 char *                nautilus_bookmark_get_uri                (NautilusBookmark      *bookmark);
