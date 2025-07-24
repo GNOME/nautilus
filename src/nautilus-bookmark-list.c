@@ -401,32 +401,33 @@ nautilus_bookmark_list_move_item (NautilusBookmarkList *bookmarks,
 }
 
 /**
- * nautilus_bookmark_list_delete_items_with_uri:
+ * nautilus_bookmark_list_remove:
  *
- * Delete all bookmarks with the given uri.
+ * Removes any bookmark for @location
  * @bookmarks: the list of bookmarks.
- * @uri: The uri to match.
+ * @location: The location to remove a bookmark for.
  **/
 void
-nautilus_bookmark_list_delete_items_with_uri (NautilusBookmarkList *bookmarks,
-                                              const char           *uri)
+nautilus_bookmark_list_remove (NautilusBookmarkList *bookmarks,
+                               GFile                *location)
 {
     g_return_if_fail (NAUTILUS_IS_BOOKMARK_LIST (bookmarks));
-    g_return_if_fail (uri != NULL);
+    g_return_if_fail (location != NULL);
 
     gboolean list_changed = FALSE;
     GList *next = NULL;
 
     for (GList *node = bookmarks->list; node != NULL; node = next)
     {
+        NautilusBookmark *bookmark = NAUTILUS_BOOKMARK (node->data);
         next = node->next;
 
-        g_autofree char *bookmark_uri = nautilus_bookmark_get_uri (NAUTILUS_BOOKMARK (node->data));
+        g_autoptr (GFile) bookmark_location = nautilus_bookmark_get_location (bookmark);
 
-        if (g_strcmp0 (bookmark_uri, uri) == 0)
+        if (g_file_equal (bookmark_location, location))
         {
-            stop_monitoring_bookmark (bookmarks, NAUTILUS_BOOKMARK (node->data));
-            g_object_unref (node->data);
+            stop_monitoring_bookmark (bookmarks, bookmark);
+            g_object_unref (bookmark);
             bookmarks->list = g_list_delete_link (bookmarks->list, node);
             list_changed = TRUE;
         }
