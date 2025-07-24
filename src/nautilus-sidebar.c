@@ -2189,21 +2189,21 @@ static void
 remove_bookmark (NautilusSidebarRow *row)
 {
     NautilusSidebarRowType type;
-    char *uri;
+    g_autoptr (NautilusFile) file = NULL;
     NautilusSidebar *sidebar;
 
     g_object_get (row,
                   "sidebar", &sidebar,
                   "place-type", &type,
-                  "uri", &uri,
+                  "file", &file,
                   NULL);
 
     if (type == NAUTILUS_SIDEBAR_ROW_BOOKMARK)
     {
-        nautilus_bookmark_list_delete_items_with_uri (sidebar->bookmark_list, uri);
+        g_autoptr (GFile) location = nautilus_file_get_location (file);
+        nautilus_bookmark_list_remove (sidebar->bookmark_list, location);
     }
 
-    g_free (uri);
     g_object_unref (sidebar);
 }
 

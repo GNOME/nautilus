@@ -1188,9 +1188,8 @@ action_unbookmark_current_directory (GSimpleAction *action,
 {
     NautilusWindowSlot *self = NAUTILUS_WINDOW_SLOT (user_data);
     NautilusApplication *app = NAUTILUS_APPLICATION (g_application_get_default ());
-    g_autofree gchar *uri = nautilus_window_slot_get_location_uri (self);
 
-    nautilus_bookmark_list_delete_items_with_uri (nautilus_application_get_bookmarks (app), uri);
+    nautilus_bookmark_list_remove (nautilus_application_get_bookmarks (app), self->location);
 }
 
 static void
