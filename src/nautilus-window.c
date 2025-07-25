@@ -591,7 +591,6 @@ action_restore_tab (GSimpleAction *action,
                     gpointer       user_data)
 {
     NautilusWindow *window = NAUTILUS_WINDOW (user_data);
-    g_autoptr (GFile) location = NULL;
     NautilusWindowSlot *slot;
     NautilusNavigationState *data;
 
@@ -602,7 +601,7 @@ action_restore_tab (GSimpleAction *action,
 
     data = g_queue_pop_head (window->tab_data_queue);
 
-    location = nautilus_bookmark_get_location (data->current_location_bookmark);
+    GFile *location = nautilus_bookmark_get_location (data->current_location_bookmark);
 
     slot = nautilus_window_create_and_init_slot (window);
 
@@ -1453,7 +1452,6 @@ void
 nautilus_window_back_or_forward_in_new_tab (NautilusWindow              *window,
                                             NautilusNavigationDirection  direction)
 {
-    g_autoptr (GFile) location = NULL;
     NautilusWindowSlot *window_slot;
     NautilusNavigationState *state;
 
@@ -1491,7 +1489,7 @@ nautilus_window_back_or_forward_in_new_tab (NautilusWindow              *window,
 
     NautilusWindowSlot *new_slot = nautilus_window_create_and_init_slot (window);
 
-    location = nautilus_bookmark_get_location (state->current_location_bookmark);
+    GFile *location = nautilus_bookmark_get_location (state->current_location_bookmark);
     nautilus_window_slot_open_location_full (new_slot, location, NULL);
     nautilus_window_slot_restore_navigation_state (new_slot, state);
 
