@@ -344,31 +344,6 @@ nautilus_bookmark_list_contains (NautilusBookmarkList *bookmarks,
 }
 
 /**
- * nautilus_bookmark_list_delete_item_at:
- *
- * Delete the bookmark at the specified position.
- * @bookmarks: the list of bookmarks.
- * @index: index, must be less than length of list.
- **/
-void
-nautilus_bookmark_list_delete_item_at (NautilusBookmarkList *bookmarks,
-                                       guint                 index)
-{
-    g_return_if_fail (NAUTILUS_IS_BOOKMARK_LIST (bookmarks));
-    g_return_if_fail (index < g_list_length (bookmarks->list));
-
-    GList *doomed = g_list_nth (bookmarks->list, index);
-
-    g_assert (NAUTILUS_IS_BOOKMARK (doomed->data));
-    stop_monitoring_bookmark (bookmarks, NAUTILUS_BOOKMARK (doomed->data));
-    g_object_unref (doomed->data);
-
-    bookmarks->list = g_list_delete_link (bookmarks->list, doomed);
-
-    nautilus_bookmark_list_save_file (bookmarks);
-}
-
-/**
  * nautilus_bookmark_list_move_item:
  *
  * Move the item from the given position to the destination.
@@ -458,41 +433,6 @@ nautilus_bookmark_list_insert_item (NautilusBookmarkList *bookmarks,
     {
         nautilus_bookmark_list_save_file (bookmarks);
     }
-}
-
-/**
- * nautilus_bookmark_list_item_at:
- *
- * Get the bookmark at the specified position.
- * @bookmarks: the list of bookmarks.
- * @index: index, must be less than length of list.
- *
- * Return value: the bookmark at position @index in @bookmarks.
- **/
-NautilusBookmark *
-nautilus_bookmark_list_item_at (NautilusBookmarkList *bookmarks,
-                                guint                 index)
-{
-    g_return_val_if_fail (NAUTILUS_IS_BOOKMARK_LIST (bookmarks), NULL);
-    g_return_val_if_fail (index < g_list_length (bookmarks->list), NULL);
-
-    return NAUTILUS_BOOKMARK (g_list_nth_data (bookmarks->list, index));
-}
-
-/**
- * nautilus_bookmark_list_length:
- *
- * Get the number of bookmarks in the list.
- * @bookmarks: the list of bookmarks.
- *
- * Return value: the length of the bookmark list.
- **/
-guint
-nautilus_bookmark_list_length (NautilusBookmarkList *bookmarks)
-{
-    g_return_val_if_fail (NAUTILUS_IS_BOOKMARK_LIST (bookmarks), 0);
-
-    return g_list_length (bookmarks->list);
 }
 
 static void
