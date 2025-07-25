@@ -992,7 +992,7 @@ update_places (NautilusGtkPlacesSidebar *sidebar)
     {
       GtkWidget *row;
 
-      g_autoptr (GFile) location = nautilus_bookmark_get_location (l->data);
+      GFile *location = nautilus_bookmark_get_location (l->data);
       g_autofree char *mount_uri = nautilus_bookmark_get_uri (l->data);
 
       gboolean is_native = g_file_is_native (location);

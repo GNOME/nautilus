@@ -2208,8 +2208,6 @@ nautilus_window_slot_back_or_forward (NautilusWindowSlot *self,
     GList *list;
     guint len;
     NautilusBookmark *bookmark;
-    g_autoptr (GFile) location = NULL;
-    GFile *old_location;
     g_autolist (NautilusFile) selection = NULL;
 
     if (back)
@@ -2239,8 +2237,8 @@ nautilus_window_slot_back_or_forward (NautilusWindowSlot *self,
     }
 
     bookmark = g_list_nth_data (list, distance);
-    location = nautilus_bookmark_get_location (bookmark);
-    old_location = self->location;
+    GFile *location = nautilus_bookmark_get_location (bookmark);
+    GFile *old_location = self->location;
 
     GStrv selected_uris = nautilus_bookmark_get_selected_uris (bookmark);
     if (selected_uris != NULL)
@@ -2341,7 +2339,6 @@ nautilus_window_slot_update_bookmark (NautilusWindowSlot *self,
         GFile *bookmark_location;
         bookmark_location = nautilus_bookmark_get_location (self->current_location_bookmark);
         recreate = !g_file_equal (bookmark_location, new_location);
-        g_object_unref (bookmark_location);
     }
 
     if (recreate)
@@ -2372,7 +2369,6 @@ check_bookmark_location_matches (NautilusBookmark *bookmark,
         g_free (uri);
         g_free (bookmark_uri);
     }
-    g_object_unref (bookmark_location);
 }
 
 /* Debugging function used to verify that the last_location_bookmark
