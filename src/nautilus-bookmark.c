@@ -692,7 +692,7 @@ nautilus_bookmark_get_location (NautilusBookmark *bookmark)
      */
     nautilus_bookmark_connect_file (bookmark);
 
-    return g_object_ref (bookmark->location);
+    return bookmark->location;
 }
 
 char *
