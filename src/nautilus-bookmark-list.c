@@ -282,10 +282,8 @@ nautilus_bookmark_list_item_with_location (NautilusBookmarkList *bookmarks,
 
     for (node = bookmarks->list; node != NULL; node = node->next)
     {
-        g_autoptr (GFile) bookmark_location = NULL;
-
         bookmark = node->data;
-        bookmark_location = nautilus_bookmark_get_location (bookmark);
+        GFile *bookmark_location = nautilus_bookmark_get_location (bookmark);
 
         if (g_file_equal (location, bookmark_location))
         {
@@ -397,7 +395,7 @@ nautilus_bookmark_list_remove (NautilusBookmarkList *bookmarks,
         NautilusBookmark *bookmark = NAUTILUS_BOOKMARK (node->data);
         next = node->next;
 
-        g_autoptr (GFile) bookmark_location = nautilus_bookmark_get_location (bookmark);
+        GFile *bookmark_location = nautilus_bookmark_get_location (bookmark);
 
         if (g_file_equal (bookmark_location, location))
         {
