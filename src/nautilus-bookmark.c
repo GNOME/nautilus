@@ -698,11 +698,7 @@ nautilus_bookmark_get_location (NautilusBookmark *bookmark)
 char *
 nautilus_bookmark_get_uri (NautilusBookmark *bookmark)
 {
-    g_autoptr (GFile) file = NULL;
-
-    file = nautilus_bookmark_get_location (bookmark);
-
-    return g_file_get_uri (file);
+    return g_file_get_uri (bookmark->location);
 }
 
 NautilusBookmark *
