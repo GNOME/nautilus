@@ -862,9 +862,6 @@ setup_name_cell (GtkSignalListItemFactory *factory,
 
         expander = nautilus_name_cell_get_expander (NAUTILUS_NAME_CELL (cell));
         gtk_tree_expander_set_indent_for_icon (expander, TRUE);
-        g_object_bind_property (listitem, "item",
-                                expander, "list-row",
-                                G_BINDING_SYNC_CREATE);
     }
 }
 
@@ -903,19 +900,17 @@ bind_name_cell (GtkSignalListItemFactory *factory,
                 GtkColumnViewCell        *listitem,
                 gpointer                  user_data)
 {
-    GtkWidget *cell;
+    GtkWidget *cell = gtk_column_view_cell_get_child (listitem);
     NautilusListView *self = user_data;
-    g_autoptr (NautilusViewItem) item = NULL;
-
-    cell = gtk_column_view_cell_get_child (listitem);
-    item = get_view_item (listitem);
+    g_autoptr (NautilusViewItem) item = get_view_item (listitem);
+    GtkTreeExpander *expander = nautilus_name_cell_get_expander (NAUTILUS_NAME_CELL (cell));
 
     nautilus_view_cell_bind_listitem (NAUTILUS_VIEW_CELL (cell), GTK_LIST_ITEM (listitem));
     nautilus_view_item_set_item_ui (item, gtk_column_view_cell_get_child (listitem));
+    gtk_tree_expander_set_list_row (expander, gtk_list_item_get_item (GTK_LIST_ITEM (listitem)));
 
     if (self->expand_as_a_tree)
     {
-        GtkTreeExpander *expander = nautilus_name_cell_get_expander (NAUTILUS_NAME_CELL (cell));
         GtkTreeListRow *row = GTK_TREE_LIST_ROW (gtk_column_view_cell_get_item (listitem));
 
         g_signal_connect_object (row,
