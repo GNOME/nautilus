@@ -506,9 +506,10 @@ nautilus_name_cell_set_path (NautilusNameCell *self,
 }
 
 void
-nautilus_name_cell_show_snippet (NautilusNameCell *self)
+nautilus_name_cell_set_show_snippet (NautilusNameCell *self,
+                                     gboolean          show)
 {
-    self->show_snippet = TRUE;
+    self->show_snippet = show;
 }
 
 GtkTreeExpander *

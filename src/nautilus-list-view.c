@@ -854,10 +854,7 @@ setup_name_cell (GtkSignalListItemFactory *factory,
     nautilus_name_cell_set_path (NAUTILUS_NAME_CELL (cell),
                                  self->path_attribute_q,
                                  self->file_path_base_location);
-    if (self->search_directory != NULL)
-    {
-        nautilus_name_cell_show_snippet (NAUTILUS_NAME_CELL (cell));
-    }
+    nautilus_name_cell_set_show_snippet (NAUTILUS_NAME_CELL (cell), self->search_directory != NULL);
 
     if (self->expand_as_a_tree)
     {
