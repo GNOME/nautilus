@@ -488,12 +488,73 @@ nautilus_name_cell_class_init (NautilusNameCellClass *klass)
     gtk_widget_class_bind_template_callback (widget_class, popover_show_cb);
 }
 
+#define CACHED_CELLS_INIT_COUNT 50
+#define CACHED_CELLS_MAX_COUNT 400
+static GPtrArray *cached_cells;
+
+void
+nautilus_name_cell_recycle (NautilusNameCell **self)
+{
+    g_return_if_fail (NAUTILUS_IS_NAME_CELL (*self));
+
+    if (!g_ptr_array_find (cached_cells, *self, NULL) &&
+        cached_cells->len < CACHED_CELLS_MAX_COUNT)
+    {
+        g_object_set (*self, "item", NULL, NULL);
+        nautilus_image_set_source (NAUTILUS_IMAGE ((*self)->icon), NULL);
+
+        g_ptr_array_add (cached_cells, g_steal_pointer (self));
+    }
+
+    g_clear_object (self);
+}
+
+static void
+ensure_cells (void)
+{
+    if (cached_cells == NULL)
+    {
+        cached_cells = g_ptr_array_new_with_free_func (g_object_unref);
+
+        for (uint i = 0; i < CACHED_CELLS_INIT_COUNT; i++)
+        {
+            NautilusNameCell *cell = g_object_new (NAUTILUS_TYPE_NAME_CELL, NULL);
+
+            g_ptr_array_add (cached_cells, g_object_ref_sink (cell));
+        }
+    }
+}
+
+void
+nautilus_name_cell_clear_cache (void)
+{
+    g_clear_pointer (&cached_cells, g_ptr_array_unref);
+}
+
 NautilusViewCell *
 nautilus_name_cell_new (NautilusListBase *view)
 {
-    return NAUTILUS_VIEW_CELL (g_object_new (NAUTILUS_TYPE_NAME_CELL,
-                                             "view", view,
-                                             NULL));
+    NautilusNameCell *cell;
+
+    ensure_cells ();
+
+    if (cached_cells->len == 0)
+    {
+        cell = g_object_new (NAUTILUS_TYPE_NAME_CELL, NULL);
+
+        /* Needed to avoid warnings when clearing the cache. */
+        g_object_ref_sink (cell);
+    }
+    else
+    {
+        cell = g_ptr_array_steal_index (cached_cells, cached_cells->len - 1);
+
+        g_assert (gtk_widget_get_parent (GTK_WIDGET (cell)) == NULL);
+    }
+
+    g_object_set (cell, "view", view, NULL);
+
+    return NAUTILUS_VIEW_CELL (cell);
 }
 
 void
