@@ -20,7 +20,6 @@ struct _NautilusLabelCell
 
     GSignalGroup *item_signal_group;
 
-    NautilusColumn *column;
     GQuark attribute_q;
 
     GtkLabel *label;
@@ -29,15 +28,6 @@ struct _NautilusLabelCell
 };
 
 G_DEFINE_TYPE (NautilusLabelCell, nautilus_label_cell, NAUTILUS_TYPE_VIEW_CELL)
-
-enum
-{
-    PROP_0,
-    PROP_COLUMN,
-    N_PROPS
-};
-
-static GParamSpec *properties[N_PROPS] = { NULL, };
 
 static void
 update_label (NautilusLabelCell *self)
@@ -52,29 +42,6 @@ update_label (NautilusLabelCell *self)
 
     string = nautilus_file_get_string_attribute_q (file, self->attribute_q);
     gtk_label_set_text (self->label, string);
-}
-
-static void
-nautilus_label_cell_set_property (GObject      *object,
-                                  guint         prop_id,
-                                  const GValue *value,
-                                  GParamSpec   *pspec)
-{
-    NautilusLabelCell *self = NAUTILUS_LABEL_CELL (object);
-
-    switch (prop_id)
-    {
-        case PROP_COLUMN:
-        {
-            self->column = g_value_get_object (value);
-        }
-        break;
-
-        default:
-        {
-            G_OBJECT_WARN_INVALID_PROPERTY_ID (object, prop_id, pspec);
-        }
-    }
 }
 
 static void
@@ -101,15 +68,38 @@ nautilus_label_cell_init (NautilusLabelCell *self)
 }
 
 static void
-nautilus_label_cell_constructed (GObject *object)
+nautilus_label_cell_dispose (GObject *object)
 {
-    NautilusLabelCell *self = NAUTILUS_LABEL_CELL (object);
+    NautilusLabelCell *self = (NautilusLabelCell *) object;
+
+    g_clear_object (&self->item_signal_group);
+    if (self->label)
+    {
+        gtk_widget_unparent (GTK_WIDGET (self->label));
+        self->label = NULL;
+    }
+    G_OBJECT_CLASS (nautilus_label_cell_parent_class)->dispose (object);
+}
+
+static void
+nautilus_label_cell_class_init (NautilusLabelCellClass *klass)
+{
+    GObjectClass *object_class = G_OBJECT_CLASS (klass);
+    GtkWidgetClass *widget_class = GTK_WIDGET_CLASS (klass);
+
+    object_class->dispose = nautilus_label_cell_dispose;
+
+    gtk_widget_class_set_layout_manager_type (widget_class, GTK_TYPE_BIN_LAYOUT);
+}
+
+static void
+nautilus_label_cell_setup_for_column (NautilusLabelCell *self,
+                                      NautilusColumn    *column)
+{
     g_autofree gchar *column_name = NULL;
     gfloat xalign;
 
-    G_OBJECT_CLASS (nautilus_label_cell_parent_class)->constructed (object);
-
-    g_object_get (self->column,
+    g_object_get (column,
                   "attribute_q", &self->attribute_q,
                   "name", &column_name,
                   "xalign", &xalign,
@@ -133,46 +123,15 @@ nautilus_label_cell_constructed (GObject *object)
     }
 }
 
-static void
-nautilus_label_cell_dispose (GObject *object)
-{
-    NautilusLabelCell *self = (NautilusLabelCell *) object;
-
-    g_clear_object (&self->item_signal_group);
-    if (self->label)
-    {
-        gtk_widget_unparent (GTK_WIDGET (self->label));
-        self->label = NULL;
-    }
-    G_OBJECT_CLASS (nautilus_label_cell_parent_class)->dispose (object);
-}
-
-static void
-nautilus_label_cell_class_init (NautilusLabelCellClass *klass)
-{
-    GObjectClass *object_class = G_OBJECT_CLASS (klass);
-    GtkWidgetClass *widget_class = GTK_WIDGET_CLASS (klass);
-
-    object_class->set_property = nautilus_label_cell_set_property;
-    object_class->constructed = nautilus_label_cell_constructed;
-    object_class->dispose = nautilus_label_cell_dispose;
-
-    properties[PROP_COLUMN] = g_param_spec_object ("column",
-                                                   "", "",
-                                                   NAUTILUS_TYPE_COLUMN,
-                                                   G_PARAM_WRITABLE | G_PARAM_CONSTRUCT_ONLY | G_PARAM_STATIC_STRINGS);
-
-    g_object_class_install_properties (object_class, N_PROPS, properties);
-
-    gtk_widget_class_set_layout_manager_type (widget_class, GTK_TYPE_BIN_LAYOUT);
-}
-
 NautilusViewCell *
 nautilus_label_cell_new (NautilusListBase *view,
                          NautilusColumn   *column)
 {
-    return NAUTILUS_VIEW_CELL (g_object_new (NAUTILUS_TYPE_LABEL_CELL,
-                                             "view", view,
-                                             "column", column,
-                                             NULL));
+    NautilusLabelCell *cell = g_object_new (NAUTILUS_TYPE_LABEL_CELL,
+                                            "view", view,
+                                            NULL);
+
+    nautilus_label_cell_setup_for_column (cell, column);
+
+    return NAUTILUS_VIEW_CELL (cell);
 }
