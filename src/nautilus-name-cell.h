@@ -18,7 +18,8 @@ NautilusViewCell * nautilus_name_cell_new (NautilusListBase *view);
 void nautilus_name_cell_set_path (NautilusNameCell *self,
                                   GQuark            path_attribute_q,
                                   GFile            *base_location);
-void nautilus_name_cell_show_snippet (NautilusNameCell *self);
+void nautilus_name_cell_set_show_snippet (NautilusNameCell *self,
+                                          gboolean          show);
 GtkTreeExpander * nautilus_name_cell_get_expander (NautilusNameCell *self);
 GtkWidget * nautilus_name_cell_get_content (NautilusNameCell *self);
 
