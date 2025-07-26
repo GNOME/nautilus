@@ -21,6 +21,7 @@ struct _NautilusLabelCell
     GSignalGroup *item_signal_group;
 
     GQuark attribute_q;
+    gulong date_format_handler_id;
 
     GtkLabel *label;
 
@@ -78,6 +79,9 @@ nautilus_label_cell_dispose (GObject *object)
         gtk_widget_unparent (GTK_WIDGET (self->label));
         self->label = NULL;
     }
+
+    g_clear_signal_handler (&self->date_format_handler_id, nautilus_preferences);
+
     G_OBJECT_CLASS (nautilus_label_cell_parent_class)->dispose (object);
 }
 
@@ -108,30 +112,93 @@ nautilus_label_cell_setup_for_column (NautilusLabelCell *self,
 
     if (nautilus_file_is_date_sort_attribute_q (self->attribute_q))
     {
-        g_signal_connect_object (nautilus_preferences, "changed::" NAUTILUS_PREFERENCES_DATE_TIME_FORMAT,
-                                 G_CALLBACK (update_label), self,
-                                 G_CONNECT_SWAPPED);
+        self->date_format_handler_id =
+            g_signal_connect_swapped (nautilus_preferences,
+                                      "changed::" NAUTILUS_PREFERENCES_DATE_TIME_FORMAT,
+                                      G_CALLBACK (update_label), self);
     }
 
     if (g_strcmp0 (column_name, "permissions") == 0)
     {
         gtk_widget_add_css_class (GTK_WIDGET (self->label), "monospace");
+        gtk_widget_remove_css_class (GTK_WIDGET (self->label), "numeric");
     }
     else
     {
         gtk_widget_add_css_class (GTK_WIDGET (self->label), "numeric");
+        gtk_widget_remove_css_class (GTK_WIDGET (self->label), "monospace");
     }
+}
+
+#define CACHED_CELLS_INIT_COUNT 200
+#define CACHED_CELLS_MAX_COUNT 1650
+static GPtrArray *cached_cells;
+
+void
+nautilus_label_cell_recycle (NautilusLabelCell **self)
+{
+    g_return_if_fail (NAUTILUS_IS_LABEL_CELL (*self));
+
+    g_clear_signal_handler (&(*self)->date_format_handler_id, nautilus_preferences);
+
+    if (!g_ptr_array_find (cached_cells, *self, NULL) &&
+        cached_cells->len < CACHED_CELLS_MAX_COUNT)
+    {
+        g_object_set (*self, "item", NULL, NULL);
+
+        g_ptr_array_add (cached_cells, g_steal_pointer (self));
+    }
+
+    g_clear_object (self);
+}
+
+static void
+ensure_cells (void)
+{
+    if (cached_cells == NULL)
+    {
+        cached_cells = g_ptr_array_new_with_free_func (g_object_unref);
+
+        for (uint i = 0; i < CACHED_CELLS_INIT_COUNT; i++)
+        {
+            NautilusLabelCell *cell = g_object_new (NAUTILUS_TYPE_LABEL_CELL, NULL);
+
+            g_ptr_array_add (cached_cells, g_object_ref_sink (cell));
+        }
+    }
+}
+
+void
+nautilus_label_cell_clear_cache (void)
+{
+    g_clear_pointer (&cached_cells, g_ptr_array_unref);
 }
 
 NautilusViewCell *
 nautilus_label_cell_new (NautilusListBase *view,
                          NautilusColumn   *column)
 {
-    NautilusLabelCell *cell = g_object_new (NAUTILUS_TYPE_LABEL_CELL,
-                                            "view", view,
-                                            NULL);
+    NautilusLabelCell *cell;
+
+    ensure_cells ();
+
+    if (cached_cells->len == 0)
+    {
+        cell = g_object_new (NAUTILUS_TYPE_LABEL_CELL, NULL);
+
+        /* Needed to avoid warnings when clearing the cache. */
+        g_object_ref_sink (cell);
+    }
+    else
+    {
+        cell = g_ptr_array_steal_index (cached_cells, cached_cells->len - 1);
+
+        g_assert (gtk_widget_get_parent (GTK_WIDGET (cell)) == NULL);
+    }
 
     nautilus_label_cell_setup_for_column (cell, column);
+
+    g_object_set (cell, "view", view, NULL);
 
     return NAUTILUS_VIEW_CELL (cell);
 }

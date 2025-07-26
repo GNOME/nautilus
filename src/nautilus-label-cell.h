@@ -19,5 +19,7 @@ G_DECLARE_FINAL_TYPE (NautilusLabelCell, nautilus_label_cell, NAUTILUS, LABEL_CE
 
 NautilusViewCell * nautilus_label_cell_new (NautilusListBase *view,
                                             NautilusColumn   *column);
+void nautilus_label_cell_recycle (NautilusLabelCell **self);
+void nautilus_label_cell_clear_cache (void);
 
 G_END_DECLS

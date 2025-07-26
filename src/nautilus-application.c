@@ -56,6 +56,7 @@
 #include "nautilus-freedesktop-dbus.h"
 #include "nautilus-global-preferences.h"
 #include "nautilus-icon-info.h"
+#include "nautilus-label-cell.h"
 #include "nautilus-module.h"
 #include "nautilus-name-cell.h"
 #include "nautilus-portal.h"
@@ -1039,6 +1040,7 @@ on_application_shutdown (GApplication *application,
 
     nautilus_grid_cell_clear_cache ();
     nautilus_name_cell_clear_cache ();
+    nautilus_label_cell_clear_cache ();
 }
 
 static void
