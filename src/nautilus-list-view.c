@@ -997,6 +997,18 @@ setup_label_cell (GtkSignalListItemFactory *factory,
     cell = nautilus_label_cell_new (NAUTILUS_LIST_BASE (user_data), nautilus_column);
     gtk_column_view_cell_set_child (listitem, GTK_WIDGET (cell));
     setup_cell_common (G_OBJECT (listitem), cell);
+    g_object_set_data (G_OBJECT (listitem), "cell", g_object_ref (cell));
+}
+
+static void
+teardown_label_cell (GtkSignalListItemFactory *factory,
+                     GtkListItem              *listitem,
+                     gpointer                  user_data)
+{
+    NautilusLabelCell *cell = g_object_get_data (G_OBJECT (listitem), "cell");
+
+    nautilus_label_cell_recycle (&cell);
+    g_object_set_data (G_OBJECT (listitem), "cell", NULL);
 }
 
 static void
@@ -1085,6 +1097,7 @@ setup_view_columns (NautilusListView *self)
             g_signal_connect (factory, "setup", G_CALLBACK (setup_label_cell), self);
             g_signal_connect (factory, "bind", G_CALLBACK (bind_cell), NULL);
             g_signal_connect (factory, "unbind", G_CALLBACK (unbind_cell), NULL);
+            g_signal_connect (factory, "teardown", G_CALLBACK (teardown_label_cell), NULL);
         }
 
         gtk_column_view_append_column (self->view_ui, view_column);
