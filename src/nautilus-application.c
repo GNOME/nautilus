@@ -57,6 +57,7 @@
 #include "nautilus-global-preferences.h"
 #include "nautilus-icon-info.h"
 #include "nautilus-module.h"
+#include "nautilus-name-cell.h"
 #include "nautilus-portal.h"
 #include "nautilus-preferences-dialog.h"
 #include "nautilus-previewer.h"
@@ -1037,6 +1038,7 @@ on_application_shutdown (GApplication *application,
     nautilus_icon_info_clear_caches ();
 
     nautilus_grid_cell_clear_cache ();
+    nautilus_name_cell_clear_cache ();
 }
 
 static void
