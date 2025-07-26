@@ -841,9 +841,9 @@ setup_name_cell (GtkSignalListItemFactory *factory,
                  gpointer                  user_data)
 {
     NautilusListView *self = NAUTILUS_LIST_VIEW (user_data);
-    NautilusViewCell *cell;
+    NautilusViewCell *cell = nautilus_name_cell_new (NAUTILUS_LIST_BASE (self));
+    GtkTreeExpander *expander = nautilus_name_cell_get_expander (NAUTILUS_NAME_CELL (cell));
 
-    cell = nautilus_name_cell_new (NAUTILUS_LIST_BASE (self));
     gtk_column_view_cell_set_child (listitem, GTK_WIDGET (cell));
     setup_cell_common (G_OBJECT (listitem), cell);
 
@@ -855,14 +855,7 @@ setup_name_cell (GtkSignalListItemFactory *factory,
                                  self->path_attribute_q,
                                  self->file_path_base_location);
     nautilus_name_cell_set_show_snippet (NAUTILUS_NAME_CELL (cell), self->search_directory != NULL);
-
-    if (self->expand_as_a_tree)
-    {
-        GtkTreeExpander *expander;
-
-        expander = nautilus_name_cell_get_expander (NAUTILUS_NAME_CELL (cell));
-        gtk_tree_expander_set_indent_for_icon (expander, TRUE);
-    }
+    gtk_tree_expander_set_indent_for_icon (expander, self->expand_as_a_tree);
 }
 
 static void
