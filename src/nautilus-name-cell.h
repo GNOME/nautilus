@@ -22,5 +22,8 @@ void nautilus_name_cell_set_show_snippet (NautilusNameCell *self,
                                           gboolean          show);
 GtkTreeExpander * nautilus_name_cell_get_expander (NautilusNameCell *self);
 GtkWidget * nautilus_name_cell_get_content (NautilusNameCell *self);
+void nautilus_name_cell_recycle (NautilusNameCell **self);
+void nautilus_name_cell_clear_cache (void);
+
 
 G_END_DECLS
