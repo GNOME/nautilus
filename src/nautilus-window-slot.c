@@ -1199,7 +1199,7 @@ action_bookmark_current_directory (GSimpleAction *action,
     NautilusApplication *app = NAUTILUS_APPLICATION (g_application_get_default ());
 
     nautilus_bookmark_list_append (nautilus_application_get_bookmarks (app),
-                                   nautilus_window_slot_get_bookmark (self));
+                                   self->location);
 }
 
 static void
