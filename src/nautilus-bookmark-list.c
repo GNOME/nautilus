@@ -234,26 +234,24 @@ bookmark_list_get_node (NautilusBookmarkList *bookmarks,
 /**
  * insert_bookmark_internal:
  * @bookmarks: pointer to a #NautilusBookmarkList
- * @bookmark: (transfer full): pointer to a #NautilusBookmark to insert
+ * @location: (transfer none): location to insert a bookmark for
  * @index: Position to store bookmark index in the list
  *
  * Adds a bookmark to the given #NautilusBookmarkList if it doesn't exist.
  *
- * Returns: %TRUE when the bookmark was inserted and %FALSE if the bookmark
- *      already exists.
+ * Returns: (transfer none): A new bookmark if one was inserted or %NULL otherwise
  */
-static gboolean
+static NautilusBookmark *
 insert_bookmark_internal (NautilusBookmarkList *bookmarks,
-                          NautilusBookmark     *bookmark,
+                          GFile                *location,
                           int                   index)
 {
-    GFile *location = nautilus_bookmark_get_location (bookmark);
-
     if (bookmark_list_get_node (bookmarks, location, NULL) != NULL)
     {
-        g_object_unref (bookmark);
-        return FALSE;
+        return NULL;
     }
+
+    NautilusBookmark *bookmark = nautilus_bookmark_new (location, NULL);
 
     bookmarks->list = g_list_insert (bookmarks->list, bookmark, index);
 
@@ -264,7 +262,7 @@ insert_bookmark_internal (NautilusBookmarkList *bookmarks,
     g_signal_connect_object (bookmark, "notify::name",
                              G_CALLBACK (bookmark_in_list_name_changed), bookmarks, G_CONNECT_SWAPPED);
 
-    return TRUE;
+    return bookmark;
 }
 
 /**
@@ -291,18 +289,21 @@ nautilus_bookmark_list_get (NautilusBookmarkList *bookmarks,
 /**
  * nautilus_bookmark_list_append:
  *
- * Append a bookmark to a bookmark list.
  * @bookmarks: NautilusBookmarkList to append to.
- * @bookmark: Bookmark to append a copy of.
+ * @location: (transfer none): location to insert a bookmark for
+ *
+ * Append a bookmark for a given location to a bookmark list
+ *
+ * Returns: (transfer none): A new bookmark if one was appended or %NULL otherwise
  **/
-void
+NautilusBookmark *
 nautilus_bookmark_list_append (NautilusBookmarkList *bookmarks,
-                               NautilusBookmark     *bookmark)
+                               GFile                *location)
 {
     g_return_if_fail (NAUTILUS_IS_BOOKMARK_LIST (bookmarks));
-    g_return_if_fail (NAUTILUS_IS_BOOKMARK (bookmark));
+    g_return_if_fail (G_IS_FILE (location));
 
-    if (insert_bookmark_internal (bookmarks, g_object_ref (bookmark), -1))
+    if (insert_bookmark_internal (bookmarks, location, -1) != NULL)
     {
         nautilus_bookmark_list_save_file (bookmarks);
     }
@@ -404,18 +405,18 @@ nautilus_bookmark_list_remove (NautilusBookmarkList *bookmarks,
  *
  * Insert a bookmark at a specified position.
  * @bookmarks: the list of bookmarks.
+ * @location: (transfer none): location to insert a bookmark for
  * @index: the position to insert the bookmark at.
- * @new_bookmark: the bookmark to insert a copy of.
  **/
 void
 nautilus_bookmark_list_insert_item (NautilusBookmarkList *bookmarks,
-                                    NautilusBookmark     *new_bookmark,
+                                    GFile                *location,
                                     guint                 index)
 {
     g_return_if_fail (NAUTILUS_IS_BOOKMARK_LIST (bookmarks));
     g_return_if_fail (index <= g_list_length (bookmarks->list));
 
-    if (insert_bookmark_internal (bookmarks, g_object_ref (new_bookmark), index))
+    if (insert_bookmark_internal (bookmarks, location, index) != NULL)
     {
         nautilus_bookmark_list_save_file (bookmarks);
     }
@@ -474,8 +475,8 @@ load_callback (GObject      *source_object,
         }
 
         g_autoptr (GFile) location = g_file_new_for_uri (uri);
-        NautilusBookmark *new_bookmark = nautilus_bookmark_new (location, label);
-        insert_bookmark_internal (self, new_bookmark, -1);
+        NautilusBookmark *new_bookmark = insert_bookmark_internal (self, location, -1);
+        nautilus_bookmark_set_name (new_bookmark, label);
     }
 
     g_signal_emit (self, signals[CHANGED], 0);
@@ -711,8 +712,8 @@ nautilus_bookmark_list_save_file (NautilusBookmarkList *bookmarks)
 }
 
 gboolean
-nautilus_bookmark_list_can_bookmark_location (NautilusBookmarkList *list,
-                                              GFile                *location)
+nautilus_bookmark_list_can_bookmark (NautilusBookmarkList *list,
+                                     GFile                *location)
 {
     if (bookmark_list_get_node (list, location, NULL) != NULL)
     {

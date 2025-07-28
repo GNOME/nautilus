@@ -40,6 +40,7 @@ typedef struct  NautilusHashQueue           NautilusHashQueue;
 typedef struct _NautilusIconInfo            NautilusIconInfo;
 typedef struct _NautilusListBase            NautilusListBase;
 typedef struct  NautilusMonitor             NautilusMonitor;
+typedef struct _NautilusNavigationState     NautilusNavigationState;
 typedef struct _NautilusQuery               NautilusQuery;
 typedef struct _NautilusQueryEditor         NautilusQueryEditor;
 typedef struct _NautilusToolbarMenuSections NautilusToolbarMenuSections;
