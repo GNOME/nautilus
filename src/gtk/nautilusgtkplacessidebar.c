@@ -1435,12 +1435,10 @@ reorder_bookmarks (NautilusGtkPlacesSidebar *sidebar,
 {
   char *uri;
   GFile *file;
-  guint old_position;
 
   g_object_get (row, "uri", &uri, NULL);
   file = g_file_new_for_uri (uri);
-  nautilus_bookmark_list_item_with_location (sidebar->bookmark_list, file, &old_position);
-  nautilus_bookmark_list_move_item (sidebar->bookmark_list, old_position, new_position);
+  nautilus_bookmark_list_move_item (sidebar->bookmark_list, file, new_position);
 
   g_object_unref (file);
   g_free (uri);
@@ -1910,12 +1908,12 @@ do_rename (GtkButton        *button,
 {
   char *new_text;
   GFile *file;
-  g_autoptr (NautilusBookmark) bookmark = NULL;
 
   new_text = g_strdup (gtk_editable_get_text (GTK_EDITABLE (sidebar->rename_entry)));
 
   file = g_file_new_for_uri (sidebar->rename_uri);
-  bookmark = nautilus_bookmark_list_item_with_location (sidebar->bookmark_list, file, NULL);
+  g_autoptr (NautilusBookmark) bookmark = nautilus_bookmark_list_get (sidebar->bookmark_list,
+                                                                      file);
   if (!bookmark)
     {
       bookmark = nautilus_bookmark_new (file, new_text);
