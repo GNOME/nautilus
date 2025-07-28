@@ -1511,8 +1511,7 @@ drop_files_as_bookmarks (NautilusSidebar *sidebar,
                  g_file_info_get_file_type (info) == G_FILE_TYPE_SHORTCUT ||
                  g_file_info_get_file_type (info) == G_FILE_TYPE_SYMBOLIC_LINK))
             {
-                g_autoptr (NautilusBookmark) bookmark = nautilus_bookmark_new (f, NULL);
-                nautilus_bookmark_list_insert_item (sidebar->bookmark_list, bookmark, position++);
+                nautilus_bookmark_list_add (sidebar->bookmark_list, f, position++);
             }
 
             g_object_unref (info);
