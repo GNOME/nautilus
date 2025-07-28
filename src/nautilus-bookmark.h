@@ -40,7 +40,6 @@ GFile *               nautilus_bookmark_get_location           (NautilusBookmark
 char *                nautilus_bookmark_get_uri                (NautilusBookmark      *bookmark);
 GIcon *               nautilus_bookmark_get_icon               (NautilusBookmark      *bookmark);
 GIcon *               nautilus_bookmark_get_symbolic_icon      (NautilusBookmark      *bookmark);
-gboolean              nautilus_bookmark_get_has_custom_name    (NautilusBookmark      *bookmark);
 
 void                  nautilus_bookmark_take_selected_uris     (NautilusBookmark      *bookmark,
 								GStrv                  selected_uris);
