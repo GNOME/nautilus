@@ -397,29 +397,23 @@ nautilus_bookmark_list_remove (NautilusBookmarkList *bookmarks,
     g_return_if_fail (NAUTILUS_IS_BOOKMARK_LIST (bookmarks));
     g_return_if_fail (location != NULL);
 
-    gboolean list_changed = FALSE;
-    GList *next = NULL;
+    GList *link_to_remove = bookmark_list_get_node (bookmarks, location, NULL);
 
-    for (GList *node = bookmarks->list; node != NULL; node = next)
+    if (link_to_remove == NULL)
     {
-        NautilusBookmark *bookmark = NAUTILUS_BOOKMARK (node->data);
-        next = node->next;
-
-        GFile *bookmark_location = nautilus_bookmark_get_location (bookmark);
-
-        if (g_file_equal (bookmark_location, location))
-        {
-            stop_monitoring_bookmark (bookmarks, bookmark);
-            g_object_unref (bookmark);
-            bookmarks->list = g_list_delete_link (bookmarks->list, node);
-            list_changed = TRUE;
-        }
+        g_autofree char *uri = g_file_get_uri (location);
+        g_warning ("Attempted removing unknown bookmark of %s", uri);
+        return;
     }
 
-    if (list_changed)
-    {
-        nautilus_bookmark_list_save_file (bookmarks);
-    }
+    bookmarks->list = g_list_remove_link (bookmarks->list,
+                                          link_to_remove);
+
+    NautilusBookmark *bookmark = link_to_remove->data;
+    stop_monitoring_bookmark (bookmarks, bookmark);
+    g_list_free_full (link_to_remove, g_object_unref);
+
+    nautilus_bookmark_list_save_file (bookmarks);
 }
 
 /**
