@@ -1511,8 +1511,7 @@ drop_files_as_bookmarks (NautilusSidebar *sidebar,
                  g_file_info_get_file_type (info) == G_FILE_TYPE_SHORTCUT ||
                  g_file_info_get_file_type (info) == G_FILE_TYPE_SYMBOLIC_LINK))
             {
-                g_autoptr (NautilusBookmark) bookmark = nautilus_bookmark_new (f, NULL);
-                nautilus_bookmark_list_insert_item (sidebar->bookmark_list, bookmark, position++);
+                nautilus_bookmark_list_insert_item (sidebar->bookmark_list, f, position++);
             }
 
             g_object_unref (info);
@@ -1922,21 +1921,18 @@ do_rename (GtkButton       *button,
 {
     char *new_text;
     GFile *file;
-    g_autoptr (NautilusBookmark) bookmark = NULL;
 
     new_text = g_strdup (gtk_editable_get_text (GTK_EDITABLE (sidebar->rename_entry)));
 
     file = g_file_new_for_uri (sidebar->rename_uri);
-    bookmark = nautilus_bookmark_list_get_bookmark (sidebar->bookmark_list, file);
-    if (!bookmark)
+    NautilusBookmark *bookmark = nautilus_bookmark_list_get_bookmark (sidebar->bookmark_list, file);
+
+    if (bookmark == NULL)
     {
-        bookmark = nautilus_bookmark_new (file, new_text);
-        nautilus_bookmark_list_append (sidebar->bookmark_list, bookmark);
+        bookmark = nautilus_bookmark_list_append (sidebar->bookmark_list, file);
     }
-    else
-    {
-        nautilus_bookmark_set_name (g_steal_pointer (&bookmark), new_text);
-    }
+
+    nautilus_bookmark_set_name (bookmark, new_text);
 
     if (sidebar->rename_popover)
     {
