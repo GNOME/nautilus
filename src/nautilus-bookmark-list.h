@@ -36,6 +36,9 @@ G_BEGIN_DECLS
 G_DECLARE_FINAL_TYPE (NautilusBookmarkList, nautilus_bookmark_list, NAUTILUS, BOOKMARK_LIST, GObject)
 
 NautilusBookmarkList *  nautilus_bookmark_list_new                 (void);
+gboolean
+nautilus_bookmark_list_contains (NautilusBookmarkList *bookmarks,
+                                 GFile                *location);
 void                    nautilus_bookmark_list_append              (NautilusBookmarkList   *bookmarks,
 								    NautilusBookmark *bookmark);
 NautilusBookmark *      nautilus_bookmark_list_item_with_location  (NautilusBookmarkList *bookmarks,
@@ -44,8 +47,6 @@ NautilusBookmark *      nautilus_bookmark_list_item_with_location  (NautilusBook
 gboolean                nautilus_bookmark_list_can_bookmark_location (NautilusBookmarkList *list,
 								      GFile                *location);
 GList *                 nautilus_bookmark_list_get_all             (NautilusBookmarkList   *bookmarks);
-gboolean                nautilus_bookmark_list_contains            (NautilusBookmarkList   *bookmarks,
-								    NautilusBookmark *bookmark);
 void                    nautilus_bookmark_list_insert_item         (NautilusBookmarkList   *bookmarks,
 								    NautilusBookmark *bookmark,
 								    guint                   index);
