@@ -1281,7 +1281,7 @@ update_bookmark_actions (NautilusWindowSlot *self)
         NautilusBookmarkList *bookmarks = nautilus_application_get_bookmarks (app);
 
         can_bookmark = nautilus_bookmark_list_can_bookmark_location (bookmarks, location);
-        can_unbookmark = nautilus_bookmark_list_item_with_location (bookmarks, location, NULL) != NULL;
+        can_unbookmark = nautilus_bookmark_list_contains (bookmarks, location);
     }
 
     GAction *action_add = g_action_map_lookup_action (G_ACTION_MAP (self->slot_action_group),

@@ -238,7 +238,9 @@ insert_bookmark_internal (NautilusBookmarkList *bookmarks,
                           NautilusBookmark     *bookmark,
                           int                   index)
 {
-    if (nautilus_bookmark_list_contains (bookmarks, bookmark))
+    GFile *location = nautilus_bookmark_get_location (bookmark);
+
+    if (nautilus_bookmark_list_contains (bookmarks, location))
     {
         g_object_unref (bookmark);
         return FALSE;
@@ -324,22 +326,20 @@ nautilus_bookmark_list_append (NautilusBookmarkList *bookmarks,
 /**
  * nautilus_bookmark_list_contains:
  *
- * Check whether a bookmark with matching name and url is already in the list.
+ * Check whether a bookmark for the given @location exists
  * @bookmarks: NautilusBookmarkList to check contents of.
- * @bookmark: NautilusBookmark to match against.
+ * @location: a #GFile to check for.
  *
  * Return value: TRUE if matching bookmark is in list, FALSE otherwise
  **/
 gboolean
 nautilus_bookmark_list_contains (NautilusBookmarkList *bookmarks,
-                                 NautilusBookmark     *bookmark)
+                                 GFile                *location)
 {
     g_return_val_if_fail (NAUTILUS_IS_BOOKMARK_LIST (bookmarks), FALSE);
-    g_return_val_if_fail (NAUTILUS_IS_BOOKMARK (bookmark), FALSE);
+    g_return_val_if_fail (G_IS_FILE (location), FALSE);
 
-    return g_list_find_custom (bookmarks->list,
-                               (gpointer) bookmark,
-                               nautilus_bookmark_compare_with) != NULL;
+    return nautilus_bookmark_list_item_with_location (bookmarks, location, NULL) != NULL;
 }
 
 /**
