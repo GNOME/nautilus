@@ -615,7 +615,7 @@ result_list_attributes_ready_cb (GList    *file_list,
         }
         else if (bookmark != NULL)
         {
-            gicon = nautilus_bookmark_get_icon (bookmark);
+            gicon = nautilus_bookmark_get_symbolic_icon (bookmark);
         }
         else
         {
