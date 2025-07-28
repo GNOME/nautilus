@@ -1849,7 +1849,8 @@ do_rename (GtkButton        *button,
   new_text = g_strdup (gtk_editable_get_text (GTK_EDITABLE (sidebar->rename_entry)));
 
   file = g_file_new_for_uri (sidebar->rename_uri);
-  bookmark = nautilus_bookmark_list_item_with_location (sidebar->bookmark_list, file, NULL);
+  bookmark = nautilus_bookmark_list_get_bookmark (sidebar->bookmark_list, file);
+
   if (!bookmark)
     {
       bookmark = nautilus_bookmark_new (file, new_text);
