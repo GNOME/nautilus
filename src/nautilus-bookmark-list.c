@@ -221,6 +221,32 @@ nautilus_bookmark_list_init (NautilusBookmarkList *bookmarks)
                       G_CALLBACK (bookmark_monitor_changed_cb), bookmarks);
 }
 
+static GList *
+bookmark_list_get_node (NautilusBookmarkList *bookmarks,
+                        GFile                *location,
+                        guint                *index_ptr)
+{
+    guint index = 0;
+
+    for (GList *node = bookmarks->list; node != NULL; node = node->next, index += 1)
+    {
+        NautilusBookmark *bookmark = node->data;
+        GFile *bookmark_location = nautilus_bookmark_get_location (bookmark);
+
+        if (g_file_equal (location, bookmark_location))
+        {
+            if (index_ptr)
+            {
+                *index_ptr = index;
+            }
+
+            return node;
+        }
+    }
+
+    return NULL;
+}
+
 /**
  * insert_bookmark_internal:
  * @bookmarks: pointer to a #NautilusBookmarkList
@@ -239,7 +265,7 @@ insert_bookmark_internal (NautilusBookmarkList *bookmarks,
 {
     GFile *location = nautilus_bookmark_get_location (bookmark);
 
-    if (nautilus_bookmark_list_item_with_location (bookmarks, location, NULL) != NULL)
+    if (bookmark_list_get_node (bookmarks, location, NULL) != NULL)
     {
         g_object_unref (bookmark);
         return FALSE;
@@ -258,48 +284,24 @@ insert_bookmark_internal (NautilusBookmarkList *bookmarks,
 }
 
 /**
- * nautilus_bookmark_list_item_with_location:
+ * nautilus_bookmark_list_get:
  *
  * Get the bookmark with the specified location, if any
  * @bookmarks: the list of bookmarks.
  * @location: a #GFile
- * @index: location where to store bookmark index, or %NULL
  *
- * Return value: the bookmark with location @location, or %NULL.
+ * Returns: (transfer none): the bookmark with location @location, or %NULL.
  **/
 NautilusBookmark *
-nautilus_bookmark_list_item_with_location (NautilusBookmarkList *bookmarks,
-                                           GFile                *location,
-                                           guint                *index)
+nautilus_bookmark_list_get (NautilusBookmarkList *bookmarks,
+                            GFile                *location)
 {
-    GList *node;
-    NautilusBookmark *bookmark;
-    guint idx;
-
     g_return_val_if_fail (NAUTILUS_IS_BOOKMARK_LIST (bookmarks), NULL);
     g_return_val_if_fail (G_IS_FILE (location), NULL);
 
-    idx = 0;
+    GList *node = bookmark_list_get_node (bookmarks, location, NULL);
 
-    for (node = bookmarks->list; node != NULL; node = node->next)
-    {
-        bookmark = node->data;
-        GFile *bookmark_location = nautilus_bookmark_get_location (bookmark);
-
-        if (g_file_equal (location, bookmark_location))
-        {
-            if (index)
-            {
-                *index = idx;
-            }
-
-            return bookmark;
-        }
-
-        idx++;
-    }
-
-    return NULL;
+    return node != NULL ? node->data : NULL;
 }
 
 /**
@@ -338,27 +340,35 @@ nautilus_bookmark_list_contains (NautilusBookmarkList *bookmarks,
     g_return_val_if_fail (NAUTILUS_IS_BOOKMARK_LIST (bookmarks), FALSE);
     g_return_val_if_fail (G_IS_FILE (location), FALSE);
 
-    return nautilus_bookmark_list_item_with_location (bookmarks, location, NULL) != NULL;
+    return bookmark_list_get_node (bookmarks, location, NULL) != NULL;
 }
 
 /**
  * nautilus_bookmark_list_move_item:
  *
- * Move the item from the given position to the destination.
- * @index: the index of the first bookmark.
+ * Move the given item to the destination.
+ * @location: the location of the bookmark to move.
  * @destination: the index of the second bookmark.
  **/
 void
 nautilus_bookmark_list_move_item (NautilusBookmarkList *bookmarks,
-                                  guint                 index,
+                                  GFile                *location,
                                   guint                 destination)
 {
+    guint index;
+    GList *link_to_move = bookmark_list_get_node (bookmarks, location, &index);
+
     if (index == destination)
     {
         return;
     }
 
-    GList *link_to_move = g_list_nth (bookmarks->list, index);
+    if (link_to_move == NULL)
+    {
+        g_autofree char *uri = g_file_get_uri (location);
+        g_warning ("Attempted moving unknown bookmark of %s", uri);
+        return;
+    }
 
     bookmarks->list = g_list_remove_link (bookmarks->list,
                                           link_to_move);
@@ -726,7 +736,7 @@ gboolean
 nautilus_bookmark_list_can_bookmark_location (NautilusBookmarkList *list,
                                               GFile                *location)
 {
-    if (nautilus_bookmark_list_item_with_location (list, location, NULL))
+    if (bookmark_list_get_node (list, location, NULL) != NULL)
     {
         /* Already bookmarked */
         return FALSE;

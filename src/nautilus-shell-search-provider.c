@@ -72,13 +72,12 @@ get_display_name (NautilusShellSearchProvider *self,
                   NautilusFile                *file)
 {
     GFile *location;
-    NautilusBookmark *bookmark;
     NautilusBookmarkList *bookmarks;
 
     bookmarks = nautilus_application_get_bookmarks (NAUTILUS_APPLICATION (g_application_get_default ()));
 
     location = nautilus_file_get_location (file);
-    bookmark = nautilus_bookmark_list_item_with_location (bookmarks, location, NULL);
+    NautilusBookmark *bookmark = nautilus_bookmark_list_get (bookmarks, location);
     g_object_unref (location);
 
     if (bookmark)
@@ -96,13 +95,12 @@ get_gicon (NautilusShellSearchProvider *self,
            NautilusFile                *file)
 {
     GFile *location;
-    NautilusBookmark *bookmark;
     NautilusBookmarkList *bookmarks;
 
     bookmarks = nautilus_application_get_bookmarks (NAUTILUS_APPLICATION (g_application_get_default ()));
 
     location = nautilus_file_get_location (file);
-    bookmark = nautilus_bookmark_list_item_with_location (bookmarks, location, NULL);
+    NautilusBookmark *bookmark = nautilus_bookmark_list_get (bookmarks, location);
     g_object_unref (location);
 
     if (bookmark)
