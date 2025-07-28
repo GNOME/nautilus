@@ -42,7 +42,7 @@ typedef struct
 {
     GList *back_list;
     GList *forward_list;
-    NautilusBookmark *current_location_bookmark;
+    GFile *location;
     NautilusQuery *current_search_query;
 } NautilusNavigationState;
 

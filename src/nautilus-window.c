@@ -599,11 +599,9 @@ action_restore_tab (GSimpleAction *action,
 
     data = g_queue_pop_head (window->tab_data_queue);
 
-    GFile *location = nautilus_bookmark_get_location (data->current_location_bookmark);
-
     slot = nautilus_window_create_and_init_slot (window);
 
-    nautilus_window_slot_open_location_full (slot, location, NULL);
+    nautilus_window_slot_open_location_full (slot, data->location, NULL);
     nautilus_window_slot_restore_navigation_state (slot, data);
 
     free_navigation_state (data);
@@ -1464,7 +1462,8 @@ nautilus_window_back_or_forward_in_new_tab (NautilusWindow              *window,
         case NAUTILUS_NAVIGATION_DIRECTION_BACK:
         {
             state->forward_list = g_list_prepend (state->forward_list, state->current_location_bookmark);
-            state->current_location_bookmark = state->back_list->data;
+            g_autoptr (GFile) location = nautilus_bookmark_get_location (state->current_location_bookmark);
+            state->location = state->back_list->data;
             state->back_list = state->back_list->next;
             g_clear_object (&state->current_search_query);
         }

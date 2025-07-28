@@ -192,7 +192,7 @@ free_navigation_state (gpointer data)
 
     g_list_free_full (navigation_state->back_list, g_object_unref);
     g_list_free_full (navigation_state->forward_list, g_object_unref);
-    g_clear_object (&navigation_state->current_location_bookmark);
+    g_clear_object (&navigation_state->location);
     g_clear_object (&navigation_state->current_search_query);
 
     g_free (navigation_state);
@@ -208,7 +208,9 @@ nautilus_window_slot_restore_navigation_state (NautilusWindowSlot      *self,
 
     update_back_forward_actions (self);
 
-    g_set_object (&self->current_location_bookmark, data->current_location_bookmark);
+    g_autoptr (NautilusBookmark) restored_bookmark = nautilus_bookmark_new (data->location, NULL);
+
+    g_set_object (&self->current_location_bookmark, restored_bookmark);
 
     self->location_change_type = NAUTILUS_LOCATION_CHANGE_RELOAD;
 
@@ -242,7 +244,7 @@ nautilus_window_slot_get_navigation_state (NautilusWindowSlot *self)
     data = g_new0 (NautilusNavigationState, 1);
     data->back_list = back_list;
     data->forward_list = forward_list;
-    g_set_object (&data->current_location_bookmark, self->current_location_bookmark);
+    g_set_object (&data->location, self->location);
     g_set_object (&data->current_search_query, nautilus_files_view_get_search_query (self->content_view));
 
     return data;
@@ -2354,20 +2356,15 @@ nautilus_window_slot_update_bookmark (NautilusWindowSlot *self,
 }
 
 static void
-check_bookmark_location_matches (NautilusBookmark *bookmark,
-                                 GFile            *location)
+assert_locations_match (GFile *test_location,
+                        GFile *expected_location)
 {
-    GFile *bookmark_location;
-    char *bookmark_uri, *uri;
-
-    bookmark_location = nautilus_bookmark_get_location (bookmark);
-    if (!g_file_equal (location, bookmark_location))
+    if (!g_file_equal (test_location, expected_location))
     {
-        bookmark_uri = g_file_get_uri (bookmark_location);
-        uri = g_file_get_uri (location);
-        g_warning ("bookmark uri is %s, but expected %s", bookmark_uri, uri);
-        g_free (uri);
-        g_free (bookmark_uri);
+        g_autofree char *test_uri = g_file_get_uri (test_location);
+        g_autofree char *expected_uri = g_file_get_uri (expected_location);
+
+        g_warning ("Location mismatch, uri is %s, but expected %s", test_uri, expected_uri);
     }
 }
 
@@ -2385,8 +2382,8 @@ check_last_bookmark_location_matches_slot (NautilusWindowSlot *self)
         return;
     }
 
-    check_bookmark_location_matches (self->last_location_bookmark,
-                                     self->location);
+    assert_locations_match (self->last_location_bookmark,
+                                     slot_location);
 }
 
 static void
@@ -2404,8 +2401,8 @@ handle_go_direction (NautilusWindowSlot *self,
 
     /* Move items from the list to the other list. */
     g_assert (g_list_length (list) > self->location_change_distance);
-    check_bookmark_location_matches (g_list_nth_data (list, self->location_change_distance),
-                                     location);
+    assert_locations_match (g_list_nth_data (list, self->location_change_distance),
+                            location);
     g_assert (self->location != NULL);
 
     /* Move current location to list */
