@@ -38,7 +38,6 @@ NautilusBookmark *    nautilus_bookmark_new                    (GFile *location)
 const char *          nautilus_bookmark_get_name               (NautilusBookmark      *bookmark);
 GFile *               nautilus_bookmark_get_location           (NautilusBookmark      *bookmark);
 char *                nautilus_bookmark_get_uri                (NautilusBookmark      *bookmark);
-GIcon *               nautilus_bookmark_get_icon               (NautilusBookmark      *bookmark);
 GIcon *               nautilus_bookmark_get_symbolic_icon      (NautilusBookmark      *bookmark);
 
 void                  nautilus_bookmark_take_selected_uris     (NautilusBookmark      *bookmark,
