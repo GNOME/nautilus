@@ -105,7 +105,7 @@ get_gicon (NautilusShellSearchProvider *self,
 
     if (bookmark)
     {
-        return nautilus_bookmark_get_icon (bookmark);
+        return nautilus_bookmark_get_symbolic_icon (bookmark);
     }
     else
     {
