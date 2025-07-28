@@ -3160,7 +3160,7 @@ on_row_dragged (GtkGestureDrag *gesture,
       GdkContentProvider *content;
       GdkSurface *surface;
       GdkDevice *device;
-      GtkAllocation allocation;
+      gint width, height;
       GtkWidget *drag_widget;
       GdkDrag *drag;
       graphene_point_t drag_point;
@@ -3185,12 +3185,13 @@ on_row_dragged (GtkGestureDrag *gesture,
       g_signal_connect (drag, "dnd-finished", G_CALLBACK (dnd_finished_cb), sidebar);
       g_signal_connect (drag, "cancel", G_CALLBACK (dnd_cancel_cb), sidebar);
 
-      gtk_widget_get_allocation (sidebar->drag_row, &allocation);
+      width = gtk_widget_get_width (sidebar->drag_row);
+      height = gtk_widget_get_height (sidebar->drag_row);
       gtk_widget_set_visible (sidebar->drag_row, FALSE);
 
       drag_widget = GTK_WIDGET (nautilus_gtk_sidebar_row_clone (NAUTILUS_GTK_SIDEBAR_ROW (sidebar->drag_row)));
-      sidebar->drag_row_height = allocation.height;
-      gtk_widget_set_size_request (drag_widget, allocation.width, allocation.height);
+      sidebar->drag_row_height = height;
+      gtk_widget_set_size_request (drag_widget, width, height);
       gtk_widget_set_opacity (drag_widget, 0.8);
 
       gtk_drag_icon_set_child (GTK_DRAG_ICON (gtk_drag_icon_get_for_drag (drag)), drag_widget);

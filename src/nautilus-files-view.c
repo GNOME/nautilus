@@ -2042,6 +2042,7 @@ get_selected_rectangle (NautilusFilesView *self,
 {
     NautilusFilesViewPrivate *priv = nautilus_files_view_get_instance_private (self);
     GtkWidget *item_ui = nautilus_list_base_get_selected_item_ui (priv->list_base);
+    graphene_rect_t item_rect;
     graphene_point_t view_point;
 
     if (item_ui == NULL)
@@ -2049,17 +2050,17 @@ get_selected_rectangle (NautilusFilesView *self,
         return FALSE;
     }
 
-    gtk_widget_get_allocation (item_ui, rectangle);
-    if (!gtk_widget_compute_point (item_ui, GTK_WIDGET (self),
-                                   &GRAPHENE_POINT_INIT (rectangle->x,
-                                                         rectangle->y),
-                                   &view_point))
+    if (!gtk_widget_compute_bounds (item_ui, item_ui, &item_rect) ||
+        !gtk_widget_compute_point (item_ui, GTK_WIDGET (self), &item_rect.origin, &view_point))
     {
         return FALSE;
     }
 
     rectangle->x = view_point.x;
     rectangle->y = view_point.y;
+    rectangle->height = item_rect.size.height;
+    rectangle->width = item_rect.size.width;
+
     return TRUE;
 }
 
