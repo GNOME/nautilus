@@ -611,44 +611,6 @@ nautilus_bookmark_get_has_custom_name (NautilusBookmark *bookmark)
     return (bookmark->has_custom_name);
 }
 
-/**
- * nautilus_bookmark_compare_with:
- *
- * Check whether two bookmarks are considered identical.
- * @a: first NautilusBookmark*.
- * @b: second NautilusBookmark*.
- *
- * Return value: 0 if @a and @b have same name and uri, 1 otherwise
- * (GCompareFunc style)
- **/
-int
-nautilus_bookmark_compare_with (gconstpointer a,
-                                gconstpointer b)
-{
-    NautilusBookmark *bookmark_a;
-    NautilusBookmark *bookmark_b;
-
-    g_return_val_if_fail (NAUTILUS_IS_BOOKMARK ((gpointer) a), 1);
-    g_return_val_if_fail (NAUTILUS_IS_BOOKMARK ((gpointer) b), 1);
-
-    bookmark_a = NAUTILUS_BOOKMARK ((gpointer) a);
-    bookmark_b = NAUTILUS_BOOKMARK ((gpointer) b);
-
-    if (!g_file_equal (bookmark_a->location,
-                       bookmark_b->location))
-    {
-        return 1;
-    }
-
-    if (g_strcmp0 (bookmark_a->name,
-                   bookmark_b->name) != 0)
-    {
-        return 1;
-    }
-
-    return 0;
-}
-
 GIcon *
 nautilus_bookmark_get_symbolic_icon (NautilusBookmark *bookmark)
 {
