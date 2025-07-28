@@ -70,22 +70,6 @@ nautilus_bookmark_list_error_quark (void)
     return g_quark_from_static_string ("nautilus-bookmark-list-error-quark");
 }
 
-static NautilusBookmark *
-new_bookmark_from_uri (const char *uri,
-                       const char *label)
-{
-    NautilusBookmark *new_bookmark = NULL;
-    g_autoptr (GFile) location = NULL;
-
-    if (uri)
-    {
-        location = g_file_new_for_uri (uri);
-        new_bookmark = nautilus_bookmark_new (location, label);
-    }
-
-    return new_bookmark;
-}
-
 static GFile *
 nautilus_bookmark_list_get_file (void)
 {
@@ -458,11 +442,7 @@ load_callback (GObject      *source_object,
 {
     NautilusBookmarkList *self = NAUTILUS_BOOKMARK_LIST (source_object);
     g_autoptr (GError) error = NULL;
-    g_autofree gchar *contents = NULL;
-    char **lines;
-    int i;
-
-    contents = g_task_propagate_pointer (G_TASK (res), &error);
+    g_autofree gchar *contents = g_task_propagate_pointer (G_TASK (res), &error);
     if (error != NULL)
     {
         g_warning ("Unable to get contents of the bookmarks file: %s",
@@ -471,27 +451,31 @@ load_callback (GObject      *source_object,
         return;
     }
 
-    lines = g_strsplit (contents, "\n", -1);
-    for (i = 0; lines[i]; i++)
+    char **lines = g_strsplit (contents, "\n", -1);
+    for (guint i = 0; lines[i]; i++)
     {
+        char *uri = lines[i];
+
         /* Ignore empty or invalid lines that cannot be parsed properly */
-        if (lines[i][0] != '\0' && lines[i][0] != ' ')
+        if (uri[0] == '\0' || g_unichar_isspace (uri[0]))
         {
-            /* gtk 2.7/2.8 might have labels appended to bookmarks which are separated by a space
-             * we must separate the bookmark URI and the potential label.
-             */
-            char *space;
-            g_autofree char *label = NULL;
-
-            space = strchr (lines[i], ' ');
-            if (space)
-            {
-                *space = '\0';
-                label = g_strdup (space + 1);
-            }
-
-            insert_bookmark_internal (self, new_bookmark_from_uri (lines[i], label), -1);
+            continue;
         }
+
+        /* Since GTK 2.7 the bookmarks file can have labels appended to bookmarks,
+         * separated by a space. Split these up into URI and label.
+         */
+        char *label = NULL;
+        char *space = strchr (uri, ' ');
+        if (space != NULL)
+        {
+            *space = '\0';
+            label = space + 1;
+        }
+
+        g_autoptr (GFile) location = g_file_new_for_uri (uri);
+        NautilusBookmark *new_bookmark = nautilus_bookmark_new (location, label);
+        insert_bookmark_internal (self, new_bookmark, -1);
     }
 
     g_signal_emit (self, signals[CHANGED], 0);
