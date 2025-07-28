@@ -589,9 +589,8 @@ result_list_attributes_ready_cb (GList    *file_list,
         g_auto (GVariantBuilder) meta = G_VARIANT_BUILDER_INIT (G_VARIANT_TYPE_VARDICT);
 
         g_autofree char *uri = nautilus_file_get_uri (file);
-        NautilusBookmark *bookmark = nautilus_bookmark_list_item_with_location (bookmarks,
-                                                                                file_location,
-                                                                                NULL);
+        NautilusBookmark *bookmark = nautilus_bookmark_list_get_bookmark (bookmarks,
+                                                                          file_location);
         const char *display_name = (bookmark != NULL)
                                    ? nautilus_bookmark_get_name (bookmark)
                                    : nautilus_file_get_display_name (file);

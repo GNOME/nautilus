@@ -285,24 +285,22 @@ insert_bookmark_internal (NautilusBookmarkList *bookmarks,
 }
 
 /**
- * nautilus_bookmark_list_item_with_location:
+ * nautilus_bookmark_list_get_bookmark:
  *
  * Get the bookmark with the specified location, if any
  * @bookmarks: the list of bookmarks.
  * @location: a #GFile
- * @index: location where to store bookmark index, or %NULL
  *
- * Return value: the bookmark with location @location, or %NULL.
+ * Returns: (transfer none): the bookmark with location @location, or %NULL.
  **/
 NautilusBookmark *
-nautilus_bookmark_list_item_with_location (NautilusBookmarkList *bookmarks,
-                                           GFile                *location,
-                                           guint                *index)
+nautilus_bookmark_list_get_bookmark (NautilusBookmarkList *bookmarks,
+                                     GFile                *location)
 {
     g_return_val_if_fail (NAUTILUS_IS_BOOKMARK_LIST (bookmarks), NULL);
     g_return_val_if_fail (G_IS_FILE (location), NULL);
 
-    GList *node = bookmark_list_get_node (bookmarks, location, index);
+    GList *node = bookmark_list_get_node (bookmarks, location, NULL);
 
     return node != NULL ? node->data : NULL;
 }
