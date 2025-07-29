@@ -67,6 +67,7 @@
 #include "nautilus-scheme.h"
 #include "nautilus-shell-search-provider.h"
 #include "nautilus-signaller.h"
+#include "nautilus-star-cell.h"
 #include "nautilus-tag-manager.h"
 #include "nautilus-localsearch-utilities.h"
 #include "nautilus-trash-monitor.h"
@@ -879,6 +880,7 @@ on_application_shutdown (GApplication *application,
     nautilus_grid_cell_clear_cache ();
     nautilus_name_cell_clear_cache ();
     nautilus_label_cell_clear_cache ();
+    nautilus_star_cell_clear_cache ();
 }
 
 static void

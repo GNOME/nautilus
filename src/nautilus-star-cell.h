@@ -15,5 +15,7 @@ G_BEGIN_DECLS
 G_DECLARE_FINAL_TYPE (NautilusStarCell, nautilus_star_cell, NAUTILUS, STAR_CELL, NautilusViewCell)
 
 NautilusViewCell * nautilus_star_cell_new (NautilusListBase *view);
+void nautilus_star_cell_recycle (NautilusStarCell **self);
+void nautilus_star_cell_clear_cache (void);
 
 G_END_DECLS
