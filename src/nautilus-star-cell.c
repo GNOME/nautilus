@@ -174,10 +174,78 @@ nautilus_star_cell_class_init (NautilusStarCellClass *klass)
     gtk_widget_class_set_layout_manager_type (widget_class, GTK_TYPE_BIN_LAYOUT);
 }
 
+#define CACHED_CELLS_INIT_COUNT 50
+#define CACHED_CELLS_MAX_COUNT 400
+static GPtrArray *cached_cells;
+
+void
+nautilus_star_cell_recycle (NautilusStarCell **self)
+{
+    g_return_if_fail (NAUTILUS_IS_STAR_CELL (*self));
+
+    if (!g_ptr_array_find (cached_cells, *self, NULL) &&
+        cached_cells->len < CACHED_CELLS_MAX_COUNT)
+    {
+        GtkWidget *star_button = GTK_WIDGET ((*self)->star);
+
+        g_object_set (*self, "item", NULL, NULL);
+
+        if (G_UNLIKELY (gtk_widget_has_css_class (star_button, "interacted")))
+        {
+            /* Stop animation */
+            gtk_widget_remove_css_class (GTK_WIDGET ((*self)->star), "interacted");
+        }
+
+        g_ptr_array_add (cached_cells, g_steal_pointer (self));
+    }
+
+    g_clear_object (self);
+}
+
+static void
+ensure_cells (void)
+{
+    if (cached_cells == NULL)
+    {
+        cached_cells = g_ptr_array_new_with_free_func (g_object_unref);
+
+        for (uint i = 0; i < CACHED_CELLS_INIT_COUNT; i++)
+        {
+            NautilusStarCell *cell = g_object_new (NAUTILUS_TYPE_STAR_CELL, NULL);
+
+            g_ptr_array_add (cached_cells, g_object_ref_sink (cell));
+        }
+    }
+}
+
+void
+nautilus_star_cell_clear_cache (void)
+{
+    g_clear_pointer (&cached_cells, g_ptr_array_unref);
+}
+
 NautilusViewCell *
 nautilus_star_cell_new (NautilusListBase *view)
 {
-    return NAUTILUS_VIEW_CELL (g_object_new (NAUTILUS_TYPE_STAR_CELL,
-                                             "view", view,
-                                             NULL));
+    NautilusStarCell *cell;
+
+    ensure_cells ();
+
+    if (cached_cells->len == 0)
+    {
+        cell = g_object_new (NAUTILUS_TYPE_STAR_CELL, NULL);
+
+        /* Needed to avoid warnings when clearing the cache. */
+        g_object_ref_sink (cell);
+    }
+    else
+    {
+        cell = g_ptr_array_steal_index (cached_cells, cached_cells->len - 1);
+
+        g_assert (gtk_widget_get_parent (GTK_WIDGET (cell)) == NULL);
+    }
+
+    g_object_set (cell, "view", view, NULL);
+
+    return NAUTILUS_VIEW_CELL (cell);
 }
