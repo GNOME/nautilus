@@ -225,14 +225,10 @@ nautilus_history_controls_set_window_slot (NautilusHistoryControls *self,
     g_return_if_fail (NAUTILUS_IS_HISTORY_CONTROLS (self));
     g_return_if_fail (window_slot == NULL || NAUTILUS_IS_WINDOW_SLOT (window_slot));
 
-    if (self->window_slot == window_slot)
+    if (g_set_object (&self->window_slot, window_slot))
     {
-        return;
+        g_object_notify_by_pspec (G_OBJECT (self), properties[PROP_WINDOW_SLOT]);
     }
-
-    self->window_slot = window_slot;
-
-    g_object_notify_by_pspec (G_OBJECT (self), properties[PROP_WINDOW_SLOT]);
 }
 
 static void

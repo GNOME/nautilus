@@ -7,10 +7,12 @@
 
 #include "nautilus-network-address-bar.h"
 
+#include "nautilus-recent-servers.h"
+#include "nautilus-scheme.h"
+#include "nautilus-window-slot.h"
+
 #include <glib/gi18n.h>
 #include <adwaita.h>
-
-#include "nautilus-recent-servers.h"
 
 struct _NautilusNetworkAddressBar
 {
@@ -26,9 +28,20 @@ struct _NautilusNetworkAddressBar
     guint entry_pulse_timeout_id;
 
     GCancellable *cancellable;
+
+    NautilusWindowSlot *window_slot;
 };
 
 G_DEFINE_TYPE (NautilusNetworkAddressBar, nautilus_network_address_bar, GTK_TYPE_BOX)
+
+enum
+{
+    PROP_0,
+    PROP_WINDOW_SLOT,
+    N_PROPS
+};
+
+static GParamSpec *properties[N_PROPS];
 
 const char *unsupported_protocols[] =
 {
@@ -340,6 +353,65 @@ populate_available_protocols_grid (GtkGrid *grid)
 }
 
 static void
+on_location_change (NautilusNetworkAddressBar *self,
+                    GParamSpec                *pspec,
+                    NautilusWindowSlot        *window_slot)
+{
+    gboolean shown = FALSE;
+
+    GFile *location = nautilus_window_slot_get_location (window_slot);
+    if (location != NULL)
+    {
+        g_autofree char *uri = g_file_get_uri (location);
+        shown = g_file_has_uri_scheme (location, SCHEME_NETWORK_VIEW);
+    }
+
+    gtk_widget_set_visible (GTK_WIDGET (self), shown);
+}
+
+static void
+nautilus_network_address_bar_set_property (GObject      *object,
+                                           guint         prop_id,
+                                           const GValue *value,
+                                           GParamSpec   *pspec)
+{
+    NautilusNetworkAddressBar *self = NAUTILUS_NETWORK_ADDRESS_BAR (object);
+
+    switch (prop_id)
+    {
+        case PROP_WINDOW_SLOT:
+        {
+            gpointer window_slot = g_value_get_object (value);
+
+            if (self->window_slot == window_slot)
+            {
+                break;
+            }
+            if (self->window_slot != NULL)
+            {
+                g_signal_handlers_disconnect_by_data (self->window_slot, self);
+            }
+
+            g_set_object (&self->window_slot, window_slot);
+
+            if (self->window_slot != NULL)
+            {
+                on_location_change (self, NULL, self->window_slot);
+                g_signal_connect_swapped (
+                    self->window_slot, "notify::location", G_CALLBACK (on_location_change), self);
+            }
+
+            break;
+        }
+
+        default:
+        {
+            G_OBJECT_WARN_INVALID_PROPERTY_ID (object, prop_id, pspec);
+        }
+    }
+}
+
+static void
 nautilus_network_address_bar_dispose (GObject *object)
 {
     NautilusNetworkAddressBar *self = NAUTILUS_NETWORK_ADDRESS_BAR (object);
@@ -375,8 +447,16 @@ nautilus_network_address_bar_class_init (NautilusNetworkAddressBarClass *klass)
 
     object_class->finalize = nautilus_network_address_bar_finalize;
     object_class->dispose = nautilus_network_address_bar_dispose;
+    object_class->set_property = nautilus_network_address_bar_set_property;
 
     widget_class->map = nautilus_network_address_bar_map;
+
+    properties[PROP_WINDOW_SLOT] = g_param_spec_object ("window-slot",
+                                                        NULL, NULL,
+                                                        NAUTILUS_TYPE_WINDOW_SLOT,
+                                                        G_PARAM_WRITABLE | G_PARAM_STATIC_STRINGS);
+
+    g_object_class_install_properties (object_class, N_PROPS, properties);
 
     /* Bind class to template */
     gtk_widget_class_set_template_from_resource (widget_class, "/org/gnome/nautilus/ui/nautilus-network-address-bar.ui");

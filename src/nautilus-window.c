@@ -66,7 +66,6 @@ static void nautilus_window_initialize_actions (NautilusWindow *window);
 static void nautilus_window_back_or_forward (NautilusWindow *window,
                                              gboolean        back,
                                              guint           distance);
-static void nautilus_window_sync_location_widgets (NautilusWindow *window);
 static void update_cursor (NautilusWindow *window);
 
 /* Sanity check: highest mouse button value I could find was 14. 5 is our
@@ -104,8 +103,6 @@ struct _NautilusWindow
     /* Toolbar */
     GtkWidget *toolbar;
     gboolean temporary_navigation_bar;
-
-    GtkWidget *network_address_bar;
 
     guint sidebar_width_handler_id;
 
@@ -277,23 +274,6 @@ action_show_current_location_menu (GSimpleAction *action,
 }
 
 static void
-on_location_changed (NautilusWindow *window)
-{
-    nautilus_window_sync_location_widgets (window);
-}
-
-static void
-on_slot_location_changed (NautilusWindowSlot *slot,
-                          GParamSpec         *pspec,
-                          NautilusWindow     *window)
-{
-    if (nautilus_window_get_active_slot (window) == slot)
-    {
-        on_location_changed (window);
-    }
-}
-
-static void
 tab_view_setup_menu_cb (AdwTabView     *tab_view,
                         AdwTabPage     *page,
                         NautilusWindow *window)
@@ -395,8 +375,6 @@ nautilus_window_create_and_init_slot (NautilusWindow *window)
 
     g_signal_connect_swapped (slot, "notify::allow-stop",
                               G_CALLBACK (update_cursor), window);
-    g_signal_connect (slot, "notify::location",
-                      G_CALLBACK (on_slot_location_changed), window);
 
     AdwTabPage *current = get_current_page (window);
     AdwTabPage *page = adw_tab_view_add_page (window->tab_view, GTK_WIDGET (slot), current);
@@ -670,24 +648,6 @@ nautilus_window_slot_close (NautilusWindow     *window,
     {
         g_debug ("Last slot removed, closing the window");
         nautilus_window_close (window);
-    }
-}
-
-static void
-nautilus_window_sync_location_widgets (NautilusWindow *window)
-{
-    NautilusWindowSlot *slot = window->active_slot;
-    GFile *location;
-
-    /* This function can only be called when there is a slot. */
-    g_assert (slot != NULL);
-
-    location = nautilus_window_slot_get_location (slot);
-
-    if (location != NULL)
-    {
-        gtk_widget_set_visible (window->network_address_bar,
-                                g_file_has_uri_scheme (location, SCHEME_NETWORK_VIEW));
     }
 }
 
@@ -1348,7 +1308,6 @@ nautilus_window_set_active_slot (NautilusWindow     *window,
         /* inform slot & view */
         nautilus_window_slot_set_active (new_slot, TRUE);
 
-        on_location_changed (window);
         update_cursor (window);
     }
 
@@ -1660,7 +1619,6 @@ nautilus_window_class_init (NautilusWindowClass *class)
     gtk_widget_class_bind_template_child (wclass, NautilusWindow, toast_overlay);
     gtk_widget_class_bind_template_child (wclass, NautilusWindow, tab_view);
     gtk_widget_class_bind_template_child (wclass, NautilusWindow, tab_bar);
-    gtk_widget_class_bind_template_child (wclass, NautilusWindow, network_address_bar);
 
     signals[SLOT_ADDED] =
         g_signal_new ("slot-added",

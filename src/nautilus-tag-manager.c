@@ -728,7 +728,7 @@ nautilus_tag_manager_init (NautilusTagManager *self)
     self->database_ok = setup_database (self, self->cancellable, &error);
     if (error)
     {
-        g_warning ("Unable to initialize tag manager: %s", error->message);
+        //g_warning ("Unable to initialize tag manager: %s", error->message);
         return;
     }
 

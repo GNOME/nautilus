@@ -1,0 +1,275 @@
+might be causing issues:
+fa4b66b87 window-slot: Stop setting custom bookmark name
+can't bookmark anymore
+
+
+bookmark get location no extra ref
+    comparison function with bookmark/gfile
+        insert/append by gfile
+
+
+
+pick d3e3759ea # bookmark-list: Add entries based on location
+
+
+
+
+places-sidebar: Drop unnecessary bookmark autoptr
+
+
+
+
+
+
+
+
+random crashes, hits not referenced any more
+
+
+
+drop this from model should_search
+    g_return_val_if_fail (nautilus_search_provider_should_stop (provider), FALSE);
+
+separate commit for making _finished use gpointer
+
+
+
+adding hits
+    threaded
+
+
+
+
+is it ok to use void function in thread?
+
+how to handle already found hits on query change?
+    cut off possible of submitted hits?
+        what about cached hits?
+            take over hit caching in main provider?
+
+
+
+
+
+add variable if threaded or just on idle
+make add hits and finished use correct context appropriately
+    remove idle handling from providers
+move custom thread variables to main class struct
+
+
+
+
+simple engine: queue location added twice? one of the previous commits to blame?
+
+
+simplify engine simple found loop mess
+
+
+
+maybe not needed anymore
+early introduce linebreak for if (self->starting ||
+
+
+
+pick 33ac1059d # search-engine: Add per-provider delays
+
+
+
+
+
+pick d1cc5913a # search-engine: Only stop running when providers are done
+
+
+pick 4fea7c03c # search-engine-localsearch: Only warn once about connection
+
+pick 5d2501784 # search-engine-simple: Add content type define
+pick 13648e81e # search-engine-simple: Cleanup visit_directory variables
+pick 015b856f3 # search-engine-simple: Simplify search thread function
+pick 9708475b9 # search-engine-simple: Simplify recursion loop snippet
+
+pick e7964f8da # search-engine-simple: Use queue free_full function
+pick e5bcf4b05 # search-engine-simple: Always have hits array ready
+
+pick 2ff044df4 # search-engine-recent: Don't cancel in finalize
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+status quo
+view: creates search dir
+      pass queue to search dir
+search dir: has engine
+
+shell-search: has engine
+
+
+goal
+query editor: has search dir
+              pass queue to dir
+
+shell-search: has engine
+
+
+
+
+
+
+
+
+
+status quo
+slot
+    -> view -> query
+            -> search_directory -> query
+                                -> engine
+    -> query_editor -> search_directory
+                    -> query
+
+search_directory from fake location
+
+goal
+slot
+    -> view -> search_directory -> query
+                                -> engine
+    -> query_editor -> search_directory
+                    -> query
+
+
+
+
+
+give search directory to query editor
+give query editor to toolbar
+
+directly communicate query editor <-> directory
+(directory has search engine)
+
+
+
+
+searching -> no results -> focus grab by hidden view
+
+
+new tab from search opens at Home
+
+
+
+
+
+issue with transfer via signal:
+    what if engine is gone?
+    callbacks instead?
+    provider holds reference of engine?
+        -> engine stays around until all providers are gone
+
+
+
+add limited queue check
+store run id to allow previous run ids with limited queue range
+filter previous hits
+make providers continue with limited scope
+
+
+cleanup g_cclosure_marshal_generic
+
+
+query communication editor <-> popover cleanup
+
+always have query ready in editor?
+    Currently NULL query has meaning (no search)
+
+
+
+
+rework provider starting
+    sync stop all
+    only keep const reference of queue in providers, no reffing
+
+
+pick 80de50fbb search-engine: Use custom start/stop functions
+
+
+pick 0fd73d3b8 # query-editor: Flatten find_enclosing_mount_cb
+
+
+
+
+search engine calculate hit score?
+    same date for all files
+
+
+pick 49df1b9ec query: Remove runtime type checks
+
+
+
+
+pick 8eee00517 search-hit: Use g_set_*
+pick 9e5ed7b43 search: Move directory monitors to model engine
+
+
+/*
+ * Copyright (C) 2005 Novell, Inc.
+ * Copyright (C) 2022 The GNOME project contributors
+ *
+ * SPDX-License-Identifier: GPL-3.0-or-later
+ *
+ * Original Author: Anders Carlsson <andersca@imendio.com>
+ * Author: Peter Eisenmann <p3732@getgoogleoff.me>
+ */
+
+
+
+
+commit 620062080938dc6833cc280676ef47bea5714e4c (HEAD -> design-search-popover)
+Author: Peter Eisenmann <p3732@getgoogleoff.me>
+Date:   Tue Jun 17 16:01:54 2025 +0800
+
+    mime-actions: Remove dead code
+    
+    Some became unused with the previous commit, some was unused before.
+
+
+
+
+
+
+
+pick 80a21d8fd # application: Bundle open-location debug section
+pick 214df12b7 # view: Fix doc copypaste mistake
+
+
+look into nautilus_directory_provider_get_all()
+
+initial mechanism to setup hash maps and such things on startup
+
+
+pick deab8d03d # query: Rework match ranking
+
+# probably useless idle varints for engines
+pick fefcb6adf # search-provider: Add idle variants for emitting signals
+pick e50da9080 # search-engine-recent: Rely on provider idle functions
+pick 95f7b2b11 # search-engine-simple: Rely on provider idle functions
+pick be38372f0 # search-engine-model: Rely on provider idle functions
+
+
+
+
+delete https://gitlab.gnome.org/GNOME/nautilus/-/commits/wip/alice/popover
+
+
+
+<signal name="notify::css-classes" handler="specific_button_update_visibility"/>
+
+
+move nautilus_date_time_is_between_dates to date-util

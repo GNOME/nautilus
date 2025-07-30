@@ -999,6 +999,18 @@ action_down (GSimpleAction *action,
 }
 
 static void
+action_focus_entry (GSimpleAction *action,
+                    GVariant      *state,
+                    gpointer       user_data)
+{
+    NautilusWindowSlot *self = NAUTILUS_WINDOW_SLOT (user_data);
+
+    (void) self;
+    //
+    //view_
+}
+
+static void
 action_focus_search (GSimpleAction *action,
                      GVariant      *state,
                      gpointer       user_data)
@@ -1242,6 +1254,7 @@ const GActionEntry slot_entries[] =
     { .name = "files-view-mode-toggle", .activate = action_files_view_mode_toggle },
     { .name = "search-visible", .state = "false", .change_state = action_search_visible },
     { .name = "search-global", .state = "false", .change_state = action_search_global },
+    { .name = "focus-entry", .activate = action_focus_entry },
     { .name = "focus-search", .activate = action_focus_search },
     { .name = "reload", .activate = action_reload },
     { .name = "stop", .activate = action_stop },
@@ -1361,6 +1374,7 @@ nautilus_window_slot_init (NautilusWindowSlot *self)
     ADD_SHORTCUT_FOR_ACTION_WITH_ARGS (self->shortcuts,
                                        "slot.open-location", "Favorites",
                                        "s", SCHEME_STARRED ":///");
+    ADD_SHORTCUT_FOR_ACTION (self->shortcuts, "slot.focus-entry", "<control>k");
     ADD_SHORTCUT_FOR_ACTION (self->shortcuts, "slot.focus-search", "<control>f|Search");
     ADD_SHORTCUT_FOR_ACTION (self->shortcuts, "slot.search-global", "<control><shift>f");
     ADD_SHORTCUT_FOR_ACTION (self->shortcuts, "slot.reload", "F5|<ctrl>r|Refresh|Reload");
@@ -1629,6 +1643,7 @@ nautilus_window_slot_set_location (NautilusWindowSlot *self,
     update_bookmark_actions (self);
     update_star_unstar_actions (self);
 
+    g_message ("notify about loc change");
     g_object_notify_by_pspec (G_OBJECT (self), properties[PROP_LOCATION]);
 }
 

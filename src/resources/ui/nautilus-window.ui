@@ -171,8 +171,9 @@
                       </object>
                     </property>
                     <child type="bottom">
-                      <object class="NautilusNetworkAddressBar" id="network_address_bar">
+                      <object class="NautilusNetworkAddressBar">
                         <property name="visible">False</property>
+                        <property name="window-slot" bind-source="NautilusWindow" bind-property="active-slot" bind-flags="sync-create"/>
                       </object>
                     </child>
                     <child type="bottom">
