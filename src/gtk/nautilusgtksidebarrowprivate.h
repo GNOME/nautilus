@@ -17,6 +17,8 @@ G_DECLARE_FINAL_TYPE (NautilusGtkSidebarRow,
                       GtkListBoxRow)
 
 NautilusGtkSidebarRow *nautilus_gtk_sidebar_row_new    (void);
+NautilusGtkSidebarRow *nautilus_sidebar_row_new_placeholder (void);
+
 NautilusGtkSidebarRow *nautilus_gtk_sidebar_row_clone  (NautilusGtkSidebarRow *self);
 
 /* Use these methods instead of gtk_widget_hide/show to use an animation */

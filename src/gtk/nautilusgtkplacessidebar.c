@@ -1260,12 +1260,6 @@ stop_drop_feedback (NautilusGtkPlacesSidebar *sidebar)
   sidebar->dragging_over = FALSE;
 }
 
-static GtkWidget *
-create_placeholder_row (NautilusGtkPlacesSidebar *sidebar)
-{
-  return g_object_new (NAUTILUS_TYPE_GTK_SIDEBAR_ROW, "placeholder", TRUE, NULL);
-}
-
 static GdkDragAction
 drag_motion_callback (GtkDropTarget    *target,
                       double            x,
@@ -1317,8 +1311,7 @@ drag_motion_callback (GtkDropTarget    *target,
       action = GDK_ACTION_MOVE;
       if (sidebar->row_placeholder == NULL)
         {
-          sidebar->row_placeholder = create_placeholder_row (sidebar);
-          g_object_ref_sink (sidebar->row_placeholder);
+          sidebar->row_placeholder =  GTK_WIDGET (nautilus_sidebar_row_new_placeholder ());
         }
       else if (GTK_WIDGET (row) == sidebar->row_placeholder)
         {

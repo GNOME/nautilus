@@ -40,7 +40,6 @@ struct _NautilusGtkSidebarRow
   GVolume *volume;
   GMount *mount;
   GObject *cloud_provider_account;
-  gboolean placeholder;
   NautilusGtkPlacesSidebar *sidebar;
   GtkWidget *revealer;
   GtkWidget *busy_spinner;
@@ -67,7 +66,6 @@ enum
   PROP_VOLUME,
   PROP_MOUNT,
   PROP_CLOUD_PROVIDER_ACCOUNT,
-  PROP_PLACEHOLDER,
   LAST_PROP
 };
 
@@ -235,10 +233,6 @@ nautilus_gtk_sidebar_row_get_property (GObject    *object,
       g_value_set_object (value, self->cloud_provider_account);
       break;
 
-    case PROP_PLACEHOLDER:
-      g_value_set_boolean (value, self->placeholder);
-      break;
-
     default:
       G_OBJECT_WARN_INVALID_PROPERTY_ID (object, prop_id, pspec);
     }
@@ -370,35 +364,6 @@ nautilus_gtk_sidebar_row_set_property (GObject      *object,
         }
 #endif
       break;
-
-    case PROP_PLACEHOLDER:
-      {
-        self->placeholder = g_value_get_boolean (value);
-        if (self->placeholder)
-          {
-            g_clear_object (&self->start_icon);
-            g_clear_object (&self->end_icon);
-            g_free (self->label);
-            self->label = NULL;
-            g_free (self->tooltip);
-            self->tooltip = NULL;
-            self->eject_tooltip = NULL;
-            gtk_widget_set_tooltip_text (GTK_WIDGET (self), NULL);
-            self->ejectable = FALSE;
-            self->section_type = NAUTILUS_GTK_PLACES_SECTION_BOOKMARKS;
-            self->place_type = NAUTILUS_GTK_PLACES_BOOKMARK_PLACEHOLDER;
-            g_free (self->uri);
-            self->uri = NULL;
-            g_clear_object (&self->drive);
-            g_clear_object (&self->volume);
-            g_clear_object (&self->mount);
-            g_clear_object (&self->cloud_provider_account);
-
-            gtk_list_box_row_set_child (GTK_LIST_BOX_ROW (self), NULL);
-          }
-
-        break;
-      }
 
     default:
       G_OBJECT_WARN_INVALID_PROPERTY_ID (object, prop_id, pspec);
@@ -673,15 +638,6 @@ nautilus_gtk_sidebar_row_class_init (NautilusGtkSidebarRowClass *klass)
                          (G_PARAM_READWRITE |
                           G_PARAM_STATIC_STRINGS));
 
-  properties [PROP_PLACEHOLDER] =
-    g_param_spec_boolean ("placeholder",
-                          "Placeholder",
-                          "Placeholder",
-                          FALSE,
-                          (G_PARAM_READWRITE |
-                           G_PARAM_CONSTRUCT_ONLY |
-                           G_PARAM_STATIC_STRINGS));
-
   g_object_class_install_properties (object_class, LAST_PROP, properties);
 
   gtk_widget_class_set_template_from_resource (widget_class,
@@ -696,6 +652,18 @@ nautilus_gtk_sidebar_row_class_init (NautilusGtkSidebarRowClass *klass)
 
   gtk_widget_class_bind_template_callback (widget_class, on_child_revealed);
   gtk_widget_class_set_css_name (widget_class, "row");
+}
+
+NautilusGtkSidebarRow*
+nautilus_sidebar_row_new_placeholder (void)
+{
+    NautilusGtkSidebarRow *row = g_object_new (NAUTILUS_TYPE_GTK_SIDEBAR_ROW, NULL);
+    g_object_ref_sink (row);
+
+    row->section_type = NAUTILUS_GTK_PLACES_SECTION_BOOKMARKS;
+    row->place_type = NAUTILUS_GTK_PLACES_BOOKMARK_PLACEHOLDER;
+
+    return row;
 }
 
 NautilusGtkSidebarRow*
