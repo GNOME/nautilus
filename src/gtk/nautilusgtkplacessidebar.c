@@ -80,16 +80,7 @@
  * call nautilus_gtk_places_sidebar_set_location() when it changes the currently-viewed
  * location.
  *
- * # CSS nodes
- *
- * NautilusGtkPlacesSidebar uses a single CSS node with name placessidebar and style
- * class .sidebar.
- *
- * Among the children of the places sidebar, the following style classes can
- * be used:
- * - .sidebar-new-bookmark-row for the 'Add new bookmark' row
- * - .sidebar-placeholder-row for a row that is a placeholder
- * - .has-open-popup when a popup is open for a row
+ * NautilusGtkPlacesSidebar uses the libadwaita "navigation-sidebar" style.
  */
 
 /* These are used when a destination-side DND operation is taking place.
@@ -1016,7 +1007,6 @@ update_places (NautilusGtkPlacesSidebar *sidebar)
                                          _("New bookmark"), new_bookmark_icon, NULL, NULL,
                                          NULL, NULL, NULL, NULL, 0,
                                          _("Add a new bookmark"));
-  gtk_widget_add_css_class (sidebar->new_bookmark_row, "sidebar-new-bookmark-row");
   g_object_unref (new_bookmark_icon);
 
   /* network */
@@ -2024,11 +2014,6 @@ update_popover_shadowing (GtkWidget *row,
   count = GPOINTER_TO_INT (g_object_get_data (G_OBJECT (row), "popover-count"));
   count = shown ? count + 1 : count - 1;
   g_object_set_data (G_OBJECT (row), "popover-count", GINT_TO_POINTER (count));
-
-  if (count > 0)
-    gtk_widget_add_css_class (row, "has-open-popup");
-  else
-    gtk_widget_remove_css_class (row, "has-open-popup");
 }
 
 static void
@@ -3914,7 +3899,6 @@ nautilus_gtk_places_sidebar_class_init (NautilusGtkPlacesSidebarClass *class)
 
   g_object_class_install_properties (gobject_class, NUM_PROPERTIES, properties);
 
-  gtk_widget_class_set_css_name (widget_class, "placessidebar");
   gtk_widget_class_set_accessible_role (widget_class, GTK_ACCESSIBLE_ROLE_LIST);
 }
 
