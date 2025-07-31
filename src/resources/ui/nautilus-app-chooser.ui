@@ -25,7 +25,7 @@
                 <property name="use-underline">True</property>
                 <property name="can-shrink">True</property>
                 <property name="sensitive">False</property>
-                <signal name="clicked" object="NautilusAppChooser" handler="open_cb" swapped="yes"/>
+                <signal name="clicked" object="NautilusAppChooser" handler="application_activated" swapped="yes"/>
                 <style>
                   <class name="suggested-action"/>
                 </style>
@@ -49,6 +49,19 @@
                     <property name="wrap-mode">PANGO_WRAP_WORD_CHAR</property>
                     <property name="justify">center</property>
                     <property name="label" translatable="yes">Choose an app to open the selected files</property>
+                  </object>
+                </child>
+                <child>
+                  <object class="GtkAppChooserWidget" id="app_chooser_widget">
+                    <property name="show-default">True</property>
+                    <property name="show-fallback">True</property>
+                    <property name="show-other">True</property>
+                    <property name="vexpand">True</property>
+                    <signal name="application-activated" handler="application_activated" object="NautilusAppChooser" swapped="yes"/>
+                    <signal name="application-selected" handler="application_selected" object="NautilusAppChooser" swapped="yes"/>
+                    <style>
+                      <class name="lowres-icon"/>
+                    </style>
                   </object>
                 </child>
               </object>

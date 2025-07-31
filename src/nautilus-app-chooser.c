@@ -21,12 +21,10 @@ struct _NautilusAppChooser
     gboolean single_content_type;
 
     GtkWidget *ok_button;
-    GtkWidget *content_box;
+    GtkWidget *app_chooser_widget;
     GtkWidget *label_description;
     GtkWidget *set_default_list_box;
     GtkWidget *set_default_row;
-
-    GtkWidget *app_chooser_widget;
 };
 
 G_DEFINE_TYPE (NautilusAppChooser, nautilus_app_chooser, ADW_TYPE_DIALOG)
@@ -49,7 +47,7 @@ enum
 static guint signals[SIGNAL_LAST] = { 0, };
 
 static void
-open_cb (NautilusAppChooser *self)
+application_activated (NautilusAppChooser *self)
 {
     gboolean set_new_default = FALSE;
     g_autoptr (GAppInfo) info = NULL;
@@ -93,17 +91,9 @@ open_cb (NautilusAppChooser *self)
 }
 
 static void
-on_application_activated (NautilusAppChooser *self)
+application_selected (NautilusAppChooser *self,
+                      GAppInfo           *info)
 {
-    open_cb (self);
-}
-
-static void
-on_application_selected (GtkAppChooserWidget *widget,
-                         GAppInfo            *info,
-                         gpointer             user_data)
-{
-    NautilusAppChooser *self = NAUTILUS_APP_CHOOSER (user_data);
     g_autoptr (GAppInfo) default_app = NULL;
     gboolean is_default;
 
@@ -176,28 +166,14 @@ nautilus_app_chooser_constructed (GObject *object)
 
     G_OBJECT_CLASS (nautilus_app_chooser_parent_class)->constructed (object);
 
-    self->app_chooser_widget = gtk_app_chooser_widget_new (self->content_type);
-    gtk_widget_set_vexpand (self->app_chooser_widget, TRUE);
-    gtk_widget_add_css_class (self->app_chooser_widget, "lowres-icon");
-    gtk_box_append (GTK_BOX (self->content_box), self->app_chooser_widget);
     adw_dialog_set_focus (ADW_DIALOG (self), self->app_chooser_widget);
-
-    gtk_app_chooser_widget_set_show_default (GTK_APP_CHOOSER_WIDGET (self->app_chooser_widget), TRUE);
-    gtk_app_chooser_widget_set_show_fallback (GTK_APP_CHOOSER_WIDGET (self->app_chooser_widget), TRUE);
-    gtk_app_chooser_widget_set_show_other (GTK_APP_CHOOSER_WIDGET (self->app_chooser_widget), TRUE);
 
     /* initialize sensitivity */
     info = nautilus_app_chooser_get_app_info (self);
     if (info != NULL)
     {
-        on_application_selected (GTK_APP_CHOOSER_WIDGET (self->app_chooser_widget),
-                                 info, self);
+        application_selected (self, info);
     }
-
-    g_signal_connect_object (self->app_chooser_widget, "application-selected",
-                             G_CALLBACK (on_application_selected), self, 0);
-    g_signal_connect_object (self->app_chooser_widget, "application-activated",
-                             G_CALLBACK (on_application_activated), self, G_CONNECT_SWAPPED);
 
     if (self->file_name != NULL)
     {
@@ -275,12 +251,13 @@ nautilus_app_chooser_class_init (NautilusAppChooserClass *klass)
                                                  NULL);
 
     gtk_widget_class_bind_template_child (widget_class, NautilusAppChooser, ok_button);
-    gtk_widget_class_bind_template_child (widget_class, NautilusAppChooser, content_box);
+    gtk_widget_class_bind_template_child (widget_class, NautilusAppChooser, app_chooser_widget);
     gtk_widget_class_bind_template_child (widget_class, NautilusAppChooser, label_description);
     gtk_widget_class_bind_template_child (widget_class, NautilusAppChooser, set_default_list_box);
     gtk_widget_class_bind_template_child (widget_class, NautilusAppChooser, set_default_row);
 
-    gtk_widget_class_bind_template_callback (widget_class, open_cb);
+    gtk_widget_class_bind_template_callback (widget_class, application_activated);
+    gtk_widget_class_bind_template_callback (widget_class, application_selected);
 
     g_object_class_install_property (object_class,
                                      PROP_CONTENT_TYPE,
