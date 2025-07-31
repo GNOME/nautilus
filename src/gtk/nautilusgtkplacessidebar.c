@@ -1730,65 +1730,16 @@ mount_volume (NautilusGtkSidebarRow *row,
 }
 
 static void
-open_drive (NautilusGtkSidebarRow      *row,
-            GDrive             *drive,
-            NautilusOpenFlags  open_flags)
+open_row (NautilusGtkSidebarRow *self,
+          NautilusOpenFlags      open_flags)
 {
-  NautilusGtkPlacesSidebar *sidebar;
-
-  g_object_get (row, "sidebar", &sidebar, NULL);
-
-  if (drive != NULL &&
-      (g_drive_can_start (drive) || g_drive_can_start_degraded (drive)))
-    {
-      GMountOperation *mount_op;
-
-      nautilus_gtk_sidebar_row_set_busy (row, TRUE);
-      mount_op = get_mount_operation (sidebar);
-      g_drive_start (drive, G_DRIVE_START_NONE, mount_op, NULL, drive_start_from_bookmark_cb, NULL);
-      g_object_unref (mount_op);
-    }
-}
-
-static void
-open_volume (NautilusGtkSidebarRow      *row,
-             GVolume            *volume,
-             NautilusOpenFlags  open_flags)
-{
-  NautilusGtkPlacesSidebar *sidebar;
-
-  g_object_get (row, "sidebar", &sidebar, NULL);
-
-  if (volume != NULL)
-    {
-      nautilus_gtk_sidebar_row_set_busy (row, TRUE);
-      mount_volume (row, volume, open_flags);
-    }
-}
-
-static void
-open_uri (NautilusGtkPlacesSidebar   *sidebar,
-          const char         *uri,
-          NautilusOpenFlags  open_flags)
-{
-  GFile *location;
-
-  location = g_file_new_for_uri (uri);
-  call_open_location (sidebar, location, NULL, open_flags);
-  g_object_unref (location);
-}
-
-static void
-open_row (NautilusGtkSidebarRow      *row,
-          NautilusOpenFlags  open_flags)
-{
-  char *uri;
-  GDrive *drive;
-  GVolume *volume;
+  g_autofree char *uri = NULL;
+  g_autoptr (GDrive) drive = NULL;
+  g_autoptr (GVolume) volume = NULL;
   NautilusGtkPlacesPlaceType place_type;
-  NautilusGtkPlacesSidebar *sidebar;
+  g_autoptr (NautilusGtkPlacesSidebar) sidebar = NULL;
 
-  g_object_get (row,
+  g_object_get (self,
                 "sidebar", &sidebar,
                 "uri", &uri,
                 "place-type", &place_type,
@@ -1798,23 +1749,24 @@ open_row (NautilusGtkSidebarRow      *row,
 
   if (uri != NULL)
     {
-      open_uri (sidebar, uri, open_flags);
+      g_autoptr (GFile) location = g_file_new_for_uri (uri);
+      call_open_location (sidebar, location, NULL, open_flags);
     }
   else if (volume != NULL)
     {
-      open_volume (row, volume, open_flags);
+      nautilus_gtk_sidebar_row_set_busy (self, TRUE);
+      mount_volume (self, volume, open_flags);
     }
   else if (drive != NULL)
     {
-      open_drive (row, drive, open_flags);
-    }
+      if (g_drive_can_start (drive) || g_drive_can_start_degraded (drive))
+        {
+          g_autoptr (GMountOperation) mount_op = get_mount_operation (sidebar);
 
-  g_object_unref (sidebar);
-  if (drive)
-    g_object_unref (drive);
-  if (volume)
-    g_object_unref (volume);
-  g_free (uri);
+          nautilus_gtk_sidebar_row_set_busy (self, TRUE);
+          g_drive_start (drive, G_DRIVE_START_NONE, mount_op, NULL, drive_start_from_bookmark_cb, NULL);
+        }
+    }
 }
 
 /* Callback used for the "Open" menu items in the context menu */
