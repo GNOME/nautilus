@@ -565,17 +565,14 @@ nautilus_application_finalize (GObject *object)
 }
 
 static gboolean
-do_cmdline_sanity_checks (NautilusApplication *self,
-                          GVariantDict        *options)
+do_cmdline_sanity_checks (GVariantDict *options)
 {
-    gboolean retval = FALSE;
-
     if (g_variant_dict_contains (options, "quit") &&
         g_variant_dict_contains (options, G_OPTION_REMAINING))
     {
         g_printerr ("%s\n",
                     _("--quit cannot be used with URIs."));
-        goto out;
+        return FALSE;
     }
 
 
@@ -584,13 +581,10 @@ do_cmdline_sanity_checks (NautilusApplication *self,
     {
         g_printerr ("%s\n",
                     _("--select must be used with at least an URI."));
-        goto out;
+        return FALSE;
     }
 
-    retval = TRUE;
-
-out:
-    return retval;
+    return TRUE;
 }
 
 static void
@@ -892,37 +886,29 @@ nautilus_application_command_line (GApplication            *application,
                                    GApplicationCommandLine *command_line)
 {
     NautilusApplication *self = NAUTILUS_APPLICATION (application);
-    gint retval = -1;
-    GVariantDict *options;
-
-    options = g_application_command_line_get_options_dict (command_line);
+    GVariantDict *options = g_application_command_line_get_options_dict (command_line);
 
     if (g_variant_dict_contains (options, "version"))
     {
         g_application_command_line_print (command_line,
                                           "GNOME nautilus " PACKAGE_VERSION "\n");
-        retval = EXIT_SUCCESS;
-        goto out;
+        return EXIT_SUCCESS;
     }
-
-    if (!do_cmdline_sanity_checks (self, options))
+    else if (!do_cmdline_sanity_checks (options))
     {
-        retval = EXIT_FAILURE;
-        goto out;
+        return EXIT_FAILURE;
     }
-
-    if (g_variant_dict_contains (options, "quit"))
+    else if (g_variant_dict_contains (options, "quit"))
     {
         g_debug ("Killing app, as requested");
         g_action_group_activate_action (G_ACTION_GROUP (application),
                                         "kill", NULL);
-        goto out;
+        return -1;
     }
-
-    retval = nautilus_application_handle_file_args (self, options);
-
-out:
-    return retval;
+    else
+    {
+        return nautilus_application_handle_file_args (self, options);
+    }
 }
 
 static void
