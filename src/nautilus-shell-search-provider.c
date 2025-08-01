@@ -67,54 +67,6 @@ struct _NautilusShellSearchProvider
 
 G_DEFINE_TYPE (NautilusShellSearchProvider, nautilus_shell_search_provider, G_TYPE_OBJECT)
 
-static const char *
-get_display_name (NautilusShellSearchProvider *self,
-                  NautilusFile                *file)
-{
-    GFile *location;
-    NautilusBookmark *bookmark;
-    NautilusBookmarkList *bookmarks;
-
-    bookmarks = nautilus_application_get_bookmarks (NAUTILUS_APPLICATION (g_application_get_default ()));
-
-    location = nautilus_file_get_location (file);
-    bookmark = nautilus_bookmark_list_item_with_location (bookmarks, location, NULL);
-    g_object_unref (location);
-
-    if (bookmark)
-    {
-        return nautilus_bookmark_get_name (bookmark);
-    }
-    else
-    {
-        return nautilus_file_get_display_name (file);
-    }
-}
-
-static GIcon *
-get_gicon (NautilusShellSearchProvider *self,
-           NautilusFile                *file)
-{
-    GFile *location;
-    NautilusBookmark *bookmark;
-    NautilusBookmarkList *bookmarks;
-
-    bookmarks = nautilus_application_get_bookmarks (NAUTILUS_APPLICATION (g_application_get_default ()));
-
-    location = nautilus_file_get_location (file);
-    bookmark = nautilus_bookmark_list_item_with_location (bookmarks, location, NULL);
-    g_object_unref (location);
-
-    if (bookmark)
-    {
-        return nautilus_bookmark_get_icon (bookmark);
-    }
-    else
-    {
-        return nautilus_file_get_gicon (file, 0);
-    }
-}
-
 static void
 pending_search_free (PendingSearch *search)
 {
@@ -625,6 +577,8 @@ result_list_attributes_ready_cb (GList    *file_list,
         g_list_model_get_item (gdk_display_get_monitors (gdk_display_get_default ()), 0);
     int icon_scale = gdk_monitor_get_scale_factor (shell_monitor);
 
+    NautilusBookmarkList *bookmarks = nautilus_application_get_bookmarks (NAUTILUS_APPLICATION (g_application_get_default ()));
+
     for (GList *l = file_list; l != NULL; l = l->next)
     {
         NautilusFile *file = l->data;
@@ -632,7 +586,13 @@ result_list_attributes_ready_cb (GList    *file_list,
         g_auto (GVariantBuilder) meta = G_VARIANT_BUILDER_INIT (G_VARIANT_TYPE_VARDICT);
 
         g_autofree char *uri = nautilus_file_get_uri (file);
-        const char *display_name = get_display_name (data->self, file);
+        NautilusBookmark *bookmark = nautilus_bookmark_list_item_with_location (bookmarks,
+                                                                                file_location,
+                                                                                NULL);
+        const char *display_name = (bookmark != NULL)
+                                   ? nautilus_bookmark_get_name (bookmark)
+                                   : nautilus_file_get_display_name (file);
+
         g_autofree gchar *path = g_file_get_path (file_location);
         g_autofree gchar *description = (path != NULL ? g_path_get_dirname (path) : NULL);
 
@@ -651,9 +611,13 @@ result_list_attributes_ready_cb (GList    *file_list,
             g_autoptr (GFile) location = g_file_new_for_path (thumbnail_path);
             gicon = g_file_icon_new (location);
         }
+        else if (bookmark != NULL)
+        {
+            gicon = nautilus_bookmark_get_icon (bookmark);
+        }
         else
         {
-            gicon = get_gicon (data->self, file);
+            gicon = nautilus_file_get_gicon (file, 0);
         }
 
         if (gicon == NULL)
