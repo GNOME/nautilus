@@ -40,5 +40,8 @@ gboolean nautilus_view_cell_setup (NautilusViewCell *self,
                                    GCallback         on_item_drag_hover_enter,
                                    GCallback         on_item_drag_hover_leave,
                                    GCallback         on_item_drag_hover_motion);
+void nautilus_view_cell_bind_listitem (NautilusViewCell *self,
+                                     GtkListItem      *listitem);
+void nautilus_view_cell_unbind_listitem (NautilusViewCell *self);
 
 G_END_DECLS
