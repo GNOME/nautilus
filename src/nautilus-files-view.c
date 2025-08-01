@@ -1670,28 +1670,16 @@ action_remove_from_recent (GSimpleAction *action,
 static void
 delete_selected_files (NautilusFilesView *view)
 {
-    GList *selection;
-    GList *node;
-    GList *locations;
+    g_autolist (NautilusFile) selection = nautilus_files_view_get_selection_for_file_transfer (view);
 
-    selection = nautilus_files_view_get_selection_for_file_transfer (view);
     if (selection == NULL)
     {
         return;
     }
 
-    locations = NULL;
-    for (node = selection; node != NULL; node = node->next)
-    {
-        locations = g_list_prepend (locations,
-                                    nautilus_file_get_location ((NautilusFile *) node->data));
-    }
-    locations = g_list_reverse (locations);
+    g_autolist (GFile) locations = nautilus_location_list_from_file_list (selection);
 
     nautilus_file_operations_delete_async (locations, nautilus_files_view_get_containing_window (view), NULL, NULL, NULL);
-
-    g_list_free_full (locations, g_object_unref);
-    nautilus_file_list_free (selection);
 }
 
 static void
@@ -2219,8 +2207,7 @@ create_archive_callback (const char *archive_name,
 {
     CompressCallbackData *callback_data = user_data;
     NautilusFilesView *view;
-    GList *source_files = NULL;
-    GList *l;
+    g_autolist (GFile) source_files = NULL;
     CompressData *data;
     g_autoptr (GFile) output = NULL;
     g_autoptr (GFile) parent = NULL;
@@ -2230,13 +2217,7 @@ create_archive_callback (const char *archive_name,
 
     view = callback_data->view;
 
-    for (l = callback_data->selection; l != NULL; l = l->next)
-    {
-        source_files = g_list_prepend (source_files,
-                                       nautilus_file_get_location (l->data));
-    }
-    source_files = g_list_reverse (source_files);
-
+    source_files = nautilus_location_list_from_file_list (callback_data->selection);
     /* Get a parent from a random file. We assume all files has a common parent.
      * But don't assume the parent is the view location, since that's not the
      * case in list view when expand-folder setting is set
@@ -2305,8 +2286,6 @@ create_archive_callback (const char *archive_name,
                                        NULL,
                                        compress_done,
                                        data);
-
-    g_list_free_full (source_files, g_object_unref);
 }
 
 static void
@@ -4977,24 +4956,13 @@ trash_or_delete_files (GtkWindow         *parent_window,
                        const GList       *files,
                        NautilusFilesView *view)
 {
-    GList *locations;
-    const GList *node;
-
-    locations = NULL;
-    for (node = files; node != NULL; node = node->next)
-    {
-        locations = g_list_prepend (locations,
-                                    nautilus_file_get_location ((NautilusFile *) node->data));
-    }
-
-    locations = g_list_reverse (locations);
+    g_autolist (GFile) locations = nautilus_location_list_from_file_list (files);
 
     nautilus_file_operations_trash_or_delete_async (locations,
                                                     parent_window,
                                                     NULL,
                                                     (NautilusDeleteCallback) trash_or_delete_done_cb,
                                                     view);
-    g_list_free_full (locations, g_object_unref);
 }
 
 static GList *
@@ -6319,8 +6287,6 @@ extract_files (NautilusFilesView *view,
                GList             *files,
                GFile             *destination_directory)
 {
-    GList *locations = NULL;
-    GList *l;
     gboolean extracting_to_current_directory;
 
     if (files == NULL)
@@ -6328,14 +6294,7 @@ extract_files (NautilusFilesView *view,
         return;
     }
 
-    for (l = files; l != NULL; l = l->next)
-    {
-        locations = g_list_prepend (locations,
-                                    nautilus_file_get_location (l->data));
-    }
-
-    locations = g_list_reverse (locations);
-
+    g_autolist (GFile) locations = nautilus_location_list_from_file_list (files);
     extracting_to_current_directory = g_file_equal (destination_directory,
                                                     nautilus_files_view_get_location (view));
 
@@ -6376,8 +6335,6 @@ extract_files (NautilusFilesView *view,
                                                 NULL,
                                                 NULL);
     }
-
-    g_list_free_full (locations, g_object_unref);
 }
 
 typedef struct
@@ -6589,17 +6546,11 @@ action_send_email (GSimpleAction *action,
 
     if (has_directory)
     {
-        g_autolist (GFile) source_locations = NULL;
+        g_autolist (GFile) source_locations = nautilus_location_list_from_file_list (selection);
         g_autofree gchar *archive_directory_name = NULL;
         g_autoptr (GFile) archive_directory = NULL;
         g_autoptr (GFile) archive_location = NULL;
 
-        for (GList *l = selection; l != NULL; l = l->next)
-        {
-            source_locations = g_list_prepend (source_locations,
-                                               nautilus_file_get_location (l->data));
-        }
-        source_locations = g_list_reverse (source_locations);
         archive_directory_name = g_dir_make_tmp ("nautilus-sendto-XXXXXX", NULL);
         archive_directory = g_file_new_for_path (archive_directory_name);
         archive_location = g_file_get_child (archive_directory, "archive.zip");

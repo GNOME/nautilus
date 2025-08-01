@@ -128,3 +128,6 @@ GList * nautilus_file_list_from_uri_list (GList *uris);
 
 gboolean check_schema_available (const gchar *schema_id);
 gboolean is_external_volume (GVolume *volume);
+
+GList *
+nautilus_location_list_from_file_list (GList *files);
