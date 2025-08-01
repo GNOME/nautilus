@@ -1,25 +1,16 @@
-/* NautilusGtkPlacesSidebar - sidebar widget for places in the filesystem
- *
- * This library is free software; you can redistribute it and/or
- * modify it under the terms of the GNU Lesser General Public
- * License as published by the Free Software Foundation; either
- * version 2 of the License, or (at your option) any later version.
- *
- * This library is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
- * Lesser General Public License for more details.
- *
- * You should have received a copy of the GNU Lesser General Public
- * License along with this library. If not, see <http://www.gnu.org/licenses/>.
- *
- * This code is originally from Nautilus.
+/*
+ * SPDX-License-Identifier: GPL-2.0-or-later
  *
  * Authors : Mr Jamie McCracken (jamiemcc at blueyonder dot co dot uk)
  *           Cosimo Cecchi <cosimoc@gnome.org>
  *           Federico Mena Quintero <federico@gnome.org>
  *           Carlos Soriano <csoriano@gnome.org>
  */
+/* This code is originally from Nautilus, was repurposed as a public widget for
+ * the file chooser in GTK3, became private with GTK4 and thus reimported into
+ * nautilus with the GTK4 port in 7bf5ab0c73d5027dbe754df34243054a83ffae1b
+ */
+#include "nautilusgtkplacessidebarprivate.h"
 
 #include "config.h"
 #include <glib/gi18n.h>
@@ -31,7 +22,6 @@
 #include <cloudproviders.h>
 #endif
 
-#include "nautilusgtkplacessidebarprivate.h"
 #include "nautilusgtksidebarrowprivate.h"
 #include "gdk/gdkkeysyms.h"
 #include "nautilus-application.h"
@@ -3784,7 +3774,7 @@ nautilus_gtk_places_sidebar_class_init (NautilusGtkPlacesSidebarClass *class)
           g_signal_new ("drag-action-requested",
                         G_OBJECT_CLASS_TYPE (gobject_class),
                         G_SIGNAL_RUN_LAST,
-                        G_STRUCT_OFFSET (NautilusGtkPlacesSidebarClass, drag_action_requested),
+                        0,
                         NULL, NULL,
                         NULL,
                         GDK_TYPE_DRAG_ACTION, 2,
@@ -3806,7 +3796,7 @@ nautilus_gtk_places_sidebar_class_init (NautilusGtkPlacesSidebarClass *class)
           g_signal_new ("drag-action-ask",
                         G_OBJECT_CLASS_TYPE (gobject_class),
                         G_SIGNAL_RUN_LAST,
-                        G_STRUCT_OFFSET (NautilusGtkPlacesSidebarClass, drag_action_ask),
+                        0,
                         NULL, NULL,
                         NULL,
                         GDK_TYPE_DRAG_ACTION, 1,
@@ -3830,7 +3820,7 @@ nautilus_gtk_places_sidebar_class_init (NautilusGtkPlacesSidebarClass *class)
           g_signal_new ("drag-perform-drop",
                         G_OBJECT_CLASS_TYPE (gobject_class),
                         G_SIGNAL_RUN_FIRST,
-                        G_STRUCT_OFFSET (NautilusGtkPlacesSidebarClass, drag_perform_drop),
+                        0,
                         NULL, NULL,
                         NULL,
                         G_TYPE_NONE, 3,
@@ -3852,7 +3842,7 @@ nautilus_gtk_places_sidebar_class_init (NautilusGtkPlacesSidebarClass *class)
           g_signal_new ("mount",
                         G_OBJECT_CLASS_TYPE (gobject_class),
                         G_SIGNAL_RUN_FIRST,
-                        G_STRUCT_OFFSET (NautilusGtkPlacesSidebarClass, mount),
+                        0,
                         NULL, NULL,
                         NULL,
                         G_TYPE_NONE,
@@ -3872,7 +3862,7 @@ nautilus_gtk_places_sidebar_class_init (NautilusGtkPlacesSidebarClass *class)
           g_signal_new ("unmount",
                         G_OBJECT_CLASS_TYPE (gobject_class),
                         G_SIGNAL_RUN_FIRST,
-                        G_STRUCT_OFFSET (NautilusGtkPlacesSidebarClass, unmount),
+                        0,
                         NULL, NULL,
                         NULL,
                         G_TYPE_NONE,

@@ -1,25 +1,11 @@
-/* nautilusgtkplacessidebarprivate.h
- *
+/*
  * Copyright (C) 2015 Red Hat
  *
- * This file is free software; you can redistribute it and/or modify it
- * under the terms of the GNU Lesser General Public License as
- * published by the Free Software Foundation; either version 2.1 of the
- * License, or (at your option) any later version.
- *
- * This file is distributed in the hope that it will be useful, but
- * WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
- * Lesser General Public License for more details.
- *
- * You should have received a copy of the GNU Lesser General Public License
- * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ * SPDX-License-Identifier: GPL-2.1-or-later
  *
  * Authors: Carlos Soriano <csoriano@gnome.org>
  */
-
-#ifndef __NAUTILUS_GTK_PLACES_SIDEBAR_PRIVATE_H__
-#define __NAUTILUS_GTK_PLACES_SIDEBAR_PRIVATE_H__
+#pragma once
 
 #include <glib.h>
 #include <gtk/gtk.h>
@@ -28,17 +14,12 @@
 
 G_BEGIN_DECLS
 
-#define NAUTILUS_TYPE_GTK_PLACES_SIDEBAR			(nautilus_gtk_places_sidebar_get_type ())
-#define NAUTILUS_GTK_PLACES_SIDEBAR(obj)			(G_TYPE_CHECK_INSTANCE_CAST ((obj), NAUTILUS_TYPE_GTK_PLACES_SIDEBAR, NautilusGtkPlacesSidebar))
-#define NAUTILUS_GTK_PLACES_SIDEBAR_CLASS(klass)		(G_TYPE_CHECK_CLASS_CAST ((klass), NAUTILUS_TYPE_GTK_PLACES_SIDEBAR, NautilusGtkPlacesSidebarClass))
-#define NAUTILUS_IS_GTK_PLACES_SIDEBAR(obj)		(G_TYPE_CHECK_INSTANCE_TYPE ((obj), NAUTILUS_TYPE_GTK_PLACES_SIDEBAR))
-#define NAUTILUS_IS_GTK_PLACES_SIDEBAR_CLASS(klass)	(G_TYPE_CHECK_CLASS_TYPE ((klass), NAUTILUS_TYPE_GTK_PLACES_SIDEBAR))
-#define NAUTILUS_GTK_PLACES_SIDEBAR_GET_CLASS(obj)	(G_TYPE_INSTANCE_GET_CLASS ((obj), NAUTILUS_TYPE_GTK_PLACES_SIDEBAR, NautilusGtkPlacesSidebarClass))
+#define NAUTILUS_TYPE_GTK_PLACES_SIDEBAR (nautilus_gtk_places_sidebar_get_type ())
+G_DECLARE_FINAL_TYPE (NautilusGtkPlacesSidebar,
+                      nautilus_gtk_places_sidebar,
+                      NAUTILUS, GTK_PLACES_SIDEBAR,
+                      GtkWidget)
 
-typedef struct _NautilusGtkPlacesSidebar NautilusGtkPlacesSidebar;
-typedef struct _NautilusGtkPlacesSidebarClass NautilusGtkPlacesSidebarClass;
-
-GType              nautilus_gtk_places_sidebar_get_type                   (void) G_GNUC_CONST;
 GtkWidget *        nautilus_gtk_places_sidebar_new                        (void);
 
 NautilusOpenFlags  nautilus_gtk_places_sidebar_get_open_flags             (NautilusGtkPlacesSidebar   *sidebar);
@@ -81,5 +62,3 @@ typedef enum {
 char *nautilus_gtk_places_sidebar_get_location_title (NautilusGtkPlacesSidebar *sidebar);
 
 G_END_DECLS
-
-#endif /* __NAUTILUS_GTK_PLACES_SIDEBAR_PRIVATE_H__ */
