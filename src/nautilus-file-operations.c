@@ -1831,7 +1831,7 @@ trash_file (CommonJob     *job,
             gboolean       toplevel,
             GList        **to_delete)
 {
-    GError *error;
+    g_autoptr (GError) error = NULL;
     char *primary, *secondary, *details;
     int response;
     g_autofree gchar *basename = NULL;
@@ -1841,8 +1841,6 @@ trash_file (CommonJob     *job,
         *skipped_file = TRUE;
         return;
     }
-
-    error = NULL;
 
     if (g_file_trash (file, job->cancellable, &error))
     {
@@ -1861,13 +1859,13 @@ trash_file (CommonJob     *job,
     if (job->skip_all_error)
     {
         *skipped_file = TRUE;
-        goto skip;
+        return;
     }
 
     if (job->delete_all)
     {
         *to_delete = g_list_prepend (*to_delete, file);
-        goto skip;
+        return;
     }
 
     basename = get_basename (file);
@@ -1919,9 +1917,6 @@ trash_file (CommonJob     *job,
     {
         *to_delete = g_list_prepend (*to_delete, file);
     }
-
-skip:
-    g_error_free (error);
 }
 
 static void
@@ -2312,11 +2307,10 @@ unmount_mount_callback (GObject      *source_object,
                         gpointer      user_data)
 {
     UnmountData *data = user_data;
-    GError *error;
     char *primary;
     gboolean unmounted;
 
-    error = NULL;
+    g_autoptr (GError) error = NULL;
     if (data->eject)
     {
         unmounted = g_mount_eject_with_operation_finish (G_MOUNT (source_object),
@@ -2356,11 +2350,6 @@ unmount_mount_callback (GObject      *source_object,
     if (data->callback)
     {
         data->callback (data->callback_data);
-    }
-
-    if (error != NULL)
-    {
-        g_error_free (error);
     }
 
     unmount_data_free (data);
@@ -2649,13 +2638,12 @@ volume_mount_cb (GObject      *source_object,
     NautilusMountCallback mount_callback;
     GObject *mount_callback_data_object;
     GMountOperation *mount_op = user_data;
-    GError *error;
     char *primary;
     char *name;
     gboolean success;
 
     success = TRUE;
-    error = NULL;
+    g_autoptr (GError) error = NULL;
     if (!g_volume_mount_finish (G_VOLUME (source_object), res, &error))
     {
         if (error->code != G_IO_ERROR_FAILED_HANDLED &&
@@ -2674,7 +2662,6 @@ volume_mount_cb (GObject      *source_object,
                          GTK_MESSAGE_ERROR);
             g_free (primary);
         }
-        g_error_free (error);
     }
 
     mount_callback = (NautilusMountCallback)
