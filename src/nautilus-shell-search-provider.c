@@ -619,34 +619,22 @@ result_list_attributes_ready_cb (GList    *file_list,
                                  gpointer  user_data)
 {
     ResultMetasData *data = user_data;
-    GVariantBuilder meta;
-    NautilusFile *file;
-    GList *l;
-    gchar *uri;
-    const char *display_name;
-    gchar *path, *description;
-    GIcon *gicon;
-    GFile *location;
-    GVariant *meta_variant;
 
     /* Get scale of monitor 0, which is assumed to be the one that shows the shell */
     g_autoptr (GdkMonitor) shell_monitor =
         g_list_model_get_item (gdk_display_get_monitors (gdk_display_get_default ()), 0);
     int icon_scale = gdk_monitor_get_scale_factor (shell_monitor);
 
-    for (l = file_list; l != NULL; l = l->next)
+    for (GList *l = file_list; l != NULL; l = l->next)
     {
-        g_autoptr (GFile) file_location = NULL;
-        g_autoptr (GVariant) icon_variant = NULL;
+        NautilusFile *file = l->data;
+        g_autoptr (GFile) file_location = nautilus_file_get_location (file);
+        g_auto (GVariantBuilder) meta = G_VARIANT_BUILDER_INIT (G_VARIANT_TYPE_VARDICT);
 
-        file = l->data;
-        g_variant_builder_init (&meta, G_VARIANT_TYPE ("a{sv}"));
-
-        uri = nautilus_file_get_uri (file);
-        display_name = get_display_name (data->self, file);
-        file_location = nautilus_file_get_location (file);
-        path = g_file_get_path (file_location);
-        description = path ? g_path_get_dirname (path) : NULL;
+        g_autofree char *uri = nautilus_file_get_uri (file);
+        const char *display_name = get_display_name (data->self, file);
+        g_autofree gchar *path = g_file_get_path (file_location);
+        g_autofree gchar *description = (path != NULL ? g_path_get_dirname (path) : NULL);
 
         g_variant_builder_add (&meta, "{sv}",
                                "id", g_variant_new_string (uri));
@@ -656,15 +644,12 @@ result_list_attributes_ready_cb (GList    *file_list,
         g_variant_builder_add (&meta, "{sv}",
                                "description", g_variant_new_string (description ? description : uri));
 
-        gicon = NULL;
-
+        g_autoptr (GIcon) gicon = NULL;
         const char *thumbnail_path = nautilus_file_get_thumbnail_path (file);
         if (thumbnail_path != NULL)
         {
-            location = g_file_new_for_path (thumbnail_path);
+            g_autoptr (GFile) location = g_file_new_for_path (thumbnail_path);
             gicon = g_file_icon_new (location);
-
-            g_object_unref (location);
         }
         else
         {
@@ -678,18 +663,13 @@ result_list_attributes_ready_cb (GList    *file_list,
                                                             NAUTILUS_FILE_ICON_FLAGS_USE_THUMBNAILS));
         }
 
-        icon_variant = g_icon_serialize (gicon);
+        g_autoptr (GVariant) icon_variant = g_icon_serialize (gicon);
         g_variant_builder_add (&meta, "{sv}",
                                "icon", icon_variant);
-        g_object_unref (gicon);
 
-        meta_variant = g_variant_builder_end (&meta);
+        GVariant *meta_variant = g_variant_builder_end (&meta);
         g_hash_table_insert (data->self->metas_cache,
-                             g_strdup (uri), g_variant_ref_sink (meta_variant));
-
-        g_free (path);
-        g_free (description);
-        g_free (uri);
+                             g_steal_pointer (&uri), g_variant_ref_sink (meta_variant));
     }
 
     data->handle = NULL;
