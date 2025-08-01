@@ -4874,7 +4874,7 @@ nautilus_file_get_thumbnail_icon (NautilusFile          *file,
 
     if (paintable != NULL)
     {
-        icon = nautilus_icon_info_new_for_paintable (paintable, scale);
+        icon = nautilus_icon_info_new_for_paintable (paintable);
     }
     else if (file->details->is_thumbnailing ||
              (nautilus_file_check_if_ready (file, NAUTILUS_FILE_ATTRIBUTE_THUMBNAIL_INFO) &&
