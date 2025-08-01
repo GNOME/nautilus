@@ -895,14 +895,6 @@ void
 setup_cell_common (GObject          *listitem,
                    NautilusViewCell *cell)
 {
-    GtkExpression *expression;
-
-    expression = gtk_property_expression_new (GTK_TYPE_LIST_ITEM, NULL, "item");
-    expression = gtk_property_expression_new (GTK_TYPE_TREE_LIST_ROW, expression, "item");
-    gtk_expression_bind (expression, cell, "item", listitem);
-    g_object_bind_property (listitem, "position", cell, "position", G_BINDING_SYNC_CREATE);
-
-
     nautilus_view_cell_setup (cell,
                               G_CALLBACK (on_item_click_pressed),
                               G_CALLBACK (on_item_click_stopped),
