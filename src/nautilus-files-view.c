@@ -1492,9 +1492,8 @@ sandboxed_choose_program_callback (GObject      *source_object,
 }
 
 static void
-sandboxed_choose_program (NautilusFilesView *view,
-                          GList             *files,
-                          GtkWindow         *window)
+sandboxed_choose_program (GList     *files,
+                          GtkWindow *window)
 {
     g_autoptr (XdpPortal) portal = xdp_portal_new ();
     XdpParent *parent = xdp_parent_new_gtk (window);
@@ -1546,7 +1545,7 @@ choose_program (NautilusFilesView *view,
 
     if (nautilus_application_is_sandboxed ())
     {
-        sandboxed_choose_program (view, g_steal_pointer (&files), parent_window);
+        sandboxed_choose_program (g_steal_pointer (&files), parent_window);
         return;
     }
 
@@ -3755,7 +3754,7 @@ nautilus_files_view_set_location (NautilusFilesView *self,
 }
 
 static GtkWidget *
-build_search_settings_button (NautilusFilesView *self)
+build_search_settings_button (void)
 {
     GtkWidget *button = gtk_button_new_with_mnemonic (_("Search _Settings"));
 
@@ -3767,7 +3766,7 @@ build_search_settings_button (NautilusFilesView *self)
 }
 
 static GtkWidget *
-build_search_everywhere_button (NautilusFilesView *self)
+build_search_everywhere_button (void)
 {
     GtkWidget *button = gtk_button_new_with_mnemonic (_("Search _Everywhere"));
 
@@ -3807,7 +3806,7 @@ real_check_empty_states (NautilusFilesView *view)
                 adw_status_page_set_icon_name (status_page, "edit-find-symbolic");
                 adw_status_page_set_description (status_page,
                                                  _("More locations can be added to search in the settings"));
-                adw_status_page_set_child (status_page, build_search_settings_button (view));
+                adw_status_page_set_child (status_page, build_search_settings_button ());
             }
             else
             {
@@ -3819,7 +3818,7 @@ real_check_empty_states (NautilusFilesView *view)
 
                 adw_status_page_set_icon_name (status_page, "nautilus-folder-search-symbolic");
                 adw_status_page_set_description (status_page, local_description);
-                adw_status_page_set_child (status_page, (build_search_everywhere_button (view)));
+                adw_status_page_set_child (status_page, (build_search_everywhere_button ()));
             }
 
             adw_status_page_set_title (status_page, _("No Results Found"));
