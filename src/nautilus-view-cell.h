@@ -26,7 +26,6 @@ void nautilus_view_cell_set_item (NautilusViewCell      *self,
                                   NautilusViewItem *item);
 NautilusViewItem *nautilus_view_cell_get_item (NautilusViewCell *self);
 guint nautilus_view_cell_get_position (NautilusViewCell *self);
-gboolean nautilus_view_cell_once (NautilusViewCell *self);
 gboolean nautilus_view_cell_setup (NautilusViewCell *self,
                                    GCallback         on_item_click_pressed,
                                    GCallback         on_item_click_stopped,
