@@ -892,9 +892,11 @@ on_view_drop (GtkDropTarget *target,
 }
 
 void
-setup_cell_common (GObject          *listitem,
-                   NautilusViewCell *cell)
+setup_cell_common (NautilusViewCell *cell,
+                   GObject          *listitem,
+                   NautilusListBase *view)
 {
+    g_object_set (cell, "view", view, NULL);
     nautilus_view_cell_setup (cell,
                               G_CALLBACK (on_item_click_pressed),
                               G_CALLBACK (on_item_click_stopped),

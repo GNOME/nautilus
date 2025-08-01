@@ -175,8 +175,7 @@ nautilus_label_cell_clear_cache (void)
 }
 
 NautilusViewCell *
-nautilus_label_cell_new (NautilusListBase *view,
-                         NautilusColumn   *column)
+nautilus_label_cell_new (NautilusColumn *column)
 {
     NautilusLabelCell *cell;
 
@@ -197,8 +196,6 @@ nautilus_label_cell_new (NautilusListBase *view,
     }
 
     nautilus_label_cell_setup_for_column (cell, column);
-
-    g_object_set (cell, "view", view, NULL);
 
     return NAUTILUS_VIEW_CELL (cell);
 }

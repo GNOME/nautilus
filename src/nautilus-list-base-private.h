@@ -25,7 +25,8 @@ GtkWidget         *nautilus_list_base_get_scrolled_window (NautilusListBase *sel
 void               nautilus_list_base_setup_gestures (NautilusListBase *self);
 
 /* Shareable helpers */
-void                          setup_cell_common                 (GObject          *listitem,
-                                                                 NautilusViewCell *cell);
+void                          setup_cell_common                 (NautilusViewCell *cell,
+                                                                 GObject          *listitem,
+                                                                 NautilusListBase *view);
 
 G_END_DECLS

@@ -569,10 +569,8 @@ nautilus_grid_cell_clear_cache (void)
 }
 
 NautilusGridCell *
-nautilus_grid_cell_new (NautilusListBase *view)
+nautilus_grid_cell_new (void)
 {
-    g_return_val_if_fail (NAUTILUS_IS_LIST_BASE (view), NULL);
-
     NautilusGridCell *cell;
 
     ensure_cells ();
@@ -590,8 +588,6 @@ nautilus_grid_cell_new (NautilusListBase *view)
 
         g_assert (gtk_widget_get_parent (GTK_WIDGET (cell)) == NULL);
     }
-
-    g_object_set (cell, "view", view, NULL);
 
     return cell;
 }

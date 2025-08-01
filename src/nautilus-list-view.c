@@ -841,12 +841,12 @@ setup_name_cell (GtkSignalListItemFactory *factory,
                  gpointer                  user_data)
 {
     NautilusListView *self = NAUTILUS_LIST_VIEW (user_data);
-    NautilusViewCell *cell = nautilus_name_cell_new (NAUTILUS_LIST_BASE (self));
+    NautilusViewCell *cell = nautilus_name_cell_new ();
     GBinding *binding;
     GtkTreeExpander *expander = nautilus_name_cell_get_expander (NAUTILUS_NAME_CELL (cell));
 
     gtk_column_view_cell_set_child (listitem, GTK_WIDGET (cell));
-    setup_cell_common (G_OBJECT (listitem), cell);
+    setup_cell_common (cell, G_OBJECT (listitem), NAUTILUS_LIST_BASE (self));
 
     binding = g_object_bind_property (self, "icon-size",
                                       cell, "icon-size",
@@ -976,11 +976,12 @@ setup_star_cell (GtkSignalListItemFactory *factory,
                  GtkColumnViewCell        *listitem,
                  gpointer                  user_data)
 {
+    NautilusListView *self = NAUTILUS_LIST_VIEW (user_data);
     NautilusViewCell *cell;
 
-    cell = nautilus_star_cell_new (NAUTILUS_LIST_BASE (user_data));
+    cell = nautilus_star_cell_new ();
     gtk_column_view_cell_set_child (listitem, GTK_WIDGET (cell));
-    setup_cell_common (G_OBJECT (listitem), cell);
+    setup_cell_common (cell, G_OBJECT (listitem), NAUTILUS_LIST_BASE (self));
     g_object_set_data (G_OBJECT (listitem), "cell", g_object_ref (cell));
 }
 
@@ -1006,9 +1007,9 @@ setup_label_cell (GtkSignalListItemFactory *factory,
 
     nautilus_column = g_hash_table_lookup (self->factory_to_column_map, factory);
 
-    cell = nautilus_label_cell_new (NAUTILUS_LIST_BASE (user_data), nautilus_column);
+    cell = nautilus_label_cell_new (nautilus_column);
     gtk_column_view_cell_set_child (listitem, GTK_WIDGET (cell));
-    setup_cell_common (G_OBJECT (listitem), cell);
+    setup_cell_common (cell, G_OBJECT (listitem), NAUTILUS_LIST_BASE (self));
     g_object_set_data (G_OBJECT (listitem), "cell", g_object_ref (cell));
 }
 

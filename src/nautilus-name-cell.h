@@ -14,7 +14,7 @@ G_BEGIN_DECLS
 
 G_DECLARE_FINAL_TYPE (NautilusNameCell, nautilus_name_cell, NAUTILUS, NAME_CELL, NautilusViewCell)
 
-NautilusViewCell * nautilus_name_cell_new (NautilusListBase *view);
+NautilusViewCell * nautilus_name_cell_new (void);
 void nautilus_name_cell_set_path (NautilusNameCell *self,
                                   GQuark            path_attribute_q,
                                   GFile            *base_location);

@@ -225,7 +225,7 @@ nautilus_star_cell_clear_cache (void)
 }
 
 NautilusViewCell *
-nautilus_star_cell_new (NautilusListBase *view)
+nautilus_star_cell_new (void)
 {
     NautilusStarCell *cell;
 
@@ -244,8 +244,6 @@ nautilus_star_cell_new (NautilusListBase *view)
 
         g_assert (gtk_widget_get_parent (GTK_WIDGET (cell)) == NULL);
     }
-
-    g_object_set (cell, "view", view, NULL);
 
     return NAUTILUS_VIEW_CELL (cell);
 }
