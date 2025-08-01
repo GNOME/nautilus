@@ -420,23 +420,18 @@ bind_cell (GtkSignalListItemFactory *factory,
     GtkWidget *cell = gtk_list_item_get_child (listitem);
     NautilusFile *file = nautilus_view_item_get_file (item);
     g_autofree gchar *accessible_label = NULL;
+    GtkWidget *parent = gtk_widget_get_parent (cell);
 
     g_object_get (file, "a11y-name", &accessible_label, NULL);
     gtk_list_item_set_accessible_label (listitem, accessible_label);
 
     nautilus_view_item_set_item_ui (item, cell);
 
-    if (nautilus_view_cell_once (NAUTILUS_VIEW_CELL (cell)))
-    {
-        GtkWidget *parent;
-
-        /* At the time of ::setup emission, the item ui has got no parent yet,
-         * that's why we need to complete the widget setup process here, on the
-         * first time ::bind is emitted. */
-        parent = gtk_widget_get_parent (cell);
-        gtk_widget_set_halign (parent, GTK_ALIGN_CENTER);
-        gtk_widget_set_valign (parent, GTK_ALIGN_START);
-    }
+    /* At the time of ::setup emission, the item ui has got no parent yet,
+     * that's why we need to complete the widget setup process here, when
+     * ::bind is emitted. */
+    gtk_widget_set_halign (parent, GTK_ALIGN_CENTER);
+    gtk_widget_set_valign (parent, GTK_ALIGN_START);
 }
 
 static void
