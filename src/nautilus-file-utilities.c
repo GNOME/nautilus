@@ -458,21 +458,18 @@ nautilus_file_list_from_uri_list (GList *uris)
     return g_list_reverse (result);
 }
 
-static GList *
-locations_from_file_list (GList *file_list)
+GList *
+nautilus_location_list_from_file_list (GList *files)
 {
-    NautilusFile *file;
-    GList *l, *ret;
+    GList *locations = NULL;
 
-    ret = NULL;
-
-    for (l = file_list; l != NULL; l = l->next)
+    for (GList *l = files; l != NULL; l = l->next)
     {
-        file = NAUTILUS_FILE (l->data);
-        ret = g_list_prepend (ret, nautilus_file_get_location (file));
+        NautilusFile *file = l->data;
+        locations = g_list_prepend (locations, nautilus_file_get_location (file));
     }
 
-    return g_list_reverse (ret);
+    return g_list_reverse (locations);
 }
 
 typedef struct
@@ -498,7 +495,7 @@ ensure_dirs_task_ready_cb (GObject      *_source,
         original_dir_location = nautilus_file_get_location (original_dir);
 
         files = g_hash_table_lookup (data->original_dirs_hash, original_dir);
-        locations = locations_from_file_list (files);
+        locations = nautilus_location_list_from_file_list (files);
 
         nautilus_file_operations_move_async (locations,
                                              original_dir_location,
