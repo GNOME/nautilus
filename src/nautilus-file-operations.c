@@ -1828,7 +1828,6 @@ trash_file (CommonJob     *job,
             gboolean      *skipped_file,
             SourceInfo    *source_info,
             TransferInfo  *transfer_info,
-            gboolean       toplevel,
             GList        **to_delete)
 {
     g_autoptr (GError) error = NULL;
@@ -2024,7 +2023,7 @@ trash_files (CommonJob *job,
         trash_file (job, file,
                     &skipped_file,
                     &source_info, &transfer_info,
-                    TRUE, &to_delete);
+                    &to_delete);
         if (skipped_file)
         {
             (*files_skipped)++;
@@ -3849,7 +3848,6 @@ static GFile *
 get_unique_target_file (GFile        *src,
                         GFile        *dest_dir,
                         GCancellable *cancellable,
-                        gboolean      same_fs,
                         const char   *dest_fs_type,
                         int           count)
 {
@@ -4904,7 +4902,7 @@ copy_move_file (CopyMoveJob   *copy_job,
 
     if (unique_names)
     {
-        dest = get_unique_target_file (src, dest_dir, job->cancellable, same_fs, *dest_fs_type, unique_name_nr++);
+        dest = get_unique_target_file (src, dest_dir, job->cancellable, *dest_fs_type, unique_name_nr++);
     }
     else if (copy_job->target_name != NULL)
     {
@@ -5110,7 +5108,7 @@ retry:
 
         if (unique_names)
         {
-            new_dest = get_unique_target_file (src, dest_dir, job->cancellable, same_fs, *dest_fs_type, unique_name_nr);
+            new_dest = get_unique_target_file (src, dest_dir, job->cancellable, *dest_fs_type, unique_name_nr);
         }
         else
         {
@@ -5145,7 +5143,7 @@ retry:
         if (unique_names)
         {
             g_object_unref (dest);
-            dest = get_unique_target_file (src, dest_dir, job->cancellable, same_fs, *dest_fs_type, unique_name_nr++);
+            dest = get_unique_target_file (src, dest_dir, job->cancellable, *dest_fs_type, unique_name_nr++);
             goto retry;
         }
 
@@ -5648,7 +5646,6 @@ nautilus_file_operations_copy_async (GList                          *files,
 
 static void
 report_preparing_move_progress (CopyMoveJob *move_job,
-                                int          total,
                                 int          left)
 {
     CommonJob *job;
@@ -6047,13 +6044,12 @@ move_files_prepare (CopyMoveJob  *job,
     GList *l;
     GFile *src;
     gboolean same_fs;
-    int total, left;
 
     common = &job->common;
 
-    total = left = g_list_length (job->files);
+    int left = g_list_length (job->files);
 
-    report_preparing_move_progress (job, total, left);
+    report_preparing_move_progress (job, left);
 
     for (l = job->files;
          l != NULL && !job_aborted (common);
@@ -6072,7 +6068,7 @@ move_files_prepare (CopyMoveJob  *job,
                            job->debuting_files,
                            fallbacks,
                            left);
-        report_preparing_move_progress (job, total, --left);
+        report_preparing_move_progress (job, --left);
     }
 
     *fallbacks = g_list_reverse (*fallbacks);
