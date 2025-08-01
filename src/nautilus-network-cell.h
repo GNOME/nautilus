@@ -14,6 +14,6 @@ G_BEGIN_DECLS
 
 G_DECLARE_FINAL_TYPE (NautilusNetworkCell, nautilus_network_cell, NAUTILUS, NETWORK_CELL, NautilusViewCell)
 
-NautilusViewCell * nautilus_network_cell_new (NautilusListBase *view);
+NautilusViewCell * nautilus_network_cell_new (void);
 
 G_END_DECLS
