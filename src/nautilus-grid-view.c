@@ -463,9 +463,9 @@ setup_cell (GtkSignalListItemFactory *factory,
     NautilusGridCell *cell;
     GBinding *binding;
 
-    cell = nautilus_grid_cell_new (NAUTILUS_LIST_BASE (self));
+    cell = nautilus_grid_cell_new ();
     gtk_list_item_set_child (listitem, GTK_WIDGET (cell));
-    setup_cell_common (G_OBJECT (listitem), NAUTILUS_VIEW_CELL (cell));
+    setup_cell_common (NAUTILUS_VIEW_CELL (cell), G_OBJECT (listitem), NAUTILUS_LIST_BASE (self));
 
     binding = g_object_bind_property (self, "icon-size",
                                       cell, "icon-size",

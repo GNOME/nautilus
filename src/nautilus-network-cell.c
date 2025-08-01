@@ -145,9 +145,7 @@ nautilus_network_cell_class_init (NautilusNetworkCellClass *klass)
 }
 
 NautilusViewCell *
-nautilus_network_cell_new (NautilusListBase *view)
+nautilus_network_cell_new (void)
 {
-    return NAUTILUS_VIEW_CELL (g_object_new (NAUTILUS_TYPE_NETWORK_CELL,
-                                             "view", view,
-                                             NULL));
+    return NAUTILUS_VIEW_CELL (g_object_new (NAUTILUS_TYPE_NETWORK_CELL, NULL));
 }
