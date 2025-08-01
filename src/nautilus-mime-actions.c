@@ -637,30 +637,6 @@ nautilus_mime_get_default_application_for_files (GList *files)
     return app;
 }
 
-static void
-trash_or_delete_files (GtkWindow   *parent_window,
-                       const GList *files,
-                       gboolean     delete_if_all_already_in_trash)
-{
-    GList *locations;
-    const GList *node;
-
-    locations = NULL;
-    for (node = files; node != NULL; node = node->next)
-    {
-        locations = g_list_prepend (locations,
-                                    nautilus_file_get_location ((NautilusFile *) node->data));
-    }
-
-    locations = g_list_reverse (locations);
-
-    nautilus_file_operations_trash_or_delete_async (locations,
-                                                    parent_window,
-                                                    NULL,
-                                                    NULL, NULL);
-    g_list_free_full (locations, g_object_unref);
-}
-
 typedef struct
 {
     GtkWindow *parent_window;
@@ -672,17 +648,16 @@ trash_symbolic_link_cb (GtkDialog *dialog,
                         char      *response,
                         gpointer   user_data)
 {
-    g_autofree TrashBrokenSymbolicLinkData *data = NULL;
-    GList file_as_list;
-
-    data = user_data;
+    g_autofree TrashBrokenSymbolicLinkData *data = user_data;
 
     if (g_strcmp0 (response, "move-to-trash") == 0)
     {
-        file_as_list.data = data->file;
-        file_as_list.next = NULL;
-        file_as_list.prev = NULL;
-        trash_or_delete_files (data->parent_window, &file_as_list, TRUE);
+        g_autoptr (GFile) location = nautilus_file_get_location (data->file);
+
+        nautilus_file_operations_trash_or_delete_async (&(GList){ .data = location },
+                                                        data->parent_window,
+                                                        NULL,
+                                                        NULL, NULL);
     }
 }
 
