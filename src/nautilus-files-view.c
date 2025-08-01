@@ -289,9 +289,6 @@ typedef struct
 /* forward declarations */
 
 static gboolean display_selection_info_idle_callback (gpointer data);
-static void     trash_or_delete_files (GtkWindow         *parent_window,
-                                       const GList       *files,
-                                       NautilusFilesView *view);
 static void     load_directory (NautilusFilesView *view,
                                 NautilusDirectory *directory);
 static void on_clipboard_owner_changed (GdkClipboard *clipboard,
@@ -1629,6 +1626,18 @@ action_open_current_directory_with_files (GSimpleAction *action,
 }
 
 static void
+trash_or_delete_done_cb (GHashTable        *debuting_uris,
+                         gboolean           user_cancel,
+                         NautilusFilesView *view)
+{
+    if (user_cancel)
+    {
+        NautilusFilesViewPrivate *priv = nautilus_files_view_get_instance_private (view);
+        priv->selection_was_removed = FALSE;
+    }
+}
+
+static void
 trash_or_delete_selected_files (NautilusFilesView *view)
 {
     NautilusFilesViewPrivate *priv;
@@ -1640,12 +1649,17 @@ trash_or_delete_selected_files (NautilusFilesView *view)
      */
     if (!priv->selection_was_removed)
     {
+        priv->selection_was_removed = TRUE;
+
         g_autolist (NautilusFile) selection = NULL;
         selection = nautilus_files_view_get_selection_for_file_transfer (view);
-        trash_or_delete_files (nautilus_files_view_get_containing_window (view),
-                               selection,
-                               view);
-        priv->selection_was_removed = TRUE;
+        g_autolist (GFile) locations = nautilus_location_list_from_file_list (selection);
+
+        nautilus_file_operations_trash_or_delete_async (locations,
+                                                        nautilus_files_view_get_containing_window (view),
+                                                        NULL,
+                                                        (NautilusDeleteCallback) trash_or_delete_done_cb,
+                                                        view);
     }
 }
 
@@ -4935,34 +4949,6 @@ home_dir_in_selection (GList *selection)
     }
 
     return FALSE;
-}
-
-static void
-trash_or_delete_done_cb (GHashTable        *debuting_uris,
-                         gboolean           user_cancel,
-                         NautilusFilesView *view)
-{
-    NautilusFilesViewPrivate *priv;
-
-    priv = nautilus_files_view_get_instance_private (view);
-    if (user_cancel)
-    {
-        priv->selection_was_removed = FALSE;
-    }
-}
-
-static void
-trash_or_delete_files (GtkWindow         *parent_window,
-                       const GList       *files,
-                       NautilusFilesView *view)
-{
-    g_autolist (GFile) locations = nautilus_location_list_from_file_list (files);
-
-    nautilus_file_operations_trash_or_delete_async (locations,
-                                                    parent_window,
-                                                    NULL,
-                                                    (NautilusDeleteCallback) trash_or_delete_done_cb,
-                                                    view);
 }
 
 static GList *
