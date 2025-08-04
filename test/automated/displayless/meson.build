@@ -46,6 +46,9 @@ tests = [
   ['test-ui-utilities', [
     'test-ui-utilities.c'
   ]],
+  ['test-thumbnails', [
+    'test-thumbnails.c'
+  ]],
 ]
 
 localsearch_tests = [
