@@ -1586,6 +1586,7 @@ nautilus_directory_notify_files_moved (GList *file_pairs)
             nautilus_file_mark_gone (to_file);
             hash_table_list_prepend (changed_lists, directory, to_file);
             collect_parent_directories (parent_directories, directory);
+            unref_list = g_list_prepend (unref_list, g_steal_pointer (&to_file));
         }
         g_clear_object (&to_file);
 
