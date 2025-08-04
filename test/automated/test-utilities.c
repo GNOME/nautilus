@@ -1,3 +1,11 @@
+/*
+ * Copyright © 2025 Khalid Abu Shawarib
+ *
+ * SPDX-License-Identifier: GPL-3.0-or-later
+ *
+ * Authors: Khalid Abu Shawarib <kas@gnome.org>
+ */
+
 #include "test-utilities.h"
 
 #include <sys/random.h>
