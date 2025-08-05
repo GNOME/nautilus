@@ -203,8 +203,12 @@ nautilus_thumbnail_remove_from_queue (const char *file_uri)
     info = nautilus_hash_queue_find_item (thumbnails_to_make, file_uri);
     if (info != NULL)
     {
+        g_autoptr (NautilusFile) file = nautilus_file_get_by_uri (info->image_uri);
+
         nautilus_hash_queue_remove (thumbnails_to_make, file_uri);
         free_thumbnail_info (info);
+        nautilus_file_set_is_thumbnailing (file, FALSE);
+
         return;
     }
 
