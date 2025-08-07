@@ -1477,11 +1477,7 @@ void
 nautilus_application_search (NautilusApplication *self,
                              NautilusQuery       *query)
 {
-    g_autoptr (GFile) location = NULL;
-    NautilusWindow *window;
-
-    location = nautilus_query_get_location (query);
-    window = open_window (self, location);
+    NautilusWindow *window = open_window (self, NULL);
     nautilus_window_search (window, query);
 }
 
