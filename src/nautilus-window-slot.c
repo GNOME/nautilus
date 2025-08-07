@@ -1280,7 +1280,7 @@ update_bookmark_actions (NautilusWindowSlot *self)
         NautilusApplication *app = NAUTILUS_APPLICATION (g_application_get_default ());
         NautilusBookmarkList *bookmarks = nautilus_application_get_bookmarks (app);
 
-        can_bookmark = nautilus_bookmark_list_can_bookmark_location (bookmarks, location);
+        can_bookmark = nautilus_bookmark_list_can_bookmark (bookmarks, location);
         can_unbookmark = nautilus_bookmark_list_contains (bookmarks, location);
     }
 

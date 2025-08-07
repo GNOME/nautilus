@@ -677,8 +677,8 @@ nautilus_bookmark_list_save_file (NautilusBookmarkList *bookmarks)
 }
 
 gboolean
-nautilus_bookmark_list_can_bookmark_location (NautilusBookmarkList *list,
-                                              GFile                *location)
+nautilus_bookmark_list_can_bookmark (NautilusBookmarkList *list,
+                                     GFile                *location)
 {
     if (bookmark_list_get_node (list, location, NULL) != NULL)
     {
@@ -714,11 +714,7 @@ nautilus_bookmark_list_can_bookmark_location (NautilusBookmarkList *list,
 NautilusBookmarkList *
 nautilus_bookmark_list_new (void)
 {
-    NautilusBookmarkList *list;
-
-    list = NAUTILUS_BOOKMARK_LIST (g_object_new (NAUTILUS_TYPE_BOOKMARK_LIST, NULL));
-
-    return list;
+    return g_object_new (NAUTILUS_TYPE_BOOKMARK_LIST, NULL);
 }
 
 /**
