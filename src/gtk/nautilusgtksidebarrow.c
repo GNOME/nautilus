@@ -1,7 +1,7 @@
 /*
  * Copyright (C) 2015 Carlos Soriano <csoriano@gnome.org>
  *
- * SPDX-License-Identifier: GPL-3.0-or-later
+ * SPDX-License-Identifier: GPL-2.1-or-later
  */
 #include "nautilusgtksidebarrowprivate.h"
 
