@@ -27,8 +27,6 @@
 #include "nautilus-files-view.h"
 
 #include <eel/eel-stock-dialogs.h>
-#include <gdesktop-enums.h>
-#include <gdk/gdkkeysyms.h>
 #include <gdk/gdk.h>
 #include <gio/gio.h>
 #include <glib/gi18n.h>
@@ -37,9 +35,7 @@
 #include <gnome-autoar/gnome-autoar.h>
 #include <libportal/portal.h>
 #include <libportal-gtk4/portal-gtk4.h>
-#include <math.h>
 #include <nautilus-extension.h>
-#include <string.h>
 
 #include "nautilus-application.h"
 #include "nautilus-app-chooser.h"
@@ -53,8 +49,6 @@
 #include "nautilus-enums.h"
 #include "nautilus-error-reporting.h"
 #include "nautilus-file-operations.h"
-#include "nautilus-file-private.h"
-#include "nautilus-file-undo-manager.h"
 #include "nautilus-file-utilities.h"
 #include "nautilus-file.h"
 #include "nautilus-filename-utilities.h"
@@ -62,8 +56,6 @@
 #include "nautilus-global-preferences.h"
 #include "nautilus-grid-view.h"
 #include "nautilus-icon-info.h"
-#include "nautilus-icon-names.h"
-#include "nautilus-list-base.h"
 #include "nautilus-list-view.h"
 #include "nautilus-metadata.h"
 #include "nautilus-mime-actions.h"
@@ -80,12 +72,9 @@
 #include "nautilus-search-directory.h"
 #include "nautilus-signaller.h"
 #include "nautilus-tag-manager.h"
-#include "nautilus-toolbar.h"
 #include "nautilus-toolbar-menu-sections.h"
 #include "nautilus-trash-monitor.h"
 #include "nautilus-ui-utilities.h"
-#include "nautilus-view-info.h"
-#include "nautilus-view-model.h"
 
 /* Minimum starting update interval */
 #define UPDATE_INTERVAL_MIN 100
@@ -99,9 +88,6 @@
 #define UPDATE_INTERVAL_RESET 1000
 
 #define SILENT_WINDOW_OPEN_LIMIT 5
-
-#define DUPLICATE_HORIZONTAL_ICON_OFFSET 70
-#define DUPLICATE_VERTICAL_ICON_OFFSET   30
 
 #define MAX_MENU_LEVELS 5
 #define TEMPLATE_LIMIT 30
