@@ -46,13 +46,6 @@ struct _NautilusFilesViewClass {
          */
         void         (* clear)                  (NautilusFilesView *view);
 
-        /* The 'begin_file_changes' signal is emitted before a set of files
-         * are added to the view. It can be replaced by a subclass to do any
-         * necessary preparation for a set of new files. The default
-         * implementation does nothing.
-         */
-        void         (* begin_file_changes)     (NautilusFilesView *view);
-
         /* The 'add_files' signal is emitted to add a set of files to the view.
          */
         void    (* add_files)                    (NautilusFilesView *view,
@@ -70,7 +63,7 @@ struct _NautilusFilesViewClass {
 
         /* The 'end_file_changes' signal is emitted after a set of files
          * are added to the view. It can be connected to in order to do any
-         * necessary cleanup (typically, cleanup for code in begin_file_changes).
+         * necessary cleanup.
          */
         void         (* end_file_changes)    (NautilusFilesView *view);
 
