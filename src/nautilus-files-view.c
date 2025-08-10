@@ -4389,7 +4389,7 @@ process_pending_files (NautilusFilesView *view)
             }
         }
 
-        if (files_removed != NULL)
+        if (g_hash_table_size (files_removed) > 0)
         {
             GHashTableIter iter;
             gpointer directory;
