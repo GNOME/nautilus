@@ -4311,7 +4311,6 @@ process_pending_files (NautilusFilesView *view)
     g_autolist (FileAndDirectory) files_added = NULL;
     g_autolist (FileAndDirectory) files_changed = NULL;
     FileAndDirectory *pending;
-    GList *files;
     g_autoptr (GList) pending_additions = NULL;
 
     priv = nautilus_files_view_get_instance_private (view);
@@ -4322,7 +4321,6 @@ process_pending_files (NautilusFilesView *view)
     if (files_added != NULL || files_changed != NULL)
     {
         g_autoptr (GHashTable) files_removed = g_hash_table_new (NULL, NULL);
-        gboolean send_selection_change = FALSE;
 
         for (GList *node = files_added; node != NULL; node = node->next)
         {
@@ -4366,7 +4364,8 @@ process_pending_files (NautilusFilesView *view)
             }
             else
             {
-                files = g_hash_table_lookup (files_removed, pending->directory);
+                GList *files = g_hash_table_lookup (files_removed, pending->directory);
+
                 g_hash_table_insert (files_removed,
                                      pending->directory,
                                      g_list_prepend (files, pending->file));
@@ -4388,6 +4387,7 @@ process_pending_files (NautilusFilesView *view)
         {
             GHashTableIter iter;
             gpointer directory;
+            GList *files;
 
             g_hash_table_iter_init (&iter, files_removed);
             while (g_hash_table_iter_next (&iter, &directory, (gpointer *) &files))
@@ -4397,22 +4397,19 @@ process_pending_files (NautilusFilesView *view)
                 g_hash_table_iter_steal (&iter);
             }
         }
+
         if (files_changed != NULL)
         {
-            g_autolist (NautilusFile) selection = NULL;
-            selection = nautilus_files_view_get_selection (view);
-            files = g_list_copy_deep (files_changed, (GCopyFunc) file_and_directory_get_file, NULL);
-            send_selection_change = _g_lists_sort_and_check_for_intersection
-                                        (&files, &selection);
-            g_list_free (files);
-        }
+            g_autolist (NautilusFile) selection = nautilus_files_view_get_selection (view);
+            g_autoptr (GList) files = g_list_copy_deep (files_changed, (GCopyFunc) file_and_directory_get_file, NULL);
 
-        if (send_selection_change)
-        {
-            /* Send a selection change since some file names could
-             * have changed.
-             */
-            nautilus_files_view_send_selection_change (view);
+            if (_g_lists_sort_and_check_for_intersection (&files, &selection))
+            {
+                /* Send a selection change since some file names could
+                 * have changed.
+                 */
+                nautilus_files_view_send_selection_change (view);
+            }
         }
 
         g_signal_emit (view, signals[END_FILE_CHANGES], 0);
