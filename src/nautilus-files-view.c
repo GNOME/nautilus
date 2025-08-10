@@ -8633,8 +8633,8 @@ nautilus_files_view_notify_selection_changed (NautilusFilesView *view)
 }
 
 static void
-file_changed_callback (NautilusFile *file,
-                       gpointer      callback_data)
+view_directory_changed_callback (NautilusFile *file,
+                                 gpointer      callback_data)
 {
     NautilusFilesView *view = NAUTILUS_FILES_VIEW (callback_data);
 
@@ -8826,7 +8826,7 @@ load_directory (NautilusFilesView *view,
 
     priv->file_changed_handler_id = g_signal_connect
                                         (priv->directory_as_file, "changed",
-                                        G_CALLBACK (file_changed_callback), view);
+                                        G_CALLBACK (view_directory_changed_callback), view);
 }
 
 static void
