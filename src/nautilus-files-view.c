@@ -3709,6 +3709,12 @@ static void
 nautilus_files_view_send_selection_change (NautilusFilesView *view)
 {
     g_signal_emit (view, signals[SELECTION_CHANGED], 0);
+
+    /* A change in MIME type could affect the Open with menu, for one thing, so
+     * we need to update menus when the selected files change.
+     */
+    schedule_update_context_menus (view);
+
     g_object_notify_by_pspec (G_OBJECT (view), properties[PROP_SELECTION]);
 }
 
@@ -4754,11 +4760,6 @@ files_changed_callback (NautilusDirectory *directory,
 
     /* The free space or the number of items could have changed */
     schedule_update_status (view);
-
-    /* A change in MIME type could affect the Open with menu, for
-     * one thing, so we need to update menus when files change.
-     */
-    schedule_update_context_menus (view);
 }
 
 static void
