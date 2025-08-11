@@ -663,6 +663,8 @@ nautilus_sidebar_row_new_placeholder (void)
     row->section_type = NAUTILUS_GTK_PLACES_SECTION_BOOKMARKS;
     row->place_type = NAUTILUS_GTK_PLACES_BOOKMARK_PLACEHOLDER;
 
+    gtk_widget_add_css_class (GTK_WIDGET (row), "sidebar-placeholder-row");
+
     return row;
 }
 
