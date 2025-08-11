@@ -6893,6 +6893,19 @@ nautilus_file_is_date_sort_attribute_q (GQuark attribute_q)
     return FALSE;
 }
 
+gboolean
+nautilus_file_attribute_slow_sort (const gchar *sort_attribute)
+{
+    GQuark attribute_q = g_quark_from_string (sort_attribute);
+
+    return attribute_q == attribute_size_q ||
+           attribute_q == attribute_size_detail_q ||
+           attribute_q == attribute_deep_size_q ||
+           attribute_q == attribute_deep_file_count_q ||
+           attribute_q == attribute_deep_directory_count_q ||
+           attribute_q == attribute_deep_total_count_q;
+}
+
 struct
 {
     const char *icon_name;

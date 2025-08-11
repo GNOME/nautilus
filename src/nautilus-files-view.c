@@ -4557,6 +4557,28 @@ schedule_timeout_display_of_pending_files (NautilusFilesView *view,
 }
 
 static void
+display_pending_files_with_tradeoff (NautilusFilesView *self)
+{
+    NautilusFilesViewPrivate *priv = nautilus_files_view_get_instance_private (self);
+    gboolean reversed;
+    const char *sort_attribute = get_directory_sort_by (priv->directory_as_file, &reversed);
+
+    unschedule_display_of_pending_files (self);
+
+    if (!nautilus_file_attribute_slow_sort (sort_attribute))
+    {
+        display_pending_files (self);
+    }
+    else
+    {
+        /* Schedule a pending update with the minimal update interval. This
+         * gives the view a short chance at gathering the (cached) deep counts.
+         */
+        schedule_timeout_display_of_pending_files (self, UPDATE_INTERVAL_MIN);
+    }
+}
+
+static void
 unschedule_display_of_pending_files (NautilusFilesView *view)
 {
     NautilusFilesViewPrivate *priv;
@@ -4756,12 +4778,7 @@ done_loading_callback (NautilusDirectory *directory,
 
     view = NAUTILUS_FILES_VIEW (callback_data);
 
-    /* Unschedule a pending update and schedule a new one with the minimal
-     * update interval. This gives the view a short chance at gathering the
-     * (cached) deep counts.
-     */
-    unschedule_display_of_pending_files (view);
-    schedule_timeout_display_of_pending_files (view, UPDATE_INTERVAL_MIN);
+    display_pending_files_with_tradeoff (view);
 
     remove_loading_floating_bar (view);
 }
@@ -8827,16 +8844,6 @@ finish_loading (NautilusFilesView *view)
 
     nautilus_files_view_check_empty_states (view);
 
-    if (nautilus_directory_are_all_files_seen (priv->directory))
-    {
-        /* Unschedule a pending update and schedule a new one with the minimal
-         * update interval. This gives the view a short chance at gathering the
-         * (cached) deep counts.
-         */
-        unschedule_display_of_pending_files (view);
-        schedule_timeout_display_of_pending_files (view, UPDATE_INTERVAL_MIN);
-    }
-
     /* Start loading. */
 
     /* Connect handlers to learn about loading progress. */
@@ -8873,6 +8880,11 @@ finish_loading (NautilusFilesView *view)
     /* If escaping search we can release the search directory now that the view
      * is now monitoring the base directory directly. */
     g_clear_object (&priv->outgoing_search);
+
+    if (nautilus_directory_are_all_files_seen (priv->directory))
+    {
+        display_pending_files_with_tradeoff (view);
+    }
 }
 
 static void
