@@ -231,10 +231,19 @@ nautilus_g_menu_replace_string_in_item (GMenu       *menu,
                                         const gchar *attribute,
                                         const gchar *string)
 {
-    g_autoptr (GMenuItem) item = NULL;
+    GMenuModel *menu_model = G_MENU_MODEL (menu);
+    g_return_if_fail (i > -1 && i < g_menu_model_get_n_items (menu_model));
 
-    g_return_if_fail (i != -1);
-    item = g_menu_item_new_from_model (G_MENU_MODEL (menu), i);
+    g_autofree gchar *old_string = NULL;
+
+    if (g_menu_model_get_item_attribute (menu_model, i, attribute, "s", &old_string) &&
+        g_strcmp0 (old_string, string) == 0)
+    {
+        /* Value is already set */
+        return;
+    }
+
+    g_autoptr (GMenuItem) item = g_menu_item_new_from_model (menu_model, i);
     g_return_if_fail (item != NULL);
 
     if (string != NULL)
