@@ -4568,17 +4568,17 @@ files_changed_callback (NautilusDirectory *directory,
                         gpointer           callback_data)
 {
     NautilusFilesView *view;
-    GtkWindow *window;
-    char *uri;
 
     view = NAUTILUS_FILES_VIEW (callback_data);
 
-    window = nautilus_files_view_get_containing_window (view);
-    uri = nautilus_files_view_get_uri (view);
-    g_debug ("Files changed in window (%p) %s", window, uri ? uri : "(no directory)");
-    nautilus_file_list_debug (files);
+    if (g_getenv ("G_MESSAGES_DEBUG") != NULL)
+    {
+        GtkWindow *window = nautilus_files_view_get_containing_window (view);
+        g_autofree gchar *uri = nautilus_files_view_get_uri (view);
 
-    g_free (uri);
+        g_debug ("Files changed in window (%p) %s", window, uri ? uri : "(no directory)");
+        nautilus_file_list_debug (files);
+    }
 
     schedule_changes (view);
 
