@@ -600,12 +600,22 @@ nautilus_file_set_directory (NautilusFile      *file,
         return;
     }
 
-    g_autofree char *parent_uri = nautilus_file_get_parent_uri (file);
-
-    g_free (file->details->directory_name_collation_key);
-    file->details->directory_name_collation_key = g_utf8_collate_key_for_filename (parent_uri, -1);
+    g_clear_pointer (&file->details->directory_name_collation_key, g_free);
 
     g_object_notify_by_pspec (G_OBJECT (file), properties[PROP_DIRECTORY]);
+}
+
+static inline const gchar *
+nautilus_file_get_directory_name (NautilusFile *file)
+{
+    if (G_UNLIKELY (file->details->directory_name_collation_key == NULL))
+    {
+        g_autofree char *parent_uri = nautilus_file_get_parent_uri (file);
+
+        file->details->directory_name_collation_key = g_utf8_collate_key_for_filename (parent_uri, -1);
+    }
+
+    return file->details->directory_name_collation_key;
 }
 
 static NautilusFile *
@@ -3375,8 +3385,10 @@ static int
 compare_by_directory_name (NautilusFile *file_1,
                            NautilusFile *file_2)
 {
-    return strcmp (file_1->details->directory_name_collation_key,
-                   file_2->details->directory_name_collation_key);
+    const gchar *directory_key1 = nautilus_file_get_directory_name (file_1);
+    const gchar *directory_key2 = nautilus_file_get_directory_name (file_2);
+
+    return strcmp (directory_key1, directory_key2);
 }
 
 static GList *
