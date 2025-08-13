@@ -302,8 +302,6 @@ static void     extract_files (NautilusFilesView *view,
 static void     extract_files_to_chosen_location (NautilusFilesView *view,
                                                   GList             *files);
 
-static void     nautilus_files_view_check_empty_states (NautilusFilesView *view);
-
 static gboolean nautilus_files_view_is_read_only (NautilusFilesView *view);
 static void copy_move_done_callback (GHashTable *debuting_files,
                                      gboolean    success,
@@ -3772,12 +3770,6 @@ build_search_everywhere_button (void)
 
 static void
 nautilus_files_view_check_empty_states (NautilusFilesView *view)
-{
-    NAUTILUS_FILES_VIEW_CLASS (G_OBJECT_GET_CLASS (view))->check_empty_states (view);
-}
-
-static void
-real_check_empty_states (NautilusFilesView *view)
 {
     NautilusFilesViewPrivate *priv = nautilus_files_view_get_instance_private (view);
     AdwStatusPage *status_page = ADW_STATUS_PAGE (priv->empty_view_page);
@@ -7444,8 +7436,8 @@ nautilus_handles_all_files_to_extract (GList *files)
     return TRUE;
 }
 
-static void
-real_update_actions_state (NautilusFilesView *view)
+void
+nautilus_files_view_update_actions_state (NautilusFilesView *view)
 {
     NautilusFilesViewPrivate *priv = nautilus_files_view_get_instance_private (view);
     NautilusMode mode = nautilus_window_slot_get_mode (priv->slot);
@@ -7972,19 +7964,6 @@ real_update_actions_state (NautilusFilesView *view)
     g_simple_action_set_enabled (G_SIMPLE_ACTION (action), can_remove_recent_server);
 }
 
-/* Convenience function to be called when updating menus,
- * so children can subclass it and it will be called when
- * they chain up to the parent in update_context_menus
- * or update_toolbar_menus
- */
-void
-nautilus_files_view_update_actions_state (NautilusFilesView *view)
-{
-    g_assert (NAUTILUS_IS_FILES_VIEW (view));
-
-    NAUTILUS_FILES_VIEW_CLASS (G_OBJECT_GET_CLASS (view))->update_actions_state (view);
-}
-
 static void
 update_selection_menu (NautilusFilesView *view,
                        GtkBuilder        *builder)
@@ -8333,8 +8312,8 @@ update_background_menu (NautilusFilesView *view,
     nautilus_g_menu_model_set_for_mode (G_MENU_MODEL (priv->background_menu_model), mode);
 }
 
-static void
-real_update_context_menus (NautilusFilesView *view)
+void
+nautilus_files_view_update_context_menus (NautilusFilesView *view)
 {
     NautilusFilesViewPrivate *priv = nautilus_files_view_get_instance_private (view);
     NautilusMode mode = nautilus_window_slot_get_mode (priv->slot);
@@ -8361,21 +8340,6 @@ real_update_context_menus (NautilusFilesView *view)
     }
 
     nautilus_files_view_update_actions_state (view);
-}
-
-/* Convenience function to reset the context menus owned by the view and update
- * them with the current state.
- * Children can subclass it and add items on the menu after chaining up to the
- * parent, so menus are already reseted.
- * It will also update the actions state, which will also update children
- * actions state if the children subclass nautilus_files_view_update_actions_state
- */
-void
-nautilus_files_view_update_context_menus (NautilusFilesView *view)
-{
-    g_assert (NAUTILUS_IS_FILES_VIEW (view));
-
-    NAUTILUS_FILES_VIEW_CLASS (G_OBJECT_GET_CLASS (view))->update_context_menus (view);
 }
 
 static void
@@ -9722,10 +9686,6 @@ nautilus_files_view_class_init (NautilusFilesViewClass *klass)
                                     NULL, NULL,
                                     g_cclosure_marshal_VOID__VOID,
                                     G_TYPE_NONE, 0);
-
-    klass->update_context_menus = real_update_context_menus;
-    klass->update_actions_state = real_update_actions_state;
-    klass->check_empty_states = real_check_empty_states;
 
     gtk_widget_class_set_template_from_resource (widget_class,
                                                  "/org/gnome/nautilus/ui/nautilus-files-view.ui");
