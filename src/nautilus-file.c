@@ -4266,14 +4266,14 @@ nautilus_file_peek_display_name (NautilusFile *file)
      *        no longer valid or could be freed somewhere else in the same time.
      *        There's race condition somewhere. See bug 602500.
      */
-    if (file == NULL || nautilus_file_is_gone (file))
+    if (G_UNLIKELY (file == NULL || nautilus_file_is_gone (file)))
     {
         return "";
     }
 
     /* Default to display name based on filename if its not set yet */
 
-    if (file->details->display_name == NULL)
+    if (G_UNLIKELY (file->details->display_name == NULL))
     {
         name = file->details->name;
         if (g_utf8_validate (name, -1, NULL))
@@ -6233,7 +6233,7 @@ nautilus_file_get_permissions_as_string (NautilusFile *file)
     g_assert (NAUTILUS_IS_FILE (file));
 
     permissions = file->details->permissions;
-    is_directory = nautilus_file_is_directory (file);
+    is_directory = file->details->type == G_FILE_TYPE_DIRECTORY;
     is_link = nautilus_file_is_symbolic_link (file);
 
     /* We use ls conventions for displaying these three obscure flags */
