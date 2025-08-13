@@ -9628,7 +9628,7 @@ nautilus_files_view_class_init (NautilusFilesViewClass *klass)
                       g_cclosure_marshal_generic,
                       G_TYPE_NONE, 2, NAUTILUS_TYPE_FILE, NAUTILUS_TYPE_DIRECTORY);
     signals[REMOVE_FILES] =
-        g_signal_new ("remove-file",
+        g_signal_new ("remove-files",
                       G_TYPE_FROM_CLASS (klass),
                       G_SIGNAL_RUN_LAST,
                       G_STRUCT_OFFSET (NautilusFilesViewClass, remove_files),

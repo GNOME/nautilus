@@ -292,7 +292,7 @@ test_remove_files (void)
 
 
     /* Delete only some of the files and verify that they are emitted */
-    g_signal_connect (files_view, "remove-file",
+    g_signal_connect (files_view, "remove-files",
                       G_CALLBACK (collect_removed_files_cb), callback_arr);
 
     for (guint i = 0; i < deleted_file_count; i++)
