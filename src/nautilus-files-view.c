@@ -145,7 +145,6 @@ typedef struct
     NautilusDirectory *directory;
     NautilusFile *directory_as_file;
     GFile *location;
-    guint dir_merge_id;
 
     NautilusViewModel *model;
     GtkSelectionFilterModel *selection;
