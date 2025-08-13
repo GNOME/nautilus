@@ -9504,7 +9504,7 @@ nautilus_files_view_class_init (NautilusFilesViewClass *klass)
     widget_class->grab_focus = nautilus_files_view_grab_focus;
 
     /**
-     * NautilusFilesView::loading:
+     * NautilusFilesView:loading:
      *
      * %TRUE if the view is loading the location, %FALSE otherwise.
      */
@@ -9515,7 +9515,7 @@ nautilus_files_view_class_init (NautilusFilesViewClass *klass)
                               FALSE,
                               G_PARAM_READABLE);
     /**
-     * NautilusFilesView::location:
+     * NautilusFilesView:location:
      *
      * The current location of the view.
      */
@@ -9526,7 +9526,7 @@ nautilus_files_view_class_init (NautilusFilesViewClass *klass)
                              G_TYPE_FILE,
                              G_PARAM_READWRITE);
     /**
-     * NautilusFilesView::selection:
+     * NautilusFilesView:selection:
      *
      * The current selection of the view.
      */
@@ -9536,7 +9536,7 @@ nautilus_files_view_class_init (NautilusFilesViewClass *klass)
                               "The current selection of the view",
                               G_PARAM_READWRITE);
     /**
-     * NautilusFilesView::searching:
+     * NautilusFilesView:searching:
      *
      * %TRUE if the view is searching, %FALSE otherwise.
      */
@@ -9548,7 +9548,7 @@ nautilus_files_view_class_init (NautilusFilesViewClass *klass)
                               G_PARAM_READABLE);
 
     /**
-     * NautilusFilesView::extensions-background-menu:
+     * NautilusFilesView:extensions-background-menu:
      *
      * Menu for the background click of extensions
      */
@@ -9559,7 +9559,7 @@ nautilus_files_view_class_init (NautilusFilesViewClass *klass)
                              G_TYPE_MENU_MODEL,
                              G_PARAM_READWRITE);
     /**
-     * NautilusFilesView::templates-menu:
+     * NautilusFilesView:templates-menu:
      *
      * Menu of templates
      */
