@@ -41,52 +41,6 @@ G_DECLARE_DERIVABLE_TYPE (NautilusFilesView, nautilus_files_view, NAUTILUS, FILE
 struct _NautilusFilesViewClass {
         AdwBinClass parent_class;
 
-        /* The 'clear' signal is emitted to empty the view of its contents.
-         * It must be replaced by each subclass.
-         */
-        void         (* clear)                  (NautilusFilesView *view);
-
-        /* The 'add_files' signal is emitted to add a set of files to the view.
-         */
-        void    (* add_files)                    (NautilusFilesView *view,
-                                                  GList             *files);
-        void    (* remove_files)                 (NautilusFilesView *view,
-                                                 GList             *files,
-                                                 NautilusDirectory *directory);
-
-        /* The 'file_changed' signal is emitted to signal a change in a file,
-         * including the file being removed.
-         */
-        void         (* file_changed)         (NautilusFilesView *view,
-                                               NautilusFile      *file,
-                                               NautilusDirectory *directory);
-
-        /* The 'end_file_changes' signal is emitted after a set of files
-         * are added to the view. It can be connected to in order to do any
-         * necessary cleanup.
-         */
-        void         (* end_file_changes)    (NautilusFilesView *view);
-
-        /* The 'begin_loading' signal is emitted before any of the contents
-         * of a directory are added to the view. It can be replaced by a
-         * subclass to do any necessary preparation to start dealing with a
-         * new directory. The default implementation does nothing.
-         */
-        void         (* begin_loading)       (NautilusFilesView *view);
-
-        /* The 'end_loading' signal is emitted after all of the contents
-         * of a directory are added to the view.
-         *
-         * If all_files_seen is true, the handler may assume that
-         * no load error ocurred, and all files of the underlying
-         * directory were loaded.
-         *
-         * Otherwise, end_loading was emitted due to cancellation,
-         * which usually means that not all files are available.
-         */
-        void         (* end_loading)          (NautilusFilesView *view,
-                                               gboolean           all_files_seen);
-
         /* Function pointers that don't have corresponding signals */
 
         /* update_menus is a function pointer that subclasses can override to

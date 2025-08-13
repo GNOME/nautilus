@@ -660,7 +660,7 @@ focus_is_on_popup (GtkRoot *window)
 }
 
 static void
-real_begin_loading (NautilusFilesView *self)
+files_view_begin_loading (NautilusFilesView *self)
 {
     NautilusFilesViewPrivate *priv = nautilus_files_view_get_instance_private (self);
     update_sort_order_from_metadata_and_preferences (self);
@@ -755,8 +755,8 @@ update_cut_status (NautilusFilesView *self)
 }
 
 static void
-real_end_loading (NautilusFilesView *self,
-                  gboolean           all_files_seen)
+files_view_end_loading (NautilusFilesView *self,
+                        gboolean           all_files_seen)
 {
     update_cut_status (self);
 }
@@ -4154,7 +4154,7 @@ still_should_show_file (NautilusFilesView *view,
 }
 
 static void
-real_end_file_changes (NautilusFilesView *view)
+files_view_end_file_changes (NautilusFilesView *view)
 {
     NautilusFilesViewPrivate *priv;
 
@@ -4230,8 +4230,8 @@ _g_lists_sort_and_check_for_intersection (GList **list_1,
 }
 
 static void
-real_add_files (NautilusFilesView *self,
-                GList             *files)
+nautilus_files_view_add_files (NautilusFilesView *self,
+                               GList             *files)
 {
     NautilusFilesViewPrivate *priv = nautilus_files_view_get_instance_private (self);
     g_autolist (NautilusViewItem) items = NULL;
@@ -4241,9 +4241,9 @@ real_add_files (NautilusFilesView *self,
 }
 
 static void
-real_remove_files (NautilusFilesView *self,
-                   GList             *files,
-                   NautilusDirectory *directory)
+files_view_remove_files (NautilusFilesView *self,
+                         GList             *files,
+                         NautilusDirectory *directory)
 {
     NautilusFilesViewPrivate *priv = nautilus_files_view_get_instance_private (self);
     g_autoptr (GHashTable) items = g_hash_table_new (NULL, NULL);
@@ -4266,9 +4266,9 @@ real_remove_files (NautilusFilesView *self,
 }
 
 static void
-real_file_changed (NautilusFilesView *self,
-                   NautilusFile      *file,
-                   NautilusDirectory *directory)
+files_view_file_changed (NautilusFilesView *self,
+                         NautilusFile      *file,
+                         NautilusDirectory *directory)
 {
     NautilusFilesViewPrivate *priv = nautilus_files_view_get_instance_private (self);
     g_autoptr (NautilusFile) directory_as_file = NULL;
@@ -4292,7 +4292,7 @@ real_file_changed (NautilusFilesView *self,
         /* When a file that was hidden is not hidden anymore (e.g. undoing the
          * rename operation which made it hidden), we get a change notification
          * for a file that's not in our model. Let's add it then. */
-        real_add_files (self, &(GList){ .data = file });
+        nautilus_files_view_add_files (self, &(GList){ .data = file });
     }
 }
 
@@ -8648,7 +8648,7 @@ view_directory_changed_callback (NautilusFile *file,
 }
 
 static void
-real_clear (NautilusFilesView *self)
+files_view_clear (NautilusFilesView *self)
 {
     NautilusFilesViewPrivate *priv = nautilus_files_view_get_instance_private (self);
 
@@ -9579,78 +9579,150 @@ nautilus_files_view_class_init (NautilusFilesViewClass *klass)
 
     g_object_class_install_properties (oclass, NUM_PROPERTIES, properties);
 
+    /*
+     * NautilusFilesView::add-files:
+     *
+     * @view: The view which emitted the signal.
+     * @files: (element-type NautilusFile) (transfer none): A list of files
+     *   that were added.
+     *
+     * Emitted to add a set of files to the view.
+     *
+     */
     signals[ADD_FILES] =
-        g_signal_new ("add-files",
-                      G_TYPE_FROM_CLASS (klass),
-                      G_SIGNAL_RUN_LAST,
-                      G_STRUCT_OFFSET (NautilusFilesViewClass, add_files),
-                      NULL, NULL,
-                      g_cclosure_marshal_generic,
-                      G_TYPE_NONE, 1, G_TYPE_POINTER);
+        g_signal_new_class_handler ("add-files",
+                                    G_TYPE_FROM_CLASS (klass),
+                                    G_SIGNAL_RUN_LAST,
+                                    G_CALLBACK (nautilus_files_view_add_files),
+                                    NULL, NULL,
+                                    g_cclosure_marshal_generic,
+                                    G_TYPE_NONE, 1, G_TYPE_POINTER);
+    /*
+     * NautilusFilesView::begin-loading:
+     *
+     * @view: The view which emitted the signal.
+     *
+     * Emitted before any of the contents of a directory are added to the view.
+     *
+     */
     signals[BEGIN_LOADING] =
-        g_signal_new ("begin-loading",
-                      G_TYPE_FROM_CLASS (klass),
-                      G_SIGNAL_RUN_LAST,
-                      G_STRUCT_OFFSET (NautilusFilesViewClass, begin_loading),
-                      NULL, NULL,
-                      g_cclosure_marshal_VOID__VOID,
-                      G_TYPE_NONE, 0);
+        g_signal_new_class_handler ("begin-loading",
+                                    G_TYPE_FROM_CLASS (klass),
+                                    G_SIGNAL_RUN_LAST,
+                                    G_CALLBACK (files_view_begin_loading),
+                                    NULL, NULL,
+                                    g_cclosure_marshal_VOID__VOID,
+                                    G_TYPE_NONE, 0);
+    /*
+     * NautilusFilesView::clear:
+     *
+     * @view: The view which emitted the signal.
+     *
+     * Emitted to empty the view of its contents.
+     *
+     */
     signals[CLEAR] =
-        g_signal_new ("clear",
-                      G_TYPE_FROM_CLASS (klass),
-                      G_SIGNAL_RUN_LAST,
-                      G_STRUCT_OFFSET (NautilusFilesViewClass, clear),
-                      NULL, NULL,
-                      g_cclosure_marshal_VOID__VOID,
-                      G_TYPE_NONE, 0);
+        g_signal_new_class_handler ("clear",
+                                    G_TYPE_FROM_CLASS (klass),
+                                    G_SIGNAL_RUN_LAST,
+                                    G_CALLBACK (files_view_clear),
+                                    NULL, NULL,
+                                    g_cclosure_marshal_VOID__VOID,
+                                    G_TYPE_NONE, 0);
+    /*
+     * NautilusFilesView::end-file-changes:
+     *
+     * @view: The view which emitted the signal.
+     *
+     * Emitted after a set of files are added to the view.
+     *
+     */
     signals[END_FILE_CHANGES] =
-        g_signal_new ("end-file-changes",
-                      G_TYPE_FROM_CLASS (klass),
-                      G_SIGNAL_RUN_LAST,
-                      G_STRUCT_OFFSET (NautilusFilesViewClass, end_file_changes),
-                      NULL, NULL,
-                      g_cclosure_marshal_VOID__VOID,
-                      G_TYPE_NONE, 0);
+        g_signal_new_class_handler ("end-file-changes",
+                                    G_TYPE_FROM_CLASS (klass),
+                                    G_SIGNAL_RUN_LAST,
+                                    G_CALLBACK (files_view_end_file_changes),
+                                    NULL, NULL,
+                                    g_cclosure_marshal_VOID__VOID,
+                                    G_TYPE_NONE, 0);
+    /*
+     * NautilusFilesView::end-loading:
+     *
+     * @view: The view which emitted the signal.
+     * @all_files_seen: If all files were loaded.
+     *
+     * Emitted after all of the contents of a directory are added to the view.
+     *
+     * If all_files_seen is true, the handler may assume that no load error
+     * occurred, and all files of the underlying directory were loaded.
+     * Otherwise, end_loading was emitted due to cancellation, which usually
+     * means that not all files are available.
+     *
+     */
     signals[END_LOADING] =
-        g_signal_new ("end-loading",
-                      G_TYPE_FROM_CLASS (klass),
-                      G_SIGNAL_RUN_LAST,
-                      G_STRUCT_OFFSET (NautilusFilesViewClass, end_loading),
-                      NULL, NULL,
-                      g_cclosure_marshal_VOID__BOOLEAN,
-                      G_TYPE_NONE, 1, G_TYPE_BOOLEAN);
+        g_signal_new_class_handler ("end-loading",
+                                    G_TYPE_FROM_CLASS (klass),
+                                    G_SIGNAL_RUN_LAST,
+                                    G_CALLBACK (files_view_end_loading),
+                                    NULL, NULL,
+                                    g_cclosure_marshal_VOID__BOOLEAN,
+                                    G_TYPE_NONE, 1, G_TYPE_BOOLEAN);
+    /*
+     * NautilusFilesView::file-changed:
+     *
+     * @view: The view which emitted the signal.
+     * @file: (type NautilusFile) (transfer none): The file that was changed.
+     * @directory: (type NautilusDirectory) (transfer none): The directory the
+     *   file is in.
+     *
+     * Emitted to signal a change in a file, including the file being removed.
+     *
+     */
     signals[FILE_CHANGED] =
-        g_signal_new ("file-changed",
-                      G_TYPE_FROM_CLASS (klass),
-                      G_SIGNAL_RUN_LAST,
-                      G_STRUCT_OFFSET (NautilusFilesViewClass, file_changed),
-                      NULL, NULL,
-                      g_cclosure_marshal_generic,
-                      G_TYPE_NONE, 2, NAUTILUS_TYPE_FILE, NAUTILUS_TYPE_DIRECTORY);
+        g_signal_new_class_handler ("file-changed",
+                                    G_TYPE_FROM_CLASS (klass),
+                                    G_SIGNAL_RUN_LAST,
+                                    G_CALLBACK (files_view_file_changed),
+                                    NULL, NULL,
+                                    g_cclosure_marshal_generic,
+                                    G_TYPE_NONE, 2, NAUTILUS_TYPE_FILE, NAUTILUS_TYPE_DIRECTORY);
+    /*
+     * NautilusFilesView::remove-files:
+     *
+     * @view: The view which emitted the signal.
+     * @files: (element-type NautilusFile) (transfer none): A list of files
+     *   that were removed.
+     * @directory: (type NautilusDirectory) (transfer none): The directory the
+     *   files were in.
+     *
+     * Emitted to remove a set of files from the view.
+     *
+     */
     signals[REMOVE_FILES] =
-        g_signal_new ("remove-files",
-                      G_TYPE_FROM_CLASS (klass),
-                      G_SIGNAL_RUN_LAST,
-                      G_STRUCT_OFFSET (NautilusFilesViewClass, remove_files),
-                      NULL, NULL,
-                      g_cclosure_marshal_generic,
-                      G_TYPE_NONE, 2, G_TYPE_POINTER /* GList<NautilusFile> */, NAUTILUS_TYPE_DIRECTORY);
+        g_signal_new_class_handler ("remove-files",
+                                    G_TYPE_FROM_CLASS (klass),
+                                    G_SIGNAL_RUN_LAST,
+                                    G_CALLBACK (files_view_remove_files),
+                                    NULL, NULL,
+                                    g_cclosure_marshal_generic,
+                                    G_TYPE_NONE, 2, G_TYPE_POINTER /* GList<NautilusFile> */, NAUTILUS_TYPE_DIRECTORY);
+    /*
+     * NautilusFilesView::selection-changed:
+     *
+     * @view: The view which emitted the signal.
+     *
+     * Emitted when changes happen to files that were in selection.
+     *
+     */
     signals[SELECTION_CHANGED] =
-        g_signal_new ("selection-changed",
-                      G_TYPE_FROM_CLASS (klass),
-                      G_SIGNAL_RUN_LAST,
-                      0,
-                      NULL, NULL,
-                      g_cclosure_marshal_VOID__VOID,
-                      G_TYPE_NONE, 0);
+        g_signal_new_class_handler ("selection-changed",
+                                    G_TYPE_FROM_CLASS (klass),
+                                    G_SIGNAL_RUN_LAST,
+                                    0,
+                                    NULL, NULL,
+                                    g_cclosure_marshal_VOID__VOID,
+                                    G_TYPE_NONE, 0);
 
-    klass->clear = real_clear;
-    klass->add_files = real_add_files;
-    klass->remove_files = real_remove_files;
-    klass->file_changed = real_file_changed;
-    klass->end_file_changes = real_end_file_changes;
-    klass->begin_loading = real_begin_loading;
-    klass->end_loading = real_end_loading;
     klass->update_context_menus = real_update_context_menus;
     klass->update_actions_state = real_update_actions_state;
     klass->check_empty_states = real_check_empty_states;
