@@ -3769,7 +3769,7 @@ build_search_everywhere_button (void)
 }
 
 static void
-nautilus_files_view_check_empty_states (NautilusFilesView *view)
+nautilus_files_view_update_status_overlay (NautilusFilesView *view)
 {
     NautilusFilesViewPrivate *priv = nautilus_files_view_get_instance_private (view);
     AdwStatusPage *status_page = ADW_STATUS_PAGE (priv->empty_view_page);
@@ -3895,7 +3895,7 @@ done_loading (NautilusFilesView *view,
 
     if (!priv->in_destruction)
     {
-        nautilus_files_view_check_empty_states (view);
+        nautilus_files_view_update_status_overlay (view);
     }
 }
 
@@ -4155,7 +4155,7 @@ files_view_end_file_changes (NautilusFilesView *view)
     nautilus_view_model_sort (priv->model);
 
     /* Addition and removal of files modify the empty state */
-    nautilus_files_view_check_empty_states (view);
+    nautilus_files_view_update_status_overlay (view);
     /* If the view is empty, zoom slider and sort menu are insensitive */
     nautilus_files_view_update_toolbar_menus (view);
 
@@ -8806,7 +8806,7 @@ finish_loading (NautilusFilesView *view)
 
     emit_begin_loading (view);
 
-    nautilus_files_view_check_empty_states (view);
+    nautilus_files_view_update_status_overlay (view);
 
     /* Start loading. */
 
