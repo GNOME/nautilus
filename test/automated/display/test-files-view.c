@@ -419,10 +419,10 @@ test_load_dir (void)
 
     ITER_CONTEXT_WHILE (nautilus_files_view_get_loading (files_view));
 
-    g_autofree gchar *view_uri = nautilus_files_view_get_uri (files_view);
+    GFile *view_location = nautilus_files_view_get_location (files_view);
+    g_autofree gchar *view_uri = g_file_get_uri (view_location);
 
-    g_assert_true (g_file_equal (tmp_location,
-                                 nautilus_files_view_get_location (files_view)));
+    g_assert_true (g_file_equal (tmp_location, view_location));
     g_assert_cmpstr (view_uri, ==, uri);
     g_assert_true (loading_started);
     g_assert_true (loading_ended);
