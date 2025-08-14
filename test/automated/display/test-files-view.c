@@ -3,13 +3,20 @@
  *
  * SPDX-License-Identifier: GPL-3.0-or-later
  */
+#define G_LOG_DOMAIN "test-files-view"
 
 #include <test-utilities.h>
 
-#undef G_LOG_DOMAIN
-#include <nautilus-files-view.c>
-#undef G_LOG_DOMAIN
+#include <nautilus-application.h>
+#include <nautilus-file.h>
+#include <nautilus-file-utilities.h>
+#include <nautilus-files-view.h>
+#include <nautilus-global-preferences.h>
 #include <nautilus-resources.h>
+#include <nautilus-tag-manager.h>
+#include <nautilus-view-info.h>
+#include <nautilus-view-model.h>
+#include <nautilus-window-slot.h>
 
 #define G_LOG_DOMAIN "test-files-view"
 
