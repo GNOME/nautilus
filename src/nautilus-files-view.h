@@ -33,12 +33,7 @@
 G_BEGIN_DECLS
 
 #define NAUTILUS_TYPE_FILES_VIEW nautilus_files_view_get_type()
-
-G_DECLARE_DERIVABLE_TYPE (NautilusFilesView, nautilus_files_view, NAUTILUS, FILES_VIEW, AdwBin)
-
-struct _NautilusFilesViewClass {
-        AdwBinClass parent_class;
-};
+G_DECLARE_FINAL_TYPE (NautilusFilesView, nautilus_files_view, NAUTILUS, FILES_VIEW, AdwBin)
 
 NautilusFilesView *      nautilus_files_view_new                         (guint               id,
                                                                           NautilusWindowSlot *slot);
