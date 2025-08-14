@@ -144,7 +144,11 @@ test_hidden_files_change (void)
     }
 
     /* Test visibility when hidden files are shown. */
-    nautilus_files_view_set_show_hidden_files (files_view, TRUE);
+
+    g_settings_set_boolean (gtk_filechooser_preferences,
+                            NAUTILUS_PREFERENCES_SHOW_HIDDEN_FILES,
+                            TRUE);
+
     ITER_CONTEXT_WHILE (nautilus_files_view_get_loading (files_view));
 
     for (gchar **filename = hidden_files_hierarchy; *filename != NULL; filename++)
