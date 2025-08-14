@@ -10082,3 +10082,11 @@ nautilus_files_view_new (guint               id,
 
     return view;
 }
+
+NautilusViewModel *
+nautilus_files_view_get_private_model (NautilusFilesView *self)
+{
+    NautilusFilesViewPrivate *priv = nautilus_files_view_get_instance_private (self);
+
+    return priv->model;
+}
