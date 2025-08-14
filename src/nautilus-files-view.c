@@ -7476,7 +7476,6 @@ nautilus_files_view_update_actions_state (NautilusFilesView *view)
     gboolean settings_show_create_link;
     GDriveStartStopType start_stop_type;
     g_autoptr (GFile) current_location = NULL;
-    g_autofree gchar *current_uri = NULL;
     gboolean can_star_current_directory;
     gboolean show_star;
     gboolean show_unstar;
@@ -7898,7 +7897,6 @@ nautilus_files_view_update_actions_state (NautilusFilesView *view)
     update_zoom_actions_state (view);
 
     current_location = nautilus_file_get_location (priv->directory_as_file);
-    current_uri = g_file_get_uri (current_location);
     can_star_current_directory = nautilus_tag_manager_can_star_contents (nautilus_tag_manager_get (), current_location);
 
     show_star = (selection != NULL) &&
