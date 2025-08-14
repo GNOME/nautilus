@@ -125,4 +125,8 @@ void              nautilus_files_view_update_context_menus       (NautilusFilesV
 void              nautilus_files_view_update_toolbar_menus       (NautilusFilesView      *view);
 void              nautilus_files_view_update_actions_state       (NautilusFilesView      *view);
 
+/* testing-only */
+NautilusViewModel *
+nautilus_files_view_get_private_model (NautilusFilesView *self);
+
 G_END_DECLS
