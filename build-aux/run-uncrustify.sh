@@ -16,7 +16,7 @@ fi
 
 for DIR in "$BUILD_AUX/../"{src,test,libnautilus-extension,eel,extensions}
 do
-    for FILE in $(find "$DIR" -name "*.c" -not -path "*/gtk/*")
+    for FILE in $(find "$DIR" -name "*.c")
     do
         # Aligning prototypes is not working yet, so avoid headers
         "$UNCRUSTIFY" -c "$BUILD_AUX/uncrustify.cfg" --no-backup "$FILE" &&
