@@ -96,7 +96,7 @@ struct _NautilusWindow
     GtkWidget *split_view;
 
     /* Side Pane */
-    GtkWidget *places_sidebar;     /* the actual GtkPlacesSidebar */
+    NautilusSidebar *places_sidebar;
     GVolume *selected_volume;     /* the selected volume in the sidebar popup callback */
     GFile *selected_file;     /* the selected file in the sidebar popup callback */
 
@@ -530,18 +530,18 @@ update_cursor (NautilusWindow *window)
 
 /* Callback used when the places sidebar needs to know the drag action to suggest */
 static GdkDragAction
-places_sidebar_drag_action_requested_cb (NautilusGtkPlacesSidebar *sidebar,
-                                         NautilusFile             *dest_file,
-                                         GList                    *source_file_list)
+places_sidebar_drag_action_requested_cb (NautilusSidebar *sidebar,
+                                         NautilusFile    *dest_file,
+                                         GList           *source_file_list)
 {
     return nautilus_dnd_get_preferred_action (dest_file, source_file_list->data);
 }
 #if 0 && NAUTILUS_DND_NEEDS_GTK4_REIMPLEMENTATION
 /* Callback used when the places sidebar needs us to pop up a menu with possible drag actions */
 static GdkDragAction
-places_sidebar_drag_action_ask_cb (NautilusGtkPlacesSidebar *sidebar,
-                                   GdkDragAction             actions,
-                                   gpointer                  user_data)
+places_sidebar_drag_action_ask_cb (NautilusSidebar *sidebar,
+                                   GdkDragAction    actions,
+                                   gpointer         user_data)
 {
     return nautilus_drag_drop_action_ask (GTK_WIDGET (sidebar), actions);
 }
@@ -568,11 +568,11 @@ build_uri_list_from_gfile_list (GSList *file_list)
 
 /* Callback used when the places sidebar has URIs dropped into it.  We do a normal file operation for them. */
 static void
-places_sidebar_drag_perform_drop_cb (NautilusGtkPlacesSidebar *sidebar,
-                                     GFile                    *dest_file,
-                                     GSList                   *source_file_list,
-                                     GdkDragAction             action,
-                                     gpointer                  user_data)
+places_sidebar_drag_perform_drop_cb (NautilusSidebar *sidebar,
+                                     GFile           *dest_file,
+                                     GSList          *source_file_list,
+                                     GdkDragAction    action,
+                                     gpointer         user_data)
 {
     char *dest_uri;
     GList *source_uri_list;
@@ -628,10 +628,10 @@ action_toggle_sidebar (GSimpleAction *action,
 static void
 nautilus_window_set_up_sidebar (NautilusWindow *window)
 {
-    nautilus_gtk_places_sidebar_set_open_flags (NAUTILUS_GTK_PLACES_SIDEBAR (window->places_sidebar),
-                                                (NAUTILUS_OPEN_FLAG_NORMAL
-                                                 | NAUTILUS_OPEN_FLAG_NEW_TAB
-                                                 | NAUTILUS_OPEN_FLAG_NEW_WINDOW));
+    nautilus_sidebar_set_open_flags (window->places_sidebar,
+                                     (NAUTILUS_OPEN_FLAG_NORMAL
+                                      | NAUTILUS_OPEN_FLAG_NEW_TAB
+                                      | NAUTILUS_OPEN_FLAG_NEW_WINDOW));
 
     g_signal_connect (window->places_sidebar, "drag-action-requested",
                       G_CALLBACK (places_sidebar_drag_action_requested_cb), window);
@@ -1535,7 +1535,7 @@ nautilus_window_init (NautilusWindow *window)
 
     g_type_ensure (NAUTILUS_TYPE_NETWORK_ADDRESS_BAR);
     g_type_ensure (NAUTILUS_TYPE_TOOLBAR);
-    g_type_ensure (NAUTILUS_TYPE_GTK_PLACES_SIDEBAR);
+    g_type_ensure (NAUTILUS_TYPE_PLACES_SIDEBAR);
     g_type_ensure (NAUTILUS_TYPE_PROGRESS_INDICATOR);
     g_type_ensure (NAUTILUS_TYPE_SHORTCUT_MANAGER);
     gtk_widget_init_template (GTK_WIDGET (window));

@@ -780,7 +780,7 @@ nautilus_file_chooser_init (NautilusFileChooser *self)
 {
     g_type_ensure (NAUTILUS_TYPE_FILENAME_VALIDATOR);
     g_type_ensure (NAUTILUS_TYPE_TOOLBAR);
-    g_type_ensure (NAUTILUS_TYPE_GTK_PLACES_SIDEBAR);
+    g_type_ensure (NAUTILUS_TYPE_PLACES_SIDEBAR);
     g_type_ensure (NAUTILUS_TYPE_SHORTCUT_MANAGER);
     gtk_widget_init_template (GTK_WIDGET (self));
 
@@ -791,10 +791,10 @@ nautilus_file_chooser_init (NautilusFileChooser *self)
     gtk_window_group_add_window (window_group, GTK_WINDOW (self));
 
     /* Setup sidebar */
-    nautilus_gtk_places_sidebar_set_open_flags (NAUTILUS_GTK_PLACES_SIDEBAR (self->places_sidebar),
-                                                NAUTILUS_OPEN_FLAG_NORMAL);
-    nautilus_gtk_places_sidebar_set_show_trash (NAUTILUS_GTK_PLACES_SIDEBAR (self->places_sidebar),
-                                                FALSE);
+    nautilus_sidebar_set_open_flags (NAUTILUS_PLACES_SIDEBAR (self->places_sidebar),
+                                     NAUTILUS_OPEN_FLAG_NORMAL);
+    nautilus_sidebar_set_show_trash (NAUTILUS_PLACES_SIDEBAR (self->places_sidebar),
+                                     FALSE);
 
     GtkEventController *controller = gtk_event_controller_key_new ();
     gtk_widget_add_controller (GTK_WIDGET (self), controller);
