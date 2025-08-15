@@ -10,7 +10,7 @@
  * the file chooser in GTK3, became private with GTK4 and thus reimported into
  * nautilus with the GTK4 port in 7bf5ab0c73d5027dbe754df34243054a83ffae1b
  */
-#include "nautilusgtkplacessidebarprivate.h"
+#include "nautilus-sidebar.h"
 
 #include "config.h"
 #include <glib/gi18n.h>
@@ -22,7 +22,6 @@
 #include <cloudproviders.h>
 #endif
 
-#include "nautilusgtksidebarrowprivate.h"
 #include "gdk/gdkkeysyms.h"
 #include "nautilus-application.h"
 #include "nautilus-bookmark.h"
@@ -35,6 +34,7 @@
 #include "nautilus-global-preferences.h"
 #include "nautilus-properties-window.h"
 #include "nautilus-scheme.h"
+#include "nautilus-sidebar-row.h"
 #include "nautilus-trash-monitor.h"
 #include "nautilus-ui-utilities.h"
 #include "nautilus-window-slot.h"
