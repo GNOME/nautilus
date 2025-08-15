@@ -21,9 +21,7 @@ libnautilus_sources = [
     h_template: 'nautilus-enum-types.h.template',
     sources: [
       'nautilus-enums.h',
-      'nautilus-location-banner.h',
       'nautilus-search-popover.h',
-      'nautilus-query.h',
       'nautilus-search-provider.h'
     ]
   ),
