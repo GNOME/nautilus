@@ -38,27 +38,6 @@ void               nautilus_gtk_places_sidebar_set_drop_targets_visible   (Nauti
 void               nautilus_gtk_places_sidebar_set_show_trash             (NautilusGtkPlacesSidebar   *sidebar,
                                                                            gboolean                    show_trash);
 
-/* Keep order, since it's used for the sort functions */
-typedef enum {
-  NAUTILUS_GTK_PLACES_SECTION_INVALID,
-  NAUTILUS_GTK_PLACES_SECTION_DEFAULT_LOCATIONS,
-  NAUTILUS_GTK_PLACES_SECTION_BOOKMARKS,
-  NAUTILUS_GTK_PLACES_SECTION_CLOUD,
-  NAUTILUS_GTK_PLACES_SECTION_MOUNTS,
-  NAUTILUS_GTK_PLACES_N_SECTIONS
-} NautilusGtkPlacesSectionType;
-
-typedef enum {
-  NAUTILUS_GTK_PLACES_INVALID,
-  NAUTILUS_GTK_PLACES_BUILT_IN,
-  NAUTILUS_GTK_PLACES_EXTERNAL_MOUNT,
-  NAUTILUS_GTK_PLACES_INTERNAL_MOUNT,
-  NAUTILUS_GTK_PLACES_NEW_BOOKMARK,
-  NAUTILUS_GTK_PLACES_BOOKMARK,
-  NAUTILUS_GTK_PLACES_BOOKMARK_PLACEHOLDER,
-  NAUTILUS_GTK_PLACES_N_PLACES
-} NautilusGtkPlacesPlaceType;
-
 char *nautilus_gtk_places_sidebar_get_location_title (NautilusGtkPlacesSidebar *sidebar);
 
 G_END_DECLS

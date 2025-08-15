@@ -32,8 +32,8 @@ struct _NautilusGtkSidebarRow
   gboolean ejectable;
   GtkWidget *eject_button;
   int order_index;
-  NautilusGtkPlacesSectionType section_type;
-  NautilusGtkPlacesPlaceType place_type;
+  NautilusSidebarSectionType section_type;
+  NautilusSidebarRowType place_type;
   char *uri;
   NautilusFile *file;
   GDrive *drive;
@@ -318,7 +318,7 @@ nautilus_gtk_sidebar_row_set_property (GObject      *object,
 
     case PROP_SECTION_TYPE:
       self->section_type = g_value_get_enum (value);
-      if (self->section_type == NAUTILUS_GTK_PLACES_SECTION_DEFAULT_LOCATIONS)
+      if (self->section_type == NAUTILUS_SIDEBAR_SECTION_DEFAULT_LOCATIONS)
         gtk_label_set_ellipsize (GTK_LABEL (self->label_widget), PANGO_ELLIPSIZE_NONE);
       else
         gtk_label_set_ellipsize (GTK_LABEL (self->label_widget), PANGO_ELLIPSIZE_MIDDLE);
@@ -570,8 +570,8 @@ nautilus_gtk_sidebar_row_class_init (NautilusGtkSidebarRowClass *klass)
     g_param_spec_enum ("section-type",
                        "section type",
                        "The section type.",
-                       NAUTILUS_TYPE_GTK_PLACES_SECTION_TYPE,
-                       NAUTILUS_GTK_PLACES_SECTION_INVALID,
+                       NAUTILUS_TYPE_SIDEBAR_SECTION_TYPE,
+                       NAUTILUS_SIDEBAR_SECTION_INVALID,
                        (G_PARAM_READWRITE |
                         G_PARAM_STATIC_STRINGS |
                         G_PARAM_CONSTRUCT_ONLY));
@@ -580,8 +580,8 @@ nautilus_gtk_sidebar_row_class_init (NautilusGtkSidebarRowClass *klass)
     g_param_spec_enum ("place-type",
                        "place type",
                        "The place type.",
-                       NAUTILUS_TYPE_GTK_PLACES_PLACE_TYPE,
-                       NAUTILUS_GTK_PLACES_INVALID,
+                       NAUTILUS_TYPE_SIDEBAR_ROW_TYPE,
+                       NAUTILUS_SIDEBAR_ROW_INVALID,
                        (G_PARAM_READWRITE |
                         G_PARAM_STATIC_STRINGS |
                         G_PARAM_CONSTRUCT_ONLY));
@@ -660,8 +660,8 @@ nautilus_sidebar_row_new_placeholder (void)
     NautilusGtkSidebarRow *row = g_object_new (NAUTILUS_TYPE_GTK_SIDEBAR_ROW, NULL);
     g_object_ref_sink (row);
 
-    row->section_type = NAUTILUS_GTK_PLACES_SECTION_BOOKMARKS;
-    row->place_type = NAUTILUS_GTK_PLACES_BOOKMARK_PLACEHOLDER;
+    row->section_type = NAUTILUS_SIDEBAR_SECTION_BOOKMARKS;
+    row->place_type = NAUTILUS_SIDEBAR_ROW_BOOKMARK_PLACEHOLDER;
 
     gtk_widget_add_css_class (GTK_WIDGET (row), "sidebar-placeholder-row");
 
