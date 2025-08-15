@@ -1747,13 +1747,11 @@ open_row (NautilusGtkSidebarRow *self,
   g_autofree char *uri = NULL;
   g_autoptr (GDrive) drive = NULL;
   g_autoptr (GVolume) volume = NULL;
-  NautilusGtkPlacesPlaceType place_type;
   g_autoptr (NautilusGtkPlacesSidebar) sidebar = NULL;
 
   g_object_get (self,
                 "sidebar", &sidebar,
                 "uri", &uri,
-                "place-type", &place_type,
                 "drive", &drive,
                 "volume", &volume,
                 NULL);
@@ -3014,12 +3012,10 @@ on_row_pressed (GtkGestureClick *gesture,
 {
   NautilusGtkPlacesSidebar *sidebar;
   NautilusGtkPlacesSectionType section_type;
-  NautilusGtkPlacesPlaceType row_type;
 
   g_object_get (row,
                 "sidebar", &sidebar,
                 "section_type", &section_type,
-                "place-type", &row_type,
                 NULL);
 
   if (section_type == NAUTILUS_GTK_PLACES_SECTION_BOOKMARKS)
@@ -3041,13 +3037,11 @@ on_row_released (GtkGestureClick *gesture,
 {
   NautilusGtkPlacesSidebar *sidebar;
   NautilusGtkPlacesSectionType section_type;
-  NautilusGtkPlacesPlaceType row_type;
   guint button, state;
 
   g_object_get (row,
                 "sidebar", &sidebar,
                 "section_type", &section_type,
-                "place-type", &row_type,
                 NULL);
 
   button = gtk_gesture_single_get_current_button (GTK_GESTURE_SINGLE (gesture));
@@ -3141,10 +3135,6 @@ on_row_dragged (GtkGestureDrag *gesture,
 static void
 popup_menu_cb (NautilusGtkSidebarRow *row)
 {
-  NautilusGtkPlacesPlaceType row_type;
-
-  g_object_get (row, "place-type", &row_type, NULL);
-
   show_row_popover (row, -1, -1);
 }
 
