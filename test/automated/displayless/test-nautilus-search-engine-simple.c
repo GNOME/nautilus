@@ -49,7 +49,8 @@ main (int   argc,
      */
     nautilus_global_preferences_init ();
 
-    NautilusSearchEngine *engine = nautilus_search_engine_new (NAUTILUS_SEARCH_TYPE_SIMPLE);
+    g_autoptr (NautilusSearchEngine) engine =
+        nautilus_search_engine_new (NAUTILUS_SEARCH_TYPE_SIMPLE);
     g_signal_connect (engine, "hits-added",
                       G_CALLBACK (hits_added_cb), NULL);
     g_signal_connect_swapped (engine, "search-finished", G_CALLBACK (finished_cb), loop);

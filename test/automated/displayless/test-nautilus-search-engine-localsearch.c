@@ -165,7 +165,8 @@ main (int   argc,
 
     create_test_data (connection, indexed_tmpdir);
 
-    NautilusSearchEngine *engine = nautilus_search_engine_new (NAUTILUS_SEARCH_TYPE_LOCALSEARCH);
+    g_autoptr (NautilusSearchEngine) engine =
+        nautilus_search_engine_new (NAUTILUS_SEARCH_TYPE_LOCALSEARCH);
     g_signal_connect (engine, "hits-added",
                       G_CALLBACK (hits_added_cb), NULL);
     g_signal_connect_swapped (engine, "search-finished", G_CALLBACK (finished_cb), loop);
