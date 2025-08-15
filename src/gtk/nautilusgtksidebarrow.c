@@ -18,7 +18,7 @@
 #include <cloudproviders.h>
 #endif
 
-struct _NautilusGtkSidebarRow
+struct _NautilusSidebarRow
 {
   GtkListBoxRow parent_instance;
   GIcon *start_icon;
@@ -40,12 +40,12 @@ struct _NautilusGtkSidebarRow
   GVolume *volume;
   GMount *mount;
   GObject *cloud_provider_account;
-  NautilusGtkPlacesSidebar *sidebar;
+  NautilusSidebar *sidebar;
   GtkWidget *revealer;
   GtkWidget *busy_spinner;
 };
 
-G_DEFINE_TYPE (NautilusGtkSidebarRow, nautilus_gtk_sidebar_row, GTK_TYPE_LIST_BOX_ROW)
+G_DEFINE_TYPE (NautilusSidebarRow, nautilus_sidebar_row, GTK_TYPE_LIST_BOX_ROW)
 
 enum
 {
@@ -79,9 +79,9 @@ dummy_callback (NautilusFile *file,
 }
 
 static void
-on_file_changed (NautilusGtkSidebarRow *self)
+on_file_changed (NautilusSidebarRow *self)
 {
-  g_return_if_fail (NAUTILUS_IS_GTK_SIDEBAR_ROW (self));
+  g_return_if_fail (NAUTILUS_IS_SIDEBAR_ROW (self));
   g_return_if_fail (NAUTILUS_IS_FILE (self->file));
   if (nautilus_file_is_gone (self->file))
     {
@@ -92,7 +92,7 @@ on_file_changed (NautilusGtkSidebarRow *self)
 }
 
 static void
-ensure_connected_file (NautilusGtkSidebarRow *self)
+ensure_connected_file (NautilusSidebarRow *self)
 {
   if (self->file != NULL)
     return;
@@ -116,7 +116,7 @@ ensure_connected_file (NautilusGtkSidebarRow *self)
 #ifdef HAVE_CLOUDPROVIDERS
 
 static void
-cloud_row_update (NautilusGtkSidebarRow *self)
+cloud_row_update (NautilusSidebarRow *self)
 {
   CloudProvidersAccount *account;
   GIcon *end_icon;
@@ -159,12 +159,12 @@ cloud_row_update (NautilusGtkSidebarRow *self)
 #endif
 
 static void
-nautilus_gtk_sidebar_row_get_property (GObject    *object,
+nautilus_sidebar_row_get_property (GObject    *object,
                               guint       prop_id,
                               GValue     *value,
                               GParamSpec *pspec)
 {
-  NautilusGtkSidebarRow *self = NAUTILUS_GTK_SIDEBAR_ROW (object);
+  NautilusSidebarRow *self = NAUTILUS_SIDEBAR_ROW (object);
 
   switch (prop_id)
     {
@@ -239,12 +239,12 @@ nautilus_gtk_sidebar_row_get_property (GObject    *object,
 }
 
 static void
-nautilus_gtk_sidebar_row_set_property (GObject      *object,
+nautilus_sidebar_row_set_property (GObject      *object,
                               guint         prop_id,
                               const GValue *value,
                               GParamSpec   *pspec)
 {
-  NautilusGtkSidebarRow *self = NAUTILUS_GTK_SIDEBAR_ROW (object);
+  NautilusSidebarRow *self = NAUTILUS_SIDEBAR_ROW (object);
 
   switch (prop_id)
     {
@@ -379,18 +379,18 @@ on_child_revealed (GObject    *self,
   * still allocate the paddings, even if the revealer is not revealed, and
   * therefore the row will be still somewhat visible. */
   if (!gtk_revealer_get_reveal_child (GTK_REVEALER (self)))
-    gtk_widget_set_visible (GTK_WIDGET (NAUTILUS_GTK_SIDEBAR_ROW (user_data)), FALSE);
+    gtk_widget_set_visible (GTK_WIDGET (NAUTILUS_SIDEBAR_ROW (user_data)), FALSE);
 }
 
 void
-nautilus_gtk_sidebar_row_reveal (NautilusGtkSidebarRow *self)
+nautilus_sidebar_row_reveal (NautilusSidebarRow *self)
 {
   gtk_widget_set_visible (GTK_WIDGET (self), TRUE);
   gtk_revealer_set_reveal_child (GTK_REVEALER (self->revealer), TRUE);
 }
 
 void
-nautilus_gtk_sidebar_row_hide (NautilusGtkSidebarRow *self,
+nautilus_sidebar_row_hide (NautilusSidebarRow *self,
                       gboolean       immediate)
 {
   guint transition_duration;
@@ -405,10 +405,10 @@ nautilus_gtk_sidebar_row_hide (NautilusGtkSidebarRow *self,
 }
 
 void
-nautilus_gtk_sidebar_row_set_start_icon (NautilusGtkSidebarRow *self,
+nautilus_sidebar_row_set_start_icon (NautilusSidebarRow *self,
                                 GIcon         *icon)
 {
-  g_return_if_fail (NAUTILUS_IS_GTK_SIDEBAR_ROW (self));
+  g_return_if_fail (NAUTILUS_IS_SIDEBAR_ROW (self));
 
   if (self->start_icon != icon)
     {
@@ -423,10 +423,10 @@ nautilus_gtk_sidebar_row_set_start_icon (NautilusGtkSidebarRow *self,
 }
 
 void
-nautilus_gtk_sidebar_row_set_end_icon (NautilusGtkSidebarRow *self,
+nautilus_sidebar_row_set_end_icon (NautilusSidebarRow *self,
                               GIcon         *icon)
 {
-  g_return_if_fail (NAUTILUS_IS_GTK_SIDEBAR_ROW (self));
+  g_return_if_fail (NAUTILUS_IS_SIDEBAR_ROW (self));
 
   if (self->end_icon != icon)
     {
@@ -442,20 +442,20 @@ nautilus_gtk_sidebar_row_set_end_icon (NautilusGtkSidebarRow *self,
 }
 
 static void
-nautilus_gtk_sidebar_row_dispose (GObject *object)
+nautilus_sidebar_row_dispose (GObject *object)
 {
-  NautilusGtkSidebarRow *self = NAUTILUS_GTK_SIDEBAR_ROW (object);
+  NautilusSidebarRow *self = NAUTILUS_SIDEBAR_ROW (object);
 
   gtk_list_box_row_set_child (GTK_LIST_BOX_ROW (self), NULL);
-  gtk_widget_dispose_template (GTK_WIDGET (self), NAUTILUS_TYPE_GTK_SIDEBAR_ROW);
+  gtk_widget_dispose_template (GTK_WIDGET (self), NAUTILUS_TYPE_SIDEBAR_ROW);
 
-  G_OBJECT_CLASS (nautilus_gtk_sidebar_row_parent_class)->dispose (object);
+  G_OBJECT_CLASS (nautilus_sidebar_row_parent_class)->dispose (object);
 }
 
 static void
-nautilus_gtk_sidebar_row_finalize (GObject *object)
+nautilus_sidebar_row_finalize (GObject *object)
 {
-  NautilusGtkSidebarRow *self = NAUTILUS_GTK_SIDEBAR_ROW (object);
+  NautilusSidebarRow *self = NAUTILUS_SIDEBAR_ROW (object);
 
   g_clear_object (&self->start_icon);
   g_clear_object (&self->end_icon);
@@ -477,11 +477,11 @@ nautilus_gtk_sidebar_row_finalize (GObject *object)
   g_clear_object (&self->cloud_provider_account);
 #endif
 
-  G_OBJECT_CLASS (nautilus_gtk_sidebar_row_parent_class)->finalize (object);
+  G_OBJECT_CLASS (nautilus_sidebar_row_parent_class)->finalize (object);
 }
 
 static void
-nautilus_gtk_sidebar_row_init (NautilusGtkSidebarRow *self)
+nautilus_sidebar_row_init (NautilusSidebarRow *self)
 {
   gtk_widget_init_template (GTK_WIDGET (self));
 
@@ -491,21 +491,21 @@ nautilus_gtk_sidebar_row_init (NautilusGtkSidebarRow *self)
 }
 
 static void
-nautilus_gtk_sidebar_row_class_init (NautilusGtkSidebarRowClass *klass)
+nautilus_sidebar_row_class_init (NautilusSidebarRowClass *klass)
 {
   GObjectClass *object_class = G_OBJECT_CLASS (klass);
   GtkWidgetClass *widget_class = GTK_WIDGET_CLASS (klass);
 
-  object_class->get_property = nautilus_gtk_sidebar_row_get_property;
-  object_class->set_property = nautilus_gtk_sidebar_row_set_property;
-  object_class->dispose = nautilus_gtk_sidebar_row_dispose;
-  object_class->finalize = nautilus_gtk_sidebar_row_finalize;
+  object_class->get_property = nautilus_sidebar_row_get_property;
+  object_class->set_property = nautilus_sidebar_row_set_property;
+  object_class->dispose = nautilus_sidebar_row_dispose;
+  object_class->finalize = nautilus_sidebar_row_finalize;
 
   properties [PROP_SIDEBAR] =
     g_param_spec_object ("sidebar",
                          "Sidebar",
                          "Sidebar",
-                         NAUTILUS_TYPE_GTK_PLACES_SIDEBAR,
+                         NAUTILUS_TYPE_PLACES_SIDEBAR,
                          (G_PARAM_READWRITE |
                           G_PARAM_CONSTRUCT_ONLY |
                           G_PARAM_STATIC_STRINGS));
@@ -643,21 +643,21 @@ nautilus_gtk_sidebar_row_class_init (NautilusGtkSidebarRowClass *klass)
   gtk_widget_class_set_template_from_resource (widget_class,
                                                "/org/gnome/nautilus/gtk/ui/nautilusgtksidebarrow.ui");
 
-  gtk_widget_class_bind_template_child (widget_class, NautilusGtkSidebarRow, start_icon_widget);
-  gtk_widget_class_bind_template_child (widget_class, NautilusGtkSidebarRow, end_icon_widget);
-  gtk_widget_class_bind_template_child (widget_class, NautilusGtkSidebarRow, label_widget);
-  gtk_widget_class_bind_template_child (widget_class, NautilusGtkSidebarRow, eject_button);
-  gtk_widget_class_bind_template_child (widget_class, NautilusGtkSidebarRow, revealer);
-  gtk_widget_class_bind_template_child (widget_class, NautilusGtkSidebarRow, busy_spinner);
+  gtk_widget_class_bind_template_child (widget_class, NautilusSidebarRow, start_icon_widget);
+  gtk_widget_class_bind_template_child (widget_class, NautilusSidebarRow, end_icon_widget);
+  gtk_widget_class_bind_template_child (widget_class, NautilusSidebarRow, label_widget);
+  gtk_widget_class_bind_template_child (widget_class, NautilusSidebarRow, eject_button);
+  gtk_widget_class_bind_template_child (widget_class, NautilusSidebarRow, revealer);
+  gtk_widget_class_bind_template_child (widget_class, NautilusSidebarRow, busy_spinner);
 
   gtk_widget_class_bind_template_callback (widget_class, on_child_revealed);
   gtk_widget_class_set_css_name (widget_class, "row");
 }
 
-NautilusGtkSidebarRow*
+NautilusSidebarRow*
 nautilus_sidebar_row_new_placeholder (void)
 {
-    NautilusGtkSidebarRow *row = g_object_new (NAUTILUS_TYPE_GTK_SIDEBAR_ROW, NULL);
+    NautilusSidebarRow *row = g_object_new (NAUTILUS_TYPE_SIDEBAR_ROW, NULL);
     g_object_ref_sink (row);
 
     row->section_type = NAUTILUS_SIDEBAR_SECTION_BOOKMARKS;
@@ -668,10 +668,10 @@ nautilus_sidebar_row_new_placeholder (void)
     return row;
 }
 
-NautilusGtkSidebarRow*
-nautilus_gtk_sidebar_row_clone (NautilusGtkSidebarRow *self)
+NautilusSidebarRow*
+nautilus_sidebar_row_clone (NautilusSidebarRow *self)
 {
- return g_object_new (NAUTILUS_TYPE_GTK_SIDEBAR_ROW,
+ return g_object_new (NAUTILUS_TYPE_SIDEBAR_ROW,
                       "sidebar", self->sidebar,
                       "start-icon", self->start_icon,
                       "end-icon", self->end_icon,
@@ -691,16 +691,16 @@ nautilus_gtk_sidebar_row_clone (NautilusGtkSidebarRow *self)
 }
 
 GtkWidget*
-nautilus_gtk_sidebar_row_get_eject_button (NautilusGtkSidebarRow *self)
+nautilus_sidebar_row_get_eject_button (NautilusSidebarRow *self)
 {
   return self->eject_button;
 }
 
 void
-nautilus_gtk_sidebar_row_set_busy (NautilusGtkSidebarRow *row,
+nautilus_sidebar_row_set_busy (NautilusSidebarRow *row,
                           gboolean       is_busy)
 {
-  g_return_if_fail (NAUTILUS_IS_GTK_SIDEBAR_ROW (row));
+  g_return_if_fail (NAUTILUS_IS_SIDEBAR_ROW (row));
 
   gtk_widget_set_visible (row->busy_spinner, is_busy);
 }

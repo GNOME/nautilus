@@ -46,9 +46,9 @@
 #pragma GCC diagnostic ignored "-Wshadow"
 
 /*< private >
- * NautilusGtkPlacesSidebar:
+ * NautilusSidebar:
  *
- * NautilusGtkPlacesSidebar is a widget that displays a list of frequently-used places in the
+ * NautilusSidebar is a widget that displays a list of frequently-used places in the
  * file system:  the user’s home directory, the user’s bookmarks, and volumes and drives.
  * This widget is used as a sidebar in GtkFileChooser and may be used by file managers
  * and similar programs.
@@ -63,17 +63,17 @@
  * While bookmarks are completely in control of the user, the places sidebar also
  * allows individual applications to provide extra shortcut folders that are unique
  * to each application.  For example, a Paint program may want to add a shortcut
- * for a Clipart folder.  You can do this with nautilus_gtk_places_sidebar_add_shortcut().
+ * for a Clipart folder.  You can do this with nautilus_sidebar_add_shortcut().
  *
  * To make use of the places sidebar, an application at least needs to connect
- * to the NautilusGtkPlacesSidebar::open-location signal.  This is emitted when the
+ * to the NautilusSidebar::open-location signal.  This is emitted when the
  * user selects in the sidebar a location to open.  The application should also
- * call nautilus_gtk_places_sidebar_set_location() when it changes the currently-viewed
+ * call nautilus_sidebar_set_location() when it changes the currently-viewed
  * location.
  *
  * # CSS nodes
  *
- * NautilusGtkPlacesSidebar uses a single CSS node with name placessidebar and style
+ * NautilusSidebar uses a single CSS node with name placessidebar and style
  * class .sidebar.
  *
  * Among the children of the places sidebar, the following style classes can
@@ -85,7 +85,7 @@
 
 /* These are used when a destination-side DND operation is taking place.
  * Normally, when a common drag action is taking place, the state will be
- * DROP_STATE_NEW_BOOKMARK_ARMED, however, if the client of NautilusGtkPlacesSidebar
+ * DROP_STATE_NEW_BOOKMARK_ARMED, however, if the client of NautilusSidebar
  * wants to show hints about the valid targets, we sill set it as
  * DROP_STATE_NEW_BOOKMARK_ARMED_PERMANENT, so the sidebar will show drop hints
  * until the client says otherwise
@@ -96,7 +96,7 @@ typedef enum {
   DROP_STATE_NEW_BOOKMARK_ARMED_PERMANENT,
 } DropState;
 
-struct _NautilusGtkPlacesSidebar {
+struct _NautilusSidebar {
   GtkWidget parent;
 
   NautilusWindowSlot *window_slot;
@@ -141,7 +141,7 @@ struct _NautilusGtkPlacesSidebar {
   GtkListBoxRow *hover_row;
 
   GtkWidget *popover;
-  NautilusGtkSidebarRow *context_row;
+  NautilusSidebarRow *context_row;
 
   GDBusProxy *hostnamed_proxy;
   GCancellable *hostnamed_cancellable;
@@ -152,22 +152,22 @@ struct _NautilusGtkPlacesSidebar {
   guint show_desktop           : 1;
 };
 
-struct _NautilusGtkPlacesSidebarClass {
+struct _NautilusSidebarClass {
   GtkWidgetClass parent_class;
 
-  GdkDragAction (* drag_action_requested)  (NautilusGtkPlacesSidebar   *sidebar,
+  GdkDragAction (* drag_action_requested)  (NautilusSidebar   *sidebar,
                                       GFile              *dest_file,
                                       GSList             *source_file_list);
-  GdkDragAction (* drag_action_ask)  (NautilusGtkPlacesSidebar   *sidebar,
+  GdkDragAction (* drag_action_ask)  (NautilusSidebar   *sidebar,
                                       GdkDragAction       actions);
-  void    (* drag_perform_drop)      (NautilusGtkPlacesSidebar   *sidebar,
+  void    (* drag_perform_drop)      (NautilusSidebar   *sidebar,
                                       GFile              *dest_file,
                                       GList              *source_file_list,
                                       GdkDragAction       action);
 
-  void    (* mount)                  (NautilusGtkPlacesSidebar   *sidebar,
+  void    (* mount)                  (NautilusSidebar   *sidebar,
                                       GMountOperation    *mount_operation);
-  void    (* unmount)                (NautilusGtkPlacesSidebar   *sidebar,
+  void    (* unmount)                (NautilusSidebar   *sidebar,
                                       GMountOperation    *unmount_operation);
 };
 
@@ -195,8 +195,8 @@ enum {
 static guint places_sidebar_signals [LAST_SIGNAL] = { 0 };
 static GParamSpec *properties[NUM_PROPERTIES] = { NULL, };
 
-static gboolean eject_or_unmount_bookmark  (NautilusGtkSidebarRow *row);
-static gboolean eject_or_unmount_selection (NautilusGtkPlacesSidebar *sidebar);
+static gboolean eject_or_unmount_bookmark  (NautilusSidebarRow *row);
+static gboolean eject_or_unmount_selection (NautilusSidebar *sidebar);
 static void  check_unmount_and_eject       (GMount   *mount,
                                             GVolume  *volume,
                                             GDrive   *drive,
@@ -206,31 +206,31 @@ static void on_row_pressed  (GtkGestureClick *gesture,
                              int                   n_press,
                              double                x,
                              double                y,
-                             NautilusGtkSidebarRow        *row);
+                             NautilusSidebarRow        *row);
 static void on_row_released (GtkGestureClick *gesture,
                              int                   n_press,
                              double                x,
                              double                y,
-                             NautilusGtkSidebarRow        *row);
+                             NautilusSidebarRow        *row);
 static void on_row_dragged  (GtkGestureDrag *gesture,
                              double          x,
                              double          y,
-                             NautilusGtkSidebarRow  *row);
+                             NautilusSidebarRow  *row);
 
-static void popup_menu_cb    (NautilusGtkSidebarRow   *row);
+static void popup_menu_cb    (NautilusSidebarRow   *row);
 static void long_press_cb    (GtkGesture      *gesture,
                               double           x,
                               double           y,
-                              NautilusGtkPlacesSidebar *sidebar);
-static void stop_drop_feedback (NautilusGtkPlacesSidebar *sidebar);
-static GMountOperation * get_mount_operation (NautilusGtkPlacesSidebar *sidebar);
-static GMountOperation * get_unmount_operation (NautilusGtkPlacesSidebar *sidebar);
+                              NautilusSidebar *sidebar);
+static void stop_drop_feedback (NautilusSidebar *sidebar);
+static GMountOperation * get_mount_operation (NautilusSidebar *sidebar);
+static GMountOperation * get_unmount_operation (NautilusSidebar *sidebar);
 
 
-G_DEFINE_TYPE (NautilusGtkPlacesSidebar, nautilus_gtk_places_sidebar, GTK_TYPE_WIDGET);
+G_DEFINE_TYPE (NautilusSidebar, nautilus_sidebar, GTK_TYPE_WIDGET);
 
 static void
-call_open_location (NautilusGtkPlacesSidebar *self,
+call_open_location (NautilusSidebar *self,
                     GFile                    *location,
                     NautilusWindowSlot       *preferred_slot,
                     NautilusOpenFlags         open_flags)
@@ -269,7 +269,7 @@ call_open_location (NautilusGtkPlacesSidebar *self,
 }
 
 static void
-show_error_message (NautilusGtkPlacesSidebar *self,
+show_error_message (NautilusSidebar *self,
                     const char               *primary,
                     const char               *secondary)
 {
@@ -280,21 +280,21 @@ show_error_message (NautilusGtkPlacesSidebar *self,
 }
 
 static void
-emit_mount_operation (NautilusGtkPlacesSidebar *sidebar,
+emit_mount_operation (NautilusSidebar *sidebar,
                       GMountOperation  *mount_op)
 {
   g_signal_emit (sidebar, places_sidebar_signals[MOUNT], 0, mount_op);
 }
 
 static void
-emit_unmount_operation (NautilusGtkPlacesSidebar *sidebar,
+emit_unmount_operation (NautilusSidebar *sidebar,
                         GMountOperation  *mount_op)
 {
   g_signal_emit (sidebar, places_sidebar_signals[UNMOUNT], 0, mount_op);
 }
 
 static GdkDragAction
-emit_drag_action_requested (NautilusGtkPlacesSidebar *sidebar,
+emit_drag_action_requested (NautilusSidebar *sidebar,
                             NautilusFile            *dest_file,
                             GSList           *source_file_list)
 {
@@ -307,7 +307,7 @@ emit_drag_action_requested (NautilusGtkPlacesSidebar *sidebar,
 }
 
 static void
-emit_drag_perform_drop (NautilusGtkPlacesSidebar *sidebar,
+emit_drag_perform_drop (NautilusSidebar *sidebar,
                         GFile            *dest_file,
                         GSList           *source_file_list,
                         GdkDragAction     action)
@@ -344,7 +344,7 @@ list_box_header_func (GtkListBoxRow *row,
 }
 
 static GtkWidget*
-add_place (NautilusGtkPlacesSidebar            *sidebar,
+add_place (NautilusSidebar            *sidebar,
            NautilusSidebarRowType           place_type,
            NautilusSidebarSectionType         section_type,
            const char                  *name,
@@ -383,7 +383,7 @@ add_place (NautilusGtkPlacesSidebar            *sidebar,
   else
     eject_tooltip = _("Unmount");
 
-  row = g_object_new (NAUTILUS_TYPE_GTK_SIDEBAR_ROW,
+  row = g_object_new (NAUTILUS_TYPE_SIDEBAR_ROW,
                       "sidebar", sidebar,
                       "start-icon", start_icon,
                       "end-icon", end_icon,
@@ -403,7 +403,7 @@ add_place (NautilusGtkPlacesSidebar            *sidebar,
 #endif
                       NULL);
 
-  eject_button = nautilus_gtk_sidebar_row_get_eject_button (NAUTILUS_GTK_SIDEBAR_ROW (row));
+  eject_button = nautilus_sidebar_row_get_eject_button (NAUTILUS_SIDEBAR_ROW (row));
 
   g_signal_connect_swapped (eject_button, "clicked",
                             G_CALLBACK (eject_or_unmount_bookmark), row);
@@ -427,7 +427,7 @@ add_place (NautilusGtkPlacesSidebar            *sidebar,
 }
 
 static gboolean
-recent_files_setting_is_enabled (NautilusGtkPlacesSidebar *sidebar)
+recent_files_setting_is_enabled (NautilusSidebar *sidebar)
 {
   GtkSettings *settings;
   gboolean enabled;
@@ -451,7 +451,7 @@ recent_scheme_is_supported (void)
 }
 
 static gboolean
-should_show_recent (NautilusGtkPlacesSidebar *sidebar)
+should_show_recent (NautilusSidebar *sidebar)
 {
   return recent_files_setting_is_enabled (sidebar) && recent_scheme_is_supported ();
 }
@@ -507,20 +507,20 @@ get_desktop_directory_uri (void)
 }
 
 typedef struct {
-  NautilusGtkPlacesSidebar *sidebar;
+  NautilusSidebar *sidebar;
   int index;
   gboolean is_native;
 } BookmarkQueryClosure;
 
 static void
-update_trash_icon (NautilusGtkPlacesSidebar *sidebar)
+update_trash_icon (NautilusSidebar *sidebar)
 {
   if (sidebar->trash_row)
     {
       GIcon *icon;
 
       icon = nautilus_trash_monitor_get_symbolic_icon ();
-      nautilus_gtk_sidebar_row_set_start_icon (NAUTILUS_GTK_SIDEBAR_ROW (sidebar->trash_row), icon);
+      nautilus_sidebar_row_set_start_icon (NAUTILUS_SIDEBAR_ROW (sidebar->trash_row), icon);
       g_object_unref (icon);
     }
 }
@@ -528,7 +528,7 @@ update_trash_icon (NautilusGtkPlacesSidebar *sidebar)
 #ifdef HAVE_CLOUDPROVIDERS
 
 static gboolean
-create_cloud_provider_account_row (NautilusGtkPlacesSidebar      *sidebar,
+create_cloud_provider_account_row (NautilusSidebar      *sidebar,
                                    CloudProvidersAccount *account)
 {
   GIcon *end_icon;
@@ -594,7 +594,7 @@ on_account_updated (GObject    *object,
                     gpointer    user_data)
 {
     CloudProvidersAccount *account = CLOUD_PROVIDERS_ACCOUNT (object);
-    NautilusGtkPlacesSidebar *sidebar = NAUTILUS_GTK_PLACES_SIDEBAR (user_data);
+    NautilusSidebar *sidebar = NAUTILUS_PLACES_SIDEBAR (user_data);
 
     if (create_cloud_provider_account_row (sidebar, account))
       {
@@ -607,7 +607,7 @@ on_account_updated (GObject    *object,
 #endif
 
 static void
-update_places (NautilusGtkPlacesSidebar *sidebar)
+update_places (NautilusSidebar *sidebar)
 {
   GList *mounts, *l, *ll;
   GMount *mount;
@@ -1065,7 +1065,7 @@ update_places (NautilusGtkPlacesSidebar *sidebar)
   g_list_free_full (network_mounts, g_object_unref);
 
   /* We want this hidden by default, but need to do it after the show_all call */
-  nautilus_gtk_sidebar_row_hide (NAUTILUS_GTK_SIDEBAR_ROW (sidebar->new_bookmark_row), TRUE);
+  nautilus_sidebar_row_hide (NAUTILUS_SIDEBAR_ROW (sidebar->new_bookmark_row), TRUE);
 
   /* restore original selection */
   if (original_uri)
@@ -1073,14 +1073,14 @@ update_places (NautilusGtkPlacesSidebar *sidebar)
       GFile *restore;
 
       restore = g_file_new_for_uri (original_uri);
-      nautilus_gtk_places_sidebar_set_location (sidebar, restore);
+      nautilus_sidebar_set_location (sidebar, restore);
       g_object_unref (restore);
       g_free (original_uri);
     }
 }
 
 void
-nautilus_gtk_places_sidebar_set_show_trash (NautilusGtkPlacesSidebar *sidebar,
+nautilus_sidebar_set_show_trash (NautilusSidebar *sidebar,
                                             gboolean                  show_trash)
 {
   if (sidebar->show_trash == show_trash)
@@ -1097,7 +1097,7 @@ nautilus_gtk_places_sidebar_set_show_trash (NautilusGtkPlacesSidebar *sidebar,
 static gboolean
 hover_timer (gpointer user_data)
 {
-  NautilusGtkPlacesSidebar *sidebar = user_data;
+  NautilusSidebar *sidebar = user_data;
   gboolean open_folder_on_hover;
   g_autofree gchar *uri = NULL;
   g_autoptr (GFile) location = NULL;
@@ -1129,8 +1129,8 @@ hover_timer (gpointer user_data)
 }
 
 static gboolean
-check_valid_drop_target (NautilusGtkPlacesSidebar *sidebar,
-                         NautilusGtkSidebarRow    *row,
+check_valid_drop_target (NautilusSidebar *sidebar,
+                         NautilusSidebarRow    *row,
                          const GValue     *value)
 {
   NautilusSidebarRowType place_type;
@@ -1169,7 +1169,7 @@ check_valid_drop_target (NautilusGtkPlacesSidebar *sidebar,
     }
 
   /* Dragging a bookmark? */
-  if (G_VALUE_HOLDS (value, NAUTILUS_TYPE_GTK_SIDEBAR_ROW))
+  if (G_VALUE_HOLDS (value, NAUTILUS_TYPE_SIDEBAR_ROW))
     {
       /* Don't allow reordering bookmarks into non-bookmark areas */
       valid = section_type == NAUTILUS_SIDEBAR_SECTION_BOOKMARKS;
@@ -1198,7 +1198,7 @@ check_valid_drop_target (NautilusGtkPlacesSidebar *sidebar,
 }
 
 static void
-update_possible_drop_targets (NautilusGtkPlacesSidebar *sidebar,
+update_possible_drop_targets (NautilusSidebar *sidebar,
                               const GValue     *value)
 {
   GtkWidget *row;
@@ -1213,13 +1213,13 @@ update_possible_drop_targets (NautilusGtkPlacesSidebar *sidebar,
         continue;
 
       sensitive = value == NULL ||
-                  check_valid_drop_target (sidebar, NAUTILUS_GTK_SIDEBAR_ROW (row), value);
+                  check_valid_drop_target (sidebar, NAUTILUS_SIDEBAR_ROW (row), value);
       gtk_widget_set_sensitive (row, sensitive);
     }
 }
 
 static void
-start_drop_feedback (NautilusGtkPlacesSidebar *sidebar,
+start_drop_feedback (NautilusSidebar *sidebar,
                      const GValue     *value)
 {
   if (value != NULL && G_VALUE_HOLDS (value, GDK_TYPE_FILE_LIST))
@@ -1230,10 +1230,10 @@ start_drop_feedback (NautilusGtkPlacesSidebar *sidebar,
           g_autoptr (NautilusFile) file = NULL;
           file = nautilus_file_get (source_list->data);
           if (nautilus_file_is_directory (file))
-            nautilus_gtk_sidebar_row_reveal (NAUTILUS_GTK_SIDEBAR_ROW (sidebar->new_bookmark_row));
+            nautilus_sidebar_row_reveal (NAUTILUS_SIDEBAR_ROW (sidebar->new_bookmark_row));
         }
     }
-  if (value && !G_VALUE_HOLDS (value, NAUTILUS_TYPE_GTK_SIDEBAR_ROW))
+  if (value && !G_VALUE_HOLDS (value, NAUTILUS_TYPE_SIDEBAR_ROW))
     {
       /* If the state is permanent, don't change it. The application controls it. */
       if (sidebar->drop_state != DROP_STATE_NEW_BOOKMARK_ARMED_PERMANENT)
@@ -1244,14 +1244,14 @@ start_drop_feedback (NautilusGtkPlacesSidebar *sidebar,
 }
 
 static void
-stop_drop_feedback (NautilusGtkPlacesSidebar *sidebar)
+stop_drop_feedback (NautilusSidebar *sidebar)
 {
   update_possible_drop_targets (sidebar, NULL);
 
   if (sidebar->drop_state != DROP_STATE_NEW_BOOKMARK_ARMED_PERMANENT &&
       sidebar->new_bookmark_row != NULL)
     {
-      nautilus_gtk_sidebar_row_hide (NAUTILUS_GTK_SIDEBAR_ROW (sidebar->new_bookmark_row), FALSE);
+      nautilus_sidebar_row_hide (NAUTILUS_SIDEBAR_ROW (sidebar->new_bookmark_row), FALSE);
       sidebar->drop_state = DROP_STATE_NORMAL;
     }
 
@@ -1275,7 +1275,7 @@ static GdkDragAction
 drag_motion_callback (GtkDropTarget    *target,
                       double            x,
                       double            y,
-                      NautilusGtkPlacesSidebar *sidebar)
+                      NautilusSidebar *sidebar)
 {
   GdkDragAction action;
   GtkListBoxRow *row;
@@ -1313,10 +1313,10 @@ drag_motion_callback (GtkDropTarget    *target,
     goto out;
 
   /* Nothing to do if the target is not valid drop destination */
-  if (!check_valid_drop_target (sidebar, NAUTILUS_GTK_SIDEBAR_ROW (row), value))
+  if (!check_valid_drop_target (sidebar, NAUTILUS_SIDEBAR_ROW (row), value))
     goto out;
 
-  if (G_VALUE_HOLDS (value, NAUTILUS_TYPE_GTK_SIDEBAR_ROW))
+  if (G_VALUE_HOLDS (value, NAUTILUS_TYPE_SIDEBAR_ROW))
     {
       /* Dragging bookmarks always moves them to another position in the bookmarks list */
       action = GDK_ACTION_MOVE;
@@ -1413,8 +1413,8 @@ drag_motion_callback (GtkDropTarget    *target,
 
 /* Reorders the bookmark to the specified position */
 static void
-reorder_bookmarks (NautilusGtkPlacesSidebar *sidebar,
-                   NautilusGtkSidebarRow    *row,
+reorder_bookmarks (NautilusSidebar *sidebar,
+                   NautilusSidebarRow    *row,
                    int               new_position)
 {
   char *uri;
@@ -1432,7 +1432,7 @@ reorder_bookmarks (NautilusGtkPlacesSidebar *sidebar,
 
 /* Creates bookmarks for the specified files at the given position in the bookmarks list */
 static void
-drop_files_as_bookmarks (NautilusGtkPlacesSidebar *sidebar,
+drop_files_as_bookmarks (NautilusSidebar *sidebar,
                          GSList           *files,
                          int               position)
 {
@@ -1468,7 +1468,7 @@ drag_drop_callback (GtkDropTarget    *target,
                     const GValue     *value,
                     double            x,
                     double            y,
-                    NautilusGtkPlacesSidebar *sidebar)
+                    NautilusSidebar *sidebar)
 {
   int target_order_index;
   NautilusSidebarRowType target_place_type;
@@ -1481,7 +1481,7 @@ drag_drop_callback (GtkDropTarget    *target,
   if (target_row == NULL)
     return FALSE;
 
-  if (!check_valid_drop_target (sidebar, NAUTILUS_GTK_SIDEBAR_ROW (target_row), value))
+  if (!check_valid_drop_target (sidebar, NAUTILUS_SIDEBAR_ROW (target_row), value))
     return FALSE;
 
   g_object_get (target_row,
@@ -1492,7 +1492,7 @@ drag_drop_callback (GtkDropTarget    *target,
                 NULL);
   result = FALSE;
 
-  if (G_VALUE_HOLDS (value, NAUTILUS_TYPE_GTK_SIDEBAR_ROW))
+  if (G_VALUE_HOLDS (value, NAUTILUS_TYPE_SIDEBAR_ROW))
     {
       GtkWidget *source_row;
       /* A bookmark got reordered */
@@ -1504,7 +1504,7 @@ drag_drop_callback (GtkDropTarget    *target,
       if (sidebar->row_placeholder != NULL)
         g_object_get (sidebar->row_placeholder, "order-index", &target_order_index, NULL);
 
-      reorder_bookmarks (sidebar, NAUTILUS_GTK_SIDEBAR_ROW (source_row), target_order_index);
+      reorder_bookmarks (sidebar, NAUTILUS_SIDEBAR_ROW (source_row), target_order_index);
       result = TRUE;
     }
   else if (G_VALUE_HOLDS (value, GDK_TYPE_FILE_LIST))
@@ -1554,7 +1554,7 @@ out:
 
 static void
 dnd_finished_cb (GdkDrag          *drag,
-                 NautilusGtkPlacesSidebar *sidebar)
+                 NautilusSidebar *sidebar)
 {
   stop_drop_feedback (sidebar);
 }
@@ -1562,7 +1562,7 @@ dnd_finished_cb (GdkDrag          *drag,
 static void
 dnd_cancel_cb (GdkDrag             *drag,
                GdkDragCancelReason  reason,
-               NautilusGtkPlacesSidebar    *sidebar)
+               NautilusSidebar    *sidebar)
 {
   stop_drop_feedback (sidebar);
 }
@@ -1582,21 +1582,21 @@ dnd_cancel_cb (GdkDrag             *drag,
  * sidebar, when the drag stops the last drag signal we receive is drag-leave.
  * So here what we will do is restore the state of the sidebar as if no drag
  * is being done (and if the application didn't request for permanent hints with
- * nautilus_gtk_places_sidebar_show_drop_hints) and we will free the drag data next time
+ * nautilus_sidebar_show_drop_hints) and we will free the drag data next time
  * we build new drag data in drag_data_received.
  */
 static void
 drag_leave_callback (GtkDropTarget *dest,
                      gpointer       user_data)
 {
-  NautilusGtkPlacesSidebar *sidebar = NAUTILUS_GTK_PLACES_SIDEBAR (user_data);
+  NautilusSidebar *sidebar = NAUTILUS_PLACES_SIDEBAR (user_data);
 
   gtk_list_box_drag_unhighlight_row (GTK_LIST_BOX (sidebar->list_box));
 
   if (sidebar->drop_state != DROP_STATE_NEW_BOOKMARK_ARMED_PERMANENT)
     {
       update_possible_drop_targets (sidebar, FALSE);
-      nautilus_gtk_sidebar_row_hide (NAUTILUS_GTK_SIDEBAR_ROW (sidebar->new_bookmark_row), FALSE);
+      nautilus_sidebar_row_hide (NAUTILUS_SIDEBAR_ROW (sidebar->new_bookmark_row), FALSE);
       sidebar->drop_state = DROP_STATE_NORMAL;
     }
 
@@ -1632,12 +1632,12 @@ drive_start_from_bookmark_cb (GObject      *source_object,
                               GAsyncResult *res,
                               gpointer      user_data)
 {
-  NautilusGtkPlacesSidebar *sidebar;
+  NautilusSidebar *sidebar;
   GError *error;
   char *primary;
   char *name;
 
-  sidebar = NAUTILUS_GTK_PLACES_SIDEBAR (user_data);
+  sidebar = NAUTILUS_PLACES_SIDEBAR (user_data);
 
   error = NULL;
   if (!g_drive_poll_for_media_finish (G_DRIVE (source_object), res, &error))
@@ -1655,7 +1655,7 @@ drive_start_from_bookmark_cb (GObject      *source_object,
 }
 
 typedef struct {
-  NautilusGtkSidebarRow *row;
+  NautilusSidebarRow *row;
   NautilusWindowSlot *window_slot; /* weak reference */
   NautilusOpenFlags open_flags;
 } VolumeMountCallbackData;
@@ -1666,8 +1666,8 @@ volume_mount_cb (GObject      *source_object,
                  gpointer      user_data)
 {
   g_autofree VolumeMountCallbackData *callback_data = user_data;
-  NautilusGtkSidebarRow *row = NAUTILUS_GTK_SIDEBAR_ROW (callback_data->row);
-  NautilusGtkPlacesSidebar *sidebar;
+  NautilusSidebarRow *row = NAUTILUS_SIDEBAR_ROW (callback_data->row);
+  NautilusSidebar *sidebar;
   GVolume *volume;
   GError *error;
   char *primary;
@@ -1698,7 +1698,7 @@ volume_mount_cb (GObject      *source_object,
       g_error_free (error);
     }
 
-  nautilus_gtk_sidebar_row_set_busy (row, FALSE);
+  nautilus_sidebar_row_set_busy (row, FALSE);
 
   mount = g_volume_get_mount (volume);
   if (mount != NULL)
@@ -1718,11 +1718,11 @@ volume_mount_cb (GObject      *source_object,
 }
 
 static void
-mount_volume (NautilusGtkSidebarRow *row,
+mount_volume (NautilusSidebarRow *row,
               GVolume               *volume,
               NautilusOpenFlags      open_flags)
 {
-  NautilusGtkPlacesSidebar *sidebar;
+  NautilusSidebar *sidebar;
   g_autoptr (GMountOperation) mount_op = NULL;
   VolumeMountCallbackData *callback_data = NULL;
 
@@ -1741,13 +1741,13 @@ mount_volume (NautilusGtkSidebarRow *row,
 }
 
 static void
-open_row (NautilusGtkSidebarRow *self,
+open_row (NautilusSidebarRow *self,
           NautilusOpenFlags      open_flags)
 {
   g_autofree char *uri = NULL;
   g_autoptr (GDrive) drive = NULL;
   g_autoptr (GVolume) volume = NULL;
-  g_autoptr (NautilusGtkPlacesSidebar) sidebar = NULL;
+  g_autoptr (NautilusSidebar) sidebar = NULL;
 
   g_object_get (self,
                 "sidebar", &sidebar,
@@ -1763,7 +1763,7 @@ open_row (NautilusGtkSidebarRow *self,
     }
   else if (volume != NULL)
     {
-      nautilus_gtk_sidebar_row_set_busy (self, TRUE);
+      nautilus_sidebar_row_set_busy (self, TRUE);
       mount_volume (self, volume, open_flags);
     }
   else if (drive != NULL)
@@ -1772,7 +1772,7 @@ open_row (NautilusGtkSidebarRow *self,
         {
           g_autoptr (GMountOperation) mount_op = get_mount_operation (sidebar);
 
-          nautilus_gtk_sidebar_row_set_busy (self, TRUE);
+          nautilus_sidebar_row_set_busy (self, TRUE);
           g_drive_start (drive, G_DRIVE_START_NONE, mount_op, NULL, drive_start_from_bookmark_cb, NULL);
         }
     }
@@ -1784,7 +1784,7 @@ open_shortcut_cb (GSimpleAction *action,
                   GVariant      *parameter,
                   gpointer       data)
 {
-  NautilusGtkPlacesSidebar *sidebar = data;
+  NautilusSidebar *sidebar = data;
   NautilusOpenFlags flags;
 
   flags = (NautilusOpenFlags)g_variant_get_int32 (parameter);
@@ -1793,7 +1793,7 @@ open_shortcut_cb (GSimpleAction *action,
 
 static void
 rename_entry_changed (GtkEntry         *entry,
-                      NautilusGtkPlacesSidebar *sidebar)
+                      NautilusSidebar *sidebar)
 {
   NautilusSidebarRowType type;
   char *name;
@@ -1840,7 +1840,7 @@ rename_entry_changed (GtkEntry         *entry,
 
 static void
 do_rename (GtkButton        *button,
-           NautilusGtkPlacesSidebar *sidebar)
+           NautilusSidebar *sidebar)
 {
   char *new_text;
   GFile *file;
@@ -1872,7 +1872,7 @@ do_rename (GtkButton        *button,
 
 static void
 on_rename_popover_destroy (GtkWidget        *rename_popover,
-                           NautilusGtkPlacesSidebar *sidebar)
+                           NautilusSidebar *sidebar)
 {
   if (sidebar)
     {
@@ -1884,7 +1884,7 @@ on_rename_popover_destroy (GtkWidget        *rename_popover,
 }
 
 static void
-create_rename_popover (NautilusGtkPlacesSidebar *sidebar)
+create_rename_popover (NautilusSidebar *sidebar)
 {
   GtkWidget *popover;
   GtkWidget *grid;
@@ -1966,20 +1966,20 @@ update_popover_shadowing (GtkWidget *row,
 }
 
 static void
-set_prelight (NautilusGtkSidebarRow *row)
+set_prelight (NautilusSidebarRow *row)
 {
   update_popover_shadowing (GTK_WIDGET (row), TRUE);
 }
 
 static void
-unset_prelight (NautilusGtkSidebarRow *row)
+unset_prelight (NautilusSidebarRow *row)
 {
   update_popover_shadowing (GTK_WIDGET (row), FALSE);
 }
 
 static void
 setup_popover_shadowing (GtkWidget                *popover,
-                         NautilusGtkPlacesSidebar *sidebar)
+                         NautilusSidebar *sidebar)
 {
   g_signal_connect_object (popover, "map",
                            G_CALLBACK (set_prelight), sidebar->context_row,
@@ -2011,11 +2011,11 @@ _popover_set_pointing_to_widget (GtkPopover *popover,
 }
 
 static void
-show_rename_popover (NautilusGtkSidebarRow *row)
+show_rename_popover (NautilusSidebarRow *row)
 {
   char *name;
   char *uri;
-  NautilusGtkPlacesSidebar *sidebar;
+  NautilusSidebar *sidebar;
 
   g_object_get (row,
                 "sidebar", &sidebar,
@@ -2043,7 +2043,7 @@ show_rename_popover (NautilusGtkSidebarRow *row)
 }
 
 static void
-rename_bookmark (NautilusGtkSidebarRow *row)
+rename_bookmark (NautilusSidebarRow *row)
 {
   NautilusSidebarRowType type;
 
@@ -2060,7 +2060,7 @@ rename_shortcut_cb (GSimpleAction *action,
                     GVariant      *parameter,
                     gpointer       data)
 {
-  NautilusGtkPlacesSidebar *sidebar = data;
+  NautilusSidebar *sidebar = data;
 
   rename_bookmark (sidebar->context_row);
 }
@@ -2070,7 +2070,7 @@ properties_cb (GSimpleAction *action,
                GVariant      *parameter,
                gpointer       data)
 {
-  NautilusGtkPlacesSidebar *sidebar = data;
+  NautilusSidebar *sidebar = data;
   GList *list;
   NautilusFile *file;
   g_autofree gchar *uri = NULL;
@@ -2088,16 +2088,16 @@ empty_trash_cb (GSimpleAction *action,
                 GVariant      *parameter,
                 gpointer       data)
 {
-  NautilusGtkPlacesSidebar *sidebar = data;
+  NautilusSidebar *sidebar = data;
   nautilus_file_operations_empty_trash (GTK_WIDGET (sidebar), TRUE, NULL);
 }
 
 static void
-remove_bookmark (NautilusGtkSidebarRow *row)
+remove_bookmark (NautilusSidebarRow *row)
 {
   NautilusSidebarRowType type;
   char *uri;
-  NautilusGtkPlacesSidebar *sidebar;
+  NautilusSidebar *sidebar;
 
   g_object_get (row,
                 "sidebar", &sidebar,
@@ -2119,7 +2119,7 @@ remove_shortcut_cb (GSimpleAction *action,
                     GVariant      *parameter,
                     gpointer       data)
 {
-  NautilusGtkPlacesSidebar *sidebar = data;
+  NautilusSidebar *sidebar = data;
 
   remove_bookmark (sidebar->context_row);
 }
@@ -2129,7 +2129,7 @@ mount_shortcut_cb (GSimpleAction *action,
                    GVariant      *parameter,
                    gpointer       data)
 {
-  NautilusGtkPlacesSidebar *sidebar = data;
+  NautilusSidebar *sidebar = data;
   GVolume *volume;
 
   g_object_get (sidebar->context_row,
@@ -2143,7 +2143,7 @@ mount_shortcut_cb (GSimpleAction *action,
 }
 
 static GMountOperation *
-get_mount_operation (NautilusGtkPlacesSidebar *sidebar)
+get_mount_operation (NautilusSidebar *sidebar)
 {
   GMountOperation *mount_op;
 
@@ -2155,7 +2155,7 @@ get_mount_operation (NautilusGtkPlacesSidebar *sidebar)
 }
 
 static GMountOperation *
-get_unmount_operation (NautilusGtkPlacesSidebar *sidebar)
+get_unmount_operation (NautilusSidebar *sidebar)
 {
   GMountOperation *mount_op;
 
@@ -2168,7 +2168,7 @@ get_unmount_operation (NautilusGtkPlacesSidebar *sidebar)
 
 static void
 do_unmount (GMount           *mount,
-            NautilusGtkPlacesSidebar *sidebar)
+            NautilusSidebar *sidebar)
 {
   if (mount != NULL)
     {
@@ -2188,7 +2188,7 @@ unmount_shortcut_cb (GSimpleAction *action,
                      GVariant      *parameter,
                      gpointer       data)
 {
-  NautilusGtkPlacesSidebar *sidebar = data;
+  NautilusSidebar *sidebar = data;
   GMount *mount;
 
   g_object_get (sidebar->context_row,
@@ -2206,7 +2206,7 @@ drive_stop_cb (GObject      *source_object,
                GAsyncResult *res,
                gpointer      user_data)
 {
-  NautilusGtkPlacesSidebar *sidebar;
+  NautilusSidebar *sidebar;
   GError *error;
   char *primary;
   char *name;
@@ -2235,7 +2235,7 @@ drive_eject_cb (GObject      *source_object,
                 GAsyncResult *res,
                 gpointer      user_data)
 {
-  NautilusGtkPlacesSidebar *sidebar;
+  NautilusSidebar *sidebar;
   GError *error;
   char *primary;
   char *name;
@@ -2264,7 +2264,7 @@ volume_eject_cb (GObject      *source_object,
                  GAsyncResult *res,
                  gpointer      user_data)
 {
-  NautilusGtkPlacesSidebar *sidebar;
+  NautilusSidebar *sidebar;
   GError *error;
   char *primary;
   char *name;
@@ -2292,7 +2292,7 @@ static void
 do_eject (GMount           *mount,
           GVolume          *volume,
           GDrive           *drive,
-          NautilusGtkPlacesSidebar *sidebar)
+          NautilusSidebar *sidebar)
 {
   GMountOperation *mount_op;
   GtkWindow *parent;
@@ -2333,7 +2333,7 @@ eject_shortcut_cb (GSimpleAction *action,
                    GVariant      *parameter,
                    gpointer       data)
 {
-  NautilusGtkPlacesSidebar *sidebar = data;
+  NautilusSidebar *sidebar = data;
   GMount *mount;
   GVolume *volume;
   GDrive *drive;
@@ -2355,14 +2355,14 @@ eject_shortcut_cb (GSimpleAction *action,
 }
 
 static gboolean
-eject_or_unmount_bookmark (NautilusGtkSidebarRow *row)
+eject_or_unmount_bookmark (NautilusSidebarRow *row)
 {
   gboolean can_unmount, can_eject;
   GMount *mount;
   GVolume *volume;
   GDrive *drive;
   gboolean ret;
-  NautilusGtkPlacesSidebar *sidebar;
+  NautilusSidebar *sidebar;
 
   g_object_get (row,
                 "sidebar", &sidebar,
@@ -2397,13 +2397,13 @@ eject_or_unmount_bookmark (NautilusGtkSidebarRow *row)
 }
 
 static gboolean
-eject_or_unmount_selection (NautilusGtkPlacesSidebar *sidebar)
+eject_or_unmount_selection (NautilusSidebar *sidebar)
 {
   gboolean ret;
   GtkListBoxRow *row;
 
   row = gtk_list_box_get_selected_row (GTK_LIST_BOX (sidebar->list_box));
-  ret = eject_or_unmount_bookmark (NAUTILUS_GTK_SIDEBAR_ROW (row));
+  ret = eject_or_unmount_bookmark (NAUTILUS_SIDEBAR_ROW (row));
 
   return ret;
 }
@@ -2413,12 +2413,12 @@ drive_poll_for_media_cb (GObject      *source_object,
                          GAsyncResult *res,
                          gpointer      user_data)
 {
-  NautilusGtkPlacesSidebar *sidebar;
+  NautilusSidebar *sidebar;
   GError *error;
   char *primary;
   char *name;
 
-  sidebar = NAUTILUS_GTK_PLACES_SIDEBAR (user_data);
+  sidebar = NAUTILUS_PLACES_SIDEBAR (user_data);
 
   error = NULL;
   if (!g_drive_poll_for_media_finish (G_DRIVE (source_object), res, &error))
@@ -2442,7 +2442,7 @@ rescan_shortcut_cb (GSimpleAction *action,
                     GVariant      *parameter,
                     gpointer       data)
 {
-  NautilusGtkPlacesSidebar *sidebar = data;
+  NautilusSidebar *sidebar = data;
   GDrive *drive;
 
   g_object_get (sidebar->context_row,
@@ -2461,12 +2461,12 @@ drive_start_cb (GObject      *source_object,
                 GAsyncResult *res,
                 gpointer      user_data)
 {
-  NautilusGtkPlacesSidebar *sidebar;
+  NautilusSidebar *sidebar;
   GError *error;
   char *primary;
   char *name;
 
-  sidebar = NAUTILUS_GTK_PLACES_SIDEBAR (user_data);
+  sidebar = NAUTILUS_PLACES_SIDEBAR (user_data);
 
   error = NULL;
   if (!g_drive_start_finish (G_DRIVE (source_object), res, &error))
@@ -2490,7 +2490,7 @@ start_shortcut_cb (GSimpleAction *action,
                    GVariant      *parameter,
                    gpointer       data)
 {
-  NautilusGtkPlacesSidebar *sidebar = data;
+  NautilusSidebar *sidebar = data;
   GDrive  *drive;
 
   g_object_get (sidebar->context_row,
@@ -2515,7 +2515,7 @@ stop_shortcut_cb (GSimpleAction *action,
                   GVariant      *parameter,
                   gpointer       data)
 {
-  NautilusGtkPlacesSidebar *sidebar = data;
+  NautilusSidebar *sidebar = data;
   GDrive  *drive;
 
   g_object_get (sidebar->context_row,
@@ -2540,7 +2540,7 @@ on_key_pressed (GtkEventControllerKey *controller,
                 guint                  keyval,
                 guint                  keycode,
                 GdkModifierType        state,
-                NautilusGtkPlacesSidebar      *sidebar)
+                NautilusSidebar      *sidebar)
 {
   guint modifiers;
   GtkListBoxRow *row;
@@ -2562,7 +2562,7 @@ on_key_pressed (GtkEventControllerKey *controller,
           else if ((state & modifiers) == GDK_CONTROL_MASK)
             open_flags = NAUTILUS_OPEN_FLAG_NEW_WINDOW;
 
-          open_row (NAUTILUS_GTK_SIDEBAR_ROW (row), open_flags);
+          open_row (NAUTILUS_SIDEBAR_ROW (row), open_flags);
 
           return TRUE;
         }
@@ -2575,14 +2575,14 @@ on_key_pressed (GtkEventControllerKey *controller,
            keyval == GDK_KEY_KP_Delete) &&
           (state & modifiers) == 0)
         {
-          remove_bookmark (NAUTILUS_GTK_SIDEBAR_ROW (row));
+          remove_bookmark (NAUTILUS_SIDEBAR_ROW (row));
           return TRUE;
         }
 
       if ((keyval == GDK_KEY_F2) &&
           (state & modifiers) == 0)
         {
-          rename_bookmark (NAUTILUS_GTK_SIDEBAR_ROW (row));
+          rename_bookmark (NAUTILUS_SIDEBAR_ROW (row));
           return TRUE;
         }
 
@@ -2590,7 +2590,7 @@ on_key_pressed (GtkEventControllerKey *controller,
           ((keyval == GDK_KEY_F10) &&
            (state & modifiers) == GDK_SHIFT_MASK))
         {
-          popup_menu_cb (NAUTILUS_GTK_SIDEBAR_ROW (row));
+          popup_menu_cb (NAUTILUS_SIDEBAR_ROW (row));
           return TRUE;
         }
     }
@@ -2603,7 +2603,7 @@ format_cb (GSimpleAction *action,
            GVariant      *variant,
            gpointer       data)
 {
-    NautilusGtkPlacesSidebar *sidebar = data;
+    NautilusSidebar *sidebar = data;
     g_autoptr (GVolume) volume = NULL;
     g_autofree gchar *device_identifier = NULL;
     GVariant *parameters;
@@ -2664,7 +2664,7 @@ should_show_format_command (GVolume *volume)
 
 static void
 on_row_popover_destroy (GtkWidget        *row_popover,
-                        NautilusGtkPlacesSidebar *sidebar)
+                        NautilusSidebar *sidebar)
 {
   if (sidebar)
     sidebar->popover = NULL;
@@ -2672,10 +2672,10 @@ on_row_popover_destroy (GtkWidget        *row_popover,
 
 #ifdef HAVE_CLOUDPROVIDERS
 static void
-build_popup_menu_using_gmenu (NautilusGtkSidebarRow *row)
+build_popup_menu_using_gmenu (NautilusSidebarRow *row)
 {
   CloudProvidersAccount *cloud_provider_account;
-  NautilusGtkPlacesSidebar *sidebar;
+  NautilusSidebar *sidebar;
   GMenuModel *cloud_provider_menu;
   GActionGroup *cloud_provider_action_group;
 
@@ -2740,8 +2740,8 @@ build_popup_menu_using_gmenu (NautilusGtkSidebarRow *row)
 
 /* Constructs the popover for the sidebar row if needed */
 static void
-create_row_popover (NautilusGtkPlacesSidebar *sidebar,
-                    NautilusGtkSidebarRow    *row)
+create_row_popover (NautilusSidebar *sidebar,
+                    NautilusSidebarRow    *row)
 {
   NautilusSidebarRowType type;
   GMenu *menu, *section;
@@ -2955,11 +2955,11 @@ create_row_popover (NautilusGtkPlacesSidebar *sidebar,
 }
 
 static void
-show_row_popover (NautilusGtkSidebarRow *row,
+show_row_popover (NautilusSidebarRow *row,
                   double x,
                   double y)
 {
-  NautilusGtkPlacesSidebar *sidebar;
+  NautilusSidebar *sidebar;
   graphene_point_t p_in_sidebar;
 
   g_object_get (row, "sidebar", &sidebar, NULL);
@@ -2990,16 +2990,16 @@ on_row_activated (GtkListBox    *list_box,
                   GtkListBoxRow *row,
                   gpointer       user_data)
 {
-  NautilusGtkSidebarRow *selected_row;
+  NautilusSidebarRow *selected_row;
 
   /* Avoid to open a location if the user is dragging. Changing the location
    * while dragging usually makes clients changing the view of the files, which
    * is confusing while the user has the attention on the drag
    */
-  if (NAUTILUS_GTK_PLACES_SIDEBAR (user_data)->dragging_over)
+  if (NAUTILUS_PLACES_SIDEBAR (user_data)->dragging_over)
     return;
 
-  selected_row = NAUTILUS_GTK_SIDEBAR_ROW (gtk_list_box_get_selected_row (list_box));
+  selected_row = NAUTILUS_SIDEBAR_ROW (gtk_list_box_get_selected_row (list_box));
   open_row (selected_row, 0);
 }
 
@@ -3008,9 +3008,9 @@ on_row_pressed (GtkGestureClick *gesture,
                 int              n_press,
                 double           x,
                 double           y,
-                NautilusGtkSidebarRow   *row)
+                NautilusSidebarRow   *row)
 {
-  NautilusGtkPlacesSidebar *sidebar;
+  NautilusSidebar *sidebar;
   NautilusSidebarSectionType section_type;
 
   g_object_get (row,
@@ -3033,9 +3033,9 @@ on_row_released (GtkGestureClick *gesture,
                  int              n_press,
                  double           x,
                  double           y,
-                 NautilusGtkSidebarRow   *row)
+                 NautilusSidebarRow   *row)
 {
-  NautilusGtkPlacesSidebar *sidebar;
+  NautilusSidebar *sidebar;
   NautilusSidebarSectionType section_type;
   guint button, state;
 
@@ -3057,13 +3057,13 @@ on_row_released (GtkGestureClick *gesture,
             NAUTILUS_OPEN_FLAG_NEW_WINDOW :
             NAUTILUS_OPEN_FLAG_NEW_TAB;
 
-          open_row (NAUTILUS_GTK_SIDEBAR_ROW (row), open_flags);
+          open_row (NAUTILUS_SIDEBAR_ROW (row), open_flags);
           gtk_gesture_set_state (GTK_GESTURE (gesture),
                                  GTK_EVENT_SEQUENCE_CLAIMED);
         }
       else if (button == 3)
         {
-          show_row_popover (NAUTILUS_GTK_SIDEBAR_ROW (row), x, y);
+          show_row_popover (NAUTILUS_SIDEBAR_ROW (row), x, y);
         }
     }
 }
@@ -3072,9 +3072,9 @@ static void
 on_row_dragged (GtkGestureDrag *gesture,
                 double          x,
                 double          y,
-                NautilusGtkSidebarRow  *row)
+                NautilusSidebarRow  *row)
 {
-  NautilusGtkPlacesSidebar *sidebar;
+  NautilusSidebar *sidebar;
 
   g_object_get (row, "sidebar", &sidebar, NULL);
 
@@ -3103,7 +3103,7 @@ on_row_dragged (GtkGestureDrag *gesture,
 
       sidebar->dragging_over = TRUE;
 
-      content = gdk_content_provider_new_typed (NAUTILUS_TYPE_GTK_SIDEBAR_ROW, sidebar->drag_row);
+      content = gdk_content_provider_new_typed (NAUTILUS_TYPE_SIDEBAR_ROW, sidebar->drag_row);
 
       surface = gtk_native_get_surface (gtk_widget_get_native (GTK_WIDGET (sidebar)));
       device = gtk_gesture_get_device (GTK_GESTURE (gesture));
@@ -3119,7 +3119,7 @@ on_row_dragged (GtkGestureDrag *gesture,
       height = gtk_widget_get_height (sidebar->drag_row);
       gtk_widget_set_visible (sidebar->drag_row, FALSE);
 
-      drag_widget = GTK_WIDGET (nautilus_gtk_sidebar_row_clone (NAUTILUS_GTK_SIDEBAR_ROW (sidebar->drag_row)));
+      drag_widget = GTK_WIDGET (nautilus_sidebar_row_clone (NAUTILUS_SIDEBAR_ROW (sidebar->drag_row)));
       sidebar->drag_row_height = height;
       gtk_widget_set_size_request (drag_widget, width, height);
       gtk_widget_set_opacity (drag_widget, 0.8);
@@ -3133,7 +3133,7 @@ on_row_dragged (GtkGestureDrag *gesture,
 }
 
 static void
-popup_menu_cb (NautilusGtkSidebarRow *row)
+popup_menu_cb (NautilusSidebarRow *row)
 {
   show_row_popover (row, -1, -1);
 }
@@ -3142,13 +3142,13 @@ static void
 long_press_cb (GtkGesture       *gesture,
                double            x,
                double            y,
-               NautilusGtkPlacesSidebar *sidebar)
+               NautilusSidebar *sidebar)
 {
   GtkWidget *row;
 
   row = GTK_WIDGET (gtk_list_box_get_row_at_y (GTK_LIST_BOX (sidebar->list_box), y));
-  if (NAUTILUS_IS_GTK_SIDEBAR_ROW (row))
-    popup_menu_cb (NAUTILUS_GTK_SIDEBAR_ROW (row));
+  if (NAUTILUS_IS_SIDEBAR_ROW (row))
+    popup_menu_cb (NAUTILUS_SIDEBAR_ROW (row));
 }
 
 static int
@@ -3254,7 +3254,7 @@ list_box_sort_func (GtkListBoxRow *row1,
 }
 
 static void
-update_hostname (NautilusGtkPlacesSidebar *sidebar)
+update_hostname (NautilusSidebar *sidebar)
 {
   GVariant *variant;
   gsize len;
@@ -3283,7 +3283,7 @@ hostname_proxy_new_cb (GObject      *source_object,
                        GAsyncResult *res,
                        gpointer      user_data)
 {
-  NautilusGtkPlacesSidebar *sidebar = user_data;
+  NautilusSidebar *sidebar = user_data;
   GError *error = NULL;
   GDBusProxy *proxy;
 
@@ -3312,7 +3312,7 @@ hostname_proxy_new_cb (GObject      *source_object,
 }
 
 static void
-create_volume_monitor (NautilusGtkPlacesSidebar *sidebar)
+create_volume_monitor (NautilusSidebar *sidebar)
 {
   g_assert (sidebar->volume_monitor == NULL);
 
@@ -3343,7 +3343,7 @@ shell_shows_desktop_changed (GtkSettings *settings,
                              GParamSpec  *pspec,
                              gpointer     user_data)
 {
-  NautilusGtkPlacesSidebar *sidebar = user_data;
+  NautilusSidebar *sidebar = user_data;
   gboolean show_desktop;
 
   g_assert (settings == sidebar->gtk_settings);
@@ -3358,7 +3358,7 @@ shell_shows_desktop_changed (GtkSettings *settings,
 }
 
 static void
-update_location (NautilusGtkPlacesSidebar *self)
+update_location (NautilusSidebar *self)
 {
   GFile *location = NULL;
 
@@ -3368,11 +3368,11 @@ update_location (NautilusGtkPlacesSidebar *self)
       location = nautilus_window_slot_get_location (self->window_slot);
     }
 
-  nautilus_gtk_places_sidebar_set_location (self, location);
+  nautilus_sidebar_set_location (self, location);
 }
 
 static void
-nautilus_gtk_places_sidebar_init (NautilusGtkPlacesSidebar *sidebar)
+nautilus_sidebar_init (NautilusSidebar *sidebar)
 {
   GtkDropTarget *target;
   gboolean show_desktop;
@@ -3437,7 +3437,7 @@ nautilus_gtk_places_sidebar_init (NautilusGtkPlacesSidebar *sidebar)
   /* DND support */
   target = gtk_drop_target_new (G_TYPE_INVALID, GDK_ACTION_ALL);
   gtk_drop_target_set_preload (target, TRUE);
-  gtk_drop_target_set_gtypes (target, (GType[2]) { NAUTILUS_TYPE_GTK_SIDEBAR_ROW, GDK_TYPE_FILE_LIST }, 2);
+  gtk_drop_target_set_gtypes (target, (GType[2]) { NAUTILUS_TYPE_SIDEBAR_ROW, GDK_TYPE_FILE_LIST }, 2);
   g_signal_connect (target, "enter", G_CALLBACK (drag_motion_callback), sidebar);
   g_signal_connect (target, "motion", G_CALLBACK (drag_motion_callback), sidebar);
   g_signal_connect (target, "drop", G_CALLBACK (drag_drop_callback), sidebar);
@@ -3498,21 +3498,21 @@ nautilus_gtk_places_sidebar_init (NautilusGtkPlacesSidebar *sidebar)
 }
 
 static void
-nautilus_gtk_places_sidebar_set_property (GObject      *obj,
+nautilus_sidebar_set_property (GObject      *obj,
                                  guint         property_id,
                                  const GValue *value,
                                  GParamSpec   *pspec)
 {
-  NautilusGtkPlacesSidebar *sidebar = NAUTILUS_GTK_PLACES_SIDEBAR (obj);
+  NautilusSidebar *sidebar = NAUTILUS_PLACES_SIDEBAR (obj);
 
   switch (property_id)
     {
     case PROP_LOCATION:
-      nautilus_gtk_places_sidebar_set_location (sidebar, g_value_get_object (value));
+      nautilus_sidebar_set_location (sidebar, g_value_get_object (value));
       break;
 
     case PROP_OPEN_FLAGS:
-      nautilus_gtk_places_sidebar_set_open_flags (sidebar, g_value_get_flags (value));
+      nautilus_sidebar_set_open_flags (sidebar, g_value_get_flags (value));
       break;
 
     case PROP_WINDOW_SLOT:
@@ -3530,21 +3530,21 @@ nautilus_gtk_places_sidebar_set_property (GObject      *obj,
 }
 
 static void
-nautilus_gtk_places_sidebar_get_property (GObject    *obj,
+nautilus_sidebar_get_property (GObject    *obj,
                                  guint       property_id,
                                  GValue     *value,
                                  GParamSpec *pspec)
 {
-  NautilusGtkPlacesSidebar *sidebar = NAUTILUS_GTK_PLACES_SIDEBAR (obj);
+  NautilusSidebar *sidebar = NAUTILUS_PLACES_SIDEBAR (obj);
 
   switch (property_id)
     {
     case PROP_LOCATION:
-      g_value_take_object (value, nautilus_gtk_places_sidebar_get_location (sidebar));
+      g_value_take_object (value, nautilus_sidebar_get_location (sidebar));
       break;
 
     case PROP_OPEN_FLAGS:
-      g_value_set_flags (value, nautilus_gtk_places_sidebar_get_open_flags (sidebar));
+      g_value_set_flags (value, nautilus_sidebar_get_open_flags (sidebar));
       break;
 
     default:
@@ -3554,14 +3554,14 @@ nautilus_gtk_places_sidebar_get_property (GObject    *obj,
 }
 
 static void
-nautilus_gtk_places_sidebar_dispose (GObject *object)
+nautilus_sidebar_dispose (GObject *object)
 {
-  NautilusGtkPlacesSidebar *sidebar;
+  NautilusSidebar *sidebar;
 #ifdef HAVE_CLOUDPROVIDERS
   GList *l;
 #endif
 
-  sidebar = NAUTILUS_GTK_PLACES_SIDEBAR (object);
+  sidebar = NAUTILUS_PLACES_SIDEBAR (object);
 
   g_clear_object (&sidebar->window_slot);
   g_clear_object (&sidebar->slot_signal_group);
@@ -3632,23 +3632,23 @@ nautilus_gtk_places_sidebar_dispose (GObject *object)
     }
 #endif
 
-  G_OBJECT_CLASS (nautilus_gtk_places_sidebar_parent_class)->dispose (object);
+  G_OBJECT_CLASS (nautilus_sidebar_parent_class)->dispose (object);
 }
 
 static void
-nautilus_gtk_places_sidebar_finalize (GObject *object)
+nautilus_sidebar_finalize (GObject *object)
 {
-  NautilusGtkPlacesSidebar *sidebar = NAUTILUS_GTK_PLACES_SIDEBAR (object);
+  NautilusSidebar *sidebar = NAUTILUS_PLACES_SIDEBAR (object);
 
   g_clear_object (&sidebar->row_actions);
 
   g_clear_pointer (&sidebar->swin, gtk_widget_unparent);
 
-  G_OBJECT_CLASS (nautilus_gtk_places_sidebar_parent_class)->finalize (object);
+  G_OBJECT_CLASS (nautilus_sidebar_parent_class)->finalize (object);
 }
 
 static void
-nautilus_gtk_places_sidebar_measure (GtkWidget      *widget,
+nautilus_sidebar_measure (GtkWidget      *widget,
                             GtkOrientation  orientation,
                             int             for_size,
                             int            *minimum,
@@ -3656,7 +3656,7 @@ nautilus_gtk_places_sidebar_measure (GtkWidget      *widget,
                             int            *minimum_baseline,
                             int            *natural_baseline)
 {
-  NautilusGtkPlacesSidebar *sidebar = NAUTILUS_GTK_PLACES_SIDEBAR (widget);
+  NautilusSidebar *sidebar = NAUTILUS_PLACES_SIDEBAR (widget);
 
   gtk_widget_measure (sidebar->swin,
                       orientation,
@@ -3666,12 +3666,12 @@ nautilus_gtk_places_sidebar_measure (GtkWidget      *widget,
 }
 
 static void
-nautilus_gtk_places_sidebar_size_allocate (GtkWidget *widget,
+nautilus_sidebar_size_allocate (GtkWidget *widget,
                                   int        width,
                                   int        height,
                                   int        baseline)
 {
-  NautilusGtkPlacesSidebar *sidebar = NAUTILUS_GTK_PLACES_SIDEBAR (widget);
+  NautilusSidebar *sidebar = NAUTILUS_PLACES_SIDEBAR (widget);
 
   gtk_widget_size_allocate (sidebar->swin,
                             &(GtkAllocation) { 0, 0, width, height },
@@ -3685,22 +3685,22 @@ nautilus_gtk_places_sidebar_size_allocate (GtkWidget *widget,
 }
 
 static void
-nautilus_gtk_places_sidebar_class_init (NautilusGtkPlacesSidebarClass *class)
+nautilus_sidebar_class_init (NautilusSidebarClass *class)
 {
   GObjectClass *gobject_class = G_OBJECT_CLASS (class);
   GtkWidgetClass *widget_class = GTK_WIDGET_CLASS (class);
 
 
-  gobject_class->dispose = nautilus_gtk_places_sidebar_dispose;
-  gobject_class->finalize = nautilus_gtk_places_sidebar_finalize;
-  gobject_class->set_property = nautilus_gtk_places_sidebar_set_property;
-  gobject_class->get_property = nautilus_gtk_places_sidebar_get_property;
+  gobject_class->dispose = nautilus_sidebar_dispose;
+  gobject_class->finalize = nautilus_sidebar_finalize;
+  gobject_class->set_property = nautilus_sidebar_set_property;
+  gobject_class->get_property = nautilus_sidebar_get_property;
 
-  widget_class->measure = nautilus_gtk_places_sidebar_measure;
-  widget_class->size_allocate = nautilus_gtk_places_sidebar_size_allocate;
+  widget_class->measure = nautilus_sidebar_measure;
+  widget_class->size_allocate = nautilus_sidebar_size_allocate;
 
   /*
-   * NautilusGtkPlacesSidebar::drag-action-requested:
+   * NautilusSidebar::drag-action-requested:
    * @sidebar: the object which received the signal.
    * @drop: (type Gdk.Drop): GdkDrop with information about the drag operation
    * @dest_file: (type Gio.File): GFile with the tentative location that is being hovered for a drop
@@ -3733,7 +3733,7 @@ nautilus_gtk_places_sidebar_class_init (NautilusGtkPlacesSidebarClass *class)
                         GDK_TYPE_FILE_LIST);
 
   /*
-   * NautilusGtkPlacesSidebar::drag-action-ask:
+   * NautilusSidebar::drag-action-ask:
    * @sidebar: the object which received the signal.
    * @actions: Possible drag actions that need to be asked for.
    *
@@ -3754,7 +3754,7 @@ nautilus_gtk_places_sidebar_class_init (NautilusGtkPlacesSidebarClass *class)
                         GDK_TYPE_DRAG_ACTION);
 
   /*
-   * NautilusGtkPlacesSidebar::drag-perform-drop:
+   * NautilusSidebar::drag-perform-drop:
    * @sidebar: the object which received the signal.
    * @dest_file: (type Gio.File): Destination GFile.
    * @source_file_list: (type GLib.SList) (element-type GFile) (transfer none):
@@ -3780,13 +3780,13 @@ nautilus_gtk_places_sidebar_class_init (NautilusGtkPlacesSidebarClass *class)
                         GDK_TYPE_DRAG_ACTION);
 
   /*
-   * NautilusGtkPlacesSidebar::mount:
+   * NautilusSidebar::mount:
    * @sidebar: the object which received the signal.
    * @mount_operation: the GMountOperation that is going to start.
    *
    * The places sidebar emits this signal when it starts a new operation
    * because the user clicked on some location that needs mounting.
-   * In this way the application using the NautilusGtkPlacesSidebar can track the
+   * In this way the application using the NautilusSidebar can track the
    * progress of the operation and, for example, show a notification.
    */
   places_sidebar_signals [MOUNT] =
@@ -3800,13 +3800,13 @@ nautilus_gtk_places_sidebar_class_init (NautilusGtkPlacesSidebarClass *class)
                         1,
                         G_TYPE_MOUNT_OPERATION);
   /*
-   * NautilusGtkPlacesSidebar::unmount:
+   * NautilusSidebar::unmount:
    * @sidebar: the object which received the signal.
    * @mount_operation: the GMountOperation that is going to start.
    *
    * The places sidebar emits this signal when it starts a new operation
    * because the user for example ejected some drive or unmounted a mount.
-   * In this way the application using the NautilusGtkPlacesSidebar can track the
+   * In this way the application using the NautilusSidebar can track the
    * progress of the operation and, for example, show a notification.
    */
   places_sidebar_signals [UNMOUNT] =
@@ -3845,24 +3845,24 @@ nautilus_gtk_places_sidebar_class_init (NautilusGtkPlacesSidebarClass *class)
 }
 
 /*
- * nautilus_gtk_places_sidebar_new:
+ * nautilus_sidebar_new:
  *
- * Creates a new NautilusGtkPlacesSidebar widget.
+ * Creates a new NautilusSidebar widget.
  *
  * The application should connect to at least the
- * NautilusGtkPlacesSidebar::open-location signal to be notified
+ * NautilusSidebar::open-location signal to be notified
  * when the user makes a selection in the sidebar.
  *
- * Returns: a newly created NautilusGtkPlacesSidebar
+ * Returns: a newly created NautilusSidebar
  */
 GtkWidget *
-nautilus_gtk_places_sidebar_new (void)
+nautilus_sidebar_new (void)
 {
-  return GTK_WIDGET (g_object_new (nautilus_gtk_places_sidebar_get_type (), NULL));
+  return GTK_WIDGET (g_object_new (nautilus_sidebar_get_type (), NULL));
 }
 
 /*
- * nautilus_gtk_places_sidebar_set_open_flags:
+ * nautilus_sidebar_set_open_flags:
  * @sidebar: a places sidebar
  * @flags: Bitmask of modes in which the calling application can open locations
  *
@@ -3875,18 +3875,18 @@ nautilus_gtk_places_sidebar_new (void)
  * application can open new locations, so that the sidebar can display (or not)
  * the “Open in new tab” and “Open in new window” menu items as appropriate.
  *
- * When the NautilusGtkPlacesSidebar::open-location signal is emitted, its flags
+ * When the NautilusSidebar::open-location signal is emitted, its flags
  * argument will be set to one of the @flags that was passed in
- * nautilus_gtk_places_sidebar_set_open_flags().
+ * nautilus_sidebar_set_open_flags().
  *
  * Passing 0 for @flags will cause NAUTILUS_OPEN_FLAG_NORMAL to always be sent
  * to callbacks for the “open-location” signal.
  */
 void
-nautilus_gtk_places_sidebar_set_open_flags (NautilusGtkPlacesSidebar   *sidebar,
+nautilus_sidebar_set_open_flags (NautilusSidebar   *sidebar,
                                    NautilusOpenFlags  flags)
 {
-  g_return_if_fail (NAUTILUS_IS_GTK_PLACES_SIDEBAR (sidebar));
+  g_return_if_fail (NAUTILUS_IS_PLACES_SIDEBAR (sidebar));
 
   if (sidebar->open_flags != flags)
     {
@@ -3896,23 +3896,23 @@ nautilus_gtk_places_sidebar_set_open_flags (NautilusGtkPlacesSidebar   *sidebar,
 }
 
 /*
- * nautilus_gtk_places_sidebar_get_open_flags:
- * @sidebar: a NautilusGtkPlacesSidebar
+ * nautilus_sidebar_get_open_flags:
+ * @sidebar: a NautilusSidebar
  *
  * Gets the open flags.
  *
  * Returns: the NautilusOpenFlags of @sidebar
  */
 NautilusOpenFlags
-nautilus_gtk_places_sidebar_get_open_flags (NautilusGtkPlacesSidebar *sidebar)
+nautilus_sidebar_get_open_flags (NautilusSidebar *sidebar)
 {
-  g_return_val_if_fail (NAUTILUS_IS_GTK_PLACES_SIDEBAR (sidebar), 0);
+  g_return_val_if_fail (NAUTILUS_IS_PLACES_SIDEBAR (sidebar), 0);
 
   return sidebar->open_flags;
 }
 
 /*
- * nautilus_gtk_places_sidebar_set_location:
+ * nautilus_sidebar_set_location:
  * @sidebar: a places sidebar
  * @location: (nullable): location to select, or %NULL for no current path
  *
@@ -3923,7 +3923,7 @@ nautilus_gtk_places_sidebar_get_open_flags (NautilusGtkPlacesSidebar *sidebar)
  * places in the list.
  */
 void
-nautilus_gtk_places_sidebar_set_location (NautilusGtkPlacesSidebar *sidebar,
+nautilus_sidebar_set_location (NautilusSidebar *sidebar,
                                  GFile            *location)
 {
   GtkWidget *row;
@@ -3931,7 +3931,7 @@ nautilus_gtk_places_sidebar_set_location (NautilusGtkPlacesSidebar *sidebar,
   char *uri;
   gboolean found = FALSE;
 
-  g_return_if_fail (NAUTILUS_IS_GTK_PLACES_SIDEBAR (sidebar));
+  g_return_if_fail (NAUTILUS_IS_PLACES_SIDEBAR (sidebar));
 
   gtk_list_box_unselect_all (GTK_LIST_BOX (sidebar->list_box));
 
@@ -3967,11 +3967,11 @@ nautilus_gtk_places_sidebar_set_location (NautilusGtkPlacesSidebar *sidebar,
 }
 
 /*
- * nautilus_gtk_places_sidebar_get_location:
+ * nautilus_sidebar_get_location:
  * @sidebar: a places sidebar
  *
  * Gets the currently selected location in the @sidebar. This can be %NULL when
- * nothing is selected, for example, when nautilus_gtk_places_sidebar_set_location() has
+ * nothing is selected, for example, when nautilus_sidebar_set_location() has
  * been called with a location that is not among the sidebar’s list of places to
  * show.
  *
@@ -3981,7 +3981,7 @@ nautilus_gtk_places_sidebar_set_location (NautilusGtkPlacesSidebar *sidebar,
  * %NULL if nothing is visually selected.
  */
 GFile *
-nautilus_gtk_places_sidebar_get_location (NautilusGtkPlacesSidebar *sidebar)
+nautilus_sidebar_get_location (NautilusSidebar *sidebar)
 {
   GtkListBoxRow *selected;
   GFile *file;
@@ -4004,7 +4004,7 @@ nautilus_gtk_places_sidebar_get_location (NautilusGtkPlacesSidebar *sidebar)
 }
 
 char *
-nautilus_gtk_places_sidebar_get_location_title (NautilusGtkPlacesSidebar *sidebar)
+nautilus_sidebar_get_location_title (NautilusSidebar *sidebar)
 {
   GtkListBoxRow *selected;
   char *title;
@@ -4021,7 +4021,7 @@ nautilus_gtk_places_sidebar_get_location_title (NautilusGtkPlacesSidebar *sideba
 }
 
 /*
- * nautilus_gtk_places_sidebar_get_nth_bookmark:
+ * nautilus_sidebar_get_nth_bookmark:
  * @sidebar: a places sidebar
  * @n: index of the bookmark to query
  *
@@ -4034,14 +4034,14 @@ nautilus_gtk_places_sidebar_get_location_title (NautilusGtkPlacesSidebar *sideba
  * the file chooser starts them with the keyboard shortcut "Alt-1".
  */
 GFile *
-nautilus_gtk_places_sidebar_get_nth_bookmark (NautilusGtkPlacesSidebar *sidebar,
+nautilus_sidebar_get_nth_bookmark (NautilusSidebar *sidebar,
                                      int               n)
 {
   GtkWidget *row;
   int k;
   GFile *file;
 
-  g_return_val_if_fail (NAUTILUS_IS_GTK_PLACES_SIDEBAR (sidebar), NULL);
+  g_return_val_if_fail (NAUTILUS_IS_PLACES_SIDEBAR (sidebar), NULL);
 
   file = NULL;
   k = 0;
@@ -4076,25 +4076,25 @@ nautilus_gtk_places_sidebar_get_nth_bookmark (NautilusGtkPlacesSidebar *sidebar,
 }
 
 /*
- * nautilus_gtk_places_sidebar_set_drop_targets_visible:
+ * nautilus_sidebar_set_drop_targets_visible:
  * @sidebar: a places sidebar.
  * @visible: whether to show the valid targets or not.
  *
- * Make the NautilusGtkPlacesSidebar show drop targets, so it can show the available
+ * Make the NautilusSidebar show drop targets, so it can show the available
  * drop targets and a "new bookmark" row. This improves the Drag-and-Drop
  * experience of the user and allows applications to show all available
  * drop targets at once.
  *
  * This needs to be called when the application is aware of an ongoing drag
  * that might target the sidebar. The drop-targets-visible state will be unset
- * automatically if the drag finishes in the NautilusGtkPlacesSidebar. You only need
+ * automatically if the drag finishes in the NautilusSidebar. You only need
  * to unset the state when the drag ends on some other widget on your application.
  */
 void
-nautilus_gtk_places_sidebar_set_drop_targets_visible (NautilusGtkPlacesSidebar *sidebar,
+nautilus_sidebar_set_drop_targets_visible (NautilusSidebar *sidebar,
                                              gboolean          visible)
 {
-  g_return_if_fail (NAUTILUS_IS_GTK_PLACES_SIDEBAR (sidebar));
+  g_return_if_fail (NAUTILUS_IS_PLACES_SIDEBAR (sidebar));
 
   if (visible)
     {

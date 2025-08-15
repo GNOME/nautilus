@@ -10,28 +10,28 @@
 
 G_BEGIN_DECLS
 
-#define NAUTILUS_TYPE_GTK_SIDEBAR_ROW (nautilus_gtk_sidebar_row_get_type ())
-G_DECLARE_FINAL_TYPE (NautilusGtkSidebarRow,
-                      nautilus_gtk_sidebar_row,
-                      NAUTILUS, GTK_SIDEBAR_ROW,
+#define NAUTILUS_TYPE_SIDEBAR_ROW (nautilus_sidebar_row_get_type ())
+G_DECLARE_FINAL_TYPE (NautilusSidebarRow,
+                      nautilus_sidebar_row,
+                      NAUTILUS, SIDEBAR_ROW,
                       GtkListBoxRow)
 
-NautilusGtkSidebarRow *nautilus_gtk_sidebar_row_new    (void);
-NautilusGtkSidebarRow *nautilus_sidebar_row_new_placeholder (void);
+NautilusSidebarRow *nautilus_sidebar_row_new    (void);
+NautilusSidebarRow *nautilus_sidebar_row_new_placeholder (void);
 
-NautilusGtkSidebarRow *nautilus_gtk_sidebar_row_clone  (NautilusGtkSidebarRow *self);
+NautilusSidebarRow *nautilus_sidebar_row_clone  (NautilusSidebarRow *self);
 
 /* Use these methods instead of gtk_widget_hide/show to use an animation */
-void           nautilus_gtk_sidebar_row_hide   (NautilusGtkSidebarRow *self,
+void           nautilus_sidebar_row_hide   (NautilusSidebarRow *self,
                                        gboolean       immediate);
-void           nautilus_gtk_sidebar_row_reveal (NautilusGtkSidebarRow *self);
+void           nautilus_sidebar_row_reveal (NautilusSidebarRow *self);
 
-GtkWidget     *nautilus_gtk_sidebar_row_get_eject_button (NautilusGtkSidebarRow *self);
-void           nautilus_gtk_sidebar_row_set_start_icon   (NautilusGtkSidebarRow *self,
+GtkWidget     *nautilus_sidebar_row_get_eject_button (NautilusSidebarRow *self);
+void           nautilus_sidebar_row_set_start_icon   (NautilusSidebarRow *self,
                                                  GIcon         *icon);
-void           nautilus_gtk_sidebar_row_set_end_icon     (NautilusGtkSidebarRow *self,
+void           nautilus_sidebar_row_set_end_icon     (NautilusSidebarRow *self,
                                                  GIcon         *icon);
-void           nautilus_gtk_sidebar_row_set_busy         (NautilusGtkSidebarRow *row,
+void           nautilus_sidebar_row_set_busy         (NautilusSidebarRow *row,
                                                  gboolean       is_busy);
 
 G_END_DECLS

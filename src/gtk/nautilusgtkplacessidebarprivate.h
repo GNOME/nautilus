@@ -14,30 +14,30 @@
 
 G_BEGIN_DECLS
 
-#define NAUTILUS_TYPE_GTK_PLACES_SIDEBAR (nautilus_gtk_places_sidebar_get_type ())
-G_DECLARE_FINAL_TYPE (NautilusGtkPlacesSidebar,
-                      nautilus_gtk_places_sidebar,
-                      NAUTILUS, GTK_PLACES_SIDEBAR,
+#define NAUTILUS_TYPE_PLACES_SIDEBAR (nautilus_sidebar_get_type ())
+G_DECLARE_FINAL_TYPE (NautilusSidebar,
+                      nautilus_sidebar,
+                      NAUTILUS, PLACES_SIDEBAR,
                       GtkWidget)
 
-GtkWidget *        nautilus_gtk_places_sidebar_new                        (void);
+GtkWidget *        nautilus_sidebar_new                        (void);
 
-NautilusOpenFlags  nautilus_gtk_places_sidebar_get_open_flags             (NautilusGtkPlacesSidebar   *sidebar);
-void               nautilus_gtk_places_sidebar_set_open_flags             (NautilusGtkPlacesSidebar   *sidebar,
+NautilusOpenFlags  nautilus_sidebar_get_open_flags             (NautilusSidebar   *sidebar);
+void               nautilus_sidebar_set_open_flags             (NautilusSidebar   *sidebar,
                                                                            NautilusOpenFlags           flags);
 
-GFile *            nautilus_gtk_places_sidebar_get_location               (NautilusGtkPlacesSidebar   *sidebar);
-void               nautilus_gtk_places_sidebar_set_location               (NautilusGtkPlacesSidebar   *sidebar,
+GFile *            nautilus_sidebar_get_location               (NautilusSidebar   *sidebar);
+void               nautilus_sidebar_set_location               (NautilusSidebar   *sidebar,
                                                                   GFile              *location);
 
-GFile *            nautilus_gtk_places_sidebar_get_nth_bookmark           (NautilusGtkPlacesSidebar   *sidebar,
+GFile *            nautilus_sidebar_get_nth_bookmark           (NautilusSidebar   *sidebar,
                                                                   int                 n);
-void               nautilus_gtk_places_sidebar_set_drop_targets_visible   (NautilusGtkPlacesSidebar   *sidebar,
+void               nautilus_sidebar_set_drop_targets_visible   (NautilusSidebar   *sidebar,
                                                                   gboolean            visible);
 
-void               nautilus_gtk_places_sidebar_set_show_trash             (NautilusGtkPlacesSidebar   *sidebar,
+void               nautilus_sidebar_set_show_trash             (NautilusSidebar   *sidebar,
                                                                            gboolean                    show_trash);
 
-char *nautilus_gtk_places_sidebar_get_location_title (NautilusGtkPlacesSidebar *sidebar);
+char *nautilus_sidebar_get_location_title (NautilusSidebar *sidebar);
 
 G_END_DECLS
