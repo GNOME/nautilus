@@ -320,8 +320,8 @@ list_box_header_func (GtkListBoxRow *row,
                       GtkListBoxRow *before,
                       gpointer       user_data)
 {
-  NautilusGtkPlacesSectionType row_section_type;
-  NautilusGtkPlacesSectionType before_section_type;
+  NautilusSidebarSectionType row_section_type;
+  NautilusSidebarSectionType before_section_type;
   GtkWidget *separator;
 
   gtk_list_box_row_set_header (row, NULL);
@@ -333,7 +333,7 @@ list_box_header_func (GtkListBoxRow *row,
     }
   else
     {
-      before_section_type = NAUTILUS_GTK_PLACES_SECTION_INVALID;
+      before_section_type = NAUTILUS_SIDEBAR_SECTION_INVALID;
     }
 
   if (before && before_section_type != row_section_type)
@@ -345,8 +345,8 @@ list_box_header_func (GtkListBoxRow *row,
 
 static GtkWidget*
 add_place (NautilusGtkPlacesSidebar            *sidebar,
-           NautilusGtkPlacesPlaceType           place_type,
-           NautilusGtkPlacesSectionType         section_type,
+           NautilusSidebarRowType           place_type,
+           NautilusSidebarSectionType         section_type,
            const char                  *name,
            GIcon                       *start_icon,
            GIcon                       *end_icon,
@@ -373,7 +373,7 @@ add_place (NautilusGtkPlacesSidebar            *sidebar,
                            &show_unmount, &show_eject);
 
   if (show_unmount || show_eject)
-    g_assert (place_type != NAUTILUS_GTK_PLACES_BOOKMARK);
+    g_assert (place_type != NAUTILUS_SIDEBAR_ROW_BOOKMARK);
 
   show_eject_button = (show_unmount || show_eject);
   if (mount != NULL && volume == NULL && drive == NULL)
@@ -571,8 +571,8 @@ create_cloud_provider_account_row (NautilusGtkPlacesSidebar      *sidebar,
       /* translators: %s is the name of a cloud provider for files */
       tooltip = g_strdup_printf (_("Open %s"), name);
 
-      add_place (sidebar, NAUTILUS_GTK_PLACES_BUILT_IN,
-                 NAUTILUS_GTK_PLACES_SECTION_CLOUD,
+      add_place (sidebar, NAUTILUS_SIDEBAR_ROW_BUILT_IN,
+                 NAUTILUS_SIDEBAR_SECTION_CLOUD,
                  name, start_icon, end_icon, mount_uri,
                  NULL, NULL, NULL, account, 0,
                  tooltip);
@@ -653,8 +653,8 @@ update_places (NautilusGtkPlacesSidebar *sidebar)
   /* home folder */
   home_uri = get_home_directory_uri ();
   start_icon = g_themed_icon_new_with_default_fallbacks (ICON_NAME_HOME);
-  add_place (sidebar, NAUTILUS_GTK_PLACES_BUILT_IN,
-             NAUTILUS_GTK_PLACES_SECTION_DEFAULT_LOCATIONS,
+  add_place (sidebar, NAUTILUS_SIDEBAR_ROW_BUILT_IN,
+             NAUTILUS_SIDEBAR_SECTION_DEFAULT_LOCATIONS,
              _("Home"), start_icon, NULL, home_uri,
              NULL, NULL, NULL, NULL, 0,
              _("Open Personal Folder"));
@@ -664,8 +664,8 @@ update_places (NautilusGtkPlacesSidebar *sidebar)
   if (should_show_recent (sidebar))
     {
       start_icon = g_themed_icon_new_with_default_fallbacks ("document-open-recent-symbolic");
-      add_place (sidebar, NAUTILUS_GTK_PLACES_BUILT_IN,
-                 NAUTILUS_GTK_PLACES_SECTION_DEFAULT_LOCATIONS,
+      add_place (sidebar, NAUTILUS_SIDEBAR_ROW_BUILT_IN,
+                 NAUTILUS_SIDEBAR_SECTION_DEFAULT_LOCATIONS,
                  _("Recent"), start_icon, NULL, SCHEME_RECENT ":///",
                  NULL, NULL, NULL, NULL, 0,
                  _("Recent Files"));
@@ -673,8 +673,8 @@ update_places (NautilusGtkPlacesSidebar *sidebar)
     }
 
   start_icon = g_themed_icon_new_with_default_fallbacks ("starred-symbolic");
-  add_place (sidebar, NAUTILUS_GTK_PLACES_BUILT_IN,
-             NAUTILUS_GTK_PLACES_SECTION_DEFAULT_LOCATIONS,
+  add_place (sidebar, NAUTILUS_SIDEBAR_ROW_BUILT_IN,
+             NAUTILUS_SIDEBAR_SECTION_DEFAULT_LOCATIONS,
              _("Starred"), start_icon, NULL, SCHEME_STARRED ":///",
              NULL, NULL, NULL, NULL, 0,
              _("Starred Files"));
@@ -687,8 +687,8 @@ update_places (NautilusGtkPlacesSidebar *sidebar)
       if (mount_uri)
         {
           start_icon = g_themed_icon_new_with_default_fallbacks (ICON_NAME_DESKTOP);
-          add_place (sidebar, NAUTILUS_GTK_PLACES_BUILT_IN,
-                     NAUTILUS_GTK_PLACES_SECTION_DEFAULT_LOCATIONS,
+          add_place (sidebar, NAUTILUS_SIDEBAR_ROW_BUILT_IN,
+                     NAUTILUS_SIDEBAR_SECTION_DEFAULT_LOCATIONS,
                      _("Desktop"), start_icon, NULL, mount_uri,
                      NULL, NULL, NULL, NULL, 0,
                      _("Open the contents of your desktop in a folder"));
@@ -699,8 +699,8 @@ update_places (NautilusGtkPlacesSidebar *sidebar)
 
   /* Network view */
   start_icon = g_themed_icon_new_with_default_fallbacks (ICON_NAME_NETWORK_VIEW);
-  add_place (sidebar, NAUTILUS_GTK_PLACES_BUILT_IN,
-             NAUTILUS_GTK_PLACES_SECTION_DEFAULT_LOCATIONS,
+  add_place (sidebar, NAUTILUS_SIDEBAR_ROW_BUILT_IN,
+             NAUTILUS_SIDEBAR_SECTION_DEFAULT_LOCATIONS,
              _("Network"), start_icon, NULL, SCHEME_NETWORK_VIEW ":///",
              NULL, NULL, NULL, NULL, 0,
              _("Open Network Locations"));
@@ -710,8 +710,8 @@ update_places (NautilusGtkPlacesSidebar *sidebar)
   if (sidebar->show_trash)
     {
       start_icon = nautilus_trash_monitor_get_symbolic_icon ();
-      sidebar->trash_row = add_place (sidebar, NAUTILUS_GTK_PLACES_BUILT_IN,
-                                      NAUTILUS_GTK_PLACES_SECTION_DEFAULT_LOCATIONS,
+      sidebar->trash_row = add_place (sidebar, NAUTILUS_SIDEBAR_ROW_BUILT_IN,
+                                      NAUTILUS_SIDEBAR_SECTION_DEFAULT_LOCATIONS,
                                       _("Trash"), start_icon, NULL, SCHEME_TRASH ":///",
                                       NULL, NULL, NULL, NULL, 0,
                                       _("Open Trash"));
@@ -794,9 +794,9 @@ update_places (NautilusGtkPlacesSidebar *sidebar)
                   tooltip = g_file_get_parse_name (root);
 
                   add_place (sidebar, (is_external_volume (volume) ?
-                                       NAUTILUS_GTK_PLACES_EXTERNAL_MOUNT :
-                                       NAUTILUS_GTK_PLACES_INTERNAL_MOUNT),
-                             NAUTILUS_GTK_PLACES_SECTION_MOUNTS,
+                                       NAUTILUS_SIDEBAR_ROW_EXTERNAL_MOUNT :
+                                       NAUTILUS_SIDEBAR_ROW_INTERNAL_MOUNT),
+                             NAUTILUS_SIDEBAR_SECTION_MOUNTS,
                              name, start_icon, NULL, mount_uri,
                              drive, volume, mount, NULL, 0, tooltip);
                   g_object_unref (root);
@@ -821,9 +821,9 @@ update_places (NautilusGtkPlacesSidebar *sidebar)
                   tooltip = g_strdup_printf (_("Mount and Open “%s”"), name);
 
                   add_place (sidebar, (is_external_volume (volume) ?
-                                       NAUTILUS_GTK_PLACES_EXTERNAL_MOUNT :
-                                       NAUTILUS_GTK_PLACES_INTERNAL_MOUNT),
-                             NAUTILUS_GTK_PLACES_SECTION_MOUNTS,
+                                       NAUTILUS_SIDEBAR_ROW_EXTERNAL_MOUNT :
+                                       NAUTILUS_SIDEBAR_ROW_INTERNAL_MOUNT),
+                             NAUTILUS_SIDEBAR_SECTION_MOUNTS,
                              name, start_icon, NULL, NULL,
                              drive, volume, NULL, NULL, 0, tooltip);
                   g_object_unref (start_icon);
@@ -850,8 +850,8 @@ update_places (NautilusGtkPlacesSidebar *sidebar)
               name = g_drive_get_name (drive);
               tooltip = g_strdup_printf (_("Mount and Open “%s”"), name);
 
-              add_place (sidebar, NAUTILUS_GTK_PLACES_BUILT_IN,
-                         NAUTILUS_GTK_PLACES_SECTION_MOUNTS,
+              add_place (sidebar, NAUTILUS_SIDEBAR_ROW_BUILT_IN,
+                         NAUTILUS_SIDEBAR_SECTION_MOUNTS,
                          name, start_icon, NULL, NULL,
                          drive, NULL, NULL, NULL, 0, tooltip);
               g_object_unref (start_icon);
@@ -898,9 +898,9 @@ update_places (NautilusGtkPlacesSidebar *sidebar)
           tooltip = g_file_get_parse_name (root);
           name = g_mount_get_name (mount);
           add_place (sidebar, (is_external_volume (volume) ?
-                               NAUTILUS_GTK_PLACES_EXTERNAL_MOUNT :
-                               NAUTILUS_GTK_PLACES_INTERNAL_MOUNT),
-                     NAUTILUS_GTK_PLACES_SECTION_MOUNTS,
+                               NAUTILUS_SIDEBAR_ROW_EXTERNAL_MOUNT :
+                               NAUTILUS_SIDEBAR_ROW_INTERNAL_MOUNT),
+                     NAUTILUS_SIDEBAR_SECTION_MOUNTS,
                      name, start_icon, NULL, mount_uri,
                      NULL, volume, mount, NULL, 0, tooltip);
           g_object_unref (mount);
@@ -916,9 +916,9 @@ update_places (NautilusGtkPlacesSidebar *sidebar)
           start_icon = g_volume_get_symbolic_icon (volume);
           name = g_volume_get_name (volume);
           add_place (sidebar, (is_external_volume (volume) ?
-                               NAUTILUS_GTK_PLACES_EXTERNAL_MOUNT :
-                               NAUTILUS_GTK_PLACES_INTERNAL_MOUNT),
-                     NAUTILUS_GTK_PLACES_SECTION_MOUNTS,
+                               NAUTILUS_SIDEBAR_ROW_EXTERNAL_MOUNT :
+                               NAUTILUS_SIDEBAR_ROW_INTERNAL_MOUNT),
+                     NAUTILUS_SIDEBAR_SECTION_MOUNTS,
                      name, start_icon, NULL, NULL,
                      NULL, volume, NULL, NULL, 0, name);
           g_object_unref (start_icon);
@@ -961,8 +961,8 @@ update_places (NautilusGtkPlacesSidebar *sidebar)
       mount_uri = g_file_get_uri (root);
       name = g_mount_get_name (mount);
       tooltip = g_file_get_parse_name (root);
-      add_place (sidebar, NAUTILUS_GTK_PLACES_EXTERNAL_MOUNT,
-                 NAUTILUS_GTK_PLACES_SECTION_MOUNTS,
+      add_place (sidebar, NAUTILUS_SIDEBAR_ROW_EXTERNAL_MOUNT,
+                 NAUTILUS_SIDEBAR_SECTION_MOUNTS,
                  name, start_icon, NULL, mount_uri,
                  NULL, NULL, mount, NULL, 0, tooltip);
       g_object_unref (root);
@@ -989,8 +989,8 @@ update_places (NautilusGtkPlacesSidebar *sidebar)
       gboolean is_native = g_file_is_native (location);
       tooltip = is_native ? g_file_get_path (location) : g_uri_unescape_string (mount_uri, NULL);
 
-      row = add_place (sidebar, NAUTILUS_GTK_PLACES_BOOKMARK,
-                       NAUTILUS_GTK_PLACES_SECTION_BOOKMARKS,
+      row = add_place (sidebar, NAUTILUS_SIDEBAR_ROW_BOOKMARK,
+                       NAUTILUS_SIDEBAR_SECTION_BOOKMARKS,
                        nautilus_bookmark_get_name (l->data),
                        NULL,
                        NULL, mount_uri, NULL, NULL, NULL, NULL, index, tooltip);
@@ -1002,8 +1002,8 @@ update_places (NautilusGtkPlacesSidebar *sidebar)
 
   /* Add new bookmark row */
   new_bookmark_icon = g_themed_icon_new ("bookmark-new-symbolic");
-  sidebar->new_bookmark_row = add_place (sidebar, NAUTILUS_GTK_PLACES_NEW_BOOKMARK,
-                                         NAUTILUS_GTK_PLACES_SECTION_BOOKMARKS,
+  sidebar->new_bookmark_row = add_place (sidebar, NAUTILUS_SIDEBAR_ROW_NEW_BOOKMARK,
+                                         NAUTILUS_SIDEBAR_SECTION_BOOKMARKS,
                                          _("New bookmark"), new_bookmark_icon, NULL, NULL,
                                          NULL, NULL, NULL, NULL, 0,
                                          _("Add a new bookmark"));
@@ -1028,8 +1028,8 @@ update_places (NautilusGtkPlacesSidebar *sidebar)
           name = g_volume_get_name (volume);
           tooltip = g_strdup_printf (_("Mount and Open “%s”"), name);
 
-          add_place (sidebar, NAUTILUS_GTK_PLACES_EXTERNAL_MOUNT,
-                     NAUTILUS_GTK_PLACES_SECTION_MOUNTS,
+          add_place (sidebar, NAUTILUS_SIDEBAR_ROW_EXTERNAL_MOUNT,
+                     NAUTILUS_SIDEBAR_SECTION_MOUNTS,
                      name, start_icon, NULL, NULL,
                      NULL, volume, NULL, NULL, 0, tooltip);
           g_object_unref (start_icon);
@@ -1049,8 +1049,8 @@ update_places (NautilusGtkPlacesSidebar *sidebar)
       mount_uri = g_file_get_uri (root);
       name = g_mount_get_name (mount);
       tooltip = g_file_get_parse_name (root);
-      add_place (sidebar, NAUTILUS_GTK_PLACES_EXTERNAL_MOUNT,
-                 NAUTILUS_GTK_PLACES_SECTION_MOUNTS,
+      add_place (sidebar, NAUTILUS_SIDEBAR_ROW_EXTERNAL_MOUNT,
+                 NAUTILUS_SIDEBAR_SECTION_MOUNTS,
                  name, start_icon, NULL, mount_uri,
                  NULL, NULL, mount, NULL, 0, tooltip);
       g_object_unref (root);
@@ -1133,8 +1133,8 @@ check_valid_drop_target (NautilusGtkPlacesSidebar *sidebar,
                          NautilusGtkSidebarRow    *row,
                          const GValue     *value)
 {
-  NautilusGtkPlacesPlaceType place_type;
-  NautilusGtkPlacesSectionType section_type;
+  NautilusSidebarRowType place_type;
+  NautilusSidebarSectionType section_type;
   g_autoptr (NautilusFile) dest_file = NULL;
   gboolean valid = FALSE;
   char *uri;
@@ -1152,14 +1152,14 @@ check_valid_drop_target (NautilusGtkPlacesSidebar *sidebar,
                 "file", &dest_file,
                 NULL);
 
-  if (place_type == NAUTILUS_GTK_PLACES_NEW_BOOKMARK)
+  if (place_type == NAUTILUS_SIDEBAR_ROW_NEW_BOOKMARK)
     {
       g_free (uri);
       return TRUE;
     }
 
   /* Disallow drops on recent:/// */
-  if (place_type == NAUTILUS_GTK_PLACES_BUILT_IN)
+  if (place_type == NAUTILUS_SIDEBAR_ROW_BUILT_IN)
     {
       if (g_strcmp0 (uri, SCHEME_RECENT ":///") == 0)
         {
@@ -1172,7 +1172,7 @@ check_valid_drop_target (NautilusGtkPlacesSidebar *sidebar,
   if (G_VALUE_HOLDS (value, NAUTILUS_TYPE_GTK_SIDEBAR_ROW))
     {
       /* Don't allow reordering bookmarks into non-bookmark areas */
-      valid = section_type == NAUTILUS_GTK_PLACES_SECTION_BOOKMARKS;
+      valid = section_type == NAUTILUS_SIDEBAR_SECTION_BOOKMARKS;
     }
   else if (G_VALUE_HOLDS (value, GDK_TYPE_FILE_LIST))
     {
@@ -1279,7 +1279,7 @@ drag_motion_callback (GtkDropTarget    *target,
 {
   GdkDragAction action;
   GtkListBoxRow *row;
-  NautilusGtkPlacesPlaceType place_type;
+  NautilusSidebarRowType place_type;
   char *drop_target_uri = NULL;
   int row_index;
   int row_placeholder_index;
@@ -1381,7 +1381,7 @@ drag_motion_callback (GtkDropTarget    *target,
        * file move/copy operation itself, or if we should only try to
        * create bookmarks out of the dragged URIs.
        */
-      if (place_type == NAUTILUS_GTK_PLACES_NEW_BOOKMARK)
+      if (place_type == NAUTILUS_SIDEBAR_ROW_NEW_BOOKMARK)
         {
           action = GDK_ACTION_COPY;
         }
@@ -1471,8 +1471,8 @@ drag_drop_callback (GtkDropTarget    *target,
                     NautilusGtkPlacesSidebar *sidebar)
 {
   int target_order_index;
-  NautilusGtkPlacesPlaceType target_place_type;
-  NautilusGtkPlacesSectionType target_section_type;
+  NautilusSidebarRowType target_place_type;
+  NautilusSidebarSectionType target_section_type;
   char *target_uri;
   GtkListBoxRow *target_row;
   gboolean result;
@@ -1496,7 +1496,7 @@ drag_drop_callback (GtkDropTarget    *target,
     {
       GtkWidget *source_row;
       /* A bookmark got reordered */
-      if (target_section_type != NAUTILUS_GTK_PLACES_SECTION_BOOKMARKS)
+      if (target_section_type != NAUTILUS_SIDEBAR_SECTION_BOOKMARKS)
         goto out;
 
       source_row = g_value_get_object (value);
@@ -1510,7 +1510,7 @@ drag_drop_callback (GtkDropTarget    *target,
   else if (G_VALUE_HOLDS (value, GDK_TYPE_FILE_LIST))
     {
       /* Dropping URIs! */
-      if (target_place_type == NAUTILUS_GTK_PLACES_NEW_BOOKMARK)
+      if (target_place_type == NAUTILUS_SIDEBAR_ROW_NEW_BOOKMARK)
         {
           drop_files_as_bookmarks (sidebar, g_value_get_boxed (value), target_order_index);
         }
@@ -1795,7 +1795,7 @@ static void
 rename_entry_changed (GtkEntry         *entry,
                       NautilusGtkPlacesSidebar *sidebar)
 {
-  NautilusGtkPlacesPlaceType type;
+  NautilusSidebarRowType type;
   char *name;
   char *uri;
   const char *new_name;
@@ -1824,7 +1824,7 @@ rename_entry_changed (GtkEntry         *entry,
                     "label", &name,
                     NULL);
 
-      if (type == NAUTILUS_GTK_PLACES_BOOKMARK &&
+      if (type == NAUTILUS_SIDEBAR_ROW_BOOKMARK &&
           strcmp (uri, sidebar->rename_uri) != 0 &&
           strcmp (new_name, name) == 0)
         found = TRUE;
@@ -2045,11 +2045,11 @@ show_rename_popover (NautilusGtkSidebarRow *row)
 static void
 rename_bookmark (NautilusGtkSidebarRow *row)
 {
-  NautilusGtkPlacesPlaceType type;
+  NautilusSidebarRowType type;
 
   g_object_get (row, "place-type", &type, NULL);
 
-  if (type != NAUTILUS_GTK_PLACES_BOOKMARK)
+  if (type != NAUTILUS_SIDEBAR_ROW_BOOKMARK)
     return;
 
   show_rename_popover (row);
@@ -2095,7 +2095,7 @@ empty_trash_cb (GSimpleAction *action,
 static void
 remove_bookmark (NautilusGtkSidebarRow *row)
 {
-  NautilusGtkPlacesPlaceType type;
+  NautilusSidebarRowType type;
   char *uri;
   NautilusGtkPlacesSidebar *sidebar;
 
@@ -2105,7 +2105,7 @@ remove_bookmark (NautilusGtkSidebarRow *row)
                 "uri", &uri,
                 NULL);
 
-  if (type == NAUTILUS_GTK_PLACES_BOOKMARK)
+  if (type == NAUTILUS_SIDEBAR_ROW_BOOKMARK)
     {
       nautilus_bookmark_list_delete_items_with_uri (sidebar->bookmark_list, uri);
     }
@@ -2743,7 +2743,7 @@ static void
 create_row_popover (NautilusGtkPlacesSidebar *sidebar,
                     NautilusGtkSidebarRow    *row)
 {
-  NautilusGtkPlacesPlaceType type;
+  NautilusSidebarRowType type;
   GMenu *menu, *section;
   GMenuItem *item;
   GMount *mount;
@@ -2794,9 +2794,9 @@ create_row_popover (NautilusGtkPlacesSidebar *sidebar,
 #endif
 
   action = g_action_map_lookup_action (G_ACTION_MAP (sidebar->row_actions), "remove");
-  g_simple_action_set_enabled (G_SIMPLE_ACTION (action), (type == NAUTILUS_GTK_PLACES_BOOKMARK));
+  g_simple_action_set_enabled (G_SIMPLE_ACTION (action), (type == NAUTILUS_SIDEBAR_ROW_BOOKMARK));
   action = g_action_map_lookup_action (G_ACTION_MAP (sidebar->row_actions), "rename");
-  g_simple_action_set_enabled (G_SIMPLE_ACTION (action), (type == NAUTILUS_GTK_PLACES_BOOKMARK));
+  g_simple_action_set_enabled (G_SIMPLE_ACTION (action), (type == NAUTILUS_SIDEBAR_ROW_BOOKMARK));
   action = g_action_map_lookup_action (G_ACTION_MAP (sidebar->row_actions), "open");
   g_simple_action_set_enabled (G_SIMPLE_ACTION (action), !gtk_list_box_row_is_selected (GTK_LIST_BOX_ROW (row)));
   action = g_action_map_lookup_action (G_ACTION_MAP (sidebar->row_actions), "empty-trash");
@@ -3011,14 +3011,14 @@ on_row_pressed (GtkGestureClick *gesture,
                 NautilusGtkSidebarRow   *row)
 {
   NautilusGtkPlacesSidebar *sidebar;
-  NautilusGtkPlacesSectionType section_type;
+  NautilusSidebarSectionType section_type;
 
   g_object_get (row,
                 "sidebar", &sidebar,
                 "section_type", &section_type,
                 NULL);
 
-  if (section_type == NAUTILUS_GTK_PLACES_SECTION_BOOKMARKS)
+  if (section_type == NAUTILUS_SIDEBAR_SECTION_BOOKMARKS)
     {
       sidebar->drag_row = GTK_WIDGET (row);
       sidebar->drag_row_x = (int)x;
@@ -3036,7 +3036,7 @@ on_row_released (GtkGestureClick *gesture,
                  NautilusGtkSidebarRow   *row)
 {
   NautilusGtkPlacesSidebar *sidebar;
-  NautilusGtkPlacesSectionType section_type;
+  NautilusSidebarSectionType section_type;
   guint button, state;
 
   g_object_get (row,
@@ -3186,8 +3186,8 @@ list_box_sort_func (GtkListBoxRow *row1,
                     GtkListBoxRow *row2,
                     gpointer       user_data)
 {
-  NautilusGtkPlacesSectionType section_type_1, section_type_2;
-  NautilusGtkPlacesPlaceType place_type_1, place_type_2;
+  NautilusSidebarSectionType section_type_1, section_type_2;
+  NautilusSidebarRowType place_type_1, place_type_2;
   g_autofree gchar *label_1 = NULL, *label_2 = NULL;
   int index_1, index_2;
 
@@ -3219,13 +3219,13 @@ list_box_sort_func (GtkListBoxRow *row1,
    * having the same as place type as normal bookmarks so that the index is
    * used for ordering.
    */
-  if (place_type_1 == NAUTILUS_GTK_PLACES_BOOKMARK_PLACEHOLDER)
+  if (place_type_1 == NAUTILUS_SIDEBAR_ROW_BOOKMARK_PLACEHOLDER)
   {
-    place_type_1 = NAUTILUS_GTK_PLACES_BOOKMARK;
+    place_type_1 = NAUTILUS_SIDEBAR_ROW_BOOKMARK;
   }
-  if (place_type_2 == NAUTILUS_GTK_PLACES_BOOKMARK_PLACEHOLDER)
+  if (place_type_2 == NAUTILUS_SIDEBAR_ROW_BOOKMARK_PLACEHOLDER)
   {
-    place_type_2 = NAUTILUS_GTK_PLACES_BOOKMARK;
+    place_type_2 = NAUTILUS_SIDEBAR_ROW_BOOKMARK;
   }
 
   if (place_type_1 != place_type_2)
@@ -3233,7 +3233,7 @@ list_box_sort_func (GtkListBoxRow *row1,
       return place_type_1 - place_type_2;
     }
 
-  if (section_type_1 == NAUTILUS_GTK_PLACES_SECTION_MOUNTS)
+  if (section_type_1 == NAUTILUS_SIDEBAR_SECTION_MOUNTS)
     {
       g_autoptr (GVolume) volume_1 = NULL, volume_2 = NULL;
 
@@ -4049,7 +4049,7 @@ nautilus_gtk_places_sidebar_get_nth_bookmark (NautilusGtkPlacesSidebar *sidebar,
        row != NULL;
        row = gtk_widget_get_next_sibling (row))
     {
-      NautilusGtkPlacesPlaceType place_type;
+      NautilusSidebarRowType place_type;
       char *uri;
 
       if (!GTK_IS_LIST_BOX_ROW (row))
@@ -4059,7 +4059,7 @@ nautilus_gtk_places_sidebar_get_nth_bookmark (NautilusGtkPlacesSidebar *sidebar,
                     "place-type", &place_type,
                     "uri", &uri,
                     NULL);
-      if (place_type == NAUTILUS_GTK_PLACES_BOOKMARK)
+      if (place_type == NAUTILUS_SIDEBAR_ROW_BOOKMARK)
         {
           if (k == n)
             {

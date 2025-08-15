@@ -20,7 +20,6 @@ libnautilus_sources = [
     c_template: 'nautilus-enum-types.c.template',
     h_template: 'nautilus-enum-types.h.template',
     sources: [
-      'gtk/nautilusgtkplacessidebarprivate.h',
       'nautilus-enums.h',
       'nautilus-location-banner.h',
       'nautilus-search-popover.h',
