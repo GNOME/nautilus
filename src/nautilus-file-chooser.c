@@ -14,8 +14,6 @@
 #include <glib/gi18n.h>
 #include <gtk/gtk.h>
 
-#include "gtk/nautilusgtkplacessidebarprivate.h"
-
 #include "nautilus-directory.h"
 #include "nautilus-enum-types.h"
 #include "nautilus-file.h"
@@ -24,6 +22,7 @@
 #include "nautilus-global-preferences.h"
 #include "nautilus-scheme.h"
 #include "nautilus-shortcut-manager.h"
+#include "nautilus-sidebar.h"
 #include "nautilus-toolbar.h"
 #include "nautilus-view-item-filter.h"
 #include "nautilus-window-slot.h"

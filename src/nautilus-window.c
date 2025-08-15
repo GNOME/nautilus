@@ -38,8 +38,6 @@
 #include <gdk/wayland/gdkwayland.h>
 #endif
 
-#include "gtk/nautilusgtkplacessidebarprivate.h"
-
 #include "nautilus-application.h"
 #include "nautilus-bookmark.h"
 #include "nautilus-bookmark-list.h"
@@ -59,6 +57,7 @@
 #include "nautilus-progress-indicator.h"
 #include "nautilus-scheme.h"
 #include "nautilus-shortcut-manager.h"
+#include "nautilus-sidebar.h"
 #include "nautilus-signaller.h"
 #include "nautilus-toolbar.h"
 #include "nautilus-trash-monitor.h"
