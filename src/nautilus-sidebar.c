@@ -1478,17 +1478,13 @@ reorder_bookmarks (NautilusSidebar    *sidebar,
                    NautilusSidebarRow *row,
                    int                 new_position)
 {
-    char *uri;
-    GFile *file;
-    guint old_position;
+    g_autoptr (NautilusFile) file = NULL;
 
-    g_object_get (row, "uri", &uri, NULL);
-    file = g_file_new_for_uri (uri);
-    nautilus_bookmark_list_item_with_location (sidebar->bookmark_list, file, &old_position);
-    nautilus_bookmark_list_move_item (sidebar->bookmark_list, old_position, new_position);
+    g_object_get (row, "file", &file, NULL);
 
-    g_object_unref (file);
-    g_free (uri);
+    g_autoptr (GFile) location = nautilus_file_get_location (file);
+
+    nautilus_bookmark_list_move_item (sidebar->bookmark_list, location, new_position);
 }
 
 /* Creates bookmarks for the specified files at the given position in the bookmarks list */
