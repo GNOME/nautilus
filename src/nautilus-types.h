@@ -28,6 +28,8 @@
 
 #include "nautilus-enums.h"
 
+#include <glib.h>
+
 /* Keep sorted alphabetically. */
 
 typedef struct _NautilusBatchRenameDialog   NautilusBatchRenameDialog;
@@ -55,3 +57,12 @@ typedef struct _NautilusViewItem            NautilusViewItem;
 typedef struct _NautilusViewModel           NautilusViewModel;
 typedef struct _NautilusWindow              NautilusWindow;
 typedef struct _NautilusWindowSlot          NautilusWindowSlot;
+
+/* List aliases used for implicit type documentation */
+#define LIST_ALIAS(ALIAS) \
+    typedef GList ALIAS; \
+    G_DEFINE_AUTOPTR_CLEANUP_FUNC(ALIAS, g_list_free)
+
+LIST_ALIAS(GFileList)
+LIST_ALIAS(NautilusDirectoryList)
+LIST_ALIAS(NautilusFileList)
