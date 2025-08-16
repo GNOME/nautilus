@@ -50,9 +50,10 @@ GList *                 nautilus_bookmark_list_get_all             (NautilusBook
 void                    nautilus_bookmark_list_insert_item         (NautilusBookmarkList   *bookmarks,
 								    NautilusBookmark *bookmark,
 								    guint                   index);
-void                    nautilus_bookmark_list_move_item           (NautilusBookmarkList *bookmarks,
-								    guint                 index,
-								    guint                 destination);
+void
+nautilus_bookmark_list_move_item (NautilusBookmarkList *bookmarks,
+                                  GFile                *location,
+                                  guint                 destination);
 void
 nautilus_bookmark_list_remove (NautilusBookmarkList *bookmarks,
                                GFile                *location);

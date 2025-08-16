@@ -349,21 +349,29 @@ nautilus_bookmark_list_contains (NautilusBookmarkList *bookmarks,
 /**
  * nautilus_bookmark_list_move_item:
  *
- * Move the item from the given position to the destination.
- * @index: the index of the first bookmark.
- * @destination: the index of the second bookmark.
+ * Move the given item to the destination.
+ * @location: the location of the bookmark to move.
+ * @destination: index to which to move the bookmark.
  **/
 void
 nautilus_bookmark_list_move_item (NautilusBookmarkList *bookmarks,
-                                  guint                 index,
+                                  GFile                *location,
                                   guint                 destination)
 {
+    guint index;
+    GList *link_to_move = bookmark_list_get_node (bookmarks, location, &index);
+
     if (index == destination)
     {
         return;
     }
 
-    GList *link_to_move = g_list_nth (bookmarks->list, index);
+    if (link_to_move == NULL)
+    {
+        g_autofree char *uri = g_file_get_uri (location);
+        g_warning ("Attempted moving unknown bookmark of %s", uri);
+        return;
+    }
 
     bookmarks->list = g_list_remove_link (bookmarks->list,
                                           link_to_move);
