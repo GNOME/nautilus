@@ -222,6 +222,32 @@ nautilus_bookmark_list_init (NautilusBookmarkList *bookmarks)
                       G_CALLBACK (bookmark_monitor_changed_cb), bookmarks);
 }
 
+static GList *
+bookmark_list_get_node (NautilusBookmarkList *bookmarks,
+                        GFile                *location,
+                        guint                *index_ptr)
+{
+    guint index = 0;
+
+    for (GList *node = bookmarks->list; node != NULL; node = node->next, index += 1)
+    {
+        NautilusBookmark *bookmark = node->data;
+        GFile *bookmark_location = nautilus_bookmark_get_location (bookmark);
+
+        if (g_file_equal (location, bookmark_location))
+        {
+            if (index_ptr)
+            {
+                *index_ptr = index;
+            }
+
+            return node;
+        }
+    }
+
+    return NULL;
+}
+
 /**
  * insert_bookmark_internal:
  * @bookmarks: pointer to a #NautilusBookmarkList
@@ -240,7 +266,7 @@ insert_bookmark_internal (NautilusBookmarkList *bookmarks,
 {
     GFile *location = nautilus_bookmark_get_location (bookmark);
 
-    if (nautilus_bookmark_list_contains (bookmarks, location))
+    if (bookmark_list_get_node (bookmarks, location, NULL) != NULL)
     {
         g_object_unref (bookmark);
         return FALSE;
@@ -273,34 +299,12 @@ nautilus_bookmark_list_item_with_location (NautilusBookmarkList *bookmarks,
                                            GFile                *location,
                                            guint                *index)
 {
-    GList *node;
-    NautilusBookmark *bookmark;
-    guint idx;
-
     g_return_val_if_fail (NAUTILUS_IS_BOOKMARK_LIST (bookmarks), NULL);
     g_return_val_if_fail (G_IS_FILE (location), NULL);
 
-    idx = 0;
+    GList *node = bookmark_list_get_node (bookmarks, location, index);
 
-    for (node = bookmarks->list; node != NULL; node = node->next)
-    {
-        bookmark = node->data;
-        GFile *bookmark_location = nautilus_bookmark_get_location (bookmark);
-
-        if (g_file_equal (location, bookmark_location))
-        {
-            if (index)
-            {
-                *index = idx;
-            }
-
-            return bookmark;
-        }
-
-        idx++;
-    }
-
-    return NULL;
+    return node != NULL ? node->data : NULL;
 }
 
 /**
@@ -339,7 +343,7 @@ nautilus_bookmark_list_contains (NautilusBookmarkList *bookmarks,
     g_return_val_if_fail (NAUTILUS_IS_BOOKMARK_LIST (bookmarks), FALSE);
     g_return_val_if_fail (G_IS_FILE (location), FALSE);
 
-    return nautilus_bookmark_list_item_with_location (bookmarks, location, NULL) != NULL;
+    return bookmark_list_get_node (bookmarks, location, NULL) != NULL;
 }
 
 /**
@@ -727,7 +731,7 @@ gboolean
 nautilus_bookmark_list_can_bookmark_location (NautilusBookmarkList *list,
                                               GFile                *location)
 {
-    if (nautilus_bookmark_list_item_with_location (list, location, NULL))
+    if (bookmark_list_get_node (list, location, NULL) != NULL)
     {
         /* Already bookmarked */
         return FALSE;
