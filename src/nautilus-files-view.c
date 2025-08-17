@@ -1429,7 +1429,7 @@ app_choosen (AdwDialog *dialog,
              gpointer   user_data)
 {
     GtkWindow *parent_window;
-    GList *files;
+    NautilusFileList *files;
     GAppInfo *info;
 
     parent_window = user_data;

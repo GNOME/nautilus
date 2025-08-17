@@ -1183,7 +1183,6 @@ open_with_response_cb (GtkDialog *dialog,
 {
     GtkWindow *parent_window;
     NautilusFile *file;
-    GList files;
     GAppInfo *info;
     ActivateParametersInstall *parameters = user_data;
 
@@ -1201,10 +1200,7 @@ open_with_response_cb (GtkDialog *dialog,
 
     g_signal_emit_by_name (nautilus_signaller_get_current (), "mime-data-changed");
 
-    files.next = NULL;
-    files.prev = NULL;
-    files.data = file;
-    nautilus_launch_application (info, &files, parent_window);
+    nautilus_launch_application (info, &(NautilusFileList){ .data = file }, parent_window);
 
     g_object_unref (info);
 
