@@ -212,8 +212,8 @@ struct _NautilusFilesView
     gboolean metadata_for_directory_as_file_pending;
     gboolean metadata_for_files_in_directory_pending;
 
-    GList *subdirectory_list;
-    GList *subdirectories_loading;
+    NautilusDirectoryList *subdirectory_list;
+    NautilusDirectoryList *subdirectories_loading;
 
     GMenu *selection_menu_model;
     GMenu *background_menu_model;
@@ -1727,7 +1727,7 @@ pattern_select_response_select (AdwDialog *dialog,
 
     selection = nautilus_directory_match_pattern (self->directory, text);
 
-    for (GList *l = self->subdirectory_list; l != NULL; l = l->next)
+    for (NautilusDirectoryList *l = self->subdirectory_list; l != NULL; l = l->next)
     {
         NautilusDirectory *subdirectory = l->data;
         selection = g_list_concat (selection, nautilus_directory_match_pattern (subdirectory, text));
