@@ -418,7 +418,7 @@ void
 nautilus_window_open_location_full (NautilusWindow     *window,
                                     GFile              *location,
                                     NautilusOpenFlags   flags,
-                                    GList              *selection,
+                                    NautilusFileList   *selection,
                                     NautilusWindowSlot *target_slot)
 {
     NautilusWindowSlot *active_slot;

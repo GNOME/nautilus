@@ -80,8 +80,8 @@ static guint signals[LAST_SIGNAL];
 static void open_filename_entry (NautilusFileChooser *self);
 
 static gboolean
-mode_can_accept_files (NautilusMode  mode,
-                       GList        *files)
+mode_can_accept_files (NautilusMode      mode,
+                       NautilusFileList *files)
 {
     if (files == NULL)
     {
@@ -115,7 +115,7 @@ mode_can_accept_files (NautilusMode  mode,
         case NAUTILUS_MODE_OPEN_FILES:
         case NAUTILUS_MODE_OPEN_FOLDERS:
         {
-            for (GList *l = files; l != NULL; l = l->next)
+            for (NautilusFileList *l = files; l != NULL; l = l->next)
             {
                 gboolean is_folder = nautilus_file_opens_in_view (NAUTILUS_FILE (l->data));
 
@@ -176,7 +176,7 @@ mode_can_accept_current_directory (NautilusMode  mode,
 
 static gboolean
 nautilus_file_chooser_can_accept (NautilusFileChooser *self,
-                                  GList               *files,
+                                  NautilusFileList    *files,
                                   GFile               *location,
                                   gboolean             filename_passed)
 {
@@ -268,7 +268,7 @@ get_file_chooser_activation_location (NautilusFile *file)
 static void
 on_accept_button_clicked (NautilusFileChooser *self)
 {
-    GList *selection = nautilus_window_slot_get_selection (self->slot);
+    NautilusFileList *selection = nautilus_window_slot_get_selection (self->slot);
 
     if (self->mode == NAUTILUS_MODE_SAVE_FILE)
     {
@@ -457,7 +457,7 @@ on_slot_selection_notify (NautilusFileChooser *self)
 {
     g_return_if_fail (self->mode == NAUTILUS_MODE_SAVE_FILE);
 
-    GList *selection = nautilus_window_slot_get_selection (self->slot);
+    NautilusFileList *selection = nautilus_window_slot_get_selection (self->slot);
 
     if (mode_can_accept_files (self->mode, selection))
     {

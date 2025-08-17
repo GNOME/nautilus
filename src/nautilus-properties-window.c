@@ -2494,7 +2494,7 @@ open_parent_folder (NautilusPropertiesWindow *self)
     nautilus_application_open_location_full (NAUTILUS_APPLICATION (g_application_get_default ()),
                                              parent_location,
                                              NAUTILUS_OPEN_FLAG_NEW_WINDOW,
-                                             &(GList){ .data = file },
+                                             &(NautilusFileList){ .data = file },
                                              NULL, NULL, NULL);
 }
 
@@ -2516,7 +2516,7 @@ open_link_target (NautilusPropertiesWindow *self)
     nautilus_application_open_location_full (NAUTILUS_APPLICATION (g_application_get_default ()),
                                              parent_location,
                                              NAUTILUS_OPEN_FLAG_NEW_WINDOW,
-                                             &(GList){ .data = link_target_file },
+                                             &(NautilusFileList){ .data = link_target_file },
                                              NULL, NULL, NULL);
 }
 
