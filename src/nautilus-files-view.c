@@ -189,7 +189,7 @@ struct _NautilusFilesView
     GList *new_added_files;
     GList *new_changed_files;
 
-    GList *pending_selection;
+    NautilusFileList *pending_selection;
     GHashTable *pending_reveal;
     GHashTable *awaiting_acknowledge;
 
@@ -267,7 +267,7 @@ typedef struct
 typedef struct
 {
     NautilusFilesView *view;
-    GList *selection;
+    NautilusFileList *selection;
 } CompressCallbackData;
 
 typedef struct
@@ -773,9 +773,9 @@ nautilus_files_view_select_first (NautilusFilesView *self)
 
 static void
 nautilus_files_view_call_set_selection (NautilusFilesView *self,
-                                        GList             *selection)
+                                        NautilusFileList  *selection)
 {
-    g_autoptr (GList) files_to_find = g_list_copy (selection);
+    g_autoptr (NautilusFileList) files_to_find = g_list_copy (selection);
     g_autoptr (GtkBitset) update_set = NULL;
     g_autoptr (GtkBitset) new_selection_set = NULL;
     g_autoptr (GtkBitset) old_selection_set = NULL;
@@ -850,14 +850,14 @@ is_ancestor_selected (GtkTreeListRow *row,
     return FALSE;
 }
 
-static GList *
+static NautilusFileList *
 get_selection_internal (NautilusFilesView *self,
                         gboolean           for_file_transfer)
 {
     g_autoptr (GtkBitset) selection = NULL;
     GtkBitsetIter iter;
     guint i;
-    GList *selected_files = NULL;
+    NautilusFileList *selected_files = NULL;
 
     selection = gtk_selection_model_get_selection (GTK_SELECTION_MODEL (self->model));
 
@@ -889,7 +889,7 @@ get_selection_internal (NautilusFilesView *self,
 
 /* The difference from get_selection() is that any files in the selection that
  * also has a parent folder in the selection is not included */
-static GList *
+static NautilusFileList *
 nautilus_files_view_get_selection_for_file_transfer (NautilusFilesView *view)
 {
     g_return_val_if_fail (NAUTILUS_IS_FILES_VIEW (view), NULL);
@@ -1051,7 +1051,7 @@ nautilus_files_view_get_view_id (NautilusFilesView *self)
  * Returns: (transfer full) (type GFile): a newly allocated list
  * of the currently selected files.
  */
-GList *
+NautilusFileList *
 nautilus_files_view_get_selection (NautilusFilesView *self)
 {
     g_return_val_if_fail (NAUTILUS_IS_FILES_VIEW (self), NULL);
@@ -1649,15 +1649,13 @@ action_restore_from_trash (GSimpleAction *action,
                            gpointer       user_data)
 {
     NautilusFilesView *view;
-    GList *selection;
+    g_autolist (NautilusFile) selection = NULL;
 
     view = NAUTILUS_FILES_VIEW (user_data);
 
     selection = nautilus_files_view_get_selection_for_file_transfer (view);
     nautilus_restore_files_from_trash (selection,
                                        nautilus_files_view_get_containing_window (view));
-
-    nautilus_file_list_free (selection);
 }
 
 static void
@@ -1785,7 +1783,7 @@ typedef struct
 {
     NautilusFilesView *directory_view;
     GHashTable *added_locations;
-    GList *selection;
+    NautilusFileList *selection;
 } NewFolderData;
 
 typedef struct
@@ -1871,7 +1869,8 @@ new_folder_done (GFile    *new_folder,
     if (g_hash_table_contains (data->added_locations, new_folder))
     {
         /* The file was already added */
-        nautilus_files_view_call_set_selection (directory_view, &(GList){ .data = file });
+        nautilus_files_view_call_set_selection (directory_view,
+                                                &(NautilusFileList){ .data = file });
     }
     else
     {
@@ -2077,7 +2076,7 @@ compress_done (GFile    *new_file,
     if (g_hash_table_contains (data->added_locations, new_file))
     {
         /* The file was already added */
-        nautilus_files_view_call_set_selection (view, &(GList){ .data = file });
+        nautilus_files_view_call_set_selection (view, &(NautilusFileList){ .data = file });
     }
     else
     {
@@ -2588,7 +2587,7 @@ action_open_item_new_window (GSimpleAction *action,
                              gpointer       user_data)
 {
     NautilusFilesView *view;
-    GList *selection;
+    g_autolist (NautilusFile) selection = NULL;
 
     view = NAUTILUS_FILES_VIEW (user_data);
     selection = nautilus_files_view_get_selection (view);
@@ -2597,8 +2596,6 @@ action_open_item_new_window (GSimpleAction *action,
                                         selection,
                                         NAUTILUS_OPEN_FLAG_NEW_WINDOW,
                                         TRUE);
-
-    nautilus_file_list_free (selection);
 }
 
 typedef struct _PasteCallbackData
@@ -3036,10 +3033,8 @@ nautilus_files_view_grab_focus (GtkWidget *widget)
  */
 void
 nautilus_files_view_set_selection (NautilusFilesView *self,
-                                   GList             *selection)
+                                   NautilusFileList  *selection)
 {
-    GList *pending_selection;
-
     if (!self->loading)
     {
         /* If we aren't still loading, set the selection right now,
@@ -3052,8 +3047,8 @@ nautilus_files_view_set_selection (NautilusFilesView *self,
         /* If we are still loading, set the list of pending URIs instead.
          * done_loading() will eventually select the pending URIs and reveal them.
          */
-        pending_selection = g_list_copy_deep (selection,
-                                              (GCopyFunc) g_object_ref, NULL);
+        NautilusFileList *pending_selection = g_list_copy_deep (selection,
+                                                                (GCopyFunc) g_object_ref, NULL);
         g_list_free_full (self->pending_selection, g_object_unref);
 
         self->pending_selection = pending_selection;
@@ -3740,7 +3735,7 @@ done_loading (NautilusFilesView *self,
 typedef struct
 {
     GHashTable *debuting_files;
-    GList *added_files;
+    NautilusFileList *added_files;
 } DebutingFilesData;
 
 static void
@@ -3994,7 +3989,7 @@ files_view_end_file_changes (NautilusFilesView *self)
     if (g_hash_table_size (self->pending_reveal) > 0 &&
         g_hash_table_size (self->awaiting_acknowledge) == 0)
     {
-        GList *selection = g_hash_table_get_keys (self->pending_reveal);
+        NautilusFileList *selection = g_hash_table_get_keys (self->pending_reveal);
         nautilus_files_view_set_selection (self, selection);
         g_hash_table_remove_all (self->pending_reveal);
     }
@@ -4691,9 +4686,9 @@ nautilus_files_view_get_loading (NautilusFilesView *self)
  */
 
 static gboolean
-home_dir_in_selection (GList *selection)
+home_dir_in_selection (NautilusFileList *selection)
 {
-    for (GList *node = selection; node != NULL; node = node->next)
+    for (NautilusFileList *node = selection; node != NULL; node = node->next)
     {
         if (nautilus_file_is_home (NAUTILUS_FILE (node->data)))
         {
@@ -4913,7 +4908,7 @@ change_to_view_directory (NautilusFilesView *view)
 }
 
 static char **
-get_file_names_as_parameter_array (GList             *selection,
+get_file_names_as_parameter_array (NautilusFileList  *selection,
                                    NautilusDirectory *directory)
 {
     char **parameters;
@@ -4955,8 +4950,8 @@ get_file_names_as_parameter_array (GList             *selection,
 }
 
 static char *
-get_file_paths_or_uris_as_newline_delimited_string (GList    *selection,
-                                                    gboolean  get_paths)
+get_file_paths_or_uris_as_newline_delimited_string (NautilusFileList *selection,
+                                                    gboolean          get_paths)
 {
     GString *expanding_string;
 
@@ -5000,13 +4995,13 @@ get_file_paths_or_uris_as_newline_delimited_string (GList    *selection,
 }
 
 static char *
-get_file_paths_as_newline_delimited_string (GList *selection)
+get_file_paths_as_newline_delimited_string (NautilusFileList *selection)
 {
     return get_file_paths_or_uris_as_newline_delimited_string (selection, TRUE);
 }
 
 static char *
-get_file_uris_as_newline_delimited_string (GList *selection)
+get_file_uris_as_newline_delimited_string (NautilusFileList *selection)
 {
     return get_file_paths_or_uris_as_newline_delimited_string (selection, FALSE);
 }
@@ -5642,7 +5637,7 @@ get_dialog_initial_location (NautilusFilesView *view,
 typedef struct _CopyCallbackData
 {
     NautilusFilesView *view;
-    GList *selection;
+    NautilusFileList *selection;
     gboolean is_move;
 } CopyCallbackData;
 
@@ -5700,7 +5695,7 @@ copy_or_move_selection (NautilusFilesView *view,
     g_autoptr (GtkFileDialog) dialog = gtk_file_dialog_new ();
     g_autoptr (GFile) location = NULL;
     CopyCallbackData *copy_data;
-    GList *selection;
+    NautilusFileList *selection;
     const gchar *title;
 
     if (is_move)
@@ -5745,15 +5740,13 @@ action_copy (GSimpleAction *action,
 {
     NautilusFilesView *view;
     GdkClipboard *clipboard;
-    GList *selection;
+    g_autolist (NautilusFile) selection = NULL;
 
     view = NAUTILUS_FILES_VIEW (user_data);
 
     selection = nautilus_files_view_get_selection_for_file_transfer (view);
     clipboard = gtk_widget_get_clipboard (GTK_WIDGET (view));
     nautilus_clipboard_prepare_for_files (clipboard, selection, FALSE);
-
-    nautilus_file_list_free (selection);
 }
 
 static void
@@ -5762,7 +5755,7 @@ action_cut (GSimpleAction *action,
             gpointer       user_data)
 {
     NautilusFilesView *view;
-    GList *selection;
+    g_autolist (NautilusFile) selection = NULL;
     GdkClipboard *clipboard;
 
     view = NAUTILUS_FILES_VIEW (user_data);
@@ -5770,8 +5763,6 @@ action_cut (GSimpleAction *action,
     selection = nautilus_files_view_get_selection_for_file_transfer (view);
     clipboard = gtk_widget_get_clipboard (GTK_WIDGET (view));
     nautilus_clipboard_prepare_for_files (clipboard, selection, TRUE);
-
-    nautilus_file_list_free (selection);
 }
 
 static void
@@ -5800,7 +5791,7 @@ action_create_links_in_place (GSimpleAction *action,
                               gpointer       user_data)
 {
     NautilusFilesView *view;
-    GList *selection;
+    g_autolist (NautilusFile) selection = NULL;
     GList *item_uris;
     GList *l;
     char *destination_uri;
@@ -5822,7 +5813,6 @@ action_create_links_in_place (GSimpleAction *action,
                                          GDK_ACTION_LINK);
 
     g_list_free_full (item_uris, g_free);
-    nautilus_file_list_free (selection);
 }
 
 static void
@@ -5946,7 +5936,7 @@ extract_done (GList    *outputs,
 
     if (all_files_acknowledged)
     {
-        GList *selection = NULL;
+        g_autolist (NautilusFile) selection = NULL;
 
         for (l = outputs; l != NULL; l = l->next)
         {
@@ -5955,8 +5945,6 @@ extract_done (GList    *outputs,
         }
 
         nautilus_files_view_set_selection (data->view, selection);
-
-        nautilus_file_list_free (selection);
     }
     else
     {
@@ -6276,7 +6264,7 @@ action_send_email (GSimpleAction *action,
 }
 
 static gboolean
-can_run_in_terminal (GList *selection)
+can_run_in_terminal (NautilusFileList *selection)
 {
     NautilusFile *file;
 
@@ -6338,7 +6326,7 @@ action_run_in_terminal (GSimpleAction *action,
 }
 
 static gboolean
-can_set_wallpaper (GList *selection)
+can_set_wallpaper (NautilusFileList *selection)
 {
     NautilusFile *file;
 
@@ -6529,11 +6517,10 @@ action_mount_volume (GSimpleAction *action,
 {
     NautilusFilesView *view = NAUTILUS_FILES_VIEW (user_data);
     NautilusFile *file;
-    GList *selection, *l;
     GMountOperation *mount_op;
+    g_autolist (NautilusFile) selection = nautilus_files_view_get_selection (view);
 
-    selection = nautilus_files_view_get_selection (view);
-    for (l = selection; l != NULL; l = l->next)
+    for (NautilusFileList *l = selection; l != NULL; l = l->next)
     {
         file = NAUTILUS_FILE (l->data);
 
@@ -6550,7 +6537,6 @@ action_mount_volume (GSimpleAction *action,
             g_object_unref (mount_op);
         }
     }
-    nautilus_file_list_free (selection);
 }
 
 static void
@@ -7016,7 +7002,7 @@ file_should_show_foreach (NautilusFile        *file,
 }
 
 static gboolean
-can_restore_from_trash (GList *files)
+can_restore_from_trash (NautilusFileList *files)
 {
     NautilusFile *original_file;
     NautilusFile *original_dir;

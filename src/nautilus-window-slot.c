@@ -140,7 +140,7 @@ struct _NautilusWindowSlot
     GFile *pending_location;
     NautilusLocationChangeType location_change_type;
     guint location_change_distance;
-    GList *pending_selection;
+    NautilusFileList *pending_selection;
     NautilusFile *pending_file_to_activate;
     NautilusFile *determine_view_file;
     GCancellable *mount_cancellable;
@@ -157,7 +157,7 @@ struct _NautilusWindowSlot
     GBinding *selection_binding;
     GBinding *extensions_background_menu_binding;
     GBinding *templates_menu_binding;
-    GList *selection;
+    NautilusFileList *selection;
 };
 
 G_DEFINE_TYPE (NautilusWindowSlot, nautilus_window_slot, ADW_TYPE_BIN);
@@ -1409,7 +1409,7 @@ nautilus_window_slot_init (NautilusWindowSlot *self)
 static void begin_location_change (NautilusWindowSlot        *slot,
                                    GFile                     *location,
                                    GFile                     *previous_location,
-                                   GList                     *new_selection,
+                                   NautilusFileList          *new_selection,
                                    NautilusLocationChangeType type,
                                    guint                      distance);
 static void free_location_change (NautilusWindowSlot *self);
@@ -1420,7 +1420,7 @@ static void got_file_info_for_view_selection_callback (NautilusFile *file,
 void
 nautilus_window_slot_open_location_full (NautilusWindowSlot *self,
                                          GFile              *location,
-                                         GList              *new_selection)
+                                         NautilusFileList   *new_selection)
 {
     GFile *old_location = nautilus_window_slot_get_location (self);
 
@@ -1440,8 +1440,8 @@ nautilus_window_slot_open_location_full (NautilusWindowSlot *self,
                            NAUTILUS_LOCATION_CHANGE_STANDARD, 0);
 }
 
-static GList *
-check_select_old_location_containing_folder (GList                      *new_selection,
+static NautilusFileList *
+check_select_old_location_containing_folder (NautilusFileList           *new_selection,
                                              NautilusLocationChangeType  type,
                                              GFile                      *location,
                                              GFile                      *previous_location)
@@ -1524,7 +1524,7 @@ save_selection_for_history (NautilusWindowSlot *self)
         g_autolist (NautilusFile) selection = nautilus_files_view_get_selection (self->content_view);
         g_autoptr (GStrvBuilder) selected_uris = g_strv_builder_new ();
 
-        for (GList *l = selection; l != NULL; l = l->next)
+        for (NautilusFileList *l = selection; l != NULL; l = l->next)
         {
             NautilusFile *file = l->data;
             g_strv_builder_take (selected_uris, nautilus_file_get_uri (file));
@@ -1555,7 +1555,7 @@ static void
 begin_location_change (NautilusWindowSlot         *self,
                        GFile                      *location,
                        GFile                      *previous_location,
-                       GList                      *new_selection,
+                       NautilusFileList           *new_selection,
                        NautilusLocationChangeType  type,
                        guint                       distance)
 {

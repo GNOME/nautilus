@@ -331,7 +331,7 @@ void
 nautilus_application_open_location_full (NautilusApplication *self,
                                          GFile               *location,
                                          NautilusOpenFlags    flags,
-                                         GList               *selection,
+                                         NautilusFileList    *selection,
                                          NautilusWindow      *target_window,
                                          NautilusWindowSlot  *target_slot,
                                          const char          *startup_id)
@@ -463,7 +463,7 @@ nautilus_application_open_location (NautilusApplication *self,
 {
     NautilusWindow *window;
     NautilusWindowSlot *slot;
-    GList *sel_list = NULL;
+    g_autolist (NautilusFile) sel_list = NULL;
     g_autofree char *location_uri = g_file_get_uri (location);
 
     if (location_uri[0] == '\0')
@@ -488,11 +488,6 @@ nautilus_application_open_location (NautilusApplication *self,
     }
 
     nautilus_application_open_location_full (self, location, 0, sel_list, window, slot, startup_id);
-
-    if (sel_list != NULL)
-    {
-        nautilus_file_list_free (sel_list);
-    }
 }
 
 /* Note: when launched from command line we do not reach this method
