@@ -204,12 +204,8 @@ static void
 file_changed (NautilusFile            *file,
               NautilusSearchDirectory *self)
 {
-    GList list;
-
-    list.data = file;
-    list.next = NULL;
-
-    nautilus_directory_emit_files_changed (NAUTILUS_DIRECTORY (self), &list);
+    nautilus_directory_emit_files_changed (NAUTILUS_DIRECTORY (self),
+                                           &(NautilusFileList){ .data = file });
 }
 
 static void

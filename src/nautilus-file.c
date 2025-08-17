@@ -7680,8 +7680,6 @@ nautilus_file_mark_gone (NautilusFile *file)
 void
 nautilus_file_changed (NautilusFile *file)
 {
-    GList fake_list;
-
     g_return_if_fail (NAUTILUS_IS_FILE (file));
 
     if (nautilus_file_is_self_owned (file))
@@ -7690,11 +7688,8 @@ nautilus_file_changed (NautilusFile *file)
     }
     else
     {
-        fake_list.data = file;
-        fake_list.next = NULL;
-        fake_list.prev = NULL;
-        nautilus_directory_emit_change_signals
-            (file->details->directory, &fake_list);
+        nautilus_directory_emit_change_signals (file->details->directory,
+                                                &(NautilusFileList){ .data = file });
     }
 }
 

@@ -967,9 +967,9 @@ nautilus_directory_emit_files_changed (NautilusDirectory *directory,
 
 void
 nautilus_directory_emit_change_signals (NautilusDirectory *directory,
-                                        GList             *changed_files)
+                                        NautilusFileList  *changed_files)
 {
-    for (GList *p = changed_files; p != NULL; p = p->next)
+    for (NautilusFileList *p = changed_files; p != NULL; p = p->next)
     {
         nautilus_file_emit_changed (p->data);
     }
