@@ -1391,55 +1391,37 @@ change_directory_location (NautilusDirectory *directory,
                          directory);
 }
 
-typedef struct
-{
-    GFile *container;
-    GList *directories;
-} CollectData;
-
-static void
-collect_directories_by_container (gpointer key,
-                                  gpointer value,
-                                  gpointer callback_data)
-{
-    NautilusDirectory *directory;
-    CollectData *collect_data;
-    GFile *location;
-
-    location = (GFile *) key;
-    directory = NAUTILUS_DIRECTORY (value);
-    collect_data = (CollectData *) callback_data;
-
-    if (g_file_has_prefix (location, collect_data->container) ||
-        g_file_equal (collect_data->container, location))
-    {
-        nautilus_directory_ref (directory);
-        collect_data->directories =
-            g_list_prepend (collect_data->directories,
-                            directory);
-    }
-}
-
 static GList *
 nautilus_directory_moved_internal (GFile *old_location,
                                    GFile *new_location)
 {
-    CollectData collection;
-    NautilusDirectory *directory;
+    GList* collection = NULL;
     GList *node, *affected_files;
     GFile *new_directory_location;
     char *relative_path;
 
-    collection.container = old_location;
-    collection.directories = NULL;
+    GHashTableIter directories_iter;
+    g_hash_table_iter_init (&directories_iter, directories);
+    gpointer value;
 
-    g_hash_table_foreach (directories,
-                          collect_directories_by_container,
-                          &collection);
+    while (g_hash_table_iter_next (&directories_iter, NULL, &value))
+    {
+        NautilusDirectory *directory = value;
+        GFile *dir_location = directory->details->location;
+
+        gboolean is_equal = g_file_equal (dir_location, old_location);
+        if (!is_equal && !g_file_has_prefix (dir_location, old_location))
+        {
+            /* Directory is not affected by move */
+            continue;
+        }
+
+        collection = g_list_prepend (collection, nautilus_directory_ref (directory));
+    }
 
     affected_files = NULL;
 
-    for (node = collection.directories; node != NULL; node = node->next)
+    for (node = collection; node != NULL; node = node->next)
     {
         directory = NAUTILUS_DIRECTORY (node->data);
         new_directory_location = NULL;
@@ -1479,7 +1461,7 @@ nautilus_directory_moved_internal (GFile *old_location,
         nautilus_directory_unref (directory);
     }
 
-    g_list_free (collection.directories);
+    g_list_free (collection);
 
     return affected_files;
 }
