@@ -32,7 +32,7 @@ typedef void (*NautilusApplicationChoiceCallback)   (GAppInfo                   
                                                      gpointer                           callback_data);
 
 void nautilus_launch_application                    (GAppInfo                          *application,
-                                                     GList                             *files,
+                                                     NautilusFileList                  *files,
                                                      GtkWindow                         *parent_window);
 void nautilus_launch_application_by_uri             (GAppInfo                          *application,
                                                      GList                             *uris,
