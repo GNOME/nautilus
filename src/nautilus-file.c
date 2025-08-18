@@ -2881,6 +2881,12 @@ nautilus_file_update_thumbnail_info (NautilusFile *file,
 {
     gboolean changed = FALSE;
 
+    if (!file->details->thumbnail_info_is_up_to_date)
+    {
+        file->details->thumbnail_info_is_up_to_date = TRUE;
+        changed = TRUE;
+    }
+
     const gchar *thumbnail_path = g_file_info_get_attribute_byte_string (info,
                                                                          G_FILE_ATTRIBUTE_THUMBNAIL_PATH);
     if (g_set_str (&file->details->thumbnail_path, thumbnail_path))
