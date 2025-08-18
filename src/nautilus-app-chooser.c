@@ -117,6 +117,29 @@ on_application_selected (GtkAppChooserWidget *widget,
 }
 
 static void
+focus_app_chooser_widget (NautilusAppChooser *self)
+{
+    /* This is a very hacky way to make focusing on the app chooser widget work.
+     * The widget is deprecated anyway and intended to be replaced by a new
+     * implementation, so we'll live with this rather than patching GTK.
+     */
+
+    GtkWidget *child = gtk_widget_get_first_child (self->app_chooser_widget);
+    g_return_if_fail (GTK_IS_OVERLAY (child));
+
+    child = gtk_widget_get_first_child (child);
+    g_return_if_fail (GTK_IS_SCROLLED_WINDOW (child));
+
+    child = gtk_widget_get_first_child (child);
+    g_return_if_fail (GTK_IS_TREE_VIEW (child));
+
+    gtk_widget_grab_focus (child);
+
+    /* Matching ref of timeout creation */
+    g_object_unref (self);
+}
+
+static void
 nautilus_app_chooser_set_property (GObject      *object,
                                    guint         param_id,
                                    const GValue *value,
@@ -180,11 +203,16 @@ nautilus_app_chooser_constructed (GObject *object)
     gtk_widget_set_vexpand (self->app_chooser_widget, TRUE);
     gtk_widget_add_css_class (self->app_chooser_widget, "lowres-icon");
     gtk_box_append (GTK_BOX (self->content_box), self->app_chooser_widget);
-    adw_dialog_set_focus (ADW_DIALOG (self), self->app_chooser_widget);
 
     gtk_app_chooser_widget_set_show_default (GTK_APP_CHOOSER_WIDGET (self->app_chooser_widget), TRUE);
     gtk_app_chooser_widget_set_show_fallback (GTK_APP_CHOOSER_WIDGET (self->app_chooser_widget), TRUE);
     gtk_app_chooser_widget_set_show_other (GTK_APP_CHOOSER_WIDGET (self->app_chooser_widget), TRUE);
+
+    /* See comment in focus_app_chooser_widget(). Hold self reference to prevent segfaults. */
+    guint upper_dialog_creation_estimate = 100;
+    g_timeout_add_once (upper_dialog_creation_estimate,
+                        (GSourceOnceFunc) focus_app_chooser_widget,
+                        g_object_ref (self));
 
     /* initialize sensitivity */
     info = nautilus_app_chooser_get_app_info (self);
