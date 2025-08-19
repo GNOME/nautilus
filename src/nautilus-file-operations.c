@@ -4873,7 +4873,6 @@ copy_move_file (CopyMoveJob   *copy_job,
                 gboolean       reset_perms)
 {
     GFile *dest, *new_dest;
-    g_autofree gchar *dest_uri = NULL;
     GError *error;
     GFileCopyFlags flags;
     char *primary, *secondary, *details;
@@ -5071,8 +5070,6 @@ retry:
 
         if (debuting_files)
         {
-            dest_uri = g_file_get_uri (dest);
-
             g_hash_table_replace (debuting_files, g_object_ref (dest), GINT_TO_POINTER (!overwrite));
         }
         if (copy_job->is_move)
@@ -5713,7 +5710,6 @@ move_file_prepare (CopyMoveJob  *move_job,
                    int           files_left)
 {
     GFile *dest, *new_dest;
-    g_autofree gchar *dest_uri = NULL;
     GError *error;
     CommonJob *job;
     gboolean overwrite;
@@ -5853,8 +5849,6 @@ retry:
         }
 
         nautilus_file_changes_queue_file_moved (src, dest);
-
-        dest_uri = g_file_get_uri (dest);
 
         if (job->undo_info != NULL)
         {
@@ -6387,7 +6381,6 @@ link_file (CopyMoveJob  *job,
     GFile *src_dir;
     GFile *new_dest;
     g_autoptr (GFile) dest = NULL;
-    g_autofree gchar *dest_uri = NULL;
     int count;
     char *path;
     gboolean not_local;
@@ -6439,7 +6432,6 @@ retry:
         }
 
         nautilus_file_changes_queue_file_added (dest);
-        dest_uri = g_file_get_uri (dest);
 
         return;
     }
