@@ -1711,7 +1711,8 @@ action_popup_menu (GSimpleAction *action,
 
     if (no_selection)
     {
-        nautilus_files_view_pop_up_background_context_menu (view, &GRAPHENE_POINT_INIT (0, 0));
+        nautilus_files_view_pop_up_background_context_menu (view, NULL);
+
         return;
     }
 
@@ -8181,12 +8182,24 @@ nautilus_files_view_pop_up_background_context_menu (NautilusFilesView *self,
     gtk_widget_set_parent (self->background_menu, GTK_WIDGET (self));
     gtk_popover_set_has_arrow (GTK_POPOVER (self->background_menu), FALSE);
     gtk_widget_set_halign (self->background_menu, GTK_ALIGN_START);
-
     gtk_popover_menu_set_menu_model (GTK_POPOVER_MENU (self->background_menu),
                                      G_MENU_MODEL (self->background_menu_model));
 
-    gtk_popover_set_pointing_to (GTK_POPOVER (self->background_menu),
-                                 &(GdkRectangle){ point->x, point->y, 0, 0 });
+    GdkRectangle rect = { 0 };
+
+    if (point == NULL &&
+        gtk_widget_get_direction (GTK_WIDGET (self)) == GTK_TEXT_DIR_RTL)
+    {
+        rect.x = (float) gtk_widget_get_width (GTK_WIDGET (self));
+    }
+    else if (point != NULL)
+    {
+        rect.x = point->x;
+        rect.y = point->y;
+    }
+
+    gtk_popover_set_pointing_to (GTK_POPOVER (self->background_menu), &rect);
+
     gtk_popover_popup (GTK_POPOVER (self->background_menu));
 }
 
