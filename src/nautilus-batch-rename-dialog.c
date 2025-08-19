@@ -806,8 +806,6 @@ check_conflict_for_files (NautilusBatchRenameDialog *dialog,
                 conflict_data->index = index;
                 dialog->duplicates = g_list_prepend (dialog->duplicates,
                                                      conflict_data);
-
-                have_conflict = TRUE;
             }
         }
     }
