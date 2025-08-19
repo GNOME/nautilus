@@ -248,7 +248,7 @@ action_prompt_home_location (GtkWidget  *widget,
 {
     NautilusToolbar *self = NAUTILUS_TOOLBAR (widget);
 
-    nautilus_toolbar_open_location_entry (self, "~");
+    nautilus_toolbar_open_location_entry (self, "~/");
 }
 
 static void
