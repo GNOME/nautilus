@@ -137,7 +137,6 @@ main (int   argc,
 {
     g_autoptr (GMainLoop) loop = NULL;
     g_autoptr (TrackerSparqlConnection) connection = NULL;
-    g_autoptr (NautilusDirectory) directory = NULL;
     g_autoptr (NautilusQuery) query = NULL;
     g_autoptr (GFile) location = NULL;
     g_autoptr (GError) error = NULL;
@@ -177,7 +176,6 @@ main (int   argc,
     nautilus_query_set_text (query, "target");
 
     location = g_file_new_for_path (indexed_tmpdir);
-    directory = nautilus_directory_get (location);
     nautilus_query_set_location (query, location);
 
     nautilus_search_provider_start (NAUTILUS_SEARCH_PROVIDER (engine), query);

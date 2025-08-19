@@ -43,7 +43,6 @@ main (int   argc,
       char *argv[])
 {
     g_autoptr (GMainLoop) loop = NULL;
-    g_autoptr (NautilusDirectory) directory = NULL;
     g_autoptr (NautilusQuery) query = NULL;
     g_autoptr (GFile) location = NULL;
 
@@ -66,7 +65,6 @@ main (int   argc,
     nautilus_query_set_text (query, "engine_simple");
 
     location = g_file_new_for_path (test_get_tmp_dir ());
-    directory = nautilus_directory_get (location);
     nautilus_query_set_location (query, location);
 
     create_search_file_hierarchy ("simple");
