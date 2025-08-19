@@ -389,9 +389,6 @@ handle_file_chooser_methods (XdpImplFileChooser    *object,
 {
     NautilusPortal *self = NAUTILUS_PORTAL (user_data);
     const char *method_name = g_dbus_method_invocation_get_method_name (invocation);
-    FileChooserData *data = g_new0 (FileChooserData, 1);
-    data->self = self;
-    data->invocation = invocation;
 
     g_application_hold (g_application_get_default ());
 
@@ -443,6 +440,10 @@ handle_file_chooser_methods (XdpImplFileChooser    *object,
     const char *path;
     g_autofree char *suggested_filename = NULL;
     g_autoptr (GFile) starting_location = NULL;
+    FileChooserData *data = g_new0 (FileChooserData, 1);
+
+    data->self = self;
+    data->invocation = invocation;
 
     if (mode == NAUTILUS_MODE_SAVE_FILE)
     {
