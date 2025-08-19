@@ -365,7 +365,6 @@ real_setup_loading_floating_bar (NautilusFilesView *self)
     nautilus_floating_bar_set_details_label (NAUTILUS_FLOATING_BAR (self->floating_bar), NULL);
     nautilus_floating_bar_set_show_stop (NAUTILUS_FLOATING_BAR (self->floating_bar), self->loading);
 
-    gtk_widget_set_halign (self->floating_bar, GTK_ALIGN_END);
     gtk_widget_set_visible (self->floating_bar, TRUE);
 }
 
