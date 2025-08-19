@@ -126,10 +126,8 @@ on_ping_finished (GObject      *object,
                   GAsyncResult *res,
                   gpointer      user_data)
 {
-    g_autoptr (GVariant) variant = NULL;
     g_autoptr (GError) error = NULL;
-
-    variant = g_dbus_proxy_call_finish (G_DBUS_PROXY (object), res, &error);
+    g_autoptr (GVariant) variant = g_dbus_proxy_call_finish (G_DBUS_PROXY (object), res, &error);
 
     if (error == NULL)
     {
@@ -390,14 +388,13 @@ nautilus_previewer_teardown (GDBusConnection *connection)
 gboolean
 nautilus_previewer_is_visible (void)
 {
-    g_autoptr (GVariant) variant = NULL;
-
     if (!ensure_previewer_proxy ())
     {
         return FALSE;
     }
 
-    variant = g_dbus_proxy_get_cached_property (previewer_proxy, "Visible");
+    g_autoptr (GVariant) variant = g_dbus_proxy_get_cached_property (previewer_proxy, "Visible");
+
     if (variant)
     {
         return g_variant_get_boolean (variant);

@@ -361,6 +361,9 @@ on_file_drop (GtkDropTarget *target,
               gpointer       user_data)
 {
     GSList *locations = g_value_get_boxed (value);
+
+    g_return_if_fail (locations != NULL);
+
     g_autolist (NautilusFile) selection = NULL;
     g_autoptr (GFile) location = NULL;
     NautilusFileChooser *self = user_data;

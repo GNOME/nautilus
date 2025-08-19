@@ -615,6 +615,8 @@ nautilus_batch_rename_dialog_sort (GList      *selection,
                                    SortMode    mode,
                                    GHashTable *creation_date_table)
 {
+    g_return_val_if_fail (selection != NULL, NULL);
+
     GList *l;
 
     if (mode == ORIGINAL_ASCENDING)
