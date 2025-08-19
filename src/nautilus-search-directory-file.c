@@ -260,7 +260,6 @@ nautilus_search_directory_file_init (NautilusSearchDirectoryFile *search_file)
 
     file->details->file_info_is_up_to_date = TRUE;
 
-    file->details->custom_icon = NULL;
     file->details->activation_uri = NULL;
 
     file->details->directory_count = 0;

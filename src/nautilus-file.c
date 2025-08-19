@@ -916,7 +916,6 @@ finalize (GObject *object)
     g_clear_pointer (&file->details->group, g_ref_string_release);
     g_free (file->details->selinux_context);
     g_free (file->details->activation_uri);
-    g_clear_object (&file->details->custom_icon);
 
     if (file->details->thumbnail)
     {

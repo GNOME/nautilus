@@ -90,8 +90,6 @@ struct NautilusFilePrivate
 	GdkTexture *thumbnail;
 	time_t thumbnail_mtime;
 
-	/* Info you might get from a link (.desktop, .directory or nautilus link) */
-	GIcon *custom_icon;
 	char *activation_uri;
 
 	/* used during DND, for checking whether source and destination are on
