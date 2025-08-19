@@ -44,7 +44,6 @@ main (int   argc,
 {
     g_autoptr (GMainLoop) loop = NULL;
     NautilusSearchEngine *engine;
-    g_autoptr (NautilusDirectory) directory = NULL;
     g_autoptr (NautilusQuery) query = NULL;
     g_autoptr (GFile) location = NULL;
     g_autoptr (GFile) file = NULL;
@@ -68,7 +67,6 @@ main (int   argc,
     nautilus_query_set_text (query, "engine_all_engines");
 
     location = g_file_new_for_path (test_get_tmp_dir ());
-    directory = nautilus_directory_get (location);
     nautilus_query_set_location (query, location);
 
     create_search_file_hierarchy ("all_engines");
