@@ -502,7 +502,7 @@ nautilus_icon_info_get_paintable (NautilusIconInfo *icon)
     res = nautilus_icon_info_get_paintable_nodefault (icon);
     if (res == NULL)
     {
-        res = GDK_PAINTABLE (gdk_texture_new_from_resource ("/org/gnome/nautilus/text-x-preview.png"));
+        res = GDK_PAINTABLE (gdk_texture_new_from_resource ("/org/gnome/nautilus/image/text-x-preview.png"));
     }
 
     return res;
@@ -521,7 +521,7 @@ nautilus_icon_info_get_texture (NautilusIconInfo *icon)
     }
     else
     {
-        res = gdk_texture_new_from_resource ("/org/gnome/nautilus/text-x-preview.png");
+        res = gdk_texture_new_from_resource ("/org/gnome/nautilus/image/text-x-preview.png");
     }
 
     return res;
