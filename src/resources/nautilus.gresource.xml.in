@@ -1,40 +1,42 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <gresources>
   <gresource prefix="/org/gnome/nautilus">
-    <file compressed="true">ui/nautilus-preferences-dialog.ui</file>
     <file alias="appdata" compressed="true" preprocess="xml-stripblanks">./../data/@appid@.metainfo.xml</file>
+
+    <!-- UI files -->
+    <file compressed="true">ui/nautilus-preferences-dialog.ui</file>
     <file compressed="true">ui/nautilus-search-popover.ui</file>
-    <file>ui/nautilus-search-types-dialog.ui</file>
+    <file>gtk/help-overlay.ui</file>
     <file>ui/nautilus-app-chooser.ui</file>
+    <file>ui/nautilus-batch-rename-dialog.ui</file>
+    <file>ui/nautilus-column-chooser.ui</file>
+    <file>ui/nautilus-compress-dialog.ui</file>
     <file>ui/nautilus-date-entry-row.ui</file>
     <file>ui/nautilus-date-range-dialog.ui</file>
-    <file>ui/nautilus-pathbar-context-menu.ui</file>
-    <file>ui/nautilus-toolbar.ui</file>
-    <file>ui/nautilus-history-controls.ui</file>
-    <file>ui/nautilus-progress-indicator.ui</file>
-    <file>ui/nautilus-view-controls.ui</file>
-    <file>ui/nautilus-toolbar-view-menu.ui</file>
-    <file>ui/nautilus-column-chooser.ui</file>
-    <file>ui/nautilus-new-folder-dialog.ui</file>
-    <file>ui/nautilus-compress-dialog.ui</file>
-    <file>ui/nautilus-rename-file-popover.ui</file>
-    <file>ui/nautilus-files-view-context-menus.ui</file>
-    <file>ui/nautilus-progress-info-widget.ui</file>
-    <file>ui/nautilus-window.ui</file>
-    <file>gtk/help-overlay.ui</file>
-    <file>ui/nautilus-batch-rename-dialog.ui</file>
-    <file>ui/nautilus-properties-window.ui</file>
-    <file>ui/nautilus-file-properties-change-permissions.ui</file>
+    <file>ui/nautilus-file-chooser.ui</file>
     <file>ui/nautilus-file-conflict-dialog.ui</file>
-    <file>ui/nautilus-files-view-select-items.ui</file>
+    <file>ui/nautilus-file-properties-change-permissions.ui</file>
     <file>ui/nautilus-files-view.ui</file>
-    <file>ui/nautilus-operations-ui-manager-request-passphrase.ui</file>
+    <file>ui/nautilus-files-view-context-menus.ui</file>
+    <file>ui/nautilus-files-view-select-items.ui</file>
     <file>ui/nautilus-grid-cell.ui</file>
+    <file>ui/nautilus-history-controls.ui</file>
     <file>ui/nautilus-name-cell.ui</file>
     <file>ui/nautilus-network-address-bar.ui</file>
     <file>ui/nautilus-network-cell.ui</file>
-    <file>ui/nautilus-file-chooser.ui</file>
+    <file>ui/nautilus-new-folder-dialog.ui</file>
+    <file>ui/nautilus-operations-ui-manager-request-passphrase.ui</file>
+    <file>ui/nautilus-pathbar-context-menu.ui</file>
+    <file>ui/nautilus-progress-indicator.ui</file>
+    <file>ui/nautilus-progress-info-widget.ui</file>
+    <file>ui/nautilus-properties-window.ui</file>
+    <file>ui/nautilus-rename-file-popover.ui</file>
+    <file>ui/nautilus-search-types-dialog.ui</file>
     <file>ui/nautilus-sidebar-row.ui</file>
+    <file>ui/nautilus-toolbar.ui</file>
+    <file>ui/nautilus-toolbar-view-menu.ui</file>
+    <file>ui/nautilus-view-controls.ui</file>
+    <file>ui/nautilus-window.ui</file>
 
     <!-- Images -->
     <file>image/checkerboard.png</file>
@@ -45,27 +47,27 @@
     <file>style-hc.css</file>
 
     <!-- Icons -->
-    <file preprocess="xml-stripblanks">icons/scalable/actions/arrow-next-symbolic.svg</file>
     <file preprocess="xml-stripblanks">icons/scalable/actions/arrow-next-symbolic-rtl.svg</file>
+    <file preprocess="xml-stripblanks">icons/scalable/actions/arrow-next-symbolic.svg</file>
     <file preprocess="xml-stripblanks">icons/scalable/actions/cancel-operation-symbolic.svg</file>
+    <file preprocess="xml-stripblanks">icons/scalable/actions/cut-large-symbolic.svg</file>
+    <file preprocess="xml-stripblanks">icons/scalable/actions/cut-symbolic.svg</file>
     <file preprocess="xml-stripblanks">icons/scalable/actions/emblem-readonly-symbolic.svg</file>
     <file preprocess="xml-stripblanks">icons/scalable/actions/emblem-symbolic-link-symbolic.svg</file>
     <file preprocess="xml-stripblanks">icons/scalable/actions/emblem-unwriteable-symbolic.svg</file>
     <file preprocess="xml-stripblanks">icons/scalable/actions/external-link-symbolic.svg</file>
     <file preprocess="xml-stripblanks">icons/scalable/actions/file-operation-cancelled-symbolic.svg</file>
     <file preprocess="xml-stripblanks">icons/scalable/actions/file-operation-finished-symbolic.svg</file>
+    <file preprocess="xml-stripblanks">icons/scalable/actions/funnel-outline-symbolic.svg</file>
+    <file preprocess="xml-stripblanks">icons/scalable/actions/image-print-symbolic.svg</file>
+    <file preprocess="xml-stripblanks">icons/scalable/actions/info-outline-symbolic.svg</file>
+    <file preprocess="xml-stripblanks">icons/scalable/actions/nautilus-file-chooser-options-symbolic.svg</file>
     <file preprocess="xml-stripblanks">icons/scalable/actions/nautilus-folder-search-symbolic.svg</file>
     <file preprocess="xml-stripblanks">icons/scalable/actions/nautilus-search-filters-symbolic.svg</file>
     <file preprocess="xml-stripblanks">icons/scalable/actions/network-computer-symbolic.svg</file>
+    <file preprocess="xml-stripblanks">icons/scalable/actions/paper-symbolic.svg</file>
     <file preprocess="xml-stripblanks">icons/scalable/actions/quotation-symbolic.svg</file>
     <file preprocess="xml-stripblanks">icons/scalable/actions/remove-custom-icon-symbolic.svg</file>
-    <file preprocess="xml-stripblanks">icons/scalable/actions/info-outline-symbolic.svg</file>
-    <file preprocess="xml-stripblanks">icons/scalable/actions/nautilus-file-chooser-options-symbolic.svg</file>
-    <file preprocess="xml-stripblanks">icons/scalable/actions/funnel-outline-symbolic.svg</file>
-    <file preprocess="xml-stripblanks">icons/scalable/actions/cut-symbolic.svg</file>
-    <file preprocess="xml-stripblanks">icons/scalable/actions/cut-large-symbolic.svg</file>
-    <file preprocess="xml-stripblanks">icons/scalable/actions/image-print-symbolic.svg</file>
-    <file preprocess="xml-stripblanks">icons/scalable/actions/paper-symbolic.svg</file>
     <file preprocess="xml-stripblanks">icons/scalable/actions/rich-text-symbolic.svg</file>
   </gresource>
 </gresources>
