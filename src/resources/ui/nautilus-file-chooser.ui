@@ -9,7 +9,7 @@
     <property name="content">
       <object class="NautilusShortcutManager">
         <property name="child">
-          <object class="AdwToastOverlay">
+          <object class="AdwToastOverlay" id="toast_overlay">
             <property name="child">
               <object class="AdwOverlaySplitView" id="split_view">
                 <property name="max-sidebar-width">240</property>
@@ -20,6 +20,9 @@
                 </style>
                 <property name="sidebar">
                   <object class="AdwToolbarView">
+                    <property name="reveal-bottom-bars"
+                              bind-source="progress_indicator" bind-property="reveal"
+                              bind-flags="sync-create"/>
                     <child type="top">
                       <object class="AdwHeaderBar">
                         <child type="start">
@@ -39,6 +42,16 @@
                             <property name="label" bind-source="NautilusFileChooser" bind-property="title"></property>
                           </object>
                         </property>
+                      </object>
+                    </child>
+                    <child type="bottom">
+                      <object class="GtkBox">
+                        <style>
+                          <class name="toolbar"/>
+                        </style>
+                        <child>
+                          <object class="NautilusProgressIndicator" id="progress_indicator" />
+                        </child>
                       </object>
                     </child>
                     <property name="content">
@@ -373,6 +386,7 @@
         <setter object="toolbar" property="show-new-folder-button">false</setter>
         <setter object="toolbar" property="show-view-controls">false</setter>
         <setter object="bottom_toolbar" property="layout-name">narrow</setter>
+        <setter object="progress_indicator" property="popover-position">2</setter>
         <setter object="filters_dropdown" property="show-arrow">false</setter>
         <setter object="filters_dropdown" property="factory">builder_list_item_image</setter>
       </object>
