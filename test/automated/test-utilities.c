@@ -12,8 +12,6 @@
 #include <src/nautilus-file-undo-manager.h>
 #include <src/nautilus-file-utilities.h>
 
-#define ASYNC_FILE_LIMIT 100
-
 static gchar *nautilus_tmp_dir = NULL;
 
 const gchar *
@@ -399,20 +397,6 @@ create_one_empty_directory (gchar *prefix)
     file_hierarchy_create (files_hier, prefix);
 }
 
-static void
-create_file_cb (GObject      *source_object,
-                GAsyncResult *res,
-                gpointer      data)
-{
-    g_autoptr (GError) error = NULL;
-    g_autoptr (GFileOutputStream) out = g_file_create_finish (G_FILE (source_object), res, &error);
-    guint *count = data;
-
-    g_assert_no_error (error);
-
-    (*count)++;
-}
-
 void
 create_multiple_files (gchar *prefix,
                        guint  number_of_files)
@@ -420,50 +404,28 @@ create_multiple_files (gchar *prefix,
     g_autoptr (GFile) root = NULL;
     g_autoptr (GFile) dir = NULL;
     gchar *file_name;
-    guint count = 0;
 
     root = g_file_new_for_path (test_get_tmp_dir ());
     g_assert_true (g_file_query_exists (root, NULL));
 
     for (guint i = 0; i < number_of_files; i++)
     {
+        GFileOutputStream *out;
         g_autoptr (GFile) file = NULL;
 
         file_name = g_strdup_printf ("%s_file_%i", prefix, i);
         file = g_file_get_child (root, file_name);
         g_free (file_name);
 
-        g_file_create_async (file, G_FILE_CREATE_NONE, G_PRIORITY_DEFAULT,
-                             NULL, create_file_cb, &count);
-
-        if ((i + 1) % ASYNC_FILE_LIMIT == 0)
-        {
-            /* Need to rate limit the number of open files */
-            ITER_CONTEXT_WHILE (count < i);
-        }
+        out = g_file_create (file, G_FILE_CREATE_NONE, NULL, NULL);
+        g_object_unref (out);
     }
-
-    ITER_CONTEXT_WHILE (count < number_of_files);
 
     file_name = g_strdup_printf ("%s_dir", prefix);
     dir = g_file_get_child (root, file_name);
     g_free (file_name);
 
     g_file_make_directory (dir, NULL, NULL);
-}
-
-static void
-create_dir_cb (GObject      *source_object,
-               GAsyncResult *res,
-               gpointer      data)
-{
-    g_autoptr (GError) error = NULL;
-    g_file_make_directory_finish (G_FILE (source_object), res, &error);
-    guint *count = data;
-
-    g_assert_no_error (error);
-
-    (*count)++;
 }
 
 void
@@ -473,7 +435,6 @@ create_multiple_directories (gchar *prefix,
     g_autoptr (GFile) root = NULL;
     g_autoptr (GFile) dir = NULL;
     gchar *file_name;
-    guint count = 0;
 
     root = g_file_new_for_path (test_get_tmp_dir ());
     g_assert_true (g_file_query_exists (root, NULL));
@@ -486,17 +447,8 @@ create_multiple_directories (gchar *prefix,
         file = g_file_get_child (root, file_name);
         g_free (file_name);
 
-        g_file_make_directory_async (file, G_PRIORITY_DEFAULT,
-                                     NULL, create_dir_cb, &count);
-
-        if ((i + 1) % ASYNC_FILE_LIMIT == 0)
-        {
-            /* Need to rate limit the number of open files */
-            ITER_CONTEXT_WHILE (count < i);
-        }
+        g_file_make_directory (file, NULL, NULL);
     }
-
-    ITER_CONTEXT_WHILE (count < number_of_directories);
 
     file_name = g_strdup_printf ("%s_destination_dir", prefix);
     dir = g_file_get_child (root, file_name);
