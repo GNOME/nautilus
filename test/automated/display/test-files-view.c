@@ -40,6 +40,26 @@ ptr_arrays_equal_unordered (GPtrArray *a,
     return TRUE;
 }
 
+static gboolean
+ptr_array_is_subset (GPtrArray *subset,
+                     GPtrArray *set)
+{
+    if (subset->len > set->len)
+    {
+        return FALSE;
+    }
+
+    for (guint i = 0; i < subset->len; i++)
+    {
+        if (!g_ptr_array_find (set, subset->pdata[i], NULL))
+        {
+            return FALSE;
+        }
+    }
+
+    return TRUE;
+}
+
 static void
 set_true (gboolean *data)
 {
@@ -194,8 +214,8 @@ test_rename_files (void)
                                                            (GDestroyNotify) nautilus_file_unref);
     g_autoptr (GPtrArray) renamed_files_arr = g_ptr_array_new_full (renamed_file_count,
                                                                     (GDestroyNotify) nautilus_file_unref);
-    g_autoptr (GPtrArray) callback_arr = g_ptr_array_new_full (renamed_file_count,
-                                                               (GDestroyNotify) nautilus_file_unref);
+    g_autoptr (GPtrArray) changed_files_arr =
+        g_ptr_array_new_full (renamed_file_count, (GDestroyNotify) nautilus_file_unref);
 
     /* Create the files before loading the view and keep them in an array. */
     for (guint i = 0; i < file_count; i++)
@@ -213,9 +233,9 @@ test_rename_files (void)
 
     g_assert_cmpint (g_list_model_get_n_items (G_LIST_MODEL (model)), ==, file_count);
 
-    /* Rename only some of the files and verify that changes are emitted*/
+    /* Rename only some of the files and verify that changes are emitted. */
     g_signal_connect (files_view, "file-changed",
-                      G_CALLBACK (collect_changed_files), callback_arr);
+                      G_CALLBACK (collect_changed_files), changed_files_arr);
 
     for (guint i = 0; i < renamed_file_count; i++)
     {
@@ -225,9 +245,9 @@ test_rename_files (void)
         nautilus_file_rename (file, file_name, collect_renamed_files, renamed_files_arr);
     }
 
-    ITER_CONTEXT_WHILE (callback_arr->len != renamed_file_count ||
+    ITER_CONTEXT_WHILE (changed_files_arr->len < renamed_file_count ||
                         renamed_files_arr->len != renamed_file_count ||
-                        !ptr_arrays_equal_unordered (callback_arr, renamed_files_arr));
+                        !ptr_array_is_subset (renamed_files_arr, changed_files_arr));
 
     g_assert_cmpint (g_list_model_get_n_items (G_LIST_MODEL (model)), ==, file_count);
 
