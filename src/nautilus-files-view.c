@@ -1104,6 +1104,24 @@ file_and_directory_free (gpointer data)
 
 G_DEFINE_AUTOPTR_CLEANUP_FUNC (FileAndDirectory, file_and_directory_free)
 
+static guint
+file_and_directory_hash (gconstpointer key)
+{
+    const FileAndDirectory *fad = key;
+
+    return g_direct_hash (fad->file) ^ g_direct_hash (fad->directory);
+}
+
+static gboolean
+file_and_directory_equal (gconstpointer a,
+                          gconstpointer b)
+{
+    const FileAndDirectory *fad_1 = a;
+    const FileAndDirectory *fad_2 = b;
+
+    return fad_1->file == fad_2->file && fad_1->directory == fad_2->directory;
+}
+
 static ScriptLaunchParameters *
 script_launch_parameters_new (NautilusFile      *file,
                               NautilusFilesView *directory_view)
@@ -4046,6 +4064,32 @@ _g_lists_sort_and_check_for_intersection (GList **list_1,
 }
 
 static void
+remove_fad_duplicates (GList **files)
+{
+    g_autoptr (GHashTable) files_hash = g_hash_table_new (file_and_directory_hash,
+                                                          file_and_directory_equal);
+
+    for (GList *l = *files; l != NULL; l = l->next)
+    {
+        FileAndDirectory *fad = l->data;
+
+        if (g_hash_table_contains (files_hash, fad))
+        {
+            /* Can't be null since we look for duplicates */
+            GList *temp = l->prev;
+
+            *files = g_list_remove_link (*files, l);
+            g_list_free_full (l, file_and_directory_free);
+            l = temp;
+        }
+        else
+        {
+            g_hash_table_add (files_hash, fad);
+        }
+    }
+}
+
+static void
 nautilus_files_view_add_files (NautilusFilesView *self,
                                GList             *files)
 {
@@ -4122,6 +4166,8 @@ process_pending_files (NautilusFilesView *self)
 
     g_autoptr (GList) pending_additions = NULL;
     g_autoptr (GHashTable) files_removed = g_hash_table_new (NULL, NULL);
+
+    remove_fad_duplicates (&files_changed);
 
     for (GList *node = files_added; node != NULL; node = node->next)
     {
