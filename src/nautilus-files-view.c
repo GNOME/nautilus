@@ -4112,111 +4112,107 @@ files_view_file_changed (NautilusFilesView *self,
 static void
 process_pending_files (NautilusFilesView *self)
 {
-    g_autolist (FileAndDirectory) files_added = NULL;
-    g_autolist (FileAndDirectory) files_changed = NULL;
-    FileAndDirectory *pending;
-    g_autoptr (GList) pending_additions = NULL;
+    g_autolist (FileAndDirectory) files_added = g_steal_pointer (&self->new_added_files);
+    g_autolist (FileAndDirectory) files_changed = g_steal_pointer (&self->new_changed_files);
 
-    files_added = g_steal_pointer (&self->new_added_files);
-    files_changed = g_steal_pointer (&self->new_changed_files);
-
-
-    if (files_added != NULL || files_changed != NULL)
+    if (files_added == NULL && files_changed == NULL)
     {
-        g_autoptr (GHashTable) files_removed = g_hash_table_new (NULL, NULL);
+        return;
+    }
 
-        for (GList *node = files_added; node != NULL; node = node->next)
+    g_autoptr (GList) pending_additions = NULL;
+    g_autoptr (GHashTable) files_removed = g_hash_table_new (NULL, NULL);
+
+    for (GList *node = files_added; node != NULL; node = node->next)
+    {
+        FileAndDirectory *pending = node->data;
+        gboolean should_add_file = still_should_show_file (self, pending);
+
+        if (should_add_file)
         {
-            gboolean should_add_file;
-            pending = node->data;
+            pending_additions = g_list_prepend (pending_additions, pending->file);
+        }
 
-            should_add_file = still_should_show_file (self, pending);
+        /* Acknowledge the files that were pending to be revealed */
+        if (g_hash_table_contains (self->awaiting_acknowledge, pending->file))
+        {
             if (should_add_file)
             {
-                pending_additions = g_list_prepend (pending_additions, pending->file);
+                g_hash_table_add (self->pending_reveal, pending->file);
             }
 
-            /* Acknowledge the files that were pending to be revealed */
-            if (g_hash_table_contains (self->awaiting_acknowledge, pending->file))
-            {
-                if (should_add_file)
-                {
-                    g_hash_table_add (self->pending_reveal, pending->file);
-                }
-
-                g_hash_table_remove (self->awaiting_acknowledge, pending->file);
-            }
+            g_hash_table_remove (self->awaiting_acknowledge, pending->file);
         }
-        pending_additions = g_list_reverse (pending_additions);
+    }
+    pending_additions = g_list_reverse (pending_additions);
 
-        if (files_added != NULL)
+    if (files_added != NULL)
+    {
+        g_signal_emit (self,
+                       signals[ADD_FILES], 0, pending_additions);
+    }
+
+    for (GList *node = files_changed; node != NULL; node = node->next)
+    {
+        FileAndDirectory *pending = node->data;
+        gboolean should_show_file = still_should_show_file (self, pending);
+
+        if (should_show_file)
         {
             g_signal_emit (self,
-                           signals[ADD_FILES], 0, pending_additions);
+                           signals[FILE_CHANGED], 0, pending->file, pending->directory);
+        }
+        else
+        {
+            GList *files = g_hash_table_lookup (files_removed, pending->directory);
+
+            g_hash_table_insert (files_removed,
+                                 pending->directory,
+                                 g_list_prepend (files, pending->file));
         }
 
-        for (GList *node = files_changed; node != NULL; node = node->next)
+        /* Acknowledge the files that were pending to be revealed */
+        if (g_hash_table_contains (self->awaiting_acknowledge, pending->file))
         {
-            gboolean should_show_file;
-            pending = node->data;
-            should_show_file = still_should_show_file (self, pending);
             if (should_show_file)
             {
-                g_signal_emit (self,
-                               signals[FILE_CHANGED], 0, pending->file, pending->directory);
-            }
-            else
-            {
-                GList *files = g_hash_table_lookup (files_removed, pending->directory);
-
-                g_hash_table_insert (files_removed,
-                                     pending->directory,
-                                     g_list_prepend (files, pending->file));
+                g_hash_table_add (self->pending_reveal, pending->file);
             }
 
-            /* Acknowledge the files that were pending to be revealed */
-            if (g_hash_table_contains (self->awaiting_acknowledge, pending->file))
-            {
-                if (should_show_file)
-                {
-                    g_hash_table_add (self->pending_reveal, pending->file);
-                }
-
-                g_hash_table_remove (self->awaiting_acknowledge, pending->file);
-            }
+            g_hash_table_remove (self->awaiting_acknowledge, pending->file);
         }
-
-        if (g_hash_table_size (files_removed) > 0)
-        {
-            GHashTableIter iter;
-            gpointer directory;
-            GList *files;
-
-            g_hash_table_iter_init (&iter, files_removed);
-            while (g_hash_table_iter_next (&iter, &directory, (gpointer *) &files))
-            {
-                g_signal_emit (self, signals[REMOVE_FILES], 0, files, directory);
-                g_list_free (files);
-                g_hash_table_iter_steal (&iter);
-            }
-        }
-
-        if (files_changed != NULL)
-        {
-            g_autolist (NautilusFile) selection = nautilus_files_view_get_selection (self);
-            g_autoptr (GList) files = g_list_copy_deep (files_changed, (GCopyFunc) file_and_directory_get_file, NULL);
-
-            if (_g_lists_sort_and_check_for_intersection (&files, &selection))
-            {
-                /* Send a selection change since some file names could
-                 * have changed.
-                 */
-                nautilus_files_view_send_selection_change (self);
-            }
-        }
-
-        g_signal_emit (self, signals[END_FILE_CHANGES], 0);
     }
+
+    if (g_hash_table_size (files_removed) > 0)
+    {
+        GHashTableIter iter;
+        gpointer directory;
+        GList *files;
+
+        g_hash_table_iter_init (&iter, files_removed);
+        while (g_hash_table_iter_next (&iter, &directory, (gpointer *) &files))
+        {
+            g_signal_emit (self, signals[REMOVE_FILES], 0, files, directory);
+            g_list_free (files);
+            g_hash_table_iter_steal (&iter);
+        }
+    }
+
+    if (files_changed != NULL)
+    {
+        g_autolist (NautilusFile) selection = nautilus_files_view_get_selection (self);
+        g_autoptr (GList) files = g_list_copy_deep (files_changed, (GCopyFunc) file_and_directory_get_file, NULL);
+
+        if (_g_lists_sort_and_check_for_intersection (&files, &selection))
+        {
+            /* Send a selection change since some file names could
+             * have changed.
+             */
+            nautilus_files_view_send_selection_change (self);
+        }
+    }
+
+    g_signal_emit (self, signals[END_FILE_CHANGES], 0);
 }
 
 static void
