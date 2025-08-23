@@ -36,6 +36,7 @@
 #include <glib/gi18n.h>
 #include <glib/gstdio.h>
 #include <gtk/gtk.h>
+#include <libportal/portal.h>
 #include <nautilus-extension.h>
 #include <sys/stat.h>
 #include <sys/types.h>
@@ -1470,7 +1471,8 @@ nautilus_application_is_sandboxed (void)
     static gsize init = 0;
     if (g_once_init_enter (&init))
     {
-        ret = g_file_test ("/.flatpak-info", G_FILE_TEST_EXISTS);
+        ret = xdp_portal_running_under_sandbox ();
+
         g_once_init_leave (&init, 1);
     }
 
