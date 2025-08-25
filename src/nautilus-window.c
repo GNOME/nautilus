@@ -1432,6 +1432,8 @@ static gboolean
 nautilus_window_close_request (GtkWindow *window)
 {
     nautilus_window_close (NAUTILUS_WINDOW (window));
+
+    /* Window got destroyed, don't call other GtkWindow::close-request handlers */
     return FALSE;
 }
 
