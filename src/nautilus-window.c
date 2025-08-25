@@ -344,7 +344,6 @@ tab_view_notify_selected_page_cb (AdwTabView     *tab_view,
 
     g_assert (widget != NULL);
 
-    /* find slot corresponding to the target page */
     slot = NAUTILUS_WINDOW_SLOT (widget);
     g_assert (slot != NULL);
 
