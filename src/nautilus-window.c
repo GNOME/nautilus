@@ -965,7 +965,7 @@ tab_view_page_attached_cb (AdwTabView     *tab_view,
 {
     NautilusWindowSlot *slot = NAUTILUS_WINDOW_SLOT (adw_tab_page_get_child (page));
 
-    window->slots = g_list_append (window->slots, slot);
+    window->slots = g_list_prepend (window->slots, slot);
     g_signal_emit (window, signals[SLOT_ADDED], 0, slot);
 }
 
