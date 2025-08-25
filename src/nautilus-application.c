@@ -337,10 +337,7 @@ nautilus_application_open_location_full (NautilusApplication *self,
                                          NautilusWindowSlot  *target_slot,
                                          const char          *startup_id)
 {
-    NautilusWindowSlot *active_slot = NULL;
     NautilusWindow *active_window;
-    GFile *old_location = NULL;
-    char *old_uri, *new_uri;
     gboolean use_same;
     GdkDisplay *display;
 
@@ -353,34 +350,13 @@ nautilus_application_open_location_full (NautilusApplication *self,
     /* There is no active window if the application is run with
      * --gapplication-service
      */
-    if (active_window)
+
+    if (g_getenv ("G_MESSAGES_DEBUG") != NULL)
     {
-        active_slot = nautilus_window_get_active_slot (active_window);
-        /* Just for debug.*/
-        if (active_slot != NULL)
-        {
-            old_location = nautilus_window_slot_get_location (active_slot);
-        }
+        g_autofree char *uri = g_file_get_uri (location);
+
+        g_debug ("Application opening location: %s", uri);
     }
-
-
-    /* this happens at startup */
-    if (old_location == NULL)
-    {
-        old_uri = g_strdup ("(none)");
-    }
-    else
-    {
-        old_uri = g_file_get_uri (old_location);
-    }
-
-    new_uri = g_file_get_uri (location);
-
-    g_debug ("Application opening location, old: %s, new: %s", old_uri, new_uri);
-
-    g_free (old_uri);
-    g_free (new_uri);
-    /* end debug */
 
     /* In case a target slot is provided, we can use it's associated window.
      * In case a target window were given as well, we give preference to the
