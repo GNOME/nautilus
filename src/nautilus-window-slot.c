@@ -3084,9 +3084,11 @@ nautilus_window_slot_get_forward_history (NautilusWindowSlot *self)
 NautilusWindowSlot *
 nautilus_window_slot_new (NautilusMode mode)
 {
-    return g_object_new (NAUTILUS_TYPE_WINDOW_SLOT,
-                         "mode", mode,
-                         NULL);
+    NautilusWindowSlot *self = g_object_new (NAUTILUS_TYPE_WINDOW_SLOT,
+                                             "mode", mode,
+                                             NULL);
+
+    return g_object_ref_sink (self);
 }
 
 const gchar *
