@@ -109,7 +109,7 @@ run_view_zoom_testcase (GSettings   *view_setting,
 {
     g_settings_set_enum (view_setting, zoom_setting_key, default_zoom_level);
 
-    g_autoptr (NautilusWindowSlot) slot = g_object_ref_sink (nautilus_window_slot_new (NAUTILUS_MODE_BROWSE));
+    g_autoptr (NautilusWindowSlot) slot = nautilus_window_slot_new (NAUTILUS_MODE_BROWSE);
     g_autoptr (NautilusFilesView) files_view = nautilus_files_view_new (view_id, slot);
     g_autoptr (GFile) tmp_location = g_file_new_for_path (test_get_tmp_dir ());
     NautilusListBase *list_base = nautilus_files_view_get_private_list_base (files_view);
@@ -213,7 +213,7 @@ const GStrv hidden_files_hierarchy = (char *[])
 static void
 test_selection_actions (void)
 {
-    g_autoptr (NautilusWindowSlot) slot = g_object_ref_sink (nautilus_window_slot_new (NAUTILUS_MODE_BROWSE));
+    g_autoptr (NautilusWindowSlot) slot = nautilus_window_slot_new (NAUTILUS_MODE_BROWSE);
     g_autoptr (NautilusFilesView) files_view = nautilus_files_view_new (NAUTILUS_VIEW_GRID_ID, slot);
     NautilusViewModel *model = nautilus_files_view_get_private_model (files_view);
     g_autoptr (GFile) tmp_location = g_file_new_for_path (test_get_tmp_dir ());
@@ -322,7 +322,7 @@ test_hidden_files_renamed (void)
                             NAUTILUS_PREFERENCES_SHOW_HIDDEN_FILES,
                             FALSE);
 
-    g_autoptr (NautilusWindowSlot) slot = g_object_ref_sink (nautilus_window_slot_new (NAUTILUS_MODE_BROWSE));
+    g_autoptr (NautilusWindowSlot) slot = nautilus_window_slot_new (NAUTILUS_MODE_BROWSE);
     g_autoptr (NautilusFilesView) files_view = nautilus_files_view_new (NAUTILUS_VIEW_GRID_ID, slot);
     NautilusViewModel *model = nautilus_files_view_get_private_model (files_view);
     g_autoptr (GFile) tmp_location = g_file_new_for_path (test_get_tmp_dir ());
@@ -389,7 +389,7 @@ test_hidden_files_change (void)
                             NAUTILUS_PREFERENCES_SHOW_HIDDEN_FILES,
                             FALSE);
 
-    g_autoptr (NautilusWindowSlot) slot = g_object_ref_sink (nautilus_window_slot_new (NAUTILUS_MODE_BROWSE));
+    g_autoptr (NautilusWindowSlot) slot = nautilus_window_slot_new (NAUTILUS_MODE_BROWSE);
     g_autoptr (NautilusFilesView) files_view = nautilus_files_view_new (NAUTILUS_VIEW_GRID_ID, slot);
     NautilusViewModel *model = nautilus_files_view_get_private_model (files_view);
     g_autoptr (GFile) tmp_location = g_file_new_for_path (test_get_tmp_dir ());
@@ -473,7 +473,7 @@ test_replace_files (void)
                             NAUTILUS_PREFERENCES_SHOW_HIDDEN_FILES,
                             FALSE);
 
-    g_autoptr (NautilusWindowSlot) slot = g_object_ref_sink (nautilus_window_slot_new (NAUTILUS_MODE_BROWSE));
+    g_autoptr (NautilusWindowSlot) slot = nautilus_window_slot_new (NAUTILUS_MODE_BROWSE);
     g_autoptr (NautilusFilesView) files_view = nautilus_files_view_new (NAUTILUS_VIEW_GRID_ID, slot);
     NautilusViewModel *model = nautilus_files_view_get_private_model (files_view);
     g_autoptr (GFile) tmp_location = g_file_new_for_path (test_get_tmp_dir ());
@@ -583,7 +583,7 @@ test_replace_files (void)
 static void
 test_rename_files (void)
 {
-    g_autoptr (NautilusWindowSlot) slot = g_object_ref_sink (nautilus_window_slot_new (NAUTILUS_MODE_BROWSE));
+    g_autoptr (NautilusWindowSlot) slot = nautilus_window_slot_new (NAUTILUS_MODE_BROWSE);
     g_autoptr (NautilusFilesView) files_view = nautilus_files_view_new (NAUTILUS_VIEW_GRID_ID, slot);
     NautilusViewModel *model = nautilus_files_view_get_private_model (files_view);
     g_autoptr (GFile) tmp_location = g_file_new_for_path (test_get_tmp_dir ());
@@ -665,7 +665,7 @@ collect_removed_files_cb (NautilusFilesView *view,
 static void
 test_remove_files (void)
 {
-    g_autoptr (NautilusWindowSlot) slot = g_object_ref_sink (nautilus_window_slot_new (NAUTILUS_MODE_BROWSE));
+    g_autoptr (NautilusWindowSlot) slot = nautilus_window_slot_new (NAUTILUS_MODE_BROWSE);
     g_autoptr (NautilusFilesView) files_view = nautilus_files_view_new (NAUTILUS_VIEW_GRID_ID, slot);
     NautilusViewModel *model = nautilus_files_view_get_private_model (files_view);
     g_autoptr (GFile) tmp_location = g_file_new_for_path (test_get_tmp_dir ());
@@ -749,7 +749,7 @@ collect_added_files_cb (NautilusFilesView *view,
 static void
 test_add_files (void)
 {
-    g_autoptr (NautilusWindowSlot) slot = g_object_ref_sink (nautilus_window_slot_new (NAUTILUS_MODE_BROWSE));
+    g_autoptr (NautilusWindowSlot) slot = nautilus_window_slot_new (NAUTILUS_MODE_BROWSE);
     g_autoptr (NautilusFilesView) files_view = nautilus_files_view_new (NAUTILUS_VIEW_GRID_ID, slot);
     NautilusViewModel *model = nautilus_files_view_get_private_model (files_view);
     g_autoptr (GFile) tmp_location = g_file_new_for_path (test_get_tmp_dir ());
@@ -806,7 +806,7 @@ test_add_files (void)
 static void
 test_load_dir (void)
 {
-    g_autoptr (NautilusWindowSlot) slot = g_object_ref_sink (nautilus_window_slot_new (NAUTILUS_MODE_BROWSE));
+    g_autoptr (NautilusWindowSlot) slot = nautilus_window_slot_new (NAUTILUS_MODE_BROWSE);
     g_autoptr (NautilusFilesView) files_view = nautilus_files_view_new (NAUTILUS_VIEW_GRID_ID, slot);
     NautilusViewModel *model = nautilus_files_view_get_private_model (files_view);
     g_autoptr (GFile) tmp_location = g_file_new_for_path (test_get_tmp_dir ());

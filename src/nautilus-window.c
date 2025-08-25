@@ -393,7 +393,7 @@ nautilus_window_create_and_init_slot (NautilusWindow *window)
 {
     g_assert (NAUTILUS_IS_WINDOW (window));
 
-    NautilusWindowSlot *slot = nautilus_window_slot_new (NAUTILUS_MODE_BROWSE);
+    g_autoptr (NautilusWindowSlot) slot = nautilus_window_slot_new (NAUTILUS_MODE_BROWSE);
 
     g_signal_connect_swapped (slot, "notify::allow-stop",
                               G_CALLBACK (update_cursor), window);
@@ -410,6 +410,9 @@ nautilus_window_create_and_init_slot (NautilusWindow *window)
                             page, "title",
                             G_BINDING_SYNC_CREATE);
     g_signal_connect (slot, "notify::title", G_CALLBACK (on_update_page_tooltip), page);
+
+    /* Assure that AdwTabView has added slot to slot list */
+    g_warn_if_fail (g_list_find (window->slots, slot) != NULL);
 
     return slot;
 }

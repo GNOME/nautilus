@@ -742,9 +742,8 @@ nautilus_file_chooser_constructed (GObject *object)
 
     NautilusFileChooser *self = (NautilusFileChooser *) object;
 
-    /* Setup slot.
-     * We hold a reference to control its lifetime with relation to bindings. */
-    self->slot = g_object_ref (nautilus_window_slot_new (self->mode));
+    /* Setup slot. */
+    self->slot = nautilus_window_slot_new (self->mode);
     g_signal_connect_swapped (self->slot, "notify::location", G_CALLBACK (on_location_changed), self);
     adw_bin_set_child (self->slot_container, GTK_WIDGET (self->slot));
     nautilus_window_slot_set_active (self->slot, TRUE);
