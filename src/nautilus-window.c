@@ -70,6 +70,9 @@ static void nautilus_window_back_or_forward (NautilusWindow *window,
                                              guint           distance);
 static void nautilus_window_sync_location_widgets (NautilusWindow *window);
 static void update_cursor (NautilusWindow *window);
+static void
+set_active_slot (NautilusWindow     *window,
+                 NautilusWindowSlot *new_slot);
 
 /* Sanity check: highest mouse button value I could find was 14. 5 is our
  * lower threshold (well-documented to be the one of the button events for the
@@ -347,7 +350,7 @@ tab_view_notify_selected_page_cb (AdwTabView     *tab_view,
     slot = NAUTILUS_WINDOW_SLOT (widget);
     g_assert (slot != NULL);
 
-    nautilus_window_set_active_slot (window, slot);
+    set_active_slot (window, slot);
 }
 
 static void
@@ -444,7 +447,7 @@ nautilus_window_open_location_full (NautilusWindow     *window,
     if (!(flags & NAUTILUS_OPEN_FLAG_DONT_MAKE_ACTIVE))
     {
         gtk_window_present (GTK_WINDOW (window));
-        nautilus_window_set_active_slot (window, target_slot);
+        set_active_slot (window, target_slot);
     }
 
     nautilus_window_slot_open_location_full (target_slot, location, selection);
@@ -1294,7 +1297,7 @@ nautilus_window_close (NautilusWindow *window)
     g_return_if_fail (NAUTILUS_IS_WINDOW (window));
 
     nautilus_window_save_geometry (window);
-    nautilus_window_set_active_slot (window, NULL);
+    set_active_slot (window, NULL);
 
     /* The pad controller hold a reference to the window, creating a cycle.
      * Usually, reference cycles are resolved in dispose(), but GTK removes the
@@ -1311,12 +1314,10 @@ nautilus_window_close (NautilusWindow *window)
 }
 
 void
-nautilus_window_set_active_slot (NautilusWindow     *window,
-                                 NautilusWindowSlot *new_slot)
+set_active_slot (NautilusWindow     *window,
+                 NautilusWindowSlot *new_slot)
 {
     NautilusWindowSlot *old_slot;
-
-    g_assert (NAUTILUS_IS_WINDOW (window));
 
     if (new_slot != NULL)
     {
@@ -1617,7 +1618,7 @@ nautilus_window_set_property (GObject      *object,
     {
         case PROP_ACTIVE_SLOT:
         {
-            nautilus_window_set_active_slot (self, NAUTILUS_WINDOW_SLOT (g_value_get_object (value)));
+            set_active_slot (self, NAUTILUS_WINDOW_SLOT (g_value_get_object (value)));
         }
         break;
 
