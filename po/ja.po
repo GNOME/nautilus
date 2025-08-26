@@ -30,8 +30,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: nautilus main\n"
 "Report-Msgid-Bugs-To: https://gitlab.gnome.org/GNOME/nautilus/issues\n"
-"POT-Creation-Date: 2025-07-25 06:01+0000\n"
-"PO-Revision-Date: 2025-07-27 05:32+0900\n"
+"POT-Creation-Date: 2025-08-03 22:45+0000\n"
+"PO-Revision-Date: 2025-08-05 05:44+0900\n"
 "Last-Translator: Makoto Sakaguchi <ycco34vx@gmail.com>\n"
 "Language-Team: Japanese <https://l10n.gnome.org/teams/ja/>\n"
 "Language: ja\n"
@@ -81,19 +81,18 @@ msgstr ""
 "れます。機能はプラグインやスクリプトで拡張できます。"
 
 #: data/org.gnome.Nautilus.metainfo.xml.in.in:60
-#: src/nautilus-files-view.c:10052
+#: src/nautilus-files-view.c:10053
 msgid "Grid View"
 msgstr "グリッド表示"
 
 #: data/org.gnome.Nautilus.metainfo.xml.in.in:64
-#: src/nautilus-files-view.c:10059
+#: src/nautilus-files-view.c:10060
 msgid "List View"
 msgstr "一覧表示"
 
 #: data/org.gnome.Nautilus.metainfo.xml.in.in:68 src/nautilus-query.c:304
 #: src/nautilus-search-directory-file.c:225
 #: src/nautilus-search-directory-file.c:265
-#: src/resources/ui/nautilus-search-popover.ui:235
 msgid "Search"
 msgstr "検索"
 
@@ -780,9 +779,9 @@ msgstr "--select オプションには一つ以上の URI を指定してくだ�
 msgid "There was an error displaying help"
 msgstr "ヘルプの表示中にエラーが発生しました"
 
-#: src/nautilus-application.c:726 src/nautilus-app-chooser.c:87
+#: src/nautilus-application.c:726 src/nautilus-app-chooser.c:85
 #: src/nautilus-autorun-software.c:161 src/nautilus-mime-actions.c:1307
-#: src/nautilus-ui-utilities.c:437
+#: src/nautilus-ui-utilities.c:344
 msgid "_OK"
 msgstr "OK(_O)"
 
@@ -813,32 +812,32 @@ msgstr "親フォルダーで指定された URI を選択する。"
 msgid "[URI…]"
 msgstr "[URI…]"
 
-#: src/nautilus-app-chooser.c:83
+#: src/nautilus-app-chooser.c:81
 msgid "Could not set as default"
 msgstr "デフォルトとして設定できませんでした"
 
-#: src/nautilus-app-chooser.c:85
+#: src/nautilus-app-chooser.c:83
 #, c-format
 msgid "Error while setting “%s” as default app: %s"
 msgstr "“%s” をデフォルトのアプリとして設定中にエラーが発生しました: %s"
 
 #. Translators: %s is the filename.  i.e. "Choose an app to open test.jpg"
-#: src/nautilus-app-chooser.c:205
+#: src/nautilus-app-chooser.c:181
 #, c-format
 msgid "Choose an app to open <b>%s</b>"
 msgstr "<b>%s</b> を開くアプリを選択してください"
 
-#: src/nautilus-app-chooser.c:211
+#: src/nautilus-app-chooser.c:187
 msgid "Open Items"
 msgstr "アイテムを開く"
 
 # 開きますにすると見切れる
-#: src/nautilus-app-chooser.c:215
+#: src/nautilus-app-chooser.c:191
 msgid "Open Folder"
 msgstr "フォルダーを開く"
 
 # 開きますにすると見切れる
-#: src/nautilus-app-chooser.c:219 src/resources/ui/nautilus-app-chooser.ui:5
+#: src/nautilus-app-chooser.c:195 src/resources/ui/nautilus-app-chooser.ui:5
 msgid "Open File"
 msgstr "ファイルを開く"
 
@@ -1050,8 +1049,10 @@ msgstr "種類"
 msgid "The type of the file."
 msgstr "ファイルの種類。"
 
+#. Translators: This refers to a date time
 #: src/nautilus-column-utilities.c:90
 #: src/resources/ui/nautilus-properties-window.ui:444
+#: src/resources/ui/nautilus-search-popover.ui:190
 msgid "Modified"
 msgstr "更新日時"
 
@@ -1076,8 +1077,10 @@ msgstr "アクセス日時"
 msgid "The date the file was accessed."
 msgstr "ファイルにアクセスした日付。"
 
+#. Translators: This refers to a date time
 #: src/nautilus-column-utilities.c:115
 #: src/resources/ui/nautilus-properties-window.ui:458
+#: src/resources/ui/nautilus-search-popover.ui:195
 msgid "Created"
 msgstr "作成日時"
 
@@ -1185,6 +1188,11 @@ msgid "Smaller archives but must be installed on Windows and Mac."
 msgstr ""
 "アーカイブは小さくなりますが、Windows と Mac では別途アーカイバーのインストー"
 "ルが必要です。"
+
+#: src/nautilus-date-utilities.c:474
+#, c-format
+msgid "Since %s"
+msgstr "期間 %s"
 
 #: src/nautilus-dbus-launcher.c:50
 #, c-format
@@ -1854,7 +1862,7 @@ msgid "Deleting Files"
 msgstr "ファイルを削除中"
 
 #. Translators: %s is a file name formatted for display
-#: src/nautilus-file-operations.c:2340 src/nautilus-files-view.c:6837
+#: src/nautilus-file-operations.c:2340 src/nautilus-files-view.c:6838
 #: src/gtk/nautilusgtkplacessidebar.c:2317
 #: src/gtk/nautilusgtkplacessidebar.c:2346
 #, c-format
@@ -1890,7 +1898,7 @@ msgid "_Empty"
 msgstr "空にする(_E)"
 
 #. Translators: %s is a file name formatted for display
-#: src/nautilus-file-operations.c:2668 src/nautilus-files-view.c:6787
+#: src/nautilus-file-operations.c:2668 src/nautilus-files-view.c:6788
 #: src/gtk/nautilusgtkplacessidebar.c:1709
 #, c-format
 msgid "Unable to access “%s”"
@@ -2434,59 +2442,59 @@ msgstr "読み込み中…"
 msgid "Examples: "
 msgstr "例: "
 
-#: src/nautilus-files-view.c:2910 src/nautilus-files-view.c:2917
-#: src/nautilus-files-view.c:2924 src/nautilus-files-view.c:2931
+#: src/nautilus-files-view.c:2911 src/nautilus-files-view.c:2918
+#: src/nautilus-files-view.c:2925 src/nautilus-files-view.c:2932
 msgid "Could not paste files"
 msgstr "ファイルを貼り付けできませんでした"
 
-#: src/nautilus-files-view.c:2911
+#: src/nautilus-files-view.c:2912
 msgid "Cannot paste files into Starred"
 msgstr "ファイルをお気に入りへ貼り付けできません"
 
-#: src/nautilus-files-view.c:2918
+#: src/nautilus-files-view.c:2919
 msgid "Cannot paste files into Recent"
 msgstr "ファイルを最近使ったファイルへ貼り付けできません"
 
-#: src/nautilus-files-view.c:2925
+#: src/nautilus-files-view.c:2926
 msgid "Cannot paste files into Trash"
 msgstr "ファイルをゴミ箱へ貼り付けできません"
 
-#: src/nautilus-files-view.c:2932
+#: src/nautilus-files-view.c:2933
 msgid "Permissions do not allow pasting files in this directory"
 msgstr "このディレクトリにファイルを貼り付ける権限がありません"
 
-#: src/nautilus-files-view.c:3570 src/nautilus-files-view.c:3617
+#: src/nautilus-files-view.c:3571 src/nautilus-files-view.c:3618
 #, c-format
 msgid "“%s” selected"
 msgstr "“%s” を選択しました"
 
-#: src/nautilus-files-view.c:3574
+#: src/nautilus-files-view.c:3575
 #, c-format
 msgid "%'d folder selected"
 msgid_plural "%'d folders selected"
 msgstr[0] "%'d 個のフォルダーを選択しました"
 
-#: src/nautilus-files-view.c:3588
+#: src/nautilus-files-view.c:3589
 #, c-format
 msgid "(containing %'d item)"
 msgid_plural "(containing %'d items)"
 msgstr[0] "(%'d 個のアイテムを含む)"
 
 #. translators: this is preceded with a string of form 'N folders' (N more than 1)
-#: src/nautilus-files-view.c:3603
+#: src/nautilus-files-view.c:3604
 #, c-format
 msgid "(containing a total of %'d item)"
 msgid_plural "(containing a total of %'d items)"
 msgstr[0] "(合計 %'d 個のアイテムを含む)"
 
-#: src/nautilus-files-view.c:3622
+#: src/nautilus-files-view.c:3623
 #, c-format
 msgid "%'d item selected"
 msgid_plural "%'d items selected"
 msgstr[0] "%'d 個のアイテムを選択しました"
 
 #. Folders selected also, use "other" terminology
-#: src/nautilus-files-view.c:3631
+#: src/nautilus-files-view.c:3632
 #, c-format
 msgid "%'d other item selected"
 msgid_plural "%'d other items selected"
@@ -2496,7 +2504,7 @@ msgstr[0] "他に %'d 個のアイテムを選択しました"
 #. * needs to use something other than parentheses. The
 #. * the message in parentheses is the size of the selected items.
 #.
-#: src/nautilus-files-view.c:3646
+#: src/nautilus-files-view.c:3647
 #, c-format
 msgid "(%s)"
 msgstr "(%s)"
@@ -2508,161 +2516,161 @@ msgstr "(%s)"
 #. * message about the number of other items and the
 #. * total size of those items.
 #.
-#: src/nautilus-files-view.c:3696
+#: src/nautilus-files-view.c:3697
 #, c-format
 msgid "%s, %s"
 msgstr "%s, %s"
 
-#: src/nautilus-files-view.c:3766
+#: src/nautilus-files-view.c:3767
 msgid "Search _Settings"
 msgstr "検索設定(_S)"
 
-#: src/nautilus-files-view.c:3778
+#: src/nautilus-files-view.c:3779
 msgid "Search _Everywhere"
 msgstr "すべての場所を検索(_S)"
 
-#: src/nautilus-files-view.c:3815
+#: src/nautilus-files-view.c:3816
 msgid "More locations can be added to search in the settings"
 msgstr "設定で検索対象の場所を追加できます"
 
 #. Translators: %s is the name of the search location formatted for display
-#: src/nautilus-files-view.c:3823
+#: src/nautilus-files-view.c:3824
 #, c-format
 msgid "No matches in “%s”"
 msgstr "“%s” で見つかりません"
 
-#: src/nautilus-files-view.c:3831
+#: src/nautilus-files-view.c:3832
 #: src/resources/ui/nautilus-search-types-dialog.ui:70
 msgid "No Results Found"
 msgstr "見つかりませんでした"
 
-#: src/nautilus-files-view.c:3836
+#: src/nautilus-files-view.c:3837
 msgid "Trash is Empty"
 msgstr "ゴミ箱が空です"
 
-#: src/nautilus-files-view.c:3842
+#: src/nautilus-files-view.c:3843
 msgid "No Starred Files"
 msgstr "お気に入りのファイルはありません"
 
-#: src/nautilus-files-view.c:3848
+#: src/nautilus-files-view.c:3849
 msgid "No Recent Files"
 msgstr "最近使ったファイルはありません"
 
-#: src/nautilus-files-view.c:3854
+#: src/nautilus-files-view.c:3855
 msgid "No Known Connections"
 msgstr "利用可能な接続はありません"
 
-#: src/nautilus-files-view.c:3855
+#: src/nautilus-files-view.c:3856
 msgid "Enter an address to connect to a network location."
 msgstr "ネットワークの場所に接続するためのアドレスを入力してください。"
 
-#: src/nautilus-files-view.c:3860
+#: src/nautilus-files-view.c:3861
 msgid "Folder is Empty"
 msgstr "フォルダーが空です"
 
-#: src/nautilus-files-view.c:6025
+#: src/nautilus-files-view.c:6026
 msgid "Select Move Destination"
 msgstr "移動先を選択"
 
-#: src/nautilus-files-view.c:6029
+#: src/nautilus-files-view.c:6030
 msgid "Select Copy Destination"
 msgstr "コピー先を選択"
 
-#: src/nautilus-files-view.c:6040 src/nautilus-files-view.c:6430
+#: src/nautilus-files-view.c:6041 src/nautilus-files-view.c:6431
 #: src/nautilus-portal.c:434 src/nautilus-properties-window.c:4027
 #: src/resources/ui/nautilus-files-view-select-items.ui:23
 msgid "_Select"
 msgstr "選択(_S)"
 
-#: src/nautilus-files-view.c:6429
+#: src/nautilus-files-view.c:6430
 msgid "Select Extract Destination"
 msgstr "展開先を選択"
 
-#: src/nautilus-files-view.c:6505
+#: src/nautilus-files-view.c:6506
 msgid "Error sending email."
 msgstr "メール送信中にエラーが発生しました。"
 
 #. Translators: %s is a file name formatted for display
-#: src/nautilus-files-view.c:6814
+#: src/nautilus-files-view.c:6815
 #, c-format
 msgid "Unable to remove “%s”"
 msgstr "%s を取り外せません"
 
-#: src/nautilus-files-view.c:6859
+#: src/nautilus-files-view.c:6860
 msgid "Unable to stop drive"
 msgstr "ドライブを停止できません"
 
 #. Translators: %s is a file name formatted for display
-#: src/nautilus-files-view.c:6974 src/gtk/nautilusgtkplacessidebar.c:1664
+#: src/nautilus-files-view.c:6975 src/gtk/nautilusgtkplacessidebar.c:1664
 #: src/gtk/nautilusgtkplacessidebar.c:2543
 #, c-format
 msgid "Unable to start “%s”"
 msgstr "“%s” を開けません"
 
-#: src/nautilus-files-view.c:8093
+#: src/nautilus-files-view.c:8094
 #, c-format
 msgid "New Folder with Selection (%'d Item)"
 msgid_plural "New Folder with Selection (%'d Items)"
 msgstr[0] "選択アイテムを含む新しいフォルダーを作成 (%'d 個)"
 
-#: src/nautilus-files-view.c:8148
+#: src/nautilus-files-view.c:8149
 #, c-format
 msgid "Open With %s"
 msgstr "%s で開く"
 
-#: src/nautilus-files-view.c:8159
+#: src/nautilus-files-view.c:8160
 msgid "Run"
 msgstr "実行"
 
-#: src/nautilus-files-view.c:8164
+#: src/nautilus-files-view.c:8165
 #: src/resources/ui/nautilus-operations-ui-manager-request-passphrase.ui:17
 msgid "Extract"
 msgstr "展開"
 
-#: src/nautilus-files-view.c:8165
+#: src/nautilus-files-view.c:8166
 msgid "Extract to…"
 msgstr "展開先…"
 
-#: src/nautilus-files-view.c:8169
+#: src/nautilus-files-view.c:8170
 #: src/resources/ui/nautilus-files-view-context-menus.ui:93
 msgid "Open"
 msgstr "開く"
 
-#: src/nautilus-files-view.c:8248
+#: src/nautilus-files-view.c:8249
 #: src/resources/ui/nautilus-files-view-context-menus.ui:159
 #: src/gtk/nautilusgtkplacessidebar.c:2966
 msgid "_Start"
 msgstr "開始(_S)"
 
-#: src/nautilus-files-view.c:8254
+#: src/nautilus-files-view.c:8255
 msgid "_Connect"
 msgstr "接続(_C)"
 
-#: src/nautilus-files-view.c:8260
+#: src/nautilus-files-view.c:8261
 msgid "_Start Multi-disk Drive"
 msgstr "マルチディスクドライブを起動(_S)"
 
-#: src/nautilus-files-view.c:8266
+#: src/nautilus-files-view.c:8267
 msgid "U_nlock Drive"
 msgstr "ドライブをロック解除(_N)"
 
-#: src/nautilus-files-view.c:8284
+#: src/nautilus-files-view.c:8285
 msgid "Stop Drive"
 msgstr "ドライブを停止"
 
-#: src/nautilus-files-view.c:8290 src/gtk/nautilusgtkplacessidebar.c:2983
+#: src/nautilus-files-view.c:8291 src/gtk/nautilusgtkplacessidebar.c:2983
 msgid "_Safely Remove Drive"
 msgstr "ドライブを安全に取り出す(_S)"
 
-#: src/nautilus-files-view.c:8296
+#: src/nautilus-files-view.c:8297
 msgid "_Disconnect"
 msgstr "切断(_D)"
 
-#: src/nautilus-files-view.c:8302
+#: src/nautilus-files-view.c:8303
 msgid "_Stop Multi-disk Drive"
 msgstr "マルチディスクドライブを停止(_S)"
 
-#: src/nautilus-files-view.c:8308
+#: src/nautilus-files-view.c:8309
 msgid "_Lock Drive"
 msgstr "ドライブをロック(_L)"
 
@@ -3246,7 +3254,7 @@ msgstr "ゴミ箱を空にする(_E)…"
 msgid "_Trash Settings"
 msgstr "ゴミ箱の設定(_T)"
 
-#: src/nautilus-location-entry.c:713 src/nautilus-query-editor.c:721
+#: src/nautilus-location-entry.c:713 src/nautilus-query-editor.c:661
 msgid "Clear Entry"
 msgstr "入力内容を消去"
 
@@ -3900,61 +3908,57 @@ msgstr "カスタムアイコンを選択"
 msgid "Search for “%s”"
 msgstr "“%s” の検索"
 
-#: src/nautilus-query-editor.c:151
+#: src/nautilus-query-editor.c:160
 msgid "Search may be slow and will not include subfolders or file contents"
 msgstr "検索は遅くなる場合があり、サブフォルダーとファイルの内容は含まれません"
 
-#: src/nautilus-query-editor.c:158
+#: src/nautilus-query-editor.c:167
 msgid "Search may be slow and will not include file contents"
 msgstr "検索は遅くなる場合があり、ファイルの内容は含まれません"
 
-#: src/nautilus-query-editor.c:166
+#: src/nautilus-query-editor.c:175
 msgid "Remote Location"
 msgstr "リモートの場所"
 
-#: src/nautilus-query-editor.c:172
+#: src/nautilus-query-editor.c:181
 msgid "External Drive"
 msgstr "外付けドライブ"
 
-#: src/nautilus-query-editor.c:178
+#: src/nautilus-query-editor.c:187
 msgid "Folder Not in Search Locations"
 msgstr "フォルダーは検索対象に含まれません"
 
-#: src/nautilus-query-editor.c:185
+#: src/nautilus-query-editor.c:194
 msgid "Subfolders Not in Search Locations"
 msgstr "サブフォルダーは検索対象に含まれません"
 
-#: src/nautilus-query-editor.c:195
+#: src/nautilus-query-editor.c:204
 msgid "Some subfolders will not be included in search results"
 msgstr "一部のサブフォルダーは検索結果に含まれません"
 
-#: src/nautilus-query-editor.c:202
+#: src/nautilus-query-editor.c:211
 msgid ""
 "Search will be slower and will not include file contents for some folders"
 msgstr "検索は遅くなり、いくつかのサブフォルダーのファイルの内容は含まれません"
 
-#: src/nautilus-query-editor.c:547
-msgid "Remove Filter"
-msgstr "フィルターを削除"
-
 #. translators: This opens the search panel in the Settings app.
-#: src/nautilus-query-editor.c:741
+#: src/nautilus-query-editor.c:681
 msgid "_Search Settings"
 msgstr "検索の設定(_S)"
 
-#: src/nautilus-query-editor.c:754
+#: src/nautilus-query-editor.c:694
 msgid "Filter Search Results"
 msgstr "検索結果のフィルター"
 
-#: src/nautilus-query-editor.c:761
+#: src/nautilus-query-editor.c:701
 msgid "Search Information"
 msgstr "検索情報"
 
-#: src/nautilus-query-editor.c:841
+#: src/nautilus-query-editor.c:781
 msgid "Search current folder"
 msgstr "現在のフォルダーを検索"
 
-#: src/nautilus-query-editor.c:842
+#: src/nautilus-query-editor.c:782
 msgid "Search everywhere"
 msgstr "すべての場所を検索"
 
@@ -3970,28 +3974,17 @@ msgstr "ファイル名を変更します"
 msgid "Unable to complete the requested search"
 msgstr "要求された検索を完了できません"
 
-#: src/nautilus-search-popover.c:281
-msgid "Show Time Ranges"
-msgstr "期間を表示"
+#: src/nautilus-search-popover.c:546
+msgid "Date Used"
+msgstr "使用日時"
 
-#: src/nautilus-search-popover.c:287
-#: src/resources/ui/nautilus-search-popover.ui:72
-msgid "Use Calendar"
-msgstr "カレンダーを使用"
+#: src/nautilus-search-popover.c:550
+msgid "Date Created"
+msgstr "作成日時"
 
-#. Add the no date filter element first
-#: src/nautilus-search-popover.c:405
-msgid "Any time"
-msgstr "指定なし"
-
-#. Other types
-#: src/nautilus-search-popover.c:500
-msgid "Other Type…"
-msgstr "他の種類…"
-
-#: src/nautilus-search-popover.c:692
-msgid "Select Dates…"
-msgstr "日付を選択…"
+#: src/nautilus-search-popover.c:554
+msgid "Date Modified"
+msgstr "更新日時"
 
 #. trash
 #: src/nautilus-shell-search-provider.c:349
@@ -4006,54 +3999,6 @@ msgstr "お気に入り済"
 #: src/nautilus-tag-manager.c:228
 msgid "unstarred"
 msgstr "お気に入りではない"
-
-#: src/nautilus-ui-utilities.c:341
-#, c-format
-msgid "Since %d day ago"
-msgid_plural "Since %d days ago"
-msgstr[0] "%d 日前以降"
-
-#: src/nautilus-ui-utilities.c:342
-#, c-format
-msgid "%d day ago"
-msgid_plural "%d days ago"
-msgstr[0] "%d 日前"
-
-#: src/nautilus-ui-utilities.c:348
-#, c-format
-msgid "Since last week"
-msgid_plural "Since %d weeks ago"
-msgstr[0] "%d 週前以降"
-
-#: src/nautilus-ui-utilities.c:349
-#, c-format
-msgid "Last week"
-msgid_plural "%d weeks ago"
-msgstr[0] "%d 週前"
-
-#: src/nautilus-ui-utilities.c:355
-#, c-format
-msgid "Since last month"
-msgid_plural "Since %d months ago"
-msgstr[0] "%d ヶ月前以降"
-
-#: src/nautilus-ui-utilities.c:356
-#, c-format
-msgid "Last month"
-msgid_plural "%d months ago"
-msgstr[0] "%d ヶ月前"
-
-#: src/nautilus-ui-utilities.c:361
-#, c-format
-msgid "Since last year"
-msgid_plural "Since %d years ago"
-msgstr[0] "%d 年前以降"
-
-#: src/nautilus-ui-utilities.c:362
-#, c-format
-msgid "Last year"
-msgid_plural "%d years ago"
-msgstr[0] "%d 年前"
 
 #: src/nautilus-window.c:142
 msgid "New tab"
@@ -4467,90 +4412,95 @@ msgstr "現在のフォルダーメニューを開く"
 
 #: src/resources/gtk/help-overlay.ui:284
 msgctxt "shortcut window"
+msgid "Open Context Menu"
+msgstr "コンテキストメニューを開く"
+
+#: src/resources/gtk/help-overlay.ui:290
+msgctxt "shortcut window"
 msgid "List View"
 msgstr "一覧表示"
 
-#: src/resources/gtk/help-overlay.ui:290
+#: src/resources/gtk/help-overlay.ui:296
 msgctxt "shortcut window"
 msgid "Grid View"
 msgstr "グリッド表示"
 
-#: src/resources/gtk/help-overlay.ui:296 src/resources/gtk/help-overlay.ui:303
+#: src/resources/gtk/help-overlay.ui:302 src/resources/gtk/help-overlay.ui:309
 msgctxt "shortcut window"
 msgid "Expand Folder"
 msgstr "フォルダーを展開する"
 
-#: src/resources/gtk/help-overlay.ui:310 src/resources/gtk/help-overlay.ui:317
+#: src/resources/gtk/help-overlay.ui:316 src/resources/gtk/help-overlay.ui:323
 msgctxt "shortcut window"
 msgid "Collapse Folder"
 msgstr "フォルダーを折りたたむ"
 
-#: src/resources/gtk/help-overlay.ui:326
+#: src/resources/gtk/help-overlay.ui:332
 msgctxt "shortcut window"
 msgid "Editing"
 msgstr "編集"
 
-#: src/resources/gtk/help-overlay.ui:329
+#: src/resources/gtk/help-overlay.ui:335
 msgctxt "shortcut window"
 msgid "Create Folder"
 msgstr "フォルダーを作成する"
 
-#: src/resources/gtk/help-overlay.ui:335
+#: src/resources/gtk/help-overlay.ui:341
 msgctxt "shortcut window"
 msgid "Rename"
 msgstr "名前を変更する"
 
-#: src/resources/gtk/help-overlay.ui:341
+#: src/resources/gtk/help-overlay.ui:347
 msgctxt "shortcut window"
 msgid "Move to Trash"
 msgstr "ゴミ箱へ移動する"
 
-#: src/resources/gtk/help-overlay.ui:347
+#: src/resources/gtk/help-overlay.ui:353
 msgctxt "shortcut window"
 msgid "Delete Permanently"
 msgstr "完全に削除する"
 
-#: src/resources/gtk/help-overlay.ui:353
+#: src/resources/gtk/help-overlay.ui:359
 msgctxt "shortcut window"
 msgid "Create Link to Copied Item"
 msgstr "コピーしたアイテムへのリンクを作成する"
 
-#: src/resources/gtk/help-overlay.ui:359
+#: src/resources/gtk/help-overlay.ui:365
 msgctxt "shortcut window"
 msgid "Create Link to Selected Item"
 msgstr "選択したアイテムへのリンクを作成する"
 
-#: src/resources/gtk/help-overlay.ui:365
+#: src/resources/gtk/help-overlay.ui:371
 msgctxt "shortcut window"
 msgid "Cut"
 msgstr "切り取る"
 
-#: src/resources/gtk/help-overlay.ui:371
+#: src/resources/gtk/help-overlay.ui:377
 msgctxt "shortcut window"
 msgid "Copy"
 msgstr "コピーする"
 
-#: src/resources/gtk/help-overlay.ui:377
+#: src/resources/gtk/help-overlay.ui:383
 msgctxt "shortcut window"
 msgid "Paste"
 msgstr "貼り付ける"
 
-#: src/resources/gtk/help-overlay.ui:383
+#: src/resources/gtk/help-overlay.ui:389
 msgctxt "shortcut window"
 msgid "Select All"
 msgstr "すべて選択する"
 
-#: src/resources/gtk/help-overlay.ui:389
+#: src/resources/gtk/help-overlay.ui:395
 msgctxt "shortcut window"
 msgid "Invert Selection"
 msgstr "選択範囲を反転する"
 
-#: src/resources/gtk/help-overlay.ui:395
+#: src/resources/gtk/help-overlay.ui:401
 msgctxt "shortcut window"
 msgid "Select Items Matching"
 msgstr "パターンを指定してアイテムを選択する"
 
-#: src/resources/gtk/help-overlay.ui:401
+#: src/resources/gtk/help-overlay.ui:407
 msgctxt "shortcut window"
 msgid "Show Item Properties"
 msgstr "アイテムのプロパティを表示する"
@@ -4559,7 +4509,7 @@ msgstr "アイテムのプロパティを表示する"
 msgid "Choose an app to open the selected files"
 msgstr "選択したファイルを開くアプリを選択してください"
 
-#: src/resources/ui/nautilus-app-chooser.ui:63
+#: src/resources/ui/nautilus-app-chooser.ui:77
 msgid "Always use for this file type"
 msgstr "常にこのファイルの種類を使用する"
 
@@ -4716,6 +4666,65 @@ msgstr "パスワード(_P)"
 #: src/resources/ui/nautilus-compress-dialog.ui:96
 msgid "_Confirm Password"
 msgstr "パスワードを確認してください(_C)"
+
+#: src/resources/ui/nautilus-date-entry-row.ui:9
+msgid "Pick Date"
+msgstr "日付を選択"
+
+#: src/resources/ui/nautilus-date-range-dialog.ui:5
+msgid "Add Date Filter"
+msgstr "日付フィルタを追加"
+
+#: src/resources/ui/nautilus-date-range-dialog.ui:15
+msgid "Filter by Date"
+msgstr "日付でフィルタ"
+
+#: src/resources/ui/nautilus-date-range-dialog.ui:26
+msgid "_Date Range"
+msgstr "日付範囲(_D)"
+
+#. Keep in sync with code
+#: src/resources/ui/nautilus-date-range-dialog.ui:32
+msgid "Single Day"
+msgstr "同日"
+
+#: src/resources/ui/nautilus-date-range-dialog.ui:33
+msgid "± 1 day"
+msgstr "± 1 日"
+
+#: src/resources/ui/nautilus-date-range-dialog.ui:34
+msgid "± 3 days"
+msgstr "± 3 日"
+
+#: src/resources/ui/nautilus-date-range-dialog.ui:35
+msgid "± 7 days"
+msgstr "± 7 日"
+
+#: src/resources/ui/nautilus-date-range-dialog.ui:36
+msgid "± 14 days"
+msgstr "± 14 日"
+
+#: src/resources/ui/nautilus-date-range-dialog.ui:37
+msgid "Specify Range"
+msgstr "範囲を指定"
+
+#: src/resources/ui/nautilus-date-range-dialog.ui:50
+msgid "_Date"
+msgstr "日付(_D)"
+
+#: src/resources/ui/nautilus-date-range-dialog.ui:58
+msgid "Fro_m"
+msgstr "開始(_M)"
+
+#: src/resources/ui/nautilus-date-range-dialog.ui:67
+msgid "_To"
+msgstr "終了(_T)"
+
+# これはWindowタイトルらしいのでニーモニック不要?
+# そもそもUIとして表示できるかどうかも不明
+#: src/resources/ui/nautilus-date-range-dialog.ui:80
+msgid "_Filter"
+msgstr "フィルタ(_F)"
 
 #: src/resources/ui/nautilus-new-folder-dialog.ui:5
 #: src/resources/ui/nautilus-file-chooser.ui:187
@@ -5308,57 +5317,98 @@ msgstr "含まれるファイルのアクセス権限を変更(_E)…"
 msgid "New Filename"
 msgstr "新しいファイル名"
 
-#: src/resources/ui/nautilus-search-popover.ui:19
-msgid "When"
-msgstr "日付"
+#: src/resources/ui/nautilus-search-popover.ui:25
+msgid "File Types"
+msgstr "ファイルの種類"
 
-#: src/resources/ui/nautilus-search-popover.ui:43
-msgid "Select _Dates…"
-msgstr "日付を選択(_D)…"
+#: src/resources/ui/nautilus-search-popover.ui:44
+msgid "_Audio"
+msgstr "音声(_A)"
 
-#: src/resources/ui/nautilus-search-popover.ui:54
-msgid "Clear Date Filter"
-msgstr "日付フィルタを解除"
+#: src/resources/ui/nautilus-search-popover.ui:56
+msgid "_Documents"
+msgstr "ドキュメント(_D)"
 
-#: src/resources/ui/nautilus-search-popover.ui:90
-msgid "Since…"
-msgstr "期間…"
+#: src/resources/ui/nautilus-search-popover.ui:68
+msgid "_Folders"
+msgstr "フォルダー(_F)"
 
-#: src/resources/ui/nautilus-search-popover.ui:139
-msgid "Last _modified"
-msgstr "最終更新日時(_M)"
+#: src/resources/ui/nautilus-search-popover.ui:80
+msgid "_Images"
+msgstr "画像(_I)"
 
-#: src/resources/ui/nautilus-search-popover.ui:147
-msgid "Last _used"
-msgstr "最終使用日時(_U)"
+#: src/resources/ui/nautilus-search-popover.ui:92
+msgid "_PDF"
+msgstr "PDF(_P)"
 
-#: src/resources/ui/nautilus-search-popover.ui:155
-msgid "_Created"
-msgstr "作成日時(_C)"
+#: src/resources/ui/nautilus-search-popover.ui:104
+msgid "_Spreadsheets"
+msgstr "表計算(_S)"
 
-#: src/resources/ui/nautilus-search-popover.ui:168
-msgid "What"
-msgstr "種類"
+#: src/resources/ui/nautilus-search-popover.ui:116
+msgid "Te_xt"
+msgstr "テキスト(_X)"
 
-#: src/resources/ui/nautilus-search-popover.ui:194
-msgid "_Anything"
-msgstr "指定なし(_A)"
+#: src/resources/ui/nautilus-search-popover.ui:128
+msgid "_Videos"
+msgstr "動画(_V)"
 
-#: src/resources/ui/nautilus-search-popover.ui:247
-msgid "Full _Text"
-msgstr "フルテキスト(_T)"
+#: src/resources/ui/nautilus-search-popover.ui:144
+msgid "Specific Type"
+msgstr "特定の種類"
 
-#: src/resources/ui/nautilus-search-popover.ui:249
+#. Translators: This refers to a date time
+#: src/resources/ui/nautilus-search-popover.ui:185
+msgid "Used"
+msgstr "使用日時"
+
+#: src/resources/ui/nautilus-search-popover.ui:213
+msgid "_Today"
+msgstr "今日(_T)"
+
+#: src/resources/ui/nautilus-search-popover.ui:220
+msgid "_Yesterday"
+msgstr "昨日(_Y)"
+
+#: src/resources/ui/nautilus-search-popover.ui:227
+msgid "Past _Week"
+msgstr "過去 1 週間(_W)"
+
+#: src/resources/ui/nautilus-search-popover.ui:234
+msgid "Past _Month"
+msgstr "過去 1 か月(_M)"
+
+#: src/resources/ui/nautilus-search-popover.ui:241
+msgid "Past Y_ear"
+msgstr "過去 1 年(_E)"
+
+#: src/resources/ui/nautilus-search-popover.ui:255
+msgid "Custom Date Range"
+msgstr "カスタム日付範囲"
+
+#: src/resources/ui/nautilus-search-popover.ui:276
+msgid "Text Matching"
+msgstr "テキスト検索"
+
+#: src/resources/ui/nautilus-search-popover.ui:292
+msgid "_Content & Filename"
+msgstr "内容とファイル名(_C)"
+
+#: src/resources/ui/nautilus-search-popover.ui:293
 msgid "Search Inside Files"
 msgstr "ファイル内を検索"
 
-#: src/resources/ui/nautilus-search-popover.ui:257
-msgid "File _Name"
-msgstr "ファイル名(_N)"
+#: src/resources/ui/nautilus-search-popover.ui:301
+msgid "_Only Filename"
+msgstr "ファイル名のみ(_O)"
 
-#: src/resources/ui/nautilus-search-popover.ui:259
+#: src/resources/ui/nautilus-search-popover.ui:302
 msgid "Don't Search Inside Files"
 msgstr "ファイル内を検索しない"
+
+#: src/resources/ui/nautilus-search-popover.ui:312
+msgid "Only Co_ntents"
+msgstr "内容のみ(_N)"
 
 #: src/resources/ui/nautilus-search-types-dialog.ui:5
 msgid "Add File Type Filter"
@@ -5622,17 +5672,87 @@ msgstr "デバイスをロック(_L)"
 msgid "Format…"
 msgstr "フォーマット…"
 
-#: src/gtk/nautilusgtkplacessidebar.c:3526
+#: src/gtk/nautilusgtkplacessidebar.c:3527
 msgid "Device"
 msgstr "デバイス"
 
-#: src/gtk/nautilusgtkplacessidebar.c:3568
+#: src/gtk/nautilusgtkplacessidebar.c:3569
 msgid "Sidebar"
 msgstr "サイドバー"
 
-#: src/gtk/nautilusgtkplacessidebar.c:3570
+#: src/gtk/nautilusgtkplacessidebar.c:3571
 msgid "List of common shortcuts, mountpoints, and bookmarks."
 msgstr "よく使うショートカット、マウントポイント、ブックマークの一覧。"
+
+#~ msgid "Remove Filter"
+#~ msgstr "フィルターを削除"
+
+#~ msgid "Show Time Ranges"
+#~ msgstr "期間を表示"
+
+#~ msgid "Use Calendar"
+#~ msgstr "カレンダーを使用"
+
+#~ msgid "Any time"
+#~ msgstr "指定なし"
+
+#~ msgid "Other Type…"
+#~ msgstr "他の種類…"
+
+#~ msgid "Select Dates…"
+#~ msgstr "日付を選択…"
+
+#, c-format
+#~ msgid "Since %d day ago"
+#~ msgid_plural "Since %d days ago"
+#~ msgstr[0] "%d 日前以降"
+
+#, c-format
+#~ msgid "%d day ago"
+#~ msgid_plural "%d days ago"
+#~ msgstr[0] "%d 日前"
+
+#, c-format
+#~ msgid "Since last week"
+#~ msgid_plural "Since %d weeks ago"
+#~ msgstr[0] "%d 週前以降"
+
+#, c-format
+#~ msgid "Since last month"
+#~ msgid_plural "Since %d months ago"
+#~ msgstr[0] "%d ヶ月前以降"
+
+#, c-format
+#~ msgid "Since last year"
+#~ msgid_plural "Since %d years ago"
+#~ msgstr[0] "%d 年前以降"
+
+#~ msgid "When"
+#~ msgstr "日付"
+
+#~ msgid "Select _Dates…"
+#~ msgstr "日付を選択(_D)…"
+
+#~ msgid "Last _modified"
+#~ msgstr "最終更新日時(_M)"
+
+#~ msgid "Last _used"
+#~ msgstr "最終使用日時(_U)"
+
+#~ msgid "_Created"
+#~ msgstr "作成日時(_C)"
+
+#~ msgid "What"
+#~ msgstr "種類"
+
+#~ msgid "_Anything"
+#~ msgstr "指定なし(_A)"
+
+#~ msgid "Full _Text"
+#~ msgstr "フルテキスト(_T)"
+
+#~ msgid "File _Name"
+#~ msgstr "ファイル名(_N)"
 
 #~ msgid ""
 #~ "\n"
@@ -5909,10 +6029,6 @@ msgstr "よく使うショートカット、マウントポイント、ブック
 
 #~ msgid "%l:%M %p"
 #~ msgstr "%p %I:%M"
-
-#, no-c-format
-#~ msgid "Yesterday"
-#~ msgstr "昨日"
 
 #, no-c-format
 #~ msgid "%a"
@@ -6345,9 +6461,6 @@ msgstr "よく使うショートカット、マウントポイント、ブック
 #~ msgid "First"
 #~ msgstr "1 番目"
 
-#~ msgid "Contents"
-#~ msgstr "内容"
-
 #~ msgid "Volume"
 #~ msgstr "ボリューム"
 
@@ -6695,14 +6808,8 @@ msgstr "よく使うショートカット、マウントポイント、ブック
 #~ msgid "Author"
 #~ msgstr "作成者"
 
-#~ msgid "Date Taken"
-#~ msgstr "撮影日時"
-
 #~ msgid "Date Digitized"
 #~ msgstr "保存日時"
-
-#~ msgid "Date Modified"
-#~ msgstr "更新日時"
 
 #~ msgid "Untrusted application launcher"
 #~ msgstr "信用できないアプリケーションのランチャー"
