@@ -69,7 +69,8 @@ void nautilus_window_open_location_full               (NautilusWindow     *windo
                                                        NautilusWindowSlot *target_slot);
 
 void             nautilus_window_new_tab              (NautilusWindow    *window);
-NautilusWindowSlot * nautilus_window_get_active_slot       (NautilusWindow *window);
+GFile *
+nautilus_window_get_active_location (NautilusWindow *self);
 GList *              nautilus_window_get_slots             (NautilusWindow *window);
 void                 nautilus_window_slot_close            (NautilusWindow *window,
                                                             NautilusWindowSlot *slot);
