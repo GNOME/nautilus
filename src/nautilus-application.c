@@ -607,34 +607,19 @@ action_clone_window (GSimpleAction *action,
 {
     GtkApplication *application = user_data;
     NautilusWindow *active_window = NAUTILUS_WINDOW (gtk_application_get_active_window (application));
-    NautilusWindowSlot *active_slot = nautilus_window_get_active_slot (active_window);
-    NautilusFilesView *current_view = nautilus_window_slot_get_current_view (active_slot);
-    g_autoptr (GFile) location = NULL;
+    GFile *window_location = nautilus_window_get_active_location (active_window);
+    g_autoptr (GFile) cloned_location = NULL;
 
-    if (current_view != NULL &&
-        nautilus_files_view_is_searching (current_view))
+    if (window_location == NULL || g_file_has_uri_scheme (window_location, SCHEME_SEARCH))
     {
-        location = g_file_new_for_path (g_get_home_dir ());
+        cloned_location = g_file_new_for_path (g_get_home_dir ());
     }
     else
     {
-        /* If the user happens to fall asleep while holding ctrl-n, or very
-         * unfortunately opens a new window at a remote location, the current
-         * location will be null, leading to criticals and/or failed assertions.
-         *
-         * Another sad thing is that checking if the view/slot is loading will
-         * not work, as the loading process only really begins after the attributes
-         * for the file have been fetched.
-         */
-        location = nautilus_window_slot_get_location (active_slot);
-        if (location == NULL)
-        {
-            location = nautilus_window_slot_get_pending_location (active_slot);
-        }
-        g_object_ref (location);
+        cloned_location = g_object_ref (window_location);
     }
 
-    nautilus_application_open_location_full (NAUTILUS_APPLICATION (application), location,
+    nautilus_application_open_location_full (NAUTILUS_APPLICATION (application), cloned_location,
                                              NAUTILUS_OPEN_FLAG_NEW_WINDOW, NULL, NULL, NULL, NULL);
 }
 
