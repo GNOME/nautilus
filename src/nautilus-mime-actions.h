@@ -42,11 +42,4 @@ void                   nautilus_mime_activate_files                       (GtkWi
 									   const char         *launch_directory,
 									   NautilusOpenFlags   flags,
 									   gboolean            user_confirmation);
-void                   nautilus_mime_activate_file                        (GtkWindow               *parent_window,
-									   NautilusWindowSlot *slot_info,
-									   NautilusFile       *file,
-									   const char         *launch_directory,
-									   NautilusOpenFlags   flags);
-guint                  nautilus_mime_types_get_number_of_groups           (void);
-const gchar*           nautilus_mime_types_group_get_name                 (guint                    group_index);
 GPtrArray*             nautilus_mime_types_group_get_mimetypes            (guint                    group_index);

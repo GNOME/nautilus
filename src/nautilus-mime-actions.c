@@ -2321,47 +2321,6 @@ nautilus_mime_activate_files (GtkWindow          *parent_window,
     }
 }
 
-/**
- * nautilus_mime_activate_file:
- *
- * Activate a file in this view. This might involve switching the displayed
- * location for the current window, or launching an application.
- * @view: FMDirectoryView in question.
- * @file: A NautilusFile representing the file in this view to activate.
- * @use_new_window: Should this item be opened in a new window?
- *
- **/
-
-void
-nautilus_mime_activate_file (GtkWindow          *parent_window,
-                             NautilusWindowSlot *slot,
-                             NautilusFile       *file,
-                             const char         *launch_directory,
-                             NautilusOpenFlags   flags)
-{
-    GList *files;
-
-    g_return_if_fail (NAUTILUS_IS_FILE (file));
-
-    files = g_list_prepend (NULL, file);
-    nautilus_mime_activate_files (parent_window, slot, files, launch_directory, flags, FALSE);
-    g_list_free (files);
-}
-
-guint
-nautilus_mime_types_get_number_of_groups (void)
-{
-    return G_N_ELEMENTS (mimetype_groups);
-}
-
-const gchar *
-nautilus_mime_types_group_get_name (guint group_index)
-{
-    g_return_val_if_fail (group_index < G_N_ELEMENTS (mimetype_groups), NULL);
-
-    return gettext (mimetype_groups[group_index].name);
-}
-
 GPtrArray *
 nautilus_mime_types_group_get_mimetypes (guint group_index)
 {
