@@ -366,8 +366,9 @@ nautilus_application_open_location_full (NautilusApplication *self,
         target_window = get_nautilus_window_containing_slot (target_slot);
     }
 
-    g_assert (!((flags & NAUTILUS_OPEN_FLAG_NEW_WINDOW) != 0 &&
-                (flags & NAUTILUS_OPEN_FLAG_NEW_TAB) != 0));
+    /* Only either flag can be set */
+    g_warn_if_fail ((flags & NAUTILUS_OPEN_FLAG_NEW_WINDOW) == 0 ||
+                    (flags & NAUTILUS_OPEN_FLAG_NEW_TAB) == 0);
 
     /* and if the flags specify so, this is overridden */
     if ((flags & NAUTILUS_OPEN_FLAG_NEW_WINDOW) != 0)
