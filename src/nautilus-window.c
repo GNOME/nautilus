@@ -70,8 +70,6 @@ static void nautilus_window_back_or_forward (NautilusWindow *window,
                                              guint           distance);
 static void nautilus_window_sync_location_widgets (NautilusWindow *window);
 static void update_cursor (NautilusWindow *window);
-static NautilusWindowSlot *
-nautilus_window_get_active_slot (NautilusWindow *window);
 static void
 set_active_slot (NautilusWindow     *window,
                  NautilusWindowSlot *new_slot);
@@ -294,7 +292,7 @@ on_slot_location_changed (NautilusWindowSlot *slot,
                           GParamSpec         *pspec,
                           NautilusWindow     *window)
 {
-    if (nautilus_window_get_active_slot (window) == slot)
+    if (window->active_slot == slot)
     {
         on_location_changed (window);
     }
@@ -428,15 +426,12 @@ nautilus_window_open_location_full (NautilusWindow     *window,
                                     NautilusFileList   *selection,
                                     NautilusWindowSlot *target_slot)
 {
-    NautilusWindowSlot *active_slot;
-
     /* Assert that we are not managing new windows */
     g_assert (!(flags & NAUTILUS_OPEN_FLAG_NEW_WINDOW));
 
-    active_slot = nautilus_window_get_active_slot (window);
     if (!target_slot)
     {
-        target_slot = active_slot;
+        target_slot = window->active_slot;
     }
 
     if (target_slot == NULL || (flags & NAUTILUS_OPEN_FLAG_NEW_TAB) != 0)
@@ -458,13 +453,11 @@ nautilus_window_open_location_full (NautilusWindow     *window,
 static gboolean
 nautilus_window_grab_focus (GtkWidget *widget)
 {
-    NautilusWindowSlot *slot;
+    NautilusWindow *self = NAUTILUS_WINDOW (widget);
 
-    slot = nautilus_window_get_active_slot (NAUTILUS_WINDOW (widget));
-
-    if (slot != NULL)
+    if (self->active_slot != NULL)
     {
-        return gtk_widget_grab_focus (GTK_WIDGET (slot));
+        return gtk_widget_grab_focus (GTK_WIDGET (self->active_slot));
     }
 
     return GTK_WIDGET_CLASS (nautilus_window_parent_class)->grab_focus (widget);
@@ -516,15 +509,13 @@ nautilus_window_new_tab (NautilusWindow *window)
 static void
 update_cursor (NautilusWindow *window)
 {
-    NautilusWindowSlot *slot = nautilus_window_get_active_slot (window);
-
     if (!gtk_widget_get_realized (GTK_WIDGET (window)))
     {
         return;
     }
 
-    if (slot != NULL &&
-        nautilus_window_slot_get_allow_stop (slot))
+    if (window->active_slot != NULL &&
+        nautilus_window_slot_get_allow_stop (window->active_slot))
     {
         gtk_widget_set_cursor_from_name (GTK_WIDGET (window), "progress");
     }
@@ -684,13 +675,10 @@ nautilus_window_slot_close (NautilusWindow     *window,
 static void
 nautilus_window_sync_location_widgets (NautilusWindow *window)
 {
-    NautilusWindowSlot *slot = window->active_slot;
-    GFile *location;
-
     /* This function can only be called when there is a slot. */
-    g_assert (slot != NULL);
+    g_return_if_fail (window->active_slot != NULL);
 
-    location = nautilus_window_slot_get_location (slot);
+    GFile *location = nautilus_window_slot_get_location (window->active_slot);
 
     if (location != NULL)
     {
@@ -846,16 +834,12 @@ nautilus_window_on_undo_changed (NautilusFileUndoManager *manager,
         }
         else if (nautilus_file_undo_info_get_op_type (undo_info) == NAUTILUS_FILE_UNDO_OP_STARRED)
         {
-            NautilusWindowSlot *active_slot;
-            GFile *location;
-
-            active_slot = nautilus_window_get_active_slot (window);
-            if (active_slot == NULL)
+            if (window->active_slot == NULL)
             {
                 return;
             }
 
-            location = nautilus_window_slot_get_location (active_slot);
+            GFile *location = nautilus_window_slot_get_location (window->active_slot);
             /* Don't pop up a notification if the focus is not in the this
              * window. This is an easy way to know from which window was the
              * unstart operation made */
@@ -1319,14 +1303,12 @@ void
 set_active_slot (NautilusWindow     *window,
                  NautilusWindowSlot *new_slot)
 {
-    NautilusWindowSlot *old_slot;
+    NautilusWindowSlot *old_slot = window->active_slot;
 
     if (new_slot != NULL)
     {
         g_assert (gtk_widget_is_ancestor (GTK_WIDGET (new_slot), GTK_WIDGET (window)));
     }
-
-    old_slot = nautilus_window_get_active_slot (window);
 
     if (old_slot == new_slot)
     {
@@ -1402,14 +1384,6 @@ nautilus_window_show (GtkWidget *widget)
     GTK_WIDGET_CLASS (nautilus_window_parent_class)->show (widget);
 }
 
-NautilusWindowSlot *
-nautilus_window_get_active_slot (NautilusWindow *window)
-{
-    g_assert (NAUTILUS_IS_WINDOW (window));
-
-    return window->active_slot;
-}
-
 GFile *
 nautilus_window_get_active_location (NautilusWindow *self)
 {
@@ -1461,13 +1435,9 @@ nautilus_window_back_or_forward (NautilusWindow *window,
                                  gboolean        back,
                                  guint           distance)
 {
-    NautilusWindowSlot *slot;
-
-    slot = nautilus_window_get_active_slot (window);
-
-    if (slot != NULL)
+    if (window->active_slot != NULL)
     {
-        nautilus_window_slot_back_or_forward (slot, back, distance);
+        nautilus_window_slot_back_or_forward (window->active_slot, back, distance);
     }
 }
 
@@ -1475,11 +1445,9 @@ void
 nautilus_window_back_or_forward_in_new_tab (NautilusWindow              *window,
                                             NautilusNavigationDirection  direction)
 {
-    NautilusWindowSlot *window_slot;
     NautilusNavigationState *state;
 
-    window_slot = nautilus_window_get_active_slot (window);
-    state = nautilus_window_slot_get_navigation_state (window_slot);
+    state = nautilus_window_slot_get_navigation_state (window->active_slot);
 
     /* Manually fix up the back / forward lists and location.
      * This way we don't have to unnecessary load the current location
@@ -1613,7 +1581,7 @@ nautilus_window_get_property (GObject    *object,
     {
         case PROP_ACTIVE_SLOT:
         {
-            g_value_set_object (value, G_OBJECT (nautilus_window_get_active_slot (self)));
+            g_value_set_object (value, G_OBJECT (self->active_slot));
         }
         break;
 
@@ -1767,12 +1735,9 @@ void
 nautilus_window_search (NautilusWindow *window,
                         NautilusQuery  *query)
 {
-    NautilusWindowSlot *active_slot;
-
-    active_slot = nautilus_window_get_active_slot (window);
-    if (active_slot)
+    if (window->active_slot != NULL)
     {
-        nautilus_window_slot_search (active_slot, query);
+        nautilus_window_slot_search (window->active_slot, query);
     }
     else
     {
