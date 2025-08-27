@@ -338,10 +338,8 @@ nautilus_application_open_location_full (NautilusApplication *self,
                                          const char          *startup_id)
 {
     NautilusWindow *active_window;
-    gboolean use_same;
     GdkDisplay *display;
 
-    use_same = TRUE;
     /* FIXME: We are having problems on getting the current focused window with
      * gtk_application_get_active_window, see https://bugzilla.gnome.org/show_bug.cgi?id=756499
      * so what we do is never rely on this on the callers, but would be cool to
@@ -358,37 +356,23 @@ nautilus_application_open_location_full (NautilusApplication *self,
         g_debug ("Application opening location: %s", uri);
     }
 
-    /* In case a target slot is provided, we can use it's associated window.
-     * In case a target window were given as well, we give preference to the
-     * slot we target at */
-    if (target_slot != NULL)
-    {
-        target_window = get_nautilus_window_containing_slot (target_slot);
-    }
-
     /* Only either flag can be set */
     g_warn_if_fail ((flags & NAUTILUS_OPEN_FLAG_NEW_WINDOW) == 0 ||
                     (flags & NAUTILUS_OPEN_FLAG_NEW_TAB) == 0);
 
-    /* and if the flags specify so, this is overridden */
-    if ((flags & NAUTILUS_OPEN_FLAG_NEW_WINDOW) != 0)
-    {
-        use_same = FALSE;
-    }
-
     /* now get/create the window */
-    if (use_same)
+    if ((flags & NAUTILUS_OPEN_FLAG_NEW_WINDOW) == 0)
     {
-        if (!target_window)
+        /* In case a target slot is provided, we can use it's associated window.
+         * In case a target window was given as well, we give preference to the
+         * slot we target at */
+        if (target_slot != NULL)
         {
-            if (!target_slot)
-            {
-                target_window = active_window;
-            }
-            else
-            {
-                target_window = get_nautilus_window_containing_slot (target_slot);
-            }
+            target_window = get_nautilus_window_containing_slot (target_slot);
+        }
+        else if (target_window == NULL)
+        {
+            target_window = active_window;
         }
     }
     else
