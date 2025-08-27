@@ -328,7 +328,7 @@ get_nautilus_window_containing_slot (NautilusWindowSlot *slot)
                                                      NAUTILUS_TYPE_WINDOW));
 }
 
-void
+NautilusWindow *
 nautilus_application_open_location_full (NautilusApplication *self,
                                          GFile               *location,
                                          NautilusOpenFlags    flags,
@@ -393,28 +393,8 @@ nautilus_application_open_location_full (NautilusApplication *self,
      * it anymore by any client */
     flags &= ~NAUTILUS_OPEN_FLAG_NEW_WINDOW;
     nautilus_window_open_location_full (target_window, location, flags, selection, target_slot);
-}
 
-static NautilusWindow *
-open_window (NautilusApplication *self,
-             GFile               *location)
-{
-    NautilusWindow *window = nautilus_application_create_window (self, NULL);
-
-    if (location != NULL)
-    {
-        nautilus_application_open_location_full (self, location, 0, NULL, window, NULL, NULL);
-    }
-    else
-    {
-        GFile *home;
-        home = g_file_new_for_path (g_get_home_dir ());
-        nautilus_application_open_location_full (self, home, 0, NULL, window, NULL, NULL);
-
-        g_object_unref (home);
-    }
-
-    return window;
+    return target_window;
 }
 
 void
@@ -484,7 +464,8 @@ nautilus_application_open (GApplication  *app,
 
         if (!slot)
         {
-            open_window (self, file);
+            nautilus_application_open_location_full (self, file, NAUTILUS_OPEN_FLAG_NEW_WINDOW,
+                                                     NULL, NULL, NULL, NULL);
         }
         else
         {
@@ -1405,7 +1386,11 @@ void
 nautilus_application_search (NautilusApplication *self,
                              NautilusQuery       *query)
 {
-    NautilusWindow *window = open_window (self, NULL);
+    g_autoptr (GFile) home = g_file_new_for_path (g_get_home_dir ());
+
+    NautilusWindow *window = nautilus_application_open_location_full (
+        self, home, NAUTILUS_OPEN_FLAG_NEW_WINDOW, NULL, NULL, NULL, NULL);
+
     nautilus_window_search (window, query);
 }
 

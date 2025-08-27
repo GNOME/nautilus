@@ -51,13 +51,14 @@ void nautilus_application_open_location (NautilusApplication *application,
 					 GFile *selection,
 					 const char *startup_id);
 
-void nautilus_application_open_location_full (NautilusApplication     *application,
-                                              GFile                   *location,
-                                              NautilusOpenFlags        flags,
-                                              GList                   *selection,
-                                              NautilusWindow          *target_window,
-                                              NautilusWindowSlot      *target_slot,
-                                              const char              *startup_id);
+NautilusWindow *
+nautilus_application_open_location_full (NautilusApplication *application,
+                                         GFile               *location,
+                                         NautilusOpenFlags    flags,
+                                         GList               *selection,
+                                         NautilusWindow      *target_window,
+                                         NautilusWindowSlot  *target_slot,
+                                         const char          *startup_id);
 
 NautilusApplication *nautilus_application_get_default (void);
 void nautilus_application_send_notification (NautilusApplication *self,
