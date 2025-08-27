@@ -467,15 +467,15 @@ nautilus_application_open (GApplication  *app,
     NautilusApplication *self = NAUTILUS_APPLICATION (app);
     gboolean force_new = (g_strcmp0 (hint, "new-window") == 0);
     NautilusWindowSlot *slot = NULL;
-    GFile *file;
-    gint idx;
 
     g_debug ("Open called on the GApplication instance; %d files", n_files);
 
     /* Open windows at each requested location. */
-    for (idx = 0; idx < n_files; idx++)
+    for (int idx = 0; idx < n_files; idx++)
     {
-        file = files[idx];
+        GFile *file = files[idx];
+
+        g_return_if_fail (file != NULL);
 
         if (!force_new)
         {
