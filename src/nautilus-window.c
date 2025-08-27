@@ -31,6 +31,7 @@
 #include <gdk/gdkkeysyms.h>
 #include <glib/gi18n.h>
 #include <gtk/gtk.h>
+#include <malloc.h>
 #include <math.h>
 #include <sys/time.h>
 
@@ -147,6 +148,17 @@ static const GtkPadActionEntry pad_actions[] =
     { GTK_PAD_ACTION_BUTTON, 2, -1, N_("Close current view"), "close-current-view" },
     /* Button number sequence continues in window-slot.c */
 };
+
+static guint malloc_trim_idle_id = 0;
+
+static gboolean
+malloc_trim_idle_cb (gpointer user_data)
+{
+    malloc_trim (8 * 1024 * 1024);
+    malloc_trim_idle_id = 0;
+
+    return FALSE;
+}
 
 static AdwTabPage *
 get_current_page (NautilusWindow *window)
@@ -677,6 +689,11 @@ window_slot_close (NautilusWindow     *window,
     {
         g_debug ("Last slot removed, closing the window");
         nautilus_window_close (window);
+    }
+
+    if (malloc_trim_idle_id == 0)
+    {
+        malloc_trim_idle_id = g_idle_add (malloc_trim_idle_cb, NULL);
     }
 }
 
