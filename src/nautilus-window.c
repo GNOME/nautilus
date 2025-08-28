@@ -1427,11 +1427,24 @@ nautilus_window_get_active_location (NautilusWindow *self)
 }
 
 GList *
-nautilus_window_get_slots (NautilusWindow *window)
+nautilus_window_get_locations (NautilusWindow *self)
 {
-    g_assert (NAUTILUS_IS_WINDOW (window));
+    g_return_val_if_fail (NAUTILUS_IS_WINDOW (self), NULL);
 
-    return window->slots;
+    GFileList *locations = NULL;
+
+    for (GList *l = self->slots; l != NULL; l = l->next)
+    {
+        NautilusWindowSlot *slot = l->data;
+        GFile *location = nautilus_window_slot_get_location (slot);
+
+        if (location != NULL)
+        {
+            locations = g_list_prepend (locations, location);
+        }
+    }
+
+    return locations;
 }
 
 static void

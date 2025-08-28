@@ -1163,21 +1163,18 @@ update_dbus_opened_locations (NautilusApplication *self)
         g_auto (GVariantBuilder) locations_in_window_builder = G_VARIANT_BUILDER_INIT (
             G_VARIANT_TYPE_STRING_ARRAY);
 
-        for (GList *sl = nautilus_window_get_slots (window); sl; sl = sl->next)
+        g_autoptr (GFileList) locations = nautilus_window_get_locations (window);
+
+        for (GList *ll = locations; ll != NULL; ll = ll->next)
         {
-            NautilusWindowSlot *slot = sl->data;
-            GFile *location = nautilus_window_slot_get_location (slot);
+            GFile *location = ll->data;
+            g_autofree char *uri = g_file_get_uri (location);
 
-            if (location != NULL)
+            g_variant_builder_add (&locations_in_window_builder, "s", uri);
+
+            if (!g_hash_table_contains (hashed_locations, uri))
             {
-                g_autofree char *uri = g_file_get_uri (location);
-
-                g_variant_builder_add (&locations_in_window_builder, "s", uri);
-
-                if (!g_hash_table_contains (hashed_locations, uri))
-                {
-                    g_hash_table_add (hashed_locations, g_steal_pointer (&uri));
-                }
+                g_hash_table_add (hashed_locations, g_steal_pointer (&uri));
             }
         }
 
