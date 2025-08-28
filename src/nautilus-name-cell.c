@@ -441,22 +441,26 @@ snapshot (GtkWidget   *widget,
 
         if (gtk_widget_compute_bounds (self->icon, widget, &dash_bounds))
         {
+            AdwStyleManager *style_manager = adw_style_manager_get_default ();
+            gboolean is_high_contrast = adw_style_manager_get_high_contrast (style_manager);
             guint icon_size;
-            GdkRGBA color;
-            gboolean is_light = !adw_style_manager_get_dark (adw_style_manager_get_default ());
+            GdkRGBA color, dashed_border_color, icon_color;
             gboolean use_small_icon;
             gchar *icon_name;
+            const double border_opacity = is_high_contrast ? 0.5 : 0.15;
+            const double dim_opacity = is_high_contrast ? 0.9 : 0.55;
             graphene_rect_t icon_bounds = dash_bounds;
 
             g_object_get (self, "icon-size", &icon_size, NULL);
             gtk_widget_get_color (widget, &color);
-            color.alpha = is_light ? 0.4 : 0.6;
             use_small_icon = icon_size <= NAUTILUS_LIST_ICON_SIZE_MEDIUM;
             icon_name = use_small_icon ? "cut-symbolic" : "cut-large-symbolic";
 
             if (icon_size >= NAUTILUS_THUMBNAIL_MINIMUM_ICON_SIZE)
             {
-                nautilus_ui_draw_icon_dashed_border (snapshot, &dash_bounds, color);
+                dashed_border_color = color;
+                dashed_border_color.alpha *= border_opacity;
+                nautilus_ui_draw_icon_dashed_border (snapshot, &dash_bounds, dashed_border_color);
 
                 graphene_rect_inset_r (&dash_bounds,
                                        0.2 * dash_bounds.size.width,
@@ -464,10 +468,12 @@ snapshot (GtkWidget   *widget,
                                        &icon_bounds);
             }
 
+            icon_color = color;
+            icon_color.alpha *= dim_opacity;
             nautilus_ui_draw_symbolic_icon (snapshot,
                                             icon_name,
                                             &icon_bounds,
-                                            color,
+                                            icon_color,
                                             gtk_widget_get_scale_factor (widget));
         }
         else
