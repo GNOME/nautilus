@@ -339,17 +339,10 @@ tab_view_notify_selected_page_cb (AdwTabView     *tab_view,
                                   GParamSpec     *pspec,
                                   NautilusWindow *window)
 {
-    AdwTabPage *page;
-    NautilusWindowSlot *slot;
-    GtkWidget *widget;
+    AdwTabPage *page = adw_tab_view_get_selected_page (tab_view);
+    NautilusWindowSlot *slot = NAUTILUS_WINDOW_SLOT (adw_tab_page_get_child (page));
 
-    page = adw_tab_view_get_selected_page (tab_view);
-    widget = adw_tab_page_get_child (page);
-
-    g_assert (widget != NULL);
-
-    slot = NAUTILUS_WINDOW_SLOT (widget);
-    g_assert (slot != NULL);
+    g_return_if_fail (slot != NULL);
 
     set_active_slot (window, slot);
 }
@@ -394,8 +387,6 @@ on_update_page_tooltip (NautilusWindowSlot *slot,
 static NautilusWindowSlot *
 nautilus_window_create_and_init_slot (NautilusWindow *window)
 {
-    g_assert (NAUTILUS_IS_WINDOW (window));
-
     g_autoptr (NautilusWindowSlot) slot = nautilus_window_slot_new (NAUTILUS_MODE_BROWSE);
 
     g_signal_connect_swapped (slot, "notify::allow-stop",
@@ -445,7 +436,7 @@ nautilus_window_open_location_full (NautilusWindow    *window,
                                     NautilusFileList  *selection)
 {
     /* Assert that we are not managing new windows */
-    g_assert (!(flags & NAUTILUS_OPEN_FLAG_NEW_WINDOW));
+    g_warn_if_fail ((flags & NAUTILUS_OPEN_FLAG_NEW_WINDOW) == 0);
 
     NautilusWindowSlot *target_slot = (flags & NAUTILUS_OPEN_FLAG_REUSE_EXISTING) != 0
                                       ? get_slot_with_open_location (window, location)
@@ -456,9 +447,9 @@ nautilus_window_open_location_full (NautilusWindow    *window,
         target_slot = nautilus_window_create_and_init_slot (window);
     }
 
-    /* Make the opened location the one active if we weren't ask for the
+    /* Make the opened location the one active if we weren't asked for the
      * opposite, since it's the most usual use case */
-    if (!(flags & NAUTILUS_OPEN_FLAG_DONT_MAKE_ACTIVE))
+    if ((flags & NAUTILUS_OPEN_FLAG_DONT_MAKE_ACTIVE) == 0)
     {
         gtk_window_present (GTK_WINDOW (window));
         set_active_slot (window, target_slot);
@@ -1243,7 +1234,7 @@ nautilus_window_dispose (GObject *object)
     g_list_free (slots_copy);
 
     /* the slots list should now be empty */
-    g_assert (window->slots == NULL);
+    g_warn_if_fail (window->slots == NULL);
 
     g_clear_weak_pointer (&window->active_slot);
 
@@ -1275,7 +1266,7 @@ nautilus_window_finalize (GObject *object)
     g_queue_free_full (window->tab_data_queue, free_navigation_state);
 
     /* nautilus_window_close() should have run */
-    g_assert (window->slots == NULL);
+    g_warn_if_fail (window->slots == NULL);
 
     G_OBJECT_CLASS (nautilus_window_parent_class)->finalize (object);
 }
@@ -1323,10 +1314,8 @@ set_active_slot (NautilusWindow     *window,
 {
     NautilusWindowSlot *old_slot = window->active_slot;
 
-    if (new_slot != NULL)
-    {
-        g_assert (gtk_widget_is_ancestor (GTK_WIDGET (new_slot), GTK_WIDGET (window)));
-    }
+    g_return_if_fail (new_slot == NULL ||
+                      gtk_widget_is_ancestor (GTK_WIDGET (new_slot), GTK_WIDGET (window)));
 
     if (old_slot == new_slot)
     {
