@@ -75,8 +75,6 @@ nautilus_window_has_open_location (NautilusWindow *self,
 GFile *
 nautilus_window_get_active_location (NautilusWindow *self);
 GList *              nautilus_window_get_slots             (NautilusWindow *window);
-void                 nautilus_window_slot_close            (NautilusWindow *window,
-                                                            NautilusWindowSlot *slot);
 
 void     nautilus_window_show_about_dialog    (NautilusWindow *window);
 
