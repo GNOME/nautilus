@@ -89,6 +89,7 @@ typedef enum
     NAUTILUS_OPEN_FLAG_NEW_WINDOW       = 1 << 1,
     NAUTILUS_OPEN_FLAG_NEW_TAB          = 1 << 2,
     NAUTILUS_OPEN_FLAG_DONT_MAKE_ACTIVE = 1 << 3,
+    NAUTILUS_OPEN_FLAG_REUSE_EXISTING   = 1 << 4,
 } NautilusOpenFlags;
 
 typedef enum {
