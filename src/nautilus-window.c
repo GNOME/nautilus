@@ -655,9 +655,9 @@ nautilus_window_set_up_sidebar (NautilusWindow *window)
                       G_CALLBACK (places_sidebar_drag_perform_drop_cb), window);
 }
 
-void
-nautilus_window_slot_close (NautilusWindow     *window,
-                            NautilusWindowSlot *slot)
+static void
+window_slot_close (NautilusWindow     *window,
+                   NautilusWindowSlot *slot)
 {
     NautilusNavigationState *data;
     AdwTabPage *page;
@@ -940,7 +940,7 @@ tab_view_close_page_cb (AdwTabView     *view,
 
     slot = NAUTILUS_WINDOW_SLOT (adw_tab_page_get_child (page));
 
-    nautilus_window_slot_close (window, slot);
+    window_slot_close (window, slot);
 
     return GDK_EVENT_PROPAGATE;
 }
