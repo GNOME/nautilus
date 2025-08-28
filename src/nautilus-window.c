@@ -123,8 +123,7 @@ struct _NautilusWindow
 
 enum
 {
-    SLOT_ADDED,
-    SLOT_REMOVED,
+    LOCATIONS_CHANGED,
     LAST_SIGNAL
 };
 
@@ -296,6 +295,8 @@ on_slot_location_changed (NautilusWindowSlot *slot,
     {
         on_location_changed (window);
     }
+
+    g_signal_emit (window, signals[LOCATIONS_CHANGED], 0);
 }
 
 static void
@@ -490,7 +491,7 @@ remove_slot_from_window (NautilusWindowSlot *slot,
 
     disconnect_slot (window, slot);
     window->slots = g_list_remove (window->slots, slot);
-    g_signal_emit (window, signals[SLOT_REMOVED], 0, slot);
+    g_signal_emit (window, signals[LOCATIONS_CHANGED], 0);
 }
 
 void
@@ -971,7 +972,8 @@ tab_view_page_attached_cb (AdwTabView     *tab_view,
     NautilusWindowSlot *slot = NAUTILUS_WINDOW_SLOT (adw_tab_page_get_child (page));
 
     window->slots = g_list_prepend (window->slots, slot);
-    g_signal_emit (window, signals[SLOT_ADDED], 0, slot);
+
+    g_signal_emit (window, signals[LOCATIONS_CHANGED], 0);
 }
 
 static AdwTabView *
@@ -1692,22 +1694,14 @@ nautilus_window_class_init (NautilusWindowClass *class)
     gtk_widget_class_bind_template_child (wclass, NautilusWindow, tab_bar);
     gtk_widget_class_bind_template_child (wclass, NautilusWindow, network_address_bar);
 
-    signals[SLOT_ADDED] =
-        g_signal_new ("slot-added",
+    signals[LOCATIONS_CHANGED] =
+        g_signal_new ("locations-changed",
                       G_TYPE_FROM_CLASS (class),
                       G_SIGNAL_RUN_LAST | G_SIGNAL_ACTION,
                       0,
                       NULL, NULL,
-                      g_cclosure_marshal_VOID__OBJECT,
-                      G_TYPE_NONE, 1, NAUTILUS_TYPE_WINDOW_SLOT);
-    signals[SLOT_REMOVED] =
-        g_signal_new ("slot-removed",
-                      G_TYPE_FROM_CLASS (class),
-                      G_SIGNAL_RUN_LAST | G_SIGNAL_ACTION,
-                      0,
-                      NULL, NULL,
-                      g_cclosure_marshal_VOID__OBJECT,
-                      G_TYPE_NONE, 1, NAUTILUS_TYPE_WINDOW_SLOT);
+                      g_cclosure_marshal_VOID__VOID,
+                      G_TYPE_NONE, 0);
 }
 
 NautilusWindow *
