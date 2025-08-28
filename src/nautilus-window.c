@@ -199,7 +199,7 @@ action_go_home (GSimpleAction *action,
     window = NAUTILUS_WINDOW (user_data);
     home = g_file_new_for_path (g_get_home_dir ());
 
-    nautilus_window_open_location_full (window, home, 0, NULL, NULL);
+    nautilus_window_open_location_full (window, home, 0, NULL);
 
     g_object_unref (home);
 }
@@ -419,20 +419,36 @@ nautilus_window_create_and_init_slot (NautilusWindow *window)
     return slot;
 }
 
+static NautilusWindowSlot *
+get_slot_with_open_location (NautilusWindow *self,
+                             GFile          *location)
+{
+    for (GList *l = self->slots; l != NULL; l = l->next)
+    {
+        NautilusWindowSlot *slot = l->data;
+        GFile *slot_location = nautilus_window_slot_get_location (slot);
+
+        if (g_file_equal (location, slot_location))
+        {
+            return slot;
+        }
+    }
+
+    return NULL;
+}
+
 void
-nautilus_window_open_location_full (NautilusWindow     *window,
-                                    GFile              *location,
-                                    NautilusOpenFlags   flags,
-                                    NautilusFileList   *selection,
-                                    NautilusWindowSlot *target_slot)
+nautilus_window_open_location_full (NautilusWindow    *window,
+                                    GFile             *location,
+                                    NautilusOpenFlags  flags,
+                                    NautilusFileList  *selection)
 {
     /* Assert that we are not managing new windows */
     g_assert (!(flags & NAUTILUS_OPEN_FLAG_NEW_WINDOW));
 
-    if (!target_slot)
-    {
-        target_slot = window->active_slot;
-    }
+    NautilusWindowSlot *target_slot = (flags & NAUTILUS_OPEN_FLAG_REUSE_EXISTING) != 0
+                                      ? get_slot_with_open_location (window, location)
+                                      : window->active_slot;
 
     if (target_slot == NULL || (flags & NAUTILUS_OPEN_FLAG_NEW_TAB) != 0)
     {
@@ -501,7 +517,7 @@ nautilus_window_new_tab (NautilusWindow *window)
 
         nautilus_window_open_location_full (window, location,
                                             NAUTILUS_OPEN_FLAG_NEW_TAB,
-                                            NULL, NULL);
+                                            NULL);
         g_object_unref (location);
     }
 }
@@ -1382,6 +1398,16 @@ static void
 nautilus_window_show (GtkWidget *widget)
 {
     GTK_WIDGET_CLASS (nautilus_window_parent_class)->show (widget);
+}
+
+gboolean
+nautilus_window_has_open_location (NautilusWindow *self,
+                                   GFile          *location)
+{
+    g_return_val_if_fail (NAUTILUS_IS_WINDOW (self), FALSE);
+    g_return_val_if_fail (location != NULL, FALSE);
+
+    return get_slot_with_open_location (self, location) != NULL;
 }
 
 GFile *
