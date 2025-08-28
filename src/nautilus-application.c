@@ -1147,13 +1147,11 @@ nautilus_application_dbus_unregister (GApplication    *app,
 static void
 update_dbus_opened_locations (NautilusApplication *self)
 {
-    gint i;
     GList *l, *sl;
-    GList *locations = NULL;
-    gsize locations_size = 0;
-    gchar **locations_array;
     NautilusWindow *window;
     GFile *location;
+    g_autoptr (GHashTable) hashed_locations = g_hash_table_new_full (g_str_hash, g_str_equal,
+                                                                     g_free, NULL);
     const gchar *dbus_object_path = NULL;
 
     g_autoptr (GVariant) windows_to_locations = NULL;
@@ -1185,14 +1183,12 @@ update_dbus_opened_locations (NautilusApplication *self)
             if (location != NULL)
             {
                 gchar *uri = g_file_get_uri (location);
-                GList *found = g_list_find_custom (locations, uri, (GCompareFunc) g_strcmp0);
 
                 g_variant_builder_add (&locations_in_window_builder, "s", uri);
 
-                if (!found)
+                if (!g_hash_table_contains (hashed_locations, uri))
                 {
-                    locations = g_list_prepend (locations, uri);
-                    ++locations_size;
+                    g_hash_table_add (hashed_locations, uri);
                 }
                 else
                 {
@@ -1207,25 +1203,16 @@ update_dbus_opened_locations (NautilusApplication *self)
         g_variant_builder_clear (&locations_in_window_builder);
     }
 
-    locations_array = g_new (gchar *, locations_size + 1);
-
-    for (i = 0, l = locations; l; l = l->next, ++i)
-    {
-        /* We reuse the locations string locations saved on list */
-        locations_array[i] = l->data;
-    }
-
-    locations_array[locations_size] = NULL;
+    g_autoptr (GPtrArray) open_locations = g_hash_table_steal_all_keys (hashed_locations);
+    /* Make array NULL-terminated */
+    g_ptr_array_add (open_locations, NULL);
 
     nautilus_freedesktop_dbus_set_open_locations (self->fdb_manager,
-                                                  (const gchar **) locations_array);
+                                                  (const gchar **) open_locations->pdata);
 
     windows_to_locations = g_variant_ref_sink (g_variant_builder_end (&windows_to_locations_builder));
     nautilus_freedesktop_dbus_set_open_windows_with_locations (self->fdb_manager,
                                                                windows_to_locations);
-
-    g_free (locations_array);
-    g_list_free_full (locations, g_free);
 }
 
 static void
