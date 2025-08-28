@@ -411,22 +411,29 @@ snapshot (GtkWidget   *widget,
 
     if (is_cut)
     {
+        AdwStyleManager *style_manager = adw_style_manager_get_default ();
+        gboolean is_high_contrast = adw_style_manager_get_high_contrast (style_manager);
         guint icon_size;
         graphene_rect_t dash_bounds, icon_bounds;
-        GdkRGBA color;
-        gboolean is_light = !adw_style_manager_get_dark (adw_style_manager_get_default ());
+        GdkRGBA color, dashed_border_color, icon_color;
+        const double border_opacity = is_high_contrast ? 0.5 : 0.15;
+        const double dim_opacity = is_high_contrast ? 0.9 : 0.55;
 
         g_object_get (self, "icon-size", &icon_size, NULL);
         dash_bounds = GRAPHENE_RECT_INIT (EMBLEMS_BOX_WIDTH, 0, icon_size, icon_size);
         graphene_rect_inset_r (&dash_bounds, 0.2 * icon_size, 0.2 * icon_size, &icon_bounds);
         gtk_widget_get_color (widget, &color);
-        color.alpha = is_light ? 0.4 : 0.6;
 
-        nautilus_ui_draw_icon_dashed_border (snapshot, &dash_bounds, color);
+        dashed_border_color = color;
+        dashed_border_color.alpha *= border_opacity;
+        nautilus_ui_draw_icon_dashed_border (snapshot, &dash_bounds, dashed_border_color);
+
+        icon_color = color;
+        icon_color.alpha *= dim_opacity;
         nautilus_ui_draw_symbolic_icon (snapshot,
                                         "cut-large-symbolic",
                                         &icon_bounds,
-                                        color,
+                                        icon_color,
                                         gtk_widget_get_scale_factor (widget));
     }
 
