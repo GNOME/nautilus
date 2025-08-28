@@ -2499,7 +2499,7 @@ open_parent_folder (NautilusPropertiesWindow *self)
                                              parent_location,
                                              NAUTILUS_OPEN_FLAG_NEW_WINDOW,
                                              &(NautilusFileList){ .data = file },
-                                             NULL, NULL, NULL);
+                                             NULL);
 }
 
 static void
@@ -2521,7 +2521,7 @@ open_link_target (NautilusPropertiesWindow *self)
                                              parent_location,
                                              NAUTILUS_OPEN_FLAG_NEW_WINDOW,
                                              &(NautilusFileList){ .data = link_target_file },
-                                             NULL, NULL, NULL);
+                                             NULL);
 }
 
 static void

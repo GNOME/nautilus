@@ -253,7 +253,7 @@ call_open_location (NautilusSidebar    *self,
     if (open_flags & (NAUTILUS_OPEN_FLAG_NEW_WINDOW | NAUTILUS_OPEN_FLAG_NEW_TAB))
     {
         nautilus_application_open_location_full (NAUTILUS_APPLICATION (g_application_get_default ()),
-                                                 location, open_flags, NULL, NULL, NULL, NULL);
+                                                 location, open_flags, NULL, NULL);
     }
     else
     {
