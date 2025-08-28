@@ -1147,60 +1147,43 @@ nautilus_application_dbus_unregister (GApplication    *app,
 static void
 update_dbus_opened_locations (NautilusApplication *self)
 {
-    GList *l, *sl;
-    NautilusWindow *window;
-    GFile *location;
     g_autoptr (GHashTable) hashed_locations = g_hash_table_new_full (g_str_hash, g_str_equal,
                                                                      g_free, NULL);
-    const gchar *dbus_object_path = NULL;
-
-    g_autoptr (GVariant) windows_to_locations = NULL;
-    GVariantBuilder windows_to_locations_builder;
+    const gchar *dbus_object_path = g_application_get_dbus_object_path (G_APPLICATION (self));
+    g_auto (GVariantBuilder) windows_to_locations_builder = G_VARIANT_BUILDER_INIT (
+        G_VARIANT_TYPE ("a{sas}"));
 
     g_return_if_fail (NAUTILUS_IS_APPLICATION (self));
+    g_return_if_fail (dbus_object_path != NULL);
 
-    dbus_object_path = g_application_get_dbus_object_path (G_APPLICATION (self));
-
-    g_return_if_fail (dbus_object_path);
-
-    g_variant_builder_init (&windows_to_locations_builder, G_VARIANT_TYPE ("a{sas}"));
-
-    for (l = self->windows; l != NULL; l = l->next)
+    for (GList *l = self->windows; l != NULL; l = l->next)
     {
-        guint32 id;
-        g_autofree gchar *path = NULL;
-        GVariantBuilder locations_in_window_builder;
+        NautilusWindow *window = l->data;
 
-        window = l->data;
+        g_auto (GVariantBuilder) locations_in_window_builder = G_VARIANT_BUILDER_INIT (
+            G_VARIANT_TYPE_STRING_ARRAY);
 
-        g_variant_builder_init (&locations_in_window_builder, G_VARIANT_TYPE ("as"));
-
-        for (sl = nautilus_window_get_slots (window); sl; sl = sl->next)
+        for (GList *sl = nautilus_window_get_slots (window); sl; sl = sl->next)
         {
             NautilusWindowSlot *slot = sl->data;
-            location = nautilus_window_slot_get_location (slot);
+            GFile *location = nautilus_window_slot_get_location (slot);
 
             if (location != NULL)
             {
-                gchar *uri = g_file_get_uri (location);
+                g_autofree char *uri = g_file_get_uri (location);
 
                 g_variant_builder_add (&locations_in_window_builder, "s", uri);
 
                 if (!g_hash_table_contains (hashed_locations, uri))
                 {
-                    g_hash_table_add (hashed_locations, uri);
-                }
-                else
-                {
-                    g_free (uri);
+                    g_hash_table_add (hashed_locations, g_steal_pointer (&uri));
                 }
             }
         }
 
-        id = gtk_application_window_get_id (GTK_APPLICATION_WINDOW (window));
-        path = g_strdup_printf ("%s/window/%u", dbus_object_path, id);
+        guint32 id = gtk_application_window_get_id (GTK_APPLICATION_WINDOW (window));
+        g_autofree gchar *path = g_strdup_printf ("%s/window/%u", dbus_object_path, id);
         g_variant_builder_add (&windows_to_locations_builder, "{sas}", path, &locations_in_window_builder);
-        g_variant_builder_clear (&locations_in_window_builder);
     }
 
     g_autoptr (GPtrArray) open_locations = g_hash_table_steal_all_keys (hashed_locations);
@@ -1210,7 +1193,8 @@ update_dbus_opened_locations (NautilusApplication *self)
     nautilus_freedesktop_dbus_set_open_locations (self->fdb_manager,
                                                   (const gchar **) open_locations->pdata);
 
-    windows_to_locations = g_variant_ref_sink (g_variant_builder_end (&windows_to_locations_builder));
+    g_autoptr (GVariant) windows_to_locations = g_variant_ref_sink (
+        g_variant_builder_end (&windows_to_locations_builder));
     nautilus_freedesktop_dbus_set_open_windows_with_locations (self->fdb_manager,
                                                                windows_to_locations);
 }
