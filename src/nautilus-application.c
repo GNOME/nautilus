@@ -68,7 +68,6 @@
 #include "nautilus-localsearch-utilities.h"
 #include "nautilus-trash-monitor.h"
 #include "nautilus-ui-utilities.h"
-#include "nautilus-window-slot.h"
 #include "nautilus-window.h"
 
 struct _NautilusApplication
@@ -95,6 +94,8 @@ struct _NautilusApplication
     GUnixMountMonitor *mount_monitor;
 
     NautilusDBusLauncher *dbus_launcher;
+
+    guint dbus_location_update_timeout_id;
 };
 
 G_DEFINE_FINAL_TYPE (NautilusApplication, nautilus_application, ADW_TYPE_APPLICATION)
@@ -465,6 +466,8 @@ nautilus_application_finalize (GObject *object)
     g_clear_object (&self->dbus_launcher);
 
     nautilus_trash_monitor_clear ();
+
+    g_clear_handle_id (&self->dbus_location_update_timeout_id, g_source_remove);
 
     G_OBJECT_CLASS (nautilus_application_parent_class)->finalize (object);
 }
@@ -1147,6 +1150,8 @@ nautilus_application_dbus_unregister (GApplication    *app,
 static void
 update_dbus_opened_locations (NautilusApplication *self)
 {
+    self->dbus_location_update_timeout_id = 0;
+
     g_autoptr (GHashTable) hashed_locations = g_hash_table_new_full (g_str_hash, g_str_equal,
                                                                      g_free, NULL);
     const gchar *dbus_object_path = g_application_get_dbus_object_path (G_APPLICATION (self));
@@ -1197,34 +1202,16 @@ update_dbus_opened_locations (NautilusApplication *self)
 }
 
 static void
-on_slot_location_changed (NautilusWindowSlot  *slot,
-                          GParamSpec          *pspec,
-                          NautilusApplication *self)
+schedule_dbus_location_update (NautilusApplication *self)
 {
-    update_dbus_opened_locations (self);
-}
+    static guint dbus_update_delay_ms = 100;
 
-static void
-on_slot_added (NautilusWindow      *window,
-               NautilusWindowSlot  *slot,
-               NautilusApplication *self)
-{
-    if (nautilus_window_slot_get_location (slot))
+    /* Avoid updating too often by bundling multiple signals */
+    if (self->dbus_location_update_timeout_id == 0)
     {
-        update_dbus_opened_locations (self);
+        self->dbus_location_update_timeout_id = g_timeout_add_once (
+            dbus_update_delay_ms, (GSourceOnceFunc) update_dbus_opened_locations, self);
     }
-
-    g_signal_connect (slot, "notify::location", G_CALLBACK (on_slot_location_changed), self);
-}
-
-static void
-on_slot_removed (NautilusWindow      *window,
-                 NautilusWindowSlot  *slot,
-                 NautilusApplication *self)
-{
-    update_dbus_opened_locations (self);
-
-    g_signal_handlers_disconnect_by_func (slot, on_slot_location_changed, self);
 }
 
 static void
@@ -1238,8 +1225,8 @@ nautilus_application_window_added (GtkApplication *app,
     if (NAUTILUS_IS_WINDOW (window))
     {
         self->windows = g_list_prepend (self->windows, window);
-        g_signal_connect (window, "slot-added", G_CALLBACK (on_slot_added), app);
-        g_signal_connect (window, "slot-removed", G_CALLBACK (on_slot_removed), app);
+        g_signal_connect_swapped (window, "locations-changed",
+                                  G_CALLBACK (schedule_dbus_location_update), app);
     }
 }
 
@@ -1254,8 +1241,7 @@ nautilus_application_window_removed (GtkApplication *app,
     if (NAUTILUS_IS_WINDOW (window))
     {
         self->windows = g_list_remove_all (self->windows, window);
-        g_signal_handlers_disconnect_by_func (window, on_slot_added, app);
-        g_signal_handlers_disconnect_by_func (window, on_slot_removed, app);
+        g_signal_handlers_disconnect_by_func (window, schedule_dbus_location_update, app);
     }
 
     /* if this was the last window, close the previewer */
