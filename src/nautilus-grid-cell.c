@@ -420,9 +420,10 @@ snapshot (GtkWidget   *widget,
         dash_bounds = GRAPHENE_RECT_INIT (EMBLEMS_BOX_WIDTH, 0, icon_size, icon_size);
         graphene_rect_inset_r (&dash_bounds, 0.2 * icon_size, 0.2 * icon_size, &icon_bounds);
         gtk_widget_get_color (widget, &color);
-        color.alpha = is_light ? 0.4 : 0.6;
 
+        color.alpha = is_light ? 0.1 : 0.15;
         nautilus_ui_draw_icon_dashed_border (snapshot, &dash_bounds, color);
+        color.alpha = is_light ? 0.4 : 0.6;
         nautilus_ui_draw_symbolic_icon (snapshot,
                                         "cut-large-symbolic",
                                         &icon_bounds,
