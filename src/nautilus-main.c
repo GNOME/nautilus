@@ -35,9 +35,7 @@
 #include <gio/gdesktopappinfo.h>
 
 #include <locale.h>
-#ifdef HAVE_MALLOC_H
 #include <malloc.h>
-#endif
 #include <stdlib.h>
 #include <string.h>
 #include <unistd.h>
@@ -63,6 +61,9 @@ main (int   argc,
 
         exit (ENOTSUP);
     }
+
+    const guint trim_threshold_mb = 128;
+    mallopt (M_TRIM_THRESHOLD, trim_threshold_mb * 1024 * 1024);
 
     nautilus_register_resource ();
     /* Run the nautilus application. */
