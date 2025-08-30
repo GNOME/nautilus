@@ -4434,12 +4434,13 @@ queue_pending_files (NautilusFilesView  *self,
     *pending_list = g_list_concat (fad_list, *pending_list);
     /* Generally we don't want to show the files while the directory is loading
      * the files themselves, so we avoid jumping and oddities. However, for
-     * search it can be a long wait, and we actually want to show files as
-     * they are getting found. So for search is fine if not all files are
-     * seen */
+     * search and for MTP devices, it can be a while, and we actually want to
+     * show files as they are loading. */
     if ((!self->loading && self->subdirectories_loading == NULL) ||
         (nautilus_directory_are_all_files_seen (directory) ||
-         nautilus_files_view_is_searching (self)))
+         nautilus_files_view_is_searching (self) ||
+         (!g_file_is_native (self->location) &&
+          g_file_has_uri_scheme (self->location, "mtp"))))
     {
         schedule_timeout_display_of_pending_files (self, self->update_interval);
     }
