@@ -1,3 +1,8 @@
+/*
+ * Copyright (C) 2025 The GNOME project contributors
+ *
+ * SPDX-License-Identifier: GPL-2.0-or-later
+ */
 #include <glib.h>
 
 typedef struct {
