@@ -2,6 +2,8 @@
  * SPDX-FileCopyrightText: 2025 The GNOME project contributors
  * SPDX-License-Identifier: GPL-2.0-or-later
  */
+#include "nautilus-user-dirs-check.h"
+
 #include <adwaita.h>
 #include <glib.h>
 #include <gtk/gtk.h>
@@ -320,7 +322,15 @@ has_xdg_translation (void)
     }
 
     str = "Desktop";
-    return dgettext ("xdg-user-dirs", str) != str;
+
+    g_autofree char *domain = g_strdup (textdomain (NULL));
+
+    /* Translate string in xdg-user-dirs domain. String stays unchanged if no translation exists. */
+    textdomain ("xdg-user-dirs");
+    gboolean has_translation = dgettext ("xdg-user-dirs", str) != str;
+    textdomain (domain);
+
+    return has_translation;
 }
 
 static void
@@ -598,9 +608,8 @@ update_locale (XdgDirEntry *old_entries)
     }
 }
 
-int
-main (int   argc,
-      char *argv[])
+void
+nautilus_user_dirs_check_update_locales (void)
 {
     XdgDirEntry *old_entries, *new_entries, *entry;
     XdgDirEntry *desktop_entry;
@@ -611,13 +620,6 @@ main (int   argc,
     int i;
     gboolean modified_bookmarks;
     char *uri;
-
-    setlocale (LC_ALL, "");
-
-    bindtextdomain (GETTEXT_PACKAGE, GLIBLOCALEDIR);
-    bindtextdomain ("xdg-user-dirs", GLIBLOCALEDIR);
-    bind_textdomain_codeset (GETTEXT_PACKAGE, "UTF-8");
-    textdomain (GETTEXT_PACKAGE);
 
     old_entries = parse_xdg_dirs (NULL);
     old_locale = parse_xdg_dirs_locale ();
@@ -632,8 +634,6 @@ main (int   argc,
         strcmp (old_locale, locale) != 0 &&
         has_xdg_translation ())
     {
-        g_set_prgname ("user-dirs-update-gtk");
-        adw_init ();
         update_locale (old_entries);
     }
 
@@ -714,6 +714,4 @@ main (int   argc,
 
     g_free (new_entries);
     g_free (old_entries);
-
-    return 0;
 }
