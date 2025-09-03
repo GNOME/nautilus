@@ -3,6 +3,8 @@
  *
  * SPDX-License-Identifier: GPL-2.0-or-later
  */
+#include "nautilus-user-dirs-check.h"
+
 #include <sys/types.h>
 #include <sys/wait.h>
 #include <unistd.h>
@@ -600,9 +602,8 @@ update_locale (XdgDirEntry *old_entries)
     }
 }
 
-int
-main (int   argc,
-      char *argv[])
+void
+nautilus_user_dirs_check_update_locales (void)
 {
     XdgDirEntry *old_entries, *new_entries, *entry;
     XdgDirEntry *desktop_entry;
@@ -613,13 +614,6 @@ main (int   argc,
     int i;
     gboolean modified_bookmarks;
     char *uri;
-
-    setlocale (LC_ALL, "");
-
-    bindtextdomain (GETTEXT_PACKAGE, GLIBLOCALEDIR);
-    bindtextdomain ("xdg-user-dirs", GLIBLOCALEDIR);
-    bind_textdomain_codeset (GETTEXT_PACKAGE, "UTF-8");
-    textdomain (GETTEXT_PACKAGE);
 
     old_entries = parse_xdg_dirs (NULL);
     old_locale = parse_xdg_dirs_locale ();
@@ -634,8 +628,6 @@ main (int   argc,
         strcmp (old_locale, locale) != 0 &&
         has_xdg_translation ())
     {
-        g_set_prgname ("user-dirs-update-gtk");
-        adw_init ();
         update_locale (old_entries);
     }
 
@@ -716,6 +708,4 @@ main (int   argc,
 
     g_free (new_entries);
     g_free (old_entries);
-
-    return 0;
 }

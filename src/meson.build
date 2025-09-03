@@ -257,6 +257,8 @@ libnautilus_sources = [
   'nautilus-trash-monitor.h',
   'nautilus-ui-utilities.c',
   'nautilus-ui-utilities.h',
+  'nautilus-user-dirs-check.c',
+  'nautilus-user-dirs-check.h',
   'nautilus-video-mime-types.h',
   'nautilus-vfs-directory.c',
   'nautilus-vfs-directory.h',

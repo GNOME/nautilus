@@ -51,6 +51,7 @@ main (int   argc,
     /* Initialize gettext support */
     setlocale (LC_ALL, "");
     bindtextdomain (GETTEXT_PACKAGE, LOCALEDIR);
+    bindtextdomain ("xdg-user-dirs", LOCALEDIR);
     bind_textdomain_codeset (GETTEXT_PACKAGE, "UTF-8");
     textdomain (GETTEXT_PACKAGE);
 

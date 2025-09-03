@@ -68,6 +68,7 @@
 #include "nautilus-localsearch-utilities.h"
 #include "nautilus-trash-monitor.h"
 #include "nautilus-ui-utilities.h"
+#include "nautilus-user-dirs-check.h"
 #include "nautilus-window-slot.h"
 #include "nautilus-window.h"
 
@@ -1160,6 +1161,9 @@ nautilus_application_startup (GApplication *app)
      * if there are problems.
      */
     check_required_directories (self);
+
+    /* Check if xdg-users-dirs need localization update */
+    nautilus_user_dirs_check_update_locales ();
 
     nautilus_init_application_actions (self);
 
