@@ -56,6 +56,7 @@
 #include "nautilus-localsearch-utilities.h"
 #include "nautilus-trash-monitor.h"
 #include "nautilus-ui-utilities.h"
+#include "nautilus-user-dirs-check.h"
 #include "nautilus-window.h"
 
 struct _NautilusApplication
@@ -1062,6 +1063,9 @@ nautilus_application_startup (GApplication *app)
 
     /* initialize preferences and create the global GSettings objects */
     nautilus_global_preferences_init ();
+
+    /* Check if xdg-users-dirs need localization update */
+    nautilus_user_dirs_check_update_locales ();
 
     /* initialize data preference watchers */
     nautilus_date_setup_preferences ();
