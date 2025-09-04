@@ -112,29 +112,18 @@ bookmark_in_list_name_changed (NautilusBookmarkList *bookmarks)
 }
 
 static void
-stop_monitoring_bookmark (NautilusBookmarkList *bookmarks,
-                          NautilusBookmark     *bookmark)
+stop_monitoring_bookmark (NautilusBookmark *bookmark,
+                          gpointer          user_data)
 {
     g_signal_handlers_disconnect_by_func (bookmark,
                                           bookmark_in_list_changed_callback,
-                                          bookmarks);
-}
-
-static void
-stop_monitoring_one (gpointer data,
-                     gpointer user_data)
-{
-    g_assert (NAUTILUS_IS_BOOKMARK (data));
-    g_assert (NAUTILUS_IS_BOOKMARK_LIST (user_data));
-
-    stop_monitoring_bookmark (NAUTILUS_BOOKMARK_LIST (user_data),
-                              NAUTILUS_BOOKMARK (data));
+                                          user_data);
 }
 
 static void
 clear (NautilusBookmarkList *bookmarks)
 {
-    g_list_foreach (bookmarks->list, stop_monitoring_one, bookmarks);
+    g_list_foreach (bookmarks->list, (GFunc) stop_monitoring_bookmark, bookmarks);
     g_list_free_full (bookmarks->list, g_object_unref);
     bookmarks->list = NULL;
 }
@@ -400,7 +389,7 @@ nautilus_bookmark_list_remove (NautilusBookmarkList *bookmarks,
                                           link_to_remove);
 
     NautilusBookmark *bookmark = link_to_remove->data;
-    stop_monitoring_bookmark (bookmarks, bookmark);
+    stop_monitoring_bookmark (bookmark, bookmarks);
     g_list_free_full (link_to_remove, g_object_unref);
 
     nautilus_bookmark_list_save_file (bookmarks);
