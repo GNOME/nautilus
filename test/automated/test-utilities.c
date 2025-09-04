@@ -8,7 +8,10 @@
 
 #include "test-utilities.h"
 
+#include <sched.h>
 #include <sys/random.h>
+#include <sys/types.h>
+#include <sys/wait.h>
 #include <src/nautilus-file-undo-manager.h>
 #include <src/nautilus-file-utilities.h>
 
@@ -580,4 +583,46 @@ create_random_file (GFile *file,
 
         size -= written_size;
     }
+}
+
+gboolean
+can_run_bwrap (void)
+{
+    g_autoptr (GError) error = NULL;
+    g_autoptr (GSubprocess) bwrap = g_subprocess_new (G_SUBPROCESS_FLAGS_NONE, &error,
+                                                      "bwrap",
+                                                      "--unshare-all",
+                                                      "--ro-bind", "/usr", "/usr",
+                                                      "--symlink", "usr/lib64", "/lib64",
+                                                      "/usr/bin/true",
+                                                      NULL);
+
+    if (!bwrap)
+    {
+        g_debug ("Could not exec bwrap: %s", error->message);
+        return FALSE;
+    }
+
+    if (!g_subprocess_wait (bwrap, NULL, &error))
+    {
+        g_debug ("Error waiting for bwrap process: %s", error->message);
+        return FALSE;
+    }
+
+
+    if (!g_subprocess_get_if_exited (bwrap))
+    {
+        g_debug ("bwrap did not exit normally");
+        return FALSE;
+    }
+
+    int code = g_subprocess_get_exit_status (bwrap);
+    if (code != 0)
+    {
+        g_debug ("bwrap exited with code %d", code);
+        return FALSE;
+    }
+
+    g_debug ("Detected working bwrap");
+    return TRUE;
 }

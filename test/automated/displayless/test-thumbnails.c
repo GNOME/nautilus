@@ -251,7 +251,7 @@ main (int   argc,
     gtk_test_init (&argc, &argv, G_TEST_OPTION_ISOLATE_DIRS, NULL);
     g_test_set_nonfatal_assertions ();
 
-    if (nautilus_application_is_sandboxed ())
+    if (nautilus_application_is_sandboxed () || !can_run_bwrap ())
     {
         /* Can't thumbnail in flatpak-builder sandbox. */
         return 77;

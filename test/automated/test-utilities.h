@@ -63,3 +63,5 @@ void create_fourth_hierarchy (gchar *prefix);
 
 void create_random_file (GFile *file,
                          gsize size);
+
+gboolean can_run_bwrap (void);
