@@ -1920,32 +1920,24 @@ static void
 do_rename (GtkButton       *button,
            NautilusSidebar *sidebar)
 {
-    char *new_text;
-    GFile *file;
-    g_autoptr (NautilusBookmark) bookmark = NULL;
-
-    new_text = g_strdup (gtk_editable_get_text (GTK_EDITABLE (sidebar->rename_entry)));
-
-    file = g_file_new_for_uri (sidebar->rename_uri);
-    bookmark = nautilus_bookmark_list_get_bookmark (sidebar->bookmark_list, file);
-    if (bookmark == NULL)
-    {
-        g_warning ("Tried to rename non-existent bookmark of %s", sidebar->rename_uri);
-    }
-    else
-    {
-        nautilus_bookmark_set_name (g_steal_pointer (&bookmark), new_text);
-    }
+    g_autofree char *uri = g_steal_pointer (&sidebar->rename_uri);
+    g_autofree char *new_text = g_strdup (gtk_editable_get_text (GTK_EDITABLE (sidebar->rename_entry)));
+    g_autoptr (GFile) file = g_file_new_for_uri (uri);
+    NautilusBookmark *bookmark = nautilus_bookmark_list_get_bookmark (sidebar->bookmark_list,
+                                                                      file);
 
     if (sidebar->rename_popover)
     {
         gtk_popover_popdown (GTK_POPOVER (sidebar->rename_popover));
     }
 
-    g_object_unref (file);
-    g_free (new_text);
+    if (bookmark == NULL)
+    {
+        g_warning ("Tried to rename non-existent bookmark of %s", sidebar->rename_uri);
+        return;
+    }
 
-    g_clear_pointer (&sidebar->rename_uri, g_free);
+    nautilus_bookmark_set_name (bookmark, new_text);
 }
 
 static void
