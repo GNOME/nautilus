@@ -134,6 +134,12 @@ stop_monitoring_bookmark (NautilusBookmarkList *bookmarks,
     g_signal_handlers_disconnect_by_func (bookmark,
                                           bookmark_in_list_changed_callback,
                                           bookmarks);
+    g_signal_handlers_disconnect_by_func (bookmark,
+                                          bookmark_in_list_icon_changed,
+                                          bookmarks);
+    g_signal_handlers_disconnect_by_func (bookmark,
+                                          bookmark_in_list_name_changed,
+                                          bookmarks);
 }
 
 static void
