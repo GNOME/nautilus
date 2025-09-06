@@ -1928,10 +1928,9 @@ do_rename (GtkButton       *button,
 
     file = g_file_new_for_uri (sidebar->rename_uri);
     bookmark = nautilus_bookmark_list_get_bookmark (sidebar->bookmark_list, file);
-    if (!bookmark)
+    if (bookmark == NULL)
     {
-        bookmark = nautilus_bookmark_new (file, new_text);
-        nautilus_bookmark_list_append (sidebar->bookmark_list, bookmark);
+        g_warning ("Tried to rename non-existent bookmark of %s", sidebar->rename_uri);
     }
     else
     {
