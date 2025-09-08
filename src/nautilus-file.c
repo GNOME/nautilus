@@ -3936,7 +3936,9 @@ nautilus_file_should_show (NautilusFile *file,
         return TRUE;
     }
 
-    if (!show_hidden && nautilus_file_is_hidden_file (file))
+    if (!show_hidden &&
+        file->details->file_info_is_up_to_date &&
+        nautilus_file_is_hidden_file (file))
     {
         return FALSE;
     }
