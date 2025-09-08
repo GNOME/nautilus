@@ -90,6 +90,15 @@ collect_changed_files (NautilusFilesView *view,
     }
 }
 
+static void
+file_changes_done (NautilusFilesView *view,
+                   gpointer           user_data)
+{
+    gboolean *end_of_changes = user_data;
+
+    *end_of_changes = TRUE;
+}
+
 const GStrv hidden_files_hierarchy = (char *[])
 {
     "my_file",
@@ -190,6 +199,138 @@ test_hidden_files_change (void)
         {
             g_assert_false (nautilus_file_is_hidden_file (file));
         }
+    }
+
+    test_clear_tmp_dir ();
+}
+
+static void
+replace_cb (GObject      *object,
+            GAsyncResult *result,
+            gpointer      user_data)
+{
+    GFile *file = G_FILE (object);
+    g_autoptr (GError) error = NULL;
+    GPtrArray *replaced_files = user_data;
+
+    g_file_replace_contents_finish (file, result, NULL, &error);
+    g_assert_no_error (error);
+
+    g_ptr_array_add (replaced_files, g_object_ref (file));
+}
+
+static void
+test_replace_files (void)
+{
+    /* This is not reproducible using files created in tmpfs. */
+    g_test_bug ("https://gitlab.gnome.org/GNOME/nautilus/-/issues/3959");
+
+    g_settings_set_boolean (gtk_filechooser_preferences,
+                            NAUTILUS_PREFERENCES_SHOW_HIDDEN_FILES,
+                            FALSE);
+
+    g_autoptr (NautilusWindowSlot) slot = g_object_ref_sink (nautilus_window_slot_new (NAUTILUS_MODE_BROWSE));
+    g_autoptr (NautilusFilesView) files_view = nautilus_files_view_new (NAUTILUS_VIEW_GRID_ID, slot);
+    NautilusViewModel *model = nautilus_files_view_get_private_model (files_view);
+    g_autoptr (GFile) tmp_location = g_file_new_for_path (test_get_tmp_dir ());
+    const gsize file_count = 10, replaced_file_count = 5;
+    g_autoptr (GPtrArray) file_arr =
+        g_ptr_array_new_full (file_count, (GDestroyNotify) nautilus_file_unref);
+    g_autoptr (GPtrArray) replacment_files_arr =
+        g_ptr_array_new_full (replaced_file_count, (GDestroyNotify) g_object_unref);
+    g_autoptr (GPtrArray) changed_files_arr =
+        g_ptr_array_new_full (replaced_file_count, (GDestroyNotify) nautilus_file_unref);
+    gboolean end_of_changes = FALSE;
+
+    /* Create the files before loading the view and keep them in an array. */
+    for (gsize i = 0; i < file_count; i++)
+    {
+        g_autofree gchar *file_name = g_strdup_printf ("test_file_%zu", i);
+        g_autoptr (GFile) file = g_file_get_child (tmp_location, file_name);
+        g_autofree gchar *text = g_uuid_string_random ();
+        g_autoptr (GError) error = NULL;
+        g_autoptr (GFileOutputStream) out = g_file_create (file, G_FILE_CREATE_NONE, NULL, &error);
+
+        g_assert_nonnull (out);
+        g_assert_no_error (error);
+        g_output_stream_write_all (G_OUTPUT_STREAM (out),
+                                   text,
+                                   strlen (text),
+                                   NULL,
+                                   NULL,
+                                   &error);
+        g_assert_no_error (error);
+
+        g_ptr_array_add (file_arr, nautilus_file_get (file));
+    }
+
+    nautilus_files_view_set_location (files_view, tmp_location);
+    ITER_CONTEXT_WHILE (nautilus_files_view_get_loading (files_view));
+
+    g_assert_cmpint (g_list_model_get_n_items (G_LIST_MODEL (model)), ==, file_count);
+
+    /* Replace only some of the files and verify that changes are emitted. */
+    g_signal_connect (files_view, "file-changed",
+                      G_CALLBACK (collect_changed_files), changed_files_arr);
+    g_signal_connect (files_view, "end-file-changes",
+                      G_CALLBACK (file_changes_done), &end_of_changes);
+
+    for (gsize i = 0; i < replaced_file_count; i++)
+    {
+        NautilusFile *file = file_arr->pdata[i];
+        g_autoptr (GFile) location = nautilus_file_get_location (file);
+        g_autofree gchar *text = g_uuid_string_random ();
+        gsize text_len = strlen (text);
+        g_autoptr (GBytes) bytes = g_bytes_new_take (g_steal_pointer (&text), text_len);
+        g_autoptr (GError) error = NULL;
+        g_file_replace_contents_bytes_async (location,
+                                             bytes,
+                                             NULL,
+                                             FALSE,
+                                             G_FILE_CREATE_REPLACE_DESTINATION,
+                                             NULL,
+                                             replace_cb,
+                                             replacment_files_arr);
+
+        g_assert_no_error (error);
+    }
+
+    ITER_CONTEXT_WHILE (!end_of_changes ||
+                        replacment_files_arr->len < replaced_file_count ||
+                        changed_files_arr->len < replaced_file_count);
+
+    g_assert_cmpint (g_list_model_get_n_items (G_LIST_MODEL (model)), ==, file_count);
+
+    for (gsize i = 0; i < file_arr->len; i++)
+    {
+        NautilusFile *file = file_arr->pdata[i];
+        NautilusViewItem *item = nautilus_view_model_get_item_for_file (model, file);
+        g_autoptr (GFile) location = nautilus_file_get_location (file);
+
+        /* Ignore replaced files as they are not guaranteed to stay the same */
+        if (!g_ptr_array_find_with_equal_func (replacment_files_arr, location,
+                                               (GEqualFunc) g_file_equal, NULL))
+        {
+            g_assert_nonnull (item);
+        }
+    }
+    for (gsize i = 0; i < replacment_files_arr->len; i++)
+    {
+        GFile *location = replacment_files_arr->pdata[i];
+        g_autoptr (NautilusFile) file = nautilus_file_get (location);
+        NautilusViewItem *item = nautilus_view_model_get_item_for_file (model, file);
+
+        /* GIO might use a temperarly hidden file for writing that starts with
+         * a dot like ".goutputstream-XXXXXX". Ensure the file is visible after
+         * the rename to the intended file. */
+        g_assert_nonnull (item);
+    }
+    for (gsize i = 0; i < changed_files_arr->len; i++)
+    {
+        NautilusFile *file = changed_files_arr->pdata[i];
+        NautilusViewItem *item = nautilus_view_model_get_item_for_file (model, file);
+
+        g_assert_nonnull (item);
     }
 
     test_clear_tmp_dir ();
@@ -498,6 +639,8 @@ main (int   argc,
                      test_remove_files);
     g_test_add_func ("/view/change_files/rename",
                      test_rename_files);
+    g_test_add_func ("/view/change_files/replace",
+                     test_replace_files);
     g_test_add_func ("/view/hidden_files/change",
                      test_hidden_files_change);
 
