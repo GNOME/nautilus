@@ -25,8 +25,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: nautilus.master.es\n"
 "Report-Msgid-Bugs-To: https://gitlab.gnome.org/GNOME/nautilus/issues\n"
-"POT-Creation-Date: 2025-09-05 10:41+0000\n"
-"PO-Revision-Date: 2025-09-05 13:48+0200\n"
+"POT-Creation-Date: 2025-09-09 18:17+0000\n"
+"PO-Revision-Date: 2025-09-10 10:58+0200\n"
 "Last-Translator: Daniel Mustieles García <daniel.mustieles@gmail.com>\n"
 "Language-Team: Spanish - Spain <gnome-es-list@gnome.org>\n"
 "Language: es_ES\n"
@@ -99,10 +99,8 @@ msgstr "Buscar"
 
 # src/file-manager/fm-properties-window.c:1641
 #: data/org.gnome.Nautilus.metainfo.xml.in.in:72
-#, fuzzy
-#| msgid "The location of the file."
 msgid "Selection of Multiple Files"
-msgstr "La ubicación del archivo."
+msgstr "Selección de varios archivos"
 
 #. Translators: Search terms to find this application. Do NOT translate or localize the semicolons! The list MUST also end with a semicolon!
 #: data/org.gnome.Nautilus.desktop.in.in:5
@@ -1720,10 +1718,9 @@ msgstr "%s libre"
 #. * action description as a useful pause in the screen reader
 #. * announcement.
 #: src/nautilus-file.c:8637
-#, fuzzy, c-format
-#| msgid "Starred"
+#, c-format
 msgid "%s. Starred"
-msgstr "Destacados"
+msgstr "%s. Destacado"
 
 # #-#-#-#-#  nautilus-es.po (Nautilus)  #-#-#-#-#
 # src/file-manager/dfos-xfer.c:419 src/file-manager/dfos-xfer.c:430
@@ -3702,6 +3699,8 @@ msgid ""
 "Running as root is not supported. Consider running `nautilus admin:///` "
 "instead."
 msgstr ""
+"Ejecutar como root no está soportado. Considere ejecutar «nautilus "
+"admin:///» en su lugar."
 
 # src/file-manager/fm-properties-window.c:844
 #: src/nautilus-mime-actions.c:98
@@ -5014,11 +5013,9 @@ msgstr "Abrir con la aplicación predeterminada"
 
 # src/file-manager/fm-directory-view.c:2126
 #: src/resources/gtk/help-overlay.ui:115
-#, fuzzy
-#| msgid "Open in Consol_e"
 msgctxt "shortcut window"
 msgid "Open Current Directory in Console"
-msgstr "Abrir en la consol_a"
+msgstr "Abrir la carpeta actual en la consola"
 
 #: src/resources/gtk/help-overlay.ui:123
 msgctxt "shortcut window"
@@ -5159,11 +5156,9 @@ msgid "Open Current Folder Menu"
 msgstr "Abrir el menú de la carpeta actual"
 
 #: src/resources/gtk/help-overlay.ui:284
-#, fuzzy
-#| msgid "Optional Context Menu Actions"
 msgctxt "shortcut window"
 msgid "Open Context Menu"
-msgstr "Acciones opcionales del menú contextual"
+msgstr "Abrir el menú de contextual"
 
 # src/file-manager/fm-directory-view.c:2403
 # src/file-manager/fm-directory-view.c:2646
@@ -5278,10 +5273,8 @@ msgstr "Mostrar las propiedades del elemento"
 
 # libnautilus-private/nautilus-program-chooser.c:1248
 #: src/resources/ui/nautilus-app-chooser.ui:51
-#, fuzzy
-#| msgid "Choose an app to open the selected files."
 msgid "Choose an app to open the selected files"
-msgstr "Elija una aplicación para abrir los archivos seleccionados."
+msgstr "Elija una aplicación para abrir los archivos seleccionados"
 
 #: src/resources/ui/nautilus-app-chooser.ui:63
 msgid "Always use for this file type"
@@ -5443,26 +5436,20 @@ msgstr "_Confirmar contraseña"
 
 # libnautilus-private/nautilus-program-chooser.c:1262
 #: src/resources/ui/nautilus-date-entry-row.ui:9
-#, fuzzy
-#| msgid "Date"
 msgid "Pick Date"
-msgstr "Fecha"
+msgstr "Elegir fecha"
 
 #: src/resources/ui/nautilus-date-range-dialog.ui:5
-#, fuzzy
-#| msgid "Clear Date Filter"
 msgid "Add Date Filter"
-msgstr "Limpiar filtro de fecha"
+msgstr "Añadir filtro de fecha"
 
 #: src/resources/ui/nautilus-date-range-dialog.ui:15
 msgid "Filter by Date"
 msgstr "Filtrar por fecha"
 
 #: src/resources/ui/nautilus-date-range-dialog.ui:26
-#, fuzzy
-#| msgid "Date Taken"
 msgid "_Date Range"
-msgstr "Fecha en que se tomó"
+msgstr "_Rango de fechas"
 
 #. Keep in sync with code
 #: src/resources/ui/nautilus-date-range-dialog.ui:32
@@ -6181,42 +6168,29 @@ msgstr "_Ayer"
 
 # src/file-manager/fm-properties-window.c:1569
 #: src/resources/ui/nautilus-search-popover.ui:227
-#, fuzzy
-#| msgid "Last week"
-#| msgid_plural "%d weeks ago"
 msgid "Past _Week"
-msgstr "Última semana"
+msgstr "Semana _pasada"
 
 #: src/resources/ui/nautilus-search-popover.ui:234
-#, fuzzy
-#| msgid "Last month"
-#| msgid_plural "%d months ago"
 msgid "Past _Month"
-msgstr "Último mes"
+msgstr "_Mes pasado"
 
 # src/file-manager/fm-directory-view.c:2154
 #: src/resources/ui/nautilus-search-popover.ui:241
-#, fuzzy
-#| msgid "Last year"
-#| msgid_plural "%d years ago"
 msgid "Past Y_ear"
-msgstr "Último año"
+msgstr "Año pa_sado"
 
 #: src/resources/ui/nautilus-search-popover.ui:255
 msgid "Custom Date Range"
 msgstr "Rango de fechas personalizado"
 
 #: src/resources/ui/nautilus-search-popover.ui:276
-#, fuzzy
-#| msgid "Full Text Match"
 msgid "Text Matching"
-msgstr "Coincidir con el texto completo"
+msgstr "Coincidencia de texto"
 
 #: src/resources/ui/nautilus-search-popover.ui:292
-#, fuzzy
-#| msgid "New Filename"
 msgid "_Content & Filename"
-msgstr "Nombre de archivo nuevo"
+msgstr "_contenido y nombre de archivo"
 
 # libnautilus-private/nautilus-global-preferences.c:727
 #: src/resources/ui/nautilus-search-popover.ui:293
@@ -6224,10 +6198,8 @@ msgid "Search Inside Files"
 msgstr "Buscar dentro de los archivos"
 
 #: src/resources/ui/nautilus-search-popover.ui:301
-#, fuzzy
-#| msgid "New Filename"
 msgid "_Only Filename"
-msgstr "Nombre de archivo nuevo"
+msgstr "Sólo el no_mbre del archivo"
 
 #: src/resources/ui/nautilus-search-popover.ui:302
 msgid "Don't Search Inside Files"
@@ -6235,10 +6207,8 @@ msgstr "No buscar dentro de los archivos"
 
 # src/file-manager/fm-properties-window.c:878
 #: src/resources/ui/nautilus-search-popover.ui:312
-#, fuzzy
-#| msgid "Contents"
 msgid "Only Co_ntents"
-msgstr "Contenido"
+msgstr "Sólo c_ontenido"
 
 #: src/resources/ui/nautilus-search-types-dialog.ui:5
 msgid "Add File Type Filter"
