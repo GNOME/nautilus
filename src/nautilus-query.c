@@ -21,6 +21,7 @@
 
 #include "nautilus-query.h"
 
+#include "nautilus-date-utilities.h"
 #include "nautilus-enum-types.h"
 #include "nautilus-file.h"
 #include "nautilus-global-preferences.h"
@@ -29,12 +30,6 @@
 #define RANK_SCALE_FACTOR 100
 #define MIN_RANK 10.0
 #define MAX_RANK 50.0
-
-static GString *
-string_create_copy (const GString *orig)
-{
-    return g_string_new_len (orig->str, orig->len);
-}
 
 static void
 prepared_word_free (GString *string)
@@ -98,10 +93,7 @@ finalize (GObject *object)
     query = NAUTILUS_QUERY (object);
 
     g_free (query->text);
-    if (query->prepared_words != NULL)
-    {
-        g_ptr_array_free (query->prepared_words, TRUE);
-    }
+    g_clear_pointer (&query->prepared_words, g_ptr_array_unref);
     g_clear_object (&query->location);
     g_clear_pointer (&query->mime_types, g_ptr_array_unref);
     g_clear_pointer (&query->date_range, g_ptr_array_unref);
@@ -195,16 +187,17 @@ NautilusQuery *
 nautilus_query_copy (NautilusQuery *query)
 {
     NautilusQuery *copy = g_object_new (NAUTILUS_TYPE_QUERY, NULL);
+    g_autoptr (GPtrArray) mime_types = nautilus_query_get_mime_types (query);
 
     copy->text = nautilus_query_get_text (query);
     copy->location = nautilus_query_get_location (query);
-    copy->mime_types = nautilus_query_get_mime_types (query);
+    g_set_ptr_array (&copy->mime_types, mime_types);
     copy->show_hidden = query->show_hidden;
     copy->date_range = nautilus_query_get_date_range (query);
     copy->recursion_tradeoff = query->recursion_tradeoff;
     copy->search_type = query->search_type;
     copy->search_content = query->search_content;
-    copy->prepared_words = g_ptr_array_copy (query->prepared_words, (GCopyFunc) string_create_copy, NULL);
+    g_set_ptr_array (&copy->prepared_words, query->prepared_words);
 
     return copy;
 }
@@ -234,7 +227,7 @@ nautilus_query_set_text (NautilusQuery *query,
         return FALSE;
     }
 
-    GPtrArray *prepared_words = NULL;
+    g_autoptr (GPtrArray) prepared_words = NULL;
     if (query->text != NULL)
     {
         g_autofree gchar *prepared_query = prepare_string_for_compare (query->text);
@@ -249,11 +242,7 @@ nautilus_query_set_text (NautilusQuery *query,
         }
     }
 
-    if (query->prepared_words != NULL)
-    {
-        g_ptr_array_free (query->prepared_words, TRUE);
-    }
-    query->prepared_words = prepared_words;
+    g_set_ptr_array (&query->prepared_words, prepared_words);
 
     return TRUE;
 }
@@ -320,8 +309,7 @@ nautilus_query_set_mime_types (NautilusQuery *query,
     g_return_if_fail (NAUTILUS_IS_QUERY (query));
     g_return_if_fail (mime_types != NULL);
 
-    g_clear_pointer (&query->mime_types, g_ptr_array_unref);
-    query->mime_types = g_ptr_array_ref (mime_types);
+    g_set_ptr_array (&query->mime_types, mime_types);
 }
 
 gboolean
