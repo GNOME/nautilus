@@ -856,22 +856,29 @@ nautilus_file_is_self_owned (NautilusFile *file)
 }
 
 static void
+nautilus_file_dispose (GObject *object)
+{
+    NautilusFile *file = NAUTILUS_FILE (object);
+
+    if (file->details->is_thumbnailing)
+    {
+        g_autofree gchar *uri = nautilus_file_get_uri (file);
+
+        nautilus_thumbnail_remove_from_queue (uri);
+    }
+
+    G_OBJECT_CLASS (nautilus_file_parent_class)->dispose (object);
+}
+
+static void
 finalize (GObject *object)
 {
     NautilusDirectory *directory;
     NautilusFile *file;
-    char *uri;
 
     file = NAUTILUS_FILE (object);
 
     g_assert (file->details->operations_in_progress == NULL);
-
-    if (file->details->is_thumbnailing)
-    {
-        uri = nautilus_file_get_uri (file);
-        nautilus_thumbnail_remove_from_queue (uri);
-        g_free (uri);
-    }
 
     nautilus_async_destroying_file (file);
 
@@ -8645,6 +8652,7 @@ nautilus_file_class_init (NautilusFileClass *class)
     attribute_free_space_q = g_quark_from_static_string ("free_space");
     attribute_starred_q = g_quark_from_static_string ("starred");
 
+    G_OBJECT_CLASS (class)->dispose = nautilus_file_dispose;
     G_OBJECT_CLASS (class)->finalize = finalize;
     G_OBJECT_CLASS (class)->constructor = nautilus_file_constructor;
     G_OBJECT_CLASS (class)->get_property = nautilus_file_get_property;
