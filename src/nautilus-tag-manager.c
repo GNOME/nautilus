@@ -483,7 +483,7 @@ on_tracker_notifier_events (TrackerNotifier *notifier,
             if (inserted)
             {
                 g_debug ("Added %s to starred files list", file_url);
-                changed_file = nautilus_file_get_by_uri (file_url);
+                changed_file = nautilus_file_get_existing_by_uri (file_url);
             }
         }
         else
@@ -493,7 +493,7 @@ on_tracker_notifier_events (TrackerNotifier *notifier,
             if (removed)
             {
                 g_debug ("Removed %s from starred files list", file_url);
-                changed_file = nautilus_file_get_by_uri (file_url);
+                changed_file = nautilus_file_get_existing_by_uri (file_url);
             }
         }
 
