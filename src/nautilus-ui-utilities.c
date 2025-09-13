@@ -624,7 +624,7 @@ nautilus_ui_draw_icon_dashed_border (GtkSnapshot     *snapshot,
     graphene_size_t arc_size = GRAPHENE_SIZE_INIT (radius, radius);
     GskRoundedRect round_rect;
     GskPathBuilder *path_builder = gsk_path_builder_new ();
-    GskStroke *stroke = gsk_stroke_new (stroke_width);
+    g_autoptr (GskStroke) stroke = gsk_stroke_new (stroke_width);
 
     gsk_rounded_rect_init (&round_rect, dash_bounds, &arc_size, &arc_size, &arc_size, &arc_size);
 

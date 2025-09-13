@@ -2630,6 +2630,8 @@ paste_callback_data_free (PasteCallbackData *data)
     g_free (data);
 }
 
+G_DEFINE_AUTOPTR_CLEANUP_FUNC (PasteCallbackData, paste_callback_data_free)
+
 static void
 handle_clipboard_data (NautilusFilesView *view,
                        GList             *item_uris,
@@ -2658,7 +2660,7 @@ paste_value_received_callback (GObject      *source_object,
     GdkClipboard *clipboard;
     GdkDragAction action;
     const GValue *value;
-    PasteCallbackData *data = user_data;
+    g_autoptr (PasteCallbackData) data = user_data;
     g_autoptr (GError) error = NULL;
 
     clipboard = GDK_CLIPBOARD (source_object);
@@ -2704,8 +2706,6 @@ paste_value_received_callback (GObject      *source_object,
         handle_clipboard_data (data->view, item_uris, data->dest_uri, action);
         g_list_free_full (item_uris, g_free);
     }
-
-    paste_callback_data_free (data);
 }
 
 static void
@@ -2713,7 +2713,7 @@ paste_files (NautilusFilesView *view,
              gchar             *dest_uri,
              gboolean           as_link)
 {
-    PasteCallbackData *data;
+    g_autoptr (PasteCallbackData) data = NULL;
     GdkClipboard *clipboard;
     GdkContentFormats *formats;
     gchar *real_dest_uri;
@@ -2743,21 +2743,24 @@ paste_files (NautilusFilesView *view,
         gdk_clipboard_read_value_async (clipboard, NAUTILUS_TYPE_CLIPBOARD,
                                         G_PRIORITY_DEFAULT,
                                         view->clipboard_cancellable,
-                                        paste_value_received_callback, data);
+                                        paste_value_received_callback,
+                                        g_steal_pointer (&data));
     }
     else if (gdk_content_formats_contain_gtype (formats, GDK_TYPE_FILE_LIST))
     {
         gdk_clipboard_read_value_async (clipboard, GDK_TYPE_FILE_LIST,
                                         G_PRIORITY_DEFAULT,
                                         view->clipboard_cancellable,
-                                        paste_value_received_callback, data);
+                                        paste_value_received_callback,
+                                        g_steal_pointer (&data));
     }
     else if (gdk_content_formats_contain_gtype (formats, G_TYPE_FILE))
     {
         gdk_clipboard_read_value_async (clipboard, G_TYPE_FILE,
                                         G_PRIORITY_DEFAULT,
                                         view->clipboard_cancellable,
-                                        paste_value_received_callback, data);
+                                        paste_value_received_callback,
+                                        g_steal_pointer (&data));
     }
 }
 
