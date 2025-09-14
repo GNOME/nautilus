@@ -8,8 +8,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: nautilus\n"
 "Report-Msgid-Bugs-To: https://gitlab.gnome.org/GNOME/nautilus/issues\n"
-"POT-Creation-Date: 2025-04-03 14:48+0000\n"
-"PO-Revision-Date: 2025-04-06 15:34+0100\n"
+"POT-Creation-Date: 2025-09-13 11:52+0000\n"
+"PO-Revision-Date: 2025-09-14 10:46+0100\n"
 "Last-Translator: ButterflyOfFire <butterflyoffire@protonmail.com>\n"
 "Language-Team: Kabyle\n"
 "Language: kab\n"
@@ -26,18 +26,18 @@ msgstr ""
 "X-DL-State: Translating\n"
 "X-DL-Lang: kab\n"
 
-#: data/nautilus-autorun-software.desktop.in:3
+#: data/nautilus-autorun-software.desktop.in:2
 msgid "Run Software"
 msgstr "Seddu aseɣẓan"
 
 #: data/org.gnome.Nautilus.metainfo.xml.in.in:5
-#: data/org.gnome.Nautilus.desktop.in.in:3 src/nautilus-mime-actions.c:102
-#: src/nautilus-portal.c:534 src/resources/ui/nautilus-window.ui:123
+#: data/org.gnome.Nautilus.desktop.in.in:2 src/nautilus-mime-actions.c:102
+#: src/nautilus-portal.c:535 src/resources/ui/nautilus-window.ui:123
 msgid "Files"
 msgstr "Ifuyla"
 
 #: data/org.gnome.Nautilus.metainfo.xml.in.in:6
-#: data/org.gnome.Nautilus.desktop.in.in:4
+#: data/org.gnome.Nautilus.desktop.in.in:3
 msgid "Access and organize files"
 msgstr "Kcem udiɣ suddes ifuyla"
 
@@ -57,18 +57,17 @@ msgid ""
 "can be extended with plugins and scripts."
 msgstr ""
 
-#: data/org.gnome.Nautilus.metainfo.xml.in.in:60 src/nautilus-view.c:150
+#: data/org.gnome.Nautilus.metainfo.xml.in.in:60 src/nautilus-files-view.c:9657
 msgid "Grid View"
 msgstr ""
 
-#: data/org.gnome.Nautilus.metainfo.xml.in.in:64 src/nautilus-view.c:154
+#: data/org.gnome.Nautilus.metainfo.xml.in.in:64 src/nautilus-files-view.c:9664
 msgid "List View"
 msgstr "Tamuɣli s tebdart"
 
-#: data/org.gnome.Nautilus.metainfo.xml.in.in:68 src/nautilus-query.c:538
-#: src/nautilus-search-directory-file.c:225
-#: src/nautilus-search-directory-file.c:265
-#: src/resources/ui/nautilus-search-popover.ui:278
+#: data/org.gnome.Nautilus.metainfo.xml.in.in:68
+#: src/nautilus-search-directory-file.c:230
+#: src/nautilus-search-directory-file.c:269
 msgid "Search"
 msgstr "Nadi"
 
@@ -77,11 +76,11 @@ msgid "Selection of Multiple Files"
 msgstr "Afran n waṭas n ifuyla"
 
 #. Translators: Search terms to find this application. Do NOT translate or localize the semicolons! The list MUST also end with a semicolon!
-#: data/org.gnome.Nautilus.desktop.in.in:6
+#: data/org.gnome.Nautilus.desktop.in.in:5
 msgid "folder;manager;explore;disk;filesystem;nautilus;"
 msgstr "akaram;aḍebsi;anagraw n yifuyla;ifuyla;nautilus"
 
-#: data/org.gnome.Nautilus.desktop.in.in:21
+#: data/org.gnome.Nautilus.desktop.in.in:20
 msgid "New Window"
 msgstr "Asfaylu amaynut"
 
@@ -379,10 +378,10 @@ msgid "You can stop this operation by clicking cancel."
 msgstr "Tzemred ad tesḥebseḍ tamhelt-agi s usiti ɣef semmet."
 
 #: eel/eel-stock-dialogs.c:196 src/nautilus-autorun-software.c:223
-#: src/nautilus-file-chooser.c:240 src/nautilus-file-operations.c:274
-#: src/nautilus-mime-actions.c:610 src/nautilus-mime-actions.c:1024
-#: src/nautilus-mime-actions.c:1336 src/resources/ui/nautilus-app-chooser.ui:90
-#: src/resources/ui/nautilus-batch-rename-dialog.ui:106
+#: src/nautilus-file-chooser.c:239 src/nautilus-file-operations.c:275
+#: src/nautilus-mime-actions.c:697 src/nautilus-mime-actions.c:1111
+#: src/nautilus-mime-actions.c:1419 src/resources/ui/nautilus-app-chooser.ui:16
+#: src/resources/ui/nautilus-batch-rename-dialog.ui:119
 #: src/resources/ui/nautilus-compress-dialog.ui:17
 #: src/resources/ui/nautilus-file-conflict-dialog.ui:15
 #: src/resources/ui/nautilus-file-properties-change-permissions.ui:14
@@ -434,7 +433,7 @@ msgstr "0 n tasint"
 
 #: extensions/audio-video-properties/totem-properties-view.c:131
 #: extensions/image-properties/nautilus-image-properties-model.c:238
-#: src/nautilus-batch-rename-dialog.h:163
+#: src/nautilus-batch-rename-dialog.h:165
 #: src/resources/ui/nautilus-batch-rename-dialog.ui:53
 msgid "Title"
 msgstr "Azwel"
@@ -520,7 +519,7 @@ msgstr "Tiregwa"
 #. Some sort of failure occurred. How 'bout we tell the user?
 #: extensions/audio-video-properties/totem-properties-view.c:338
 #: extensions/image-properties/nautilus-image-properties-model.c:280
-#: src/nautilus-application.c:185 src/nautilus-window-slot.c:1846
+#: src/nautilus-application.c:180 src/nautilus-window-slot.c:1822
 msgid "Oops! Something went wrong."
 msgstr ""
 
@@ -540,7 +539,7 @@ msgstr ""
 msgid "Duration"
 msgstr "Tanzagt"
 
-#: extensions/audio-video-properties/totem-properties-view.c:370
+#: extensions/audio-video-properties/totem-properties-view.c:371
 msgid "Container"
 msgstr ""
 
@@ -661,11 +660,11 @@ msgstr "Tisidag"
 msgid "Failed to load image information"
 msgstr "D awezɣi aɛebbi talɣut n tugna"
 
-#: extensions/image-properties/nautilus-image-properties-model.c:510
+#: extensions/image-properties/nautilus-image-properties-model.c:512
 msgid "Image Properties"
 msgstr "Iraten n tugna"
 
-#: src/nautilus-application.c:188
+#: src/nautilus-application.c:183
 #, c-format
 msgid ""
 "Unable to create a required folder. Please create the following folder, or "
@@ -673,7 +672,7 @@ msgid ""
 "%s"
 msgstr ""
 
-#: src/nautilus-application.c:195
+#: src/nautilus-application.c:190
 #, c-format
 msgid ""
 "Unable to create required folders. Please create the following folders, or "
@@ -681,78 +680,75 @@ msgid ""
 "%s"
 msgstr ""
 
-#: src/nautilus-application.c:592
+#: src/nautilus-application.c:570
 msgid "--quit cannot be used with URIs."
 msgstr "--quit ulamek ad yettwasemres akked URIs."
 
-#: src/nautilus-application.c:601
+#: src/nautilus-application.c:579
 msgid "--select must be used with at least an URI."
 msgstr ""
 
-#: src/nautilus-application.c:744
+#: src/nautilus-application.c:715
 msgid "There was an error displaying help"
 msgstr "Tella-d tuccḍa deg uskan n tallalt"
 
-#: src/nautilus-application.c:745 src/nautilus-autorun-software.c:161
-#: src/nautilus-mime-actions.c:1195 src/nautilus-ui-utilities.c:437
+#: src/nautilus-application.c:716 src/nautilus-app-chooser.c:87
+#: src/nautilus-autorun-software.c:161 src/nautilus-mime-actions.c:1278
+#: src/nautilus-ui-utilities.c:353
 msgid "_OK"
 msgstr "_IH"
 
-#: src/nautilus-application.c:864
+#: src/nautilus-application.c:835
 #, c-format
 msgid ""
 "“%s” is an internal protocol. Opening this location directly is not "
 "supported."
 msgstr ""
 
-#: src/nautilus-application.c:954
+#: src/nautilus-application.c:917
 msgid "Show the version of the program."
 msgstr "Sken-d tasenfelt n wahil."
 
-#: src/nautilus-application.c:958
+#: src/nautilus-application.c:921
 msgid "Always open a new window for browsing specified URIs"
 msgstr ""
 
-#: src/nautilus-application.c:962
+#: src/nautilus-application.c:925
 msgid "Quit Nautilus."
 msgstr "Mdel Nautilus."
 
-#: src/nautilus-application.c:966
+#: src/nautilus-application.c:929
 msgid "Select specified URI in parent folder."
 msgstr ""
 
-#: src/nautilus-application.c:968
+#: src/nautilus-application.c:931
 msgid "[URI…]"
 msgstr "[URI…]"
 
-#: src/nautilus-app-chooser.c:74
+#: src/nautilus-app-chooser.c:83
+msgid "Could not set as default"
+msgstr ""
+
+#: src/nautilus-app-chooser.c:85
 #, c-format
 msgid "Error while setting “%s” as default app: %s"
 msgstr ""
 
-#: src/nautilus-app-chooser.c:77
-msgid "Could not set as default"
-msgstr ""
-
-#: src/nautilus-app-chooser.c:79
-msgid "OK"
-msgstr "IH (_O)"
-
 #. Translators: %s is the filename.  i.e. "Choose an app to open test.jpg"
-#: src/nautilus-app-chooser.c:194
+#: src/nautilus-app-chooser.c:233
 #, c-format
 msgid "Choose an app to open <b>%s</b>"
 msgstr "Fren asnas s wacu ara teldiḍ <b>%s</b>"
 
-#: src/nautilus-app-chooser.c:200
+#: src/nautilus-app-chooser.c:239
 msgid "Open Items"
 msgstr "Ldi iferdisen"
 
-#: src/nautilus-app-chooser.c:204
+#: src/nautilus-app-chooser.c:243
 msgid "Open Folder"
 msgstr "Ldi Akaram"
 
-#: src/nautilus-app-chooser.c:208 src/resources/ui/nautilus-app-chooser.ui:5
+#: src/nautilus-app-chooser.c:247 src/resources/ui/nautilus-app-chooser.ui:5
 msgid "Open File"
 msgstr "Ldi afaylu"
 
@@ -793,40 +789,40 @@ msgstr ""
 msgid "_Run"
 msgstr "Seddu (_R)"
 
-#: src/nautilus-batch-rename-dialog.c:708
+#: src/nautilus-batch-rename-dialog.c:524
 #, c-format
 msgid "“%s” would not be a unique new name."
 msgstr ""
 
-#: src/nautilus-batch-rename-dialog.c:714
+#: src/nautilus-batch-rename-dialog.c:530
 #, c-format
 msgid "“%s” would conflict with an existing file."
 msgstr ""
 
-#: src/nautilus-batch-rename-dialog.c:1181
+#: src/nautilus-batch-rename-dialog.c:960
 msgid "Name cannot be empty."
 msgstr "Ur ilaq ara ad yili isem d ilem."
 
-#: src/nautilus-batch-rename-dialog.c:1187
+#: src/nautilus-batch-rename-dialog.c:966
 msgid "Name cannot contain “/”."
 msgstr "Ur ilaq ara ad yegber isem “/”."
 
-#: src/nautilus-batch-rename-dialog.c:1193
+#: src/nautilus-batch-rename-dialog.c:972
 msgid "“.” is not a valid name."
 msgstr "“.” ur yili d isem amaɣtu."
 
-#: src/nautilus-batch-rename-dialog.c:1199
+#: src/nautilus-batch-rename-dialog.c:978
 msgid "“..” is not a valid name."
 msgstr "“..” ur yili d isem amaɣtu."
 
-#: src/nautilus-batch-rename-dialog.c:1869
+#: src/nautilus-batch-rename-dialog.c:1580
 #, c-format
 msgid "Rename %d Folder"
 msgid_plural "Rename %d Folders"
 msgstr[0] "Ẓreg isem n ukaram %d"
 msgstr[1] "Ẓreg isem n ikaramen %d"
 
-#: src/nautilus-batch-rename-dialog.c:1877
+#: src/nautilus-batch-rename-dialog.c:1588
 #, c-format
 msgid "Rename %d File"
 msgid_plural "Rename %d Files"
@@ -835,88 +831,89 @@ msgstr[1] "Ẓreg isem n ifuyla %d"
 
 #. To translators: %d is the total number of files and folders.
 #. * Singular case of the string is never used
-#: src/nautilus-batch-rename-dialog.c:1887
+#: src/nautilus-batch-rename-dialog.c:1598
 #, c-format
 msgid "Rename %d File and Folder"
 msgid_plural "Rename %d Files and Folders"
 msgstr[0] "Ẓreg isem n ufaylu d ukaram %d"
 msgstr[1] "Ẓreg isem ifuyla d ikaramen %d"
 
-#: src/nautilus-batch-rename-dialog.h:87
+#: src/nautilus-batch-rename-dialog.h:89
 #: src/resources/ui/nautilus-batch-rename-dialog.ui:73
+#: src/resources/ui/nautilus-batch-rename-dialog.ui:231
 msgid "Original Name (Ascending)"
 msgstr ""
 
-#: src/nautilus-batch-rename-dialog.h:92
+#: src/nautilus-batch-rename-dialog.h:94
 #: src/resources/ui/nautilus-batch-rename-dialog.ui:78
 msgid "Original Name (Descending)"
 msgstr ""
 
-#: src/nautilus-batch-rename-dialog.h:97
+#: src/nautilus-batch-rename-dialog.h:99
 #: src/resources/ui/nautilus-batch-rename-dialog.ui:83
 msgid "First Modified"
 msgstr "Asnifel mezwaru"
 
-#: src/nautilus-batch-rename-dialog.h:102
+#: src/nautilus-batch-rename-dialog.h:104
 #: src/resources/ui/nautilus-batch-rename-dialog.ui:88
 msgid "Last Modified"
 msgstr "Asnifel aneggaru"
 
-#: src/nautilus-batch-rename-dialog.h:107
+#: src/nautilus-batch-rename-dialog.h:109
 msgid "First Created"
 msgstr "Timerna tamezwarut"
 
-#: src/nautilus-batch-rename-dialog.h:112
+#: src/nautilus-batch-rename-dialog.h:114
 msgid "Last Created"
 msgstr "Timerna taneggarut"
 
-#: src/nautilus-batch-rename-dialog.h:121
+#: src/nautilus-batch-rename-dialog.h:123
 msgid "Camera model"
 msgstr "Talɣa n tkamiṛat"
 
-#: src/nautilus-batch-rename-dialog.h:128
+#: src/nautilus-batch-rename-dialog.h:130
 msgid "Creation date"
 msgstr "Azemz n usnulfu"
 
-#: src/nautilus-batch-rename-dialog.h:135
+#: src/nautilus-batch-rename-dialog.h:137
 msgid "Season number"
 msgstr ""
 
-#: src/nautilus-batch-rename-dialog.h:142
+#: src/nautilus-batch-rename-dialog.h:144
 msgid "Episode number"
 msgstr ""
 
-#: src/nautilus-batch-rename-dialog.h:149
+#: src/nautilus-batch-rename-dialog.h:151
 msgid "Track number"
 msgstr "Numéro de piste"
 
-#: src/nautilus-batch-rename-dialog.h:156
+#: src/nautilus-batch-rename-dialog.h:158
 msgid "Artist name"
 msgstr "Isem n unaẓur"
 
-#: src/nautilus-batch-rename-dialog.h:170
+#: src/nautilus-batch-rename-dialog.h:172
 msgid "Album name"
 msgstr "Isem n walbum"
 
-#: src/nautilus-batch-rename-dialog.h:177
+#: src/nautilus-batch-rename-dialog.h:179
 msgid "Original file name"
 msgstr ""
 
-#: src/nautilus-batch-rename-dialog.h:188
+#: src/nautilus-batch-rename-dialog.h:190
 msgid "1, 2, 3"
 msgstr "1, 2, 3"
 
-#: src/nautilus-batch-rename-dialog.h:195
+#: src/nautilus-batch-rename-dialog.h:197
 msgid "01, 02, 03"
 msgstr "01, 02, 03"
 
-#: src/nautilus-batch-rename-dialog.h:202
+#: src/nautilus-batch-rename-dialog.h:204
 msgid "001, 002, 003"
 msgstr "001, 002, 003"
 
 #: src/nautilus-bookmark.c:110 src/nautilus-file-utilities.c:59
-#: src/nautilus-pathbar.c:416 src/nautilus-shell-search-provider.c:342
-#: src/nautilus-window.c:141 src/gtk/nautilusgtkplacessidebar.c:667
+#: src/nautilus-pathbar.c:419 src/nautilus-shell-search-provider.c:299
+#: src/nautilus-sidebar.c:699 src/nautilus-window.c:143
 msgid "Home"
 msgstr "Agejdan"
 
@@ -936,11 +933,11 @@ msgstr ""
 msgid "Nautilus Clipboard must not have empty lines."
 msgstr ""
 
-#: src/nautilus-column-chooser.c:358
+#: src/nautilus-column-chooser.c:359
 msgid "View More"
 msgstr "Sken-d ugar"
 
-#: src/nautilus-column-utilities.c:69 src/gtk/nautilusgtkplacessidebar.c:1978
+#: src/nautilus-column-utilities.c:69 src/nautilus-sidebar.c:2004
 msgid "Name"
 msgstr "Isem"
 
@@ -950,7 +947,7 @@ msgstr "Isem akked tignit n ufaylu."
 
 #: src/nautilus-column-utilities.c:76
 msgid "Size"
-msgstr "Teɣzi"
+msgstr "Tiddi"
 
 #: src/nautilus-column-utilities.c:77
 msgid "The size of the file."
@@ -964,8 +961,10 @@ msgstr "Tawsit"
 msgid "The type of the file."
 msgstr "Anaw n ufaylu."
 
+#. Translators: This refers to a date time
 #: src/nautilus-column-utilities.c:90
 #: src/resources/ui/nautilus-properties-window.ui:444
+#: src/resources/ui/nautilus-search-popover.ui:190
 msgid "Modified"
 msgstr "Yettwabeddel"
 
@@ -990,8 +989,10 @@ msgstr "Yettwakcem"
 msgid "The date the file was accessed."
 msgstr "Azemz ideg yettwaddef ufaylu."
 
+#. Translators: This refers to a date time
 #: src/nautilus-column-utilities.c:115
 #: src/resources/ui/nautilus-properties-window.ui:458
+#: src/resources/ui/nautilus-search-popover.ui:195
 msgid "Created"
 msgstr "Yettwarna"
 
@@ -1033,11 +1034,6 @@ msgstr ""
 #: src/nautilus-column-utilities.c:150
 msgid "The date the file was accessed by the user."
 msgstr ""
-
-#: src/nautilus-column-utilities.c:159 src/nautilus-properties-window.c:741
-#: src/nautilus-star-cell.c:66
-msgid "Star"
-msgstr "Itri"
 
 #: src/nautilus-column-utilities.c:160
 msgid "Shows if file is starred."
@@ -1101,70 +1097,11 @@ msgstr "7Z (.7z)"
 msgid "Smaller archives but must be installed on Windows and Mac."
 msgstr ""
 
-#. Translators: date and time in 24h format,
-#. * i.e. "12/31/2023 23:59"
-#: src/nautilus-date-utilities.c:87
-#, no-c-format
-msgid "%m/%d/%Y %H:%M"
-msgstr "%d/%m/%Y %H:%M"
-
-#. Translators: date and time in 12h format,
-#. * i.e. "12/31/2023 11:59 PM"
-#: src/nautilus-date-utilities.c:94
-#, no-c-format
-msgid "%m/%d/%Y %I:%M %p"
-msgstr "%d/%m/%Y %I:%M %p"
-
-#. Translators: this is the word "Today" followed by
-#. * a time in 24h format. i.e. "Today 23:04"
-#: src/nautilus-date-utilities.c:123
-#, no-c-format
-msgid "Today %-H:%M"
-msgstr "Ass-a %-H:%M"
-
-#. Translators: this is the word Today followed by
-#. * a time in 12h format. i.e. "Today 9:04 PM"
-#: src/nautilus-date-utilities.c:130
-#, no-c-format
-msgid "Today %-I:%M %p"
-msgstr "Ass-a %-I:%M %p"
-
-#. Translators: this is the word Yesterday followed by
-#. * a time in 24h format. i.e. "Yesterday 23:04"
-#: src/nautilus-date-utilities.c:141
-#, no-c-format
-msgid "Yesterday %-H:%M"
-msgstr "Iḍelli %-H:%M"
-
-#. Translators: this is the word Yesterday followed by
-#. * a time in 12h format. i.e. "Yesterday 9:04 PM"
-#: src/nautilus-date-utilities.c:148
-#, no-c-format
-msgid "Yesterday %-I:%M %p"
-msgstr "Iḍelli %-I:%M %p"
-
-#. Translators: this is the day of the month followed by the abbreviated
-#. * month name followed by the year i.e. "3 Feb 2015"
-#: src/nautilus-date-utilities.c:156
-#, no-c-format
-msgid "%-e %b %Y"
-msgstr "%-e %b %Y"
-
-#. Translators: this is the day number followed by the full month
-#. * name followed by the year followed by a time in 24h format
-#. * with seconds i.e. "3 February 2015 23:04:00"
-#: src/nautilus-date-utilities.c:167
-#, no-c-format
-msgid "%-e %B %Y %H:%M:%S"
-msgstr "%-e %B %Y %H:%M:%S"
-
-#. Translators: this is the day number followed by the full month
-#. * name followed by the year followed by a time in 12h format
-#. * with seconds i.e. "3 February 2015 09:04:00 PM"
-#: src/nautilus-date-utilities.c:175
-#, no-c-format
-msgid "%-e %B %Y %I:%M:%S %p"
-msgstr "%-e %B %Y %I:%M:%S %p"
+#: src/nautilus-date-utilities.c:474
+#, fuzzy, c-format
+#| msgid "Since…"
+msgid "Since %s"
+msgstr "Si..."
 
 #: src/nautilus-dbus-launcher.c:50
 #, c-format
@@ -1172,7 +1109,7 @@ msgid "Details: %s"
 msgstr "Talqayt: %s"
 
 #: src/nautilus-dbus-launcher.c:51 src/nautilus-dbus-launcher.c:80
-#: src/nautilus-program-choosing.c:376 src/nautilus-program-choosing.c:451
+#: src/nautilus-program-choosing.c:369 src/nautilus-program-choosing.c:444
 msgid "There was an error launching the app."
 msgstr "Teḍra-d tuccḍa di tnekra n usnas."
 
@@ -1181,121 +1118,121 @@ msgid "Details: The proxy has not been created."
 msgstr ""
 
 #. Translators: this is of the format "hostname (uri-scheme)"
-#: src/nautilus-directory.c:641
+#: src/nautilus-directory.c:616
 #, c-format
 msgid "%s (%s)"
 msgstr "%s (%s)"
 
-#: src/nautilus-dnd.c:107
+#: src/nautilus-dnd.c:108
 msgid "_Move Here"
 msgstr "S_mutti ɣer dagi"
 
-#: src/nautilus-dnd.c:112
+#: src/nautilus-dnd.c:113
 msgid "_Copy Here"
 msgstr "Nɣel dagi (_C)"
 
-#: src/nautilus-dnd.c:117
+#: src/nautilus-dnd.c:118
 msgid "_Link Here"
 msgstr "Cudd-it ɣer da (_L)"
 
-#: src/nautilus-dnd.c:126 src/nautilus-file-operations.c:2514
-#: src/nautilus-mime-actions.c:621
+#: src/nautilus-dnd.c:127 src/nautilus-file-operations.c:2512
+#: src/nautilus-mime-actions.c:708
 #: src/resources/ui/nautilus-progress-info-widget.ui:39
 #: src/resources/ui/nautilus-toolbar.ui:41
 msgid "Cancel"
 msgstr "Semmet"
 
-#: src/nautilus-dnd.c:257
+#: src/nautilus-dnd.c:258
 msgid "Dropped Image"
 msgstr ""
 
-#: src/nautilus-error-reporting.c:82
+#: src/nautilus-error-reporting.c:83
 #, c-format
 msgid "You do not have the permissions necessary to view the contents of “%s”."
 msgstr ""
 
-#: src/nautilus-error-reporting.c:89
+#: src/nautilus-error-reporting.c:90
 #, c-format
 msgid "“%s” could not be found. Perhaps it has recently been deleted."
 msgstr ""
 
-#: src/nautilus-error-reporting.c:101
+#: src/nautilus-error-reporting.c:102
 #, c-format
 msgid "Sorry, could not display all the contents of “%s”: %s"
 msgstr ""
 
-#: src/nautilus-error-reporting.c:112
+#: src/nautilus-error-reporting.c:113
 msgid "This location could not be displayed."
 msgstr ""
 
-#: src/nautilus-error-reporting.c:139
+#: src/nautilus-error-reporting.c:140
 #, c-format
 msgid "You do not have the permissions necessary to change the group of “%s”."
 msgstr ""
 
 #. fall through
-#: src/nautilus-error-reporting.c:162
+#: src/nautilus-error-reporting.c:163
 #, c-format
 msgid "Sorry, could not change the group of “%s”: %s"
 msgstr ""
 
-#: src/nautilus-error-reporting.c:167
+#: src/nautilus-error-reporting.c:168
 msgid "The group could not be changed."
 msgstr "Agraw ulamek ad yettwasenfel."
 
-#: src/nautilus-error-reporting.c:188
+#: src/nautilus-error-reporting.c:189
 #, c-format
 msgid "Sorry, could not change the owner of “%s”: %s"
 msgstr ""
 
-#: src/nautilus-error-reporting.c:191
+#: src/nautilus-error-reporting.c:192
 msgid "The owner could not be changed."
 msgstr "Bab-is ur izmir ara ad ittusnifel."
 
-#: src/nautilus-error-reporting.c:212
+#: src/nautilus-error-reporting.c:213
 #, c-format
 msgid "Sorry, could not change the permissions of “%s”: %s"
 msgstr ""
 
-#: src/nautilus-error-reporting.c:215
+#: src/nautilus-error-reporting.c:216
 msgid "The permissions could not be changed."
 msgstr "Tisirag ur zmirent ara ad ttusniflent."
 
-#: src/nautilus-error-reporting.c:250
+#: src/nautilus-error-reporting.c:251
 #, c-format
 msgid ""
 "The name “%s” is already used in this location. Please use a different name."
 msgstr ""
 
-#: src/nautilus-error-reporting.c:258
+#: src/nautilus-error-reporting.c:259
 #, c-format
 msgid ""
 "There is no “%s” in this location. Perhaps it was just moved or deleted?"
 msgstr ""
 
-#: src/nautilus-error-reporting.c:266
+#: src/nautilus-error-reporting.c:267
 #, c-format
 msgid "You do not have the permissions necessary to rename “%s”."
 msgstr ""
 
-#: src/nautilus-error-reporting.c:280
+#: src/nautilus-error-reporting.c:279
 #, c-format
 msgid ""
 "The name “%s” is not valid because it contains the character “%c”. Please "
 "use a different name."
 msgstr ""
 
-#: src/nautilus-error-reporting.c:288
+#: src/nautilus-error-reporting.c:285
 #, c-format
 msgid "The name “%s” is not valid. Please use a different name."
 msgstr ""
 
-#: src/nautilus-error-reporting.c:297
+#: src/nautilus-error-reporting.c:294
 #, c-format
 msgid "The name “%s” is too long. Please use a different name."
 msgstr ""
 
-#: src/nautilus-error-reporting.c:305
+#: src/nautilus-error-reporting.c:302
 #, c-format
 msgid ""
 "Could not rename “%s” because a process is using it. If it's open in another "
@@ -1303,108 +1240,108 @@ msgid ""
 msgstr ""
 
 #. fall through
-#: src/nautilus-error-reporting.c:330
+#: src/nautilus-error-reporting.c:327
 #, c-format
 msgid "Sorry, could not rename “%s” to “%s”: %s"
 msgstr ""
 
-#: src/nautilus-error-reporting.c:335
+#: src/nautilus-error-reporting.c:332
 msgid "The item could not be renamed."
 msgstr "Isem n uferdis ur izmir ara ad ittusnifel."
 
-#: src/nautilus-error-reporting.c:447
+#: src/nautilus-error-reporting.c:444
 #, c-format
 msgid "Renaming “%s” to “%s”."
 msgstr "Asenfel n yisem seg “%s” ɣer “%s”."
 
-#: src/nautilus-file.c:1298 src/nautilus-vfs-file.c:271
+#: src/nautilus-file.c:1306 src/nautilus-vfs-file.c:271
 msgid "This file cannot be mounted"
 msgstr "Afaylu-a ur izmir ara ad yettwaserkeb"
 
-#: src/nautilus-file.c:1352
+#: src/nautilus-file.c:1360
 msgid "This file cannot be unmounted"
 msgstr "Afaylu-agi ur izmir ara ad d-yekkes"
 
-#: src/nautilus-file.c:1399
+#: src/nautilus-file.c:1407
 msgid "This file cannot be ejected"
 msgstr "Afaylu-agi ur izmir ara ad yeffeɣ"
 
-#: src/nautilus-file.c:1444 src/nautilus-vfs-file.c:462
+#: src/nautilus-file.c:1452 src/nautilus-vfs-file.c:462
 msgid "This file cannot be started"
 msgstr "Afaylu-agi ur izmir ara ad yebdu"
 
-#: src/nautilus-file.c:1503 src/nautilus-file.c:1543
+#: src/nautilus-file.c:1511 src/nautilus-file.c:1551
 msgid "This file cannot be stopped"
 msgstr "Afaylu-agi ur izmir ara ad yettwaseḥbes"
 
-#: src/nautilus-file.c:1899
+#: src/nautilus-file.c:1908
 #, c-format
 msgid "Slashes are not allowed in filenames"
 msgstr "Tifeggagin yeknan ur urigent ara deg yismawen n ifuyla"
 
-#: src/nautilus-file.c:1942
+#: src/nautilus-file.c:1951
 #, c-format
 msgid "Toplevel files cannot be renamed"
 msgstr "D awezɣi abeddel n yisem n ifuyla iẓuran"
 
-#: src/nautilus-file.c:2022
+#: src/nautilus-file.c:2031
 #, c-format
 msgid "File not found"
 msgstr "Afaylu ur yettwaf ara"
 
-#: src/nautilus-file.c:5436
+#: src/nautilus-file.c:5491
 #, c-format
 msgid "Not allowed to set permissions"
 msgstr "Ur turigeḍ ara iwakken ad tesbaduḍ isirigen"
 
-#: src/nautilus-file.c:5780
+#: src/nautilus-file.c:5835
 #, c-format
 msgid "Not allowed to set owner"
 msgstr "Ur turigeḍ ara iwakken ad tesbaduḍ amli"
 
-#: src/nautilus-file.c:5799
+#: src/nautilus-file.c:5854
 #, c-format
 msgid "Specified owner “%s” doesn’t exist"
 msgstr ""
 
-#: src/nautilus-file.c:6089
+#: src/nautilus-file.c:6144
 #, c-format
 msgid "Not allowed to set group"
 msgstr "Ur  turigeḍ ara iwakken ad tesbaduḍ agraw"
 
-#: src/nautilus-file.c:6108
+#: src/nautilus-file.c:6163
 #, c-format
 msgid "Specified group “%s” doesn’t exist"
 msgstr ""
 
 #. Translators: This is a username followed by "(You)" to indicate the file is owned by the current user
-#: src/nautilus-file.c:6248
+#: src/nautilus-file.c:6303
 #, c-format
 msgid "%s (You)"
 msgstr "%s (Kečč·kemm)"
 
-#: src/nautilus-file.c:6280
+#: src/nautilus-file.c:6335
 #, c-format
 msgid "%'u item"
 msgid_plural "%'u items"
 msgstr[0] "%'u n uferdis"
 msgstr[1] "%'u n iferdisen"
 
-#: src/nautilus-file.c:6281
+#: src/nautilus-file.c:6336
 #, c-format
 msgid "%'u folder"
 msgid_plural "%'u folders"
 msgstr[0] "%'u n ukaram"
 msgstr[1] "%'u n ikaramen"
 
-#: src/nautilus-file.c:6282
+#: src/nautilus-file.c:6337
 #, c-format
 msgid "%'u file"
 msgid_plural "%'u files"
 msgstr[0] "%'u n ufaylu"
 msgstr[1] "%'u n ifuyla"
 
-#: src/nautilus-file.c:6366 src/nautilus-properties-window.c:2098
+#: src/nautilus-file.c:6421 src/nautilus-properties-window.c:2105
 #, c-format
 msgid "%s byte"
 msgid_plural "%s bytes"
@@ -1412,93 +1349,93 @@ msgstr[0] "%s n uṭamḍan"
 msgstr[1] "%s n iṭamḍanen"
 
 #. This means no contents at all were readable
-#: src/nautilus-file.c:6770
+#: src/nautilus-file.c:6825
 msgid "? bytes"
 msgstr "? iṭamḍanen"
 
 #. This means no contents at all were readable
-#: src/nautilus-file.c:6782
+#: src/nautilus-file.c:6837
 msgid "? items"
 msgstr "? iferdisen"
 
 #. Translators: This about a file type.
-#: src/nautilus-file.c:6791
+#: src/nautilus-file.c:6846
 msgid "Unknown type"
 msgstr "Anaw d arussin"
 
 #. Fallback, use for both unknown attributes and attributes
 #. * for which we have no more appropriate default.
 #.
-#: src/nautilus-file.c:6822
+#: src/nautilus-file.c:6877
 msgid "Unknown"
 msgstr "Arussin"
 
-#: src/nautilus-file.c:6859 src/nautilus-file.c:6867 src/nautilus-file.c:6926
+#: src/nautilus-file.c:6927 src/nautilus-file.c:6935 src/nautilus-file.c:6994
 msgid "Program"
 msgstr "Ahil"
 
-#: src/nautilus-file.c:6860
+#: src/nautilus-file.c:6928
 msgid "Audio"
 msgstr "Imesli"
 
-#: src/nautilus-file.c:6861
+#: src/nautilus-file.c:6929
 msgid "Font"
 msgstr "Tasefsit"
 
-#: src/nautilus-file.c:6862
+#: src/nautilus-file.c:6930
 msgid "Image"
 msgstr "Tugna"
 
-#: src/nautilus-file.c:6863
+#: src/nautilus-file.c:6931
 msgid "Archive"
 msgstr "Tarcivt"
 
-#: src/nautilus-file.c:6864
+#: src/nautilus-file.c:6932
 msgid "Markup"
 msgstr ""
 
-#: src/nautilus-file.c:6865 src/nautilus-file.c:6866
+#: src/nautilus-file.c:6933 src/nautilus-file.c:6934
 msgid "Text"
 msgstr "Aḍris"
 
-#: src/nautilus-file.c:6868 src/nautilus-mime-actions.c:245
+#: src/nautilus-file.c:6936 src/nautilus-mime-actions.c:301
 msgid "Video"
 msgstr "Tavidyut"
 
-#: src/nautilus-file.c:6869
+#: src/nautilus-file.c:6937
 msgid "Contacts"
 msgstr "Inermisen"
 
-#: src/nautilus-file.c:6870
+#: src/nautilus-file.c:6938
 msgid "Calendar"
 msgstr "Awitay"
 
-#: src/nautilus-file.c:6871
+#: src/nautilus-file.c:6939
 msgid "Document"
 msgstr "Isemli"
 
-#: src/nautilus-file.c:6872 src/nautilus-mime-actions.c:206
+#: src/nautilus-file.c:6940 src/nautilus-mime-actions.c:262
 msgid "Presentation"
 msgstr "Tanekda"
 
-#: src/nautilus-file.c:6873 src/nautilus-mime-actions.c:218
+#: src/nautilus-file.c:6941 src/nautilus-mime-actions.c:274
 msgid "Spreadsheet"
 msgstr "Tiferkit n usiḍen"
 
 #. Refers to a file type which is known but not one of the basic types
-#: src/nautilus-file.c:6906
+#: src/nautilus-file.c:6974
 msgid "Other"
 msgstr "Wayeḍ"
 
-#: src/nautilus-file.c:6928
+#: src/nautilus-file.c:6996
 msgid "Binary"
 msgstr "Imisin"
 
-#: src/nautilus-file.c:6933
+#: src/nautilus-file.c:7001
 msgid "Folder"
 msgstr "Akaram"
 
-#: src/nautilus-file.c:6991
+#: src/nautilus-file.c:7059
 msgid "Link"
 msgstr "Aseɣwen"
 
@@ -1507,211 +1444,219 @@ msgstr "Aseɣwen"
 #. * to that kind of file (e.g. "link to folder").
 #.
 #. Translators: File name for new symlink. %s is target's name
-#: src/nautilus-file.c:6997 src/nautilus-filename-utilities.c:254
+#: src/nautilus-file.c:7065 src/nautilus-filename-utilities.c:253
 #, c-format
 msgid "Link to %s"
 msgstr "Ccud ɣer %s"
 
-#: src/nautilus-file.c:7013 src/nautilus-file.c:7029 src/nautilus-file.c:7045
+#: src/nautilus-file.c:7081 src/nautilus-file.c:7097 src/nautilus-file.c:7113
 msgid "Link (broken)"
 msgstr "Aseɣwen (iṛṛeẓ)"
 
 #. Translators: This refers to available space in a folder; e.g.: 100 MB Free
-#: src/nautilus-file.c:7206
+#: src/nautilus-file.c:7274
 #, c-format
 msgid "%s Free"
 msgstr "%s d yeggran"
 
-#: src/nautilus-file-chooser.c:230
+#. Translators: A "." is added in between file name and starring
+#. * action description as a useful pause in the screen reader
+#. * announcement.
+#: src/nautilus-file.c:8644
+#, c-format
+msgid "%s. Starred"
+msgstr "%s. s yitran"
+
+#: src/nautilus-file-chooser.c:229
 msgid "Replace When Saving?"
 msgstr ""
 
-#: src/nautilus-file-chooser.c:236
+#: src/nautilus-file-chooser.c:235
 #, c-format
 msgid ""
 "“%s” already exists in “%s”. Saving will replace or overwrite its contents."
 msgstr ""
 
-#: src/nautilus-file-chooser.c:241 src/nautilus-file-chooser.c:317
-#: src/nautilus-file-operations.c:280
+#: src/nautilus-file-chooser.c:240 src/nautilus-file-chooser.c:332
+#: src/nautilus-file-operations.c:281
 #: src/resources/ui/nautilus-file-conflict-dialog.ui:40
 msgid "_Replace"
 msgstr "Semselsi (_R)"
 
-#: src/nautilus-filename-validator.c:132
+#: src/nautilus-filename-validator.c:135
 msgid "Folder names cannot contain “/”"
 msgstr "Ismawen n ukaram ur zmiren ara ad gebren “/”"
 
-#: src/nautilus-filename-validator.c:133
+#: src/nautilus-filename-validator.c:136
 msgid "File names cannot contain “/”"
 msgstr "Ismawen n ifuyla ur zmiren ara ad gebren “/”"
 
-#: src/nautilus-filename-validator.c:138
+#: src/nautilus-filename-validator.c:141
 msgid "A folder cannot be called “.”"
 msgstr "Isem n ukaram ur izmir ara ad yili “.”"
 
-#: src/nautilus-filename-validator.c:139
+#: src/nautilus-filename-validator.c:142
 msgid "A file cannot be called “.”"
 msgstr "Isem n ukaram ur izmir ara ad yili “.”"
 
-#: src/nautilus-filename-validator.c:144
+#: src/nautilus-filename-validator.c:147
 msgid "A folder cannot be called “..”"
 msgstr "Isem n ukaram ur izmir ara ad yili “..”"
 
-#: src/nautilus-filename-validator.c:145
+#: src/nautilus-filename-validator.c:148
 msgid "A file cannot be called “..”"
 msgstr "Isem n ukaram ur izmir ara ad yili “..”"
 
-#: src/nautilus-filename-validator.c:150
+#: src/nautilus-filename-validator.c:153
 msgid "Folder name is too long"
 msgstr "Isem n ufaylu ɣezzif aṭas"
 
-#: src/nautilus-filename-validator.c:151
+#: src/nautilus-filename-validator.c:154
 msgid "File name is too long"
 msgstr "Isem n ufaylu ɣezzif aṭas"
 
 #. We must warn about the side effect
-#: src/nautilus-filename-validator.c:157
+#: src/nautilus-filename-validator.c:160
 msgid "Folders with “.” at the beginning of their name are hidden"
 msgstr "Ikaramen yeɛan “.” di tazwara n yisem-nsen ttwafren"
 
-#: src/nautilus-filename-validator.c:158
+#: src/nautilus-filename-validator.c:161
 msgid "Files with “.” at the beginning of their name are hidden"
 msgstr "Ifuyla yesɛan “.” di tazwara n yisem-nsen ttwafren."
 
-#: src/nautilus-filename-validator.c:167
+#: src/nautilus-filename-validator.c:170
 msgid "A folder with that name already exists"
 msgstr ""
 
-#: src/nautilus-filename-validator.c:168
+#: src/nautilus-filename-validator.c:171
 msgid "A file with that name already exists"
 msgstr ""
 
-#: src/nautilus-file-operations.c:275
+#: src/nautilus-file-operations.c:276
 #: src/resources/ui/nautilus-file-conflict-dialog.ui:22
 msgid "_Skip"
 msgstr "Zgel (_S)"
 
-#: src/nautilus-file-operations.c:276
+#: src/nautilus-file-operations.c:277
 msgid "S_kip All"
 msgstr "Zgel-iten a_kk"
 
-#: src/nautilus-file-operations.c:277
+#: src/nautilus-file-operations.c:278
 msgid "_Retry"
 msgstr "Ɛ_reḍ tikkelt-nniḍen"
 
-#: src/nautilus-file-operations.c:278
+#: src/nautilus-file-operations.c:279
 msgid "_Delete"
 msgstr "Kkes (_D)"
 
-#: src/nautilus-file-operations.c:279
+#: src/nautilus-file-operations.c:280
 msgid "Delete _All"
 msgstr "Kkes-iten _akk"
 
-#: src/nautilus-file-operations.c:281
+#: src/nautilus-file-operations.c:282
 msgid "Replace _All"
 msgstr "Se_mselsi-iten akk"
 
-#: src/nautilus-file-operations.c:282 src/nautilus-operations-ui-manager.c:369
+#: src/nautilus-file-operations.c:283 src/nautilus-operations-ui-manager.c:369
 msgid "_Merge"
 msgstr "Zdi (_M)"
 
-#: src/nautilus-file-operations.c:283
+#: src/nautilus-file-operations.c:284
 msgid "Merge _All"
 msgstr "Zdi-iten _akk"
 
-#: src/nautilus-file-operations.c:284
-msgid "Copy _Anyway"
-msgstr "Suken _akken ibɣu yili"
-
 #: src/nautilus-file-operations.c:285
+msgid "Copy _Anyway"
+msgstr "Nɣel _akken ibɣu yili"
+
+#: src/nautilus-file-operations.c:286
 msgid "Proceed _Anyway"
 msgstr ""
 
-#: src/nautilus-file-operations.c:286
+#: src/nautilus-file-operations.c:287
 msgid "Empty _Trash"
 msgstr "Smir _taqecwalt"
 
-#: src/nautilus-file-operations.c:399
+#: src/nautilus-file-operations.c:400
 #, c-format
 msgid "%'d second"
 msgid_plural "%'d seconds"
 msgstr[0] "%'d n tasint"
 msgstr[1] "%'d n tasinin"
 
-#: src/nautilus-file-operations.c:405 src/nautilus-file-operations.c:417
+#: src/nautilus-file-operations.c:406 src/nautilus-file-operations.c:418
 #, c-format
 msgid "%'d minute"
 msgid_plural "%'d minutes"
 msgstr[0] "%'d n tesdat"
 msgstr[1] "%'d tesdatin"
 
-#: src/nautilus-file-operations.c:416 src/nautilus-file-operations.c:424
+#: src/nautilus-file-operations.c:417 src/nautilus-file-operations.c:425
 #, c-format
 msgid "%'d hour"
 msgid_plural "%'d hours"
 msgstr[0] "%'d n usrag"
 msgstr[1] "%'d n isragen"
 
-#: src/nautilus-file-operations.c:484 src/nautilus-properties-window.c:902
+#: src/nautilus-file-operations.c:485 src/nautilus-properties-window.c:908
 msgid "unknown"
 msgstr "arussin"
 
-#: src/nautilus-file-operations.c:1133 src/nautilus-file-operations.c:1194
+#: src/nautilus-file-operations.c:1146 src/nautilus-file-operations.c:1207
 #, c-format
 msgid "Permanently Delete “%s”?"
 msgstr ""
 
-#: src/nautilus-file-operations.c:1137 src/nautilus-file-operations.c:1199
+#: src/nautilus-file-operations.c:1150 src/nautilus-file-operations.c:1212
 #, c-format
 msgid "Permanently Delete %'d Selected Item?"
 msgid_plural "Permanently Delete %'d Selected Items?"
 msgstr[0] ""
 msgstr[1] ""
 
-#: src/nautilus-file-operations.c:1145 src/nautilus-file-operations.c:1207
+#: src/nautilus-file-operations.c:1158 src/nautilus-file-operations.c:1220
 msgid "Permanently deleted items can not be restored"
 msgstr ""
 
-#: src/nautilus-file-operations.c:1160
+#: src/nautilus-file-operations.c:1173
 msgid "Empty Trash?"
 msgstr "Smir taqecwalt?"
 
-#: src/nautilus-file-operations.c:1164
+#: src/nautilus-file-operations.c:1177
 msgid "All items in the Trash will be permanently deleted"
 msgstr ""
 
 #. Translators: This action removes a file from Recent
-#: src/nautilus-file-operations.c:1267
+#: src/nautilus-file-operations.c:1280
 #, c-format
 msgid "Cleared “%s”"
 msgstr "Ittwakkes “%s”"
 
-#: src/nautilus-file-operations.c:1271
+#: src/nautilus-file-operations.c:1284
 #, c-format
 msgid "Deleted “%s”"
 msgstr "Ittwakkes “%s”"
 
 #. Translators: This action removes a file from Recent
-#: src/nautilus-file-operations.c:1279
+#: src/nautilus-file-operations.c:1292
 #, c-format
 msgid "Clearing “%s”"
 msgstr "Tukksa “%s”"
 
-#: src/nautilus-file-operations.c:1283
+#: src/nautilus-file-operations.c:1296
 #, c-format
 msgid "Deleting “%s”"
 msgstr "Tukksa “%s”"
 
 #. Translators: This action removes file(s) from Recent
-#: src/nautilus-file-operations.c:1298
+#: src/nautilus-file-operations.c:1311
 #, c-format
 msgid "Cleared %'d file"
 msgid_plural "Cleared %'d files"
 msgstr[0] ""
 msgstr[1] ""
 
-#: src/nautilus-file-operations.c:1304
+#: src/nautilus-file-operations.c:1317
 #, c-format
 msgid "Deleted %'d file"
 msgid_plural "Deleted %'d files"
@@ -1719,28 +1664,28 @@ msgstr[0] ""
 msgstr[1] ""
 
 #. Translators: This action removes file(s) from Recent
-#: src/nautilus-file-operations.c:1314
+#: src/nautilus-file-operations.c:1327
 #, c-format
 msgid "Clearing %'d file"
 msgid_plural "Clearing %'d files"
 msgstr[0] ""
 msgstr[1] ""
 
-#: src/nautilus-file-operations.c:1320
+#: src/nautilus-file-operations.c:1333
 #, c-format
 msgid "Deleting %'d file"
 msgid_plural "Deleting %'d files"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Tukksa n %'d n ufaylu"
+msgstr[1] "Tukksa n %'d n ifuyla"
 
 #. To translators: %'d is the number of files completed for the operation,
 #. * so it will be something like 2/14.
-#: src/nautilus-file-operations.c:1349 src/nautilus-file-operations.c:1357
-#: src/nautilus-file-operations.c:1397 src/nautilus-file-operations.c:1743
-#: src/nautilus-file-operations.c:1751 src/nautilus-file-operations.c:1791
-#: src/nautilus-file-operations.c:3693 src/nautilus-file-operations.c:3701
-#: src/nautilus-file-operations.c:3772 src/nautilus-file-operations.c:8490
-#: src/nautilus-file-operations.c:8558
+#: src/nautilus-file-operations.c:1362 src/nautilus-file-operations.c:1370
+#: src/nautilus-file-operations.c:1410 src/nautilus-file-operations.c:1756
+#: src/nautilus-file-operations.c:1764 src/nautilus-file-operations.c:1804
+#: src/nautilus-file-operations.c:3689 src/nautilus-file-operations.c:3697
+#: src/nautilus-file-operations.c:3768 src/nautilus-file-operations.c:8460
+#: src/nautilus-file-operations.c:8528
 #, c-format
 msgid "%'d / %'d"
 msgstr "%'d / %'d"
@@ -1750,67 +1695,67 @@ msgstr "%'d / %'d"
 #. *
 #. * The singular/plural form will be used depending on the remaining time (i.e. the %s argument).
 #.
-#: src/nautilus-file-operations.c:1376 src/nautilus-file-operations.c:1770
+#: src/nautilus-file-operations.c:1389 src/nautilus-file-operations.c:1783
 #, c-format
 msgid "%'d / %'d — %s left"
 msgid_plural "%'d / %'d — %s left"
 msgstr[0] "%'d / %'d — %s i d-yeggran"
 msgstr[1] "%'d / %'d — %s i d-yeggran"
 
-#: src/nautilus-file-operations.c:1380 src/nautilus-file-operations.c:1773
+#: src/nautilus-file-operations.c:1393 src/nautilus-file-operations.c:1786
 #, c-format
 msgid "(%d file/s)"
 msgid_plural "(%d files/s)"
 msgstr[0] "(%d n ufaylu/ts)"
 msgstr[1] "(%d n ifuyla/ts)"
 
-#: src/nautilus-file-operations.c:1493
+#: src/nautilus-file-operations.c:1506
 #, c-format
 msgid "Failed to delete all child files"
 msgstr ""
 
-#: src/nautilus-file-operations.c:1546 src/nautilus-file-operations.c:2843
+#: src/nautilus-file-operations.c:1559 src/nautilus-file-operations.c:2839
 msgid "Error while deleting."
 msgstr "Tuccḍa di tukksa."
 
-#: src/nautilus-file-operations.c:1553
+#: src/nautilus-file-operations.c:1566
 #, c-format
 msgid "You do not have sufficient permissions to delete the folder “%s”."
 msgstr ""
 
-#: src/nautilus-file-operations.c:1556
+#: src/nautilus-file-operations.c:1569
 #, c-format
 msgid "There was an error deleting the folder “%s”."
 msgstr ""
 
-#: src/nautilus-file-operations.c:1563
+#: src/nautilus-file-operations.c:1576
 #, c-format
 msgid "You do not have sufficient permissions to delete the file “%s”."
 msgstr ""
 
-#: src/nautilus-file-operations.c:1566
+#: src/nautilus-file-operations.c:1579
 #, c-format
 msgid "There was an error deleting the file “%s”."
 msgstr ""
 
-#: src/nautilus-file-operations.c:1693
+#: src/nautilus-file-operations.c:1706
 #, c-format
 msgid "Trashing “%s”"
 msgstr ""
 
-#: src/nautilus-file-operations.c:1697
+#: src/nautilus-file-operations.c:1710
 #, c-format
 msgid "Trashed “%s”"
 msgstr ""
 
-#: src/nautilus-file-operations.c:1708
+#: src/nautilus-file-operations.c:1721
 #, c-format
 msgid "Trashing %'d file"
 msgid_plural "Trashing %'d files"
 msgstr[0] ""
 msgstr[1] ""
 
-#: src/nautilus-file-operations.c:1714
+#: src/nautilus-file-operations.c:1727
 #, c-format
 msgid "Trashed %'d file"
 msgid_plural "Trashed %'d files"
@@ -1818,174 +1763,173 @@ msgstr[0] ""
 msgstr[1] ""
 
 #. Translators: %s is a file name
-#: src/nautilus-file-operations.c:1863
+#: src/nautilus-file-operations.c:1873
 #, c-format
 msgid "“%s” can’t be put in the trash. Do you want to delete it immediately?"
 msgstr ""
 
-#: src/nautilus-file-operations.c:1875
+#: src/nautilus-file-operations.c:1885
 msgid "This remote location does not support sending items to the trash."
 msgstr ""
 
-#: src/nautilus-file-operations.c:2170
+#: src/nautilus-file-operations.c:2175
 msgid "Trashing Files"
 msgstr "Ifuyla n idumman"
 
-#: src/nautilus-file-operations.c:2174
+#: src/nautilus-file-operations.c:2179
 msgid "Deleting Files"
 msgstr "Tukksa n ifuyla"
 
 #. Translators: %s is a file name formatted for display
-#: src/nautilus-file-operations.c:2331 src/nautilus-files-view.c:6901
-#: src/gtk/nautilusgtkplacessidebar.c:2310
-#: src/gtk/nautilusgtkplacessidebar.c:2339
+#: src/nautilus-file-operations.c:2334 src/nautilus-files-view.c:6527
+#: src/nautilus-sidebar.c:2348 src/nautilus-sidebar.c:2377
 #, c-format
 msgid "Unable to eject “%s”"
 msgstr ""
 
-#: src/nautilus-file-operations.c:2336
+#: src/nautilus-file-operations.c:2339
 #, c-format
 msgid "Unable to unmount “%s”"
 msgstr ""
 
-#: src/nautilus-file-operations.c:2507
+#: src/nautilus-file-operations.c:2505
 msgid "Empty Trash Before Ejecting?"
 msgstr ""
 
-#: src/nautilus-file-operations.c:2510
+#: src/nautilus-file-operations.c:2508
 #, c-format
 msgid ""
 "Empty the trash to free up space on “%s”. All trashed items will be "
 "permanently deleted."
 msgstr ""
 
-#: src/nautilus-file-operations.c:2515
+#: src/nautilus-file-operations.c:2513
 msgid "Do _Not Empty"
 msgstr "Ur ttesmiri ara taqecwalt (_N)"
 
 #. Translators: This is an action in a dialog to
 #. * clear trashed items.
-#: src/nautilus-file-operations.c:2518
+#: src/nautilus-file-operations.c:2516
 msgid "_Empty"
 msgstr "D il_em"
 
 #. Translators: %s is a file name formatted for display
-#: src/nautilus-file-operations.c:2659 src/nautilus-files-view.c:6851
-#: src/gtk/nautilusgtkplacessidebar.c:1702
+#: src/nautilus-file-operations.c:2656 src/nautilus-files-view.c:6478
+#: src/nautilus-sidebar.c:1770
 #, c-format
 msgid "Unable to access “%s”"
 msgstr ""
 
-#: src/nautilus-file-operations.c:2744
+#: src/nautilus-file-operations.c:2740
 #, c-format
 msgid "Preparing to copy %'d file (%s)"
 msgid_plural "Preparing to copy %'d files (%s)"
 msgstr[0] ""
 msgstr[1] ""
 
-#: src/nautilus-file-operations.c:2757
+#: src/nautilus-file-operations.c:2753
 #, c-format
 msgid "Preparing to move %'d file (%s)"
 msgid_plural "Preparing to move %'d files (%s)"
 msgstr[0] ""
 msgstr[1] ""
 
-#: src/nautilus-file-operations.c:2770
+#: src/nautilus-file-operations.c:2766
 #, c-format
 msgid "Preparing to delete %'d file (%s)"
 msgid_plural "Preparing to delete %'d files (%s)"
 msgstr[0] ""
 msgstr[1] ""
 
-#: src/nautilus-file-operations.c:2780
+#: src/nautilus-file-operations.c:2776
 #, c-format
 msgid "Preparing to trash %'d file"
 msgid_plural "Preparing to trash %'d files"
 msgstr[0] "Aheyyi i wesmutti n %'d n ufaylu ɣer tqecwalt"
 msgstr[1] "Aheyyi i wesmutti n %'d n ifuyla ɣer tqecwalt"
 
-#: src/nautilus-file-operations.c:2789
+#: src/nautilus-file-operations.c:2785
 #, c-format
 msgid "Preparing to compress %'d file"
 msgid_plural "Preparing to compress %'d files"
 msgstr[0] ""
 msgstr[1] ""
 
-#: src/nautilus-file-operations.c:2833 src/nautilus-file-operations.c:4280
-#: src/nautilus-file-operations.c:4472 src/nautilus-file-operations.c:4554
-#: src/nautilus-file-operations.c:4842
+#: src/nautilus-file-operations.c:2829 src/nautilus-file-operations.c:4275
+#: src/nautilus-file-operations.c:4467 src/nautilus-file-operations.c:4549
+#: src/nautilus-file-operations.c:4837
 msgid "Error while copying."
 msgstr "Tuccḍa deg unɣal."
 
-#: src/nautilus-file-operations.c:2838 src/nautilus-file-operations.c:4468
-#: src/nautilus-file-operations.c:4550 src/nautilus-file-operations.c:4838
+#: src/nautilus-file-operations.c:2834 src/nautilus-file-operations.c:4463
+#: src/nautilus-file-operations.c:4545 src/nautilus-file-operations.c:4833
 msgid "Error while moving."
 msgstr "Tuccḍa deg usenkez."
 
-#: src/nautilus-file-operations.c:2848
+#: src/nautilus-file-operations.c:2844
 msgid "Error while moving files to trash."
 msgstr "Tuccḍa deg usenkez ifuyla ar idumman."
 
-#: src/nautilus-file-operations.c:2853
+#: src/nautilus-file-operations.c:2849
 msgid "Error while compressing files."
 msgstr ""
 
-#: src/nautilus-file-operations.c:2945
+#: src/nautilus-file-operations.c:2941
 #, c-format
 msgid ""
 "Files in the folder “%s” cannot be handled because you do not have "
 "permissions to see them."
 msgstr ""
 
-#: src/nautilus-file-operations.c:2951 src/nautilus-file-operations.c:4484
+#: src/nautilus-file-operations.c:2947 src/nautilus-file-operations.c:4479
 #, c-format
 msgid ""
 "There was an error getting information about the files in the folder “%s”."
 msgstr ""
 
-#: src/nautilus-file-operations.c:3006
+#: src/nautilus-file-operations.c:3002
 #, c-format
 msgid ""
 "The folder “%s” cannot be handled because you do not have permissions to "
 "read it."
 msgstr ""
 
-#: src/nautilus-file-operations.c:3012 src/nautilus-file-operations.c:4566
+#: src/nautilus-file-operations.c:3008 src/nautilus-file-operations.c:4561
 #, c-format
 msgid "There was an error reading the folder “%s”."
 msgstr ""
 
-#: src/nautilus-file-operations.c:3122
+#: src/nautilus-file-operations.c:3118
 #, c-format
 msgid ""
 "The file “%s” cannot be handled because you do not have permissions to read "
 "it."
 msgstr ""
 
-#: src/nautilus-file-operations.c:3127
+#: src/nautilus-file-operations.c:3123
 #, c-format
 msgid "There was an error getting information about “%s”."
 msgstr ""
 
-#: src/nautilus-file-operations.c:3251 src/nautilus-file-operations.c:3313
-#: src/nautilus-file-operations.c:3368 src/nautilus-file-operations.c:3430
+#: src/nautilus-file-operations.c:3247 src/nautilus-file-operations.c:3309
+#: src/nautilus-file-operations.c:3364 src/nautilus-file-operations.c:3426
 #, c-format
 msgid "Error while copying to “%s”."
 msgstr ""
 
-#: src/nautilus-file-operations.c:3256
+#: src/nautilus-file-operations.c:3252
 msgid "You do not have permissions to access the destination folder."
 msgstr "Yettban am akken ur ɣur-k ara tisirag n unekcum ar ukaram aɣerwaḍ."
 
-#: src/nautilus-file-operations.c:3260
+#: src/nautilus-file-operations.c:3256
 msgid "There was an error getting information about the destination."
 msgstr "Teḍra-d tuccḍa deg awway n telɣut ɣef  tniɣert."
 
-#: src/nautilus-file-operations.c:3314
+#: src/nautilus-file-operations.c:3310
 msgid "The destination is not a folder."
 msgstr "Taɣerwaḍt mačči d akaram."
 
-#: src/nautilus-file-operations.c:3369
+#: src/nautilus-file-operations.c:3365
 msgid ""
 "There is not enough space on the destination. Try to remove files to make "
 "space."
@@ -1993,89 +1937,89 @@ msgstr ""
 "Taɣerwaḍt ur tesɛi ara aṭas n tallunt tilellit. Eɛreḍ ad tekkseḍ ifuyla "
 "iwakken ad teslelliḍ tallunt."
 
-#: src/nautilus-file-operations.c:3373
+#: src/nautilus-file-operations.c:3369
 #, c-format
 msgid "%s more space is required to copy to the destination."
 msgstr ""
 
-#: src/nautilus-file-operations.c:3409
+#: src/nautilus-file-operations.c:3405
 msgid "File too Large for Destination"
 msgstr ""
 
-#: src/nautilus-file-operations.c:3410
+#: src/nautilus-file-operations.c:3406
 msgid "Files bigger than 4.3 GB cannot be copied onto a FAT filesystem."
 msgstr ""
 
-#: src/nautilus-file-operations.c:3431
+#: src/nautilus-file-operations.c:3427
 msgid "The destination is read-only."
 msgstr "Taɣerwaḍt i tira kan."
 
-#: src/nautilus-file-operations.c:3508
+#: src/nautilus-file-operations.c:3504
 #, c-format
 msgid "Moving “%s” to “%s”"
 msgstr "Asmutti seg “%s” ɣer “%s”"
 
-#: src/nautilus-file-operations.c:3512
+#: src/nautilus-file-operations.c:3508
 #, c-format
 msgid "Moved “%s” to “%s”"
 msgstr "Yesmutti “%s” ɣer “%s”"
 
-#: src/nautilus-file-operations.c:3519
+#: src/nautilus-file-operations.c:3515
 #, c-format
 msgid "Copying “%s” to “%s”"
 msgstr "Anɣal \"%s\" ɣer \"%s\""
 
-#: src/nautilus-file-operations.c:3523
+#: src/nautilus-file-operations.c:3519
 #, c-format
 msgid "Copied “%s” to “%s”"
 msgstr "Yenɣel \"%s\" ɣer \"%s\""
 
-#: src/nautilus-file-operations.c:3557
+#: src/nautilus-file-operations.c:3553
 #, c-format
 msgid "Duplicating “%s”"
 msgstr ""
 
-#: src/nautilus-file-operations.c:3561
+#: src/nautilus-file-operations.c:3557
 #, c-format
 msgid "Duplicated “%s”"
 msgstr ""
 
-#: src/nautilus-file-operations.c:3580
+#: src/nautilus-file-operations.c:3576
 #, c-format
 msgid "Moving %'d file to “%s”"
 msgid_plural "Moving %'d files to “%s”"
 msgstr[0] ""
 msgstr[1] ""
 
-#: src/nautilus-file-operations.c:3586
+#: src/nautilus-file-operations.c:3582
 #, c-format
 msgid "Copying %'d file to “%s”"
 msgid_plural "Copying %'d files to “%s”"
 msgstr[0] "Anɣal n %'d ufaylu ɣer “%s”"
 msgstr[1] "Anɣal n %'d ifuyla ɣer “%s”"
 
-#: src/nautilus-file-operations.c:3605
+#: src/nautilus-file-operations.c:3601
 #, c-format
 msgid "Moved %'d file to “%s”"
 msgid_plural "Moved %'d files to “%s”"
 msgstr[0] ""
 msgstr[1] ""
 
-#: src/nautilus-file-operations.c:3611
+#: src/nautilus-file-operations.c:3607
 #, c-format
 msgid "Copied %'d file to “%s”"
 msgid_plural "Copied %'d files to “%s”"
 msgstr[0] ""
 msgstr[1] ""
 
-#: src/nautilus-file-operations.c:3634
+#: src/nautilus-file-operations.c:3630
 #, c-format
 msgid "Duplicating %'d file in “%s”"
 msgid_plural "Duplicating %'d files in “%s”"
 msgstr[0] ""
 msgstr[1] ""
 
-#: src/nautilus-file-operations.c:3644
+#: src/nautilus-file-operations.c:3640
 #, c-format
 msgid "Duplicated %'d file in “%s”"
 msgid_plural "Duplicated %'d files in “%s”"
@@ -2089,9 +2033,9 @@ msgstr[1] ""
 #.
 #. To translators: %s will expand to a size like "2 bytes" or "3 MB", so something like "4 kB / 4 MB"
 #. To translators: %s will expand to a size like "2 bytes" or "3 MB".
-#: src/nautilus-file-operations.c:3683 src/nautilus-file-operations.c:3743
-#: src/nautilus-file-operations.c:8003 src/nautilus-file-operations.c:8230
-#: src/nautilus-file-operations.c:8485 src/nautilus-file-operations.c:8528
+#: src/nautilus-file-operations.c:3679 src/nautilus-file-operations.c:3739
+#: src/nautilus-file-operations.c:7973 src/nautilus-file-operations.c:8200
+#: src/nautilus-file-operations.c:8455 src/nautilus-file-operations.c:8498
 #, c-format
 msgid "%s / %s"
 msgstr "%s / %s"
@@ -2114,8 +2058,8 @@ msgstr "%s / %s"
 #. *
 #. * The singular/plural form will be used depending on the remaining time (i.e. the %s argument).
 #.
-#: src/nautilus-file-operations.c:3727 src/nautilus-file-operations.c:8021
-#: src/nautilus-file-operations.c:8517
+#: src/nautilus-file-operations.c:3723 src/nautilus-file-operations.c:7991
+#: src/nautilus-file-operations.c:8487
 #, c-format
 msgid "%s / %s — %s left (%s/s)"
 msgid_plural "%s / %s — %s left (%s/s)"
@@ -2127,346 +2071,346 @@ msgstr[1] "%s / %s — %s d yeggran (%s/s)"
 #. *
 #. * The singular/plural form will be used depending on the remaining time (i.e. the %s argument).
 #.
-#: src/nautilus-file-operations.c:3761 src/nautilus-file-operations.c:8547
+#: src/nautilus-file-operations.c:3757 src/nautilus-file-operations.c:8517
 #, c-format
 msgid "%'d / %'d — %s left (%s/s)"
 msgid_plural "%'d / %'d — %s left (%s/s)"
 msgstr[0] "%'d / %'d — %s d yeggran (%s/s)"
 msgstr[1] "%'d / %'d — %s d yeggran (%s/s)"
 
-#: src/nautilus-file-operations.c:4286
+#: src/nautilus-file-operations.c:4281
 #, c-format
 msgid ""
 "The folder “%s” cannot be copied because you do not have permissions to "
 "create it in the destination."
 msgstr ""
 
-#: src/nautilus-file-operations.c:4292
+#: src/nautilus-file-operations.c:4287
 #, c-format
 msgid "There was an error creating the folder “%s”."
 msgstr ""
 
-#: src/nautilus-file-operations.c:4479
+#: src/nautilus-file-operations.c:4474
 #, c-format
 msgid ""
 "Files in the folder “%s” cannot be copied because you do not have "
 "permissions to see them."
 msgstr ""
 
-#: src/nautilus-file-operations.c:4495
+#: src/nautilus-file-operations.c:4490
 msgid "_Skip files"
 msgstr "Zgel ifuyla (_S)"
 
-#: src/nautilus-file-operations.c:4561
+#: src/nautilus-file-operations.c:4556
 #, c-format
 msgid ""
 "The folder “%s” cannot be copied because you do not have permissions to read "
 "it."
 msgstr ""
 
-#: src/nautilus-file-operations.c:4626 src/nautilus-file-operations.c:5260
-#: src/nautilus-file-operations.c:6012
+#: src/nautilus-file-operations.c:4621 src/nautilus-file-operations.c:5252
+#: src/nautilus-file-operations.c:5994
 #, c-format
 msgid "Error while moving “%s”."
 msgstr ""
 
-#: src/nautilus-file-operations.c:4627
+#: src/nautilus-file-operations.c:4622
 msgid "Could not remove the source folder."
 msgstr "D waezɣi tukksa n ukaram aɣbalu."
 
-#: src/nautilus-file-operations.c:4844
+#: src/nautilus-file-operations.c:4839
 msgid "There was an error getting information about the source."
 msgstr ""
 
 #. the run_warning() frees all strings passed in automatically
-#: src/nautilus-file-operations.c:4946 src/nautilus-file-operations.c:5770
+#: src/nautilus-file-operations.c:4940 src/nautilus-file-operations.c:5754
 msgid "You cannot move a folder into itself."
 msgstr "Ur tezmireḍ ara ad tawiḍ akaram ar yiman-is."
 
-#: src/nautilus-file-operations.c:4947 src/nautilus-file-operations.c:5771
+#: src/nautilus-file-operations.c:4941 src/nautilus-file-operations.c:5755
 msgid "You cannot copy a folder into itself."
 msgstr "Ur tezmireḍ ara ad neɣleḍ akaram ar yiman-is."
 
-#: src/nautilus-file-operations.c:4948 src/nautilus-file-operations.c:5772
+#: src/nautilus-file-operations.c:4942 src/nautilus-file-operations.c:5756
 msgid "The destination folder is inside the source folder."
 msgstr "Akaram aɣerwaḍ atan deg ukaram aɣbalu."
 
 #. the run_warning() frees all strings passed in automatically
-#: src/nautilus-file-operations.c:4988 src/nautilus-file-operations.c:5813
+#: src/nautilus-file-operations.c:4982 src/nautilus-file-operations.c:5797
 msgid "You cannot move a file over itself."
 msgstr "Ur tezmireḍ ara ad tawiḍ afaylu ar yiman-is."
 
-#: src/nautilus-file-operations.c:4989 src/nautilus-file-operations.c:5814
+#: src/nautilus-file-operations.c:4983 src/nautilus-file-operations.c:5798
 msgid "You cannot copy a file over itself."
 msgstr "Ur tezmireḍ ara ad tneɣleḍ afaylu ar yiman-is."
 
-#: src/nautilus-file-operations.c:4990 src/nautilus-file-operations.c:5815
+#: src/nautilus-file-operations.c:4984 src/nautilus-file-operations.c:5799
 msgid "The source file would be overwritten by the destination."
 msgstr "Afaylu aɣbalu ad t-tesefsex tɣerwaḍt."
 
-#: src/nautilus-file-operations.c:5264 src/nautilus-file-operations.c:5352
+#: src/nautilus-file-operations.c:5256 src/nautilus-file-operations.c:5344
 #, c-format
 msgid "Error while copying “%s”."
 msgstr ""
 
-#: src/nautilus-file-operations.c:5267
+#: src/nautilus-file-operations.c:5259
 #, c-format
 msgid "Could not remove the already existing file with the same name in %s."
 msgstr ""
 
-#: src/nautilus-file-operations.c:5354
+#: src/nautilus-file-operations.c:5346
 #, c-format
 msgid "There was an error copying the file into %s."
 msgstr ""
 
-#: src/nautilus-file-operations.c:5551
+#: src/nautilus-file-operations.c:5538
 msgid "Copying Files"
 msgstr "Anɣel n yifuyla"
 
-#: src/nautilus-file-operations.c:5671
+#: src/nautilus-file-operations.c:5656
 #, c-format
 msgid "Preparing to move to “%s”"
 msgstr ""
 
-#: src/nautilus-file-operations.c:5675
+#: src/nautilus-file-operations.c:5660
 #, c-format
 msgid "Preparing to move %'d file"
 msgid_plural "Preparing to move %'d files"
 msgstr[0] "Aheyyi i wesmutti n %'d n ufaylu"
 msgstr[1] "Aheyyi i wesmutti n %'d n ifuyla"
 
-#: src/nautilus-file-operations.c:6014
+#: src/nautilus-file-operations.c:5996
 #, c-format
 msgid "There was an error moving the file into %s."
 msgstr ""
 
-#: src/nautilus-file-operations.c:6256
+#: src/nautilus-file-operations.c:6229
 msgid "Moving Files"
 msgstr "Asmutti n ifuyla"
 
-#: src/nautilus-file-operations.c:6362
+#: src/nautilus-file-operations.c:6334
 #, c-format
 msgid "Creating links in “%s”"
 msgstr ""
 
-#: src/nautilus-file-operations.c:6366
+#: src/nautilus-file-operations.c:6338
 #, c-format
 msgid "Making link to %'d file"
 msgid_plural "Making links to %'d files"
 msgstr[0] "Eg aseɣwen ɣer %'d n ufaylu"
 msgstr[1] "Eg isɣewnen ɣer %'d n ifuyla"
 
-#: src/nautilus-file-operations.c:6516
+#: src/nautilus-file-operations.c:6486
 #, c-format
 msgid "Error while creating link to “%s”."
 msgstr ""
 
-#: src/nautilus-file-operations.c:6520
+#: src/nautilus-file-operations.c:6490
 msgid "Symbolic links only supported for local files"
 msgstr "Isɣewnen izamulen tteddun kkan i ifuyla idiganen"
 
-#: src/nautilus-file-operations.c:6525
+#: src/nautilus-file-operations.c:6495
 msgid "The target doesn’t support symbolic links."
 msgstr ""
 
-#: src/nautilus-file-operations.c:6533
+#: src/nautilus-file-operations.c:6503
 #, c-format
 msgid "There was an error creating the symlink in %s."
 msgstr ""
 
-#: src/nautilus-file-operations.c:6863
+#: src/nautilus-file-operations.c:6833
 msgid "Setting permissions"
 msgstr "Asbadu n isirigen"
 
 #. localizers: the initial name of a new folder
-#: src/nautilus-file-operations.c:7155
+#: src/nautilus-file-operations.c:7125
 msgid "Untitled Folder"
 msgstr "Akaram war isem"
 
 #. localizers: the initial name of a new empty document
-#: src/nautilus-file-operations.c:7170
+#: src/nautilus-file-operations.c:7140
 msgid "Untitled Document"
 msgstr "Isemli war azwel"
 
-#: src/nautilus-file-operations.c:7396
+#: src/nautilus-file-operations.c:7366
 #, c-format
 msgid "Error while creating directory “%s”."
 msgstr ""
 
-#: src/nautilus-file-operations.c:7401
+#: src/nautilus-file-operations.c:7371
 #, c-format
 msgid "Error while creating file “%s”."
 msgstr ""
 
-#: src/nautilus-file-operations.c:7405
+#: src/nautilus-file-operations.c:7375
 #, c-format
 msgid "There was an error creating the directory in %s."
 msgstr ""
 
-#: src/nautilus-file-operations.c:7506
+#: src/nautilus-file-operations.c:7476
 msgid "Saving image to file"
 msgstr "Asekles n tugna ɣer ufaylu"
 
-#: src/nautilus-file-operations.c:7515
+#: src/nautilus-file-operations.c:7485
 msgid "Successfully saved image to file"
 msgstr ""
 
-#: src/nautilus-file-operations.c:7545
+#: src/nautilus-file-operations.c:7515
 msgid "Failed to save image"
 msgstr "Asekles n tugna ur yeddi ara"
 
 #. Translators: This is used to auto-generate a file name for pasted images from
 #. * the clipboard i.e. "Pasted image.png", "Pasted image 1.png", ...
-#: src/nautilus-file-operations.c:7607
+#: src/nautilus-file-operations.c:7577
 msgid "Pasted image"
 msgstr ""
 
-#: src/nautilus-file-operations.c:7614
+#: src/nautilus-file-operations.c:7584
 msgid "Retrieving clipboard data"
 msgstr ""
 
-#: src/nautilus-file-operations.c:7646
+#: src/nautilus-file-operations.c:7616
 msgid "Retrieving image data"
 msgstr ""
 
-#: src/nautilus-file-operations.c:7864
+#: src/nautilus-file-operations.c:7834
 msgid "Emptying Trash"
 msgstr "Asmiri n tqecwalt"
 
-#: src/nautilus-file-operations.c:7907
+#: src/nautilus-file-operations.c:7877
 msgid "Verifying destination"
 msgstr ""
 
-#: src/nautilus-file-operations.c:7961
+#: src/nautilus-file-operations.c:7931
 #, c-format
 msgid "Extracting “%s”"
 msgstr "Tussfa n “%s”"
 
-#: src/nautilus-file-operations.c:8087 src/nautilus-file-operations.c:8177
+#: src/nautilus-file-operations.c:8057 src/nautilus-file-operations.c:8147
 #, c-format
 msgid "Error extracting “%s”"
 msgstr "Tuccḍa n tussfa “%s”"
 
-#: src/nautilus-file-operations.c:8094
+#: src/nautilus-file-operations.c:8064
 #, c-format
 msgid "There was an error while extracting “%s”."
 msgstr ""
 
-#: src/nautilus-file-operations.c:8180
+#: src/nautilus-file-operations.c:8150
 #, c-format
 msgid "Not enough free space to extract “%s”"
 msgstr ""
 
-#: src/nautilus-file-operations.c:8213
+#: src/nautilus-file-operations.c:8183
 #, c-format
 msgid "Extracted “%s” to “%s”"
-msgstr ""
+msgstr "Asefsu n “%s” ar “%s”"
 
-#: src/nautilus-file-operations.c:8219
+#: src/nautilus-file-operations.c:8189
 #, c-format
 msgid "Extracted %'d file to “%s”"
 msgid_plural "Extracted %'d files to “%s”"
 msgstr[0] ""
 msgstr[1] ""
 
-#: src/nautilus-file-operations.c:8253
+#: src/nautilus-file-operations.c:8223
 msgid "Preparing to extract"
 msgstr ""
 
-#: src/nautilus-file-operations.c:8381
+#: src/nautilus-file-operations.c:8351
 msgid "Extracting Files"
 msgstr "Tukksa n tussda ɣef ifuyla"
 
-#: src/nautilus-file-operations.c:8441
+#: src/nautilus-file-operations.c:8411
 #, c-format
 msgid "Compressing “%s” into “%s”"
 msgstr "Tussda n “%s” sdaxel n “%s”"
 
-#: src/nautilus-file-operations.c:8447
+#: src/nautilus-file-operations.c:8417
 #, c-format
 msgid "Compressing %'d file into “%s”"
 msgid_plural "Compressing %'d files into “%s”"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Tussda n %'d ufaylu sdaxel n “%s”"
+msgstr[1] "Tussda n %'d n ifuyla sdaxel n “%s”"
 
-#: src/nautilus-file-operations.c:8595
+#: src/nautilus-file-operations.c:8565
 #, c-format
 msgid "Error compressing “%s” into “%s”"
 msgstr ""
 
-#: src/nautilus-file-operations.c:8601
+#: src/nautilus-file-operations.c:8571
 #, c-format
 msgid "Error compressing %'d file into “%s”"
 msgid_plural "Error compressing %'d files into “%s”"
 msgstr[0] ""
 msgstr[1] ""
 
-#: src/nautilus-file-operations.c:8611
+#: src/nautilus-file-operations.c:8581
 msgid "There was an error while compressing files."
 msgstr ""
 
-#: src/nautilus-file-operations.c:8636
+#: src/nautilus-file-operations.c:8606
 #, c-format
 msgid "Compressed “%s” into “%s”"
 msgstr ""
 
-#: src/nautilus-file-operations.c:8642
+#: src/nautilus-file-operations.c:8612
 #, c-format
 msgid "Compressed %'d file into “%s”"
 msgid_plural "Compressed %'d files into “%s”"
 msgstr[0] ""
 msgstr[1] ""
 
-#: src/nautilus-file-operations.c:8761
+#: src/nautilus-file-operations.c:8731
 msgid "Compressing Files"
 msgstr "Tussda n ifuyla"
 
-#: src/nautilus-files-view.c:399
+#: src/nautilus-files-view.c:364
 msgid "Searching…"
 msgstr "Yettnadi…"
 
-#: src/nautilus-files-view.c:399 src/nautilus-window-slot.c:926
+#: src/nautilus-files-view.c:364 src/nautilus-window-slot.c:907
 msgid "Loading…"
 msgstr "Yettɛebbi-d…"
 
-#: src/nautilus-files-view.c:1908
+#: src/nautilus-files-view.c:1773
 msgid "Examples: "
 msgstr "Imedyaten: "
 
-#: src/nautilus-files-view.c:2964 src/nautilus-files-view.c:2971
-#: src/nautilus-files-view.c:2978 src/nautilus-files-view.c:2985
+#: src/nautilus-files-view.c:2787 src/nautilus-files-view.c:2794
+#: src/nautilus-files-view.c:2801 src/nautilus-files-view.c:2808
 msgid "Could not paste files"
 msgstr ""
 
-#: src/nautilus-files-view.c:2965
+#: src/nautilus-files-view.c:2788
 msgid "Cannot paste files into Starred"
 msgstr ""
 
-#: src/nautilus-files-view.c:2972
+#: src/nautilus-files-view.c:2795
 msgid "Cannot paste files into Recent"
 msgstr ""
 
-#: src/nautilus-files-view.c:2979
+#: src/nautilus-files-view.c:2802
 msgid "Cannot paste files into Trash"
 msgstr ""
 
-#: src/nautilus-files-view.c:2986
+#: src/nautilus-files-view.c:2809
 msgid "Permissions do not allow pasting files in this directory"
 msgstr ""
 
-#: src/nautilus-files-view.c:3619 src/nautilus-files-view.c:3666
+#: src/nautilus-files-view.c:3402 src/nautilus-files-view.c:3449
 #, c-format
 msgid "“%s” selected"
-msgstr ""
+msgstr "“%s” yettwafren"
 
-#: src/nautilus-files-view.c:3623
+#: src/nautilus-files-view.c:3406
 #, c-format
 msgid "%'d folder selected"
 msgid_plural "%'d folders selected"
 msgstr[0] "%'d n ukaram yettwafren"
 msgstr[1] "%'d n ikaramen ttwafernen"
 
-#: src/nautilus-files-view.c:3637
+#: src/nautilus-files-view.c:3420
 #, c-format
 msgid "(containing %'d item)"
 msgid_plural "(containing %'d items)"
@@ -2474,14 +2418,14 @@ msgstr[0] ""
 msgstr[1] ""
 
 #. translators: this is preceded with a string of form 'N folders' (N more than 1)
-#: src/nautilus-files-view.c:3652
+#: src/nautilus-files-view.c:3435
 #, c-format
 msgid "(containing a total of %'d item)"
 msgid_plural "(containing a total of %'d items)"
 msgstr[0] ""
 msgstr[1] ""
 
-#: src/nautilus-files-view.c:3671
+#: src/nautilus-files-view.c:3454
 #, c-format
 msgid "%'d item selected"
 msgid_plural "%'d items selected"
@@ -2489,7 +2433,7 @@ msgstr[0] "%'d n uferdis yettwafren"
 msgstr[1] "%'d n iferdisen ttwafernen"
 
 #. Folders selected also, use "other" terminology
-#: src/nautilus-files-view.c:3680
+#: src/nautilus-files-view.c:3463
 #, c-format
 msgid "%'d other item selected"
 msgid_plural "%'d other items selected"
@@ -2500,7 +2444,7 @@ msgstr[1] "%'d n iferdisen-nniḍen ttwafernen"
 #. * needs to use something other than parentheses. The
 #. * the message in parentheses is the size of the selected items.
 #.
-#: src/nautilus-files-view.c:3695
+#: src/nautilus-files-view.c:3478
 #, c-format
 msgid "(%s)"
 msgstr "(%s)"
@@ -2512,162 +2456,161 @@ msgstr "(%s)"
 #. * message about the number of other items and the
 #. * total size of those items.
 #.
-#: src/nautilus-files-view.c:3745
+#: src/nautilus-files-view.c:3528
 #, c-format
 msgid "%s, %s"
 msgstr "%s, %s"
 
-#: src/nautilus-files-view.c:3808
+#: src/nautilus-files-view.c:3604
 msgid "Search _Settings"
 msgstr "Iɣewwaṛen n unadi (_S)"
 
-#: src/nautilus-files-view.c:3820
+#: src/nautilus-files-view.c:3616
 msgid "Search _Everywhere"
 msgstr ""
 
-#: src/nautilus-files-view.c:3857
+#: src/nautilus-files-view.c:3646
 msgid "More locations can be added to search in the settings"
 msgstr ""
 
 #. Translators: %s is the name of the search location formatted for display
-#: src/nautilus-files-view.c:3865
+#: src/nautilus-files-view.c:3654
 #, c-format
 msgid "No matches in “%s”"
 msgstr ""
 
-#: src/nautilus-files-view.c:3873
+#: src/nautilus-files-view.c:3662
 #: src/resources/ui/nautilus-search-types-dialog.ui:70
 msgid "No Results Found"
 msgstr "Ulac igmad i yettwafen"
 
-#: src/nautilus-files-view.c:3878
+#: src/nautilus-files-view.c:3667
 msgid "Trash is Empty"
 msgstr "Taqecwalt d tilemt"
 
-#: src/nautilus-files-view.c:3884
+#: src/nautilus-files-view.c:3673
 msgid "No Starred Files"
 msgstr "Ulac ifuyla yeɛan itran"
 
-#: src/nautilus-files-view.c:3890
+#: src/nautilus-files-view.c:3679
 msgid "No Recent Files"
 msgstr "Ulac ifuyla imiranen"
 
-#: src/nautilus-files-view.c:3896
+#: src/nautilus-files-view.c:3685
 msgid "No Known Connections"
 msgstr ""
 
-#: src/nautilus-files-view.c:3897
+#: src/nautilus-files-view.c:3686
 msgid "Enter an address to connect to a network location."
 msgstr ""
 
-#: src/nautilus-files-view.c:3902
+#: src/nautilus-files-view.c:3691
 msgid "Folder is Empty"
 msgstr "Akaram d ilem"
 
-#: src/nautilus-files-view.c:6091
+#: src/nautilus-files-view.c:5746
 msgid "Select Move Destination"
 msgstr ""
 
-#: src/nautilus-files-view.c:6095
+#: src/nautilus-files-view.c:5750
 msgid "Select Copy Destination"
 msgstr ""
 
-#: src/nautilus-files-view.c:6106 src/nautilus-files-view.c:6494
-#: src/nautilus-portal.c:434 src/nautilus-properties-window.c:4020
+#: src/nautilus-files-view.c:5761 src/nautilus-files-view.c:6128
+#: src/nautilus-portal.c:431 src/nautilus-properties-window.c:4027
 #: src/resources/ui/nautilus-files-view-select-items.ui:23
 msgid "_Select"
 msgstr "Fren (_S)"
 
-#: src/nautilus-files-view.c:6493
+#: src/nautilus-files-view.c:6127
 msgid "Select Extract Destination"
 msgstr ""
 
-#: src/nautilus-files-view.c:6569
+#: src/nautilus-files-view.c:6203
 msgid "Error sending email."
 msgstr ""
 
 #. Translators: %s is a file name formatted for display
-#: src/nautilus-files-view.c:6878
+#: src/nautilus-files-view.c:6504
 #, c-format
 msgid "Unable to remove “%s”"
 msgstr ""
 
-#: src/nautilus-files-view.c:6923
+#: src/nautilus-files-view.c:6549
 msgid "Unable to stop drive"
 msgstr "D awezɣi aseḥbes n imeɣri"
 
 #. Translators: %s is a file name formatted for display
-#: src/nautilus-files-view.c:7038 src/gtk/nautilusgtkplacessidebar.c:1657
-#: src/gtk/nautilusgtkplacessidebar.c:2536
+#: src/nautilus-files-view.c:6660 src/nautilus-sidebar.c:1721
+#: src/nautilus-sidebar.c:2592
 #, c-format
 msgid "Unable to start “%s”"
 msgstr ""
 
-#: src/nautilus-files-view.c:8159
+#: src/nautilus-files-view.c:7756
 #, c-format
 msgid "New Folder with Selection (%'d Item)"
 msgid_plural "New Folder with Selection (%'d Items)"
 msgstr[0] ""
 msgstr[1] ""
 
-#: src/nautilus-files-view.c:8214
+#: src/nautilus-files-view.c:7811
 #, c-format
 msgid "Open With %s"
 msgstr "Ldi s %s"
 
-#: src/nautilus-files-view.c:8225
+#: src/nautilus-files-view.c:7822
 msgid "Run"
 msgstr "Seddu"
 
-#: src/nautilus-files-view.c:8230
+#: src/nautilus-files-view.c:7827
 #: src/resources/ui/nautilus-operations-ui-manager-request-passphrase.ui:17
 msgid "Extract"
 msgstr "Ssef"
 
-#: src/nautilus-files-view.c:8231
+#: src/nautilus-files-view.c:7828
 msgid "Extract to…"
 msgstr "Sefsu ɣer…"
 
-#: src/nautilus-files-view.c:8235
+#: src/nautilus-files-view.c:7832
 #: src/resources/ui/nautilus-files-view-context-menus.ui:93
 msgid "Open"
 msgstr "Ldi"
 
-#: src/nautilus-files-view.c:8314
+#: src/nautilus-files-view.c:7911 src/nautilus-sidebar.c:3030
 #: src/resources/ui/nautilus-files-view-context-menus.ui:159
-#: src/gtk/nautilusgtkplacessidebar.c:2959
 msgid "_Start"
 msgstr "_Sekker"
 
-#: src/nautilus-files-view.c:8320
+#: src/nautilus-files-view.c:7917
 msgid "_Connect"
 msgstr "Qqen (_C)"
 
-#: src/nautilus-files-view.c:8326
+#: src/nautilus-files-view.c:7923
 msgid "_Start Multi-disk Drive"
 msgstr "_Sekker ableɣ aget-aḍebsi"
 
-#: src/nautilus-files-view.c:8332
+#: src/nautilus-files-view.c:7929
 msgid "U_nlock Drive"
 msgstr "K_kes azekṛun i webleɣ"
 
-#: src/nautilus-files-view.c:8350
+#: src/nautilus-files-view.c:7947
 msgid "Stop Drive"
-msgstr ""
+msgstr "Seḥbes anuḍaf"
 
-#: src/nautilus-files-view.c:8356 src/gtk/nautilusgtkplacessidebar.c:2976
+#: src/nautilus-files-view.c:7953 src/nautilus-sidebar.c:3061
 msgid "_Safely Remove Drive"
 msgstr "Kkes ableɣ s t_ɣellist"
 
-#: src/nautilus-files-view.c:8362
+#: src/nautilus-files-view.c:7959
 msgid "_Disconnect"
 msgstr "_Senser"
 
-#: src/nautilus-files-view.c:8368
+#: src/nautilus-files-view.c:7965
 msgid "_Stop Multi-disk Drive"
 msgstr "_Seḥbes ableɣ aget-aḍebsi"
 
-#: src/nautilus-files-view.c:8374
+#: src/nautilus-files-view.c:7971
 msgid "_Lock Drive"
 msgstr "_Sekkeṛ ableɣ"
 
@@ -2684,7 +2627,7 @@ msgstr "Azuɣer akked usersi ur itteddu ara."
 msgid "An invalid drag type was used."
 msgstr "Anaw n uzuɣer arameɣtu yettwaseqdec."
 
-#: src/nautilus-file-undo-operations.c:177 src/nautilus-window.c:890
+#: src/nautilus-file-undo-operations.c:177 src/nautilus-window.c:874
 msgid "Undo"
 msgstr "Err-d"
 
@@ -2762,7 +2705,7 @@ msgstr[0] "Smutti %d n uferdis ɣer tqecwalt"
 msgstr[1] "Smutti %d n iferdisen ɣer tqecwalt"
 
 #: src/nautilus-file-undo-operations.c:486
-#: src/nautilus-file-undo-operations.c:1627
+#: src/nautilus-file-undo-operations.c:1631
 #, c-format
 msgid "Restore %d item from trash"
 msgid_plural "Restore %d items from trash"
@@ -2790,8 +2733,8 @@ msgstr[1] "Kkes %d n iferdisen yettusuknen"
 #, c-format
 msgid "Copy %d item to “%s”"
 msgid_plural "Copy %d items to “%s”"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Anɣal n %d n uferdis ar “%s”"
+msgstr[1] "Anɣal n %d n iferdisen ar “%s”"
 
 #: src/nautilus-file-undo-operations.c:507
 #, c-format
@@ -2810,8 +2753,8 @@ msgstr[1] "A_les asuken n %d n iferdisen"
 #: src/nautilus-file-undo-operations.c:516
 #: src/nautilus-file-undo-operations.c:543
 #: src/nautilus-file-undo-operations.c:831
-#: src/nautilus-file-undo-operations.c:2383
-#: src/nautilus-file-undo-operations.c:2546
+#: src/nautilus-file-undo-operations.c:2388
+#: src/nautilus-file-undo-operations.c:2551
 #, c-format
 msgid "Delete “%s”"
 msgstr "Kkes “%s”"
@@ -3003,287 +2946,283 @@ msgstr ""
 msgid "_Redo Unstarring"
 msgstr ""
 
-#: src/nautilus-file-undo-operations.c:1630
+#: src/nautilus-file-undo-operations.c:1634
 #, c-format
 msgid "Move %d item to trash"
 msgid_plural "Move %d items to trash"
 msgstr[0] "Smutti %d n uferdis ɣer tqecwalt"
 msgstr[1] "Smutti %d n iferdisen ɣer tqecwalt"
 
-#: src/nautilus-file-undo-operations.c:1644
+#: src/nautilus-file-undo-operations.c:1648
 #, c-format
 msgid "Restore “%s” to “%s”"
 msgstr ""
 
-#: src/nautilus-file-undo-operations.c:1651
+#: src/nautilus-file-undo-operations.c:1655
 #, c-format
 msgid "Move “%s” to trash"
 msgstr "Smutti “%s” ɣer tqecwalt"
 
-#: src/nautilus-file-undo-operations.c:1656
+#: src/nautilus-file-undo-operations.c:1660
 msgid "_Undo Trash"
 msgstr "Se_fsex asmutti ɣer tqecwalt"
 
-#: src/nautilus-file-undo-operations.c:1657
+#: src/nautilus-file-undo-operations.c:1661
 msgid "_Redo Trash"
 msgstr "Err-d seg iḍu_mman"
 
-#: src/nautilus-file-undo-operations.c:1951
+#: src/nautilus-file-undo-operations.c:1956
 #, c-format
 msgid "Restore original permissions of items enclosed in “%s”"
 msgstr ""
 
-#: src/nautilus-file-undo-operations.c:1952
+#: src/nautilus-file-undo-operations.c:1957
 #, c-format
 msgid "Set permissions of items enclosed in “%s”"
 msgstr ""
 
-#: src/nautilus-file-undo-operations.c:1954
-#: src/nautilus-file-undo-operations.c:2107
+#: src/nautilus-file-undo-operations.c:1959
+#: src/nautilus-file-undo-operations.c:2112
 msgid "_Undo Change Permissions"
 msgstr "Sefsex abeddel n tsira_g"
 
-#: src/nautilus-file-undo-operations.c:1955
-#: src/nautilus-file-undo-operations.c:2108
+#: src/nautilus-file-undo-operations.c:1960
+#: src/nautilus-file-undo-operations.c:2113
 msgid "_Redo Change Permissions"
 msgstr "E_rr-d ibeddilen n isirigen"
 
-#: src/nautilus-file-undo-operations.c:2104
+#: src/nautilus-file-undo-operations.c:2109
 #, c-format
 msgid "Restore original permissions of “%s”"
 msgstr ""
 
-#: src/nautilus-file-undo-operations.c:2105
+#: src/nautilus-file-undo-operations.c:2110
 #, c-format
 msgid "Set permissions of “%s”"
 msgstr ""
 
-#: src/nautilus-file-undo-operations.c:2217
+#: src/nautilus-file-undo-operations.c:2222
 #, c-format
 msgid "Restore group of “%s” to “%s”"
 msgstr ""
 
-#: src/nautilus-file-undo-operations.c:2219
+#: src/nautilus-file-undo-operations.c:2224
 #, c-format
 msgid "Set group of “%s” to “%s”"
 msgstr ""
 
-#: src/nautilus-file-undo-operations.c:2222
+#: src/nautilus-file-undo-operations.c:2227
 msgid "_Undo Change Group"
 msgstr "Se_fsex abeddel n ugraw"
 
-#: src/nautilus-file-undo-operations.c:2223
+#: src/nautilus-file-undo-operations.c:2228
 msgid "_Redo Change Group"
 msgstr "E_rr-d abeddel n ugraw"
 
-#: src/nautilus-file-undo-operations.c:2227
+#: src/nautilus-file-undo-operations.c:2232
 #, c-format
 msgid "Restore owner of “%s” to “%s”"
 msgstr ""
 
-#: src/nautilus-file-undo-operations.c:2229
+#: src/nautilus-file-undo-operations.c:2234
 #, c-format
 msgid "Set owner of “%s” to “%s”"
 msgstr ""
 
-#: src/nautilus-file-undo-operations.c:2232
+#: src/nautilus-file-undo-operations.c:2237
 msgid "_Undo Change Owner"
 msgstr "Se_fsex abeddel n umli"
 
-#: src/nautilus-file-undo-operations.c:2233
+#: src/nautilus-file-undo-operations.c:2238
 msgid "_Redo Change Owner"
 msgstr "E_rr-d abeddel n umli"
 
-#: src/nautilus-file-undo-operations.c:2369
+#: src/nautilus-file-undo-operations.c:2374
 msgid "_Undo Extract"
 msgstr ""
 
-#: src/nautilus-file-undo-operations.c:2370
+#: src/nautilus-file-undo-operations.c:2375
 msgid "_Redo Extract"
 msgstr ""
 
-#: src/nautilus-file-undo-operations.c:2387
+#: src/nautilus-file-undo-operations.c:2392
 #, c-format
 msgid "Delete %d extracted file"
 msgid_plural "Delete %d extracted files"
 msgstr[0] ""
 msgstr[1] ""
 
-#: src/nautilus-file-undo-operations.c:2401
+#: src/nautilus-file-undo-operations.c:2406
 #, c-format
 msgid "Extract “%s”"
 msgstr "Ssef “%s”"
 
-#: src/nautilus-file-undo-operations.c:2405
+#: src/nautilus-file-undo-operations.c:2410
 #, c-format
 msgid "Extract %d file"
 msgid_plural "Extract %d files"
 msgstr[0] "Ssef %d ufaylu"
 msgstr[1] "Ssef %d ifuyla"
 
-#: src/nautilus-file-undo-operations.c:2557
+#: src/nautilus-file-undo-operations.c:2562
 #, c-format
 msgid "Compress “%s”"
 msgstr "Ssed “%s”"
 
-#: src/nautilus-file-undo-operations.c:2561
+#: src/nautilus-file-undo-operations.c:2566
 #, c-format
 msgid "Compress %d file"
 msgid_plural "Compress %d files"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Tussda n %d n ufaylu"
+msgstr[1] "Tussda n %d n ifuyla"
 
-#: src/nautilus-file-undo-operations.c:2567
+#: src/nautilus-file-undo-operations.c:2572
 msgid "_Undo Compress"
 msgstr ""
 
-#: src/nautilus-file-undo-operations.c:2568
+#: src/nautilus-file-undo-operations.c:2573
 msgid "_Redo Compress"
 msgstr ""
 
-#: src/nautilus-file-utilities.c:570
+#: src/nautilus-file-utilities.c:567
 #, c-format
 msgid "Could not determine original location of “%s” "
 msgstr ""
 
-#: src/nautilus-file-utilities.c:574
+#: src/nautilus-file-utilities.c:571
 msgid "The item cannot be restored from trash"
 msgstr "D awezɣi tiririt n uferdis si tqecwalt"
 
 #. translators: these describe the contents of removable media
-#: src/nautilus-file-utilities.c:697
+#: src/nautilus-file-utilities.c:694
 msgid "Photo CD"
 msgstr ""
 
-#: src/nautilus-file-utilities.c:701 src/nautilus-file-utilities.c:748
+#: src/nautilus-file-utilities.c:698 src/nautilus-file-utilities.c:745
 msgid "Contains digital photos"
 msgstr ""
 
-#: src/nautilus-file-utilities.c:705
+#: src/nautilus-file-utilities.c:702
 msgid "Contains music"
 msgstr ""
 
-#: src/nautilus-file-utilities.c:709
+#: src/nautilus-file-utilities.c:706
 msgid "Contains software to run"
 msgstr ""
 
-#: src/nautilus-file-utilities.c:713
+#: src/nautilus-file-utilities.c:710
 msgid "Contains software to install"
 msgstr ""
 
-#: src/nautilus-file-utilities.c:719
+#: src/nautilus-file-utilities.c:716
 #, c-format
 msgid "Detected as “%s”"
 msgstr ""
 
 #. translators: these describe the contents of removable media
-#: src/nautilus-file-utilities.c:740
+#: src/nautilus-file-utilities.c:737
 msgid "Contains music and photos"
 msgstr ""
 
-#: src/nautilus-file-utilities.c:744
+#: src/nautilus-file-utilities.c:741
 msgid "Contains photos and music"
 msgstr ""
 
 #. Translators: This is appended to a file name when a copy of a file is created.
-#: src/nautilus-filename-utilities.c:165
+#: src/nautilus-filename-utilities.c:164
 msgctxt "Noun"
 msgid "Copy"
 msgstr "Nɣel"
 
 #. Translators: This is appended to a file name when a copy of an already copied file is created.
 #. * `%zu` will be replaced with a number one higher than that of the previous copy.
-#: src/nautilus-filename-utilities.c:168
+#: src/nautilus-filename-utilities.c:167
 #, c-format
 msgctxt "Noun"
 msgid "Copy %zu"
 msgstr "Nɣel %zu"
 
 #. Translators: File name for new symlink. %s is target's name, %zu is number of symlink.
-#: src/nautilus-filename-utilities.c:259
+#: src/nautilus-filename-utilities.c:258
 #, c-format
 msgid "Link to %s (%zu)"
 msgstr "Ccud ɣer %s (%zu)"
 
 #: src/nautilus-floating-bar.c:391
+msgctxt "Stop an ongoing operation"
 msgid "Stop"
 msgstr "Seḥbes"
 
-#: src/nautilus-grid-view.c:516 src/nautilus-list-view.c:403
-#: src/nautilus-network-view.c:349
+#: src/nautilus-grid-view.c:521 src/nautilus-list-view.c:385
+#: src/nautilus-network-view.c:350
 msgid "Content View"
 msgstr "Tamuɣli n ugbur"
 
-#: src/nautilus-grid-view.c:518 src/nautilus-list-view.c:405
-#: src/nautilus-network-view.c:351
+#: src/nautilus-grid-view.c:523 src/nautilus-list-view.c:387
+#: src/nautilus-network-view.c:352
 msgid "View of the current location"
 msgstr ""
 
-#: src/nautilus-internal-place-file.c:165
-#: src/gtk/nautilusgtkplacessidebar.c:713
+#: src/nautilus-internal-place-file.c:165 src/nautilus-sidebar.c:745
 msgid "Network"
 msgstr "Azeṭṭa"
 
-#: src/nautilus-internal-place-file.c:169
-#: src/gtk/nautilusgtkplacessidebar.c:687
+#: src/nautilus-internal-place-file.c:169 src/nautilus-sidebar.c:719
 msgid "Starred"
 msgstr "S yitran"
 
-#: src/nautilus-location-banner.c:101
+#: src/nautilus-location-banner.c:102
 msgid "Files in the trash are permanently deleted after 1 hour"
 msgstr ""
 
-#: src/nautilus-location-banner.c:106
+#: src/nautilus-location-banner.c:107
 #, c-format
 msgid "Files in the trash are permanently deleted after %d day"
 msgid_plural "Files in the trash are permanently deleted after %d days"
 msgstr[0] ""
 msgstr[1] ""
 
-#: src/nautilus-location-banner.c:211
+#: src/nautilus-location-banner.c:212
 msgid "Executable files in this folder will appear in the Scripts menu"
 msgstr ""
 
-#: src/nautilus-location-banner.c:217
+#: src/nautilus-location-banner.c:218
 msgid ""
 "Turn on File Sharing to share the contents of this folder over the network"
 msgstr ""
 
-#: src/nautilus-location-banner.c:218
+#: src/nautilus-location-banner.c:219
 msgid "Sharing Settings"
 msgstr ""
 
-#: src/nautilus-location-banner.c:225
+#: src/nautilus-location-banner.c:226
 msgid "Put files in this folder to use them as templates for new documents"
 msgstr ""
 
-#: src/nautilus-location-banner.c:226
+#: src/nautilus-location-banner.c:227
 msgid "_Learn More"
 msgstr "Issin ugar (_L)"
 
-#: src/nautilus-location-banner.c:239 src/gtk/nautilusgtkplacessidebar.c:2911
+#: src/nautilus-location-banner.c:240 src/nautilus-sidebar.c:2982
 msgid "_Empty Trash…"
 msgstr "Smir taq_ecwalt"
 
-#: src/nautilus-location-banner.c:256
+#: src/nautilus-location-banner.c:257
 msgid "_Trash Settings"
-msgstr "Iɣewwaṛen n _tqecwalt"
+msgstr "Iɣewwaren n _tqecwalt"
 
-#: src/nautilus-location-entry.c:706 src/nautilus-query-editor.c:740
+#: src/nautilus-location-entry.c:713 src/nautilus-query-editor.c:631
 msgid "Clear Entry"
 msgstr "Sfeḍ anekcam"
 
-#: src/nautilus-location-entry.c:715
+#: src/nautilus-location-entry.c:722
 msgid "Go to Location"
 msgstr "Ddu ɣer wadig"
 
 #: src/nautilus-main.c:61
 msgid ""
-"\n"
-"========================================================\n"
-"This app cannot work correctly if run as root (not even\n"
-"with sudo). Consider running `nautilus admin:/` instead.\n"
-"========================================================"
+"Running as root is not supported. Consider running `nautilus admin:///` "
+"instead."
 msgstr ""
 
 #: src/nautilus-mime-actions.c:98
@@ -3306,102 +3245,102 @@ msgstr ""
 msgid "Music"
 msgstr "Aẓawan"
 
-#: src/nautilus-mime-actions.c:173
+#: src/nautilus-mime-actions.c:229
 msgid "PDF / PostScript"
 msgstr "PDF / PostScript"
 
-#: src/nautilus-mime-actions.c:184
+#: src/nautilus-mime-actions.c:240
 msgid "Picture"
 msgstr "Tugna"
 
-#: src/nautilus-mime-actions.c:237
+#: src/nautilus-mime-actions.c:293
 msgid "Text File"
 msgstr "Afaylu Aḍris"
 
-#: src/nautilus-mime-actions.c:595
+#: src/nautilus-mime-actions.c:682
 msgid "This link cannot be used because it has no target."
 msgstr ""
 
-#: src/nautilus-mime-actions.c:599
+#: src/nautilus-mime-actions.c:686
 #, c-format
 msgid "This link cannot be used because its target “%s” doesn’t exist."
 msgstr ""
 
-#: src/nautilus-mime-actions.c:607
+#: src/nautilus-mime-actions.c:694
 #, c-format
 msgid "The link “%s” is broken. Move it to Trash?"
 msgstr ""
 
-#: src/nautilus-mime-actions.c:611
+#: src/nautilus-mime-actions.c:698
 #: src/resources/ui/nautilus-files-view-context-menus.ui:226
 msgid "Mo_ve to Trash"
 msgstr "S_mutti ɣer tqecwalt"
 
-#: src/nautilus-mime-actions.c:618
+#: src/nautilus-mime-actions.c:705
 #, c-format
 msgid "The link “%s” is broken."
 msgstr ""
 
-#: src/nautilus-mime-actions.c:1004
+#: src/nautilus-mime-actions.c:1091
 msgid "Are you sure you want to open all files?"
 msgstr "Tebɣiḍ ad tmedleḍ akk ifuyla?"
 
-#: src/nautilus-mime-actions.c:1008
+#: src/nautilus-mime-actions.c:1095
 #, c-format
 msgid "This will open %d separate tab and window."
 msgid_plural "This will open %d separate tabs and windows."
 msgstr[0] "Aya ad yeldi %d n yiccer akked usfaylu iman-is"
 msgstr[1] "Aya ad yeldi %d n yiccaren akked yisfuylaiman-nnsen."
 
-#: src/nautilus-mime-actions.c:1013
+#: src/nautilus-mime-actions.c:1100
 #, c-format
 msgid "This will open %d separate tab."
 msgid_plural "This will open %d separate tabs."
 msgstr[0] "Ayagi ad yeldi %d n yiccer iman-is."
 msgstr[1] "Ayagi ad yeldi %d n yiccaren iman-nnsen."
 
-#: src/nautilus-mime-actions.c:1018
+#: src/nautilus-mime-actions.c:1105
 #, c-format
 msgid "This will open %d separate window."
 msgid_plural "This will open %d separate windows."
 msgstr[0] "Ayagi ad yeldi %d n usfaylu iman-is."
 msgstr[1] "Ayagi ad yeldi %d n isfuyla iman-nsen."
 
-#: src/nautilus-mime-actions.c:1025
+#: src/nautilus-mime-actions.c:1112
 msgid "_Open All"
 msgstr "Ldi-iten akk (_O)"
 
-#: src/nautilus-mime-actions.c:1086
+#: src/nautilus-mime-actions.c:1173
 #, c-format
 msgid "Could Not Display “%s”"
 msgstr ""
 
-#: src/nautilus-mime-actions.c:1184
+#: src/nautilus-mime-actions.c:1267
 msgid "The file is of an unknown type"
 msgstr ""
 
-#: src/nautilus-mime-actions.c:1189
+#: src/nautilus-mime-actions.c:1272
 #, c-format
 msgid "There is no app installed for “%s” files"
 msgstr ""
 
-#: src/nautilus-mime-actions.c:1194
+#: src/nautilus-mime-actions.c:1277
 msgid "_Select App"
 msgstr "Fren a_snas"
 
-#: src/nautilus-mime-actions.c:1230
+#: src/nautilus-mime-actions.c:1313
 msgid "There was an internal error trying to search for apps:"
 msgstr ""
 
-#: src/nautilus-mime-actions.c:1232
+#: src/nautilus-mime-actions.c:1315
 msgid "Unable to search for app"
 msgstr "D awezɣi anadi n usnas"
 
-#: src/nautilus-mime-actions.c:1337
+#: src/nautilus-mime-actions.c:1420
 msgid "_Search in Software"
-msgstr ""
+msgstr "Af-d deg U_seɣẓan"
 
-#: src/nautilus-mime-actions.c:1340
+#: src/nautilus-mime-actions.c:1423
 #, c-format
 msgid ""
 "There is no app installed for “%s” files. Do you want to search for an app "
@@ -3409,21 +3348,21 @@ msgid ""
 msgstr ""
 
 #. if it wasn't cancelled show a dialog
-#: src/nautilus-mime-actions.c:1737 src/nautilus-mime-actions.c:2036
+#: src/nautilus-mime-actions.c:1819 src/nautilus-mime-actions.c:2118
 #: src/nautilus-network-address-bar.c:80
 msgid "Unable to access location"
 msgstr ""
 
-#: src/nautilus-mime-actions.c:2127
+#: src/nautilus-mime-actions.c:2209
 msgid "Unable to start location"
 msgstr "D awezɣi asekker n wasun"
 
-#: src/nautilus-mime-actions.c:2220
+#: src/nautilus-mime-actions.c:2302
 #, c-format
 msgid "Opening “%s”."
 msgstr "Alday n “%s”."
 
-#: src/nautilus-mime-actions.c:2224
+#: src/nautilus-mime-actions.c:2306
 #, c-format
 msgid "Opening %d item."
 msgid_plural "Opening %d items."
@@ -3489,21 +3428,21 @@ msgid "dav:// or davs://"
 msgstr "dav:// neɣ davs://"
 
 #. Online accounts do not currently have a target URI.
-#: src/nautilus-network-cell.c:41
+#: src/nautilus-network-cell.c:44
 msgid "Online Account"
 msgstr ""
 
 #. Translators: This refers to network places which are currently mounted
-#: src/nautilus-network-view.c:263
+#: src/nautilus-network-view.c:264
 msgid "Connected"
 msgstr "Yettwaqqen"
 
 #. Translators: This refers to network servers the user has previously connected to
-#: src/nautilus-network-view.c:270
+#: src/nautilus-network-view.c:271
 msgid "Previous"
 msgstr "Uzwir"
 
-#: src/nautilus-network-view.c:276
+#: src/nautilus-network-view.c:277
 msgid "Available on Current Network"
 msgstr ""
 
@@ -3607,12 +3546,12 @@ msgstr "Afaylu aneṣli"
 #: src/nautilus-operations-ui-manager.c:288
 #: src/nautilus-operations-ui-manager.c:320
 msgid "Size:"
-msgstr "Teɣzi:"
+msgstr "Tiddi:"
 
 #: src/nautilus-operations-ui-manager.c:293
 #: src/nautilus-operations-ui-manager.c:325
 msgid "Type:"
-msgstr "Anaw :"
+msgstr "Tawsit:"
 
 #: src/nautilus-operations-ui-manager.c:296
 #: src/nautilus-operations-ui-manager.c:328
@@ -3625,7 +3564,7 @@ msgstr "Smezdi akked"
 
 #: src/nautilus-operations-ui-manager.c:314
 #: src/nautilus-operations-ui-manager.c:319
-#: src/resources/ui/nautilus-batch-rename-dialog.ui:281
+#: src/resources/ui/nautilus-batch-rename-dialog.ui:286
 msgid "Replace With"
 msgstr "Semselsi s"
 
@@ -3642,45 +3581,44 @@ msgstr ""
 msgid "File Conflict"
 msgstr ""
 
-#: src/nautilus-operations-ui-manager.c:585
+#: src/nautilus-operations-ui-manager.c:586
 msgid ""
 "Password-protected archives are not yet supported. This list contains apps "
 "that can open the archive."
 msgstr ""
 
-#: src/nautilus-operations-ui-manager.c:654
+#: src/nautilus-operations-ui-manager.c:655
 #, c-format
 msgid "“%s” is password-protected."
 msgstr ""
 
-#: src/nautilus-pathbar.c:313
+#: src/nautilus-pathbar.c:315
 msgid "Current Folder Menu"
 msgstr "Umuɣ n ukaram amiran"
 
 #. Translators: This is the label used in the pathbar when seeing
 #. * the root directory (also known as /)
-#: src/nautilus-pathbar.c:404 src/nautilus-properties-window.c:851
+#: src/nautilus-pathbar.c:407 src/nautilus-properties-window.c:857
 msgid "Operating System"
 msgstr "Anagraw n wammud"
 
 #. Translators: This is the filesystem root directory (also known
 #. * as /) when seen as administrator
-#: src/nautilus-pathbar.c:411
+#: src/nautilus-pathbar.c:414
 msgid "Administrator Root"
 msgstr "Anedbal aẓar"
 
-#: src/nautilus-portal.c:434 src/resources/ui/nautilus-app-chooser.ui:96
+#: src/nautilus-portal.c:431 src/nautilus-sidebar.c:2819
+#: src/nautilus-sidebar.c:2937 src/resources/ui/nautilus-app-chooser.ui:24
 #: src/resources/ui/nautilus-files-view-context-menus.ui:87
-#: src/gtk/nautilusgtkplacessidebar.c:2751
-#: src/gtk/nautilusgtkplacessidebar.c:2867
 msgid "_Open"
 msgstr "_Ldi"
 
-#: src/nautilus-portal.c:438
+#: src/nautilus-portal.c:435
 msgid "_Save"
 msgstr "_Sekles"
 
-#: src/nautilus-portal.c:518
+#: src/nautilus-portal.c:519
 msgid "Open Read-Only"
 msgstr ""
 
@@ -3698,11 +3636,11 @@ msgstr "Imedya: “%s”, “%s”"
 
 #: src/nautilus-preferences-dialog.c:343
 msgid "Single-Click"
-msgstr ""
+msgstr "Asiti asuf"
 
 #: src/nautilus-preferences-dialog.c:343
 msgid "Double-Click"
-msgstr ""
+msgstr "Asiti uslig"
 
 #: src/nautilus-preferences-dialog.c:345 src/nautilus-preferences-dialog.c:347
 #: src/nautilus-preferences-dialog.c:349
@@ -3726,28 +3664,28 @@ msgstr "Akk ifuyla"
 msgid "All Folders"
 msgstr "Akk ikaramen"
 
-#: src/nautilus-program-choosing.c:363
+#: src/nautilus-program-choosing.c:356
 msgid "Sorry, but you cannot execute commands from a remote site."
 msgstr "Surfaɣ, maca ur tezmireḍ ara ad tselkmeḍ inezḍayen seg usmel anmeggag."
 
-#: src/nautilus-program-choosing.c:364
+#: src/nautilus-program-choosing.c:357
 msgid "This is disabled due to security considerations."
 msgstr "Ayagi yexsi i lmend n tɣellist."
 
 #. all files are non-local
 #. some files are non-local
-#: src/nautilus-program-choosing.c:405 src/nautilus-program-choosing.c:417
+#: src/nautilus-program-choosing.c:398 src/nautilus-program-choosing.c:410
 msgid "This drop target only supports local files."
 msgstr "Anican n usersi d ifuyla idiganen kan i yetteddun deg-s."
 
-#: src/nautilus-program-choosing.c:406
+#: src/nautilus-program-choosing.c:399
 msgid ""
 "To open non-local files copy them to a local folder and then drop them again."
 msgstr ""
 "Iwakken ad teldiḍ ifuyla ur nelli ara d idiganen suken-iten ɣer ukaram "
 "adigan sakin sers-iten tikkelt-nniḍen."
 
-#: src/nautilus-program-choosing.c:418
+#: src/nautilus-program-choosing.c:411
 msgid ""
 "To open non-local files copy them to a local folder and then drop them "
 "again. The local files you dropped have already been opened."
@@ -3756,7 +3694,7 @@ msgstr ""
 "adigan sakin sers-iten tikkelt-nniḍen. Ifuyla idiganen i tserseḍ ttwaldin "
 "yakan."
 
-#: src/nautilus-program-choosing.c:450
+#: src/nautilus-program-choosing.c:443
 msgid "Details: "
 msgstr "Talqayt:"
 
@@ -3769,7 +3707,7 @@ msgid "Preparing"
 msgstr "Aheyyi"
 
 #. Translators: This describes an operation, such as copying or compressing files, as being completed.
-#: src/nautilus-progress-info-widget.c:57
+#: src/nautilus-progress-info-widget.c:60
 msgid "Operation Completed"
 msgstr ""
 
@@ -3819,7 +3757,7 @@ msgstr "Sebder ifuyla kan"
 
 #: src/nautilus-properties-window.c:386
 msgid "Write-Only"
-msgstr ""
+msgstr "Tira-kan"
 
 #: src/nautilus-properties-window.c:390
 msgid "Write-Only, No Access"
@@ -3833,7 +3771,7 @@ msgstr "Akeččum kan"
 msgid "Custom icon removed"
 msgstr ""
 
-#: src/nautilus-properties-window.c:643 src/nautilus-window.c:807
+#: src/nautilus-properties-window.c:643 src/nautilus-window.c:786
 #: src/resources/ui/nautilus-window.ui:22
 msgid "_Undo"
 msgstr "Sefsex (_U)"
@@ -3858,240 +3796,367 @@ msgstr "Tzemreḍ kan ad tesqedceḍ tugniwin tidiganin am tignitin tudmawanin."
 msgid "The file that you dropped is not an image."
 msgstr "Afaylu i tserseḍ mačči d tugna."
 
-#. Translators: This is a verb for tagging or untagging a file with a star.
 #. Unmarks a file as starred (starred)
-#: src/nautilus-properties-window.c:741 src/nautilus-star-cell.c:66
+#: src/nautilus-properties-window.c:747 src/nautilus-star-cell.c:72
 #: src/resources/ui/nautilus-files-view-context-menus.ui:256
 msgid "Unstar"
 msgstr "Kkes itri"
 
-#: src/nautilus-properties-window.c:1585
+#: src/nautilus-properties-window.c:747 src/nautilus-star-cell.c:72
+msgctxt "Verb"
+msgid "Star"
+msgstr "Itri"
+
+#: src/nautilus-properties-window.c:1592
 msgid "Cancel Group Change?"
 msgstr "Semmet asnifel n ugraw?"
 
-#: src/nautilus-properties-window.c:1734
+#: src/nautilus-properties-window.c:1741
 msgid "Cancel Owner Change?"
 msgstr "Semmet asnifel n bab-is?"
 
-#: src/nautilus-properties-window.c:1884 src/nautilus-properties-window.c:1931
+#: src/nautilus-properties-window.c:1891 src/nautilus-properties-window.c:1938
 msgid "Multiple"
 msgstr ""
 
-#: src/nautilus-properties-window.c:2065
+#: src/nautilus-properties-window.c:2072
 msgid "Empty folder"
 msgstr "Akaram ilem"
 
-#: src/nautilus-properties-window.c:2069
+#: src/nautilus-properties-window.c:2076
 msgid "Contents unreadable"
 msgstr "Ugbureb ur yattwaɣray ara"
 
-#: src/nautilus-properties-window.c:2081
+#: src/nautilus-properties-window.c:2088
 #, c-format
 msgid "%'d item, with size %s"
 msgid_plural "%'d items, totalling %s"
 msgstr[0] ""
 msgstr[1] ""
 
-#: src/nautilus-properties-window.c:2091
+#: src/nautilus-properties-window.c:2098
 msgid "(some contents unreadable)"
 msgstr "(kra n ugbur ur yattwaɣray ara)"
 
 #. Translators: %s will be filled with a filesystem type, such as 'ext4' or 'msdos'.
-#: src/nautilus-properties-window.c:2423
+#: src/nautilus-properties-window.c:2430
 #, c-format
 msgid "%s Filesystem"
 msgstr "%s anagraw n yifuyla"
 
-#: src/nautilus-properties-window.c:3528
+#: src/nautilus-properties-window.c:3535
 #, c-format
 msgid "The permissions of “%s” could not be determined."
 msgstr ""
 
-#: src/nautilus-properties-window.c:3890
+#: src/nautilus-properties-window.c:3897
 msgid "Creating Properties window."
 msgstr "Asnulfu n iraten n usfaylu."
 
-#: src/nautilus-properties-window.c:4019
+#: src/nautilus-properties-window.c:4026
 msgid "Select Custom Icon"
 msgstr "Fren tignit tudmawant"
 
-#: src/nautilus-query.c:541
-#, c-format
-msgid "Search for “%s”"
-msgstr "Nadi ɣef \"%s\""
-
-#: src/nautilus-query-editor.c:146
+#: src/nautilus-query-editor.c:145
 msgid "Search may be slow and will not include subfolders or file contents"
 msgstr ""
 
-#: src/nautilus-query-editor.c:153
+#: src/nautilus-query-editor.c:152
 msgid "Search may be slow and will not include file contents"
 msgstr ""
 
-#: src/nautilus-query-editor.c:161
+#: src/nautilus-query-editor.c:160
 msgid "Remote Location"
 msgstr ""
 
-#: src/nautilus-query-editor.c:167
+#: src/nautilus-query-editor.c:166
 msgid "External Drive"
 msgstr ""
 
-#: src/nautilus-query-editor.c:173
+#: src/nautilus-query-editor.c:172
 msgid "Folder Not in Search Locations"
 msgstr ""
 
-#: src/nautilus-query-editor.c:180
+#: src/nautilus-query-editor.c:179
 msgid "Subfolders Not in Search Locations"
 msgstr ""
 
-#: src/nautilus-query-editor.c:190
+#: src/nautilus-query-editor.c:188
 msgid "Some subfolders will not be included in search results"
 msgstr ""
 
-#: src/nautilus-query-editor.c:197
+#: src/nautilus-query-editor.c:195
 msgid ""
 "Search will be slower and will not include file contents for some folders"
 msgstr ""
 
-#: src/nautilus-query-editor.c:546
-msgid "Remove Filter"
-msgstr "Kkes amsizdeg"
-
 #. translators: This opens the search panel in the Settings app.
-#: src/nautilus-query-editor.c:764
+#: src/nautilus-query-editor.c:651
 msgid "_Search Settings"
 msgstr "Iɣewwaṛen n unadi (_S)"
 
-#: src/nautilus-query-editor.c:777
+#: src/nautilus-query-editor.c:664
 msgid "Filter Search Results"
 msgstr ""
 
-#: src/nautilus-query-editor.c:784
+#: src/nautilus-query-editor.c:671
 msgid "Search Information"
 msgstr ""
 
-#: src/nautilus-query-editor.c:864
+#: src/nautilus-query-editor.c:751
 msgid "Search current folder"
 msgstr "Nadi deg akaram amiran"
 
-#: src/nautilus-query-editor.c:865
+#: src/nautilus-query-editor.c:752
 msgid "Search everywhere"
 msgstr "Nadi deg yal adeg"
 
-#: src/nautilus-rename-file-popover.c:226
+#: src/nautilus-rename-file-popover.c:223
 msgid "Rename Folder"
 msgstr "Ẓreg isem n ukaram"
 
-#: src/nautilus-rename-file-popover.c:227
+#: src/nautilus-rename-file-popover.c:224
 msgid "Rename File"
 msgstr "Ẓreg isem n ufaylu"
 
-#: src/nautilus-search-engine.c:356
+#: src/nautilus-search-directory-file.c:223
+#, c-format
+msgid "Search for “%s”"
+msgstr "Nadi ɣef \"%s\""
+
+#: src/nautilus-search-engine.c:237
 msgid "Unable to complete the requested search"
 msgstr ""
 
-#: src/nautilus-search-popover.c:301
-msgid "Show Time Ranges"
-msgstr ""
+#: src/nautilus-search-popover.c:547
+#, fuzzy
+#| msgid "Other Users"
+msgid "Date Used"
+msgstr "Iseqdacen nniḍen"
 
-#: src/nautilus-search-popover.c:307
-#: src/resources/ui/nautilus-search-popover.ui:73
-msgid "Use Calendar"
-msgstr "Seqdec awitay"
+#: src/nautilus-search-popover.c:551
+msgid "Date Created"
+msgstr "Azemz n usnulfu"
 
-#. Add the no date filter element first
-#: src/nautilus-search-popover.c:427
-msgid "Any time"
-msgstr "Deg yal akud"
-
-#. Other types
-#: src/nautilus-search-popover.c:522
-msgid "Other Type…"
-msgstr "Anaw-nniḍen…"
-
-#: src/nautilus-search-popover.c:714
-msgid "Select Dates…"
-msgstr "Fren izemzen…"
+#: src/nautilus-search-popover.c:555
+msgid "Date Modified"
+msgstr "Azemz n usnifel"
 
 #. trash
-#: src/nautilus-shell-search-provider.c:347
-#: src/gtk/nautilusgtkplacessidebar.c:724
+#: src/nautilus-shell-search-provider.c:304 src/nautilus-sidebar.c:756
 msgid "Trash"
 msgstr "Iḍumman"
 
-#: src/nautilus-ui-utilities.c:341
-#, c-format
-msgid "Since %d day ago"
-msgid_plural "Since %d days ago"
-msgstr[0] ""
-msgstr[1] ""
+#: src/nautilus-sidebar.c:393 src/resources/ui/nautilus-network-cell.ui:70
+msgid "Disconnect"
+msgstr "Senser tuqqna"
 
-#: src/nautilus-ui-utilities.c:342
-#, c-format
-msgid "%d day ago"
-msgid_plural "%d days ago"
-msgstr[0] "%d n wass aya"
-msgstr[1] "%d n wussan aya"
+#: src/nautilus-sidebar.c:397
+msgid "Eject"
+msgstr "Ḍeqqer"
 
-#: src/nautilus-ui-utilities.c:348
-#, c-format
-msgid "Since last week"
-msgid_plural "Since %d weeks ago"
-msgstr[0] ""
-msgstr[1] ""
+#: src/nautilus-sidebar.c:401
+msgid "Unmount"
+msgstr "Kkes aserkeb"
 
-#: src/nautilus-ui-utilities.c:349
+#. translators: %s is the name of a cloud provider for files
+#: src/nautilus-sidebar.c:607 src/nautilus-window.c:917
 #, c-format
-msgid "Last week"
-msgid_plural "%d weeks ago"
-msgstr[0] "Dduṛt yezrin"
-msgstr[1] "%d n ledwaṛ yezrin"
+msgid "Open %s"
+msgstr "Ldi %s"
 
-#: src/nautilus-ui-utilities.c:355
+#: src/nautilus-sidebar.c:701
+msgid "Open Personal Folder"
+msgstr "Ldi akaram anagbar"
+
+#: src/nautilus-sidebar.c:710
+msgid "Recent"
+msgstr "Melmi kan"
+
+#: src/nautilus-sidebar.c:712
+msgid "Recent Files"
+msgstr "Ifuyla n melmi kan"
+
+#: src/nautilus-sidebar.c:721
+msgid "Starred Files"
+msgstr "Ifuyla s yitran"
+
+#: src/nautilus-sidebar.c:733
+msgid "Desktop"
+msgstr "Tanarit"
+
+#: src/nautilus-sidebar.c:735
+msgid "Open the contents of your desktop in a folder"
+msgstr "Ldi igburen n tnarit-ik·im deg ukaram"
+
+#: src/nautilus-sidebar.c:747
+msgid "Open Network Locations"
+msgstr ""
+
+#: src/nautilus-sidebar.c:758
+msgid "Open Trash"
+msgstr "Ldi taqecwalt"
+
+#: src/nautilus-sidebar.c:860 src/nautilus-sidebar.c:890
+#: src/nautilus-sidebar.c:1068
 #, c-format
-msgid "Since last month"
-msgid_plural "Since %d months ago"
-msgstr[0] ""
-msgstr[1] ""
+msgid "Mount and Open “%s”"
+msgstr "Serkeb sakin ldi “%s”"
 
-#: src/nautilus-ui-utilities.c:356
+#: src/nautilus-sidebar.c:1046
+msgid "New bookmark"
+msgstr "Ticreḍt tamaynut"
+
+#: src/nautilus-sidebar.c:1048
+msgid "Add a new bookmark"
+msgstr "Rnu ticreḍt tamaynut"
+
+#. Translators: This means that unlocking an encrypted storage
+#. * device failed. %s is the name of the device.
+#.
+#: src/nautilus-sidebar.c:1766
 #, c-format
-msgid "Last month"
-msgid_plural "%d months ago"
-msgstr[0] "Aggur yezrin"
-msgstr[1] "%d n wagguren yezrin"
+msgid "Error unlocking “%s”"
+msgstr "D ameɣzi tukksa n uzekṛun i “%s”"
 
-#: src/nautilus-ui-utilities.c:361
+#: src/nautilus-sidebar.c:1920
+msgid "This name is already taken"
+msgstr "isem-a yettwasekles yakan"
+
+#: src/nautilus-sidebar.c:2010 src/nautilus-sidebar.c:2971
+#: src/resources/ui/nautilus-batch-rename-dialog.ui:126
+#: src/resources/ui/nautilus-file-conflict-dialog.ui:30
+#: src/resources/ui/nautilus-rename-file-popover.ui:47
+msgid "_Rename"
+msgstr "Beddel isem (_R)"
+
+#: src/nautilus-sidebar.c:2319
 #, c-format
-msgid "Since last year"
-msgid_plural "Since %d years ago"
-msgstr[0] ""
-msgstr[1] ""
+msgid "Unable to stop “%s”"
+msgstr "D awezɣi aseḥbes n “%s”"
 
-#: src/nautilus-ui-utilities.c:362
+#: src/nautilus-sidebar.c:2544
 #, c-format
-msgid "Last year"
-msgid_plural "%d years ago"
-msgstr[0] "%d aseggas yezrin"
-msgstr[1] "%d iseggasen yezrin"
+msgid "Unable to poll “%s” for media changes"
+msgstr ""
 
-#: src/nautilus-window.c:142
+#: src/nautilus-sidebar.c:2827 src/nautilus-sidebar.c:2945
+#: src/resources/ui/nautilus-files-view-context-menus.ui:98
+#: src/resources/ui/nautilus-pathbar-context-menu.ui:10
+msgid "Open in New _Tab"
+msgstr "Ldi deg iccer amaynu_t"
+
+#: src/nautilus-sidebar.c:2834 src/nautilus-sidebar.c:2954
+#: src/resources/ui/nautilus-files-view-context-menus.ui:103
+#: src/resources/ui/nautilus-pathbar-context-menu.ui:6
+msgid "Open in New _Window"
+msgstr "Ldi deg usfaylu amaynut (_W)"
+
+#: src/nautilus-sidebar.c:2966
+msgid "_Remove from Bookmarks"
+msgstr ""
+
+#: src/nautilus-sidebar.c:2995
+#: src/resources/ui/nautilus-files-view-context-menus.ui:144
+msgid "_Mount"
+msgstr "Serkeb (_M)"
+
+#: src/nautilus-sidebar.c:3004
+#: src/resources/ui/nautilus-files-view-context-menus.ui:149
+msgid "_Unmount"
+msgstr "Kkes aserkeb (_U)"
+
+#: src/nautilus-sidebar.c:3011
+#: src/resources/ui/nautilus-files-view-context-menus.ui:154
+msgid "_Eject"
+msgstr "Ḍ_eqqer"
+
+#: src/nautilus-sidebar.c:3021
+#: src/resources/ui/nautilus-files-view-context-menus.ui:169
+msgid "_Detect Media"
+msgstr "Af-d ami_dya"
+
+#: src/nautilus-sidebar.c:3034
+msgid "_Power On"
+msgstr ""
+
+#: src/nautilus-sidebar.c:3038
+msgid "_Connect Drive"
+msgstr "Qqen ableɣ (_C)"
+
+#: src/nautilus-sidebar.c:3042
+msgid "_Start Multi-disk Device"
+msgstr "_Sekker ableɣ aget-aḍebsi"
+
+#: src/nautilus-sidebar.c:3046
+msgid "_Unlock Device"
+msgstr "Kkes azekṛ_un i webleɣ"
+
+#: src/nautilus-sidebar.c:3057
+#: src/resources/ui/nautilus-files-view-context-menus.ui:164
+msgid "_Stop"
+msgstr "_Seḥbes"
+
+#: src/nautilus-sidebar.c:3065
+msgid "_Disconnect Drive"
+msgstr "Senser ableɣ"
+
+#: src/nautilus-sidebar.c:3069
+msgid "_Stop Multi-disk Device"
+msgstr "_Seḥbes ableɣ aget-aḍebsi"
+
+#: src/nautilus-sidebar.c:3073
+msgid "_Lock Device"
+msgstr "Sekkeṛ ab_leɣ"
+
+#: src/nautilus-sidebar.c:3083
+msgid "Format…"
+msgstr "Amasal…"
+
+#: src/nautilus-sidebar.c:3094 src/resources/ui/nautilus-properties-window.ui:5
+#: src/resources/ui/nautilus-properties-window.ui:16
+msgid "Properties"
+msgstr "Iraten"
+
+#: src/nautilus-sidebar.c:3620
+msgid "Device"
+msgstr "Ibenk"
+
+#: src/nautilus-sidebar.c:3662
+msgid "Sidebar"
+msgstr "Afeggag n yidis"
+
+#: src/nautilus-sidebar.c:3664
+msgid "List of common shortcuts, mountpoints, and bookmarks."
+msgstr ""
+
+#: src/nautilus-tag-manager.c:218
+msgid "starred"
+msgstr "s yitran"
+
+#: src/nautilus-tag-manager.c:228
+#, fuzzy
+#| msgid "Starred"
+msgid "unstarred"
+msgstr "S yitran"
+
+#: src/nautilus-window.c:144
 msgid "New tab"
 msgstr "Iccer amaynut"
 
-#: src/nautilus-window.c:143
+#: src/nautilus-window.c:145
 msgid "Close current view"
 msgstr "Mdel timeẓri tamirant"
 
 #. Translators: only one item has been moved to trash and %s is its name.
-#: src/nautilus-window.c:730
+#: src/nautilus-window.c:709
 #, c-format
 msgid "“%s” moved to trash"
 msgstr "“%s” yettwasmutti ɣer tqecwalt"
 
 #. Translators: one or more items might have been moved to trash, and %d
 #. * is the count.
-#: src/nautilus-window.c:737
+#: src/nautilus-window.c:716
 #, c-format
 msgid "%d file moved to trash"
 msgid_plural "%d files moved to trash"
@@ -4099,50 +4164,44 @@ msgstr[0] "%d n ufaylu yettwasmutti ɣer tqecwalt"
 msgstr[1] "%d n yifuyla ttwasmuttin ɣer tqecwalt"
 
 #. Translators: one item has been unstarred and %s is its name.
-#: src/nautilus-window.c:756
+#: src/nautilus-window.c:735
 #, c-format
 msgid "“%s” unstarred"
 msgstr ""
 
 #. Translators: one or more items have been unstarred, and %d
 #. * is the count.
-#: src/nautilus-window.c:762
+#: src/nautilus-window.c:741
 #, c-format
 msgid "%d file unstarred"
 msgid_plural "%d files unstarred"
 msgstr[0] ""
 msgstr[1] ""
 
-#: src/nautilus-window.c:817 src/resources/ui/nautilus-window.ui:26
+#: src/nautilus-window.c:796 src/resources/ui/nautilus-window.ui:26
 msgid "_Redo"
 msgstr "E_rr-d"
 
-#. translators: %s is the name of a cloud provider for files
-#: src/nautilus-window.c:933 src/gtk/nautilusgtkplacessidebar.c:581
-#, c-format
-msgid "Open %s"
-msgstr "Ldi %s"
-
-#: src/nautilus-window.c:1719 src/nautilus-window.c:1724
-#: src/nautilus-window.c:1729
+#: src/nautilus-window.c:1702 src/nautilus-window.c:1707
+#: src/nautilus-window.c:1712
 msgid "The GNOME Project"
 msgstr "Asenfaṛ n GNOME"
 
-#: src/nautilus-window.c:1736
+#: src/nautilus-window.c:1719
 msgid "No plugins currently installed."
 msgstr ""
 
-#: src/nautilus-window.c:1740
+#: src/nautilus-window.c:1723
 msgid "Currently installed plugins:"
 msgstr ""
 
-#: src/nautilus-window.c:1742
+#: src/nautilus-window.c:1725
 msgid "For bug testing only, the following command can be used:"
 msgstr ""
 
 #. Translators should localize the following string which will be displayed at the bottom of
 #. * the about box to give credit to the translator(s).
-#: src/nautilus-window.c:1757
+#: src/nautilus-window.c:1740
 msgid "translator-credits"
 msgstr ""
 "Launchpad Contributions:\n"
@@ -4150,65 +4209,65 @@ msgstr ""
 "  atlantis103 https://launchpad.net/~atlantis103-hotmail\n"
 "  ButterflyOfFire https://l10n.gnome.org/users/ButterflyOfFire/"
 
-#: src/nautilus-window-slot.c:165
+#: src/nautilus-window-slot.c:167
 msgid "Parent folder"
 msgstr "Akaram amaraw"
 
-#: src/nautilus-window-slot.c:166
+#: src/nautilus-window-slot.c:168
 #: src/resources/ui/nautilus-history-controls.ui:11
 msgid "Back"
 msgstr "Tuɣalin"
 
-#: src/nautilus-window-slot.c:167
+#: src/nautilus-window-slot.c:169
 #: src/resources/ui/nautilus-history-controls.ui:19
 msgid "Forward"
 msgstr "Ɣer sdat"
 
-#: src/nautilus-window-slot.c:912 src/resources/ui/nautilus-file-chooser.ui:27
+#: src/nautilus-window-slot.c:893 src/resources/ui/nautilus-file-chooser.ui:27
 #: src/resources/ui/nautilus-window.ui:116
 msgid "Search Everywhere"
-msgstr ""
+msgstr "Nadi deg yal adeg"
 
-#: src/nautilus-window-slot.c:913
+#: src/nautilus-window-slot.c:894
 msgid "Find files and folders in all search locations"
 msgstr ""
 
-#: src/nautilus-window-slot.c:916
+#: src/nautilus-window-slot.c:897
 msgid "Search Settings"
 msgstr "Anadi ɣef iɣewwaṛen"
 
-#: src/nautilus-window-slot.c:1852
+#: src/nautilus-window-slot.c:1828
 msgid "Unable to display the contents of this folder."
 msgstr ""
 
-#: src/nautilus-window-slot.c:1856
+#: src/nautilus-window-slot.c:1832
 msgid "This location doesn’t appear to be a folder."
 msgstr ""
 
-#: src/nautilus-window-slot.c:1868
+#: src/nautilus-window-slot.c:1844
 #, c-format
 msgid "Unable to find “%s”. Please check the spelling and try again."
 msgstr ""
 
-#: src/nautilus-window-slot.c:1873
+#: src/nautilus-window-slot.c:1849
 msgid ""
 "Unable to find the requested file. Please check the spelling and try again."
 msgstr ""
 
-#: src/nautilus-window-slot.c:1884
+#: src/nautilus-window-slot.c:1860
 #, c-format
 msgid "“%s” locations are not supported."
 msgstr ""
 
-#: src/nautilus-window-slot.c:1889
+#: src/nautilus-window-slot.c:1865
 msgid "Unable to handle this kind of location."
 msgstr ""
 
-#: src/nautilus-window-slot.c:1897
+#: src/nautilus-window-slot.c:1873
 msgid "Unable to access the requested location."
 msgstr ""
 
-#: src/nautilus-window-slot.c:1903
+#: src/nautilus-window-slot.c:1879
 msgid "Don’t have permission to access the requested location."
 msgstr ""
 
@@ -4217,7 +4276,7 @@ msgstr ""
 #. * But this case is also hit for legitimate web addresses when
 #. * the proxy is set up wrong.
 #.
-#: src/nautilus-window-slot.c:1914
+#: src/nautilus-window-slot.c:1890
 msgid ""
 "Unable to find the requested location. Please check the spelling or the "
 "network settings."
@@ -4226,13 +4285,13 @@ msgstr ""
 #. This case can be hit when server application is not installed
 #. * or is inactive in the system user is trying to connect to.
 #.
-#: src/nautilus-window-slot.c:1923
+#: src/nautilus-window-slot.c:1899
 msgid ""
 "The server has refused the connection. Typically this means that the "
 "firewall is blocking access or that the remote service is not running."
 msgstr ""
 
-#: src/nautilus-window-slot.c:1942
+#: src/nautilus-window-slot.c:1918
 #, c-format
 msgid "Unhandled error message: %s"
 msgstr ""
@@ -4264,7 +4323,7 @@ msgstr "Ffeɣ"
 #: src/resources/gtk/help-overlay.ui:32
 msgctxt "shortcut window"
 msgid "Search Everywhere"
-msgstr ""
+msgstr "Nadi deg yal adeg"
 
 #: src/resources/gtk/help-overlay.ui:38
 msgctxt "shortcut window"
@@ -4331,226 +4390,241 @@ msgctxt "shortcut window"
 msgid "Open With Default App"
 msgstr "Ldi s wesnas amezwaru"
 
-#: src/resources/gtk/help-overlay.ui:117
+#: src/resources/gtk/help-overlay.ui:115
+#, fuzzy
+#| msgid "Open in Consol_e"
+msgctxt "shortcut window"
+msgid "Open Current Directory in Console"
+msgstr "Ldi deg tdiwent (_E)"
+
+#: src/resources/gtk/help-overlay.ui:123
 msgctxt "shortcut window"
 msgid "Tabs"
 msgstr "Iccaren"
 
-#: src/resources/gtk/help-overlay.ui:120
+#: src/resources/gtk/help-overlay.ui:126
 msgctxt "shortcut window"
 msgid "New Tab"
 msgstr "Iccer amaynut"
 
-#: src/resources/gtk/help-overlay.ui:126
+#: src/resources/gtk/help-overlay.ui:132
 msgctxt "shortcut window"
 msgid "Go to Previous Tab"
 msgstr "Ddu ɣer yiccer yezrin"
 
-#: src/resources/gtk/help-overlay.ui:132
+#: src/resources/gtk/help-overlay.ui:138
 msgctxt "shortcut window"
 msgid "Go to Next Tab"
 msgstr "Ddu ɣer yiccer uḍfir"
 
-#: src/resources/gtk/help-overlay.ui:138
+#: src/resources/gtk/help-overlay.ui:144
 msgctxt "shortcut window"
 msgid "Open Tab"
 msgstr "Ldi accer"
 
-#: src/resources/gtk/help-overlay.ui:144
+#: src/resources/gtk/help-overlay.ui:150
 msgctxt "shortcut window"
 msgid "Move Tab Left"
 msgstr "Smutti iccer ɣer tama tazelmaḍt"
 
-#: src/resources/gtk/help-overlay.ui:150
+#: src/resources/gtk/help-overlay.ui:156
 msgctxt "shortcut window"
 msgid "Move Tab Right"
 msgstr "Smutti iccer ɣer tama tayeffust"
 
-#: src/resources/gtk/help-overlay.ui:156
+#: src/resources/gtk/help-overlay.ui:162
 msgctxt "shortcut window"
 msgid "Restore Closed Tab"
 msgstr "Err-d iccer yettwamedlen"
 
-#: src/resources/gtk/help-overlay.ui:164
+#: src/resources/gtk/help-overlay.ui:170
 msgctxt "shortcut window"
 msgid "Navigation"
 msgstr "Tunigin"
 
-#: src/resources/gtk/help-overlay.ui:167 src/resources/gtk/help-overlay.ui:174
+#: src/resources/gtk/help-overlay.ui:173 src/resources/gtk/help-overlay.ui:180
 msgctxt "shortcut window"
 msgid "Go Back"
 msgstr "Tuɣalin"
 
-#: src/resources/gtk/help-overlay.ui:181 src/resources/gtk/help-overlay.ui:188
+#: src/resources/gtk/help-overlay.ui:187 src/resources/gtk/help-overlay.ui:194
 msgctxt "shortcut window"
 msgid "Go Forward"
 msgstr "Ɣer sdat"
 
-#: src/resources/gtk/help-overlay.ui:195
+#: src/resources/gtk/help-overlay.ui:201
 msgctxt "shortcut window"
 msgid "Go Up"
 msgstr "Ddu d asawen"
 
-#: src/resources/gtk/help-overlay.ui:201
+#: src/resources/gtk/help-overlay.ui:207
 msgctxt "shortcut window"
 msgid "Go Down"
 msgstr "Ddu d akessar"
 
-#: src/resources/gtk/help-overlay.ui:207
+#: src/resources/gtk/help-overlay.ui:213
 msgctxt "shortcut window"
 msgid "Go to Home Folder"
 msgstr "Ddu ɣer ukaram agejdan"
 
-#: src/resources/gtk/help-overlay.ui:213
+#: src/resources/gtk/help-overlay.ui:219
 msgctxt "shortcut window"
 msgid "Enter Location"
 msgstr "Sekcem adig"
 
-#: src/resources/gtk/help-overlay.ui:219
+#: src/resources/gtk/help-overlay.ui:225
 msgctxt "shortcut window"
 msgid "Location Bar With Root Location"
 msgstr ""
 
-#: src/resources/gtk/help-overlay.ui:225
+#: src/resources/gtk/help-overlay.ui:231
 msgctxt "shortcut window"
 msgid "Location Bar With Home Location"
 msgstr ""
 
-#: src/resources/gtk/help-overlay.ui:233
+#: src/resources/gtk/help-overlay.ui:239
 msgctxt "shortcut window"
 msgid "View"
 msgstr "Tamuɣli"
 
-#: src/resources/gtk/help-overlay.ui:236
+#: src/resources/gtk/help-overlay.ui:242
 msgctxt "shortcut window"
 msgid "Zoom In"
 msgstr "Semɣeṛ"
 
-#: src/resources/gtk/help-overlay.ui:242
+#: src/resources/gtk/help-overlay.ui:248
 msgctxt "shortcut window"
 msgid "Zoom Out"
 msgstr "Semẓi"
 
-#: src/resources/gtk/help-overlay.ui:248
+#: src/resources/gtk/help-overlay.ui:254
 msgctxt "shortcut window"
 msgid "Reset Zoom"
 msgstr "Ales awennez n usimɣeṛ"
 
-#: src/resources/gtk/help-overlay.ui:254
+#: src/resources/gtk/help-overlay.ui:260
 msgctxt "shortcut window"
 msgid "Refresh View"
 msgstr ""
 
-#: src/resources/gtk/help-overlay.ui:260
+#: src/resources/gtk/help-overlay.ui:266
 msgctxt "shortcut window"
 msgid "Show/Hide Hidden Files"
 msgstr "Sken/Ffer ifuyla yettwaffren"
 
-#: src/resources/gtk/help-overlay.ui:266
+#: src/resources/gtk/help-overlay.ui:272
 msgctxt "shortcut window"
 msgid "Show/Hide Sidebar"
 msgstr "Sken/ffer afeggag n yidis"
 
-#: src/resources/gtk/help-overlay.ui:272
+#: src/resources/gtk/help-overlay.ui:278
 msgctxt "shortcut window"
 msgid "Open Current Folder Menu"
 msgstr "Ldi umuɣ n ukaram amiran"
 
-#: src/resources/gtk/help-overlay.ui:278
+#: src/resources/gtk/help-overlay.ui:284
+#, fuzzy
+#| msgctxt "shortcut window"
+#| msgid "Open Current Folder Menu"
+msgctxt "shortcut window"
+msgid "Open Context Menu"
+msgstr "Ldi umuɣ n ukaram amiran"
+
+#: src/resources/gtk/help-overlay.ui:290
 msgctxt "shortcut window"
 msgid "List View"
 msgstr "Tamuɣli s tebdart"
 
-#: src/resources/gtk/help-overlay.ui:284
+#: src/resources/gtk/help-overlay.ui:296
 msgctxt "shortcut window"
 msgid "Grid View"
 msgstr ""
 
-#: src/resources/gtk/help-overlay.ui:290 src/resources/gtk/help-overlay.ui:297
+#: src/resources/gtk/help-overlay.ui:302 src/resources/gtk/help-overlay.ui:309
 msgctxt "shortcut window"
 msgid "Expand Folder"
 msgstr ""
 
-#: src/resources/gtk/help-overlay.ui:304 src/resources/gtk/help-overlay.ui:311
+#: src/resources/gtk/help-overlay.ui:316 src/resources/gtk/help-overlay.ui:323
 msgctxt "shortcut window"
 msgid "Collapse Folder"
 msgstr ""
 
-#: src/resources/gtk/help-overlay.ui:320
+#: src/resources/gtk/help-overlay.ui:332
 msgctxt "shortcut window"
 msgid "Editing"
 msgstr "Asiẓreg"
 
-#: src/resources/gtk/help-overlay.ui:323
+#: src/resources/gtk/help-overlay.ui:335
 msgctxt "shortcut window"
 msgid "Create Folder"
 msgstr "Snulfu-d akaram"
 
-#: src/resources/gtk/help-overlay.ui:329
+#: src/resources/gtk/help-overlay.ui:341
 msgctxt "shortcut window"
 msgid "Rename"
-msgstr "Beddel isem"
+msgstr "Snifel isem"
 
-#: src/resources/gtk/help-overlay.ui:335
+#: src/resources/gtk/help-overlay.ui:347
 msgctxt "shortcut window"
 msgid "Move to Trash"
 msgstr "Smutti ɣer tqecwalt"
 
-#: src/resources/gtk/help-overlay.ui:341
+#: src/resources/gtk/help-overlay.ui:353
 msgctxt "shortcut window"
 msgid "Delete Permanently"
 msgstr "Kkes i lebda"
 
-#: src/resources/gtk/help-overlay.ui:347
+#: src/resources/gtk/help-overlay.ui:359
 msgctxt "shortcut window"
 msgid "Create Link to Copied Item"
 msgstr "Rnu asaɣ ar %d iferdisen yettwaneɣlen"
 
-#: src/resources/gtk/help-overlay.ui:353
+#: src/resources/gtk/help-overlay.ui:365
 msgctxt "shortcut window"
 msgid "Create Link to Selected Item"
 msgstr "Rnu asaɣ ar %d uferdis yettwafernen"
 
-#: src/resources/gtk/help-overlay.ui:359
+#: src/resources/gtk/help-overlay.ui:371
 msgctxt "shortcut window"
 msgid "Cut"
 msgstr "Gzem"
 
-#: src/resources/gtk/help-overlay.ui:365
+#: src/resources/gtk/help-overlay.ui:377
 msgctxt "shortcut window"
 msgid "Copy"
 msgstr "Nɣel"
 
-#: src/resources/gtk/help-overlay.ui:371
+#: src/resources/gtk/help-overlay.ui:383
 msgctxt "shortcut window"
 msgid "Paste"
 msgstr "Senṭeḍ"
 
-#: src/resources/gtk/help-overlay.ui:377
+#: src/resources/gtk/help-overlay.ui:389
 msgctxt "shortcut window"
 msgid "Select All"
 msgstr "Fren-iten akk"
 
-#: src/resources/gtk/help-overlay.ui:383
+#: src/resources/gtk/help-overlay.ui:395
 msgctxt "shortcut window"
 msgid "Invert Selection"
 msgstr ""
 
-#: src/resources/gtk/help-overlay.ui:389
+#: src/resources/gtk/help-overlay.ui:401
 msgctxt "shortcut window"
 msgid "Select Items Matching"
 msgstr ""
 
-#: src/resources/gtk/help-overlay.ui:395
+#: src/resources/gtk/help-overlay.ui:407
 msgctxt "shortcut window"
 msgid "Show Item Properties"
 msgstr "Sken-d iraten n iferdisen"
 
-#: src/resources/ui/nautilus-app-chooser.ui:46
-msgid "Choose an app to open the selected files."
-msgstr ""
+#: src/resources/ui/nautilus-app-chooser.ui:51
+msgid "Choose an app to open the selected files"
+msgstr "Fren asnas s wacu ara teldiḍ ifuyla yettwafernen"
 
-#: src/resources/ui/nautilus-app-chooser.ui:73
+#: src/resources/ui/nautilus-app-chooser.ui:63
 msgid "Always use for this file type"
 msgstr ""
 
@@ -4592,53 +4666,55 @@ msgstr ""
 
 #: src/resources/ui/nautilus-batch-rename-dialog.ui:48
 msgid "Artist Name"
-msgstr ""
+msgstr "Isem n unaẓur"
 
 #: src/resources/ui/nautilus-batch-rename-dialog.ui:58
 msgid "Album Name"
-msgstr ""
+msgstr "Isem n walbum"
 
 #: src/resources/ui/nautilus-batch-rename-dialog.ui:65
 msgid "Original File Name"
 msgstr ""
 
-#: src/resources/ui/nautilus-batch-rename-dialog.ui:113
-#: src/resources/ui/nautilus-file-conflict-dialog.ui:30
-#: src/resources/ui/nautilus-rename-file-popover.ui:47
-#: src/gtk/nautilusgtkplacessidebar.c:1984
-#: src/gtk/nautilusgtkplacessidebar.c:2901
-msgid "_Rename"
-msgstr "Beddel isem (_R)"
-
-#: src/resources/ui/nautilus-batch-rename-dialog.ui:141
+#: src/resources/ui/nautilus-batch-rename-dialog.ui:155
 msgid "Rename _using a template"
 msgstr ""
 
-#: src/resources/ui/nautilus-batch-rename-dialog.ui:149
+#: src/resources/ui/nautilus-batch-rename-dialog.ui:163
 msgid "Find and replace _text"
 msgstr ""
 
 #. Translators: This is a noun, not a verb
-#: src/resources/ui/nautilus-batch-rename-dialog.ui:170
+#: src/resources/ui/nautilus-batch-rename-dialog.ui:180
 msgid "Format"
 msgstr ""
 
-#: src/resources/ui/nautilus-batch-rename-dialog.ui:195
+#: src/resources/ui/nautilus-batch-rename-dialog.ui:205
 msgid "Add"
 msgstr "Rnu"
 
-#: src/resources/ui/nautilus-batch-rename-dialog.ui:218
+#: src/resources/ui/nautilus-batch-rename-dialog.ui:226
 msgid "Automatic Numbering Order"
 msgstr ""
 
-#: src/resources/ui/nautilus-batch-rename-dialog.ui:243
+#: src/resources/ui/nautilus-batch-rename-dialog.ui:247
 msgctxt "title"
 msgid "Replace"
 msgstr "Semselsi"
 
-#: src/resources/ui/nautilus-batch-rename-dialog.ui:255
+#: src/resources/ui/nautilus-batch-rename-dialog.ui:260
 msgid "Existing Text"
 msgstr "Aḍris yellan"
+
+#: src/resources/ui/nautilus-batch-rename-dialog.ui:453
+msgid "Next Conflict"
+msgstr ""
+
+#: src/resources/ui/nautilus-batch-rename-dialog.ui:463
+#, fuzzy
+#| msgid "Previous"
+msgid "Previous Conflict"
+msgstr "Uzwir"
 
 #: src/resources/ui/nautilus-column-chooser.ui:14
 msgid "Visible Columns"
@@ -4678,7 +4754,7 @@ msgstr "Isem _n uɣbar"
 
 #: src/resources/ui/nautilus-compress-dialog.ui:76
 msgid "Co_mpression Method"
-msgstr ""
+msgstr "Tarrayt n tussda (_M)"
 
 #: src/resources/ui/nautilus-compress-dialog.ui:85
 msgid "Encryption"
@@ -4697,6 +4773,63 @@ msgstr "Awal n uɛeddi (_P)"
 #: src/resources/ui/nautilus-compress-dialog.ui:96
 msgid "_Confirm Password"
 msgstr "Sentem awal n uɛeddi (_C)"
+
+#: src/resources/ui/nautilus-date-entry-row.ui:9
+msgid "Pick Date"
+msgstr ""
+
+#: src/resources/ui/nautilus-date-range-dialog.ui:5
+msgid "Add Date Filter"
+msgstr ""
+
+#: src/resources/ui/nautilus-date-range-dialog.ui:15
+msgid "Filter by Date"
+msgstr ""
+
+#: src/resources/ui/nautilus-date-range-dialog.ui:26
+msgid "_Date Range"
+msgstr ""
+
+#. Keep in sync with code
+#: src/resources/ui/nautilus-date-range-dialog.ui:32
+msgid "Single Day"
+msgstr ""
+
+#: src/resources/ui/nautilus-date-range-dialog.ui:33
+msgid "± 1 day"
+msgstr "± 1 n wass"
+
+#: src/resources/ui/nautilus-date-range-dialog.ui:34
+msgid "± 3 days"
+msgstr "± 3 n wussan"
+
+#: src/resources/ui/nautilus-date-range-dialog.ui:35
+msgid "± 7 days"
+msgstr "± 7 n wussan"
+
+#: src/resources/ui/nautilus-date-range-dialog.ui:36
+msgid "± 14 days"
+msgstr "± 14 n wussan"
+
+#: src/resources/ui/nautilus-date-range-dialog.ui:37
+msgid "Specify Range"
+msgstr ""
+
+#: src/resources/ui/nautilus-date-range-dialog.ui:50
+msgid "_Date"
+msgstr ""
+
+#: src/resources/ui/nautilus-date-range-dialog.ui:58
+msgid "Fro_m"
+msgstr ""
+
+#: src/resources/ui/nautilus-date-range-dialog.ui:67
+msgid "_To"
+msgstr "I"
+
+#: src/resources/ui/nautilus-date-range-dialog.ui:80
+msgid "_Filter"
+msgstr "Imsizdeg (_F)"
 
 #: src/resources/ui/nautilus-new-folder-dialog.ui:5
 #: src/resources/ui/nautilus-file-chooser.ui:187
@@ -4811,14 +4944,16 @@ msgid "Open in Consol_e"
 msgstr "Ldi deg tdiwent (_E)"
 
 #: src/resources/ui/nautilus-files-view-context-menus.ui:27
+#: src/resources/ui/nautilus-pathbar-context-menu.ui:83
 msgid "_Paste"
 msgstr "Senteḍ (_P)"
 
 #: src/resources/ui/nautilus-files-view-context-menus.ui:32
 msgid "Paste as _Link"
-msgstr "Senṭeḍ amzun d asaɣ"
+msgstr "Senteḍ-it amzun d aseɣwen"
 
 #: src/resources/ui/nautilus-files-view-context-menus.ui:37
+#: src/resources/ui/nautilus-pathbar-context-menu.ui:92
 msgid "Select _All"
 msgstr "Fren-iten a_kk"
 
@@ -4827,13 +4962,13 @@ msgid "_Visible Columns"
 msgstr "Ijga n tebdart d-yettbanen (_V)"
 
 #: src/resources/ui/nautilus-files-view-context-menus.ui:48
-#: src/resources/ui/nautilus-pathbar-context-menu.ui:89
+#: src/resources/ui/nautilus-pathbar-context-menu.ui:99
 msgid "Empty _Trash…"
 msgstr "Smir _taqecwalt…"
 
 #: src/resources/ui/nautilus-files-view-context-menus.ui:56
 #: src/resources/ui/nautilus-files-view-context-menus.ui:276
-#: src/resources/ui/nautilus-pathbar-context-menu.ui:96
+#: src/resources/ui/nautilus-pathbar-context-menu.ui:106
 msgid "P_roperties"
 msgstr "I_raten"
 
@@ -4847,21 +4982,7 @@ msgstr "Ssef ɣer… (_X)"
 
 #: src/resources/ui/nautilus-files-view-context-menus.ui:82
 msgid "_Run as a Program"
-msgstr ""
-
-#: src/resources/ui/nautilus-files-view-context-menus.ui:98
-#: src/resources/ui/nautilus-pathbar-context-menu.ui:10
-#: src/gtk/nautilusgtkplacessidebar.c:2759
-#: src/gtk/nautilusgtkplacessidebar.c:2875
-msgid "Open in New _Tab"
-msgstr "Ldi deg iccer amaynu_t"
-
-#: src/resources/ui/nautilus-files-view-context-menus.ui:103
-#: src/resources/ui/nautilus-pathbar-context-menu.ui:6
-#: src/gtk/nautilusgtkplacessidebar.c:2766
-#: src/gtk/nautilusgtkplacessidebar.c:2884
-msgid "Open in New _Window"
-msgstr "Ldi deg usfaylu amaynut (_W)"
+msgstr "Selkem-it am ahil (_R)"
 
 #: src/resources/ui/nautilus-files-view-context-menus.ui:123
 msgid "_Open Item Location"
@@ -4874,31 +4995,6 @@ msgstr "I_skripten"
 #: src/resources/ui/nautilus-files-view-context-menus.ui:135
 msgid "_Open Scripts Folder"
 msgstr ""
-
-#: src/resources/ui/nautilus-files-view-context-menus.ui:144
-#: src/gtk/nautilusgtkplacessidebar.c:2924
-msgid "_Mount"
-msgstr "Serkeb (_M)"
-
-#: src/resources/ui/nautilus-files-view-context-menus.ui:149
-#: src/gtk/nautilusgtkplacessidebar.c:2933
-msgid "_Unmount"
-msgstr "Kkes aserkeb (_U)"
-
-#: src/resources/ui/nautilus-files-view-context-menus.ui:154
-#: src/gtk/nautilusgtkplacessidebar.c:2940
-msgid "_Eject"
-msgstr "Ḍ_eqqer"
-
-#: src/resources/ui/nautilus-files-view-context-menus.ui:164
-#: src/gtk/nautilusgtkplacessidebar.c:2974
-msgid "_Stop"
-msgstr "_Bedd"
-
-#: src/resources/ui/nautilus-files-view-context-menus.ui:169
-#: src/gtk/nautilusgtkplacessidebar.c:2950
-msgid "_Detect Media"
-msgstr "Af-d ami_dya"
 
 #: src/resources/ui/nautilus-files-view-context-menus.ui:178
 msgid "Cu_t"
@@ -4975,7 +5071,7 @@ msgstr "Fren iferdisen isaḍan"
 msgid "Pattern"
 msgstr "Udlif"
 
-#: src/resources/ui/nautilus-name-cell.ui:112
+#: src/resources/ui/nautilus-name-cell.ui:114
 msgid "Full Text Match"
 msgstr ""
 
@@ -5003,11 +5099,6 @@ msgstr "Tansa n uqeddac"
 #: src/resources/ui/nautilus-network-address-bar.ui:111
 msgid "Server Address Information"
 msgstr ""
-
-#: src/resources/ui/nautilus-network-cell.ui:70
-#: src/gtk/nautilusgtkplacessidebar.c:389
-msgid "Disconnect"
-msgstr "Senser tuqqna"
 
 #: src/resources/ui/nautilus-operations-ui-manager-request-passphrase.ui:5
 msgid "Password Required"
@@ -5046,16 +5137,16 @@ msgid "_Unstar Folder"
 msgstr "Kkes itri i _ukaram"
 
 #: src/resources/ui/nautilus-pathbar-context-menu.ui:72
-msgid "Edit _Location"
-msgstr "Ẓreg adig (_L)"
-
-#: src/resources/ui/nautilus-pathbar-context-menu.ui:77
 msgid "_Copy Location"
 msgstr "Nɣel adig (_C)"
 
-#: src/resources/ui/nautilus-pathbar-context-menu.ui:81
+#: src/resources/ui/nautilus-pathbar-context-menu.ui:76
 msgid "_Open in File Manager"
 msgstr "Ldi s umsefrak n yifuyla"
+
+#: src/resources/ui/nautilus-pathbar-context-menu.ui:87
+msgid "Paste as Lin_k"
+msgstr "Senteḍ-it amzun d aseɣwen"
 
 #: src/resources/ui/nautilus-preferences-dialog.ui:8
 #: src/resources/ui/nautilus-preferences-dialog.ui:11
@@ -5158,12 +5249,6 @@ msgstr "Wis kraḍ"
 msgid "Show File Operations"
 msgstr "Sken-d timhalin n ufaylu"
 
-#: src/resources/ui/nautilus-properties-window.ui:5
-#: src/resources/ui/nautilus-properties-window.ui:16
-#: src/gtk/nautilusgtkplacessidebar.c:2998
-msgid "Properties"
-msgstr "Iraten"
-
 #: src/resources/ui/nautilus-properties-window.ui:100
 msgid "Set Custom Icon"
 msgstr "Sbadu tignit tudmawant"
@@ -5178,7 +5263,7 @@ msgstr "Anagraw d yifuyla arussin"
 
 #: src/resources/ui/nautilus-properties-window.ui:255
 msgid "total"
-msgstr ""
+msgstr "aɣrud"
 
 #. Refers to the capacity of the filesystem
 #: src/resources/ui/nautilus-properties-window.ui:285
@@ -5267,7 +5352,7 @@ msgstr "Iseqdacen nniḍen"
 
 #: src/resources/ui/nautilus-properties-window.ui:674
 msgid "Security Context"
-msgstr ""
+msgstr "Asatel n tɣellist"
 
 #: src/resources/ui/nautilus-properties-window.ui:691
 msgid "Change Permissions for _Enclosed Files…"
@@ -5277,57 +5362,102 @@ msgstr ""
 msgid "New Filename"
 msgstr "Isem amaynut n ufaylu"
 
-#: src/resources/ui/nautilus-search-popover.ui:15
-msgid "When"
-msgstr "Melmi"
+#: src/resources/ui/nautilus-search-popover.ui:25
+msgid "File Types"
+msgstr "Anawen n ifuyla"
 
 #: src/resources/ui/nautilus-search-popover.ui:44
-msgid "Select _Dates…"
-msgstr "Fren izemzen (_D)"
+msgid "_Audio"
+msgstr "Imesli (_A)"
 
-#: src/resources/ui/nautilus-search-popover.ui:55
-msgid "Clear Date Filter"
+#: src/resources/ui/nautilus-search-popover.ui:56
+msgid "_Documents"
+msgstr "Isemliyen (_D)"
+
+#: src/resources/ui/nautilus-search-popover.ui:68
+msgid "_Folders"
+msgstr "Ikaramen (_F)"
+
+#: src/resources/ui/nautilus-search-popover.ui:80
+msgid "_Images"
+msgstr "Tugn_iwin"
+
+#: src/resources/ui/nautilus-search-popover.ui:92
+msgid "_PDF"
+msgstr "_PDF"
+
+#: src/resources/ui/nautilus-search-popover.ui:104
+#, fuzzy
+#| msgid "Spreadsheet"
+msgid "_Spreadsheets"
+msgstr "Tiferkit n usiḍen"
+
+#: src/resources/ui/nautilus-search-popover.ui:116
+msgid "Te_xt"
+msgstr "Aḍris (_x)"
+
+#: src/resources/ui/nautilus-search-popover.ui:128
+msgid "_Videos"
+msgstr "Ti_vidyutin"
+
+#: src/resources/ui/nautilus-search-popover.ui:144
+msgid "Specific Type"
 msgstr ""
 
-#: src/resources/ui/nautilus-search-popover.ui:96
-msgid "Since…"
-msgstr "Si..."
+#. Translators: This refers to a date time
+#: src/resources/ui/nautilus-search-popover.ui:185
+msgid "Used"
+msgstr "Yettwaseqdec"
 
-#: src/resources/ui/nautilus-search-popover.ui:155
-msgid "Last _modified"
-msgstr "Asnifel aneggaru (_M)"
+#: src/resources/ui/nautilus-search-popover.ui:213
+msgid "_Today"
+msgstr "Ass-a (_T)"
 
-#: src/resources/ui/nautilus-search-popover.ui:167
-msgid "Last _used"
-msgstr "Aseqdec anneggar_u"
+#: src/resources/ui/nautilus-search-popover.ui:220
+msgid "_Yesterday"
+msgstr "Iḍelli (_Y)"
 
-#: src/resources/ui/nautilus-search-popover.ui:179
-msgid "_Created"
-msgstr "Yettwasnulfa-d (_C)"
+#: src/resources/ui/nautilus-search-popover.ui:227
+msgid "Past _Week"
+msgstr "Dduṛt yezrin (_W)"
 
-#: src/resources/ui/nautilus-search-popover.ui:201
-msgid "What"
-msgstr "Acu"
+#: src/resources/ui/nautilus-search-popover.ui:234
+msgid "Past _Month"
+msgstr "Aggur yezrin (_M)"
 
-#: src/resources/ui/nautilus-search-popover.ui:232
-msgid "_Anything"
-msgstr "Yal t_aɣawsa"
+#: src/resources/ui/nautilus-search-popover.ui:241
+msgid "Past Y_ear"
+msgstr "As_eggas yezrin"
 
-#: src/resources/ui/nautilus-search-popover.ui:295
-msgid "Full _Text"
+#: src/resources/ui/nautilus-search-popover.ui:255
+msgid "Custom Date Range"
 msgstr ""
 
-#: src/resources/ui/nautilus-search-popover.ui:297
+#: src/resources/ui/nautilus-search-popover.ui:276
+#, fuzzy
+#| msgid "Select Items Matching"
+msgid "Text Matching"
+msgstr "Fren iferdisen isaḍan"
+
+#: src/resources/ui/nautilus-search-popover.ui:292
+msgid "_Content & Filename"
+msgstr "Agbur akked yisem n ufaylu (_C)"
+
+#: src/resources/ui/nautilus-search-popover.ui:293
 msgid "Search Inside Files"
 msgstr "Nadi sdaxel n yifuyla"
 
-#: src/resources/ui/nautilus-search-popover.ui:305
-msgid "File _Name"
-msgstr "Isem _n ufaylu"
+#: src/resources/ui/nautilus-search-popover.ui:301
+msgid "_Only Filename"
+msgstr "Isem n ufaylu kan (_O)"
 
-#: src/resources/ui/nautilus-search-popover.ui:307
+#: src/resources/ui/nautilus-search-popover.ui:302
 msgid "Don't Search Inside Files"
 msgstr "Ur ttnadi ara sdaxel n yifuyla"
+
+#: src/resources/ui/nautilus-search-popover.ui:312
+msgid "Only Co_ntents"
+msgstr "Igburen ka_n"
 
 #: src/resources/ui/nautilus-search-types-dialog.ui:5
 msgid "Add File Type Filter"
@@ -5379,7 +5509,7 @@ msgstr "Asni_fel amezwaru"
 
 #: src/resources/ui/nautilus-toolbar-view-menu.ui:32
 msgid "_Size"
-msgstr "Teɣzi (_S)"
+msgstr "Tiddi (_S)"
 
 #: src/resources/ui/nautilus-toolbar-view-menu.ui:38
 msgid "_Type"
@@ -5416,7 +5546,7 @@ msgstr "Wali tixtiṛiyin"
 msgid "Zoom Out"
 msgstr "Semẓi"
 
-#: src/resources/ui/nautilus-view-controls.ui:63
+#: src/resources/ui/nautilus-view-controls.ui:62
 msgid "Zoom In"
 msgstr "Semɣeṛ"
 
@@ -5477,710 +5607,3 @@ msgstr "Mdel accaren-nniḍen (_O)"
 #: src/resources/ui/nautilus-window.ui:128
 msgid "Main Menu"
 msgstr "Umuɣ agejdan"
-
-#: src/gtk/nautilusgtkplacessidebar.c:391
-msgid "Eject"
-msgstr "Ḍeqqer"
-
-#: src/gtk/nautilusgtkplacessidebar.c:393
-msgid "Unmount"
-msgstr "Kkes aserkeb"
-
-#: src/gtk/nautilusgtkplacessidebar.c:669
-msgid "Open Personal Folder"
-msgstr "Ldi akaram anagbar"
-
-#: src/gtk/nautilusgtkplacessidebar.c:678
-msgid "Recent"
-msgstr "Melmi kan"
-
-#: src/gtk/nautilusgtkplacessidebar.c:680
-msgid "Recent Files"
-msgstr "Ifuyla n melmi kan"
-
-#: src/gtk/nautilusgtkplacessidebar.c:689
-msgid "Starred Files"
-msgstr "Ifuyla s yitran"
-
-#: src/gtk/nautilusgtkplacessidebar.c:701
-msgid "Desktop"
-msgstr "Tanarit"
-
-#: src/gtk/nautilusgtkplacessidebar.c:703
-msgid "Open the contents of your desktop in a folder"
-msgstr "Ldi igburen n tnarit-ik·im deg ukaram"
-
-#: src/gtk/nautilusgtkplacessidebar.c:715
-msgid "Open Network Locations"
-msgstr ""
-
-#: src/gtk/nautilusgtkplacessidebar.c:726
-msgid "Open Trash"
-msgstr "Ldi taqecwalt"
-
-#: src/gtk/nautilusgtkplacessidebar.c:830
-#: src/gtk/nautilusgtkplacessidebar.c:860
-#: src/gtk/nautilusgtkplacessidebar.c:1038
-#, c-format
-msgid "Mount and Open “%s”"
-msgstr "Serkeb sakin ldi “%s”"
-
-#: src/gtk/nautilusgtkplacessidebar.c:1016
-msgid "New bookmark"
-msgstr "Ticreḍt tamaynut"
-
-#: src/gtk/nautilusgtkplacessidebar.c:1018
-msgid "Add a new bookmark"
-msgstr "Rnu ticreḍt tamaynut"
-
-#. Translators: This means that unlocking an encrypted storage
-#. * device failed. %s is the name of the device.
-#.
-#: src/gtk/nautilusgtkplacessidebar.c:1700
-#, c-format
-msgid "Error unlocking “%s”"
-msgstr "D ameɣzi tukksa n uzekṛun i “%s”"
-
-#: src/gtk/nautilusgtkplacessidebar.c:1897
-msgid "This name is already taken"
-msgstr "isem-a yettwasekles yakan"
-
-#: src/gtk/nautilusgtkplacessidebar.c:2281
-#, c-format
-msgid "Unable to stop “%s”"
-msgstr "D awezɣi aseḥbes n “%s”"
-
-#: src/gtk/nautilusgtkplacessidebar.c:2488
-#, c-format
-msgid "Unable to poll “%s” for media changes"
-msgstr ""
-
-#: src/gtk/nautilusgtkplacessidebar.c:2896
-msgid "_Remove from Bookmarks"
-msgstr ""
-
-#: src/gtk/nautilusgtkplacessidebar.c:2961
-msgid "_Power On"
-msgstr ""
-
-#: src/gtk/nautilusgtkplacessidebar.c:2962
-msgid "_Connect Drive"
-msgstr "Qqen ableɣ (_C)"
-
-#: src/gtk/nautilusgtkplacessidebar.c:2963
-msgid "_Start Multi-disk Device"
-msgstr "_Sekker ableɣ aget-aḍebsi"
-
-#: src/gtk/nautilusgtkplacessidebar.c:2964
-msgid "_Unlock Device"
-msgstr "Kkes azekṛ_un i webleɣ"
-
-#: src/gtk/nautilusgtkplacessidebar.c:2977
-msgid "_Disconnect Drive"
-msgstr "Senser ableɣ"
-
-#: src/gtk/nautilusgtkplacessidebar.c:2978
-msgid "_Stop Multi-disk Device"
-msgstr "_Seḥbes ableɣ aget-aḍebsi"
-
-#: src/gtk/nautilusgtkplacessidebar.c:2979
-msgid "_Lock Device"
-msgstr "Sekkeṛ ab_leɣ"
-
-#: src/gtk/nautilusgtkplacessidebar.c:2988
-msgid "Format…"
-msgstr "Amasal…"
-
-#: src/gtk/nautilusgtkplacessidebar.c:3519
-msgid "Device"
-msgstr "Ibenk"
-
-#: src/gtk/nautilusgtkplacessidebar.c:3561
-msgid "Sidebar"
-msgstr "Afeggag n yidis"
-
-#: src/gtk/nautilusgtkplacessidebar.c:3563
-msgid "List of common shortcuts, mountpoints, and bookmarks."
-msgstr ""
-
-#~ msgid "Do you want to empty the trash before you unmount?"
-#~ msgstr "Tebɣiḍ ad tesmireḍ taqecwalt send afsay?"
-
-#~ msgid ""
-#~ "In order to regain the free space on this volume the trash must be "
-#~ "emptied. All trashed items on the volume will be permanently lost."
-#~ msgstr ""
-#~ "Iwakken ad d-trebḥeḍ tallunt tilellit deg ubleɣ-agi isefk ad tesneɣleḍ "
-#~ "taqecwalt.  Akk iferdisen n tqecwalt n ubleɣ-agi ad ṛuḥen i lebda."
-
-#~ msgid "Audio CD"
-#~ msgstr "Aḍebsi CD n umesliw"
-
-#~ msgid "Audio DVD"
-#~ msgstr "Aḍebsi DVD n umesliw"
-
-#~ msgid "Video DVD"
-#~ msgstr "Aḍebsi DVD n uvidyu"
-
-#~ msgid "Video CD"
-#~ msgstr "Vidyu CD"
-
-#~ msgid "Super Video CD"
-#~ msgstr "Super-vidyu CD"
-
-#~ msgid "Picture CD"
-#~ msgstr "Aḍebsi CD n tungniwin"
-
-#~ msgid "Merge"
-#~ msgstr "Smezdi"
-
-#~ msgid "On This Computer Only"
-#~ msgstr "Deg uselkim-a kan"
-
-#~ msgid "Select type"
-#~ msgstr "Fren anaw"
-
-#~ msgid "Select"
-#~ msgstr "Fren"
-
-#~ msgid "Searching network locations only"
-#~ msgstr "Anadi n yimukan n uẓeṭṭa kan"
-
-#~ msgid "Only searching the current folder"
-#~ msgstr "Anadi deg ukaram amiran kan"
-
-#~ msgid "Create"
-#~ msgstr "Snulfu-d"
-
-#~ msgid "Enter a Password"
-#~ msgstr "Sekcem-d awal n uɛeddi"
-
-#~ msgid "C_ancel"
-#~ msgstr "Sefsex (_A)"
-
-#~ msgid "Re_name"
-#~ msgstr "S_nifel isem"
-
-#~ msgid "Re_place"
-#~ msgstr "Semselsi (_P)"
-
-#~ msgid "Trashed on"
-#~ msgstr "Deg iḍumman di"
-
-#~ msgid "The permissions of the selected file could not be determined."
-#~ msgstr "Isirigen n ufaylu yettwafernen ur ttusbadun ara."
-
-#~ msgid "No Recent Servers"
-#~ msgstr "Ulac iqeddacen ineggura"
-
-#~ msgid "Recent Servers"
-#~ msgstr "Iqeddacen ineggura"
-
-#~ msgid "Enter server address…"
-#~ msgstr "Sekcem tansa n uqeddac…"
-
-#~ msgid "Enter Location"
-#~ msgstr "Sekcem adig"
-
-#~ msgid "Manually enter a location"
-#~ msgstr "Sekcem adig s ufus"
-
-#~ msgid "Open the contents of the file system"
-#~ msgstr "Ldi igburen n unagraw n yifuyla"
-
-#~ msgid "Computer"
-#~ msgstr "Aselkim"
-
-#~ msgid "Original folder"
-#~ msgstr "Akaram aneṣli"
-
-#~ msgid "Replace with"
-#~ msgstr "Semselsi s"
-
-#~ msgid "Tile View"
-#~ msgstr "Sken-d azwel"
-
-#~ msgid "Show location bar in new windows"
-#~ msgstr "Sken-d afeggag n wadig deg usfaylu amaynut"
-
-#~ msgid "X"
-#~ msgstr "X"
-
-#~ msgid "Y"
-#~ msgstr "Y"
-
-#~ msgctxt "Title"
-#~ msgid "Unknown"
-#~ msgstr "Arussin"
-
-#~ msgctxt "Artist"
-#~ msgid "Unknown"
-#~ msgstr "Arussin"
-
-#~ msgctxt "Album"
-#~ msgid "Unknown"
-#~ msgstr "Arussin"
-
-#~ msgctxt "Year"
-#~ msgid "Unknown"
-#~ msgstr "Arussin"
-
-#~ msgctxt "Media container"
-#~ msgid "Unknown"
-#~ msgstr "Arussin"
-
-#~ msgctxt "Dimensions"
-#~ msgid "N/A"
-#~ msgstr "N/A"
-
-#~ msgctxt "Video codec"
-#~ msgid "N/A"
-#~ msgstr "N/A"
-
-#~ msgctxt "Video bit rate"
-#~ msgid "N/A"
-#~ msgstr "N/A"
-
-#~ msgctxt "Frame rate"
-#~ msgid "N/A"
-#~ msgstr "N/A"
-
-#~ msgctxt "Audio bit rate"
-#~ msgid "N/A"
-#~ msgstr "N/A"
-
-#~ msgctxt "Audio codec"
-#~ msgid "N/A"
-#~ msgstr "N/A"
-
-#~ msgid "0 Hz"
-#~ msgstr "0 Hz"
-
-#~ msgid "0 Channels"
-#~ msgstr "0 n tregwa"
-
-#~ msgid "N/A"
-#~ msgstr "N/A"
-
-#~ msgctxt "Stream bit rate"
-#~ msgid "N/A"
-#~ msgstr "N/A"
-
-#, c-format
-#~ msgid "%d Hz"
-#~ msgstr "%d Hz"
-
-#~ msgctxt "Sample rate"
-#~ msgid "N/A"
-#~ msgstr "N/A"
-
-#~ msgctxt "Number of audio channels"
-#~ msgid "N/A"
-#~ msgstr "N/A"
-
-#~ msgid "Title:"
-#~ msgstr "Azewel:"
-
-#~ msgid "Codec:"
-#~ msgstr "Akudak:"
-
-#~ msgid "Send to…"
-#~ msgstr "Azen i..."
-
-#~ msgid "Send file by mail…"
-#~ msgstr "Azen afaylu s imayl..."
-
-#~ msgid "Send files by mail…"
-#~ msgstr "Azen ifuyla s imayl..."
-
-#~ msgid "--check cannot be used with other options."
-#~ msgstr "--check ulamek aa yettwasemres akked tnefrunin-nniḍen."
-
-#~ msgid "Perform a quick set of self-check tests."
-#~ msgstr "Selkem asbadu uzrib ɣef ikayaden n usenqed awurman."
-
-#~ msgid "The selection rectangle"
-#~ msgstr "Asrem n tefrayt"
-
-#~ msgid "Reset to De_fault"
-#~ msgstr "Wannez ɣer _umezwer"
-
-#~ msgid "%H:%M"
-#~ msgstr "%H:%M"
-
-#~ msgid "%l:%M %p"
-#~ msgstr "%l:%M %p"
-
-#, no-c-format
-#~ msgid "Yesterday"
-#~ msgstr "Iḍelli"
-
-#, no-c-format
-#~ msgid "%a"
-#~ msgstr "%a"
-
-#, no-c-format
-#~ msgid "%-e %b"
-#~ msgstr "%-e %b"
-
-#, no-c-format
-#~ msgid "%-e %b %H:%M"
-#~ msgstr "%-e %b %H:%M"
-
-#, no-c-format
-#~ msgid "%-e %b %l:%M %p"
-#~ msgstr "%-e %b %l:%M %p"
-
-#, no-c-format
-#~ msgid "%c"
-#~ msgstr "%c"
-
-#~ msgid "Me"
-#~ msgstr "Nek"
-
-#, c-format
-#~ msgid "Another link to %s"
-#~ msgstr "Aseɣwen-nniḍen ar %s"
-
-#, c-format
-#~ msgid "%'dst link to %s"
-#~ msgstr "%'dst icudd ar %s"
-
-#, c-format
-#~ msgid "%'dnd link to %s"
-#~ msgstr "%'dnd icudd ar %s"
-
-#, c-format
-#~ msgid "%'drd link to %s"
-#~ msgstr "%'drd icudd ar %s"
-
-#, c-format
-#~ msgid "%'dth link to %s"
-#~ msgstr "%'dth icudd ar %s"
-
-#~ msgid " (copy)"
-#~ msgstr " (anɣel)"
-
-#~ msgid " (another copy)"
-#~ msgstr " (anɣel-nniḍen)"
-
-#~ msgid "th copy)"
-#~ msgstr "anɣel )"
-
-#~ msgid "st copy)"
-#~ msgstr "anɣel mzr)"
-
-#~ msgid "nd copy)"
-#~ msgstr "anɣel wis sn)"
-
-#~ msgid "rd copy)"
-#~ msgstr "anɣel wis krḍ)"
-
-#, c-format
-#~ msgid "%s (copy)%s"
-#~ msgstr "%s (anɣel)%s"
-
-#, c-format
-#~ msgid "%s (another copy)%s"
-#~ msgstr "%s (an qel-nniḍen)%s"
-
-#, c-format
-#~ msgid "%s (%'dth copy)%s"
-#~ msgstr "%s (%'dth n unɣel)%s"
-
-#, c-format
-#~ msgid "%s (%'dst copy)%s"
-#~ msgstr "%s (%'dst n unɣel)%s"
-
-#, c-format
-#~ msgid "%s (%'dnd copy)%s"
-#~ msgstr "%s (%'dnd n unɣel)%s"
-
-#, c-format
-#~ msgid "%s (%'drd copy)%s"
-#~ msgstr "%s (%'drd n unɣel)%s"
-
-#~ msgid " ("
-#~ msgstr " ("
-
-#, c-format
-#~ msgid " (%'d"
-#~ msgstr " (%'d"
-
-#, c-format
-#~ msgid ""
-#~ "Are you sure you want to permanently delete the %'d selected item from "
-#~ "the trash?"
-#~ msgid_plural ""
-#~ "Are you sure you want to permanently delete the %'d selected items from "
-#~ "the trash?"
-#~ msgstr[0] ""
-#~ "Tebɣiḍ ad tekkseḍ s wudem imezgi %'d n uferdis yettwafernen seg iḍuman?"
-#~ msgstr[1] ""
-#~ "Tebɣiḍ ad tekkseḍ s wudem imezgi %'d n yiferdisen yettwafernen seg iḍuman?"
-
-#~ msgid "If you delete an item, it will be permanently lost."
-#~ msgstr "Ma tekkseḍ aferdis, ad iṛuḥ i lebda."
-
-#~ msgid "Empty all items from Trash?"
-#~ msgstr "Ad tekkseḍ akk iferdisen n tqecwalt?"
-
-#, c-format
-#~ msgid "This will open %'d separate tab."
-#~ msgid_plural "This will open %'d separate tabs."
-#~ msgstr[0] "Ayagi ad yeldi %'d n yiccer iman-is."
-#~ msgstr[1] "Ayagi ad yeldi %'d n yiccaren iman-nsen."
-
-#, c-format
-#~ msgid "This will open %'d separate window."
-#~ msgid_plural "This will open %'d separate windows."
-#~ msgstr[0] "Ayagi ad yeldi %'d n nusfaylu iman-is."
-#~ msgstr[1] "Ayagi ad yeldi %'d n n isfuyla iman-nsen."
-
-#~ msgid "Wallpapers"
-#~ msgstr "Wallpapers"
-
-#~ msgid "Drag and drop is only supported on local file systems."
-#~ msgstr "Azuɣer akked usersi itteddu kan deg yinagrawen n ifuyla idiganen."
-
-#~ msgid "(Empty)"
-#~ msgstr "(Ilem)"
-
-#~ msgid "Use Default"
-#~ msgstr "Seqdec s wudem amezwaru"
-
-#, c-format
-#~ msgid "Do you want to view %d location?"
-#~ msgid_plural "Do you want to view %d locations?"
-#~ msgstr[0] "Tebɣiḍ ad twaliḍ %d n wasun?"
-#~ msgstr[1] "Tebɣiḍ ad twaliḍ %d n wasunen?"
-
-#, fuzzy
-#~| msgid "On This Computer"
-#~ msgid "On this computer only"
-#~ msgstr "Deg uselkim-agi"
-
-#~ msgid "_Name"
-#~ msgid_plural "_Names"
-#~ msgstr[0] "_Isem"
-#~ msgstr[1] ""
-
-#, c-format
-#~ msgctxt "folder"
-#~ msgid "%s Properties"
-#~ msgstr "Timeziliyin %s"
-
-#, c-format
-#~ msgctxt "file"
-#~ msgid "%s Properties"
-#~ msgstr "Timeziliyin %s"
-
-#, c-format
-#~ msgctxt "MIME type description (MIME type)"
-#~ msgid "%s (%s)"
-#~ msgstr "%s (%s)"
-
-#~ msgid "nothing"
-#~ msgstr "ulac"
-
-#~ msgid "unreadable"
-#~ msgstr "ulamek taɣuri"
-
-#~ msgid "no "
-#~ msgstr "ala "
-
-#~ msgid "list"
-#~ msgstr "tabdart"
-
-#~ msgid "read"
-#~ msgstr "ɣeṛ"
-
-#~ msgid "create/delete"
-#~ msgstr "rnu/kkes"
-
-#~ msgid "write"
-#~ msgstr "aru"
-
-#~ msgid "access"
-#~ msgstr "anekcum"
-
-#~ msgid "Could not forget association"
-#~ msgstr "D awezɣi tittin n useddukel"
-
-#~ msgid "Forget association"
-#~ msgstr "Ttu asdukkel"
-
-#, c-format
-#~ msgid "%s document"
-#~ msgstr "%s isemli"
-
-#~ msgid "Restore selected items to their original position"
-#~ msgstr "Err-d iferdisen yettwafernen ɣer wadig-nnsen asentan"
-
-#~ msgid "Delete all items in the Trash"
-#~ msgstr "Kkes iferdisen seg iḍumman"
-
-#~ msgid "Show List"
-#~ msgstr "Sken tabdert"
-
-#, c-format
-#~ msgid "“%s” deleted"
-#~ msgstr "\"%s\" yettwakkes"
-
-#~ msgctxt "shortcut window"
-#~ msgid "New window"
-#~ msgstr "Asfaylu amaynut"
-
-#~ msgctxt "shortcut window"
-#~ msgid "Search"
-#~ msgstr "Nadi"
-
-#~ msgctxt "shortcut window"
-#~ msgid "New tab"
-#~ msgstr "Iccer amaynut"
-
-#~ msgctxt "shortcut window"
-#~ msgid "Go back"
-#~ msgstr "Uɣal ɣer deffir"
-
-#~ msgctxt "shortcut window"
-#~ msgid "List view"
-#~ msgstr "Timeẓri n tebdart"
-
-#~ msgctxt "shortcut window"
-#~ msgid "Delete permanently"
-#~ msgstr "Kkes i lebda"
-
-#~ msgctxt "shortcut window"
-#~ msgid "Select all"
-#~ msgstr "Fren akk"
-
-#~ msgid "New _Folder"
-#~ msgstr "A_karam amaynut"
-
-#~ msgid "Tags"
-#~ msgstr "Tibzimin"
-
-#~ msgctxt "menu item"
-#~ msgid "Star"
-#~ msgstr "Itri"
-
-#~ msgctxt "the n-th position of an icon caption"
-#~ msgid "First"
-#~ msgstr "Amezwaru"
-
-#~ msgid "Contents"
-#~ msgstr "Igburen"
-
-#~ msgid "Volume"
-#~ msgstr "Ableɣ"
-
-#~ msgid "Free space"
-#~ msgstr "Amkan yellan"
-
-#, fuzzy
-#~| msgid "Total capacity:"
-#~ msgid "Total capacity"
-#~ msgstr "Akettur uɣrid:"
-
-#~ msgid "Basic"
-#~ msgstr "Azadur"
-
-#~ msgid "Execute"
-#~ msgstr "Selkem"
-
-#~ msgid "Set as default"
-#~ msgstr "Sbadu d amezwer"
-
-#~ msgid "Edit"
-#~ msgstr "Ẓreg"
-
-#~ msgid "Cut"
-#~ msgstr "Couper"
-
-#~ msgid "Paste"
-#~ msgstr "Senṭeḍ"
-
-#~ msgid "Go back"
-#~ msgstr "Uɣal ɣer deffir"
-
-#~ msgid "No results found"
-#~ msgstr "Ulac igmaḍ"
-
-#~ msgid "@icon@"
-#~ msgstr "@tignit@"
-
-#~ msgid "Run in _Terminal"
-#~ msgstr "Sekker deg yi_xef"
-
-#~ msgid "_Display"
-#~ msgstr "_Beqqeḍ"
-
-#~ msgid "%d MB"
-#~ msgstr "%d MAṬ"
-
-#~ msgctxt "preferences"
-#~ msgid "Sort"
-#~ msgstr "Smizzwer"
-
-#~ msgid "Views"
-#~ msgstr "Timezriyin"
-
-#~ msgid "Behavior"
-#~ msgstr "Tiddin"
-
-#~ msgid "Choose the order of information to appear in the list view."
-#~ msgstr "Fren amizzwer n isallan ara yettwabeqqeḍen di tmuɣli s tebdart."
-
-#~ msgid "Always"
-#~ msgstr "Yalas"
-
-#~ msgid "Local Files Only"
-#~ msgstr "Ifuyla idiganen kan"
-
-#~ msgid "Small"
-#~ msgstr "Mecṭuḥ"
-
-#~ msgid "Standard"
-#~ msgstr "Standard"
-
-#~ msgid "Large"
-#~ msgstr "Ameqran"
-
-#~ msgid "By Name"
-#~ msgstr "S yisem"
-
-#~ msgid "By Size"
-#~ msgstr "S teɣzi"
-
-#~ msgid "By Type"
-#~ msgstr "S wanaw"
-
-#~ msgid "By Modification Date"
-#~ msgstr "S wazem n usnifel"
-
-#~ msgid "By Access Date"
-#~ msgstr "S wazemz n unekcum"
-
-#~ msgid "By Trashed Date"
-#~ msgstr "S wazemz n tukksa"
-
-#~ msgid "_Name:"
-#~ msgid_plural "_Names:"
-#~ msgstr[0] "I_sem:"
-#~ msgstr[1] "I_smawen:"
-
-#~ msgid "Accessed:"
-#~ msgstr "yettwakcem:"
-
-#~ msgid "Modified:"
-#~ msgstr "Yettwabeddel:"
-
-#~ msgid "Owner:"
-#~ msgstr "Bab:"
-
-#~ msgid "Group:"
-#~ msgstr "Agraw:"
-
-#~ msgid "Others:"
-#~ msgstr "Wiyiḍ:"
