@@ -2,41 +2,40 @@
 # Courtesy of Prevod.org team (http://prevod.org/) -- 2003—2017.
 # This file is distributed under the same license as the nautilus package.
 # Данило Шеган <danilo@gnome.org>, 2005.
-# Милош Поповић <gpopac@gmail.com>, 2010—2015.
 # Мирослав Николић <miroslavnikolic@rocketmail.com>, 2011—2017.
 # Борисав Живановић <borisavzivanovic@gmail.com>, 2017.
 # Марко М. Костић <marko.m.kostic@gmail.com>, 2015—20-2024.
+# Милош Поповић <gpopac@gmail.com>, 2010—20-2025.
 #
 msgid ""
 msgstr ""
 "Project-Id-Version: nautilus\n"
 "Report-Msgid-Bugs-To: https://gitlab.gnome.org/GNOME/nautilus/issues\n"
-"POT-Creation-Date: 2024-09-23 13:04+0000\n"
-"PO-Revision-Date: 2024-09-30 17:39+0200\n"
-"Last-Translator: Марко М. Костић <marko.m.kostic@gmail.com>\n"
-"Language-Team: српски <gnome-sr@googlegroups.org>\n"
+"POT-Creation-Date: 2025-09-15 18:24+0000\n"
+"PO-Revision-Date: 2025-09-15 22:11+0200\n"
+"Last-Translator: Милош Поповић <gpopac@gmail.com>\n"
+"Language-Team: Serbian <Serbian <gnome-sr@googlegroups.com>>\n"
 "Language: sr\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=4; plural=n==1? 3 : n%10==1 && n%100!=11 ? 0 : "
-"n%10>=2 && n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2;\n"
+"n%10>=2 && n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2\n"
 "X-Project-Style: gnome\n"
-"X-Generator: Gtranslator 45.3\n"
+"X-Generator: Gtranslator 47.1\n"
 
-#: data/nautilus-autorun-software.desktop.in:3
+#: data/nautilus-autorun-software.desktop.in:2
 msgid "Run Software"
 msgstr "Покрени програм"
 
 #: data/org.gnome.Nautilus.metainfo.xml.in.in:5
-#: data/org.gnome.Nautilus.desktop.in.in:3 src/nautilus-mime-actions.c:102
-#: src/nautilus-portal.c:517 src/nautilus-window.c:1746
-#: src/resources/ui/nautilus-window.ui:124
+#: data/org.gnome.Nautilus.desktop.in.in:2 src/nautilus-mime-actions.c:102
+#: src/nautilus-portal.c:535 src/resources/ui/nautilus-window.ui:123
 msgid "Files"
 msgstr "Датотеке"
 
 #: data/org.gnome.Nautilus.metainfo.xml.in.in:6
-#: data/org.gnome.Nautilus.desktop.in.in:4
+#: data/org.gnome.Nautilus.desktop.in.in:3
 msgid "Access and organize files"
 msgstr "Приступите датотекама и организујте их"
 
@@ -65,30 +64,33 @@ msgstr ""
 "иконица, списак иконица и преглед у стаблу. Његове функције могу бити "
 "проширене прикључцима и скриптама."
 
-#: data/org.gnome.Nautilus.metainfo.xml.in.in:53 src/nautilus-view.c:150
+#: data/org.gnome.Nautilus.metainfo.xml.in.in:60 src/nautilus-files-view.c:9660
 msgid "Grid View"
 msgstr "Прикажи као мрежу"
 
-#: data/org.gnome.Nautilus.metainfo.xml.in.in:57 src/nautilus-view.c:154
+#: data/org.gnome.Nautilus.metainfo.xml.in.in:64 src/nautilus-files-view.c:9667
 msgid "List View"
 msgstr "Прикажи као списак"
 
-#: data/org.gnome.Nautilus.metainfo.xml.in.in:61 src/nautilus-query.c:542
-#: src/nautilus-search-directory-file.c:225
-#: src/nautilus-search-directory-file.c:265
-#: src/resources/ui/nautilus-search-popover.ui:278
+#: data/org.gnome.Nautilus.metainfo.xml.in.in:68
+#: src/nautilus-search-directory-file.c:230
+#: src/nautilus-search-directory-file.c:269
 msgid "Search"
 msgstr "Претрага"
 
+#: data/org.gnome.Nautilus.metainfo.xml.in.in:72
+msgid "Selection of Multiple Files"
+msgstr "Избор више датотека"
+
 #. Translators: Search terms to find this application. Do NOT translate or localize the semicolons! The list MUST also end with a semicolon!
-#: data/org.gnome.Nautilus.desktop.in.in:6
+#: data/org.gnome.Nautilus.desktop.in.in:5
 msgid "folder;manager;explore;disk;filesystem;nautilus;"
 msgstr ""
 "фасцикла;фолдер;управник;менаџер;истражи;диск;систем датотека;фајлсистем;"
 "наутилус;fascikla;folder;upravnik;menadžer;menadzer;istraži;istrazi;sistem "
 "datoteka;fajlsistem;folder;manager;explore;disk;filesystem;nautilus;"
 
-#: data/org.gnome.Nautilus.desktop.in.in:21
+#: data/org.gnome.Nautilus.desktop.in.in:20
 msgid "New Window"
 msgstr "Нови прозор"
 
@@ -319,8 +321,8 @@ msgid ""
 "This key is deprecated and ignored. The “show-hidden” key from “org.gtk."
 "Settings.FileChooser” is now used instead."
 msgstr ""
-"Овај кључ је застарео и занемарен. Сада се користи кључ „show-"
-"hidden“ (прикажи скривене) из „org.gtk.Settings.FileChooser“ уместо њега."
+"Овај кључ је застарео и занемарен. Сада се користи кључ „show-hidden“ "
+"(прикажи скривене) из „org.gtk.Settings.FileChooser“ уместо њега."
 
 #: data/org.gnome.nautilus.gschema.xml:178
 msgid "Whether GTK 4 settings migration happened"
@@ -403,10 +405,10 @@ msgid ""
 "“type”, “date_modified”, “owner”, “group”, “permissions”, and “mime_type”."
 msgstr ""
 "Списак наслова испод иконице у приказу помоћу иконица и на радној површи. "
-"Прави број ознака зависи од нивоа увећања. Дозвољене вредности су: "
-"„size“ (величина), „type“ (врста), „date_modified“ (датум измене), "
-"„owner“ (власник), „group“ (група), „permissions“ (дозволе) и "
-"„mime_type“ (миме врста)."
+"Прави број ознака зависи од нивоа увећања. Дозвољене вредности су: „size“ "
+"(величина), „type“ (врста), „date_modified“ (датум измене), „owner“ "
+"(власник), „group“ (група), „permissions“ (дозволе) и „mime_type“ (миме "
+"врста)."
 
 #: data/org.gnome.nautilus.gschema.xml:219
 msgid "Default icon view zoom level"
@@ -454,15 +456,15 @@ msgstr "Да ли навигациони прозор треба да буде �
 msgid "Whether the navigation window should be maximized by default."
 msgstr "Да ли да управљачки прозор буде подразумевано увећан."
 
-#: eel/eel-stock-dialogs.c:195
+#: eel/eel-stock-dialogs.c:194
 msgid "You can stop this operation by clicking cancel."
 msgstr "Можете прекинути тренутни захват притиском на „Откажи“."
 
-#: eel/eel-stock-dialogs.c:197 src/nautilus-autorun-software.c:224
-#: src/nautilus-file-chooser.c:232 src/nautilus-file-operations.c:273
-#: src/nautilus-mime-actions.c:610 src/nautilus-mime-actions.c:1019
-#: src/nautilus-mime-actions.c:1330 src/resources/ui/nautilus-app-chooser.ui:96
-#: src/resources/ui/nautilus-batch-rename-dialog.ui:106
+#: eel/eel-stock-dialogs.c:196 src/nautilus-autorun-software.c:223
+#: src/nautilus-file-chooser.c:239 src/nautilus-file-operations.c:275
+#: src/nautilus-mime-actions.c:697 src/nautilus-mime-actions.c:1111
+#: src/nautilus-mime-actions.c:1419 src/resources/ui/nautilus-app-chooser.ui:16
+#: src/resources/ui/nautilus-batch-rename-dialog.ui:119
 #: src/resources/ui/nautilus-compress-dialog.ui:17
 #: src/resources/ui/nautilus-file-conflict-dialog.ui:15
 #: src/resources/ui/nautilus-file-properties-change-permissions.ui:14
@@ -520,7 +522,7 @@ msgstr "0 секунди"
 
 #: extensions/audio-video-properties/totem-properties-view.c:131
 #: extensions/image-properties/nautilus-image-properties-model.c:238
-#: src/nautilus-batch-rename-dialog.h:163
+#: src/nautilus-batch-rename-dialog.h:165
 #: src/resources/ui/nautilus-batch-rename-dialog.ui:53
 msgid "Title"
 msgstr "Наслов"
@@ -608,7 +610,7 @@ msgstr "Канала"
 #. Some sort of failure occurred. How 'bout we tell the user?
 #: extensions/audio-video-properties/totem-properties-view.c:338
 #: extensions/image-properties/nautilus-image-properties-model.c:280
-#: src/nautilus-application.c:182 src/nautilus-window-slot.c:1836
+#: src/nautilus-application.c:180 src/nautilus-window-slot.c:1822
 msgid "Oops! Something went wrong."
 msgstr "Уххх! Нешто је пошло наопако."
 
@@ -628,7 +630,7 @@ msgstr "Својства видеа"
 msgid "Duration"
 msgstr "Трајање"
 
-#: extensions/audio-video-properties/totem-properties-view.c:370
+#: extensions/audio-video-properties/totem-properties-view.c:371
 msgid "Container"
 msgstr "Садржалац"
 
@@ -751,11 +753,11 @@ msgstr "Координате"
 msgid "Failed to load image information"
 msgstr "Не могу да учитам податке о слици"
 
-#: extensions/image-properties/nautilus-image-properties-model.c:510
+#: extensions/image-properties/nautilus-image-properties-model.c:512
 msgid "Image Properties"
 msgstr "Својства слике"
 
-#: src/nautilus-application.c:185
+#: src/nautilus-application.c:183
 #, c-format
 msgid ""
 "Unable to create a required folder. Please create the following folder, or "
@@ -766,7 +768,7 @@ msgstr ""
 "поставите овлашћења тако да може бити направљена:\n"
 "%s"
 
-#: src/nautilus-application.c:192
+#: src/nautilus-application.c:190
 #, c-format
 msgid ""
 "Unable to create required folders. Please create the following folders, or "
@@ -777,29 +779,25 @@ msgstr ""
 "поставите овлашћења тако да могу бити направљене:\n"
 "%s"
 
-#: src/nautilus-application.c:587
+#: src/nautilus-application.c:570
 msgid "--quit cannot be used with URIs."
 msgstr "„--quit“ се не може користити са путањама."
 
-#: src/nautilus-application.c:596
+#: src/nautilus-application.c:579
 msgid "--select must be used with at least an URI."
 msgstr "„--select“ мора да се користити барем са једном путањом."
 
-#: src/nautilus-application.c:742
-#, c-format
-msgid ""
-"There was an error displaying help: \n"
-"%s"
-msgstr ""
-"Дошло је до грешке у приказивању помоћи: \n"
-"%s"
+#: src/nautilus-application.c:715
+msgid "There was an error displaying help"
+msgstr "Грешка приликом приказа помоћи"
 
-#: src/nautilus-application.c:744 src/nautilus-autorun-software.c:162
-#: src/nautilus-mime-actions.c:1189 src/nautilus-ui-utilities.c:437
+#: src/nautilus-application.c:716 src/nautilus-app-chooser.c:87
+#: src/nautilus-autorun-software.c:161 src/nautilus-mime-actions.c:1278
+#: src/nautilus-ui-utilities.c:353
 msgid "_OK"
 msgstr "У _реду"
 
-#: src/nautilus-application.c:863
+#: src/nautilus-application.c:835
 #, c-format
 msgid ""
 "“%s” is an internal protocol. Opening this location directly is not "
@@ -808,54 +806,50 @@ msgstr ""
 "Путања „%s“ представља интерни протокол. Непосредно отварање овог места није "
 "подржано."
 
-#: src/nautilus-application.c:953
+#: src/nautilus-application.c:917
 msgid "Show the version of the program."
 msgstr "Приказује издање програма."
 
-#: src/nautilus-application.c:957
+#: src/nautilus-application.c:921
 msgid "Always open a new window for browsing specified URIs"
 msgstr "Увек отвара нови прозор за разгледање наведених путања"
 
-#: src/nautilus-application.c:961
+#: src/nautilus-application.c:925
 msgid "Quit Nautilus."
 msgstr "Напушта Наутилус."
 
-#: src/nautilus-application.c:965
+#: src/nautilus-application.c:929
 msgid "Select specified URI in parent folder."
 msgstr "Изаберите наведену путању у полазној фасцикли."
 
-#: src/nautilus-application.c:967
+#: src/nautilus-application.c:931
 msgid "[URI…]"
 msgstr "[Путања…]"
 
-#: src/nautilus-app-chooser.c:74
+#: src/nautilus-app-chooser.c:83
+msgid "Could not set as default"
+msgstr "Не могу да поставим као подразумевани програм"
+
+#: src/nautilus-app-chooser.c:85
 #, c-format
 msgid "Error while setting “%s” as default app: %s"
 msgstr "Грешка при постављању „%s“ за подразумевани програм: %s"
 
-#: src/nautilus-app-chooser.c:77
-msgid "Could not set as default"
-msgstr "Не могу да поставим као подразумевани програм"
-
-#: src/nautilus-app-chooser.c:79
-msgid "OK"
-msgstr "У реду"
-
 #. Translators: %s is the filename.  i.e. "Choose an app to open test.jpg"
-#: src/nautilus-app-chooser.c:194
+#: src/nautilus-app-chooser.c:233
 #, c-format
 msgid "Choose an app to open <b>%s</b>"
 msgstr "Изаберите програм за отварање <b>%s</b>"
 
-#: src/nautilus-app-chooser.c:200
+#: src/nautilus-app-chooser.c:239
 msgid "Open Items"
 msgstr "Отвори ставке"
 
-#: src/nautilus-app-chooser.c:204
+#: src/nautilus-app-chooser.c:243
 msgid "Open Folder"
 msgstr "Отвори фасциклу"
 
-#: src/nautilus-app-chooser.c:208 src/resources/ui/nautilus-app-chooser.ui:5
+#: src/nautilus-app-chooser.c:247 src/resources/ui/nautilus-app-chooser.ui:5
 msgid "Open File"
 msgstr "Отвори датотеку"
 
@@ -877,15 +871,15 @@ msgstr "Овај програм није обележен као извршан.
 msgid "Unable to locate the program"
 msgstr "Не могу да пронађем програм"
 
-#: src/nautilus-autorun-software.c:160
+#: src/nautilus-autorun-software.c:159
 msgid "Oops! There was a problem running this software."
 msgstr "Уххх! Дошло је до проблема приликом покретања овог програма."
 
-#: src/nautilus-autorun-software.c:190
+#: src/nautilus-autorun-software.c:189
 msgid "If you don’t trust this location or aren’t sure, press Cancel."
 msgstr "Ако не верујете овом месту или ако нисте сигурни, притисните „Откажи“."
 
-#: src/nautilus-autorun-software.c:192
+#: src/nautilus-autorun-software.c:191
 #, c-format
 msgid ""
 "“%s” contains software intended to be automatically started. Would you like "
@@ -894,37 +888,37 @@ msgstr ""
 "„%s“ садржи програм који се сам покреће по убацивању медијума. Да ли желите "
 "да га покренете?"
 
-#: src/nautilus-autorun-software.c:225
+#: src/nautilus-autorun-software.c:224
 msgid "_Run"
 msgstr "_Покрени"
 
-#: src/nautilus-batch-rename-dialog.c:708
+#: src/nautilus-batch-rename-dialog.c:524
 #, c-format
 msgid "“%s” would not be a unique new name."
 msgstr "„%s“ неће бити јединствени назив."
 
-#: src/nautilus-batch-rename-dialog.c:714
+#: src/nautilus-batch-rename-dialog.c:530
 #, c-format
 msgid "“%s” would conflict with an existing file."
 msgstr "„%s“ се не слаже са већ постојећом датотеком."
 
-#: src/nautilus-batch-rename-dialog.c:1181
+#: src/nautilus-batch-rename-dialog.c:960
 msgid "Name cannot be empty."
 msgstr "Назив не сме бити празан."
 
-#: src/nautilus-batch-rename-dialog.c:1187
+#: src/nautilus-batch-rename-dialog.c:966
 msgid "Name cannot contain “/”."
 msgstr "Назив датотекe не сме да садржи знак „/“."
 
-#: src/nautilus-batch-rename-dialog.c:1193
+#: src/nautilus-batch-rename-dialog.c:972
 msgid "“.” is not a valid name."
 msgstr "„.“ није дозвољени назив."
 
-#: src/nautilus-batch-rename-dialog.c:1199
+#: src/nautilus-batch-rename-dialog.c:978
 msgid "“..” is not a valid name."
 msgstr "„..“ није дозвољени назив."
 
-#: src/nautilus-batch-rename-dialog.c:1868
+#: src/nautilus-batch-rename-dialog.c:1580
 #, c-format
 msgid "Rename %d Folder"
 msgid_plural "Rename %d Folders"
@@ -933,7 +927,7 @@ msgstr[1] "Преименујем „%d“ фасцикле"
 msgstr[2] "Преименујем „%d“ фасцикла"
 msgstr[3] "Преименујем фасциклу"
 
-#: src/nautilus-batch-rename-dialog.c:1876
+#: src/nautilus-batch-rename-dialog.c:1588
 #, c-format
 msgid "Rename %d File"
 msgid_plural "Rename %d Files"
@@ -944,7 +938,7 @@ msgstr[3] "Преименујем датотеку"
 
 #. To translators: %d is the total number of files and folders.
 #. * Singular case of the string is never used
-#: src/nautilus-batch-rename-dialog.c:1886
+#: src/nautilus-batch-rename-dialog.c:1598
 #, c-format
 msgid "Rename %d File and Folder"
 msgid_plural "Rename %d Files and Folders"
@@ -953,83 +947,84 @@ msgstr[1] "Преименујем „%d“ датотеке и фасцикле"
 msgstr[2] "Преименујем „%d“ датотека и фасцикли"
 msgstr[3] "Преименујем датотеку и фасциклу"
 
-#: src/nautilus-batch-rename-dialog.h:87
+#: src/nautilus-batch-rename-dialog.h:89
 #: src/resources/ui/nautilus-batch-rename-dialog.ui:73
+#: src/resources/ui/nautilus-batch-rename-dialog.ui:231
 msgid "Original Name (Ascending)"
 msgstr "Изворни назив (растуће)"
 
-#: src/nautilus-batch-rename-dialog.h:92
+#: src/nautilus-batch-rename-dialog.h:94
 #: src/resources/ui/nautilus-batch-rename-dialog.ui:78
 msgid "Original Name (Descending)"
 msgstr "Изворни назив (опадајуће)"
 
-#: src/nautilus-batch-rename-dialog.h:97
+#: src/nautilus-batch-rename-dialog.h:99
 #: src/resources/ui/nautilus-batch-rename-dialog.ui:83
 msgid "First Modified"
 msgstr "Прва измењена"
 
-#: src/nautilus-batch-rename-dialog.h:102
+#: src/nautilus-batch-rename-dialog.h:104
 #: src/resources/ui/nautilus-batch-rename-dialog.ui:88
 msgid "Last Modified"
 msgstr "Последња измењена"
 
-#: src/nautilus-batch-rename-dialog.h:107
+#: src/nautilus-batch-rename-dialog.h:109
 msgid "First Created"
 msgstr "Прва направљена"
 
-#: src/nautilus-batch-rename-dialog.h:112
+#: src/nautilus-batch-rename-dialog.h:114
 msgid "Last Created"
 msgstr "Последња направљена"
 
-#: src/nautilus-batch-rename-dialog.h:121
+#: src/nautilus-batch-rename-dialog.h:123
 msgid "Camera model"
 msgstr "Модел камере"
 
-#: src/nautilus-batch-rename-dialog.h:128
+#: src/nautilus-batch-rename-dialog.h:130
 msgid "Creation date"
 msgstr "Датум настанка"
 
-#: src/nautilus-batch-rename-dialog.h:135
+#: src/nautilus-batch-rename-dialog.h:137
 msgid "Season number"
 msgstr "Број сезоне"
 
-#: src/nautilus-batch-rename-dialog.h:142
+#: src/nautilus-batch-rename-dialog.h:144
 msgid "Episode number"
 msgstr "Број епизоде"
 
-#: src/nautilus-batch-rename-dialog.h:149
+#: src/nautilus-batch-rename-dialog.h:151
 msgid "Track number"
 msgstr "Број песме"
 
-#: src/nautilus-batch-rename-dialog.h:156
+#: src/nautilus-batch-rename-dialog.h:158
 msgid "Artist name"
 msgstr "Извођач"
 
-#: src/nautilus-batch-rename-dialog.h:170
+#: src/nautilus-batch-rename-dialog.h:172
 msgid "Album name"
 msgstr "Назив албума"
 
-#: src/nautilus-batch-rename-dialog.h:177
+#: src/nautilus-batch-rename-dialog.h:179
 msgid "Original file name"
 msgstr "Изворни назив датотеке"
 
-#: src/nautilus-batch-rename-dialog.h:188
+#: src/nautilus-batch-rename-dialog.h:190
 msgid "1, 2, 3"
 msgstr "1, 2, 3"
 
-#: src/nautilus-batch-rename-dialog.h:195
+#: src/nautilus-batch-rename-dialog.h:197
 msgid "01, 02, 03"
 msgstr "01, 02, 03"
 
-#: src/nautilus-batch-rename-dialog.h:202
+#: src/nautilus-batch-rename-dialog.h:204
 msgid "001, 002, 003"
 msgstr "001, 002, 003"
 
 # #-#-#-#-#  nautilus.master.sr.po (nautilus)  #-#-#-#-#
 # ako je za "home directory", onda bi bilo dobro "licni direktorijum", ako je za "home page", onda za "licna stranica"
 #: src/nautilus-bookmark.c:110 src/nautilus-file-utilities.c:59
-#: src/nautilus-pathbar.c:414 src/nautilus-shell-search-provider.c:341
-#: src/nautilus-window.c:141 src/gtk/nautilusgtkplacessidebar.c:670
+#: src/nautilus-pathbar.c:419 src/nautilus-shell-search-provider.c:299
+#: src/nautilus-sidebar.c:699 src/nautilus-window.c:143
 msgid "Home"
 msgstr "Личнo"
 
@@ -1049,11 +1044,11 @@ msgstr "Остава Наутилуса мора почињати са \"cut\" �
 msgid "Nautilus Clipboard must not have empty lines."
 msgstr "Остава Наутилуса не може садржати празне линије."
 
-#: src/nautilus-column-chooser.c:358
+#: src/nautilus-column-chooser.c:359
 msgid "View More"
 msgstr "Прикажи још"
 
-#: src/nautilus-column-utilities.c:69 src/gtk/nautilusgtkplacessidebar.c:1977
+#: src/nautilus-column-utilities.c:69 src/nautilus-sidebar.c:2004
 msgid "Name"
 msgstr "Назив"
 
@@ -1077,8 +1072,10 @@ msgstr "Врста"
 msgid "The type of the file."
 msgstr "Врста датотеке."
 
+#. Translators: This refers to a date time
 #: src/nautilus-column-utilities.c:90
-#: src/resources/ui/nautilus-properties-window.ui:436
+#: src/resources/ui/nautilus-properties-window.ui:444
+#: src/resources/ui/nautilus-search-popover.ui:190
 msgid "Modified"
 msgstr "Датум измене"
 
@@ -1095,7 +1092,7 @@ msgid "The detailed type of the file."
 msgstr "Опширан опис врсте датотеке."
 
 #: src/nautilus-column-utilities.c:106
-#: src/resources/ui/nautilus-properties-window.ui:423
+#: src/resources/ui/nautilus-properties-window.ui:430
 msgid "Accessed"
 msgstr "Датум приступа"
 
@@ -1103,8 +1100,10 @@ msgstr "Датум приступа"
 msgid "The date the file was accessed."
 msgstr "Датум када је последњи пут датотека коришћена."
 
+#. Translators: This refers to a date time
 #: src/nautilus-column-utilities.c:115
-#: src/resources/ui/nautilus-properties-window.ui:449
+#: src/resources/ui/nautilus-properties-window.ui:458
+#: src/resources/ui/nautilus-search-popover.ui:195
 msgid "Created"
 msgstr "Датум настанка"
 
@@ -1147,17 +1146,12 @@ msgstr "Учесталост"
 msgid "The date the file was accessed by the user."
 msgstr "Датум када је последњи пут корисник приступио датотеци."
 
-#: src/nautilus-column-utilities.c:159 src/nautilus-properties-window.c:741
-#: src/nautilus-star-cell.c:66
-msgid "Star"
-msgstr "Звезда"
-
 #: src/nautilus-column-utilities.c:160
 msgid "Shows if file is starred."
 msgstr "Приказује да ли је датотека обележена звездом."
 
 #: src/nautilus-column-utilities.c:205
-#: src/resources/ui/nautilus-properties-window.ui:406
+#: src/resources/ui/nautilus-properties-window.ui:412
 msgid "Trashed On"
 msgstr "Премештено у смеће"
 
@@ -1214,70 +1208,10 @@ msgstr "7З (.7z)"
 msgid "Smaller archives but must be installed on Windows and Mac."
 msgstr "Мање архиве, али морају бити инсталиране на Виндоус и Мек системима."
 
-#. Translators: date and time in 24h format,
-#. * i.e. "12/31/2023 23:59"
-#: src/nautilus-date-utilities.c:83
-#, no-c-format
-msgid "%m/%d/%Y %H:%M"
-msgstr "%-e. %b %Y. у %H:%M"
-
-#. Translators: date and time in 12h format,
-#. * i.e. "12/31/2023 11:59 PM"
-#: src/nautilus-date-utilities.c:90
-#, no-c-format
-msgid "%m/%d/%Y %I:%M %p"
-msgstr "%-e. %b %Y. у %l:%M %p"
-
-#. Translators: this is the word "Today" followed by
-#. * a time in 24h format. i.e. "Today 23:04"
-#: src/nautilus-date-utilities.c:119
-#, no-c-format
-msgid "Today %-H:%M"
-msgstr "Данас, у %-H:%M"
-
-#. Translators: this is the word Today followed by
-#. * a time in 12h format. i.e. "Today 9:04 PM"
-#: src/nautilus-date-utilities.c:126
-#, no-c-format
-msgid "Today %-I:%M %p"
-msgstr "Данас, %l:%M %p"
-
-#. Translators: this is the word Yesterday followed by
-#. * a time in 24h format. i.e. "Yesterday 23:04"
-#: src/nautilus-date-utilities.c:137
-#, no-c-format
-msgid "Yesterday %-H:%M"
-msgstr "Јуче, у %H:%M"
-
-#. Translators: this is the word Yesterday followed by
-#. * a time in 12h format. i.e. "Yesterday 9:04 PM"
-#: src/nautilus-date-utilities.c:144
-#, no-c-format
-msgid "Yesterday %-I:%M %p"
-msgstr "Јуче, у %l:%M %p"
-
-#. Translators: this is the day of the month followed by the abbreviated
-#. * month name followed by the year i.e. "3 Feb 2015"
-#: src/nautilus-date-utilities.c:152
-#, no-c-format
-msgid "%-e %b %Y"
-msgstr "%-e. %b %Y."
-
-#. Translators: this is the day number followed by the full month
-#. * name followed by the year followed by a time in 24h format
-#. * with seconds i.e. "3 February 2015 23:04:00"
-#: src/nautilus-date-utilities.c:163
-#, no-c-format
-msgid "%-e %B %Y %H:%M:%S"
-msgstr "%-e. %b %Y. у %H:%M:%S"
-
-#. Translators: this is the day number followed by the full month
-#. * name followed by the year followed by a time in 12h format
-#. * with seconds i.e. "3 February 2015 09:04:00 PM"
-#: src/nautilus-date-utilities.c:171
-#, no-c-format
-msgid "%-e %B %Y %I:%M:%S %p"
-msgstr "%-e. %b %Y. у %I:%M:%S %p"
+#: src/nautilus-date-utilities.c:474
+#, c-format
+msgid "Since %s"
+msgstr "Од %s"
 
 #: src/nautilus-dbus-launcher.c:50
 #, c-format
@@ -1285,7 +1219,7 @@ msgid "Details: %s"
 msgstr "Појединости: %s"
 
 #: src/nautilus-dbus-launcher.c:51 src/nautilus-dbus-launcher.c:80
-#: src/nautilus-program-choosing.c:379 src/nautilus-program-choosing.c:454
+#: src/nautilus-program-choosing.c:369 src/nautilus-program-choosing.c:444
 msgid "There was an error launching the app."
 msgstr "Дошло је до грешке при покретању програма."
 
@@ -1294,108 +1228,108 @@ msgid "Details: The proxy has not been created."
 msgstr "Појединости: посредник није направљен."
 
 #. Translators: this is of the format "hostname (uri-scheme)"
-#: src/nautilus-directory.c:640
+#: src/nautilus-directory.c:616
 #, c-format
 msgid "%s (%s)"
 msgstr "%s (%s)"
 
-#: src/nautilus-dnd.c:107
+#: src/nautilus-dnd.c:108
 msgid "_Move Here"
 msgstr "Пре_мести овде"
 
-#: src/nautilus-dnd.c:112
+#: src/nautilus-dnd.c:113
 msgid "_Copy Here"
 msgstr "_Копирај овде"
 
 # #-#-#-#-#  nautilus.master.sr.po (nautilus)  #-#-#-#-#
 # Горане, ја бих да ово буде једнобразно са две опције изнад???
-#: src/nautilus-dnd.c:117
+#: src/nautilus-dnd.c:118
 msgid "_Link Here"
 msgstr "По_вежи овде"
 
-#: src/nautilus-dnd.c:126 src/nautilus-file-operations.c:2513
-#: src/nautilus-mime-actions.c:621
+#: src/nautilus-dnd.c:127 src/nautilus-file-operations.c:2512
+#: src/nautilus-mime-actions.c:708
 #: src/resources/ui/nautilus-progress-info-widget.ui:39
 #: src/resources/ui/nautilus-toolbar.ui:41
 msgid "Cancel"
 msgstr "Откажи"
 
-#: src/nautilus-dnd.c:257
+#: src/nautilus-dnd.c:258
 msgid "Dropped Image"
 msgstr "Превучена слика"
 
-#: src/nautilus-error-reporting.c:82
+#: src/nautilus-error-reporting.c:83
 #, c-format
 msgid "You do not have the permissions necessary to view the contents of “%s”."
 msgstr "Нисте овлашћени да прегледате садржај „%s“."
 
-#: src/nautilus-error-reporting.c:89
+#: src/nautilus-error-reporting.c:90
 #, c-format
 msgid "“%s” could not be found. Perhaps it has recently been deleted."
 msgstr "Не могу да пронађем „%s“. Можда је недавно обрисана."
 
-#: src/nautilus-error-reporting.c:101
+#: src/nautilus-error-reporting.c:102
 #, c-format
 msgid "Sorry, could not display all the contents of “%s”: %s"
 msgstr "Не могу да прикажем сав садржај „%s“: %s"
 
-#: src/nautilus-error-reporting.c:112
+#: src/nautilus-error-reporting.c:113
 msgid "This location could not be displayed."
 msgstr "Не могу да прикажем ово место."
 
-#: src/nautilus-error-reporting.c:139
+#: src/nautilus-error-reporting.c:140
 #, c-format
 msgid "You do not have the permissions necessary to change the group of “%s”."
 msgstr "Нисте овлашћени да промените групу за „%s“."
 
 #. fall through
-#: src/nautilus-error-reporting.c:162
+#: src/nautilus-error-reporting.c:163
 #, c-format
 msgid "Sorry, could not change the group of “%s”: %s"
 msgstr "Не могу да променим групу за „%s“: %s"
 
-#: src/nautilus-error-reporting.c:167
+#: src/nautilus-error-reporting.c:168
 msgid "The group could not be changed."
 msgstr "Група не може бити измењена."
 
-#: src/nautilus-error-reporting.c:188
+#: src/nautilus-error-reporting.c:189
 #, c-format
 msgid "Sorry, could not change the owner of “%s”: %s"
 msgstr "Не могу да променим власника „%s“: %s"
 
-#: src/nautilus-error-reporting.c:191
+#: src/nautilus-error-reporting.c:192
 msgid "The owner could not be changed."
 msgstr "Власник не може бити измењен."
 
-#: src/nautilus-error-reporting.c:212
+#: src/nautilus-error-reporting.c:213
 #, c-format
 msgid "Sorry, could not change the permissions of “%s”: %s"
 msgstr "Не могу да променим овлашћења за „%s“: %s"
 
-#: src/nautilus-error-reporting.c:215
+#: src/nautilus-error-reporting.c:216
 msgid "The permissions could not be changed."
 msgstr "Овлашћења не могу бити измењена."
 
-#: src/nautilus-error-reporting.c:250
+#: src/nautilus-error-reporting.c:251
 #, c-format
 msgid ""
 "The name “%s” is already used in this location. Please use a different name."
 msgstr ""
 "Назив „%s“ је већ у употреби на овом месту. Користите неки други назив."
 
-#: src/nautilus-error-reporting.c:258
+#: src/nautilus-error-reporting.c:259
 #, c-format
 msgid ""
 "There is no “%s” in this location. Perhaps it was just moved or deleted?"
 msgstr ""
 "Не постоји „%s“ на овом месту. Можда је управо премештено или обрисано?"
 
-#: src/nautilus-error-reporting.c:266
+#: src/nautilus-error-reporting.c:267
 #, c-format
 msgid "You do not have the permissions necessary to rename “%s”."
 msgstr "Нисте овлашћени да преименујете „%s“."
 
-#: src/nautilus-error-reporting.c:280
+#: src/nautilus-error-reporting.c:279
 #, c-format
 msgid ""
 "The name “%s” is not valid because it contains the character “%c”. Please "
@@ -1404,17 +1338,17 @@ msgstr ""
 "Назив „%s“ је неисправан зато што садржи знак „%c“. Употребите неки други "
 "назив."
 
-#: src/nautilus-error-reporting.c:288
+#: src/nautilus-error-reporting.c:285
 #, c-format
 msgid "The name “%s” is not valid. Please use a different name."
 msgstr "Назив „%s“ је неисправан. Користите неки други назив."
 
-#: src/nautilus-error-reporting.c:297
+#: src/nautilus-error-reporting.c:294
 #, c-format
 msgid "The name “%s” is too long. Please use a different name."
 msgstr "Назив „%s“ је предуг. Користите неки други назив."
 
-#: src/nautilus-error-reporting.c:305
+#: src/nautilus-error-reporting.c:302
 #, c-format
 msgid ""
 "Could not rename “%s” because a process is using it. If it's open in another "
@@ -1424,87 +1358,87 @@ msgstr ""
 "у другом програму, затворите је пре преименовања."
 
 #. fall through
-#: src/nautilus-error-reporting.c:330
+#: src/nautilus-error-reporting.c:327
 #, c-format
 msgid "Sorry, could not rename “%s” to “%s”: %s"
 msgstr "Не могу да преименујем „%s“ у „%s“: %s"
 
-#: src/nautilus-error-reporting.c:335
+#: src/nautilus-error-reporting.c:332
 msgid "The item could not be renamed."
 msgstr "Ставка се не може преименовати."
 
-#: src/nautilus-error-reporting.c:447
+#: src/nautilus-error-reporting.c:444
 #, c-format
 msgid "Renaming “%s” to “%s”."
 msgstr "Преименујем „%s“ у „%s“."
 
-#: src/nautilus-file.c:1291 src/nautilus-vfs-file.c:271
+#: src/nautilus-file.c:1306 src/nautilus-vfs-file.c:271
 msgid "This file cannot be mounted"
 msgstr "Ова датотека не може бити прикачена"
 
-#: src/nautilus-file.c:1345
+#: src/nautilus-file.c:1360
 msgid "This file cannot be unmounted"
 msgstr "Ова датотека не може бити откачена"
 
-#: src/nautilus-file.c:1392
+#: src/nautilus-file.c:1407
 msgid "This file cannot be ejected"
 msgstr "Ова датотека не може бити избачена"
 
-#: src/nautilus-file.c:1437 src/nautilus-vfs-file.c:462
+#: src/nautilus-file.c:1452 src/nautilus-vfs-file.c:462
 msgid "This file cannot be started"
 msgstr "Ова датотека не може бити покренута"
 
-#: src/nautilus-file.c:1496 src/nautilus-file.c:1536
+#: src/nautilus-file.c:1511 src/nautilus-file.c:1551
 msgid "This file cannot be stopped"
 msgstr "Ова датотека не може бити заустављена"
 
-#: src/nautilus-file.c:1892
+#: src/nautilus-file.c:1908
 #, c-format
 msgid "Slashes are not allowed in filenames"
 msgstr "Косе црте нису дозвољене у називу датотека"
 
-#: src/nautilus-file.c:1935
+#: src/nautilus-file.c:1951
 #, c-format
 msgid "Toplevel files cannot be renamed"
 msgstr "Датотеке у фасцикли највишег нивоа не могу бити преименоване"
 
-#: src/nautilus-file.c:2015
+#: src/nautilus-file.c:2031
 #, c-format
 msgid "File not found"
 msgstr "Датотека није пронађена"
 
-#: src/nautilus-file.c:5407
+#: src/nautilus-file.c:5493
 #, c-format
 msgid "Not allowed to set permissions"
 msgstr "Немате дозволу да поставите овлашћења"
 
-#: src/nautilus-file.c:5751
+#: src/nautilus-file.c:5837
 #, c-format
 msgid "Not allowed to set owner"
 msgstr "Немате дозволу да мењате власништво"
 
-#: src/nautilus-file.c:5770
+#: src/nautilus-file.c:5856
 #, c-format
 msgid "Specified owner “%s” doesn’t exist"
 msgstr "Наведени власник „%s“ не постоји"
 
-#: src/nautilus-file.c:6060
+#: src/nautilus-file.c:6146
 #, c-format
 msgid "Not allowed to set group"
 msgstr "Немате дозволу да поставите групу"
 
-#: src/nautilus-file.c:6079
+#: src/nautilus-file.c:6165
 #, c-format
 msgid "Specified group “%s” doesn’t exist"
 msgstr "Наведена група „%s“ не постоји"
 
 #. Translators: This is a username followed by "(You)" to indicate the file is owned by the current user
-#: src/nautilus-file.c:6219
+#: src/nautilus-file.c:6305
 #, c-format
 msgid "%s (You)"
 msgstr "%s (Ви)"
 
-#: src/nautilus-file.c:6251
+#: src/nautilus-file.c:6337
 #, c-format
 msgid "%'u item"
 msgid_plural "%'u items"
@@ -1513,7 +1447,7 @@ msgstr[1] "%'u ставке"
 msgstr[2] "%'u ставки"
 msgstr[3] "једна ставка"
 
-#: src/nautilus-file.c:6252
+#: src/nautilus-file.c:6338
 #, c-format
 msgid "%'u folder"
 msgid_plural "%'u folders"
@@ -1522,7 +1456,7 @@ msgstr[1] "%'u фасцикле"
 msgstr[2] "%'u фасцикли"
 msgstr[3] "једна фасцикла"
 
-#: src/nautilus-file.c:6253
+#: src/nautilus-file.c:6339
 #, c-format
 msgid "%'u file"
 msgid_plural "%'u files"
@@ -1531,7 +1465,7 @@ msgstr[1] "%'u датотеке"
 msgstr[2] "%'u датотека"
 msgstr[3] "једна датотека"
 
-#: src/nautilus-file.c:6337 src/nautilus-properties-window.c:2099
+#: src/nautilus-file.c:6423 src/nautilus-properties-window.c:2105
 #, c-format
 msgid "%s byte"
 msgid_plural "%s bytes"
@@ -1541,93 +1475,93 @@ msgstr[2] "%s бајтова"
 msgstr[3] "%s бајт"
 
 #. This means no contents at all were readable
-#: src/nautilus-file.c:6741
+#: src/nautilus-file.c:6827
 msgid "? bytes"
 msgstr "? бајтова"
 
 #. This means no contents at all were readable
-#: src/nautilus-file.c:6753
+#: src/nautilus-file.c:6839
 msgid "? items"
 msgstr "? ставки"
 
 #. Translators: This about a file type.
-#: src/nautilus-file.c:6762
+#: src/nautilus-file.c:6848
 msgid "Unknown type"
 msgstr "Непозната врста"
 
 #. Fallback, use for both unknown attributes and attributes
 #. * for which we have no more appropriate default.
 #.
-#: src/nautilus-file.c:6793
+#: src/nautilus-file.c:6879
 msgid "Unknown"
 msgstr "Непознато"
 
-#: src/nautilus-file.c:6830 src/nautilus-file.c:6838 src/nautilus-file.c:6897
+#: src/nautilus-file.c:6929 src/nautilus-file.c:6937 src/nautilus-file.c:6996
 msgid "Program"
 msgstr "Програм"
 
-#: src/nautilus-file.c:6831
+#: src/nautilus-file.c:6930
 msgid "Audio"
 msgstr "Звук"
 
-#: src/nautilus-file.c:6832
+#: src/nautilus-file.c:6931
 msgid "Font"
 msgstr "Фонт"
 
-#: src/nautilus-file.c:6833
+#: src/nautilus-file.c:6932
 msgid "Image"
 msgstr "Слика"
 
-#: src/nautilus-file.c:6834
+#: src/nautilus-file.c:6933
 msgid "Archive"
 msgstr "Архива"
 
-#: src/nautilus-file.c:6835
+#: src/nautilus-file.c:6934
 msgid "Markup"
 msgstr "Маркап текст"
 
-#: src/nautilus-file.c:6836 src/nautilus-file.c:6837
+#: src/nautilus-file.c:6935 src/nautilus-file.c:6936
 msgid "Text"
 msgstr "Текст"
 
-#: src/nautilus-file.c:6839 src/nautilus-mime-actions.c:245
+#: src/nautilus-file.c:6938 src/nautilus-mime-actions.c:301
 msgid "Video"
 msgstr "Видео"
 
-#: src/nautilus-file.c:6840
+#: src/nautilus-file.c:6939
 msgid "Contacts"
 msgstr "Контакти"
 
-#: src/nautilus-file.c:6841
+#: src/nautilus-file.c:6940
 msgid "Calendar"
 msgstr "Календар"
 
-#: src/nautilus-file.c:6842
+#: src/nautilus-file.c:6941
 msgid "Document"
 msgstr "Документ"
 
-#: src/nautilus-file.c:6843 src/nautilus-mime-actions.c:206
+#: src/nautilus-file.c:6942 src/nautilus-mime-actions.c:262
 msgid "Presentation"
 msgstr "Презентација"
 
-#: src/nautilus-file.c:6844 src/nautilus-mime-actions.c:218
+#: src/nautilus-file.c:6943 src/nautilus-mime-actions.c:274
 msgid "Spreadsheet"
 msgstr "Табела"
 
 #. Refers to a file type which is known but not one of the basic types
-#: src/nautilus-file.c:6877
+#: src/nautilus-file.c:6976
 msgid "Other"
 msgstr "Остали"
 
-#: src/nautilus-file.c:6899
+#: src/nautilus-file.c:6998
 msgid "Binary"
 msgstr "Бинарни објекат"
 
-#: src/nautilus-file.c:6904
+#: src/nautilus-file.c:7003
 msgid "Folder"
 msgstr "Фасцикла"
 
-#: src/nautilus-file.c:6962
+#: src/nautilus-file.c:7061
 msgid "Link"
 msgstr "Веза"
 
@@ -1638,134 +1572,142 @@ msgstr "Веза"
 #. * to that kind of file (e.g. "link to folder").
 #.
 #. Translators: File name for new symlink. %s is target's name
-#: src/nautilus-file.c:6968 src/nautilus-filename-utilities.c:254
+#: src/nautilus-file.c:7067 src/nautilus-filename-utilities.c:253
 #, c-format
 msgid "Link to %s"
 msgstr "Веза ка %s"
 
 # #-#-#-#-#  nautilus.master.sr.po (nautilus)  #-#-#-#-#
 # Не показује на право место
-#: src/nautilus-file.c:6984 src/nautilus-file.c:7000 src/nautilus-file.c:7016
+#: src/nautilus-file.c:7083 src/nautilus-file.c:7099 src/nautilus-file.c:7115
 msgid "Link (broken)"
 msgstr "Веза (поломљена)"
 
 #. Translators: This refers to available space in a folder; e.g.: 100 MB Free
-#: src/nautilus-file.c:7177
+#: src/nautilus-file.c:7276
 #, c-format
 msgid "%s Free"
 msgstr "%s слободно"
 
-#: src/nautilus-file-chooser.c:222
+#. Translators: A "." is added in between file name and starring
+#. * action description as a useful pause in the screen reader
+#. * announcement.
+#: src/nautilus-file.c:8646
+#, c-format
+msgid "%s. Starred"
+msgstr "%s. са звездицом"
+
+#: src/nautilus-file-chooser.c:229
 msgid "Replace When Saving?"
 msgstr "Да заменим приликом чувања?"
 
-#: src/nautilus-file-chooser.c:228
+#: src/nautilus-file-chooser.c:235
 #, c-format
 msgid ""
 "“%s” already exists in “%s”. Saving will replace or overwrite its contents."
 msgstr "„%s“ већ постоји у „%s“. Чување ће заменити њен садржај."
 
-#: src/nautilus-file-chooser.c:233 src/nautilus-file-chooser.c:309
-#: src/nautilus-file-operations.c:279
+#: src/nautilus-file-chooser.c:240 src/nautilus-file-chooser.c:332
+#: src/nautilus-file-operations.c:281
 #: src/resources/ui/nautilus-file-conflict-dialog.ui:40
 msgid "_Replace"
 msgstr "_Замени"
 
-#: src/nautilus-filename-validator.c:132
-msgid "Folder names cannot contain “/”."
-msgstr "Назив фасцикле не сме да садржи знак „/“."
+#: src/nautilus-filename-validator.c:135
+msgid "Folder names cannot contain “/”"
+msgstr "Назив фасцикле не сме да садржи знак „/“"
 
-#: src/nautilus-filename-validator.c:133
-msgid "File names cannot contain “/”."
-msgstr "Називи датотека не смеју да садрже знак „/“."
+#: src/nautilus-filename-validator.c:136
+msgid "File names cannot contain “/”"
+msgstr "Назив датотеке не сме да садржи знак „/“"
 
-#: src/nautilus-filename-validator.c:138
-msgid "A folder cannot be called “.”."
-msgstr "Фасцикла се не може звати „.“."
+#: src/nautilus-filename-validator.c:141
+msgid "A folder cannot be called “.”"
+msgstr "Фасцикла се не може звати „.“"
 
-#: src/nautilus-filename-validator.c:139
-msgid "A file cannot be called “.”."
-msgstr "Датотека се не може звати „.“."
+#: src/nautilus-filename-validator.c:142
+msgid "A file cannot be called “.”"
+msgstr "Датотека се не може звати „.“"
 
-#: src/nautilus-filename-validator.c:144
-msgid "A folder cannot be called “..”."
-msgstr "Фасцикла се не може звати „..“."
+#: src/nautilus-filename-validator.c:147
+msgid "A folder cannot be called “..”"
+msgstr "Фасцикла се не може звати „..“"
 
-#: src/nautilus-filename-validator.c:145
-msgid "A file cannot be called “..”."
-msgstr "Датотека се не може звати „..“."
+#: src/nautilus-filename-validator.c:148
+msgid "A file cannot be called “..”"
+msgstr "Датотека се не може звати „..“"
 
-#: src/nautilus-filename-validator.c:150
-msgid "Folder name is too long."
-msgstr "Назив фасцикле је предугачак."
+#: src/nautilus-filename-validator.c:153
+msgid "Folder name is too long"
+msgstr "Назив фасцикле је предугачак"
 
-#: src/nautilus-filename-validator.c:151
-msgid "File name is too long."
-msgstr "Назив датотеке је предугачак."
+#: src/nautilus-filename-validator.c:154
+msgid "File name is too long"
+msgstr "Назив датотеке је предугачак"
 
 #. We must warn about the side effect
-#: src/nautilus-filename-validator.c:157
-msgid "Folders with “.” at the beginning of their name are hidden."
-msgstr "Фасцикле чији назив почиње са знаком „.“ су скривене."
+#: src/nautilus-filename-validator.c:160
+msgid "Folders with “.” at the beginning of their name are hidden"
+msgstr "Фасцикле чији назив почиње са знаком „.“ су скривене"
 
-#: src/nautilus-filename-validator.c:158
-msgid "Files with “.” at the beginning of their name are hidden."
-msgstr "Датотеке чији назив почиње са знаком „.“ су скривене."
+#: src/nautilus-filename-validator.c:161
+msgid "Files with “.” at the beginning of their name are hidden"
+msgstr "Датотеке чији назив почиње са знаком „.“ су скривене"
 
-#: src/nautilus-filename-validator.c:167
-msgid "A folder with that name already exists."
-msgstr "Фасцикла са овим називом већ постоји."
+#: src/nautilus-filename-validator.c:170
+msgid "A folder with that name already exists"
+msgstr "Фасцикла са овим називом већ постоји"
 
-#: src/nautilus-filename-validator.c:168
-msgid "A file with that name already exists."
-msgstr "Датотека са овим називом већ постоји."
+#: src/nautilus-filename-validator.c:171
+msgid "A file with that name already exists"
+msgstr "Датотека са овим називом већ постоји"
 
-#: src/nautilus-file-operations.c:274
+#: src/nautilus-file-operations.c:276
 #: src/resources/ui/nautilus-file-conflict-dialog.ui:22
 msgid "_Skip"
 msgstr "Пре_скочи"
 
-#: src/nautilus-file-operations.c:275
+#: src/nautilus-file-operations.c:277
 msgid "S_kip All"
 msgstr "Прес_кочи све"
 
-#: src/nautilus-file-operations.c:276
+#: src/nautilus-file-operations.c:278
 msgid "_Retry"
 msgstr "П_робај поново"
 
-#: src/nautilus-file-operations.c:277
+#: src/nautilus-file-operations.c:279
 msgid "_Delete"
 msgstr "_Обриши"
 
-#: src/nautilus-file-operations.c:278
+#: src/nautilus-file-operations.c:280
 msgid "Delete _All"
 msgstr "Обриши _све"
 
-#: src/nautilus-file-operations.c:280
+#: src/nautilus-file-operations.c:282
 msgid "Replace _All"
 msgstr "Замени _све"
 
-#: src/nautilus-file-operations.c:281 src/nautilus-operations-ui-manager.c:369
+#: src/nautilus-file-operations.c:283 src/nautilus-operations-ui-manager.c:369
 msgid "_Merge"
 msgstr "С_поји"
 
-#: src/nautilus-file-operations.c:282
+#: src/nautilus-file-operations.c:284
 msgid "Merge _All"
 msgstr "Споји _све"
 
-#: src/nautilus-file-operations.c:283
+#: src/nautilus-file-operations.c:285
 msgid "Copy _Anyway"
 msgstr "Ип_ак копирај"
 
-#: src/nautilus-file-operations.c:284
+#: src/nautilus-file-operations.c:286
 msgid "Proceed _Anyway"
 msgstr "Ип_ак настави"
 
-#: src/nautilus-file-operations.c:285
+#: src/nautilus-file-operations.c:287
 msgid "Empty _Trash"
 msgstr "Избаци сме_ће"
 
-#: src/nautilus-file-operations.c:398
+#: src/nautilus-file-operations.c:400
 #, c-format
 msgid "%'d second"
 msgid_plural "%'d seconds"
@@ -1774,7 +1716,7 @@ msgstr[1] "%'d секунде"
 msgstr[2] "%'d секунди"
 msgstr[3] "једна секунда"
 
-#: src/nautilus-file-operations.c:404 src/nautilus-file-operations.c:416
+#: src/nautilus-file-operations.c:406 src/nautilus-file-operations.c:418
 #, c-format
 msgid "%'d minute"
 msgid_plural "%'d minutes"
@@ -1783,7 +1725,7 @@ msgstr[1] "%'d минута"
 msgstr[2] "%'d минута"
 msgstr[3] "један минут"
 
-#: src/nautilus-file-operations.c:415 src/nautilus-file-operations.c:423
+#: src/nautilus-file-operations.c:417 src/nautilus-file-operations.c:425
 #, c-format
 msgid "%'d hour"
 msgid_plural "%'d hours"
@@ -1792,16 +1734,16 @@ msgstr[1] "%'d сата"
 msgstr[2] "%'d сати"
 msgstr[3] "један сат"
 
-#: src/nautilus-file-operations.c:483 src/nautilus-properties-window.c:904
+#: src/nautilus-file-operations.c:485 src/nautilus-properties-window.c:908
 msgid "unknown"
 msgstr "непознато"
 
-#: src/nautilus-file-operations.c:1132 src/nautilus-file-operations.c:1193
+#: src/nautilus-file-operations.c:1146 src/nautilus-file-operations.c:1207
 #, c-format
 msgid "Permanently Delete “%s”?"
 msgstr "Да ли да трајно обришем „%s“?"
 
-#: src/nautilus-file-operations.c:1136 src/nautilus-file-operations.c:1198
+#: src/nautilus-file-operations.c:1150 src/nautilus-file-operations.c:1212
 #, c-format
 msgid "Permanently Delete %'d Selected Item?"
 msgid_plural "Permanently Delete %'d Selected Items?"
@@ -1810,42 +1752,42 @@ msgstr[1] "Да ли желите трајно да обришете %'d иза�
 msgstr[2] "Да ли желите трајно да обришете %'d изабраних ставки?"
 msgstr[3] "Да ли желите трајно да обришете изабрану ставку?"
 
-#: src/nautilus-file-operations.c:1144 src/nautilus-file-operations.c:1206
+#: src/nautilus-file-operations.c:1158 src/nautilus-file-operations.c:1220
 msgid "Permanently deleted items can not be restored"
 msgstr "Не могу да вратим трајно обрисане ставке из смећа"
 
-#: src/nautilus-file-operations.c:1159
+#: src/nautilus-file-operations.c:1173
 msgid "Empty Trash?"
 msgstr "Да избацим смеће?"
 
-#: src/nautilus-file-operations.c:1163
+#: src/nautilus-file-operations.c:1177
 msgid "All items in the Trash will be permanently deleted"
 msgstr "Све ставке из смећа ће бити трајно обрисане"
 
 #. Translators: This action removes a file from Recent
-#: src/nautilus-file-operations.c:1266
+#: src/nautilus-file-operations.c:1280
 #, c-format
 msgid "Cleared “%s”"
 msgstr "Очишћено „%s“"
 
-#: src/nautilus-file-operations.c:1270
+#: src/nautilus-file-operations.c:1284
 #, c-format
 msgid "Deleted “%s”"
 msgstr "Обрисано „%s“"
 
 #. Translators: This action removes a file from Recent
-#: src/nautilus-file-operations.c:1278
+#: src/nautilus-file-operations.c:1292
 #, c-format
 msgid "Clearing “%s”"
 msgstr "Чистим „%s“"
 
-#: src/nautilus-file-operations.c:1282
+#: src/nautilus-file-operations.c:1296
 #, c-format
 msgid "Deleting “%s”"
 msgstr "Бришем „%s“"
 
 #. Translators: This action removes file(s) from Recent
-#: src/nautilus-file-operations.c:1297
+#: src/nautilus-file-operations.c:1311
 #, c-format
 msgid "Cleared %'d file"
 msgid_plural "Cleared %'d files"
@@ -1854,7 +1796,7 @@ msgstr[1] "Очишћене су %'d датотеке"
 msgstr[2] "Очишћено је %'d датотека"
 msgstr[3] "Датотека је очишћена"
 
-#: src/nautilus-file-operations.c:1303
+#: src/nautilus-file-operations.c:1317
 #, c-format
 msgid "Deleted %'d file"
 msgid_plural "Deleted %'d files"
@@ -1864,7 +1806,7 @@ msgstr[2] "Обрисано је %'d датотека"
 msgstr[3] "Датотека је обрисана"
 
 #. Translators: This action removes file(s) from Recent
-#: src/nautilus-file-operations.c:1313
+#: src/nautilus-file-operations.c:1327
 #, c-format
 msgid "Clearing %'d file"
 msgid_plural "Clearing %'d files"
@@ -1873,7 +1815,7 @@ msgstr[1] "Чистим %'d датотеке"
 msgstr[2] "Чистим %'d датотеке"
 msgstr[3] "Чистим датотеку"
 
-#: src/nautilus-file-operations.c:1319
+#: src/nautilus-file-operations.c:1333
 #, c-format
 msgid "Deleting %'d file"
 msgid_plural "Deleting %'d files"
@@ -1884,12 +1826,12 @@ msgstr[3] "Бришем датотеку"
 
 #. To translators: %'d is the number of files completed for the operation,
 #. * so it will be something like 2/14.
-#: src/nautilus-file-operations.c:1348 src/nautilus-file-operations.c:1356
-#: src/nautilus-file-operations.c:1396 src/nautilus-file-operations.c:1742
-#: src/nautilus-file-operations.c:1750 src/nautilus-file-operations.c:1790
-#: src/nautilus-file-operations.c:3690 src/nautilus-file-operations.c:3698
-#: src/nautilus-file-operations.c:3769 src/nautilus-file-operations.c:8487
-#: src/nautilus-file-operations.c:8555
+#: src/nautilus-file-operations.c:1362 src/nautilus-file-operations.c:1370
+#: src/nautilus-file-operations.c:1410 src/nautilus-file-operations.c:1756
+#: src/nautilus-file-operations.c:1764 src/nautilus-file-operations.c:1804
+#: src/nautilus-file-operations.c:3689 src/nautilus-file-operations.c:3697
+#: src/nautilus-file-operations.c:3768 src/nautilus-file-operations.c:8460
+#: src/nautilus-file-operations.c:8528
 #, c-format
 msgid "%'d / %'d"
 msgstr "%'d од %'d"
@@ -1899,7 +1841,7 @@ msgstr "%'d од %'d"
 #. *
 #. * The singular/plural form will be used depending on the remaining time (i.e. the %s argument).
 #.
-#: src/nautilus-file-operations.c:1375 src/nautilus-file-operations.c:1769
+#: src/nautilus-file-operations.c:1389 src/nautilus-file-operations.c:1783
 #, c-format
 msgid "%'d / %'d — %s left"
 msgid_plural "%'d / %'d — %s left"
@@ -1908,7 +1850,7 @@ msgstr[1] "%'d од %'d — преостају %s"
 msgstr[2] "%'d од %'d — преостаје %s"
 msgstr[3] "%'d од %'d — преостаје %s"
 
-#: src/nautilus-file-operations.c:1379 src/nautilus-file-operations.c:1772
+#: src/nautilus-file-operations.c:1393 src/nautilus-file-operations.c:1786
 #, c-format
 msgid "(%d file/s)"
 msgid_plural "(%d files/s)"
@@ -1917,46 +1859,46 @@ msgstr[1] "(%d датотеке/сек)"
 msgstr[2] "(%d датотека/сек)"
 msgstr[3] "(%d датотека/сек)"
 
-#: src/nautilus-file-operations.c:1492
+#: src/nautilus-file-operations.c:1506
 #, c-format
 msgid "Failed to delete all child files"
 msgstr "Неуспех при брисању под-датотека"
 
-#: src/nautilus-file-operations.c:1545 src/nautilus-file-operations.c:2840
+#: src/nautilus-file-operations.c:1559 src/nautilus-file-operations.c:2839
 msgid "Error while deleting."
 msgstr "Грешка приликом брисања."
 
-#: src/nautilus-file-operations.c:1552
+#: src/nautilus-file-operations.c:1566
 #, c-format
 msgid "You do not have sufficient permissions to delete the folder “%s”."
 msgstr "Немате овлашћења да обришете фасциклу „%s“."
 
-#: src/nautilus-file-operations.c:1555
+#: src/nautilus-file-operations.c:1569
 #, c-format
 msgid "There was an error deleting the folder “%s”."
 msgstr "Дошло је до грешке при брисању фасцикле „%s“."
 
-#: src/nautilus-file-operations.c:1562
+#: src/nautilus-file-operations.c:1576
 #, c-format
 msgid "You do not have sufficient permissions to delete the file “%s”."
 msgstr "Немате овлашћења да обришете датотеку „%s“."
 
-#: src/nautilus-file-operations.c:1565
+#: src/nautilus-file-operations.c:1579
 #, c-format
 msgid "There was an error deleting the file “%s”."
 msgstr "Дошло је до грешке при брисању датотеке „%s“."
 
-#: src/nautilus-file-operations.c:1692
+#: src/nautilus-file-operations.c:1706
 #, c-format
 msgid "Trashing “%s”"
 msgstr "Премештам у смеће „%s"
 
-#: src/nautilus-file-operations.c:1696
+#: src/nautilus-file-operations.c:1710
 #, c-format
 msgid "Trashed “%s”"
 msgstr "Преместио „%s“ у смеће"
 
-#: src/nautilus-file-operations.c:1707
+#: src/nautilus-file-operations.c:1721
 #, c-format
 msgid "Trashing %'d file"
 msgid_plural "Trashing %'d files"
@@ -1965,7 +1907,7 @@ msgstr[1] "Премештам у смеће %'d датотеке"
 msgstr[2] "Премештам у смеће %'d датотека"
 msgstr[3] "Премештам датотеку у смеће"
 
-#: src/nautilus-file-operations.c:1713
+#: src/nautilus-file-operations.c:1727
 #, c-format
 msgid "Trashed %'d file"
 msgid_plural "Trashed %'d files"
@@ -1975,38 +1917,41 @@ msgstr[2] "Преместио %'d датотеке у смеће"
 msgstr[3] "Преместио сам датотеку у смеће"
 
 #. Translators: %s is a file name
-#: src/nautilus-file-operations.c:1862
+#: src/nautilus-file-operations.c:1873
 #, c-format
 msgid "“%s” can’t be put in the trash. Do you want to delete it immediately?"
 msgstr ""
 "Не могу да преместим датотеку „%s“ у смеће. Да ли да је обришем трајно?"
 
-#: src/nautilus-file-operations.c:1874
+#: src/nautilus-file-operations.c:1885
 msgid "This remote location does not support sending items to the trash."
 msgstr "Ово удаљено место не подржава слање ставки у смеће."
 
-#: src/nautilus-file-operations.c:2169
+#: src/nautilus-file-operations.c:2175
 msgid "Trashing Files"
 msgstr "Премештам датотеке у смеће"
 
-#: src/nautilus-file-operations.c:2173
+#: src/nautilus-file-operations.c:2179
 msgid "Deleting Files"
 msgstr "Бришем датотеке"
 
 #. Translators: %s is a file name formatted for display
-#: src/nautilus-file-operations.c:2330 src/nautilus-files-view.c:6926
-#: src/gtk/nautilusgtkplacessidebar.c:2309
-#: src/gtk/nautilusgtkplacessidebar.c:2338
+#: src/nautilus-file-operations.c:2334 src/nautilus-files-view.c:6530
+#: src/nautilus-sidebar.c:2348 src/nautilus-sidebar.c:2377
 #, c-format
 msgid "Unable to eject “%s”"
 msgstr "Не могу да избацим „%s“"
 
-#: src/nautilus-file-operations.c:2335
+#: src/nautilus-file-operations.c:2339
 #, c-format
 msgid "Unable to unmount “%s”"
 msgstr "Не могу да откачим „%s“"
 
 #: src/nautilus-file-operations.c:2505
+msgid "Empty Trash Before Ejecting?"
+msgstr "Да избацим смеће пре избацивања?"
+
+#: src/nautilus-file-operations.c:2508
 #, c-format
 msgid ""
 "Empty the trash to free up space on “%s”. All trashed items will be "
@@ -2015,28 +1960,26 @@ msgstr ""
 "Празни смеће како би ослободио простор у „%s“. Све ставке у смећуће бити "
 "трајно обрисане."
 
-#: src/nautilus-file-operations.c:2510
-msgid "Empty Trash Before Ejecting?"
-msgstr "Да избацим смеће пре избацивања?"
-
-#: src/nautilus-file-operations.c:2514
+#: src/nautilus-file-operations.c:2513
 msgid "Do _Not Empty"
 msgstr "_Не празни"
 
-#: src/nautilus-file-operations.c:2515
+#. Translators: This is an action in a dialog to
+#. * clear trashed items.
+#: src/nautilus-file-operations.c:2516
 msgid "_Empty"
 msgstr "И_спразни…"
 
 #. Translators: %s is a file name formatted for display
-#: src/nautilus-file-operations.c:2656 src/nautilus-files-view.c:6876
-#: src/gtk/nautilusgtkplacessidebar.c:1701
+#: src/nautilus-file-operations.c:2656 src/nautilus-files-view.c:6481
+#: src/nautilus-sidebar.c:1770
 #, c-format
 msgid "Unable to access “%s”"
 msgstr "Не могу да приступим датотеци „%s“"
 
 # #-#-#-#-#  nautilus.master.sr.po (nautilus)  #-#-#-#-#
 # мсгстр3 је могао и без %’д, али мсгфмт пријављује грешку :(
-#: src/nautilus-file-operations.c:2741
+#: src/nautilus-file-operations.c:2740
 #, c-format
 msgid "Preparing to copy %'d file (%s)"
 msgid_plural "Preparing to copy %'d files (%s)"
@@ -2045,7 +1988,7 @@ msgstr[1] "Припремам се за копирање %'d датотеке (%
 msgstr[2] "Припремам се за копирање %'d датотека (%s)"
 msgstr[3] "Припремам се за копирање %'d датотеке (%s)"
 
-#: src/nautilus-file-operations.c:2754
+#: src/nautilus-file-operations.c:2753
 #, c-format
 msgid "Preparing to move %'d file (%s)"
 msgid_plural "Preparing to move %'d files (%s)"
@@ -2054,7 +1997,7 @@ msgstr[1] "Припремам се за премештање %'d датотек�
 msgstr[2] "Припремам се за премештање %'d датотека (%s)"
 msgstr[3] "Припремам се за премештање %'d датотеке (%s)"
 
-#: src/nautilus-file-operations.c:2767
+#: src/nautilus-file-operations.c:2766
 #, c-format
 msgid "Preparing to delete %'d file (%s)"
 msgid_plural "Preparing to delete %'d files (%s)"
@@ -2063,7 +2006,7 @@ msgstr[1] "Припремам се за брисање %'d датотеке (%s)
 msgstr[2] "Припремам се за брисање %'d датотека (%s)"
 msgstr[3] "Припремам за брисање %'d датотеку (%s)"
 
-#: src/nautilus-file-operations.c:2777
+#: src/nautilus-file-operations.c:2776
 #, c-format
 msgid "Preparing to trash %'d file"
 msgid_plural "Preparing to trash %'d files"
@@ -2072,7 +2015,7 @@ msgstr[1] "Припремам се за премештање у смеће %'d �
 msgstr[2] "Припремам се за премештање у смеће %'d датотека"
 msgstr[3] "Припремам датотеку за слање у смеће"
 
-#: src/nautilus-file-operations.c:2786
+#: src/nautilus-file-operations.c:2785
 #, c-format
 msgid "Preparing to compress %'d file"
 msgid_plural "Preparing to compress %'d files"
@@ -2081,26 +2024,26 @@ msgstr[1] "Припремам се за паковање %'d датотеке"
 msgstr[2] "Припремам се за паковање %'d датотека"
 msgstr[3] "Припремам се за паковање датотеке"
 
-#: src/nautilus-file-operations.c:2830 src/nautilus-file-operations.c:4277
-#: src/nautilus-file-operations.c:4469 src/nautilus-file-operations.c:4551
-#: src/nautilus-file-operations.c:4838
+#: src/nautilus-file-operations.c:2829 src/nautilus-file-operations.c:4275
+#: src/nautilus-file-operations.c:4467 src/nautilus-file-operations.c:4549
+#: src/nautilus-file-operations.c:4837
 msgid "Error while copying."
 msgstr "Грешка приликом копирања."
 
-#: src/nautilus-file-operations.c:2835 src/nautilus-file-operations.c:4465
-#: src/nautilus-file-operations.c:4547 src/nautilus-file-operations.c:4834
+#: src/nautilus-file-operations.c:2834 src/nautilus-file-operations.c:4463
+#: src/nautilus-file-operations.c:4545 src/nautilus-file-operations.c:4833
 msgid "Error while moving."
 msgstr "Грешка приликом померања."
 
-#: src/nautilus-file-operations.c:2845
+#: src/nautilus-file-operations.c:2844
 msgid "Error while moving files to trash."
 msgstr "Грешка приликом премештања датотека у смеће."
 
-#: src/nautilus-file-operations.c:2850
+#: src/nautilus-file-operations.c:2849
 msgid "Error while compressing files."
 msgstr "Грешка при паковању датотека."
 
-#: src/nautilus-file-operations.c:2942
+#: src/nautilus-file-operations.c:2941
 #, c-format
 msgid ""
 "Files in the folder “%s” cannot be handled because you do not have "
@@ -2109,7 +2052,7 @@ msgstr ""
 "Не можете приступити датотекама у фасцикли „%s“ јер немате овлашћења да их "
 "видите."
 
-#: src/nautilus-file-operations.c:2948 src/nautilus-file-operations.c:4481
+#: src/nautilus-file-operations.c:2947 src/nautilus-file-operations.c:4479
 #, c-format
 msgid ""
 "There was an error getting information about the files in the folder “%s”."
@@ -2117,49 +2060,49 @@ msgstr ""
 "Догодила се грешка приликом добављања података о датотекама унутар фасцикле "
 "„%s“."
 
-#: src/nautilus-file-operations.c:3003
+#: src/nautilus-file-operations.c:3002
 #, c-format
 msgid ""
 "The folder “%s” cannot be handled because you do not have permissions to "
 "read it."
 msgstr "Не може се радити у фасцикли „%s“ јер немате овлашћење да је читате."
 
-#: src/nautilus-file-operations.c:3009 src/nautilus-file-operations.c:4563
+#: src/nautilus-file-operations.c:3008 src/nautilus-file-operations.c:4561
 #, c-format
 msgid "There was an error reading the folder “%s”."
 msgstr "Догодила се грешка приликом читања фасцикле „%s“."
 
-#: src/nautilus-file-operations.c:3119
+#: src/nautilus-file-operations.c:3118
 #, c-format
 msgid ""
 "The file “%s” cannot be handled because you do not have permissions to read "
 "it."
 msgstr "Не можете приступити датотеци „%s“ јер немате овлашћења да је читате."
 
-#: src/nautilus-file-operations.c:3124
+#: src/nautilus-file-operations.c:3123
 #, c-format
 msgid "There was an error getting information about “%s”."
 msgstr "Догодила се грешка приликом добављања података о „%s“."
 
-#: src/nautilus-file-operations.c:3248 src/nautilus-file-operations.c:3310
-#: src/nautilus-file-operations.c:3365 src/nautilus-file-operations.c:3427
+#: src/nautilus-file-operations.c:3247 src/nautilus-file-operations.c:3309
+#: src/nautilus-file-operations.c:3364 src/nautilus-file-operations.c:3426
 #, c-format
 msgid "Error while copying to “%s”."
 msgstr "Грешка приликом копирања у „%s“."
 
-#: src/nautilus-file-operations.c:3253
+#: src/nautilus-file-operations.c:3252
 msgid "You do not have permissions to access the destination folder."
 msgstr "Немате овлашћења за приступање одредишној фасцикли."
 
-#: src/nautilus-file-operations.c:3257
+#: src/nautilus-file-operations.c:3256
 msgid "There was an error getting information about the destination."
 msgstr "Догодила се грешка приликом добављања података о одредишту."
 
-#: src/nautilus-file-operations.c:3311
+#: src/nautilus-file-operations.c:3310
 msgid "The destination is not a folder."
 msgstr "Одредиште није фасцикла."
 
-#: src/nautilus-file-operations.c:3366
+#: src/nautilus-file-operations.c:3365
 msgid ""
 "There is not enough space on the destination. Try to remove files to make "
 "space."
@@ -2167,54 +2110,54 @@ msgstr ""
 "Нема довољно слободног простора у одредишту. Покушајте да најпре уклоните "
 "непотребне датотеке."
 
-#: src/nautilus-file-operations.c:3370
+#: src/nautilus-file-operations.c:3369
 #, c-format
 msgid "%s more space is required to copy to the destination."
 msgstr "Потребно је %s слободног простора за копирање података у одредиште."
 
-#: src/nautilus-file-operations.c:3406
+#: src/nautilus-file-operations.c:3405
 msgid "File too Large for Destination"
 msgstr "Датотека је превелика за Одредиште"
 
-#: src/nautilus-file-operations.c:3407
+#: src/nautilus-file-operations.c:3406
 msgid "Files bigger than 4.3 GB cannot be copied onto a FAT filesystem."
 msgstr "Датотека већа од 4.3 GB не може бити копирана на ФАТ систем датотека."
 
-#: src/nautilus-file-operations.c:3428
+#: src/nautilus-file-operations.c:3427
 msgid "The destination is read-only."
 msgstr "Одредиште је само за читање."
 
-#: src/nautilus-file-operations.c:3505
+#: src/nautilus-file-operations.c:3504
 #, c-format
 msgid "Moving “%s” to “%s”"
 msgstr "Премештам „%s“ у „%s“"
 
-#: src/nautilus-file-operations.c:3509
+#: src/nautilus-file-operations.c:3508
 #, c-format
 msgid "Moved “%s” to “%s”"
 msgstr "Преместио сам „%s“ у „%s“"
 
-#: src/nautilus-file-operations.c:3516
+#: src/nautilus-file-operations.c:3515
 #, c-format
 msgid "Copying “%s” to “%s”"
 msgstr "Копирам „%s“ у „%s“"
 
-#: src/nautilus-file-operations.c:3520
+#: src/nautilus-file-operations.c:3519
 #, c-format
 msgid "Copied “%s” to “%s”"
 msgstr "Копирао сам „%s“ у „%s“"
 
-#: src/nautilus-file-operations.c:3554
+#: src/nautilus-file-operations.c:3553
 #, c-format
 msgid "Duplicating “%s”"
 msgstr "Удвостручујем „%s“"
 
-#: src/nautilus-file-operations.c:3558
+#: src/nautilus-file-operations.c:3557
 #, c-format
 msgid "Duplicated “%s”"
 msgstr "Удвостручио сам „%s“"
 
-#: src/nautilus-file-operations.c:3577
+#: src/nautilus-file-operations.c:3576
 #, c-format
 msgid "Moving %'d file to “%s”"
 msgid_plural "Moving %'d files to “%s”"
@@ -2223,7 +2166,7 @@ msgstr[1] "Премештам %'d датотеке у „%s“"
 msgstr[2] "Премештам %'d датотека у „%s“"
 msgstr[3] "Премештам %'d датотеку у „%s“"
 
-#: src/nautilus-file-operations.c:3583
+#: src/nautilus-file-operations.c:3582
 #, c-format
 msgid "Copying %'d file to “%s”"
 msgid_plural "Copying %'d files to “%s”"
@@ -2232,7 +2175,7 @@ msgstr[1] "Копирам %'d датотеке у „%s“"
 msgstr[2] "Копирам %'d датотека у „%s“"
 msgstr[3] "Копирам %'d датотеку у „%s“"
 
-#: src/nautilus-file-operations.c:3602
+#: src/nautilus-file-operations.c:3601
 #, c-format
 msgid "Moved %'d file to “%s”"
 msgid_plural "Moved %'d files to “%s”"
@@ -2241,7 +2184,7 @@ msgstr[1] "Преместио сам %'d датотеке у „%s“"
 msgstr[2] "Преместио сам %'d датотека у „%s“"
 msgstr[3] "Преместио сам %'d датотеку у „%s“"
 
-#: src/nautilus-file-operations.c:3608
+#: src/nautilus-file-operations.c:3607
 #, c-format
 msgid "Copied %'d file to “%s”"
 msgid_plural "Copied %'d files to “%s”"
@@ -2250,7 +2193,7 @@ msgstr[1] "Копирао сам %'d датотеке у „%s“"
 msgstr[2] "Копирао сам %'d датотека у „%s“"
 msgstr[3] "Копирао сам %'d датотеку у „%s“"
 
-#: src/nautilus-file-operations.c:3631
+#: src/nautilus-file-operations.c:3630
 #, c-format
 msgid "Duplicating %'d file in “%s”"
 msgid_plural "Duplicating %'d files in “%s”"
@@ -2259,7 +2202,7 @@ msgstr[1] "Удвостручујем %'d датотеке у „%s“"
 msgstr[2] "Удвостручујем %'d датотека у „%s“"
 msgstr[3] "Удвостручујем %'d датотеку у „%s“"
 
-#: src/nautilus-file-operations.c:3641
+#: src/nautilus-file-operations.c:3640
 #, c-format
 msgid "Duplicated %'d file in “%s”"
 msgid_plural "Duplicated %'d files in “%s”"
@@ -2275,9 +2218,9 @@ msgstr[3] "Удвостручио сам %'d датотеку у „%s“"
 #.
 #. To translators: %s will expand to a size like "2 bytes" or "3 MB", so something like "4 kB / 4 MB"
 #. To translators: %s will expand to a size like "2 bytes" or "3 MB".
-#: src/nautilus-file-operations.c:3680 src/nautilus-file-operations.c:3740
-#: src/nautilus-file-operations.c:8000 src/nautilus-file-operations.c:8227
-#: src/nautilus-file-operations.c:8482 src/nautilus-file-operations.c:8525
+#: src/nautilus-file-operations.c:3679 src/nautilus-file-operations.c:3739
+#: src/nautilus-file-operations.c:7973 src/nautilus-file-operations.c:8200
+#: src/nautilus-file-operations.c:8455 src/nautilus-file-operations.c:8498
 #, c-format
 msgid "%s / %s"
 msgstr "%s од %s"
@@ -2300,8 +2243,8 @@ msgstr "%s од %s"
 #. *
 #. * The singular/plural form will be used depending on the remaining time (i.e. the %s argument).
 #.
-#: src/nautilus-file-operations.c:3724 src/nautilus-file-operations.c:8018
-#: src/nautilus-file-operations.c:8514
+#: src/nautilus-file-operations.c:3723 src/nautilus-file-operations.c:7991
+#: src/nautilus-file-operations.c:8487
 #, c-format
 msgid "%s / %s — %s left (%s/s)"
 msgid_plural "%s / %s — %s left (%s/s)"
@@ -2315,7 +2258,7 @@ msgstr[3] "%s од %s — преостаје %s (%s по секунди)"
 #. *
 #. * The singular/plural form will be used depending on the remaining time (i.e. the %s argument).
 #.
-#: src/nautilus-file-operations.c:3758 src/nautilus-file-operations.c:8544
+#: src/nautilus-file-operations.c:3757 src/nautilus-file-operations.c:8517
 #, c-format
 msgid "%'d / %'d — %s left (%s/s)"
 msgid_plural "%'d / %'d — %s left (%s/s)"
@@ -2324,7 +2267,7 @@ msgstr[1] "%'d од %'d — преостају %s (%s по секунди)"
 msgstr[2] "%'d од %'d — преостаје %s (%s по секунди)"
 msgstr[3] "%'d од %'d — преостаје %s (%s по секунди)"
 
-#: src/nautilus-file-operations.c:4283
+#: src/nautilus-file-operations.c:4281
 #, c-format
 msgid ""
 "The folder “%s” cannot be copied because you do not have permissions to "
@@ -2333,12 +2276,12 @@ msgstr ""
 "Фасцикла „%s“ не може бити копирана зато што немате овлашћења да је "
 "направите у одредишту."
 
-#: src/nautilus-file-operations.c:4289
+#: src/nautilus-file-operations.c:4287
 #, c-format
 msgid "There was an error creating the folder “%s”."
 msgstr "Дошло је до грешке при прављењу фасцикле „%s“."
 
-#: src/nautilus-file-operations.c:4476
+#: src/nautilus-file-operations.c:4474
 #, c-format
 msgid ""
 "Files in the folder “%s” cannot be copied because you do not have "
@@ -2347,11 +2290,11 @@ msgstr ""
 "Датотеке у фасцикли „%s“ не могу бити копиране зато што немате овлашћења за "
 "њихов приказ."
 
-#: src/nautilus-file-operations.c:4492
+#: src/nautilus-file-operations.c:4490
 msgid "_Skip files"
 msgstr "Пре_скочи датотеке"
 
-#: src/nautilus-file-operations.c:4558
+#: src/nautilus-file-operations.c:4556
 #, c-format
 msgid ""
 "The folder “%s” cannot be copied because you do not have permissions to read "
@@ -2359,72 +2302,72 @@ msgid ""
 msgstr ""
 "Фасцикла „%s“ не може бити копирана зато што немате овлашћења за њено читање."
 
-#: src/nautilus-file-operations.c:4623 src/nautilus-file-operations.c:5256
-#: src/nautilus-file-operations.c:6008
+#: src/nautilus-file-operations.c:4621 src/nautilus-file-operations.c:5252
+#: src/nautilus-file-operations.c:5994
 #, c-format
 msgid "Error while moving “%s”."
 msgstr "Грешка при премештању „%s“."
 
-#: src/nautilus-file-operations.c:4624
+#: src/nautilus-file-operations.c:4622
 msgid "Could not remove the source folder."
 msgstr "Не могу да уклоним изворну фасциклу."
 
-#: src/nautilus-file-operations.c:4840
+#: src/nautilus-file-operations.c:4839
 msgid "There was an error getting information about the source."
 msgstr "Догодила се грешка приликом добављања података о извору."
 
 # Шаљиво, бат ит вил ду :)
 #. the run_warning() frees all strings passed in automatically
-#: src/nautilus-file-operations.c:4942 src/nautilus-file-operations.c:5766
+#: src/nautilus-file-operations.c:4940 src/nautilus-file-operations.c:5754
 msgid "You cannot move a folder into itself."
 msgstr "Не можете преместити фасциклу у исту фасциклу."
 
-#: src/nautilus-file-operations.c:4943 src/nautilus-file-operations.c:5767
+#: src/nautilus-file-operations.c:4941 src/nautilus-file-operations.c:5755
 msgid "You cannot copy a folder into itself."
 msgstr "Не можете да копирате фасциклу у исту фасциклу."
 
-#: src/nautilus-file-operations.c:4944 src/nautilus-file-operations.c:5768
+#: src/nautilus-file-operations.c:4942 src/nautilus-file-operations.c:5756
 msgid "The destination folder is inside the source folder."
 msgstr "Одредишна фасцикла је унутар полазне фасцикле."
 
 #. the run_warning() frees all strings passed in automatically
-#: src/nautilus-file-operations.c:4984 src/nautilus-file-operations.c:5809
+#: src/nautilus-file-operations.c:4982 src/nautilus-file-operations.c:5797
 msgid "You cannot move a file over itself."
 msgstr "Не можете преместити датотеку у исту датотеку."
 
-#: src/nautilus-file-operations.c:4985 src/nautilus-file-operations.c:5810
+#: src/nautilus-file-operations.c:4983 src/nautilus-file-operations.c:5798
 msgid "You cannot copy a file over itself."
 msgstr "Не можете копирати датотеку у исту датотеку."
 
-#: src/nautilus-file-operations.c:4986 src/nautilus-file-operations.c:5811
+#: src/nautilus-file-operations.c:4984 src/nautilus-file-operations.c:5799
 msgid "The source file would be overwritten by the destination."
 msgstr "Овом датотеком ћете преписати изворну датотеку."
 
-#: src/nautilus-file-operations.c:5260 src/nautilus-file-operations.c:5348
+#: src/nautilus-file-operations.c:5256 src/nautilus-file-operations.c:5344
 #, c-format
 msgid "Error while copying “%s”."
 msgstr "Грешка при копирању „%s“."
 
-#: src/nautilus-file-operations.c:5263
+#: src/nautilus-file-operations.c:5259
 #, c-format
 msgid "Could not remove the already existing file with the same name in %s."
 msgstr "Не могу да уклоним већ постојећу датотеку са истим називом у „%s“."
 
-#: src/nautilus-file-operations.c:5350
+#: src/nautilus-file-operations.c:5346
 #, c-format
 msgid "There was an error copying the file into %s."
 msgstr "Дошло је до грешке при копирању датотеке у „%s“."
 
-#: src/nautilus-file-operations.c:5547
+#: src/nautilus-file-operations.c:5538
 msgid "Copying Files"
 msgstr "Копирам датотеке"
 
-#: src/nautilus-file-operations.c:5667
+#: src/nautilus-file-operations.c:5656
 #, c-format
 msgid "Preparing to move to “%s”"
 msgstr "Припремам се за премештање у „%s“"
 
-#: src/nautilus-file-operations.c:5671
+#: src/nautilus-file-operations.c:5660
 #, c-format
 msgid "Preparing to move %'d file"
 msgid_plural "Preparing to move %'d files"
@@ -2433,21 +2376,21 @@ msgstr[1] "Припремам се за премештање %'d датотек�
 msgstr[2] "Припремам се за премештање %'d датотека"
 msgstr[3] "Припремам датотеку за премештање"
 
-#: src/nautilus-file-operations.c:6010
+#: src/nautilus-file-operations.c:5996
 #, c-format
 msgid "There was an error moving the file into %s."
 msgstr "Дошло је до грешке при премештању у „%s“."
 
-#: src/nautilus-file-operations.c:6258
+#: src/nautilus-file-operations.c:6229
 msgid "Moving Files"
 msgstr "Премештам датотеке"
 
-#: src/nautilus-file-operations.c:6364
+#: src/nautilus-file-operations.c:6334
 #, c-format
 msgid "Creating links in “%s”"
 msgstr "Правим везе у „%s“"
 
-#: src/nautilus-file-operations.c:6368
+#: src/nautilus-file-operations.c:6338
 #, c-format
 msgid "Making link to %'d file"
 msgid_plural "Making links to %'d files"
@@ -2456,113 +2399,113 @@ msgstr[1] "Правим везе ка %'d датотеке"
 msgstr[2] "Правим везе ка %'d датотека"
 msgstr[3] "Правим везу ка датотеци"
 
-#: src/nautilus-file-operations.c:6518
+#: src/nautilus-file-operations.c:6486
 #, c-format
 msgid "Error while creating link to “%s”."
 msgstr "Грешка при прављењу везе ка „%s“."
 
-#: src/nautilus-file-operations.c:6522
+#: src/nautilus-file-operations.c:6490
 msgid "Symbolic links only supported for local files"
 msgstr "Симболичке везе су могуће само над локалним датотекама"
 
-#: src/nautilus-file-operations.c:6527
+#: src/nautilus-file-operations.c:6495
 msgid "The target doesn’t support symbolic links."
 msgstr "Одредиште не подржава симболичке везе."
 
-#: src/nautilus-file-operations.c:6535
+#: src/nautilus-file-operations.c:6503
 #, c-format
 msgid "There was an error creating the symlink in %s."
 msgstr "Дошло је до грешке при образовању симболичке везе у „%s“."
 
-#: src/nautilus-file-operations.c:6865
+#: src/nautilus-file-operations.c:6833
 msgid "Setting permissions"
 msgstr "Постављам овлашћења"
 
 #. localizers: the initial name of a new folder
-#: src/nautilus-file-operations.c:7157
+#: src/nautilus-file-operations.c:7125
 msgid "Untitled Folder"
 msgstr "Неименована фасцикла"
 
 #. localizers: the initial name of a new empty document
-#: src/nautilus-file-operations.c:7172
+#: src/nautilus-file-operations.c:7140
 msgid "Untitled Document"
 msgstr "Неименован документ"
 
-#: src/nautilus-file-operations.c:7398
+#: src/nautilus-file-operations.c:7366
 #, c-format
 msgid "Error while creating directory “%s”."
 msgstr "Грешка при прављењу фасцикле „%s“."
 
-#: src/nautilus-file-operations.c:7403
+#: src/nautilus-file-operations.c:7371
 #, c-format
 msgid "Error while creating file “%s”."
 msgstr "Грешка при прављењу датотеке „%s“."
 
-#: src/nautilus-file-operations.c:7407
+#: src/nautilus-file-operations.c:7375
 #, c-format
 msgid "There was an error creating the directory in %s."
 msgstr "Дошло је до грешке при стварању фасцикле у „%s“."
 
-#: src/nautilus-file-operations.c:7508
+#: src/nautilus-file-operations.c:7476
 msgid "Saving image to file"
 msgstr "Чувам слику у датотеку"
 
-#: src/nautilus-file-operations.c:7517
+#: src/nautilus-file-operations.c:7485
 msgid "Successfully saved image to file"
 msgstr "Успешно сачувао слику унутар датотеке"
 
-#: src/nautilus-file-operations.c:7547
+#: src/nautilus-file-operations.c:7515
 msgid "Failed to save image"
 msgstr "Неуспех при чувању слике"
 
 #. Translators: This is used to auto-generate a file name for pasted images from
 #. * the clipboard i.e. "Pasted image.png", "Pasted image 1.png", ...
-#: src/nautilus-file-operations.c:7609
+#: src/nautilus-file-operations.c:7577
 msgid "Pasted image"
 msgstr "Убачена слика"
 
-#: src/nautilus-file-operations.c:7616
+#: src/nautilus-file-operations.c:7584
 msgid "Retrieving clipboard data"
 msgstr "Добављам податке из оставе"
 
-#: src/nautilus-file-operations.c:7648
+#: src/nautilus-file-operations.c:7616
 msgid "Retrieving image data"
 msgstr "Добављам податке слике"
 
-#: src/nautilus-file-operations.c:7866
+#: src/nautilus-file-operations.c:7834
 msgid "Emptying Trash"
 msgstr "Празним смеће"
 
-#: src/nautilus-file-operations.c:7908
+#: src/nautilus-file-operations.c:7877
 msgid "Verifying destination"
 msgstr "Проверавам одредиште"
 
-#: src/nautilus-file-operations.c:7958
+#: src/nautilus-file-operations.c:7931
 #, c-format
 msgid "Extracting “%s”"
 msgstr "Распакујем „%s“"
 
-#: src/nautilus-file-operations.c:8084 src/nautilus-file-operations.c:8174
+#: src/nautilus-file-operations.c:8057 src/nautilus-file-operations.c:8147
 #, c-format
 msgid "Error extracting “%s”"
 msgstr "Грешка при распаковању „%s“"
 
-#: src/nautilus-file-operations.c:8091
+#: src/nautilus-file-operations.c:8064
 #, c-format
 msgid "There was an error while extracting “%s”."
 msgstr "Дошло је до грешке приликом распаковања „%s“."
 
-#: src/nautilus-file-operations.c:8177
+#: src/nautilus-file-operations.c:8150
 #, c-format
 msgid "Not enough free space to extract “%s”"
 msgstr "Нема довољно слободног места за распакивање „%s“"
 
-#: src/nautilus-file-operations.c:8210
+#: src/nautilus-file-operations.c:8183
 #, c-format
 msgid "Extracted “%s” to “%s”"
 msgstr "Распаковао сам „%s“ у „%s“"
 
-#: src/nautilus-file-operations.c:8216
+#: src/nautilus-file-operations.c:8189
 #, c-format
 msgid "Extracted %'d file to “%s”"
 msgid_plural "Extracted %'d files to “%s”"
@@ -2571,20 +2514,20 @@ msgstr[1] "Распаковао сам %'d датотеке у „%s“"
 msgstr[2] "Распаковао сам %'d датотека у „%s“"
 msgstr[3] "Распаковао сам %'d датотеку у „%s“"
 
-#: src/nautilus-file-operations.c:8250
+#: src/nautilus-file-operations.c:8223
 msgid "Preparing to extract"
 msgstr "Припремам се за распаковање"
 
-#: src/nautilus-file-operations.c:8378
+#: src/nautilus-file-operations.c:8351
 msgid "Extracting Files"
 msgstr "Распакујем датотеке"
 
-#: src/nautilus-file-operations.c:8438
+#: src/nautilus-file-operations.c:8411
 #, c-format
 msgid "Compressing “%s” into “%s”"
 msgstr "Пакујем „%s“ у „%s“"
 
-#: src/nautilus-file-operations.c:8444
+#: src/nautilus-file-operations.c:8417
 #, c-format
 msgid "Compressing %'d file into “%s”"
 msgid_plural "Compressing %'d files into “%s”"
@@ -2593,12 +2536,12 @@ msgstr[1] "Пакујем %'d датотеке у „%s“"
 msgstr[2] "Пакујем %'d датотека у „%s“"
 msgstr[3] "Пакујем %'d датотеку у „%s“"
 
-#: src/nautilus-file-operations.c:8592
+#: src/nautilus-file-operations.c:8565
 #, c-format
 msgid "Error compressing “%s” into “%s”"
 msgstr "Грешка приликом паковања „%s“ у „%s“"
 
-#: src/nautilus-file-operations.c:8598
+#: src/nautilus-file-operations.c:8571
 #, c-format
 msgid "Error compressing %'d file into “%s”"
 msgid_plural "Error compressing %'d files into “%s”"
@@ -2607,16 +2550,16 @@ msgstr[1] "Грешка приликом паковања %'d датотеке �
 msgstr[2] "Грешка приликом паковања %'d датотека у „%s“"
 msgstr[3] "Грешка приликом паковања %'d датотеке у „%s“"
 
-#: src/nautilus-file-operations.c:8608
+#: src/nautilus-file-operations.c:8581
 msgid "There was an error while compressing files."
 msgstr "Дошло је до грешке при паковању датотека."
 
-#: src/nautilus-file-operations.c:8633
+#: src/nautilus-file-operations.c:8606
 #, c-format
 msgid "Compressed “%s” into “%s”"
 msgstr "Пакујем „%s“ у „%s“"
 
-#: src/nautilus-file-operations.c:8639
+#: src/nautilus-file-operations.c:8612
 #, c-format
 msgid "Compressed %'d file into “%s”"
 msgid_plural "Compressed %'d files into “%s”"
@@ -2625,49 +2568,49 @@ msgstr[1] "Пакујем %'d датотеке у „%s“"
 msgstr[2] "Пакујем %'d датотека у „%s“"
 msgstr[3] "Пакујем %'d датотеку у „%s“"
 
-#: src/nautilus-file-operations.c:8758
+#: src/nautilus-file-operations.c:8731
 msgid "Compressing Files"
 msgstr "Пакујем датотеке"
 
-#: src/nautilus-files-view.c:393
+#: src/nautilus-files-view.c:364
 msgid "Searching…"
 msgstr "Тражим…"
 
-#: src/nautilus-files-view.c:393 src/nautilus-window-slot.c:939
+#: src/nautilus-files-view.c:364 src/nautilus-window-slot.c:907
 msgid "Loading…"
 msgstr "Учитавам…"
 
-#: src/nautilus-files-view.c:1902
+#: src/nautilus-files-view.c:1773
 msgid "Examples: "
 msgstr "Примери: "
 
-#: src/nautilus-files-view.c:2958 src/nautilus-files-view.c:2965
-#: src/nautilus-files-view.c:2972 src/nautilus-files-view.c:2979
+#: src/nautilus-files-view.c:2790 src/nautilus-files-view.c:2797
+#: src/nautilus-files-view.c:2804 src/nautilus-files-view.c:2811
 msgid "Could not paste files"
 msgstr "Не могу да убацим датотеке"
 
-#: src/nautilus-files-view.c:2959
+#: src/nautilus-files-view.c:2791
 msgid "Cannot paste files into Starred"
 msgstr "Не могу да убацим датотеке у омиљено"
 
-#: src/nautilus-files-view.c:2966
+#: src/nautilus-files-view.c:2798
 msgid "Cannot paste files into Recent"
 msgstr "Не могу да убацим датотеке у недавно"
 
-#: src/nautilus-files-view.c:2973
+#: src/nautilus-files-view.c:2805
 msgid "Cannot paste files into Trash"
 msgstr "Не могу да убацим датотеке у смеће"
 
-#: src/nautilus-files-view.c:2980
+#: src/nautilus-files-view.c:2812
 msgid "Permissions do not allow pasting files in this directory"
 msgstr "Недовољно овлашћења за убацивање датотека унутар ове фасцикле"
 
-#: src/nautilus-files-view.c:3612 src/nautilus-files-view.c:3659
+#: src/nautilus-files-view.c:3405 src/nautilus-files-view.c:3452
 #, c-format
 msgid "“%s” selected"
 msgstr "„%s“ је изабрано"
 
-#: src/nautilus-files-view.c:3616
+#: src/nautilus-files-view.c:3409
 #, c-format
 msgid "%'d folder selected"
 msgid_plural "%'d folders selected"
@@ -2676,7 +2619,7 @@ msgstr[1] "Изабране су %'d фасцикле"
 msgstr[2] "Изабрано је %'d фасцикли"
 msgstr[3] "Изабрана је једна фасцикла"
 
-#: src/nautilus-files-view.c:3630
+#: src/nautilus-files-view.c:3423
 #, c-format
 msgid "(containing %'d item)"
 msgid_plural "(containing %'d items)"
@@ -2686,7 +2629,7 @@ msgstr[2] "(садржи %'d ставки)"
 msgstr[3] "(садржи једну ставку)"
 
 #. translators: this is preceded with a string of form 'N folders' (N more than 1)
-#: src/nautilus-files-view.c:3645
+#: src/nautilus-files-view.c:3438
 #, c-format
 msgid "(containing a total of %'d item)"
 msgid_plural "(containing a total of %'d items)"
@@ -2695,7 +2638,7 @@ msgstr[1] "(садрже укупно %'d ставке)"
 msgstr[2] "(садрже укупно %'d ставки)"
 msgstr[3] "(садрже само једну ставку)"
 
-#: src/nautilus-files-view.c:3664
+#: src/nautilus-files-view.c:3457
 #, c-format
 msgid "%'d item selected"
 msgid_plural "%'d items selected"
@@ -2705,7 +2648,7 @@ msgstr[2] "Изабрано је %'d ставки"
 msgstr[3] "Изабрана је једна ставка"
 
 #. Folders selected also, use "other" terminology
-#: src/nautilus-files-view.c:3673
+#: src/nautilus-files-view.c:3466
 #, c-format
 msgid "%'d other item selected"
 msgid_plural "%'d other items selected"
@@ -2718,7 +2661,7 @@ msgstr[3] "Изабрана је једна друга ставка"
 #. * needs to use something other than parentheses. The
 #. * the message in parentheses is the size of the selected items.
 #.
-#: src/nautilus-files-view.c:3688
+#: src/nautilus-files-view.c:3481
 #, c-format
 msgid "(%s)"
 msgstr "(%s)"
@@ -2730,98 +2673,98 @@ msgstr "(%s)"
 #. * message about the number of other items and the
 #. * total size of those items.
 #.
-#: src/nautilus-files-view.c:3738
+#: src/nautilus-files-view.c:3531
 #, c-format
 msgid "%s, %s"
 msgstr "%s, %s"
 
-#: src/nautilus-files-view.c:3801
+#: src/nautilus-files-view.c:3607
 msgid "Search _Settings"
 msgstr "Подешавања п_ретраге"
 
-#: src/nautilus-files-view.c:3813
+#: src/nautilus-files-view.c:3619
 msgid "Search _Everywhere"
 msgstr "Пр_етражи свуда"
 
-#: src/nautilus-files-view.c:3850
+#: src/nautilus-files-view.c:3649
 msgid "More locations can be added to search in the settings"
 msgstr "Можете додати још места за претрагу унутар подешавања"
 
 #. Translators: %s is the name of the search location formatted for display
-#: src/nautilus-files-view.c:3858
+#: src/nautilus-files-view.c:3657
 #, c-format
 msgid "No matches in “%s”"
 msgstr "Нисам нашао унутар „%s“"
 
-#: src/nautilus-files-view.c:3866
+#: src/nautilus-files-view.c:3665
 #: src/resources/ui/nautilus-search-types-dialog.ui:70
 msgid "No Results Found"
 msgstr "Нема резултата"
 
-#: src/nautilus-files-view.c:3871
+#: src/nautilus-files-view.c:3670
 msgid "Trash is Empty"
 msgstr "Фасцикла је празна"
 
-#: src/nautilus-files-view.c:3877
+#: src/nautilus-files-view.c:3676
 msgid "No Starred Files"
 msgstr "Нема датотека са звездом"
 
-#: src/nautilus-files-view.c:3883
+#: src/nautilus-files-view.c:3682
 msgid "No Recent Files"
 msgstr "Нема недавних датотека"
 
-#: src/nautilus-files-view.c:3889
+#: src/nautilus-files-view.c:3688
 msgid "No Known Connections"
 msgstr "Нема познатих повезивања"
 
-#: src/nautilus-files-view.c:3890
+#: src/nautilus-files-view.c:3689
 msgid "Enter an address to connect to a network location."
 msgstr "Унесите адресу да се повежете на локацију мреже."
 
-#: src/nautilus-files-view.c:3895
+#: src/nautilus-files-view.c:3694
 msgid "Folder is Empty"
 msgstr "Фасцикла је празна"
 
-#: src/nautilus-files-view.c:6112
+#: src/nautilus-files-view.c:5749
 msgid "Select Move Destination"
 msgstr "Изаберите одредиште премештања"
 
-#: src/nautilus-files-view.c:6116
+#: src/nautilus-files-view.c:5753
 msgid "Select Copy Destination"
 msgstr "Изаберите одредиште копирања"
 
-#: src/nautilus-files-view.c:6122 src/nautilus-files-view.c:6510
-#: src/nautilus-portal.c:416 src/nautilus-properties-window.c:4082
+#: src/nautilus-files-view.c:5764 src/nautilus-files-view.c:6131
+#: src/nautilus-portal.c:431 src/nautilus-properties-window.c:4027
 #: src/resources/ui/nautilus-files-view-select-items.ui:23
 msgid "_Select"
 msgstr "_Изабери"
 
-#: src/nautilus-files-view.c:6509
+#: src/nautilus-files-view.c:6130
 msgid "Select Extract Destination"
 msgstr "Изаберите одредиште за распаковање"
 
-#: src/nautilus-files-view.c:6585
+#: src/nautilus-files-view.c:6206
 msgid "Error sending email."
 msgstr "Грешка приликом слања поште."
 
 #. Translators: %s is a file name formatted for display
-#: src/nautilus-files-view.c:6903
+#: src/nautilus-files-view.c:6507
 #, c-format
 msgid "Unable to remove “%s”"
 msgstr "Не могу да уклоним „%s“"
 
-#: src/nautilus-files-view.c:6948
+#: src/nautilus-files-view.c:6552
 msgid "Unable to stop drive"
 msgstr "Не могу да зауставим уређај"
 
 #. Translators: %s is a file name formatted for display
-#: src/nautilus-files-view.c:7063 src/gtk/nautilusgtkplacessidebar.c:1656
-#: src/gtk/nautilusgtkplacessidebar.c:2535
+#: src/nautilus-files-view.c:6663 src/nautilus-sidebar.c:1721
+#: src/nautilus-sidebar.c:2592
 #, c-format
 msgid "Unable to start “%s”"
 msgstr "Не могу да покренем „%s“"
 
-#: src/nautilus-files-view.c:8185
+#: src/nautilus-files-view.c:7759
 #, c-format
 msgid "New Folder with Selection (%'d Item)"
 msgid_plural "New Folder with Selection (%'d Items)"
@@ -2830,64 +2773,63 @@ msgstr[1] "Нова фасцикла са избором (%'d ставке)"
 msgstr[2] "Нова фасцикла са избором (%'d ставки)"
 msgstr[3] "Нова фасцикла са избором (једна ставка)"
 
-#: src/nautilus-files-view.c:8240
+#: src/nautilus-files-view.c:7814
 #, c-format
 msgid "Open With %s"
 msgstr "Отвори помоћу %s"
 
-#: src/nautilus-files-view.c:8251
+#: src/nautilus-files-view.c:7825
 msgid "Run"
 msgstr "Покрени"
 
-#: src/nautilus-files-view.c:8256
+#: src/nautilus-files-view.c:7830
 #: src/resources/ui/nautilus-operations-ui-manager-request-passphrase.ui:17
 msgid "Extract"
 msgstr "Распакуј"
 
-#: src/nautilus-files-view.c:8257
+#: src/nautilus-files-view.c:7831
 msgid "Extract to…"
 msgstr "Распакуј у…"
 
-#: src/nautilus-files-view.c:8261
+#: src/nautilus-files-view.c:7835
 #: src/resources/ui/nautilus-files-view-context-menus.ui:93
 msgid "Open"
 msgstr "Отвори"
 
-#: src/nautilus-files-view.c:8340
+#: src/nautilus-files-view.c:7914 src/nautilus-sidebar.c:3030
 #: src/resources/ui/nautilus-files-view-context-menus.ui:159
-#: src/gtk/nautilusgtkplacessidebar.c:2957
 msgid "_Start"
 msgstr "_Покрени"
 
-#: src/nautilus-files-view.c:8346
+#: src/nautilus-files-view.c:7920
 msgid "_Connect"
 msgstr "_Повежи се"
 
-#: src/nautilus-files-view.c:8352
+#: src/nautilus-files-view.c:7926
 msgid "_Start Multi-disk Drive"
 msgstr "_Покрени уређај са више дискова"
 
-#: src/nautilus-files-view.c:8358
+#: src/nautilus-files-view.c:7932
 msgid "U_nlock Drive"
 msgstr "_Откључај уређај"
 
-#: src/nautilus-files-view.c:8376
+#: src/nautilus-files-view.c:7950
 msgid "Stop Drive"
 msgstr "Заустави уређај"
 
-#: src/nautilus-files-view.c:8382 src/gtk/nautilusgtkplacessidebar.c:2974
+#: src/nautilus-files-view.c:7956 src/nautilus-sidebar.c:3061
 msgid "_Safely Remove Drive"
 msgstr "_Безбедно уклони уређај"
 
-#: src/nautilus-files-view.c:8388
+#: src/nautilus-files-view.c:7962
 msgid "_Disconnect"
 msgstr "_Прекини везу"
 
-#: src/nautilus-files-view.c:8394
+#: src/nautilus-files-view.c:7968
 msgid "_Stop Multi-disk Drive"
 msgstr "_Заустави уређај са више диска"
 
-#: src/nautilus-files-view.c:8400
+#: src/nautilus-files-view.c:7974
 msgid "_Lock Drive"
 msgstr "_Закључај уређај"
 
@@ -2904,7 +2846,7 @@ msgstr "Превлачење и пуштање није подржано."
 msgid "An invalid drag type was used."
 msgstr "Употребљена је неисправна врста превлачења."
 
-#: src/nautilus-file-undo-operations.c:177 src/nautilus-window.c:890
+#: src/nautilus-file-undo-operations.c:177 src/nautilus-window.c:874
 msgid "Undo"
 msgstr "Опозови"
 
@@ -2992,7 +2934,7 @@ msgstr[2] "Премештам %d ставки назад у смеће"
 msgstr[3] "Премештам ставку назад у смеће"
 
 #: src/nautilus-file-undo-operations.c:486
-#: src/nautilus-file-undo-operations.c:1624
+#: src/nautilus-file-undo-operations.c:1631
 #, c-format
 msgid "Restore %d item from trash"
 msgid_plural "Restore %d items from trash"
@@ -3050,8 +2992,8 @@ msgstr[3] "_Понови копирање ставке"
 #: src/nautilus-file-undo-operations.c:516
 #: src/nautilus-file-undo-operations.c:543
 #: src/nautilus-file-undo-operations.c:831
-#: src/nautilus-file-undo-operations.c:2380
-#: src/nautilus-file-undo-operations.c:2543
+#: src/nautilus-file-undo-operations.c:2388
+#: src/nautilus-file-undo-operations.c:2551
 #, c-format
 msgid "Delete “%s”"
 msgstr "Обриши „%s“"
@@ -3207,8 +3149,8 @@ msgstr "_Опозови преименовање"
 msgid "_Redo Rename"
 msgstr "_Понови преименовање"
 
-#: src/nautilus-file-undo-operations.c:1182
-#: src/nautilus-file-undo-operations.c:1186
+#: src/nautilus-file-undo-operations.c:1184
+#: src/nautilus-file-undo-operations.c:1188
 #, c-format
 msgid "Batch rename %d file"
 msgid_plural "Batch rename %d files"
@@ -3217,16 +3159,16 @@ msgstr[1] "Преименујем серију од „%d“ датотеке"
 msgstr[2] "Преименујем серију од „%d“ датотека"
 msgstr[3] "Преименујем серију од једне датотеке"
 
-#: src/nautilus-file-undo-operations.c:1191
+#: src/nautilus-file-undo-operations.c:1193
 msgid "_Undo Batch Rename"
 msgstr "_Опозови серијско преименовање"
 
-#: src/nautilus-file-undo-operations.c:1192
+#: src/nautilus-file-undo-operations.c:1194
 msgid "_Redo Batch Rename"
 msgstr "_Понови серијско преименовање"
 
-#: src/nautilus-file-undo-operations.c:1408
-#: src/nautilus-file-undo-operations.c:1425
+#: src/nautilus-file-undo-operations.c:1411
+#: src/nautilus-file-undo-operations.c:1428
 #, c-format
 msgid "Unstar %d file"
 msgid_plural "Unstar %d files"
@@ -3235,8 +3177,8 @@ msgstr[1] "Уклони звезду са %d датотеке"
 msgstr[2] "Уклони звезду са %d датотека"
 msgstr[3] "Уклони звезду са датотеке"
 
-#: src/nautilus-file-undo-operations.c:1412
-#: src/nautilus-file-undo-operations.c:1421
+#: src/nautilus-file-undo-operations.c:1415
+#: src/nautilus-file-undo-operations.c:1424
 #, c-format
 msgid "Star %d file"
 msgid_plural "Star %d files"
@@ -3245,23 +3187,23 @@ msgstr[1] "Додај звезду на %d датотеку"
 msgstr[2] "Додај звезду на %d датотеку"
 msgstr[3] "Додај звезду на датотеку"
 
-#: src/nautilus-file-undo-operations.c:1416
+#: src/nautilus-file-undo-operations.c:1419
 msgid "_Undo Starring"
 msgstr "_Опозови додавање звезде"
 
-#: src/nautilus-file-undo-operations.c:1417
+#: src/nautilus-file-undo-operations.c:1420
 msgid "_Redo Starring"
 msgstr "_Понови додавање звезде"
 
-#: src/nautilus-file-undo-operations.c:1429
+#: src/nautilus-file-undo-operations.c:1432
 msgid "_Undo Unstarring"
 msgstr "_Опозови уклањање звезде"
 
-#: src/nautilus-file-undo-operations.c:1430
+#: src/nautilus-file-undo-operations.c:1433
 msgid "_Redo Unstarring"
 msgstr "_Понови уклањање звезде"
 
-#: src/nautilus-file-undo-operations.c:1627
+#: src/nautilus-file-undo-operations.c:1634
 #, c-format
 msgid "Move %d item to trash"
 msgid_plural "Move %d items to trash"
@@ -3270,99 +3212,99 @@ msgstr[1] "Премештам %d датотеке у смеће"
 msgstr[2] "Премештам %d датотека у смеће"
 msgstr[3] "Премештам датотеку у смеће"
 
-#: src/nautilus-file-undo-operations.c:1641
+#: src/nautilus-file-undo-operations.c:1648
 #, c-format
 msgid "Restore “%s” to “%s”"
 msgstr "Преименујем „%s“ у „%s“"
 
-#: src/nautilus-file-undo-operations.c:1648
+#: src/nautilus-file-undo-operations.c:1655
 #, c-format
 msgid "Move “%s” to trash"
 msgstr "Премештам „%s“ у смеће"
 
-#: src/nautilus-file-undo-operations.c:1653
+#: src/nautilus-file-undo-operations.c:1660
 msgid "_Undo Trash"
 msgstr "_Опозови бацање"
 
-#: src/nautilus-file-undo-operations.c:1654
+#: src/nautilus-file-undo-operations.c:1661
 msgid "_Redo Trash"
 msgstr "_Понови бацање"
 
-#: src/nautilus-file-undo-operations.c:1948
+#: src/nautilus-file-undo-operations.c:1956
 #, c-format
 msgid "Restore original permissions of items enclosed in “%s”"
 msgstr "Враћам првобитна овлашћења ставки садржаних у „%s“"
 
-#: src/nautilus-file-undo-operations.c:1949
+#: src/nautilus-file-undo-operations.c:1957
 #, c-format
 msgid "Set permissions of items enclosed in “%s”"
 msgstr "Постављам овлашћења ставки садржаних у „%s“"
 
-#: src/nautilus-file-undo-operations.c:1951
-#: src/nautilus-file-undo-operations.c:2104
+#: src/nautilus-file-undo-operations.c:1959
+#: src/nautilus-file-undo-operations.c:2112
 msgid "_Undo Change Permissions"
 msgstr "_Опозови измену овлашћења"
 
-#: src/nautilus-file-undo-operations.c:1952
-#: src/nautilus-file-undo-operations.c:2105
+#: src/nautilus-file-undo-operations.c:1960
+#: src/nautilus-file-undo-operations.c:2113
 msgid "_Redo Change Permissions"
 msgstr "_Понови измену овлашћења"
 
-#: src/nautilus-file-undo-operations.c:2101
+#: src/nautilus-file-undo-operations.c:2109
 #, c-format
 msgid "Restore original permissions of “%s”"
 msgstr "Враћам првобитна овлашћења за „%s“"
 
-#: src/nautilus-file-undo-operations.c:2102
+#: src/nautilus-file-undo-operations.c:2110
 #, c-format
 msgid "Set permissions of “%s”"
 msgstr "Постављам овлашћења за „%s“"
 
-#: src/nautilus-file-undo-operations.c:2214
+#: src/nautilus-file-undo-operations.c:2222
 #, c-format
 msgid "Restore group of “%s” to “%s”"
 msgstr "Враћам групу „%s“ на „%s“"
 
-#: src/nautilus-file-undo-operations.c:2216
+#: src/nautilus-file-undo-operations.c:2224
 #, c-format
 msgid "Set group of “%s” to “%s”"
 msgstr "Подешавам групу „%s“ на „%s“"
 
-#: src/nautilus-file-undo-operations.c:2219
+#: src/nautilus-file-undo-operations.c:2227
 msgid "_Undo Change Group"
 msgstr "_Опозови измену гупе"
 
-#: src/nautilus-file-undo-operations.c:2220
+#: src/nautilus-file-undo-operations.c:2228
 msgid "_Redo Change Group"
 msgstr "_Понови измену гупе"
 
-#: src/nautilus-file-undo-operations.c:2224
+#: src/nautilus-file-undo-operations.c:2232
 #, c-format
 msgid "Restore owner of “%s” to “%s”"
 msgstr "Враћам власника „%s“ на „%s“"
 
-#: src/nautilus-file-undo-operations.c:2226
+#: src/nautilus-file-undo-operations.c:2234
 #, c-format
 msgid "Set owner of “%s” to “%s”"
 msgstr "Подешавам власника „%s“ на „%s“"
 
-#: src/nautilus-file-undo-operations.c:2229
+#: src/nautilus-file-undo-operations.c:2237
 msgid "_Undo Change Owner"
 msgstr "_Опозови измену власника"
 
-#: src/nautilus-file-undo-operations.c:2230
+#: src/nautilus-file-undo-operations.c:2238
 msgid "_Redo Change Owner"
 msgstr "_Понови измену власника"
 
-#: src/nautilus-file-undo-operations.c:2366
+#: src/nautilus-file-undo-operations.c:2374
 msgid "_Undo Extract"
 msgstr "_Опозови распаковање"
 
-#: src/nautilus-file-undo-operations.c:2367
+#: src/nautilus-file-undo-operations.c:2375
 msgid "_Redo Extract"
 msgstr "_Понови распаковање"
 
-#: src/nautilus-file-undo-operations.c:2384
+#: src/nautilus-file-undo-operations.c:2392
 #, c-format
 msgid "Delete %d extracted file"
 msgid_plural "Delete %d extracted files"
@@ -3371,12 +3313,12 @@ msgstr[1] "Бришем %d распаковане ставке"
 msgstr[2] "Бришем %d распакованих ставки"
 msgstr[3] "Бришем распаковану ставку"
 
-#: src/nautilus-file-undo-operations.c:2398
+#: src/nautilus-file-undo-operations.c:2406
 #, c-format
 msgid "Extract “%s”"
 msgstr "Распакуј „%s“"
 
-#: src/nautilus-file-undo-operations.c:2402
+#: src/nautilus-file-undo-operations.c:2410
 #, c-format
 msgid "Extract %d file"
 msgid_plural "Extract %d files"
@@ -3385,12 +3327,12 @@ msgstr[1] "Распакуј %'d датотеке"
 msgstr[2] "Распакуј %'d датотека"
 msgstr[3] "Распакуј датотеку"
 
-#: src/nautilus-file-undo-operations.c:2554
+#: src/nautilus-file-undo-operations.c:2562
 #, c-format
 msgid "Compress “%s”"
 msgstr "Запакуј „%s“"
 
-#: src/nautilus-file-undo-operations.c:2558
+#: src/nautilus-file-undo-operations.c:2566
 #, c-format
 msgid "Compress %d file"
 msgid_plural "Compress %d files"
@@ -3399,67 +3341,67 @@ msgstr[1] "Запакуј %'d датотеке"
 msgstr[2] "Запакуј %'d датотека"
 msgstr[3] "Запакуј датотеку"
 
-#: src/nautilus-file-undo-operations.c:2564
+#: src/nautilus-file-undo-operations.c:2572
 msgid "_Undo Compress"
 msgstr "_Опозови паковање"
 
-#: src/nautilus-file-undo-operations.c:2565
+#: src/nautilus-file-undo-operations.c:2573
 msgid "_Redo Compress"
 msgstr "_Понови паковање"
 
-#: src/nautilus-file-utilities.c:566
+#: src/nautilus-file-utilities.c:567
 #, c-format
 msgid "Could not determine original location of “%s” "
 msgstr "Не могу да одредим првобитно место за „%s“ "
 
-#: src/nautilus-file-utilities.c:570
+#: src/nautilus-file-utilities.c:571
 msgid "The item cannot be restored from trash"
 msgstr "Не могу да вратим ставку из смећа"
 
 #. translators: these describe the contents of removable media
-#: src/nautilus-file-utilities.c:693
+#: src/nautilus-file-utilities.c:694
 msgid "Photo CD"
 msgstr "ЦД са фотграфијама"
 
-#: src/nautilus-file-utilities.c:697 src/nautilus-file-utilities.c:744
+#: src/nautilus-file-utilities.c:698 src/nautilus-file-utilities.c:745
 msgid "Contains digital photos"
 msgstr "Садржи дигиталне фотографије"
 
-#: src/nautilus-file-utilities.c:701
+#: src/nautilus-file-utilities.c:702
 msgid "Contains music"
 msgstr "Садржи музику"
 
-#: src/nautilus-file-utilities.c:705
+#: src/nautilus-file-utilities.c:706
 msgid "Contains software to run"
 msgstr "Садржи програме за извршавање"
 
-#: src/nautilus-file-utilities.c:709
+#: src/nautilus-file-utilities.c:710
 msgid "Contains software to install"
 msgstr "Садржи програме за инсталирање"
 
-#: src/nautilus-file-utilities.c:715
+#: src/nautilus-file-utilities.c:716
 #, c-format
 msgid "Detected as “%s”"
 msgstr "Откривен је као „%s“"
 
 #. translators: these describe the contents of removable media
-#: src/nautilus-file-utilities.c:736
+#: src/nautilus-file-utilities.c:737
 msgid "Contains music and photos"
 msgstr "Садржи музику и фотографије"
 
-#: src/nautilus-file-utilities.c:740
+#: src/nautilus-file-utilities.c:741
 msgid "Contains photos and music"
 msgstr "Садржи фотографије и музику"
 
 #. Translators: This is appended to a file name when a copy of a file is created.
-#: src/nautilus-filename-utilities.c:165
+#: src/nautilus-filename-utilities.c:164
 msgctxt "Noun"
 msgid "Copy"
 msgstr "Копирај"
 
 #. Translators: This is appended to a file name when a copy of an already copied file is created.
 #. * `%zu` will be replaced with a number one higher than that of the previous copy.
-#: src/nautilus-filename-utilities.c:168
+#: src/nautilus-filename-utilities.c:167
 #, c-format
 msgctxt "Noun"
 msgid "Copy %zu"
@@ -3468,26 +3410,39 @@ msgstr "Копирам %zu"
 # #-#-#-#-#  nautilus.master.sr.po (nautilus)  #-#-#-#-#
 # bug: string composition sucks! (веза на фасцикла)
 #. Translators: File name for new symlink. %s is target's name, %zu is number of symlink.
-#: src/nautilus-filename-utilities.c:259
+#: src/nautilus-filename-utilities.c:258
 #, c-format
 msgid "Link to %s (%zu)"
 msgstr "Веза ка %s (%zu)"
 
-#: src/nautilus-internal-place-file.c:165
-#: src/gtk/nautilusgtkplacessidebar.c:716
+#: src/nautilus-floating-bar.c:391
+msgctxt "Stop an ongoing operation"
+msgid "Stop"
+msgstr "Заустави"
+
+#: src/nautilus-grid-view.c:521 src/nautilus-list-view.c:385
+#: src/nautilus-network-view.c:350
+msgid "Content View"
+msgstr "Преглед садржаја"
+
+#: src/nautilus-grid-view.c:523 src/nautilus-list-view.c:387
+#: src/nautilus-network-view.c:352
+msgid "View of the current location"
+msgstr "Преглед тренутне локације"
+
+#: src/nautilus-internal-place-file.c:165 src/nautilus-sidebar.c:745
 msgid "Network"
 msgstr "Мрежа"
 
-#: src/nautilus-internal-place-file.c:169
-#: src/gtk/nautilusgtkplacessidebar.c:690
+#: src/nautilus-internal-place-file.c:169 src/nautilus-sidebar.c:719
 msgid "Starred"
 msgstr "Са звездом"
 
-#: src/nautilus-location-banner.c:100
+#: src/nautilus-location-banner.c:102
 msgid "Files in the trash are permanently deleted after 1 hour"
 msgstr "Датотеке из смећа се трајно бришу накој једног сата."
 
-#: src/nautilus-location-banner.c:105
+#: src/nautilus-location-banner.c:107
 #, c-format
 msgid "Files in the trash are permanently deleted after %d day"
 msgid_plural "Files in the trash are permanently deleted after %d days"
@@ -3496,59 +3451,52 @@ msgstr[1] "Датотеке из смећа се трајно бришу нак�
 msgstr[2] "Датотеке из смећа се трајно бришу након %d дана."
 msgstr[3] "Датотеке из смећа се трајно бришу након једног дана."
 
-#: src/nautilus-location-banner.c:202
+#: src/nautilus-location-banner.c:212
 msgid "Executable files in this folder will appear in the Scripts menu"
 msgstr "Извршне датотеке из ове фасцикле ће се појавити у менију Скрипте."
 
-#: src/nautilus-location-banner.c:208
+#: src/nautilus-location-banner.c:218
 msgid ""
 "Turn on File Sharing to share the contents of this folder over the network"
 msgstr ""
 "Укључите Дељење датотека да бисте поделили садржај ове фасцикле на мрежи."
 
-#: src/nautilus-location-banner.c:209
+#: src/nautilus-location-banner.c:219
 msgid "Sharing Settings"
 msgstr "Подешавања дељења"
 
-#: src/nautilus-location-banner.c:216
+#: src/nautilus-location-banner.c:226
 msgid "Put files in this folder to use them as templates for new documents"
 msgstr ""
 "Ставите датотеке у ову фасциклу да их користите као шаблоне за нове документе"
 
-#: src/nautilus-location-banner.c:217
+#: src/nautilus-location-banner.c:227
 msgid "_Learn More"
 msgstr "_Сазнај више"
 
-#: src/nautilus-location-banner.c:225 src/gtk/nautilusgtkplacessidebar.c:2909
+#: src/nautilus-location-banner.c:240 src/nautilus-sidebar.c:2982
 msgid "_Empty Trash…"
 msgstr "Избаци с_меће…"
 
-#: src/nautilus-location-banner.c:238
+#: src/nautilus-location-banner.c:257
 msgid "_Trash Settings"
 msgstr "По_дешавања смећа"
 
-#: src/nautilus-location-entry.c:706 src/nautilus-query-editor.c:740
+#: src/nautilus-location-entry.c:713 src/nautilus-query-editor.c:631
 msgid "Clear Entry"
 msgstr "Очисти унос"
 
-#: src/nautilus-location-entry.c:715
+#: src/nautilus-location-entry.c:722
 msgid "Go to Location"
 msgstr "Иди на место"
 
 #: src/nautilus-main.c:61
 msgid ""
-"\n"
-"========================================================\n"
-"This app cannot work correctly if run as root (not even\n"
-"with sudo). Consider running `nautilus admin:/` instead.\n"
-"========================================================"
+"Running as root is not supported. Consider running `nautilus admin:///` "
+"instead."
 msgstr ""
-"\n"
-"========================================================\n"
-"Ова апликација не може да ради исправно уколико је покренете\n"
-"као администратор (чак и преко наредбе sudo). Уместо тога,\n"
-"покушајте да користите „nautilus admin:/“.\n"
-"========================================================"
+"Покретање са администраторског налога ние поджано. Уместо овога покрените "
+"апликацију наредбом „nautilus admin:///“."
 
 #: src/nautilus-mime-actions.c:98
 msgid "Anything"
@@ -3570,48 +3518,48 @@ msgstr "Цртеж"
 msgid "Music"
 msgstr "Музика"
 
-#: src/nautilus-mime-actions.c:173
+#: src/nautilus-mime-actions.c:229
 msgid "PDF / PostScript"
 msgstr "ПДФ / Постскрипт"
 
-#: src/nautilus-mime-actions.c:184
+#: src/nautilus-mime-actions.c:240
 msgid "Picture"
 msgstr "Слика"
 
-#: src/nautilus-mime-actions.c:237
+#: src/nautilus-mime-actions.c:293
 msgid "Text File"
 msgstr "Текстуална датотека"
 
-#: src/nautilus-mime-actions.c:595
+#: src/nautilus-mime-actions.c:682
 msgid "This link cannot be used because it has no target."
 msgstr "Не можете користити ову везу зато што нема одредиште."
 
-#: src/nautilus-mime-actions.c:599
+#: src/nautilus-mime-actions.c:686
 #, c-format
 msgid "This link cannot be used because its target “%s” doesn’t exist."
 msgstr "Не можете користити везу зато што не постоји њено одредиште „%s“."
 
 # bug: s/borken/broken/, though, one can always wonder :)
-#: src/nautilus-mime-actions.c:607
+#: src/nautilus-mime-actions.c:694
 #, c-format
 msgid "The link “%s” is broken. Move it to Trash?"
 msgstr "Веза „%s“ је неисправна. Да је преместим у смеће?"
 
-#: src/nautilus-mime-actions.c:611
+#: src/nautilus-mime-actions.c:698
 #: src/resources/ui/nautilus-files-view-context-menus.ui:226
 msgid "Mo_ve to Trash"
 msgstr "Пре_мести у смеће"
 
-#: src/nautilus-mime-actions.c:618
+#: src/nautilus-mime-actions.c:705
 #, c-format
 msgid "The link “%s” is broken."
 msgstr "Веза „%s“ је неисправна."
 
-#: src/nautilus-mime-actions.c:999
+#: src/nautilus-mime-actions.c:1091
 msgid "Are you sure you want to open all files?"
 msgstr "Сигурно желите да отворите све датотеке?"
 
-#: src/nautilus-mime-actions.c:1003
+#: src/nautilus-mime-actions.c:1095
 #, c-format
 msgid "This will open %d separate tab and window."
 msgid_plural "This will open %d separate tabs and windows."
@@ -3620,7 +3568,7 @@ msgstr[1] "Ово ће отворити %d засебна језичка и пр
 msgstr[2] "Ово ће отворити %d засебних језичака и прозора."
 msgstr[3] "Ово ће отворити један засебан језичак и прозор."
 
-#: src/nautilus-mime-actions.c:1008
+#: src/nautilus-mime-actions.c:1100
 #, c-format
 msgid "This will open %d separate tab."
 msgid_plural "This will open %d separate tabs."
@@ -3629,7 +3577,7 @@ msgstr[1] "Ово ће отворити %d засебна језичка."
 msgstr[2] "Ово ће отворити %d засебних језичака."
 msgstr[3] "Ово ће отворити један засебан језичак."
 
-#: src/nautilus-mime-actions.c:1013
+#: src/nautilus-mime-actions.c:1105
 #, c-format
 msgid "This will open %d separate window."
 msgid_plural "This will open %d separate windows."
@@ -3638,41 +3586,41 @@ msgstr[1] "Ово ће отворити %d засебна прозора."
 msgstr[2] "Ово ће отворити %d засебних прозора."
 msgstr[3] "Ово ће отворити један засебан прозор."
 
-#: src/nautilus-mime-actions.c:1020
+#: src/nautilus-mime-actions.c:1112
 msgid "_Open All"
 msgstr "_Отвори све"
 
-#: src/nautilus-mime-actions.c:1080
+#: src/nautilus-mime-actions.c:1173
 #, c-format
 msgid "Could Not Display “%s”"
 msgstr "Не могу да прикажем „%s“"
 
-#: src/nautilus-mime-actions.c:1178
+#: src/nautilus-mime-actions.c:1267
 msgid "The file is of an unknown type"
 msgstr "Није позната ова врста датотеке"
 
-#: src/nautilus-mime-actions.c:1183
+#: src/nautilus-mime-actions.c:1272
 #, c-format
 msgid "There is no app installed for “%s” files"
 msgstr "Није инсталиран програм за отварање „%s“ датотека"
 
-#: src/nautilus-mime-actions.c:1188
+#: src/nautilus-mime-actions.c:1277
 msgid "_Select App"
 msgstr "_Изабери програм"
 
-#: src/nautilus-mime-actions.c:1224
+#: src/nautilus-mime-actions.c:1313
 msgid "There was an internal error trying to search for apps:"
 msgstr "Дошло је до грешке приликом тражења програма:"
 
-#: src/nautilus-mime-actions.c:1226
+#: src/nautilus-mime-actions.c:1315
 msgid "Unable to search for app"
 msgstr "Не могу да нађем програм"
 
-#: src/nautilus-mime-actions.c:1331
+#: src/nautilus-mime-actions.c:1420
 msgid "_Search in Software"
 msgstr "По_тражи у Програмима"
 
-#: src/nautilus-mime-actions.c:1334
+#: src/nautilus-mime-actions.c:1423
 #, c-format
 msgid ""
 "There is no app installed for “%s” files. Do you want to search for an app "
@@ -3682,21 +3630,21 @@ msgstr ""
 "програм који може да отвори ову датотеку?"
 
 #. if it wasn't cancelled show a dialog
-#: src/nautilus-mime-actions.c:1730 src/nautilus-mime-actions.c:2029
-#: src/nautilus-network-address-bar.c:78
+#: src/nautilus-mime-actions.c:1819 src/nautilus-mime-actions.c:2118
+#: src/nautilus-network-address-bar.c:80
 msgid "Unable to access location"
 msgstr "Не могу да учитам место"
 
-#: src/nautilus-mime-actions.c:2120
+#: src/nautilus-mime-actions.c:2209
 msgid "Unable to start location"
 msgstr "Ме могу да покренем место"
 
-#: src/nautilus-mime-actions.c:2213
+#: src/nautilus-mime-actions.c:2302
 #, c-format
 msgid "Opening “%s”."
 msgstr "Отварам „%s“."
 
-#: src/nautilus-mime-actions.c:2217
+#: src/nautilus-mime-actions.c:2306
 #, c-format
 msgid "Opening %d item."
 msgid_plural "Opening %d items."
@@ -3705,80 +3653,80 @@ msgstr[1] "Отварам %d ставке."
 msgstr[2] "Отварам %d ставки."
 msgstr[3] "Отварам ставку."
 
-#: src/nautilus-network-address-bar.c:46
+#: src/nautilus-network-address-bar.c:47
 msgid "_Close"
 msgstr "_Затвори"
 
 #. Restore from Cancel to Connect
-#: src/nautilus-network-address-bar.c:89
+#: src/nautilus-network-address-bar.c:91
 #: src/resources/ui/nautilus-network-address-bar.ui:101
 msgid "Con_nect"
 msgstr "Повеж_и се"
 
 #. Allow to cancel the operation
-#: src/nautilus-network-address-bar.c:173
+#: src/nautilus-network-address-bar.c:175
 msgid "Cance_l"
 msgstr "О_ткажи"
 
-#: src/nautilus-network-address-bar.c:217
+#: src/nautilus-network-address-bar.c:219
 msgid "Unable to get remote server location"
 msgstr "Не могу да добијем место удаљеног сервера"
 
-#: src/nautilus-network-address-bar.c:294
+#: src/nautilus-network-address-bar.c:296
 msgid "AppleTalk"
 msgstr "ЕплТок (AppleTalk)"
 
-#: src/nautilus-network-address-bar.c:300
+#: src/nautilus-network-address-bar.c:302
 msgid "File Transfer Protocol"
 msgstr "Протокол за размену датотека (ФТП)"
 
 #. Translators: do not translate ftp:// and ftps://
-#: src/nautilus-network-address-bar.c:302
+#: src/nautilus-network-address-bar.c:304
 msgid "ftp:// or ftps://"
 msgstr "ftp:// или ftps://"
 
-#: src/nautilus-network-address-bar.c:308
+#: src/nautilus-network-address-bar.c:310
 msgid "Network File System"
 msgstr "Мрежни систем датотека (НФС)"
 
-#: src/nautilus-network-address-bar.c:314
+#: src/nautilus-network-address-bar.c:316
 msgid "Samba"
 msgstr "Самба"
 
-#: src/nautilus-network-address-bar.c:320
+#: src/nautilus-network-address-bar.c:322
 msgid "SSH File Transfer Protocol"
 msgstr "ССХ протокол за размену датотеке"
 
 #. Translators: do not translate sftp:// and ssh://
-#: src/nautilus-network-address-bar.c:322
+#: src/nautilus-network-address-bar.c:324
 msgid "sftp:// or ssh://"
 msgstr "sftp:// или ssh://"
 
-#: src/nautilus-network-address-bar.c:328
+#: src/nautilus-network-address-bar.c:330
 msgid "WebDAV"
 msgstr "ВебДАВ"
 
 #. Translators: do not translate dav:// and davs://
-#: src/nautilus-network-address-bar.c:330
+#: src/nautilus-network-address-bar.c:332
 msgid "dav:// or davs://"
 msgstr "dav:// или davs://"
 
 #. Online accounts do not currently have a target URI.
-#: src/nautilus-network-cell.c:41
+#: src/nautilus-network-cell.c:44
 msgid "Online Account"
 msgstr "Налози на мрежи"
 
 #. Translators: This refers to network places which are currently mounted
-#: src/nautilus-network-view.c:262
+#: src/nautilus-network-view.c:264
 msgid "Connected"
 msgstr "Повезано"
 
 #. Translators: This refers to network servers the user has previously connected to
-#: src/nautilus-network-view.c:269
+#: src/nautilus-network-view.c:271
 msgid "Previous"
 msgstr "Претходно"
 
-#: src/nautilus-network-view.c:275
+#: src/nautilus-network-view.c:277
 msgid "Available on Current Network"
 msgstr "Доступно на тренутној мрежи"
 
@@ -3867,7 +3815,7 @@ msgid "Another file with the same name already exists in “%s”."
 msgstr "Друга датотека са овим називом већ постоји у „%s“."
 
 #: src/nautilus-operations-ui-manager.c:282
-#: src/resources/ui/nautilus-properties-window.ui:396
+#: src/resources/ui/nautilus-properties-window.ui:401
 msgid "Original Folder"
 msgstr "Изворна фасцикла"
 
@@ -3901,7 +3849,7 @@ msgstr "Споји са"
 
 #: src/nautilus-operations-ui-manager.c:314
 #: src/nautilus-operations-ui-manager.c:319
-#: src/resources/ui/nautilus-batch-rename-dialog.ui:278
+#: src/resources/ui/nautilus-batch-rename-dialog.ui:286
 msgid "Replace With"
 msgstr "Замени са"
 
@@ -3918,7 +3866,7 @@ msgstr "Сукоб датотеке и фасцикле"
 msgid "File Conflict"
 msgstr "Сукоб датотека"
 
-#: src/nautilus-operations-ui-manager.c:585
+#: src/nautilus-operations-ui-manager.c:586
 msgid ""
 "Password-protected archives are not yet supported. This list contains apps "
 "that can open the archive."
@@ -3926,39 +3874,38 @@ msgstr ""
 "Архиве заштићене лозинком још нису подржане. Овај списак садржи програме "
 "који могу отворити архиву."
 
-#: src/nautilus-operations-ui-manager.c:654
+#: src/nautilus-operations-ui-manager.c:655
 #, c-format
 msgid "“%s” is password-protected."
 msgstr "„%s“ је заштићено лозинком."
 
-#: src/nautilus-pathbar.c:311
+#: src/nautilus-pathbar.c:315
 msgid "Current Folder Menu"
 msgstr "Мени тренутне фасцикле"
 
 #. Translators: This is the label used in the pathbar when seeing
 #. * the root directory (also known as /)
-#: src/nautilus-pathbar.c:402 src/nautilus-properties-window.c:853
+#: src/nautilus-pathbar.c:407 src/nautilus-properties-window.c:857
 msgid "Operating System"
 msgstr "Оперативни систем"
 
 #. Translators: This is the filesystem root directory (also known
 #. * as /) when seen as administrator
-#: src/nautilus-pathbar.c:409
+#: src/nautilus-pathbar.c:414
 msgid "Administrator Root"
 msgstr "Администраторска партиција"
 
-#: src/nautilus-portal.c:416 src/resources/ui/nautilus-app-chooser.ui:102
+#: src/nautilus-portal.c:431 src/nautilus-sidebar.c:2819
+#: src/nautilus-sidebar.c:2937 src/resources/ui/nautilus-app-chooser.ui:24
 #: src/resources/ui/nautilus-files-view-context-menus.ui:87
-#: src/gtk/nautilusgtkplacessidebar.c:2750
-#: src/gtk/nautilusgtkplacessidebar.c:2866
 msgid "_Open"
 msgstr "_Отвори"
 
-#: src/nautilus-portal.c:420
+#: src/nautilus-portal.c:435
 msgid "_Save"
 msgstr "_Сачувај"
 
-#: src/nautilus-portal.c:501
+#: src/nautilus-portal.c:519
 msgid "Open Read-Only"
 msgstr "Отвори само за читање"
 
@@ -4004,28 +3951,28 @@ msgstr "Све датотеке"
 msgid "All Folders"
 msgstr "Све фасцикле"
 
-#: src/nautilus-program-choosing.c:366
+#: src/nautilus-program-choosing.c:356
 msgid "Sorry, but you cannot execute commands from a remote site."
 msgstr "Нажалост, не можете извршавати наредбе са удаљеног места."
 
-#: src/nautilus-program-choosing.c:367
+#: src/nautilus-program-choosing.c:357
 msgid "This is disabled due to security considerations."
 msgstr "Ово је онемогућено из безбедносних разлога."
 
 #. all files are non-local
 #. some files are non-local
-#: src/nautilus-program-choosing.c:408 src/nautilus-program-choosing.c:420
+#: src/nautilus-program-choosing.c:398 src/nautilus-program-choosing.c:410
 msgid "This drop target only supports local files."
 msgstr "Ово одредиште превлачења подржава само локалне датотеке."
 
-#: src/nautilus-program-choosing.c:409
+#: src/nautilus-program-choosing.c:399
 msgid ""
 "To open non-local files copy them to a local folder and then drop them again."
 msgstr ""
 "Да бисте отворили удаљене датотеке, пребаците их у локалну фасциклу, и "
 "превуците их поново."
 
-#: src/nautilus-program-choosing.c:421
+#: src/nautilus-program-choosing.c:411
 msgid ""
 "To open non-local files copy them to a local folder and then drop them "
 "again. The local files you dropped have already been opened."
@@ -4033,7 +3980,7 @@ msgstr ""
 "Да бисте отворили удаљене датотеке, пребаците их у локалну фасциклу, и "
 "превуците их поново. Локалне датотеке које сте превукли су већ отворене."
 
-#: src/nautilus-program-choosing.c:453
+#: src/nautilus-program-choosing.c:443
 msgid "Details: "
 msgstr "Детаљи: "
 
@@ -4046,7 +3993,7 @@ msgid "Preparing"
 msgstr "Припремам"
 
 #. Translators: This describes an operation, such as copying or compressing files, as being completed.
-#: src/nautilus-progress-info-widget.c:57
+#: src/nautilus-progress-info-widget.c:60
 msgid "Operation Completed"
 msgstr "Радња је завршена"
 
@@ -4112,7 +4059,7 @@ msgstr "Само за приступање"
 msgid "Custom icon removed"
 msgstr "Произвољна иконица је уклоњена"
 
-#: src/nautilus-properties-window.c:643 src/nautilus-window.c:807
+#: src/nautilus-properties-window.c:643 src/nautilus-window.c:786
 #: src/resources/ui/nautilus-window.ui:22
 msgid "_Undo"
 msgstr "_Опозови"
@@ -4137,34 +4084,38 @@ msgstr "Можете користити само локалне слике за 
 msgid "The file that you dropped is not an image."
 msgstr "Датотека коју сте пустили није слика."
 
-#. Translators: This is a verb for tagging or untagging a file with a star.
 #. Unmarks a file as starred (starred)
-#: src/nautilus-properties-window.c:741 src/nautilus-star-cell.c:66
+#: src/nautilus-properties-window.c:747 src/nautilus-star-cell.c:72
 #: src/resources/ui/nautilus-files-view-context-menus.ui:256
 msgid "Unstar"
-msgstr "Уклони звезду"
+msgstr "Уклони звездицу"
 
-#: src/nautilus-properties-window.c:1584
+#: src/nautilus-properties-window.c:747 src/nautilus-star-cell.c:72
+msgctxt "Verb"
+msgid "Star"
+msgstr "Додај звездицу"
+
+#: src/nautilus-properties-window.c:1592
 msgid "Cancel Group Change?"
 msgstr "Да одустанем од измене групе?"
 
-#: src/nautilus-properties-window.c:1733
+#: src/nautilus-properties-window.c:1741
 msgid "Cancel Owner Change?"
 msgstr "Да одустанем од измене власника?"
 
-#: src/nautilus-properties-window.c:1885 src/nautilus-properties-window.c:1932
+#: src/nautilus-properties-window.c:1891 src/nautilus-properties-window.c:1938
 msgid "Multiple"
 msgstr "Вишеструко"
 
-#: src/nautilus-properties-window.c:2066
+#: src/nautilus-properties-window.c:2072
 msgid "Empty folder"
 msgstr "Празна фасцикла"
 
-#: src/nautilus-properties-window.c:2070
+#: src/nautilus-properties-window.c:2076
 msgid "Contents unreadable"
 msgstr "Садржај је нечитљив"
 
-#: src/nautilus-properties-window.c:2082
+#: src/nautilus-properties-window.c:2088
 #, c-format
 msgid "%'d item, with size %s"
 msgid_plural "%'d items, totalling %s"
@@ -4173,215 +4124,327 @@ msgstr[1] "%'d ставке, укупне величине %s"
 msgstr[2] "%'d ставки, укупне величине %s"
 msgstr[3] "%'d ставка, величине %s"
 
-#: src/nautilus-properties-window.c:2092
+#: src/nautilus-properties-window.c:2098
 msgid "(some contents unreadable)"
 msgstr "(део садржаја је нечитљив)"
 
 #. Translators: %s will be filled with a filesystem type, such as 'ext4' or 'msdos'.
-#: src/nautilus-properties-window.c:2424
+#: src/nautilus-properties-window.c:2430
 #, c-format
 msgid "%s Filesystem"
 msgstr "%s систем датотека"
 
-#: src/nautilus-properties-window.c:3553
+#: src/nautilus-properties-window.c:3535
 #, c-format
 msgid "The permissions of “%s” could not be determined."
 msgstr "Не могу да утврдим овлашћења за „%s“."
 
-#: src/nautilus-properties-window.c:3948
+#: src/nautilus-properties-window.c:3897
 msgid "Creating Properties window."
 msgstr "Стварам прозор са особинама."
 
-#: src/nautilus-properties-window.c:4081
+#: src/nautilus-properties-window.c:4026
 msgid "Select Custom Icon"
 msgstr "Изаберите вашу иконицу"
 
-#: src/nautilus-query.c:545
-#, c-format
-msgid "Search for “%s”"
-msgstr "Пронађи „%s“"
-
-#: src/nautilus-query-editor.c:146
+#: src/nautilus-query-editor.c:145
 msgid "Search may be slow and will not include subfolders or file contents"
 msgstr ""
 "Претрага може да успори и неће укључити подфасцикле или садржаје датотека"
 
-#: src/nautilus-query-editor.c:153
+#: src/nautilus-query-editor.c:152
 msgid "Search may be slow and will not include file contents"
 msgstr "Претрага може да успори и неће укључити садржаје датотека"
 
-#: src/nautilus-query-editor.c:161
+#: src/nautilus-query-editor.c:160
 msgid "Remote Location"
 msgstr "Удаљена локација"
 
-#: src/nautilus-query-editor.c:167
+#: src/nautilus-query-editor.c:166
 msgid "External Drive"
 msgstr "Спољни диск"
 
-#: src/nautilus-query-editor.c:173
+#: src/nautilus-query-editor.c:172
 msgid "Folder Not in Search Locations"
 msgstr "Фасцикла није унутар места за претрагу"
 
-#: src/nautilus-query-editor.c:180
+#: src/nautilus-query-editor.c:179
 msgid "Subfolders Not in Search Locations"
 msgstr "Подфасцикле нису унутар места за претрагу"
 
-#: src/nautilus-query-editor.c:190
+#: src/nautilus-query-editor.c:188
 msgid "Some subfolders will not be included in search results"
 msgstr "Неке подфасцикле неће бити укључене у резултате претраге"
 
-#: src/nautilus-query-editor.c:197
+#: src/nautilus-query-editor.c:195
 msgid ""
 "Search will be slower and will not include file contents for some folders"
 msgstr ""
 "Претрага ће успорити и неће укључити садржаје датотека у неким фасциклама"
 
-#: src/nautilus-query-editor.c:774
+#. translators: This opens the search panel in the Settings app.
+#: src/nautilus-query-editor.c:651
+msgid "_Search Settings"
+msgstr "Пос_тавке претраге"
+
+#: src/nautilus-query-editor.c:664
 msgid "Filter Search Results"
 msgstr "Филтрирај резултате претраге"
 
-#: src/nautilus-query-editor.c:781
+#: src/nautilus-query-editor.c:671
 msgid "Search Information"
 msgstr "Подаци за претрагу"
 
-#: src/nautilus-query-editor.c:861
+#: src/nautilus-query-editor.c:751
 msgid "Search current folder"
 msgstr "Претражи тренутну фасциклу"
 
-#: src/nautilus-query-editor.c:862
+#: src/nautilus-query-editor.c:752
 msgid "Search everywhere"
 msgstr "Претражи свуда"
 
-#: src/nautilus-rename-file-popover.c:226
+#: src/nautilus-rename-file-popover.c:223
 msgid "Rename Folder"
 msgstr "Преименуј фасциклу"
 
-#: src/nautilus-rename-file-popover.c:227
+#: src/nautilus-rename-file-popover.c:224
 msgid "Rename File"
 msgstr "Преименуј датотеку"
 
-#: src/nautilus-search-engine.c:356
+#: src/nautilus-search-directory-file.c:223
+#, c-format
+msgid "Search for “%s”"
+msgstr "Пронађи „%s“"
+
+#: src/nautilus-search-engine.c:237
 msgid "Unable to complete the requested search"
 msgstr "Не могу да обавим затражену претрагу"
 
-#: src/nautilus-search-popover.c:301
-msgid "Show Time Ranges"
-msgstr "Прикажи временске опсеге"
+#: src/nautilus-search-popover.c:547
+msgid "Date Used"
+msgstr "Датум коришћења"
 
-#: src/nautilus-search-popover.c:307
-#: src/resources/ui/nautilus-search-popover.ui:73
-msgid "Use Calendar"
-msgstr "Користи календар"
+#: src/nautilus-search-popover.c:551
+msgid "Date Created"
+msgstr "Датум настанка"
 
-#. Add the no date filter element first
-#: src/nautilus-search-popover.c:426
-msgid "Any time"
-msgstr "Било када"
-
-#. Other types
-#: src/nautilus-search-popover.c:521
-msgid "Other Type…"
-msgstr "Друга врста…"
-
-#: src/nautilus-search-popover.c:713
-msgid "Select Dates…"
-msgstr "Изабери датуме…"
+#: src/nautilus-search-popover.c:555
+msgid "Date Modified"
+msgstr "Датум измене"
 
 #. trash
-#: src/nautilus-shell-search-provider.c:346
-#: src/gtk/nautilusgtkplacessidebar.c:727
+#: src/nautilus-shell-search-provider.c:304 src/nautilus-sidebar.c:756
 msgid "Trash"
 msgstr "Смеће"
 
-#: src/nautilus-ui-utilities.c:341
-#, c-format
-msgid "Since %d day ago"
-msgid_plural "Since %d days ago"
-msgstr[0] "Пре %d дан"
-msgstr[1] "Пре %d дана"
-msgstr[2] "Пре %d дана"
-msgstr[3] "Јуче"
+#: src/nautilus-sidebar.c:393 src/resources/ui/nautilus-network-cell.ui:70
+msgid "Disconnect"
+msgstr "Прекини везу"
 
-#: src/nautilus-ui-utilities.c:342
-#, c-format
-msgid "%d day ago"
-msgid_plural "%d days ago"
-msgstr[0] "Пре %d дан"
-msgstr[1] "Пре %d дана"
-msgstr[2] "Пре %d дана"
-msgstr[3] "Јуче"
+#: src/nautilus-sidebar.c:397
+msgid "Eject"
+msgstr "Избаци"
 
-#: src/nautilus-ui-utilities.c:348
-#, c-format
-msgid "Since last week"
-msgid_plural "Since %d weeks ago"
-msgstr[0] "Пре %d недеље"
-msgstr[1] "Пре %d недеље"
-msgstr[2] "Пре %d недеља"
-msgstr[3] "Прошле недеље"
+#: src/nautilus-sidebar.c:401
+msgid "Unmount"
+msgstr "Откачи"
 
-#: src/nautilus-ui-utilities.c:349
+#. translators: %s is the name of a cloud provider for files
+#: src/nautilus-sidebar.c:607 src/nautilus-window.c:917
 #, c-format
-msgid "Last week"
-msgid_plural "%d weeks ago"
-msgstr[0] "Пре %d недеље"
-msgstr[1] "Пре %d недеље"
-msgstr[2] "Пре %d недеља"
-msgstr[3] "Прошле недеље"
+msgid "Open %s"
+msgstr "Отвори %s"
 
-#: src/nautilus-ui-utilities.c:355
+#: src/nautilus-sidebar.c:701
+msgid "Open Personal Folder"
+msgstr "Отвори личну фасциклу"
+
+#: src/nautilus-sidebar.c:710
+msgid "Recent"
+msgstr "Недавно"
+
+#: src/nautilus-sidebar.c:712
+msgid "Recent Files"
+msgstr "Скорашње датотеке"
+
+#: src/nautilus-sidebar.c:721
+msgid "Starred Files"
+msgstr "Датотеке са звездицом"
+
+#: src/nautilus-sidebar.c:733
+msgid "Desktop"
+msgstr "Радна површ"
+
+#: src/nautilus-sidebar.c:735
+msgid "Open the contents of your desktop in a folder"
+msgstr "Отворите садржај ваше радне површи унутар фасцикле"
+
+#: src/nautilus-sidebar.c:747
+msgid "Open Network Locations"
+msgstr "Отвори место на мрежи"
+
+#: src/nautilus-sidebar.c:758
+msgid "Open Trash"
+msgstr "Отвори смеће"
+
+#: src/nautilus-sidebar.c:860 src/nautilus-sidebar.c:890
+#: src/nautilus-sidebar.c:1068
 #, c-format
-msgid "Since last month"
-msgid_plural "Since %d months ago"
-msgstr[0] "Пре %d месец"
-msgstr[1] "Пре %d месеца"
-msgstr[2] "Пре %d месеци"
-msgstr[3] "Прошлог месеца"
+msgid "Mount and Open “%s”"
+msgstr "Закачи и отвори „%s“"
 
-#: src/nautilus-ui-utilities.c:356
+#: src/nautilus-sidebar.c:1046
+msgid "New bookmark"
+msgstr "Нови обележивач"
+
+#: src/nautilus-sidebar.c:1048
+msgid "Add a new bookmark"
+msgstr "Додај нови обележивач"
+
+#. Translators: This means that unlocking an encrypted storage
+#. * device failed. %s is the name of the device.
+#.
+#: src/nautilus-sidebar.c:1766
 #, c-format
-msgid "Last month"
-msgid_plural "%d months ago"
-msgstr[0] "Пре %d месец"
-msgstr[1] "Пре %d месеца"
-msgstr[2] "Пре %d месеци"
-msgstr[3] "Прошлог месеца"
+msgid "Error unlocking “%s”"
+msgstr "Грешка при откључавању уређаја „%s“"
 
-#: src/nautilus-ui-utilities.c:361
+#: src/nautilus-sidebar.c:1920
+msgid "This name is already taken"
+msgstr "Овај назив је већ заузет"
+
+#: src/nautilus-sidebar.c:2010 src/nautilus-sidebar.c:2971
+#: src/resources/ui/nautilus-batch-rename-dialog.ui:126
+#: src/resources/ui/nautilus-file-conflict-dialog.ui:30
+#: src/resources/ui/nautilus-rename-file-popover.ui:47
+msgid "_Rename"
+msgstr "П_реименуј"
+
+#: src/nautilus-sidebar.c:2319
 #, c-format
-msgid "Since last year"
-msgid_plural "Since %d years ago"
-msgstr[0] "Пре %d године"
-msgstr[1] "Пре %d године"
-msgstr[2] "Пре %d година"
-msgstr[3] "Прошле године"
+msgid "Unable to stop “%s”"
+msgstr "Не могу да зауставим „%s“"
 
-#: src/nautilus-ui-utilities.c:362
+#: src/nautilus-sidebar.c:2544
 #, c-format
-msgid "Last year"
-msgid_plural "%d years ago"
-msgstr[0] "Пре %d године"
-msgstr[1] "Пре %d године"
-msgstr[2] "Пре %d година"
-msgstr[3] "Прошле године"
+msgid "Unable to poll “%s” for media changes"
+msgstr "Не могу да питам „%s“ о изменама медија"
 
-#: src/nautilus-window.c:142
+#: src/nautilus-sidebar.c:2827 src/nautilus-sidebar.c:2945
+#: src/resources/ui/nautilus-files-view-context-menus.ui:98
+#: src/resources/ui/nautilus-pathbar-context-menu.ui:10
+msgid "Open in New _Tab"
+msgstr "Отвори у новом _језичку"
+
+#: src/nautilus-sidebar.c:2834 src/nautilus-sidebar.c:2954
+#: src/resources/ui/nautilus-files-view-context-menus.ui:103
+#: src/resources/ui/nautilus-pathbar-context-menu.ui:6
+msgid "Open in New _Window"
+msgstr "Отвори у но_вом прозору"
+
+#: src/nautilus-sidebar.c:2966
+msgid "_Remove from Bookmarks"
+msgstr "Ук_лони из обележивача"
+
+#: src/nautilus-sidebar.c:2995
+#: src/resources/ui/nautilus-files-view-context-menus.ui:144
+msgid "_Mount"
+msgstr "_Прикачи"
+
+#: src/nautilus-sidebar.c:3004
+#: src/resources/ui/nautilus-files-view-context-menus.ui:149
+msgid "_Unmount"
+msgstr "_Откачи"
+
+#: src/nautilus-sidebar.c:3011
+#: src/resources/ui/nautilus-files-view-context-menus.ui:154
+msgid "_Eject"
+msgstr "_Избаци"
+
+#: src/nautilus-sidebar.c:3021
+#: src/resources/ui/nautilus-files-view-context-menus.ui:169
+msgid "_Detect Media"
+msgstr "Про_нађи медијум"
+
+#: src/nautilus-sidebar.c:3034
+msgid "_Power On"
+msgstr "_Укључи"
+
+#: src/nautilus-sidebar.c:3038
+msgid "_Connect Drive"
+msgstr "_Повежи уређај"
+
+#: src/nautilus-sidebar.c:3042
+msgid "_Start Multi-disk Device"
+msgstr "_Покрени уређај са више дискова"
+
+#: src/nautilus-sidebar.c:3046
+msgid "_Unlock Device"
+msgstr "Откљ_учај уређај"
+
+#: src/nautilus-sidebar.c:3057
+#: src/resources/ui/nautilus-files-view-context-menus.ui:164
+msgid "_Stop"
+msgstr "_Заустави"
+
+#: src/nautilus-sidebar.c:3065
+msgid "_Disconnect Drive"
+msgstr "_Откачи уређај"
+
+#: src/nautilus-sidebar.c:3069
+msgid "_Stop Multi-disk Device"
+msgstr "_Заустави уређај са више диска"
+
+#: src/nautilus-sidebar.c:3073
+msgid "_Lock Device"
+msgstr "_Закључај уређај"
+
+#: src/nautilus-sidebar.c:3083
+msgid "Format…"
+msgstr "Форматирај…"
+
+#: src/nautilus-sidebar.c:3094 src/resources/ui/nautilus-properties-window.ui:5
+#: src/resources/ui/nautilus-properties-window.ui:16
+msgid "Properties"
+msgstr "Особине"
+
+#: src/nautilus-sidebar.c:3620
+msgid "Device"
+msgstr "Уређај"
+
+#: src/nautilus-sidebar.c:3662
+msgid "Sidebar"
+msgstr "Бочна површ"
+
+#: src/nautilus-sidebar.c:3664
+msgid "List of common shortcuts, mountpoints, and bookmarks."
+msgstr "Списак честих пречица, тачака качења и обележивача."
+
+#: src/nautilus-tag-manager.c:218
+msgid "starred"
+msgstr "са звездицом"
+
+#: src/nautilus-tag-manager.c:228
+msgid "unstarred"
+msgstr "без звездице"
+
+#: src/nautilus-window.c:144
 msgid "New tab"
 msgstr "Нови језичак"
 
-#: src/nautilus-window.c:143
+#: src/nautilus-window.c:145
 msgid "Close current view"
 msgstr "Затворите тренутни прозор"
 
 #. Translators: only one item has been moved to trash and %s is its name.
-#: src/nautilus-window.c:730
+#: src/nautilus-window.c:709
 #, c-format
 msgid "“%s” moved to trash"
 msgstr "Ставка „%s“ премештена у смеће"
 
 #. Translators: one or more items might have been moved to trash, and %d
 #. * is the count.
-#: src/nautilus-window.c:737
+#: src/nautilus-window.c:716
 #, c-format
 msgid "%d file moved to trash"
 msgid_plural "%d files moved to trash"
@@ -4391,14 +4454,14 @@ msgstr[2] "%d датотека је премештено у смеће"
 msgstr[3] "Једна датотека је премештена у смеће"
 
 #. Translators: one item has been unstarred and %s is its name.
-#: src/nautilus-window.c:756
+#: src/nautilus-window.c:735
 #, c-format
 msgid "“%s” unstarred"
 msgstr "Уклоњена је звезда са ставке „%s“"
 
 #. Translators: one or more items have been unstarred, and %d
 #. * is the count.
-#: src/nautilus-window.c:762
+#: src/nautilus-window.c:741
 #, c-format
 msgid "%d file unstarred"
 msgid_plural "%d files unstarred"
@@ -4407,38 +4470,30 @@ msgstr[1] "Уклоњена је звезда са %d датотеке"
 msgstr[2] "Уклоњена је звезда са %d датотеке"
 msgstr[3] "Уклоњена је звезда са датотеке"
 
-#: src/nautilus-window.c:817 src/resources/ui/nautilus-window.ui:26
+#: src/nautilus-window.c:796 src/resources/ui/nautilus-window.ui:26
 msgid "_Redo"
 msgstr "_Понови"
 
-#. translators: %s is the name of a cloud provider for files
-#: src/nautilus-window.c:933 src/gtk/nautilusgtkplacessidebar.c:584
-#, c-format
-msgid "Open %s"
-msgstr "Отвори %s"
-
-#: src/nautilus-window.c:1718 src/nautilus-window.c:1723
-#: src/nautilus-window.c:1728 src/nautilus-window.c:1748
+#: src/nautilus-window.c:1702 src/nautilus-window.c:1707
+#: src/nautilus-window.c:1712
 msgid "The GNOME Project"
 msgstr "Гномов пројекат"
 
-#: src/nautilus-window.c:1735
+#: src/nautilus-window.c:1719
 msgid "No plugins currently installed."
 msgstr "Нема инсталираних прикључака тренутно."
 
-#: src/nautilus-window.c:1739
+#: src/nautilus-window.c:1723
 msgid "Currently installed plugins:"
 msgstr "Тренутно инсталирани прикључци:"
 
-#: src/nautilus-window.c:1741
+#: src/nautilus-window.c:1725
 msgid "For bug testing only, the following command can be used:"
 msgstr "За решавање проблема, пробајте следећу наредбу:"
 
-#. Translators should localize the following string
-#. * which will be displayed at the bottom of the about
-#. * box to give credit to the translator(s).
-#.
-#: src/nautilus-window.c:1763
+#. Translators should localize the following string which will be displayed at the bottom of
+#. * the about box to give credit to the translator(s).
+#: src/nautilus-window.c:1740
 msgid "translator-credits"
 msgstr ""
 "Данило Шеган <danilo@prevod.org>\n"
@@ -4449,69 +4504,69 @@ msgstr ""
 "\n"
 "https://гном.срб — превод Гнома на српски језик."
 
-#: src/nautilus-window-slot.c:166
+#: src/nautilus-window-slot.c:167
 msgid "Parent folder"
 msgstr "Родитељска фасцикла"
 
-#: src/nautilus-window-slot.c:167
+#: src/nautilus-window-slot.c:168
 #: src/resources/ui/nautilus-history-controls.ui:11
 msgid "Back"
 msgstr "Назад"
 
-#: src/nautilus-window-slot.c:168
+#: src/nautilus-window-slot.c:169
 #: src/resources/ui/nautilus-history-controls.ui:19
 msgid "Forward"
 msgstr "Напред"
 
-#: src/nautilus-window-slot.c:925 src/resources/ui/nautilus-file-chooser.ui:27
-#: src/resources/ui/nautilus-window.ui:117
+#: src/nautilus-window-slot.c:893 src/resources/ui/nautilus-file-chooser.ui:27
+#: src/resources/ui/nautilus-window.ui:116
 msgid "Search Everywhere"
 msgstr "Претражи свуда"
 
-#: src/nautilus-window-slot.c:926
+#: src/nautilus-window-slot.c:894
 msgid "Find files and folders in all search locations"
 msgstr "Пронађи датотеке и фасцикле на свим местима за претрагу"
 
-#: src/nautilus-window-slot.c:929
+#: src/nautilus-window-slot.c:897
 msgid "Search Settings"
 msgstr "Поставке претраге"
 
-#: src/nautilus-window-slot.c:1842
+#: src/nautilus-window-slot.c:1828
 msgid "Unable to display the contents of this folder."
 msgstr "Не могу да прикажем садржај ове фасцикле."
 
-#: src/nautilus-window-slot.c:1846
+#: src/nautilus-window-slot.c:1832
 msgid "This location doesn’t appear to be a folder."
 msgstr "Изгледа да ово место није фасцикла."
 
-#: src/nautilus-window-slot.c:1858
+#: src/nautilus-window-slot.c:1844
 #, c-format
 msgid "Unable to find “%s”. Please check the spelling and try again."
 msgstr ""
 "Не могу да пронађем „%s“. Проверите да ли сте добро укуцали и покушајте "
 "поново."
 
-#: src/nautilus-window-slot.c:1863
+#: src/nautilus-window-slot.c:1849
 msgid ""
 "Unable to find the requested file. Please check the spelling and try again."
 msgstr ""
 "Не могу да пронађем затражену датотеку. Проверите да ли сте добро укуцали и "
 "покушајте поново."
 
-#: src/nautilus-window-slot.c:1874
+#: src/nautilus-window-slot.c:1860
 #, c-format
 msgid "“%s” locations are not supported."
 msgstr "„%s“ места нису подржана."
 
-#: src/nautilus-window-slot.c:1879
+#: src/nautilus-window-slot.c:1865
 msgid "Unable to handle this kind of location."
 msgstr "Наутилус не подржава ову врсту места."
 
-#: src/nautilus-window-slot.c:1887
+#: src/nautilus-window-slot.c:1873
 msgid "Unable to access the requested location."
 msgstr "Не могу да приступим захтеваном месту."
 
-#: src/nautilus-window-slot.c:1893
+#: src/nautilus-window-slot.c:1879
 msgid "Don’t have permission to access the requested location."
 msgstr "Немате овлашћења за приступ захтеваном месту."
 
@@ -4520,7 +4575,7 @@ msgstr "Немате овлашћења за приступ захтеваном
 #. * But this case is also hit for legitimate web addresses when
 #. * the proxy is set up wrong.
 #.
-#: src/nautilus-window-slot.c:1904
+#: src/nautilus-window-slot.c:1890
 msgid ""
 "Unable to find the requested location. Please check the spelling or the "
 "network settings."
@@ -4531,7 +4586,7 @@ msgstr ""
 #. This case can be hit when server application is not installed
 #. * or is inactive in the system user is trying to connect to.
 #.
-#: src/nautilus-window-slot.c:1913
+#: src/nautilus-window-slot.c:1899
 msgid ""
 "The server has refused the connection. Typically this means that the "
 "firewall is blocking access or that the remote service is not running."
@@ -4539,7 +4594,7 @@ msgstr ""
 "Сервер је одбио везу. Ово обично значи да је заштитни зид блокирао приступ "
 "или да удаљена услуга није покренута."
 
-#: src/nautilus-window-slot.c:1932
+#: src/nautilus-window-slot.c:1918
 #, c-format
 msgid "Unhandled error message: %s"
 msgstr "Порука грешке: %s"
@@ -4638,226 +4693,236 @@ msgctxt "shortcut window"
 msgid "Open With Default App"
 msgstr "Отвори подразумеваним програмом"
 
-#: src/resources/gtk/help-overlay.ui:117
+#: src/resources/gtk/help-overlay.ui:115
+msgctxt "shortcut window"
+msgid "Open Current Directory in Console"
+msgstr "Отвори тренутни директоријум у Конзоли"
+
+#: src/resources/gtk/help-overlay.ui:123
 msgctxt "shortcut window"
 msgid "Tabs"
 msgstr "Језичци"
 
-#: src/resources/gtk/help-overlay.ui:120
+#: src/resources/gtk/help-overlay.ui:126
 msgctxt "shortcut window"
 msgid "New Tab"
 msgstr "Нови језичак"
 
-#: src/resources/gtk/help-overlay.ui:126
+#: src/resources/gtk/help-overlay.ui:132
 msgctxt "shortcut window"
 msgid "Go to Previous Tab"
 msgstr "Иди на претходни језичак"
 
-#: src/resources/gtk/help-overlay.ui:132
+#: src/resources/gtk/help-overlay.ui:138
 msgctxt "shortcut window"
 msgid "Go to Next Tab"
 msgstr "Иди на следећи језичак"
 
-#: src/resources/gtk/help-overlay.ui:138
+#: src/resources/gtk/help-overlay.ui:144
 msgctxt "shortcut window"
 msgid "Open Tab"
 msgstr "Отвори језичак"
 
-#: src/resources/gtk/help-overlay.ui:144
+#: src/resources/gtk/help-overlay.ui:150
 msgctxt "shortcut window"
 msgid "Move Tab Left"
 msgstr "Помери језичак улево"
 
-#: src/resources/gtk/help-overlay.ui:150
+#: src/resources/gtk/help-overlay.ui:156
 msgctxt "shortcut window"
 msgid "Move Tab Right"
 msgstr "Помери језичак удесно"
 
-#: src/resources/gtk/help-overlay.ui:156
+#: src/resources/gtk/help-overlay.ui:162
 msgctxt "shortcut window"
-msgid "Restore Tab"
-msgstr "Поврати језичак"
+msgid "Restore Closed Tab"
+msgstr "Врати затворени језичак"
 
-#: src/resources/gtk/help-overlay.ui:164
+#: src/resources/gtk/help-overlay.ui:170
 msgctxt "shortcut window"
 msgid "Navigation"
 msgstr "Навигација"
 
-#: src/resources/gtk/help-overlay.ui:167 src/resources/gtk/help-overlay.ui:174
+#: src/resources/gtk/help-overlay.ui:173 src/resources/gtk/help-overlay.ui:180
 msgctxt "shortcut window"
 msgid "Go Back"
 msgstr "Иди назад"
 
-#: src/resources/gtk/help-overlay.ui:181 src/resources/gtk/help-overlay.ui:188
+#: src/resources/gtk/help-overlay.ui:187 src/resources/gtk/help-overlay.ui:194
 msgctxt "shortcut window"
 msgid "Go Forward"
 msgstr "Иди напред"
 
-#: src/resources/gtk/help-overlay.ui:195
+#: src/resources/gtk/help-overlay.ui:201
 msgctxt "shortcut window"
 msgid "Go Up"
 msgstr "Иди горе"
 
-#: src/resources/gtk/help-overlay.ui:201
+#: src/resources/gtk/help-overlay.ui:207
 msgctxt "shortcut window"
 msgid "Go Down"
 msgstr "Иди доле"
 
-#: src/resources/gtk/help-overlay.ui:207
+#: src/resources/gtk/help-overlay.ui:213
 msgctxt "shortcut window"
 msgid "Go to Home Folder"
 msgstr "Иди у личну фасциклу"
 
-#: src/resources/gtk/help-overlay.ui:213
+#: src/resources/gtk/help-overlay.ui:219
 msgctxt "shortcut window"
 msgid "Enter Location"
 msgstr "Унесите место"
 
-#: src/resources/gtk/help-overlay.ui:219
+#: src/resources/gtk/help-overlay.ui:225
 msgctxt "shortcut window"
 msgid "Location Bar With Root Location"
 msgstr "Трака за место уз приказ кореног диска"
 
-#: src/resources/gtk/help-overlay.ui:225
+#: src/resources/gtk/help-overlay.ui:231
 msgctxt "shortcut window"
 msgid "Location Bar With Home Location"
 msgstr "Трака за место уз приказ личне фасцикле"
 
-#: src/resources/gtk/help-overlay.ui:233
+#: src/resources/gtk/help-overlay.ui:239
 msgctxt "shortcut window"
 msgid "View"
 msgstr "Прегледање"
 
-#: src/resources/gtk/help-overlay.ui:236
+#: src/resources/gtk/help-overlay.ui:242
 msgctxt "shortcut window"
 msgid "Zoom In"
 msgstr "Увећај"
 
-#: src/resources/gtk/help-overlay.ui:242
+#: src/resources/gtk/help-overlay.ui:248
 msgctxt "shortcut window"
 msgid "Zoom Out"
 msgstr "Умањи"
 
-#: src/resources/gtk/help-overlay.ui:248
+#: src/resources/gtk/help-overlay.ui:254
 msgctxt "shortcut window"
 msgid "Reset Zoom"
 msgstr "Поново постави увећање"
 
-#: src/resources/gtk/help-overlay.ui:254
+#: src/resources/gtk/help-overlay.ui:260
 msgctxt "shortcut window"
 msgid "Refresh View"
 msgstr "Освежи приказ"
 
-#: src/resources/gtk/help-overlay.ui:260
+#: src/resources/gtk/help-overlay.ui:266
 msgctxt "shortcut window"
 msgid "Show/Hide Hidden Files"
 msgstr "Прикажи или сакриј скривене датотеке"
 
-#: src/resources/gtk/help-overlay.ui:266
+#: src/resources/gtk/help-overlay.ui:272
 msgctxt "shortcut window"
 msgid "Show/Hide Sidebar"
 msgstr "Прикажи или сакриј бочну површ"
 
-#: src/resources/gtk/help-overlay.ui:272
-msgctxt "shortcut window"
-msgid "Show/Hide Action Menu"
-msgstr "Прикажи или сакриј мени са радњама"
-
 #: src/resources/gtk/help-overlay.ui:278
+msgctxt "shortcut window"
+msgid "Open Current Folder Menu"
+msgstr "Отвори мени тренутне фасцикле"
+
+#: src/resources/gtk/help-overlay.ui:284
+msgctxt "shortcut window"
+msgid "Open Context Menu"
+msgstr "Отвори контекстуални мени"
+
+#: src/resources/gtk/help-overlay.ui:290
 msgctxt "shortcut window"
 msgid "List View"
 msgstr "Приказ списка"
 
-#: src/resources/gtk/help-overlay.ui:284
+#: src/resources/gtk/help-overlay.ui:296
 msgctxt "shortcut window"
 msgid "Grid View"
 msgstr "Приказ мреже"
 
-#: src/resources/gtk/help-overlay.ui:290 src/resources/gtk/help-overlay.ui:297
+#: src/resources/gtk/help-overlay.ui:302 src/resources/gtk/help-overlay.ui:309
 msgctxt "shortcut window"
 msgid "Expand Folder"
 msgstr "Прошири фасциклу"
 
-#: src/resources/gtk/help-overlay.ui:304 src/resources/gtk/help-overlay.ui:311
+#: src/resources/gtk/help-overlay.ui:316 src/resources/gtk/help-overlay.ui:323
 msgctxt "shortcut window"
 msgid "Collapse Folder"
 msgstr "Сакупи фасциклу"
 
-#: src/resources/gtk/help-overlay.ui:320
+#: src/resources/gtk/help-overlay.ui:332
 msgctxt "shortcut window"
 msgid "Editing"
 msgstr "Уређивање"
 
-#: src/resources/gtk/help-overlay.ui:323
+#: src/resources/gtk/help-overlay.ui:335
 msgctxt "shortcut window"
 msgid "Create Folder"
 msgstr "Направи фасциклу"
 
-#: src/resources/gtk/help-overlay.ui:329
+#: src/resources/gtk/help-overlay.ui:341
 msgctxt "shortcut window"
 msgid "Rename"
 msgstr "Преименуј"
 
-#: src/resources/gtk/help-overlay.ui:335
+#: src/resources/gtk/help-overlay.ui:347
 msgctxt "shortcut window"
 msgid "Move to Trash"
 msgstr "Премести у смеће"
 
-#: src/resources/gtk/help-overlay.ui:341
+#: src/resources/gtk/help-overlay.ui:353
 msgctxt "shortcut window"
 msgid "Delete Permanently"
 msgstr "Трајно обриши"
 
-#: src/resources/gtk/help-overlay.ui:347
+#: src/resources/gtk/help-overlay.ui:359
 msgctxt "shortcut window"
 msgid "Create Link to Copied Item"
 msgstr "Направи везу до копиране ставке"
 
-#: src/resources/gtk/help-overlay.ui:353
+#: src/resources/gtk/help-overlay.ui:365
 msgctxt "shortcut window"
 msgid "Create Link to Selected Item"
 msgstr "Направи везу до изабране ставке"
 
-#: src/resources/gtk/help-overlay.ui:359
+#: src/resources/gtk/help-overlay.ui:371
 msgctxt "shortcut window"
 msgid "Cut"
 msgstr "Исеци"
 
-#: src/resources/gtk/help-overlay.ui:365
+#: src/resources/gtk/help-overlay.ui:377
 msgctxt "shortcut window"
 msgid "Copy"
 msgstr "Копирај"
 
-#: src/resources/gtk/help-overlay.ui:371
+#: src/resources/gtk/help-overlay.ui:383
 msgctxt "shortcut window"
 msgid "Paste"
 msgstr "Убаци"
 
-#: src/resources/gtk/help-overlay.ui:377
+#: src/resources/gtk/help-overlay.ui:389
 msgctxt "shortcut window"
 msgid "Select All"
 msgstr "Изабери све"
 
-#: src/resources/gtk/help-overlay.ui:383
+#: src/resources/gtk/help-overlay.ui:395
 msgctxt "shortcut window"
 msgid "Invert Selection"
 msgstr "Обрн избор"
 
-#: src/resources/gtk/help-overlay.ui:389
+#: src/resources/gtk/help-overlay.ui:401
 msgctxt "shortcut window"
 msgid "Select Items Matching"
 msgstr "Означи ставке на основу поклапања"
 
-#: src/resources/gtk/help-overlay.ui:395
+#: src/resources/gtk/help-overlay.ui:407
 msgctxt "shortcut window"
 msgid "Show Item Properties"
 msgstr "Прикажи особине ставке"
 
-#: src/resources/ui/nautilus-app-chooser.ui:46
-msgid "Choose an app to open the selected files."
-msgstr "Изабери програм за отварање изабраних датотека."
+#: src/resources/ui/nautilus-app-chooser.ui:51
+msgid "Choose an app to open the selected files"
+msgstr "Изабери апликацију за отварање изабраних датотека"
 
-#: src/resources/ui/nautilus-app-chooser.ui:79
+#: src/resources/ui/nautilus-app-chooser.ui:63
 msgid "Always use for this file type"
 msgstr "Увек користи за датотеке ове врсте"
 
@@ -4909,66 +4974,66 @@ msgstr "Наслов албума"
 msgid "Original File Name"
 msgstr "Изворни назив датотеке"
 
-#: src/resources/ui/nautilus-batch-rename-dialog.ui:113
-#: src/resources/ui/nautilus-file-conflict-dialog.ui:30
-#: src/resources/ui/nautilus-rename-file-popover.ui:47
-#: src/gtk/nautilusgtkplacessidebar.c:1983
-#: src/gtk/nautilusgtkplacessidebar.c:2900
-msgid "_Rename"
-msgstr "П_реименуј"
-
-#: src/resources/ui/nautilus-batch-rename-dialog.ui:141
+#: src/resources/ui/nautilus-batch-rename-dialog.ui:155
 msgid "Rename _using a template"
 msgstr "Преименуј помоћу _шаблона"
 
-#: src/resources/ui/nautilus-batch-rename-dialog.ui:149
+#: src/resources/ui/nautilus-batch-rename-dialog.ui:163
 msgid "Find and replace _text"
 msgstr "Нађи и _замени текст"
 
 #. Translators: This is a noun, not a verb
-#: src/resources/ui/nautilus-batch-rename-dialog.ui:170
+#: src/resources/ui/nautilus-batch-rename-dialog.ui:180
 msgid "Format"
 msgstr "Формат"
 
-#: src/resources/ui/nautilus-batch-rename-dialog.ui:195
+#: src/resources/ui/nautilus-batch-rename-dialog.ui:205
 msgid "Add"
 msgstr "Додај"
 
-#: src/resources/ui/nautilus-batch-rename-dialog.ui:218
+#: src/resources/ui/nautilus-batch-rename-dialog.ui:226
 msgid "Automatic Numbering Order"
 msgstr "Редослед аутоматског нумерисања"
 
-#: src/resources/ui/nautilus-batch-rename-dialog.ui:243
+#: src/resources/ui/nautilus-batch-rename-dialog.ui:247
 msgctxt "title"
 msgid "Replace"
 msgstr "Замени"
 
-#: src/resources/ui/nautilus-batch-rename-dialog.ui:255
+#: src/resources/ui/nautilus-batch-rename-dialog.ui:260
 msgid "Existing Text"
 msgstr "Постојећи текст"
 
+#: src/resources/ui/nautilus-batch-rename-dialog.ui:453
+msgid "Next Conflict"
+msgstr "Следећи сукоб"
+
+#: src/resources/ui/nautilus-batch-rename-dialog.ui:463
+msgid "Previous Conflict"
+msgstr "Претходни сукоб"
+
 # bug: plural-forms?
-#: src/resources/ui/nautilus-column-chooser.ui:17
+#: src/resources/ui/nautilus-column-chooser.ui:14
 msgid "Visible Columns"
 msgstr "Видљиве колоне"
 
-#: src/resources/ui/nautilus-column-chooser.ui:27
+#: src/resources/ui/nautilus-column-chooser.ui:24
 msgid "This folder uses custom settings"
 msgstr "Ова фасцикла користи прилагођена подешавања"
 
-#: src/resources/ui/nautilus-column-chooser.ui:28
+#: src/resources/ui/nautilus-column-chooser.ui:25
 msgid "_Revert"
 msgstr "_Врати"
 
-#: src/resources/ui/nautilus-column-chooser.ui:57
+#: src/resources/ui/nautilus-column-chooser.ui:54
 msgid "_Only Apply to Current Folder"
 msgstr "Примени _само на тренутну фасциклу"
 
-#: src/resources/ui/nautilus-column-chooser.ui:72
+#: src/resources/ui/nautilus-column-chooser.ui:69
 msgid "Move _Up"
 msgstr "Премести _горе"
 
-#: src/resources/ui/nautilus-column-chooser.ui:76
+#: src/resources/ui/nautilus-column-chooser.ui:73
 msgid "Move _Down"
 msgstr "Премести _доле"
 
@@ -5007,6 +5072,63 @@ msgstr "_Лозинка"
 #: src/resources/ui/nautilus-compress-dialog.ui:96
 msgid "_Confirm Password"
 msgstr "По_тврди лозинку"
+
+#: src/resources/ui/nautilus-date-entry-row.ui:9
+msgid "Pick Date"
+msgstr "Изаберите датум"
+
+#: src/resources/ui/nautilus-date-range-dialog.ui:5
+msgid "Add Date Filter"
+msgstr "Додај филтер датума"
+
+#: src/resources/ui/nautilus-date-range-dialog.ui:15
+msgid "Filter by Date"
+msgstr "Филтер по датуму"
+
+#: src/resources/ui/nautilus-date-range-dialog.ui:26
+msgid "_Date Range"
+msgstr "Опсег _датума"
+
+#. Keep in sync with code
+#: src/resources/ui/nautilus-date-range-dialog.ui:32
+msgid "Single Day"
+msgstr "Један дан"
+
+#: src/resources/ui/nautilus-date-range-dialog.ui:33
+msgid "± 1 day"
+msgstr "± 1 дан"
+
+#: src/resources/ui/nautilus-date-range-dialog.ui:34
+msgid "± 3 days"
+msgstr "± 3 дана"
+
+#: src/resources/ui/nautilus-date-range-dialog.ui:35
+msgid "± 7 days"
+msgstr "± 7 дана"
+
+#: src/resources/ui/nautilus-date-range-dialog.ui:36
+msgid "± 14 days"
+msgstr "± 14 дана"
+
+#: src/resources/ui/nautilus-date-range-dialog.ui:37
+msgid "Specify Range"
+msgstr "Задај опсег"
+
+#: src/resources/ui/nautilus-date-range-dialog.ui:50
+msgid "_Date"
+msgstr "Д_атум"
+
+#: src/resources/ui/nautilus-date-range-dialog.ui:58
+msgid "Fro_m"
+msgstr "_Од"
+
+#: src/resources/ui/nautilus-date-range-dialog.ui:67
+msgid "_To"
+msgstr "_До"
+
+#: src/resources/ui/nautilus-date-range-dialog.ui:80
+msgid "_Filter"
+msgstr "_Филтер"
 
 #: src/resources/ui/nautilus-new-folder-dialog.ui:5
 #: src/resources/ui/nautilus-file-chooser.ui:187
@@ -5086,7 +5208,6 @@ msgid "Fol_ders"
 msgstr "Фа_сцикле"
 
 #: src/resources/ui/nautilus-file-properties-change-permissions.ui:69
-#: src/resources/ui/nautilus-properties-window.ui:627
 msgid "Others"
 msgstr "Остали"
 
@@ -5104,24 +5225,25 @@ msgid "New _Folder…"
 msgstr "Нова _фасцикла…"
 
 #: src/resources/ui/nautilus-files-view-context-menus.ui:10
-#: src/resources/ui/nautilus-pathbar-context-menu.ui:24
+#: src/resources/ui/nautilus-pathbar-context-menu.ui:25
 msgid "New _Document"
 msgstr "Нови _документ"
 
 #: src/resources/ui/nautilus-files-view-context-menus.ui:16
 #: src/resources/ui/nautilus-files-view-context-menus.ui:76
 #: src/resources/ui/nautilus-files-view-context-menus.ui:110
-#: src/resources/ui/nautilus-pathbar-context-menu.ui:29
+#: src/resources/ui/nautilus-pathbar-context-menu.ui:30
 msgid "Open _With…"
 msgstr "От_вори помоћу…"
 
 #: src/resources/ui/nautilus-files-view-context-menus.ui:21
 #: src/resources/ui/nautilus-files-view-context-menus.ui:115
-#: src/resources/ui/nautilus-pathbar-context-menu.ui:33
+#: src/resources/ui/nautilus-pathbar-context-menu.ui:34
 msgid "Open in Consol_e"
 msgstr "Отвори у конзол_и"
 
 #: src/resources/ui/nautilus-files-view-context-menus.ui:27
+#: src/resources/ui/nautilus-pathbar-context-menu.ui:83
 msgid "_Paste"
 msgstr "_Убаци"
 
@@ -5130,6 +5252,7 @@ msgid "Paste as _Link"
 msgstr "У_баци као везу"
 
 #: src/resources/ui/nautilus-files-view-context-menus.ui:37
+#: src/resources/ui/nautilus-pathbar-context-menu.ui:92
 msgid "Select _All"
 msgstr "Изабери _све"
 
@@ -5139,13 +5262,13 @@ msgid "_Visible Columns"
 msgstr "_Видљиве колоне"
 
 #: src/resources/ui/nautilus-files-view-context-menus.ui:48
-#: src/resources/ui/nautilus-pathbar-context-menu.ui:79
+#: src/resources/ui/nautilus-pathbar-context-menu.ui:99
 msgid "Empty _Trash…"
 msgstr "Из_баци смеће…"
 
 #: src/resources/ui/nautilus-files-view-context-menus.ui:56
 #: src/resources/ui/nautilus-files-view-context-menus.ui:276
-#: src/resources/ui/nautilus-pathbar-context-menu.ui:86
+#: src/resources/ui/nautilus-pathbar-context-menu.ui:106
 msgid "P_roperties"
 msgstr "Осо_бине"
 
@@ -5161,20 +5284,6 @@ msgstr "Распакуј _у…"
 msgid "_Run as a Program"
 msgstr "Пок_рени као програм"
 
-#: src/resources/ui/nautilus-files-view-context-menus.ui:98
-#: src/resources/ui/nautilus-pathbar-context-menu.ui:10
-#: src/gtk/nautilusgtkplacessidebar.c:2758
-#: src/gtk/nautilusgtkplacessidebar.c:2874
-msgid "Open in New _Tab"
-msgstr "Отвори у новом _језичку"
-
-#: src/resources/ui/nautilus-files-view-context-menus.ui:103
-#: src/resources/ui/nautilus-pathbar-context-menu.ui:6
-#: src/gtk/nautilusgtkplacessidebar.c:2765
-#: src/gtk/nautilusgtkplacessidebar.c:2883
-msgid "Open in New _Window"
-msgstr "Отвори у но_вом прозору"
-
 #: src/resources/ui/nautilus-files-view-context-menus.ui:123
 msgid "_Open Item Location"
 msgstr "Отвори _место ставке"
@@ -5186,31 +5295,6 @@ msgstr "_Скрипте"
 #: src/resources/ui/nautilus-files-view-context-menus.ui:135
 msgid "_Open Scripts Folder"
 msgstr "_Отвори фасциклу са скриптама"
-
-#: src/resources/ui/nautilus-files-view-context-menus.ui:144
-#: src/gtk/nautilusgtkplacessidebar.c:2922
-msgid "_Mount"
-msgstr "_Прикачи"
-
-#: src/resources/ui/nautilus-files-view-context-menus.ui:149
-#: src/gtk/nautilusgtkplacessidebar.c:2931
-msgid "_Unmount"
-msgstr "_Откачи"
-
-#: src/resources/ui/nautilus-files-view-context-menus.ui:154
-#: src/gtk/nautilusgtkplacessidebar.c:2938
-msgid "_Eject"
-msgstr "_Избаци"
-
-#: src/resources/ui/nautilus-files-view-context-menus.ui:164
-#: src/gtk/nautilusgtkplacessidebar.c:2972
-msgid "_Stop"
-msgstr "_Заустави"
-
-#: src/resources/ui/nautilus-files-view-context-menus.ui:169
-#: src/gtk/nautilusgtkplacessidebar.c:2948
-msgid "_Detect Media"
-msgstr "Про_нађи медијум"
 
 #: src/resources/ui/nautilus-files-view-context-menus.ui:178
 msgid "Cu_t"
@@ -5287,15 +5371,7 @@ msgstr "Означи ставке по услову"
 msgid "Pattern"
 msgstr "Образац"
 
-#: src/resources/ui/nautilus-files-view.ui:6
-msgid "Content View"
-msgstr "Преглед садржаја"
-
-#: src/resources/ui/nautilus-files-view.ui:7
-msgid "View of the current folder"
-msgstr "Преглед текуће фасцикле"
-
-#: src/resources/ui/nautilus-name-cell.ui:112
+#: src/resources/ui/nautilus-name-cell.ui:114
 msgid "Full Text Match"
 msgstr "Поклапање тачног текста"
 
@@ -5325,11 +5401,6 @@ msgstr "Адреса сервера"
 msgid "Server Address Information"
 msgstr "Подаци о адреси сервера"
 
-#: src/resources/ui/nautilus-network-cell.ui:70
-#: src/gtk/nautilusgtkplacessidebar.c:392
-msgid "Disconnect"
-msgstr "Прекини везу"
-
 #: src/resources/ui/nautilus-operations-ui-manager-request-passphrase.ui:5
 msgid "Password Required"
 msgstr "Потребна је лозинка"
@@ -5342,37 +5413,41 @@ msgstr "Унесите лозинку…"
 msgid "_Properties"
 msgstr "_Особине"
 
-#: src/resources/ui/nautilus-pathbar-context-menu.ui:39
+#: src/resources/ui/nautilus-pathbar-context-menu.ui:40
 msgid "R_eload"
 msgstr "_Освежи"
 
-#: src/resources/ui/nautilus-pathbar-context-menu.ui:44
+#: src/resources/ui/nautilus-pathbar-context-menu.ui:46
 msgid "St_op"
 msgstr "_Заустави"
 
-#: src/resources/ui/nautilus-pathbar-context-menu.ui:49
+#: src/resources/ui/nautilus-pathbar-context-menu.ui:51
 msgid "Add to _Bookmarks"
 msgstr "Додај у о_бележиваче"
 
-#: src/resources/ui/nautilus-pathbar-context-menu.ui:53
+#: src/resources/ui/nautilus-pathbar-context-menu.ui:57
+msgid "Remove from _Bookmarks"
+msgstr "Уклони из о_бележивача"
+
+#: src/resources/ui/nautilus-pathbar-context-menu.ui:62
 msgid "_Star Folder"
 msgstr "Оми_љена фасцикла"
 
-#: src/resources/ui/nautilus-pathbar-context-menu.ui:58
+#: src/resources/ui/nautilus-pathbar-context-menu.ui:67
 msgid "_Unstar Folder"
 msgstr "_Није омиљена фасцикла"
 
-#: src/resources/ui/nautilus-pathbar-context-menu.ui:63
-msgid "Edit _Location"
-msgstr "Уреди _место"
-
-#: src/resources/ui/nautilus-pathbar-context-menu.ui:67
+#: src/resources/ui/nautilus-pathbar-context-menu.ui:72
 msgid "_Copy Location"
 msgstr "_Копирај место"
 
-#: src/resources/ui/nautilus-pathbar-context-menu.ui:71
+#: src/resources/ui/nautilus-pathbar-context-menu.ui:76
 msgid "_Open in File Manager"
 msgstr "Отвори у уређивачу датотека"
+
+#: src/resources/ui/nautilus-pathbar-context-menu.ui:87
+msgid "Paste as Lin_k"
+msgstr "У_баци као везу"
 
 #: src/resources/ui/nautilus-preferences-dialog.ui:8
 #: src/resources/ui/nautilus-preferences-dialog.ui:11
@@ -5481,114 +5556,112 @@ msgstr "_Трећи"
 msgid "Show File Operations"
 msgstr "Прикажи радње над датотекама"
 
-#: src/resources/ui/nautilus-properties-window.ui:5
-#: src/resources/ui/nautilus-properties-window.ui:16
-#: src/gtk/nautilusgtkplacessidebar.c:2996
-msgid "Properties"
-msgstr "Особине"
-
-#: src/resources/ui/nautilus-properties-window.ui:97
+#: src/resources/ui/nautilus-properties-window.ui:100
 msgid "Set Custom Icon"
 msgstr "Изаберите произвољну иконицу"
 
-#: src/resources/ui/nautilus-properties-window.ui:118
+#: src/resources/ui/nautilus-properties-window.ui:121
 msgid "Remove Custom Icon"
 msgstr "Изаберите произвољну иконицу"
 
-#: src/resources/ui/nautilus-properties-window.ui:165
+#: src/resources/ui/nautilus-properties-window.ui:168
 msgid "Unknown Filesystem"
 msgstr "Непознати систем датотека"
 
-#: src/resources/ui/nautilus-properties-window.ui:252
+#: src/resources/ui/nautilus-properties-window.ui:255
 msgid "total"
 msgstr "укупно"
 
 #. Refers to the capacity of the filesystem
-#: src/resources/ui/nautilus-properties-window.ui:282
+#: src/resources/ui/nautilus-properties-window.ui:285
 msgid "used"
 msgstr "заузето"
 
 #. Refers to the capacity of the filesystem
-#: src/resources/ui/nautilus-properties-window.ui:313
+#: src/resources/ui/nautilus-properties-window.ui:316
 msgid "free"
 msgstr "слободно"
 
 #. Disks refers to GNOME Disks.
-#: src/resources/ui/nautilus-properties-window.ui:330
+#: src/resources/ui/nautilus-properties-window.ui:333
 msgid "_Open in Disks"
 msgstr "_Отвори у Дисковима"
 
-#: src/resources/ui/nautilus-properties-window.ui:343
+#: src/resources/ui/nautilus-properties-window.ui:346
 msgid "_Link Target"
 msgstr "О_дредиште везе"
 
-#: src/resources/ui/nautilus-properties-window.ui:354
+#: src/resources/ui/nautilus-properties-window.ui:358
 msgid "Open Link Target"
 msgstr "Отвори одредиште везе"
 
-#: src/resources/ui/nautilus-properties-window.ui:367
+#: src/resources/ui/nautilus-properties-window.ui:371
 msgid "Parent _Folder"
 msgstr "Родитељска _фасцикла"
 
-#: src/resources/ui/nautilus-properties-window.ui:378
+#: src/resources/ui/nautilus-properties-window.ui:383
 msgid "Open Parent Folder"
 msgstr "Отвори родитељску фасциклу"
 
-#: src/resources/ui/nautilus-properties-window.ui:468
+#: src/resources/ui/nautilus-properties-window.ui:478
 msgid "_Permissions"
 msgstr "Ов_лашћења"
 
-#: src/resources/ui/nautilus-properties-window.ui:490
+#: src/resources/ui/nautilus-properties-window.ui:500
 msgid "_Executable as Program"
 msgstr "Изв_рши као програм"
 
-#: src/resources/ui/nautilus-properties-window.ui:517
+#: src/resources/ui/nautilus-properties-window.ui:528
 msgid "Set Custom Permissions"
 msgstr "Постави прилагођена овлашћења"
 
-#: src/resources/ui/nautilus-properties-window.ui:531
+#: src/resources/ui/nautilus-properties-window.ui:542
 msgid "Unknown Permissions"
 msgstr "Непозната овлашћења"
 
-#: src/resources/ui/nautilus-properties-window.ui:532
+#: src/resources/ui/nautilus-properties-window.ui:543
 msgid "The permissions of the selected files could not be determined"
 msgstr "Не могу да утврдим овлашћења за изабране датотеке."
 
-#: src/resources/ui/nautilus-properties-window.ui:545
+#: src/resources/ui/nautilus-properties-window.ui:556
 msgid "Only the owner can edit these permissions"
 msgstr "Само власник може изменити ова овлашћења."
 
-#: src/resources/ui/nautilus-properties-window.ui:556
+#: src/resources/ui/nautilus-properties-window.ui:566
 msgid "_Owner"
 msgstr "_Власник"
 
-#: src/resources/ui/nautilus-properties-window.ui:567
-#: src/resources/ui/nautilus-properties-window.ui:603
-#: src/resources/ui/nautilus-properties-window.ui:634
+#: src/resources/ui/nautilus-properties-window.ui:578
+#: src/resources/ui/nautilus-properties-window.ui:618
+#: src/resources/ui/nautilus-properties-window.ui:647
 msgid "Access"
 msgstr "Приступ"
 
-#: src/resources/ui/nautilus-properties-window.ui:574
-#: src/resources/ui/nautilus-properties-window.ui:610
-#: src/resources/ui/nautilus-properties-window.ui:641
+#: src/resources/ui/nautilus-properties-window.ui:586
+#: src/resources/ui/nautilus-properties-window.ui:626
+#: src/resources/ui/nautilus-properties-window.ui:655
 msgid "Folder Access"
 msgstr "Приступ фасцикли"
 
-#: src/resources/ui/nautilus-properties-window.ui:581
-#: src/resources/ui/nautilus-properties-window.ui:617
-#: src/resources/ui/nautilus-properties-window.ui:648
+#: src/resources/ui/nautilus-properties-window.ui:594
+#: src/resources/ui/nautilus-properties-window.ui:634
+#: src/resources/ui/nautilus-properties-window.ui:663
 msgid "File Access"
 msgstr "Приступ датотеци"
 
-#: src/resources/ui/nautilus-properties-window.ui:592
+#: src/resources/ui/nautilus-properties-window.ui:606
 msgid "_Group"
 msgstr "_Група"
 
-#: src/resources/ui/nautilus-properties-window.ui:658
+#: src/resources/ui/nautilus-properties-window.ui:642
+msgid "Other Users"
+msgstr "Остали корисници"
+
+#: src/resources/ui/nautilus-properties-window.ui:674
 msgid "Security Context"
 msgstr "Безбедносни контекст"
 
-#: src/resources/ui/nautilus-properties-window.ui:673
+#: src/resources/ui/nautilus-properties-window.ui:691
 msgid "Change Permissions for _Enclosed Files…"
 msgstr "Измени овлашћења за _садржане датотеке…"
 
@@ -5596,57 +5669,98 @@ msgstr "Измени овлашћења за _садржане датотеке�
 msgid "New Filename"
 msgstr "Нови назив датотеке"
 
-#: src/resources/ui/nautilus-search-popover.ui:15
-msgid "When"
-msgstr "Када"
+#: src/resources/ui/nautilus-search-popover.ui:25
+msgid "File Types"
+msgstr "Врсте датотека"
 
 #: src/resources/ui/nautilus-search-popover.ui:44
-msgid "Select _Dates…"
-msgstr "Изаберите датуме…"
+msgid "_Audio"
+msgstr "_Звук"
 
-#: src/resources/ui/nautilus-search-popover.ui:55
-msgid "Clear Date Filter"
-msgstr "Очисти филтер датума"
+#: src/resources/ui/nautilus-search-popover.ui:56
+msgid "_Documents"
+msgstr "_Документи"
 
-#: src/resources/ui/nautilus-search-popover.ui:96
-msgid "Since…"
-msgstr "Од…"
+#: src/resources/ui/nautilus-search-popover.ui:68
+msgid "_Folders"
+msgstr "_Фасцикле"
 
-#: src/resources/ui/nautilus-search-popover.ui:155
-msgid "Last _modified"
-msgstr "Датум из_мене"
+#: src/resources/ui/nautilus-search-popover.ui:80
+msgid "_Images"
+msgstr "_Слике"
 
-#: src/resources/ui/nautilus-search-popover.ui:167
-msgid "Last _used"
-msgstr "Последњи п_ут коришћено"
+#: src/resources/ui/nautilus-search-popover.ui:92
+msgid "_PDF"
+msgstr "_ПДФ"
 
-#: src/resources/ui/nautilus-search-popover.ui:179
-msgid "_Created"
-msgstr "_Настала"
+#: src/resources/ui/nautilus-search-popover.ui:104
+msgid "_Spreadsheets"
+msgstr "_Рачунске таблице"
 
-#: src/resources/ui/nautilus-search-popover.ui:201
-msgid "What"
-msgstr "Шта"
+#: src/resources/ui/nautilus-search-popover.ui:116
+msgid "Te_xt"
+msgstr "_Текст"
 
-#: src/resources/ui/nautilus-search-popover.ui:232
-msgid "_Anything"
-msgstr "_Било шта"
+#: src/resources/ui/nautilus-search-popover.ui:128
+msgid "_Videos"
+msgstr "_Видео"
 
-#: src/resources/ui/nautilus-search-popover.ui:295
-msgid "Full _Text"
-msgstr "П_ун текст"
+#: src/resources/ui/nautilus-search-popover.ui:144
+msgid "Specific Type"
+msgstr "Одређена врста"
 
-#: src/resources/ui/nautilus-search-popover.ui:297
+#. Translators: This refers to a date time
+#: src/resources/ui/nautilus-search-popover.ui:185
+msgid "Used"
+msgstr "Коришћено"
+
+#: src/resources/ui/nautilus-search-popover.ui:213
+msgid "_Today"
+msgstr "_Данас"
+
+#: src/resources/ui/nautilus-search-popover.ui:220
+msgid "_Yesterday"
+msgstr "_Јуче"
+
+#: src/resources/ui/nautilus-search-popover.ui:227
+msgid "Past _Week"
+msgstr "Задње _недеље"
+
+#: src/resources/ui/nautilus-search-popover.ui:234
+msgid "Past _Month"
+msgstr "Задњег _месеца"
+
+#: src/resources/ui/nautilus-search-popover.ui:241
+msgid "Past Y_ear"
+msgstr "Задње _године"
+
+#: src/resources/ui/nautilus-search-popover.ui:255
+msgid "Custom Date Range"
+msgstr "Произвољан опсег датума"
+
+#: src/resources/ui/nautilus-search-popover.ui:276
+msgid "Text Matching"
+msgstr "Поклапање текста"
+
+#: src/resources/ui/nautilus-search-popover.ui:292
+msgid "_Content & Filename"
+msgstr "_Садржај и назив датотеке"
+
+#: src/resources/ui/nautilus-search-popover.ui:293
 msgid "Search Inside Files"
 msgstr "Потражи унутар датотека"
 
-#: src/resources/ui/nautilus-search-popover.ui:305
-msgid "File _Name"
-msgstr "На_зив датотеке"
+#: src/resources/ui/nautilus-search-popover.ui:301
+msgid "_Only Filename"
+msgstr "Само _назив датотеке"
 
-#: src/resources/ui/nautilus-search-popover.ui:307
+#: src/resources/ui/nautilus-search-popover.ui:302
 msgid "Don't Search Inside Files"
 msgstr "Не претражуј унутар датотека"
+
+#: src/resources/ui/nautilus-search-popover.ui:312
+msgid "Only Co_ntents"
+msgstr "Само садр_жај"
 
 #: src/resources/ui/nautilus-search-types-dialog.ui:5
 msgid "Add File Type Filter"
@@ -5722,16 +5836,16 @@ msgstr "Поређај"
 msgid "Show _Hidden Files"
 msgstr "Прикажи с_кривене датотеке"
 
-#: src/resources/ui/nautilus-view-controls.ui:31
+#: src/resources/ui/nautilus-view-controls.ui:32
 msgid "_Visible Columns…"
 msgstr "Приказане _колоне…"
 
 #. Translators: This is a noun, meaning the options pertaining to the view.
-#: src/resources/ui/nautilus-view-controls.ui:42
+#: src/resources/ui/nautilus-view-controls.ui:43
 msgid "View Options"
 msgstr "Могућности прегледа"
 
-#: src/resources/ui/nautilus-view-controls.ui:51
+#: src/resources/ui/nautilus-view-controls.ui:52
 msgid "Zoom Out"
 msgstr "Умањи"
 
@@ -5793,134 +5907,163 @@ msgstr "_Затвори језичак"
 msgid "Close _Other Tabs"
 msgstr "Затв_ори остале језичке"
 
-#: src/resources/ui/nautilus-window.ui:129
+#: src/resources/ui/nautilus-window.ui:128
 msgid "Main Menu"
 msgstr "Главни мени"
 
-#: src/gtk/nautilusgtkplacessidebar.c:394
-msgid "Eject"
-msgstr "Избаци"
-
-#: src/gtk/nautilusgtkplacessidebar.c:396
-msgid "Unmount"
-msgstr "Откачи"
-
-#: src/gtk/nautilusgtkplacessidebar.c:672
-msgid "Open Personal Folder"
-msgstr "Отвори личну фасциклу"
-
-#: src/gtk/nautilusgtkplacessidebar.c:681
-msgid "Recent"
-msgstr "Недавно"
-
-#: src/gtk/nautilusgtkplacessidebar.c:683
-msgid "Recent Files"
-msgstr "Скорашње датотеке"
-
-#: src/gtk/nautilusgtkplacessidebar.c:692
-msgid "Starred Files"
-msgstr "Датотеке са звездицом"
-
-#: src/gtk/nautilusgtkplacessidebar.c:704
-msgid "Desktop"
-msgstr "Радна површ"
-
-#: src/gtk/nautilusgtkplacessidebar.c:706
-msgid "Open the contents of your desktop in a folder"
-msgstr "Отворите садржај ваше радне површи унутар фасцикле"
-
-#: src/gtk/nautilusgtkplacessidebar.c:718
-msgid "Open Network Locations"
-msgstr "Отвори место на мрежи"
-
-#: src/gtk/nautilusgtkplacessidebar.c:729
-msgid "Open Trash"
-msgstr "Отвори смеће"
-
-#: src/gtk/nautilusgtkplacessidebar.c:833
-#: src/gtk/nautilusgtkplacessidebar.c:863
-#: src/gtk/nautilusgtkplacessidebar.c:1040
 #, c-format
-msgid "Mount and Open “%s”"
-msgstr "Закачи и отвори „%s“"
+#~ msgid ""
+#~ "There was an error displaying help: \n"
+#~ "%s"
+#~ msgstr ""
+#~ "Дошло је до грешке у приказивању помоћи: \n"
+#~ "%s"
 
-#: src/gtk/nautilusgtkplacessidebar.c:1018
-msgid "New bookmark"
-msgstr "Нови обележивач"
+#~ msgid "OK"
+#~ msgstr "У реду"
 
-#: src/gtk/nautilusgtkplacessidebar.c:1020
-msgid "Add a new bookmark"
-msgstr "Додај нови обележивач"
+#, no-c-format
+#~ msgid "%m/%d/%Y %H:%M"
+#~ msgstr "%-e. %b %Y. у %H:%M"
 
-#. Translators: This means that unlocking an encrypted storage
-#. * device failed. %s is the name of the device.
-#.
-#: src/gtk/nautilusgtkplacessidebar.c:1699
+#, no-c-format
+#~ msgid "%m/%d/%Y %I:%M %p"
+#~ msgstr "%-e. %b %Y. у %l:%M %p"
+
+#, no-c-format
+#~ msgid "Today %-H:%M"
+#~ msgstr "Данас, у %-H:%M"
+
+#, no-c-format
+#~ msgid "Today %-I:%M %p"
+#~ msgstr "Данас, %l:%M %p"
+
+#, no-c-format
+#~ msgid "Yesterday %-H:%M"
+#~ msgstr "Јуче, у %H:%M"
+
+#, no-c-format
+#~ msgid "Yesterday %-I:%M %p"
+#~ msgstr "Јуче, у %l:%M %p"
+
+#, no-c-format
+#~ msgid "%-e %b %Y"
+#~ msgstr "%-e. %b %Y."
+
+#, no-c-format
+#~ msgid "%-e %B %Y %H:%M:%S"
+#~ msgstr "%-e. %b %Y. у %H:%M:%S"
+
+#, no-c-format
+#~ msgid "%-e %B %Y %I:%M:%S %p"
+#~ msgstr "%-e. %b %Y. у %I:%M:%S %p"
+
+#~ msgid ""
+#~ "\n"
+#~ "========================================================\n"
+#~ "This app cannot work correctly if run as root (not even\n"
+#~ "with sudo). Consider running `nautilus admin:/` instead.\n"
+#~ "========================================================"
+#~ msgstr ""
+#~ "\n"
+#~ "========================================================\n"
+#~ "Ова апликација не може да ради исправно уколико је покренете\n"
+#~ "као администратор (чак и преко наредбе sudo). Уместо тога,\n"
+#~ "покушајте да користите „nautilus admin:/“.\n"
+#~ "========================================================"
+
+#~ msgid "Show Time Ranges"
+#~ msgstr "Прикажи временске опсеге"
+
+#~ msgid "Use Calendar"
+#~ msgstr "Користи календар"
+
+#~ msgid "Any time"
+#~ msgstr "Било када"
+
+#~ msgid "Other Type…"
+#~ msgstr "Друга врста…"
+
+#~ msgid "Select Dates…"
+#~ msgstr "Изабери датуме…"
+
 #, c-format
-msgid "Error unlocking “%s”"
-msgstr "Грешка при откључавању уређаја „%s“"
+#~ msgid "Since %d day ago"
+#~ msgid_plural "Since %d days ago"
+#~ msgstr[0] "Пре %d дан"
+#~ msgstr[1] "Пре %d дана"
+#~ msgstr[2] "Пре %d дана"
+#~ msgstr[3] "Јуче"
 
-#: src/gtk/nautilusgtkplacessidebar.c:1896
-msgid "This name is already taken"
-msgstr "Овај назив је већ заузет"
-
-#: src/gtk/nautilusgtkplacessidebar.c:2280
 #, c-format
-msgid "Unable to stop “%s”"
-msgstr "Не могу да зауставим „%s“"
+#~ msgid "%d day ago"
+#~ msgid_plural "%d days ago"
+#~ msgstr[0] "Пре %d дан"
+#~ msgstr[1] "Пре %d дана"
+#~ msgstr[2] "Пре %d дана"
+#~ msgstr[3] "Јуче"
 
-#: src/gtk/nautilusgtkplacessidebar.c:2487
 #, c-format
-msgid "Unable to poll “%s” for media changes"
-msgstr "Не могу да питам „%s“ о изменама медија"
+#~ msgid "Since last week"
+#~ msgid_plural "Since %d weeks ago"
+#~ msgstr[0] "Пре %d недеље"
+#~ msgstr[1] "Пре %d недеље"
+#~ msgstr[2] "Пре %d недеља"
+#~ msgstr[3] "Прошле недеље"
 
-#: src/gtk/nautilusgtkplacessidebar.c:2895
-msgid "_Remove from Bookmarks"
-msgstr "Ук_лони из обележивача"
+#, c-format
+#~ msgid "Since last month"
+#~ msgid_plural "Since %d months ago"
+#~ msgstr[0] "Пре %d месец"
+#~ msgstr[1] "Пре %d месеца"
+#~ msgstr[2] "Пре %d месеци"
+#~ msgstr[3] "Прошлог месеца"
 
-#: src/gtk/nautilusgtkplacessidebar.c:2959
-msgid "_Power On"
-msgstr "_Укључи"
+#, c-format
+#~ msgid "Since last year"
+#~ msgid_plural "Since %d years ago"
+#~ msgstr[0] "Пре %d године"
+#~ msgstr[1] "Пре %d године"
+#~ msgstr[2] "Пре %d година"
+#~ msgstr[3] "Прошле године"
 
-#: src/gtk/nautilusgtkplacessidebar.c:2960
-msgid "_Connect Drive"
-msgstr "_Повежи уређај"
+#~ msgctxt "shortcut window"
+#~ msgid "Restore Tab"
+#~ msgstr "Поврати језичак"
 
-#: src/gtk/nautilusgtkplacessidebar.c:2961
-msgid "_Start Multi-disk Device"
-msgstr "_Покрени уређај са више дискова"
+#~ msgctxt "shortcut window"
+#~ msgid "Show/Hide Action Menu"
+#~ msgstr "Прикажи или сакриј мени са радњама"
 
-#: src/gtk/nautilusgtkplacessidebar.c:2962
-msgid "_Unlock Device"
-msgstr "Откљ_учај уређај"
+#~ msgid "Edit _Location"
+#~ msgstr "Уреди _место"
 
-#: src/gtk/nautilusgtkplacessidebar.c:2975
-msgid "_Disconnect Drive"
-msgstr "_Откачи уређај"
+#~ msgid "When"
+#~ msgstr "Када"
 
-#: src/gtk/nautilusgtkplacessidebar.c:2976
-msgid "_Stop Multi-disk Device"
-msgstr "_Заустави уређај са више диска"
+#~ msgid "Select _Dates…"
+#~ msgstr "Изаберите датуме…"
 
-#: src/gtk/nautilusgtkplacessidebar.c:2977
-msgid "_Lock Device"
-msgstr "_Закључај уређај"
+#~ msgid "Last _modified"
+#~ msgstr "Датум из_мене"
 
-#: src/gtk/nautilusgtkplacessidebar.c:2986
-msgid "Format…"
-msgstr "Форматирај…"
+#~ msgid "Last _used"
+#~ msgstr "Последњи п_ут коришћено"
 
-#: src/gtk/nautilusgtkplacessidebar.c:3495
-msgid "Device"
-msgstr "Уређај"
+#~ msgid "_Created"
+#~ msgstr "_Настала"
 
-#: src/gtk/nautilusgtkplacessidebar.c:3537
-msgid "Sidebar"
-msgstr "Бочна површ"
+#~ msgid "What"
+#~ msgstr "Шта"
 
-#: src/gtk/nautilusgtkplacessidebar.c:3539
-msgid "List of common shortcuts, mountpoints, and bookmarks."
-msgstr "Списак честих пречица, тачака качења и обележивача."
+#~ msgid "_Anything"
+#~ msgstr "_Било шта"
+
+#~ msgid "Full _Text"
+#~ msgstr "П_ун текст"
+
+#~ msgid "File _Name"
+#~ msgstr "На_зив датотеке"
 
 #~ msgid "Other Locations"
 #~ msgstr "Друга места"
@@ -6071,9 +6214,6 @@ msgstr "Списак честих пречица, тачака качења и �
 
 #~ msgid "Location"
 #~ msgstr "Место"
-
-#~ msgid "The location of the file."
-#~ msgstr "Место где се датотека налази."
 
 #~ msgid "Modified — Time"
 #~ msgstr "Мењано - време"
@@ -6342,10 +6482,6 @@ msgstr "Списак честих пречица, тачака качења и �
 #~ msgstr "%l:%M %p"
 
 #, no-c-format
-#~ msgid "Yesterday"
-#~ msgstr "Јуче"
-
-#, no-c-format
 #~ msgid "%a"
 #~ msgstr "%a"
 
@@ -6527,8 +6663,8 @@ msgstr "Списак честих пречица, тачака качења и �
 #~ "прелази три реда; „smallest:5,smaller:4,0“ – скраћује назив ако прелази "
 #~ "пет редова при најмањем увећању или четири реда при мањем увећању. Не "
 #~ "крати називе датотека за друге степене увећања. Доступни степени увећања "
-#~ "се дају на енглеском језику и доступни су: „small“ (мало), "
-#~ "„standard“ (уобичајено) и „large“ (велико)."
+#~ "се дају на енглеском језику и доступни су: „small“ (мало), „standard“ "
+#~ "(уобичајено) и „large“ (велико)."
 
 #~ msgid "Width of the side pane"
 #~ msgstr "Ширина бочне површи"
@@ -6751,9 +6887,6 @@ msgstr "Списак честих пречица, тачака качења и �
 #~ msgid "Star"
 #~ msgstr "Додај звездицу"
 
-#~ msgid "Contents"
-#~ msgstr "Садржај"
-
 #~ msgid "Volume"
 #~ msgstr "Диск"
 
@@ -6841,10 +6974,10 @@ msgstr "Списак честих пречица, тачака качења и �
 #~ "text files."
 #~ msgstr ""
 #~ "Шта треба да уради са извршним текстуалним датотекама при њиховом "
-#~ "активирању (једноструки или двоструки клик). Могуће вредности су "
-#~ "„launch“ (покрени) за покретање истих као програма, „ask“ (питај) за "
-#~ "постављање питања помоћу прозорчета, и „display“ (прикази) за приказивање "
-#~ "као текстуалних датотека."
+#~ "активирању (једноструки или двоструки клик). Могуће вредности су „launch“ "
+#~ "(покрени) за покретање истих као програма, „ask“ (питај) за постављање "
+#~ "питања помоћу прозорчета, и „display“ (прикази) за приказивање као "
+#~ "текстуалних датотека."
 
 #~ msgid "Do you want to run “%s”, or display its contents?"
 #~ msgstr "Желите ли да покренете „%s“, или прикажете њен садржај?"
@@ -7303,14 +7436,8 @@ msgstr "Списак честих пречица, тачака качења и �
 #~ msgid "Source"
 #~ msgstr "Извор"
 
-#~ msgid "Date Taken"
-#~ msgstr "Датум снимања"
-
 #~ msgid "Date Digitized"
 #~ msgstr "Датум дигитализације"
-
-#~ msgid "Date Modified"
-#~ msgstr "Датум измене"
 
 #~ msgid "_Keep aligned"
 #~ msgstr "_Задржи распоред"
@@ -8366,9 +8493,6 @@ msgstr "Списак честих пречица, тачака качења и �
 
 #~ msgid "_Up"
 #~ msgstr "_Горе"
-
-#~ msgid "There was an error displaying help."
-#~ msgstr "Дошло је до грешке при приказивању помоћи."
 
 #~ msgid "_Browse"
 #~ msgstr "_Разгледај"
