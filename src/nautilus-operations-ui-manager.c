@@ -475,9 +475,9 @@ run_file_conflict_dialog (gpointer user_data)
     FileConflictDialogData *data = user_data;
     GList *files = NULL;
 
-    data->source = nautilus_file_get (data->source_name);
-    data->destination = nautilus_file_get (data->destination_name);
-    data->destination_directory_file = nautilus_file_get (data->destination_directory_name);
+    data->source = nautilus_file_new (data->source_name);
+    data->destination = nautilus_file_new (data->destination_name);
+    data->destination_directory_file = nautilus_file_new (data->destination_directory_name);
 
     data->dialog = nautilus_file_conflict_dialog_new (data->parent);
 
@@ -605,7 +605,7 @@ handle_unsupported_compressed_file (GtkWindow *parent_window,
 
     data = g_slice_new0 (HandleUnsupportedFileData);
     data->parent_window = parent_window;
-    data->file = nautilus_file_get (compressed_file);
+    data->file = nautilus_file_new (compressed_file);
 
     invoke_main_context_sync (NULL, open_file_in_application, data);
 

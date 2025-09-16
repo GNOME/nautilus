@@ -816,7 +816,7 @@ nautilus_file_get_internal (GFile    *location,
 }
 
 NautilusFile *
-nautilus_file_get (GFile *location)
+nautilus_file_new (GFile *location)
 {
     g_return_val_if_fail (G_IS_FILE (location), NULL);
 
@@ -842,13 +842,13 @@ nautilus_file_get_existing_by_uri (const char *uri)
 }
 
 NautilusFile *
-nautilus_file_get_by_uri (const char *uri)
+nautilus_file_new_for_uri (const char *uri)
 {
     g_autoptr (GFile) location = NULL;
 
     location = g_file_new_for_uri (uri);
 
-    return nautilus_file_get (location);
+    return nautilus_file_new (location);
 }
 
 gboolean
@@ -5057,7 +5057,7 @@ nautilus_file_get_where_string (NautilusFile *file)
     {
         g_autoptr (GFile) activation_location = nautilus_file_get_activation_location (file);
 
-        real_file = nautilus_file_get (activation_location);
+        real_file = nautilus_file_new (activation_location);
     }
     else
     {
@@ -7636,7 +7636,7 @@ nautilus_file_get_trash_original_file (NautilusFile *file)
     if (file->details->trash_orig_path != NULL)
     {
         location = g_file_new_for_path (file->details->trash_orig_path);
-        original_file = nautilus_file_get (location);
+        original_file = nautilus_file_new (location);
         g_object_unref (location);
     }
 

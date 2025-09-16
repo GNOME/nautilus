@@ -49,7 +49,7 @@ make_image_file (GFile  *file,
 
     if (image_files != NULL)
     {
-        *image_files = g_list_append (*image_files, nautilus_file_get (file));
+        *image_files = g_list_append (*image_files, nautilus_file_new (file));
     }
 }
 
@@ -137,7 +137,7 @@ test_thumbnail_image (void)
     g_autoptr (GFile) image_location = g_file_new_build_filename (test_get_tmp_dir (),
                                                                   "Image.png",
                                                                   NULL);
-    g_autoptr (NautilusFile) image_file = nautilus_file_get (image_location);
+    g_autoptr (NautilusFile) image_file = nautilus_file_new (image_location);
     gboolean file_is_ready = FALSE;
     const gchar *mime_type;
 
@@ -203,7 +203,7 @@ static void
 test_thumbnail_text (void)
 {
     g_autoptr (GFile) text_location = make_text_file ();
-    g_autoptr (NautilusFile) text_file = nautilus_file_get (text_location);
+    g_autoptr (NautilusFile) text_file = nautilus_file_new (text_location);
     gboolean file_is_ready = FALSE;
     const gchar *mime_type;
 

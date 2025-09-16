@@ -102,7 +102,7 @@ nautilus_clipboard_from_string (char    *string,
         {
             return NULL;
         }
-        files = g_list_prepend (files, nautilus_file_get_by_uri (lines[i]));
+        files = g_list_prepend (files, nautilus_file_new_for_uri (lines[i]));
     }
 
     clip = g_new0 (NautilusClipboard, 1);

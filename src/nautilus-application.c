@@ -474,7 +474,7 @@ nautilus_application_open_location (NautilusApplication *self,
 
     if (selection != NULL)
     {
-        sel_list = g_list_prepend (sel_list, nautilus_file_get (selection));
+        sel_list = g_list_prepend (sel_list, nautilus_file_new (selection));
     }
 
     slot = get_window_slot_for_location (self, location);

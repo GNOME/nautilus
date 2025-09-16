@@ -203,7 +203,7 @@ nautilus_thumbnail_remove_from_queue (const char *file_uri)
     info = nautilus_hash_queue_find_item (thumbnails_to_make, file_uri);
     if (info != NULL)
     {
-        g_autoptr (NautilusFile) file = nautilus_file_get_by_uri (info->image_uri);
+        g_autoptr (NautilusFile) file = nautilus_file_new_for_uri (info->image_uri);
 
         nautilus_hash_queue_remove (thumbnails_to_make, file_uri);
         free_thumbnail_info (info);
@@ -394,7 +394,7 @@ nautilus_create_thumbnail (NautilusFile *file)
 static void
 thumbnail_finalize (NautilusThumbnailInfo *info)
 {
-    g_autoptr (NautilusFile) file = nautilus_file_get_by_uri (info->image_uri);
+    g_autoptr (NautilusFile) file = nautilus_file_new_for_uri (info->image_uri);
 
     nautilus_file_set_is_thumbnailing (file, FALSE);
     g_hash_table_remove (currently_thumbnailing_hash, info->image_uri);
@@ -490,7 +490,7 @@ thumbnail_generated_cb (GObject      *source_object,
         return;
     }
 
-    file = nautilus_file_get_by_uri (info->image_uri);
+    file = nautilus_file_new_for_uri (info->image_uri);
 
     if (pixbuf != NULL)
     {

@@ -560,7 +560,7 @@ nautilus_directory_get_corresponding_file (NautilusDirectory *directory)
     if (file == NULL)
     {
         g_autoptr (GFile) location = nautilus_directory_get_location (directory);
-        file = nautilus_file_get (location);
+        file = nautilus_file_new (location);
     }
 
     return file;
@@ -1207,7 +1207,7 @@ nautilus_directory_notify_files_added (GList *files)
 
         file = nautilus_file_get_existing (location);
         /* We check is_added here, because the file could have been added
-         * to the directory by a nautilus_file_get() but not gotten
+         * to the directory by a nautilus_file_new() but not gotten
          * files_added emitted
          */
         if (file && file->details->is_added)
@@ -1594,7 +1594,7 @@ nautilus_directory_notify_files_moved (GList *file_pairs)
                                          from_file);
             }
 
-            /* Unref each file once to balance out nautilus_file_get_by_uri. */
+            /* Unref each file once to balance out nautilus_file_new_for_uri. */
             unref_list = g_list_prepend (unref_list, from_file);
         }
     }

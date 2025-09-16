@@ -11,7 +11,7 @@ test_file_refcount_single_file (void)
 {
     g_assert_cmpint (nautilus_directory_number_outstanding (), ==, 0);
 
-    NautilusFile *file = nautilus_file_get_by_uri ("file:///home/");
+    NautilusFile *file = nautilus_file_new_for_uri ("file:///home/");
 
     g_assert_cmpint (G_OBJECT (file)->ref_count, ==, 1);
     g_assert_cmpint (G_OBJECT (file->details->directory)->ref_count, ==, 1);
@@ -25,7 +25,7 @@ test_file_refcount_single_file (void)
 static void
 test_file_check_name_bland (void)
 {
-    g_autoptr (NautilusFile) file = nautilus_file_get_by_uri ("file:///home");
+    g_autoptr (NautilusFile) file = nautilus_file_new_for_uri ("file:///home");
     const char *name = nautilus_file_get_name (file);
     g_assert_cmpstr (name, ==, "home");
 }
@@ -33,7 +33,7 @@ test_file_check_name_bland (void)
 static void
 test_file_check_name_trailing_slash (void)
 {
-    g_autoptr (NautilusFile) file = nautilus_file_get_by_uri ("file:///home/");
+    g_autoptr (NautilusFile) file = nautilus_file_new_for_uri ("file:///home/");
     const char *name = nautilus_file_get_name (file);
     g_assert_cmpstr (name, ==, "home");
 }
@@ -41,20 +41,20 @@ test_file_check_name_trailing_slash (void)
 static void
 test_file_duplicate_pointers (void)
 {
-    g_autoptr (NautilusFile) file = nautilus_file_get_by_uri ("file:///home/");
+    g_autoptr (NautilusFile) file = nautilus_file_new_for_uri ("file:///home/");
 
-    g_assert_true (nautilus_file_get_by_uri ("file:///home/") == file);
+    g_assert_true (nautilus_file_new_for_uri ("file:///home/") == file);
     nautilus_file_unref (file);
 
-    g_assert_true (nautilus_file_get_by_uri ("file:///home") == file);
+    g_assert_true (nautilus_file_new_for_uri ("file:///home") == file);
     nautilus_file_unref (file);
 }
 
 static void
 test_file_sort_order (void)
 {
-    g_autoptr (NautilusFile) file_1 = nautilus_file_get_by_uri ("file:///etc");
-    g_autoptr (NautilusFile) file_2 = nautilus_file_get_by_uri ("file:///usr");
+    g_autoptr (NautilusFile) file_1 = nautilus_file_new_for_uri ("file:///etc");
+    g_autoptr (NautilusFile) file_2 = nautilus_file_new_for_uri ("file:///usr");
     NautilusFileSortType sort_type = NAUTILUS_FILE_SORT_BY_DISPLAY_NAME;
 
     g_assert_cmpint (G_OBJECT (file_1)->ref_count, ==, 1);
@@ -70,7 +70,7 @@ test_file_sort_order (void)
 static void
 test_file_sort_with_self (void)
 {
-    g_autoptr (NautilusFile) file_1 = nautilus_file_get_by_uri ("file:///etc");
+    g_autoptr (NautilusFile) file_1 = nautilus_file_new_for_uri ("file:///etc");
     NautilusFileSortType sort_type = NAUTILUS_FILE_SORT_BY_DISPLAY_NAME;
     int order;
 

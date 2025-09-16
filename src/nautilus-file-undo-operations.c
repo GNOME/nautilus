@@ -1078,7 +1078,7 @@ rename_redo_func (NautilusFileUndoInfo           *info,
     NautilusFileUndoInfoRename *self = NAUTILUS_FILE_UNDO_INFO_RENAME (info);
     NautilusFile *file;
 
-    file = nautilus_file_get (self->old_file);
+    file = nautilus_file_new (self->old_file);
     nautilus_file_rename (file, self->new_display_name,
                           file_undo_info_operation_callback, self);
 
@@ -1093,7 +1093,7 @@ rename_undo_func (NautilusFileUndoInfo           *info,
     NautilusFileUndoInfoRename *self = NAUTILUS_FILE_UNDO_INFO_RENAME (info);
     NautilusFile *file;
 
-    file = nautilus_file_get (self->new_file);
+    file = nautilus_file_new (self->new_file);
     nautilus_file_rename (file, self->old_display_name,
                           file_undo_info_operation_callback, self);
 
@@ -1211,7 +1211,7 @@ batch_rename_redo_func (NautilusFileUndoInfo           *info,
     {
         old_file = l->data;
 
-        file = nautilus_file_get (old_file);
+        file = nautilus_file_new (old_file);
         files = g_list_prepend (files, file);
     }
 
@@ -1244,7 +1244,7 @@ batch_rename_undo_func (NautilusFileUndoInfo           *info,
     {
         new_file = l->data;
 
-        file = nautilus_file_get (new_file);
+        file = nautilus_file_new (new_file);
         files = g_list_prepend (files, file);
     }
 
@@ -2121,7 +2121,7 @@ permissions_real_func (NautilusFileUndoInfoPermissions *self,
 {
     NautilusFile *file;
 
-    file = nautilus_file_get (self->target_file);
+    file = nautilus_file_new (self->target_file);
     nautilus_file_set_permissions (file, permissions,
                                    file_undo_info_operation_callback, self);
 
@@ -2248,7 +2248,7 @@ ownership_real_func (NautilusFileUndoInfoOwnership *self,
     NautilusFileUndoOp op_type = nautilus_file_undo_info_get_op_type (NAUTILUS_FILE_UNDO_INFO (self));
     NautilusFile *file;
 
-    file = nautilus_file_get (self->target_file);
+    file = nautilus_file_new (self->target_file);
 
     if (op_type == NAUTILUS_FILE_UNDO_OP_CHANGE_OWNER)
     {

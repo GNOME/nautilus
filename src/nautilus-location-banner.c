@@ -151,7 +151,7 @@ get_mode_for_location (GFile *location)
         return NAUTILUS_LOCATION_BANNER_NONE;
     }
 
-    file = nautilus_file_get (location);
+    file = nautilus_file_new (location);
 
     if (nautilus_should_use_templates_directory () &&
         nautilus_file_is_user_special_directory (file, G_USER_DIRECTORY_TEMPLATES))

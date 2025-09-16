@@ -1366,7 +1366,7 @@ nautilus_path_bar_update_path (NautilusPathBar *self,
     first_directory = TRUE;
     new_buttons = NULL;
 
-    file = nautilus_file_get (file_path);
+    file = nautilus_file_new (file_path);
 
     while (file != NULL)
     {

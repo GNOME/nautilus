@@ -101,7 +101,7 @@ ensure_connected_file (NautilusSidebarRow *self)
 
     if (self->uri != NULL)
     {
-        g_autoptr (NautilusFile) file = nautilus_file_get_by_uri (self->uri);
+        g_autoptr (NautilusFile) file = nautilus_file_new_for_uri (self->uri);
 
         /* Self-owned file may be marked as gone, if we are rebuilding the sidebar
          * in response to that file being unmounted. Don't keep it alive. */

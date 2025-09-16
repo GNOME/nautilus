@@ -471,7 +471,7 @@ handle_rename_uri_internal (const gchar                    *uri,
 {
     NautilusFile *file = NULL;
 
-    file = nautilus_file_get_by_uri (uri);
+    file = nautilus_file_new_for_uri (uri);
 
     g_application_hold (g_application_get_default ());
     nautilus_file_rename (file, new_name,
