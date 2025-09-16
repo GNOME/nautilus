@@ -1466,7 +1466,7 @@ check_select_old_location_containing_folder (NautilusFileList           *new_sel
         if (parent != NULL)
         {
             g_clear_list (&new_selection, g_object_unref);
-            new_selection = g_list_prepend (NULL, nautilus_file_get (from_folder));
+            new_selection = g_list_prepend (NULL, nautilus_file_new (from_folder));
             g_object_unref (parent);
         }
 
@@ -1489,7 +1489,7 @@ check_force_reload (GFile                      *location,
      * we end up fetching things twice.
      */
     directory = nautilus_directory_get (location);
-    file = nautilus_file_get (location);
+    file = nautilus_file_new (location);
 
     if (type == NAUTILUS_LOCATION_CHANGE_RELOAD)
     {
@@ -1589,7 +1589,7 @@ begin_location_change (NautilusWindowSlot         *self,
     save_selection_for_history (self);
 
     /* Get the info needed to make decisions about how to open the new location */
-    self->determine_view_file = nautilus_file_get (location);
+    self->determine_view_file = nautilus_file_new (location);
     g_assert (self->determine_view_file != NULL);
 
     nautilus_file_call_when_ready (self->determine_view_file,
@@ -1782,7 +1782,7 @@ mount_not_mounted_callback (GObject      *source_object,
 
     self->mount_cancellable = NULL;
 
-    self->determine_view_file = nautilus_file_get (self->pending_location);
+    self->determine_view_file = nautilus_file_new (self->pending_location);
 
     error = NULL;
     if (!g_file_mount_enclosing_volume_finish (G_FILE (source_object), res, &error))
@@ -2251,7 +2251,7 @@ nautilus_window_slot_back_or_forward (NautilusWindowSlot *self,
     {
         for (int i = 0; selected_uris[i] != NULL; i++)
         {
-            selection = g_list_prepend (selection, nautilus_file_get_by_uri (selected_uris[i]));
+            selection = g_list_prepend (selection, nautilus_file_new_for_uri (selected_uris[i]));
         }
         selection = g_list_reverse (selection);
     }
@@ -2605,7 +2605,7 @@ nautilus_window_slot_update_for_new_location (NautilusWindowSlot *self)
     g_autoptr (GFile) new_location = g_steal_pointer (&self->pending_location);
     NautilusFile *file;
 
-    file = nautilus_file_get (new_location);
+    file = nautilus_file_new (new_location);
     nautilus_window_slot_update_bookmark (self, file);
 
     update_history (self, self->location_change_type, new_location);

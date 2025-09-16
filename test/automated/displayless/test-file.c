@@ -14,7 +14,7 @@ test_file_refcount_single_file (void)
 {
     g_assert_cmpint (nautilus_directory_number_outstanding (), ==, 0);
 
-    NautilusFile *file = nautilus_file_get_by_uri ("file:///home/");
+    NautilusFile *file = nautilus_file_new_for_uri ("file:///home/");
 
     g_assert_cmpint (G_OBJECT (file)->ref_count, ==, 1);
     g_assert_cmpint (G_OBJECT (file->details->directory)->ref_count, ==, 1);
@@ -28,7 +28,7 @@ test_file_refcount_single_file (void)
 static void
 test_file_check_name_bland (void)
 {
-    g_autoptr (NautilusFile) file = nautilus_file_get_by_uri ("file:///home");
+    g_autoptr (NautilusFile) file = nautilus_file_new_for_uri ("file:///home");
     const char *name = nautilus_file_get_name (file);
     g_assert_cmpstr (name, ==, "home");
 }
@@ -36,7 +36,7 @@ test_file_check_name_bland (void)
 static void
 test_file_check_name_trailing_slash (void)
 {
-    g_autoptr (NautilusFile) file = nautilus_file_get_by_uri ("file:///home/");
+    g_autoptr (NautilusFile) file = nautilus_file_new_for_uri ("file:///home/");
     const char *name = nautilus_file_get_name (file);
     g_assert_cmpstr (name, ==, "home");
 }
@@ -44,20 +44,20 @@ test_file_check_name_trailing_slash (void)
 static void
 test_file_duplicate_pointers (void)
 {
-    g_autoptr (NautilusFile) file = nautilus_file_get_by_uri ("file:///home/");
+    g_autoptr (NautilusFile) file = nautilus_file_new_for_uri ("file:///home/");
 
-    g_assert_true (nautilus_file_get_by_uri ("file:///home/") == file);
+    g_assert_true (nautilus_file_new_for_uri ("file:///home/") == file);
     nautilus_file_unref (file);
 
-    g_assert_true (nautilus_file_get_by_uri ("file:///home") == file);
+    g_assert_true (nautilus_file_new_for_uri ("file:///home") == file);
     nautilus_file_unref (file);
 }
 
 static void
 test_file_sort_order (void)
 {
-    g_autoptr (NautilusFile) file_1 = nautilus_file_get_by_uri ("file:///etc");
-    g_autoptr (NautilusFile) file_2 = nautilus_file_get_by_uri ("file:///usr");
+    g_autoptr (NautilusFile) file_1 = nautilus_file_new_for_uri ("file:///etc");
+    g_autoptr (NautilusFile) file_2 = nautilus_file_new_for_uri ("file:///usr");
     NautilusFileSortType sort_type = NAUTILUS_FILE_SORT_BY_DISPLAY_NAME;
 
     g_assert_cmpint (G_OBJECT (file_1)->ref_count, ==, 1);
@@ -73,7 +73,7 @@ test_file_sort_order (void)
 static void
 test_file_sort_with_self (void)
 {
-    g_autoptr (NautilusFile) file_1 = nautilus_file_get_by_uri ("file:///etc");
+    g_autoptr (NautilusFile) file_1 = nautilus_file_new_for_uri ("file:///etc");
     NautilusFileSortType sort_type = NAUTILUS_FILE_SORT_BY_DISPLAY_NAME;
     int order;
 
@@ -165,7 +165,7 @@ batch_rename_test (const GStrv hierarchy,
         g_autoptr (GFile) location = g_file_new_build_filename (test_get_tmp_dir (),
                                                                 original_names[i],
                                                                 NULL);
-        NautilusFile *file = nautilus_file_get (location);
+        NautilusFile *file = nautilus_file_new (location);
         GString *new_name = g_string_new_take (g_path_get_basename (expected_names[i]));
 
         files = g_list_prepend (files, file);
@@ -298,7 +298,7 @@ test_file_permissions_can_set (void)
                                                 G_FILE_ATTRIBUTE_UNIX_MODE, mode,
                                                 G_FILE_QUERY_INFO_NONE, NULL, NULL));
 
-    g_autoptr (NautilusFile) file = nautilus_file_get (location);
+    g_autoptr (NautilusFile) file = nautilus_file_new (location);
 
     file_load_attributes (file, NAUTILUS_FILE_ATTRIBUTE_INFO);
     g_assert_true (nautilus_file_can_set_permissions (file));
@@ -344,7 +344,7 @@ test_file_permissions_set_basic (void)
     g_assert_nonnull (stream);
     g_assert_true (g_output_stream_close (G_OUTPUT_STREAM (stream), NULL, NULL));
 
-    g_autoptr (NautilusFile) file = nautilus_file_get (location);
+    g_autoptr (NautilusFile) file = nautilus_file_new (location);
     PermissionTestData perm_data = { file, FALSE };
     gboolean file_changed = FALSE;
     guint32 perms = 0600;
@@ -380,7 +380,7 @@ test_file_permissions_set_same (void)
     g_assert_nonnull (stream);
     g_assert_true (g_output_stream_close (G_OUTPUT_STREAM (stream), NULL, NULL));
 
-    g_autoptr (NautilusFile) file = nautilus_file_get (location);
+    g_autoptr (NautilusFile) file = nautilus_file_new (location);
     gboolean file_changed = FALSE;
     g_autoptr (GFileInfo) info_before = g_file_query_info (location, G_FILE_ATTRIBUTE_UNIX_MODE,
                                                            G_FILE_QUERY_INFO_NONE, NULL, NULL);
@@ -423,7 +423,7 @@ test_directory_counts (void)
         NULL
     };
     g_autoptr (GFile) location = g_file_new_build_filename (test_get_tmp_dir (), "deepcount", NULL);
-    g_autoptr (NautilusFile) file = nautilus_file_get (location);
+    g_autoptr (NautilusFile) file = nautilus_file_new (location);
     guint dir_count = 0, file_count = 0, unreadable = 0, item_count = 0;
     NautilusRequestStatus status;
     gboolean count_unreadable = TRUE;

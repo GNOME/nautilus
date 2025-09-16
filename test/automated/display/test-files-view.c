@@ -232,7 +232,7 @@ test_selection_actions (void)
     {
         g_autofree gchar *name = g_strdup_printf ("select_test_file_%u", i);
         g_autoptr (GFile) location = g_file_get_child (tmp_location, name);
-        g_autoptr (NautilusFile) file = nautilus_file_get (location);
+        g_autoptr (NautilusFile) file = nautilus_file_new (location);
 
         selection_set = g_list_append (selection_set, nautilus_file_ref (file));
     }
@@ -353,7 +353,7 @@ test_hidden_files_renamed (void)
         }
 
         g_autoptr (GFile) location = g_file_new_build_filename (test_get_tmp_dir (), orig_name, NULL);
-        g_autoptr (NautilusFile) file = nautilus_file_get (location);
+        g_autoptr (NautilusFile) file = nautilus_file_new (location);
         NautilusViewItem *item = nautilus_view_model_get_item_for_file (model, file);
         g_autofree gchar *new_name = g_strdup_printf ("renamed_visible_%u", renamed);
 
@@ -405,7 +405,7 @@ test_hidden_files_change (void)
         g_autoptr (GFile) location = g_file_new_build_filename (test_get_tmp_dir (),
                                                                 *filename,
                                                                 NULL);
-        g_autoptr (NautilusFile) file = nautilus_file_get (location);
+        g_autoptr (NautilusFile) file = nautilus_file_new (location);
         NautilusViewItem *item = nautilus_view_model_get_item_for_file (model, file);
 
         if (strstr (*filename, "hidden"))
@@ -430,7 +430,7 @@ test_hidden_files_change (void)
         g_autoptr (GFile) location = g_file_new_build_filename (test_get_tmp_dir (),
                                                                 *filename,
                                                                 NULL);
-        g_autoptr (NautilusFile) file = nautilus_file_get (location);
+        g_autoptr (NautilusFile) file = nautilus_file_new (location);
         NautilusViewItem *item = nautilus_view_model_get_item_for_file (model, file);
 
         g_assert_nonnull (item);
@@ -505,7 +505,7 @@ test_replace_files (void)
                                    &error);
         g_assert_no_error (error);
 
-        g_ptr_array_add (file_arr, nautilus_file_get (file));
+        g_ptr_array_add (file_arr, nautilus_file_new (file));
     }
 
     nautilus_files_view_set_location (files_view, tmp_location);
@@ -561,7 +561,7 @@ test_replace_files (void)
     for (gsize i = 0; i < replacment_files_arr->len; i++)
     {
         GFile *location = replacment_files_arr->pdata[i];
-        g_autoptr (NautilusFile) file = nautilus_file_get (location);
+        g_autoptr (NautilusFile) file = nautilus_file_new (location);
         NautilusViewItem *item = nautilus_view_model_get_item_for_file (model, file);
 
         /* GIO might use a temperarly hidden file for writing that starts with
@@ -603,7 +603,7 @@ test_rename_files (void)
         g_autoptr (GFileOutputStream) out = g_file_create (file, G_FILE_CREATE_NONE, NULL, NULL);
 
         g_assert_nonnull (out);
-        g_ptr_array_add (file_arr, nautilus_file_get (file));
+        g_ptr_array_add (file_arr, nautilus_file_new (file));
     }
 
     nautilus_files_view_set_location (files_view, tmp_location);
@@ -685,7 +685,7 @@ test_remove_files (void)
         g_autoptr (GFileOutputStream) out = g_file_create (file, G_FILE_CREATE_NONE, NULL, NULL);
 
         g_assert_nonnull (out);
-        g_ptr_array_add (file_arr, nautilus_file_get (file));
+        g_ptr_array_add (file_arr, nautilus_file_new (file));
     }
 
     nautilus_files_view_set_location (files_view, tmp_location);
@@ -774,7 +774,7 @@ test_add_files (void)
         g_autofree gchar *file_name = g_strdup_printf ("test_file_%i", i);
         g_autoptr (GFile) location = g_file_get_child (tmp_location, file_name);
 
-        g_ptr_array_add (file_arr, nautilus_file_get (location));
+        g_ptr_array_add (file_arr, nautilus_file_new (location));
     }
 
     /* Create files and verify that the view added the correct files */
@@ -850,7 +850,7 @@ test_load_dir (void)
     g_assert_cmpint (g_list_model_get_n_items (G_LIST_MODEL (model)), ==, file_count + 1);
     while (g_file_enumerator_iterate (enumerator, NULL, &child, NULL, NULL) && child != NULL)
     {
-        g_autoptr (NautilusFile) file = nautilus_file_get (child);
+        g_autoptr (NautilusFile) file = nautilus_file_new (child);
         g_assert_nonnull (nautilus_view_model_get_item_for_file (model, file));
         counter++;
     }

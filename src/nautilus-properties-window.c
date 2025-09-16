@@ -2513,7 +2513,7 @@ open_link_target (NautilusPropertiesWindow *self)
     link_target_uri = nautilus_file_get_symbolic_link_target_uri (get_file (self));
     g_return_if_fail (link_target_uri != NULL);
     link_target_location = g_file_new_for_uri (link_target_uri);
-    link_target_file = nautilus_file_get (link_target_location);
+    link_target_file = nautilus_file_new (link_target_location);
     parent_location = nautilus_file_get_parent_location (link_target_file);
     g_return_if_fail (parent_location != NULL);
 

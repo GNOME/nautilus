@@ -7003,7 +7003,7 @@ nautilus_file_operations_copy_move (const GList                    *item_uris,
 
         for (GList *l = locations; l != NULL; l = l->next)
         {
-            source_file_list = g_list_prepend (source_file_list, nautilus_file_get (l->data));
+            source_file_list = g_list_prepend (source_file_list, nautilus_file_new (l->data));
         }
 
         source_file_list = g_list_reverse (source_file_list);

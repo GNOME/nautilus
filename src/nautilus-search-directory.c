@@ -590,7 +590,7 @@ search_engine_hits_added (NautilusSearchEngine    *engine,
 
         nautilus_search_hit_compute_scores (hit, now, query_location);
 
-        file = nautilus_file_get_by_uri (uri);
+        file = nautilus_file_new_for_uri (uri);
         nautilus_file_set_search_relevance (file, nautilus_search_hit_get_relevance (hit));
         nautilus_file_set_search_fts_snippet (file, nautilus_search_hit_get_fts_snippet (hit));
 

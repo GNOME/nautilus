@@ -196,7 +196,7 @@ nautilus_tag_manager_get_starred_files (NautilusTagManager *self)
     while (g_hash_table_iter_next (&starred_iter, (gpointer *) &starred_uri, NULL))
     {
         g_autoptr (GFile) location = g_file_new_for_uri (starred_uri);
-        NautilusFile *file = nautilus_file_get (location);
+        NautilusFile *file = nautilus_file_new (location);
 
         /* Skip files outside $HOME, because we don't support starring these yet.
          * See comment on nautilus_tag_manager_can_star_contents() */
@@ -268,7 +268,7 @@ on_get_starred_files_cursor_callback (GObject      *object,
 
     g_hash_table_add (self->starred_file_uris, g_strdup (url));
 
-    file = nautilus_file_get_by_uri (url);
+    file = nautilus_file_new_for_uri (url);
 
     if (file)
     {

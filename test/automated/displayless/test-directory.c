@@ -13,7 +13,7 @@ static void
 test_directory_duplicate_pointers (void)
 {
     g_autoptr (NautilusDirectory) directory = nautilus_directory_get_by_uri ("file:///etc");
-    g_autoptr (NautilusFile) file = nautilus_file_get_by_uri ("file:///etc/passwd");
+    g_autoptr (NautilusFile) file = nautilus_file_new_for_uri ("file:///etc/passwd");
 
     /* Assert that the NautilusFile reuses the existing NautilusDirectory instance.. */
     g_assert_cmpuint (nautilus_directory_number_outstanding (), ==, 1);

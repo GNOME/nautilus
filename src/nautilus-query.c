@@ -390,7 +390,7 @@ nautilus_query_can_search_content (NautilusQuery *self)
     }
     else if (nautilus_query_recursive_local_only (self))
     {
-        g_autoptr (NautilusFile) file = nautilus_file_get (self->location);
+        g_autoptr (NautilusFile) file = nautilus_file_new (self->location);
         return !nautilus_file_is_remote (file);
     }
     else

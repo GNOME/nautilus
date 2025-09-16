@@ -640,7 +640,7 @@ handle_get_result_metas (NautilusShellSearchProvider2  *skeleton,
 
         if (!g_hash_table_lookup (self->metas_cache, uri))
         {
-            missing_files = g_list_prepend (missing_files, nautilus_file_get_by_uri (uri));
+            missing_files = g_list_prepend (missing_files, nautilus_file_new_for_uri (uri));
         }
     }
 

@@ -81,7 +81,7 @@ nautilus_launch_application_for_mount (GAppInfo  *app_info,
                                        GtkWindow *parent_window)
 {
     g_autoptr (GFile) root = g_mount_get_root (mount);
-    g_autoptr (NautilusFile) file = nautilus_file_get (root);
+    g_autoptr (NautilusFile) file = nautilus_file_new (root);
 
     nautilus_launch_application (app_info,
                                  &(NautilusFileList){ .data = file },
@@ -169,7 +169,7 @@ nautilus_launch_application_by_uri (GAppInfo  *application,
 
     launch_context = get_launch_context (parent_window);
 
-    file = nautilus_file_get_by_uri (uris->data);
+    file = nautilus_file_new_for_uri (uris->data);
     icon = nautilus_file_get_icon (file,
                                    48, gtk_widget_get_scale_factor (GTK_WIDGET (parent_window)),
                                    0);
@@ -207,7 +207,7 @@ nautilus_launch_application_by_uri (GAppInfo  *application,
     {
         for (l = uris; l != NULL; l = l->next)
         {
-            file = nautilus_file_get_by_uri (l->data);
+            file = nautilus_file_new_for_uri (l->data);
             add_file_to_recent (file, application);
             nautilus_file_unref (file);
         }

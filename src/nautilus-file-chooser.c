@@ -228,7 +228,7 @@ ask_confirm_overwrite (NautilusFileChooser *self)
 {
     AdwDialog *dialog = adw_alert_dialog_new (_("Replace When Saving?"), NULL);
     g_autofree char *filename = nautilus_filename_validator_get_new_name (self->validator);
-    g_autoptr (NautilusFile) directory_as_file = nautilus_file_get (nautilus_window_slot_get_location (self->slot));
+    g_autoptr (NautilusFile) directory_as_file = nautilus_file_new (nautilus_window_slot_get_location (self->slot));
     const char *directory_name = nautilus_file_get_display_name (directory_as_file);
 
     adw_alert_dialog_format_body (ADW_ALERT_DIALOG (dialog),
@@ -370,7 +370,7 @@ on_file_drop (GtkDropTarget *target,
 
     for (GSList *l = locations; l != NULL; l = l->next)
     {
-        selection = g_list_prepend (selection, nautilus_file_get (l->data));
+        selection = g_list_prepend (selection, nautilus_file_new (l->data));
     }
 
     selection = g_list_reverse (selection);

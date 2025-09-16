@@ -364,7 +364,7 @@ get_files_for_names (const GStrv files_names)
     {
         gchar *name = files_names[i];
         g_autofree gchar *uri = g_strconcat ("file:///", name, NULL);
-        NautilusFile *file = nautilus_file_get_by_uri (uri);
+        NautilusFile *file = nautilus_file_new_for_uri (uri);
 
         if (name[strlen (name) - 1] == G_DIR_SEPARATOR)
         {

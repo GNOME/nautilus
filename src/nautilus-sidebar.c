@@ -1278,7 +1278,7 @@ start_drop_feedback (NautilusSidebar *sidebar,
         if (g_slist_length (source_list) == 1)
         {
             g_autoptr (NautilusFile) file = NULL;
-            file = nautilus_file_get (source_list->data);
+            file = nautilus_file_new (source_list->data);
             if (nautilus_file_is_directory (file))
             {
                 nautilus_sidebar_row_reveal (NAUTILUS_SIDEBAR_ROW (sidebar->new_bookmark_row));
@@ -2170,7 +2170,7 @@ properties_cb (GSimpleAction *action,
     g_autofree gchar *uri = NULL;
 
     g_object_get (sidebar->context_row, "uri", &uri, NULL);
-    file = nautilus_file_get_by_uri (uri);
+    file = nautilus_file_new_for_uri (uri);
     list = g_list_append (NULL, file);
     nautilus_properties_window_present (list, GTK_WIDGET (sidebar), NULL, NULL, NULL);
 

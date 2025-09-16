@@ -68,7 +68,7 @@ nautilus_compute_title_for_location (GFile *location)
     title = NULL;
     if (location)
     {
-        file = nautilus_file_get (location);
+        file = nautilus_file_new (location);
 
         title = g_strdup (nautilus_file_get_display_name (file));
 
@@ -457,7 +457,7 @@ nautilus_file_list_from_uri_list (GList *uris)
         g_autoptr (GFile) location = NULL;
 
         location = g_file_new_for_uri (l->data);
-        result = g_list_prepend (result, nautilus_file_get (location));
+        result = g_list_prepend (result, nautilus_file_new (location));
     }
 
     return g_list_reverse (result);

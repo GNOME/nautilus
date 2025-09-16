@@ -41,7 +41,7 @@ source_is_deletable (GFile *file)
     gboolean ret;
 
     /* if there's no a cached NautilusFile, it returns NULL */
-    naut_file = nautilus_file_get (file);
+    naut_file = nautilus_file_new (file);
     if (naut_file == NULL)
     {
         return FALSE;
@@ -219,7 +219,7 @@ nautilus_dnd_get_preferred_action (NautilusFile *target_file,
         return GDK_ACTION_MOVE;
     }
 
-    dropped_file = nautilus_file_get (dropped);
+    dropped_file = nautilus_file_new (dropped);
     same_fs = check_same_fs (target_file, dropped_file);
     source_deletable = source_is_deletable (dropped);
     if (same_fs && source_deletable)

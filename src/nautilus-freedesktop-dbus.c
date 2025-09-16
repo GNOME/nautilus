@@ -120,7 +120,7 @@ skeleton_handle_show_item_properties_cb (NautilusFreedesktopFileManager1 *object
 
     for (i = 0; uris[i] != NULL; i++)
     {
-        files = g_list_prepend (files, nautilus_file_get_by_uri (uris[i]));
+        files = g_list_prepend (files, nautilus_file_new_for_uri (uris[i]));
     }
 
     files = g_list_reverse (files);

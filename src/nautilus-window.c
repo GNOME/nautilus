@@ -912,7 +912,7 @@ nautilus_window_show_operation_notification (NautilusWindow *window,
         GVariant *target;
 
         target = g_variant_new_take_string (g_file_get_uri (folder_to_open));
-        folder = nautilus_file_get (folder_to_open);
+        folder = nautilus_file_new (folder_to_open);
         g_string_printf (button_label, _("Open %s"), nautilus_file_get_display_name (folder));
         /* Need to escape mnemonics since it's a button. */
         g_string_replace (button_label, "_", "__", -1);
@@ -1026,7 +1026,7 @@ extra_drag_value_cb (AdwTabBar    *self,
                      gpointer      user_data)
 {
     NautilusWindowSlot *slot = NAUTILUS_WINDOW_SLOT (adw_tab_page_get_child (page));
-    g_autoptr (NautilusFile) file = nautilus_file_get (nautilus_window_slot_get_location (slot));
+    g_autoptr (NautilusFile) file = nautilus_file_new (nautilus_window_slot_get_location (slot));
     GdkDragAction action = 0;
 
     if (value != NULL)

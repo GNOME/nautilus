@@ -433,7 +433,7 @@ launch_location_update_from_uri (LaunchLocation *location,
 {
     nautilus_file_unref (location->file);
     g_free (location->uri);
-    location->file = nautilus_file_get_by_uri (uri);
+    location->file = nautilus_file_new_for_uri (uri);
     location->uri = g_strdup (uri);
 }
 
@@ -871,7 +871,7 @@ make_activation_parameters (GList  *uris,
     for (l = uris; l != NULL; l = l->next)
     {
         uri = l->data;
-        file = nautilus_file_get_by_uri (uri);
+        file = nautilus_file_new_for_uri (uri);
 
         app = nautilus_mime_get_default_application_for_file (file);
         if (app != NULL)
@@ -1421,7 +1421,7 @@ application_unhandled_uri (ActivateParameters *parameters,
     NautilusFile *file;
     ActivateParametersInstall *parameters_install;
 
-    file = nautilus_file_get_by_uri (uri);
+    file = nautilus_file_new_for_uri (uri);
 
     /* copy the parts of parameters we are interested in as the orignal will be unref'd */
     parameters_install = g_new0 (ActivateParametersInstall, 1);
@@ -2058,7 +2058,7 @@ activation_mountable_mounted (NautilusFile *file,
     if (error == NULL)
     {
         /* Replace file with the result of the mount */
-        target_file = nautilus_file_get (result_location);
+        target_file = nautilus_file_new (result_location);
 
         location = find_launch_location_for_file (parameters->locations,
                                                   file);

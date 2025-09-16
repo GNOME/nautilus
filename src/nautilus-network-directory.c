@@ -270,7 +270,7 @@ get_recent_server_file (NautilusDirectory *directory,
     g_autofree char *uri = g_strconcat (SCHEME_NETWORK_VIEW ":///",
                                         g_file_info_get_name (server_info),
                                         NULL);
-    g_autoptr (NautilusFile) file = nautilus_file_get_by_uri (uri);
+    g_autoptr (NautilusFile) file = nautilus_file_new_for_uri (uri);
 
     nautilus_file_update_info (file, server_info);
 

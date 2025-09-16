@@ -547,7 +547,7 @@ nautilus_directory_get_corresponding_file (NautilusDirectory *directory)
     if (file == NULL)
     {
         g_autoptr (GFile) location = nautilus_directory_get_location (directory);
-        file = nautilus_file_get (location);
+        file = nautilus_file_new (location);
     }
 
     return file;
@@ -1072,7 +1072,7 @@ nautilus_directory_notify_files_added (GList *files)
 
         g_autoptr (NautilusFile) file = nautilus_file_get_existing (location);
         /* We check is_added here, because the file could have been added
-         * to the directory by a nautilus_file_get() but not gotten
+         * to the directory by a nautilus_file_new() but not gotten
          * files_added emitted
          */
         if (file && file->details->is_added)
