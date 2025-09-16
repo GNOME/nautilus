@@ -272,7 +272,7 @@ nautilus_bookmark_connect_file (NautilusBookmark *bookmark)
     {
         g_debug ("%s: creating file", nautilus_bookmark_get_name (bookmark));
 
-        bookmark->file = nautilus_file_get (bookmark->location);
+        bookmark->file = nautilus_file_new (bookmark->location);
 
         if (nautilus_file_is_gone (bookmark->file))
         {

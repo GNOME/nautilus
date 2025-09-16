@@ -1428,7 +1428,7 @@ determine_new_selection (NautilusWindowSlot *self,
 
         if (parent != NULL)
         {
-            return g_list_prepend (NULL, nautilus_file_get (from_folder));
+            return g_list_prepend (NULL, nautilus_file_new (from_folder));
         }
     }
 
@@ -1508,7 +1508,7 @@ begin_location_change (NautilusWindowSlot *self,
     g_assert (self->pending_file == NULL);
 
     self->pending_location = g_object_ref (location);
-    self->pending_file = nautilus_file_get (location);
+    self->pending_file = nautilus_file_new (location);
     self->location_change_distance = distance;
     self->tried_mount = FALSE;
     self->pending_selection = determine_new_selection (self, new_selection);
@@ -2116,7 +2116,7 @@ nautilus_window_slot_navigate (NautilusWindowSlot *self,
     {
         for (int i = 0; selected_uris[i] != NULL; i++)
         {
-            selection = g_list_prepend (selection, nautilus_file_get_by_uri (selected_uris[i]));
+            selection = g_list_prepend (selection, nautilus_file_new_for_uri (selected_uris[i]));
         }
         selection = g_list_reverse (selection);
     }

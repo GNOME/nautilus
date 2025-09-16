@@ -58,7 +58,7 @@ nautilus_compute_title_for_location (GFile *location)
     title = NULL;
     if (location)
     {
-        file = nautilus_file_get (location);
+        file = nautilus_file_new (location);
 
         title = g_strdup (nautilus_file_get_display_name (file));
 

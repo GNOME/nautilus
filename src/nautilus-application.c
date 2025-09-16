@@ -401,7 +401,7 @@ nautilus_application_open_location (NautilusApplication *self,
 
     if (selection != NULL)
     {
-        sel_list = g_list_prepend (sel_list, nautilus_file_get (selection));
+        sel_list = g_list_prepend (sel_list, nautilus_file_new (selection));
     }
 
     nautilus_application_open_location_full (self, location, NAUTILUS_OPEN_FLAG_REUSE_EXISTING,

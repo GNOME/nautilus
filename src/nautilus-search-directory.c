@@ -550,7 +550,7 @@ search_engine_hits_added (NautilusSearchEngine    *engine,
     {
         NautilusSearchHit *hit = hits->pdata[i];
         const char *uri = nautilus_search_hit_get_uri (hit);
-        NautilusFile *hit_file = nautilus_file_get_by_uri (uri);
+        NautilusFile *hit_file = nautilus_file_new_for_uri (uri);
 
         nautilus_search_hit_compute_scores (hit, now, query_location);
         nautilus_file_set_search_relevance (hit_file, nautilus_search_hit_get_relevance (hit));

@@ -17,7 +17,7 @@ test_bookmark (void)
                                                             NULL);
     g_autoptr (NautilusBookmark) bookmark = nautilus_bookmark_new (location, NULL);
     GFile *bookmark_location = nautilus_bookmark_get_location (bookmark);
-    g_autoptr (NautilusFile) file = nautilus_file_get (location);
+    g_autoptr (NautilusFile) file = nautilus_file_new (location);
     const gchar *custom_name = "My Custom Bookmark";
     g_autoptr (GIcon) icon = nautilus_bookmark_get_icon (bookmark);
     g_autoptr (GIcon) symbolic_icon = nautilus_bookmark_get_symbolic_icon (bookmark);

@@ -6195,7 +6195,7 @@ nautilus_file_operations_copy_move (const GList                    *item_uris,
 
         for (GList *l = locations; l != NULL; l = l->next)
         {
-            source_file_list = g_list_prepend (source_file_list, nautilus_file_get (l->data));
+            source_file_list = g_list_prepend (source_file_list, nautilus_file_new (l->data));
         }
 
         source_file_list = g_list_reverse (source_file_list);
@@ -6878,7 +6878,7 @@ nautilus_file_operations_rename (GFile                          *location,
                                  ? GTK_WINDOW (gtk_widget_get_ancestor (parent_view, GTK_TYPE_WINDOW))
                                  : NULL,
                                  dbus_data);
-    NautilusFile *file = nautilus_file_get (location);
+    NautilusFile *file = nautilus_file_new (location);
     g_autofree char *wait_message = NULL;
     g_autofree char *uri = NULL;
 

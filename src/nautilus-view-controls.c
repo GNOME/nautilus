@@ -80,7 +80,7 @@ adjust_to_location (NautilusViewControls *self,
         return;
     }
 
-    g_autoptr (NautilusFile) file = nautilus_file_get (location);
+    g_autoptr (NautilusFile) file = nautilus_file_new (location);
 
     update_sort_section (self, file);
 }

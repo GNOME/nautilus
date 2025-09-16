@@ -2489,7 +2489,7 @@ open_link_target (NautilusPropertiesWidget *self)
     link_target_uri = nautilus_file_get_symbolic_link_target_uri (get_file (self));
     g_return_if_fail (link_target_uri != NULL);
     link_target_location = g_file_new_for_uri (link_target_uri);
-    link_target_file = nautilus_file_get (link_target_location);
+    link_target_file = nautilus_file_new (link_target_location);
     parent_location = nautilus_file_get_parent_location (link_target_file);
     g_return_if_fail (parent_location != NULL);
 
@@ -3744,7 +3744,7 @@ properties_widget_new (NautilusFileList *files,
         {
             g_autofree char *uri = nautilus_file_get_activation_uri (file);
 
-            self->files = g_list_prepend (self->files, nautilus_file_get_by_uri (uri));
+            self->files = g_list_prepend (self->files, nautilus_file_new_for_uri (uri));
         }
         else
         {

@@ -150,7 +150,7 @@ previewer_navigate_to_event (NautilusFilesView *files_view,
 
     g_variant_get (parameters, "(s)", &uri);
 
-    g_autoptr (NautilusFile) file = nautilus_file_get_by_uri (uri);
+    g_autoptr (NautilusFile) file = nautilus_file_new_for_uri (uri);
 
     if (!nautilus_file_is_directory (file) || !is_uri_selected (files_view, uri))
     {

@@ -11,7 +11,7 @@ static const char *KEY_STR = NAUTILUS_METADATA_KEY_ICON_VIEW_SORT_BY;
 static void
 test_file_metadata_bool_set_true (void)
 {
-    g_autoptr (NautilusFile) file = nautilus_file_get_by_uri (TEST_FILE);
+    g_autoptr (NautilusFile) file = nautilus_file_new_for_uri (TEST_FILE);
     nautilus_file_set_boolean_metadata (file, KEY_BOOL, TRUE);
     g_assert_true (nautilus_file_get_boolean_metadata (file, KEY_BOOL, FALSE));
 }
@@ -19,7 +19,7 @@ test_file_metadata_bool_set_true (void)
 static void
 test_file_metadata_bool_set_false (void)
 {
-    g_autoptr (NautilusFile) file = nautilus_file_get_by_uri (TEST_FILE);
+    g_autoptr (NautilusFile) file = nautilus_file_new_for_uri (TEST_FILE);
     nautilus_file_set_boolean_metadata (file, KEY_BOOL, FALSE);
     g_assert_false (nautilus_file_get_boolean_metadata (file, KEY_BOOL, TRUE));
 }
@@ -27,7 +27,7 @@ test_file_metadata_bool_set_false (void)
 static void
 test_file_metadata_str_set (void)
 {
-    g_autoptr (NautilusFile) file = nautilus_file_get_by_uri (TEST_FILE);
+    g_autoptr (NautilusFile) file = nautilus_file_new_for_uri (TEST_FILE);
 
     nautilus_file_set_metadata (file, KEY_STR, NAUTILUS_METADATA_STRING, "value");
 

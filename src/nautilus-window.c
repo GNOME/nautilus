@@ -1022,7 +1022,7 @@ extra_drag_value_cb (AdwTabBar    *self,
                      gpointer      user_data)
 {
     NautilusWindowSlot *slot = NAUTILUS_WINDOW_SLOT (adw_tab_page_get_child (page));
-    g_autoptr (NautilusFile) file = nautilus_file_get (nautilus_window_slot_get_location (slot));
+    g_autoptr (NautilusFile) file = nautilus_file_new (nautilus_window_slot_get_location (slot));
     GdkDragAction action = 0;
 
     if (value != NULL)

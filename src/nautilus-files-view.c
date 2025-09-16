@@ -1368,7 +1368,7 @@ action_open_item_location (GSimpleAction *action,
 
     item = NAUTILUS_FILE (selection->data);
     activation_location = nautilus_file_get_activation_location (item);
-    activation_file = nautilus_file_get (activation_location);
+    activation_file = nautilus_file_new (activation_location);
     parent = nautilus_file_get_parent (activation_file);
     parent_location = nautilus_file_get_location (parent);
 
@@ -1861,7 +1861,7 @@ new_folder_done (GFile    *new_folder,
         return;
     }
 
-    g_autoptr (NautilusFile) file = nautilus_file_get (new_folder);
+    g_autoptr (NautilusFile) file = nautilus_file_new (new_folder);
 
     if (data->selection != NULL)
     {
@@ -2009,7 +2009,7 @@ create_new_folder_callback (const char *folder_name,
                            G_CONNECT_AFTER);
 
     parent_uri = nautilus_files_view_get_backing_uri (view);
-    parent = nautilus_file_get_by_uri (parent_uri);
+    parent = nautilus_file_new_for_uri (parent_uri);
     nautilus_file_operations_new_folder (GTK_WIDGET (view),
                                          NULL,
                                          parent_uri, folder_name,
@@ -2093,7 +2093,7 @@ compress_done (GFile    *new_file,
         return;
     }
 
-    file = nautilus_file_get (new_file);
+    file = nautilus_file_new (new_file);
 
     if (g_hash_table_contains (data->added_locations, new_file))
     {
@@ -3614,7 +3614,7 @@ nautilus_files_view_update_status_overlay (NautilusFilesView *self)
             else
             {
                 g_autoptr (GFile) location = nautilus_query_get_location (query);
-                g_autoptr (NautilusFile) file = nautilus_file_get (location);
+                g_autoptr (NautilusFile) file = nautilus_file_new (location);
                 /* Translators: %s is the name of the search location formatted for display */
                 g_autofree gchar *local_description = g_strdup_printf (_("No matches in “%s”"),
                                                                        nautilus_file_get_display_name (file));
@@ -3863,7 +3863,7 @@ remove_not_really_moved_files (gpointer key,
 
     added_files = callback_data;
     *added_files = g_list_prepend (*added_files,
-                                   nautilus_file_get (loc));
+                                   nautilus_file_new (loc));
     return TRUE;
 }
 
@@ -5838,7 +5838,7 @@ extract_done (GList    *outputs,
         for (l = outputs; l != NULL; l = l->next)
         {
             selection = g_list_prepend (selection,
-                                        nautilus_file_get (l->data));
+                                        nautilus_file_new (l->data));
         }
 
         nautilus_files_view_set_selection (data->view,
@@ -5850,7 +5850,7 @@ extract_done (GList    *outputs,
         for (l = outputs; l != NULL; l = l->next)
         {
             gboolean acknowledged;
-            g_autoptr (NautilusFile) file = nautilus_file_get (l->data);
+            g_autoptr (NautilusFile) file = nautilus_file_new (l->data);
 
             acknowledged = g_hash_table_contains (data->added_locations,
                                                   l->data);
@@ -6726,7 +6726,7 @@ can_paste_into_file (NautilusFile *file)
         gboolean res;
 
         location = nautilus_file_get_activation_location (file);
-        activation_file = nautilus_file_get (location);
+        activation_file = nautilus_file_new (location);
         g_object_unref (location);
 
         /* The target location might not have data for it read yet,

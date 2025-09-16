@@ -42,7 +42,7 @@ static void
 test_directory_empty (void)
 {
     g_autoptr (GFile) test_location = g_file_new_for_path (test_get_tmp_dir ());
-    g_autoptr (NautilusFile) test_file = nautilus_file_get (test_location);
+    g_autoptr (NautilusFile) test_file = nautilus_file_new (test_location);
     GtkWindow *properties_window =
         nautilus_properties_present_window (&(GList) { .data = test_file }, NULL);
 
@@ -58,7 +58,7 @@ static void
 test_directory_root (void)
 {
     g_autoptr (GFile) test_location = g_file_new_for_path ("/");
-    g_autoptr (NautilusFile) test_file = nautilus_file_get (test_location);
+    g_autoptr (NautilusFile) test_file = nautilus_file_new (test_location);
     GtkWindow *properties_window =
         nautilus_properties_present_window (&(GList) { .data = test_file }, NULL);
 
@@ -76,7 +76,7 @@ test_directory_unreadable (void)
     g_autoptr (GFile) unreadable_location = g_file_new_build_filename (test_get_tmp_dir (),
                                                                        "unaccessible",
                                                                        NULL);
-    g_autoptr (NautilusFile) unreadable_file = nautilus_file_get (unreadable_location);
+    g_autoptr (NautilusFile) unreadable_file = nautilus_file_new (unreadable_location);
     GtkWindow *properties_window = NULL;
 
     g_assert_true (g_file_make_directory (unreadable_location, NULL, NULL));
@@ -105,8 +105,8 @@ test_image (void)
     g_autoptr (GFile) image2_location = g_file_new_build_filename (test_get_tmp_dir (),
                                                                    "image2.png",
                                                                    NULL);
-    g_autoptr (NautilusFile) image1_file = nautilus_file_get (image1_location);
-    g_autoptr (NautilusFile) image2_file = nautilus_file_get (image2_location);
+    g_autoptr (NautilusFile) image1_file = nautilus_file_new (image1_location);
+    g_autoptr (NautilusFile) image2_file = nautilus_file_new (image2_location);
     GtkWindow *properties_window = NULL;
 
     /* First image is thumbnailed */
@@ -155,7 +155,7 @@ test_images (void)
         GFile *location = l->data;
 
         make_image_file_with_mtime (location, 1, FALSE);
-        image_files = g_list_prepend (image_files, nautilus_file_get (location));
+        image_files = g_list_prepend (image_files, nautilus_file_new (location));
     }
     image_files = g_list_reverse (image_files);
     properties_window = nautilus_properties_present_window (image_files, NULL);
@@ -171,7 +171,7 @@ test_images (void)
         GFile *location = l->data;
 
         make_image_file_with_mtime (location, 1, TRUE);
-        thumb_image_files = g_list_prepend (thumb_image_files, nautilus_file_get (location));
+        thumb_image_files = g_list_prepend (thumb_image_files, nautilus_file_new (location));
     }
     thumb_image_files = g_list_reverse (thumb_image_files);
     properties_window = nautilus_properties_present_window (thumb_image_files, NULL);
