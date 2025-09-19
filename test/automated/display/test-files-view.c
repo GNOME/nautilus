@@ -139,6 +139,73 @@ create_hidden_files (void)
 }
 
 static void
+test_hidden_files_renamed (void)
+{
+    g_settings_set_boolean (gtk_filechooser_preferences,
+                            NAUTILUS_PREFERENCES_SHOW_HIDDEN_FILES,
+                            FALSE);
+
+    g_autoptr (NautilusWindowSlot) slot = g_object_ref_sink (nautilus_window_slot_new (NAUTILUS_MODE_BROWSE));
+    g_autoptr (NautilusFilesView) files_view = nautilus_files_view_new (NAUTILUS_VIEW_GRID_ID, slot);
+    NautilusViewModel *model = nautilus_files_view_get_private_model (files_view);
+    g_autoptr (GFile) tmp_location = g_file_new_for_path (test_get_tmp_dir ());
+    const guint renamed_file_count = 4;
+    g_autoptr (GPtrArray) renamed_files_arr = g_ptr_array_new_full (renamed_file_count,
+                                                                    (GDestroyNotify) nautilus_file_unref);
+    g_autoptr (GPtrArray) changed_files_arr = g_ptr_array_new_full (renamed_file_count,
+                                                                    (GDestroyNotify) nautilus_file_unref);
+
+    create_hidden_files ();
+
+    /* Load the directory with hidden files not shown. */
+    nautilus_files_view_set_location (NAUTILUS_FILES_VIEW (files_view), tmp_location);
+    ITER_CONTEXT_WHILE (nautilus_files_view_get_loading (files_view));
+
+    /* Rename a few hidden files to visible names and verify they appear. */
+    g_signal_connect (files_view, "file-changed",
+                      G_CALLBACK (collect_changed_files), changed_files_arr);
+
+    for (guint i = 0, renamed = 0; hidden_files_hierarchy[i] != NULL && renamed < renamed_file_count; i++)
+    {
+        const gchar *orig_name = hidden_files_hierarchy[i];
+
+        /* Only pick hidden entries */
+        if (strstr (orig_name, "hidden") == NULL)
+        {
+            continue;
+        }
+
+        g_autoptr (GFile) location = g_file_new_build_filename (test_get_tmp_dir (), orig_name, NULL);
+        g_autoptr (NautilusFile) file = nautilus_file_get (location);
+        NautilusViewItem *item = nautilus_view_model_get_item_for_file (model, file);
+        g_autofree gchar *new_name = g_strdup_printf ("renamed_visible_%u", renamed);
+
+        /* Ensure hidden files are not visible initially. */
+        g_assert_true (nautilus_file_is_hidden_file (file));
+        g_assert_null (item);
+
+        nautilus_file_rename (file, new_name, collect_renamed_files, renamed_files_arr);
+        renamed++;
+    }
+
+    ITER_CONTEXT_WHILE (changed_files_arr->len < renamed_file_count ||
+                        renamed_files_arr->len < renamed_file_count ||
+                        !ptr_array_is_subset (renamed_files_arr, changed_files_arr));
+
+    /* The renamed files should now be present in the view model. */
+    for (guint i = 0; i < renamed_files_arr->len; i++)
+    {
+        NautilusFile *file = renamed_files_arr->pdata[i];
+        NautilusViewItem *item = nautilus_view_model_get_item_for_file (model, file);
+
+        g_assert_false (nautilus_file_is_hidden_file (file));
+        g_assert_nonnull (item);
+    }
+
+    test_clear_tmp_dir ();
+}
+
+static void
 test_hidden_files_change (void)
 {
     g_settings_set_boolean (gtk_filechooser_preferences,
@@ -643,6 +710,8 @@ main (int   argc,
                      test_replace_files);
     g_test_add_func ("/view/hidden_files/change",
                      test_hidden_files_change);
+    g_test_add_func ("/view/hidden_files/rename_files",
+                     test_hidden_files_renamed);
 
     return g_test_run ();
 }
