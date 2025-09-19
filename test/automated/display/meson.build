@@ -5,6 +5,9 @@ tests = {
     'tracker': true,
     'is_parallel' : false,
   },
+  'test-sidebar': {
+    'is_parallel' : false,
+  },
 }
 
 foreach test_name, extra_args : tests
