@@ -661,40 +661,26 @@ nautilus_directory_provider_get_all (void)
 static NautilusDirectory *
 nautilus_directory_new (GFile *location)
 {
-    GList *extensions;
-    GList *l;
-    GIOExtension *gio_extension;
-    GType handling_provider_type;
-    gboolean handled = FALSE;
-    NautilusDirectoryClass *current_provider_class;
-    NautilusDirectory *handling_instance;
+    GList *extensions = nautilus_directory_provider_get_all ();
 
-    extensions = nautilus_directory_provider_get_all ();
-
-    for (l = extensions; l != NULL; l = l->next)
+    for (GList *l = extensions; l != NULL; l = l->next)
     {
-        gio_extension = l->data;
-        current_provider_class = NAUTILUS_DIRECTORY_CLASS (g_io_extension_ref_class (gio_extension));
+        GIOExtension *gio_extension = l->data;
+        NautilusDirectoryClass *current_provider_class =
+            NAUTILUS_DIRECTORY_CLASS (g_io_extension_ref_class (gio_extension));
+
         if (current_provider_class->handles_location (location))
         {
-            handling_provider_type = g_io_extension_get_type (gio_extension);
-            handled = TRUE;
-            break;
+            return g_object_new (g_io_extension_get_type (gio_extension),
+                                 "location", location,
+                                 NULL);
         }
     }
 
-    if (!handled)
-    {
-        /* This class is the fallback for any location */
-        handling_provider_type = NAUTILUS_TYPE_VFS_DIRECTORY;
-    }
-
-    handling_instance = g_object_new (handling_provider_type,
-                                      "location", location,
-                                      NULL);
-
-
-    return handling_instance;
+    /* This class is the fallback for any location */
+    return g_object_new (NAUTILUS_TYPE_VFS_DIRECTORY,
+                         "location", location,
+                         NULL);
 }
 
 /**
