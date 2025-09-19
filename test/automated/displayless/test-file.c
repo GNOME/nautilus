@@ -407,6 +407,46 @@ test_file_permissions_set_same (void)
     test_clear_tmp_dir ();
 }
 
+static void
+test_directory_counts (void)
+{
+    const GStrv deep_hierarchy = (char *[])
+    {
+        "deepcount/",
+        "deepcount/file1",
+        "deepcount/dir1/",
+        "deepcount/dir1/file2",
+        "deepcount/dir1/dir1a/",
+        "deepcount/dir1/dir1a/file3",
+        "deepcount/dir2/",
+        "deepcount/dir2/file4",
+        NULL
+    };
+    g_autoptr (GFile) location = g_file_new_build_filename (test_get_tmp_dir (), "deepcount", NULL);
+    g_autoptr (NautilusFile) file = nautilus_file_get (location);
+    guint dir_count = 0, file_count = 0, unreadable = 0, item_count = 0;
+    NautilusRequestStatus status;
+    gboolean count_unreadable = TRUE;
+
+    file_hierarchy_create (deep_hierarchy, "");
+    file_load_attributes (file,
+                          NAUTILUS_FILE_ATTRIBUTE_INFO |
+                          NAUTILUS_FILE_ATTRIBUTE_DIRECTORY_ITEM_COUNT |
+                          NAUTILUS_FILE_ATTRIBUTE_DEEP_COUNTS);
+
+    g_assert_true (nautilus_file_get_directory_item_count (file, &item_count, &count_unreadable));
+    g_assert_cmpint (item_count, ==, 3);
+    g_assert_false (count_unreadable);
+
+    status = nautilus_file_get_deep_counts (file, &dir_count, &file_count, &unreadable, NULL, TRUE);
+    g_assert_cmpint (status, ==, NAUTILUS_REQUEST_DONE);
+    g_assert_cmpint (dir_count, ==, 3);
+    g_assert_cmpint (file_count, ==, 4);
+    g_assert_cmpint (unreadable, ==, 0);
+
+    test_clear_tmp_dir ();
+}
+
 int
 main (int   argc,
       char *argv[])
@@ -445,6 +485,8 @@ main (int   argc,
                      test_file_permissions_set_basic);
     g_test_add_func ("/file/permissions/same",
                      test_file_permissions_set_same);
+    g_test_add_func ("/file/deep-counts/basic",
+                     test_directory_counts);
 
     return g_test_run ();
 }
