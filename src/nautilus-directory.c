@@ -432,8 +432,16 @@ async_data_preference_changed_callback (gpointer callback_data)
 }
 
 static void
-add_preferences_callbacks (void)
+ensure_directories_hash_table (void)
 {
+    if (G_LIKELY (directories != NULL))
+    {
+        return;
+    }
+
+    /* Create a hash table to reuse existing directory objects */
+    directories = g_hash_table_new (g_file_hash, (GCompareFunc) g_file_equal);
+
     nautilus_global_preferences_init ();
 
     g_signal_connect_swapped (gtk_filechooser_preferences,
@@ -459,19 +467,12 @@ NautilusDirectory *
 nautilus_directory_get_internal (GFile    *location,
                                  gboolean  create)
 {
-    NautilusDirectory *directory;
-
-    /* Create the hash table first time through. */
-    if (directories == NULL)
-    {
-        directories = g_hash_table_new (g_file_hash, (GCompareFunc) g_file_equal);
-        add_preferences_callbacks ();
-    }
+    ensure_directories_hash_table ();
 
     /* If the object is already in the hash table, look it up. */
 
-    directory = g_hash_table_lookup (directories,
-                                     location);
+    NautilusDirectory *directory = g_hash_table_lookup (directories,
+                                                        location);
     if (directory != NULL)
     {
         nautilus_directory_ref (directory);
