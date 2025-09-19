@@ -39,6 +39,23 @@
   ],
   "modules": [
     {
+      "name": "inih",
+      "buildsystem": "meson",
+      "config-opts": [
+        "-Ddefault_library=shared",
+        "-Ddistro_install=true",
+        "-Dwith_INIReader=true",
+        "-Dtests=false"
+      ],
+      "sources": [
+        {
+          "type": "archive",
+          "url": "https://github.com/benhoyt/inih/archive/refs/tags/r62.tar.gz",
+          "sha256": "9c15fa751bb8093d042dae1b9f125eb45198c32c6704cd5481ccde460d4f8151"
+        }
+      ]
+    },
+    {
       "name": "exiv2",
       "config-opts": [
         "-DCMAKE_INSTALL_PREFIX=/app",
@@ -49,7 +66,7 @@
         {
           "type": "git",
           "url": "https://github.com/Exiv2/exiv2.git",
-          "branch": "0.27-maintenance"
+          "branch": "0.28.x"
         }
       ]
     },
@@ -68,7 +85,7 @@
         {
           "type": "git",
           "url": "https://gitlab.gnome.org/GNOME/gexiv2.git",
-          "tag": "gexiv2-0.14.2"
+          "tag": "0.16.0"
         }
       ]
     },
