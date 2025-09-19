@@ -12,6 +12,7 @@
 #include <sys/random.h>
 #include <sys/types.h>
 #include <sys/wait.h>
+#include <nautilus-file.h>
 #include <src/nautilus-file-undo-manager.h>
 #include <src/nautilus-file-utilities.h>
 
@@ -587,6 +588,29 @@ create_random_file (GFile *file,
 
         size -= written_size;
     }
+}
+
+static void
+file_ready_cb (NautilusFile *file,
+               gpointer      callback_data)
+{
+    gboolean *done = callback_data;
+
+    *done = TRUE;
+}
+
+void
+file_load_attributes (NautilusFile           *file,
+                      NautilusFileAttributes  attributes)
+{
+    gboolean done = FALSE;
+
+    nautilus_file_call_when_ready (file,
+                                   attributes,
+                                   file_ready_cb,
+                                   &done);
+
+    ITER_CONTEXT_WHILE (!done);
 }
 
 gboolean
