@@ -9738,3 +9738,15 @@ nautilus_files_view_get_private_model (NautilusFilesView *self)
 {
     return self->model;
 }
+
+GActionGroup *
+nautilus_files_view_get_private_action_group (NautilusFilesView *self)
+{
+    return self->view_action_group;
+}
+
+NautilusListBase *
+nautilus_files_view_get_private_list_base (NautilusFilesView *self)
+{
+    return self->list_base;
+}
