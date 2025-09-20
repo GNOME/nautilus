@@ -8,10 +8,12 @@
 #include <test-utilities.h>
 
 #include <nautilus-application.h>
+#include <nautilus-enums.h>
 #include <nautilus-file.h>
 #include <nautilus-file-utilities.h>
 #include <nautilus-files-view.h>
 #include <nautilus-global-preferences.h>
+#include <nautilus-list-base.h>
 #include <nautilus-resources.h>
 #include <nautilus-tag-manager.h>
 #include <nautilus-view-info.h>
@@ -97,6 +99,100 @@ file_changes_done (NautilusFilesView *view,
     gboolean *end_of_changes = user_data;
 
     *end_of_changes = TRUE;
+}
+
+static void
+run_view_zoom_testcase (GSettings   *view_setting,
+                        const gchar *zoom_setting_key,
+                        uint         default_zoom_level,
+                        uint         view_id)
+{
+    g_settings_set_enum (view_setting, zoom_setting_key, default_zoom_level);
+
+    g_autoptr (NautilusWindowSlot) slot = g_object_ref_sink (nautilus_window_slot_new (NAUTILUS_MODE_BROWSE));
+    g_autoptr (NautilusFilesView) files_view = nautilus_files_view_new (view_id, slot);
+    g_autoptr (GFile) tmp_location = g_file_new_for_path (test_get_tmp_dir ());
+    NautilusListBase *list_base = nautilus_files_view_get_private_list_base (files_view);
+    NautilusViewInfo view_info = nautilus_list_base_get_view_info (list_base);
+    const guint file_count = 10;
+
+    create_multiple_files ("zoom_test", file_count);
+
+    nautilus_files_view_set_location (files_view, tmp_location);
+    ITER_CONTEXT_WHILE (nautilus_files_view_get_loading (files_view));
+
+    GActionGroup *group = nautilus_files_view_get_private_action_group (files_view);
+    GAction *action_zoom_in = g_action_map_lookup_action (G_ACTION_MAP (group), "zoom-in");
+    GAction *action_zoom_out = g_action_map_lookup_action (G_ACTION_MAP (group), "zoom-out");
+    GAction *action_zoom_standard = g_action_map_lookup_action (G_ACTION_MAP (group),
+                                                                "zoom-standard");
+
+    /* Zoom in until we reach the max (action becomes disabled) */
+    while (g_action_get_enabled (action_zoom_in))
+    {
+        gtk_widget_activate_action (GTK_WIDGET (files_view), "view.zoom-in", NULL);
+        g_assert_true (g_action_get_enabled (action_zoom_out));
+    }
+    g_assert_true (g_action_get_enabled (action_zoom_standard));
+    g_assert_cmpint (g_settings_get_enum (view_setting, zoom_setting_key),
+                     ==,
+                     view_info.zoom_level_max);
+
+    /* Zoom out until we reach the max (action becomes disabled) */
+    while (g_action_get_enabled (action_zoom_out))
+    {
+        gtk_widget_activate_action (GTK_WIDGET (files_view), "view.zoom-out", NULL);
+        g_assert_true (g_action_get_enabled (action_zoom_in));
+    }
+    g_assert_true (g_action_get_enabled (action_zoom_standard));
+    g_assert_cmpint (g_settings_get_enum (view_setting, zoom_setting_key),
+                     ==,
+                     view_info.zoom_level_min);
+
+    /* Now set to standard and ensure the standard action becomes disabled */
+    gtk_widget_activate_action (GTK_WIDGET (files_view), "view.zoom-standard", NULL);
+    g_assert_true (g_action_get_enabled (action_zoom_in));
+    g_assert_true (g_action_get_enabled (action_zoom_out));
+    g_assert_false (g_action_get_enabled (action_zoom_standard));
+    g_assert_cmpint (g_settings_get_enum (view_setting, zoom_setting_key),
+                     ==,
+                     view_info.zoom_level_standard);
+
+    test_clear_tmp_dir ();
+}
+
+static void
+test_zoom_actions (void)
+{
+    struct
+    {
+        GSettings *view_setting;
+        const gchar *zoom_setting_key;
+        uint default_zoom_level;
+        uint view_id;
+    } testcases[] =
+    {
+        {
+            nautilus_list_view_preferences,
+            NAUTILUS_PREFERENCES_LIST_VIEW_DEFAULT_ZOOM_LEVEL,
+            NAUTILUS_LIST_ZOOM_LEVEL_MEDIUM,
+            NAUTILUS_VIEW_LIST_ID,
+        },
+        {
+            nautilus_icon_view_preferences,
+            NAUTILUS_PREFERENCES_ICON_VIEW_DEFAULT_ZOOM_LEVEL,
+            NAUTILUS_GRID_ZOOM_LEVEL_MEDIUM,
+            NAUTILUS_VIEW_GRID_ID,
+        },
+    };
+
+    for (uint i = 0; i < G_N_ELEMENTS (testcases); i++)
+    {
+        run_view_zoom_testcase (testcases[i].view_setting,
+                                testcases[i].zoom_setting_key,
+                                testcases[i].default_zoom_level,
+                                testcases[i].view_id);
+    }
 }
 
 const GStrv hidden_files_hierarchy = (char *[])
@@ -795,6 +891,8 @@ main (int   argc,
                      test_hidden_files_renamed);
     g_test_add_func ("/view/selection/actions",
                      test_selection_actions);
+    g_test_add_func ("/view/actions/zoom",
+                     test_zoom_actions);
 
     return g_test_run ();
 }
