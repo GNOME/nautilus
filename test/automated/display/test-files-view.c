@@ -115,6 +115,87 @@ const GStrv hidden_files_hierarchy = (char *[])
 };
 
 static void
+test_selection_actions (void)
+{
+    g_autoptr (NautilusWindowSlot) slot = g_object_ref_sink (nautilus_window_slot_new (NAUTILUS_MODE_BROWSE));
+    g_autoptr (NautilusFilesView) files_view = nautilus_files_view_new (NAUTILUS_VIEW_GRID_ID, slot);
+    NautilusViewModel *model = nautilus_files_view_get_private_model (files_view);
+    g_autoptr (GFile) tmp_location = g_file_new_for_path (test_get_tmp_dir ());
+    const guint file_count = 10, selected_count = 4;
+    g_autoptr (NautilusFileList) selection_set = NULL;
+    NautilusFileList *got_selection = NULL;
+    guint got_count;
+
+    /* Need to subtract one since it creates an extra directory. */
+    create_multiple_files ("select_test", file_count - 1);
+
+    nautilus_files_view_set_location (files_view, tmp_location);
+    ITER_CONTEXT_WHILE (nautilus_files_view_get_loading (files_view));
+
+    for (guint i = 0; i < selected_count; i++)
+    {
+        g_autofree gchar *name = g_strdup_printf ("select_test_file_%u", i);
+        g_autoptr (GFile) location = g_file_get_child (tmp_location, name);
+        g_autoptr (NautilusFile) file = nautilus_file_get (location);
+
+        selection_set = g_list_append (selection_set, nautilus_file_ref (file));
+    }
+
+    /* Set the selection on the view */
+    nautilus_files_view_set_selection (files_view, selection_set);
+
+    /* Retrieve selection and verify it matches what we set */
+    got_selection = nautilus_files_view_get_selection (files_view);
+    got_count = g_list_length (got_selection);
+
+    g_assert_cmpint (got_count, ==, selected_count);
+
+    for (NautilusFileList *l = got_selection; l != NULL; l = l->next)
+    {
+        NautilusFile *file = l->data;
+        NautilusViewItem *item = nautilus_view_model_get_item_for_file (model, file);
+
+        g_assert_nonnull (item);
+        g_assert_nonnull (g_list_find (selection_set, file));
+    }
+    g_clear_pointer (&got_selection, nautilus_file_list_free);
+
+    /* Invert selection */
+    gtk_widget_activate_action (GTK_WIDGET (files_view), "view.invert-selection", NULL);
+    got_selection = nautilus_files_view_get_selection (files_view);
+    got_count = g_list_length (got_selection);
+
+    g_assert_cmpint (got_count, ==, file_count - selected_count);
+
+    for (NautilusFileList *l = got_selection; l != NULL; l = l->next)
+    {
+        NautilusFile *file = l->data;
+        NautilusViewItem *item = nautilus_view_model_get_item_for_file (model, file);
+
+        g_assert_nonnull (item);
+        g_assert_null (g_list_find (selection_set, file));
+    }
+    g_clear_pointer (&got_selection, nautilus_file_list_free);
+
+    /* Select all */
+    gtk_widget_activate_action (GTK_WIDGET (files_view), "view.select-all", NULL);
+    got_selection = nautilus_files_view_get_selection (files_view);
+    got_count = g_list_length (got_selection);
+
+    g_assert_cmpint (got_count, ==, file_count);
+    g_assert_cmpint (got_count, ==, g_list_model_get_n_items (G_LIST_MODEL (model)));
+    g_clear_pointer (&got_selection, nautilus_file_list_free);
+
+    /* Invert selection to clear selection. */
+    gtk_widget_activate_action (GTK_WIDGET (files_view), "view.invert-selection", NULL);
+    got_selection = nautilus_files_view_get_selection (files_view);
+    g_assert_null (got_selection);
+    g_clear_pointer (&got_selection, nautilus_file_list_free);
+
+    test_clear_tmp_dir ();
+}
+
+static void
 create_hidden_files (void)
 {
     g_autoptr (GFile) hidden_list_file = g_file_new_build_filename (test_get_tmp_dir (),
@@ -712,6 +793,8 @@ main (int   argc,
                      test_hidden_files_change);
     g_test_add_func ("/view/hidden_files/rename_files",
                      test_hidden_files_renamed);
+    g_test_add_func ("/view/selection/actions",
+                     test_selection_actions);
 
     return g_test_run ();
 }
