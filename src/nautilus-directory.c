@@ -455,6 +455,18 @@ ensure_directories_hash_table (void)
 }
 
 /**
+ * lookup_existing:
+ * @location: (nullable): location for which to lookup existing #NautilusDirectory
+ */
+static NautilusDirectory *
+lookup_existing (GFile *location)
+{
+    ensure_directories_hash_table ();
+
+    return g_hash_table_lookup (directories, location);
+}
+
+/**
  * nautilus_directory_get_by_uri:
  * @uri: URI of directory to get.
  *
@@ -467,12 +479,8 @@ NautilusDirectory *
 nautilus_directory_get_internal (GFile    *location,
                                  gboolean  create)
 {
-    ensure_directories_hash_table ();
+    NautilusDirectory *directory = lookup_existing (location);
 
-    /* If the object is already in the hash table, look it up. */
-
-    NautilusDirectory *directory = g_hash_table_lookup (directories,
-                                                        location);
     if (directory != NULL)
     {
         nautilus_directory_ref (directory);
@@ -509,12 +517,9 @@ nautilus_directory_get (GFile *location)
 NautilusDirectory *
 nautilus_directory_get_existing (GFile *location)
 {
-    if (location == NULL)
-    {
-        return NULL;
-    }
+    NautilusDirectory *directory = lookup_existing (location);
 
-    return nautilus_directory_get_internal (location, FALSE);
+    return (directory != NULL) ? nautilus_directory_ref (directory) : NULL;
 }
 
 
@@ -1258,7 +1263,7 @@ nautilus_directory_notify_files_changed (GList *files)
         else
         {
             g_autoptr (GFile) parent = g_file_get_parent (location);
-            g_autoptr (NautilusDirectory) dir = nautilus_directory_get_existing (parent);
+            NautilusDirectory *dir = lookup_existing (location);
 
             if (dir != NULL && dir->details->new_files_in_progress != NULL &&
                 files != dir->details->files_changed_while_adding)
