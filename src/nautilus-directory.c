@@ -1123,16 +1123,12 @@ invalidate_count_and_unref (gpointer key,
 }
 
 static void
-collect_parent_directories (GHashTable        *hash_table,
+hash_table_add_uncontained (GHashTable        *hash_table,
                             NautilusDirectory *directory)
 {
-    g_assert (hash_table != NULL);
-    g_assert (NAUTILUS_IS_DIRECTORY (directory));
-
-    if (g_hash_table_lookup (hash_table, directory) == NULL)
+    if (directory != NULL && !g_hash_table_contains (hash_table, directory))
     {
-        nautilus_directory_ref (directory);
-        g_hash_table_insert (hash_table, directory, directory);
+        g_hash_table_add (hash_table, nautilus_directory_ref (directory));
     }
 }
 
@@ -1175,7 +1171,7 @@ nautilus_directory_notify_files_added (GList *files)
             continue;
         }
 
-        collect_parent_directories (parent_directories, directory);
+        hash_table_add_uncontained (parent_directories, directory);
 
         /* If no one is monitoring files in the directory, nothing to do. */
         if (!nautilus_directory_is_file_list_monitored (directory))
@@ -1291,10 +1287,7 @@ nautilus_directory_notify_files_removed (GList *files)
         g_autoptr (GFile) parent = g_file_get_parent (location);
         NautilusDirectory *parent_directory = lookup_existing (parent);
 
-        if (parent_directory != NULL)
-        {
-            collect_parent_directories (parent_directories, parent_directory);
-        }
+        hash_table_add_uncontained (parent_directories, parent_directory);
 
         /* Find the file. */
         g_autoptr (NautilusFile) file = nautilus_file_get_existing (location);
@@ -1477,7 +1470,7 @@ nautilus_directory_notify_files_moved (GList *file_pairs)
             /* Mark it gone and prepare to send the changed signal. */
             nautilus_file_mark_gone (to_file);
             hash_table_list_prepend (changed_lists, directory, to_file);
-            collect_parent_directories (parent_directories, directory);
+            hash_table_add_uncontained (parent_directories, directory);
             unref_list = g_list_prepend (unref_list, g_steal_pointer (&to_file));
         }
 
@@ -1504,7 +1497,7 @@ nautilus_directory_notify_files_moved (GList *file_pairs)
             NautilusDirectory *old_directory = nautilus_file_get_directory (from_file);
 
             /* Handle notification in the old directory. */
-            collect_parent_directories (parent_directories, old_directory);
+            hash_table_add_uncontained (parent_directories, old_directory);
 
             /* Cancel loading of attributes in the old directory */
             nautilus_directory_cancel_loading_file_attributes
@@ -1512,7 +1505,7 @@ nautilus_directory_notify_files_moved (GList *file_pairs)
 
             /* Locate the new directory. */
             g_autoptr (NautilusDirectory) new_directory = get_parent_directory (to_location);
-            collect_parent_directories (parent_directories, new_directory);
+            hash_table_add_uncontained (parent_directories, new_directory);
 
             /* Update the file's name and directory. */
             g_autofree char *name = g_file_get_basename (to_location);
