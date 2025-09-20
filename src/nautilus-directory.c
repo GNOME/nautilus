@@ -1406,33 +1406,22 @@ void
 nautilus_directory_moved (const char *old_uri,
                           const char *new_uri)
 {
-    GHashTable *hash;
-    NautilusFile *file;
-    GFile *old_location;
-    GFile *new_location;
-
-    hash = g_hash_table_new (NULL, NULL);
-
-    old_location = g_file_new_for_uri (old_uri);
-    new_location = g_file_new_for_uri (new_uri);
+    g_autoptr (GHashTable) moved_files =
+        g_hash_table_new_full (NULL, NULL, NULL, NULL);
+    g_autoptr (GFile) old_location = g_file_new_for_uri (old_uri);
+    g_autoptr (GFile) new_location = g_file_new_for_uri (new_uri);
 
     g_autolist (NautilusFile) list =
         nautilus_directory_moved_internal (old_location, new_location);
     for (NautilusFileList *node = list; node != NULL; node = node->next)
     {
-        NautilusDirectory *directory;
+        NautilusFile *file = node->data;
+        NautilusDirectory *directory = nautilus_file_get_directory (file);
 
-        file = NAUTILUS_FILE (node->data);
-        directory = nautilus_file_get_directory (file);
-
-        hash_table_list_prepend (hash, directory, nautilus_file_ref (file));
+        hash_table_list_prepend (moved_files, directory, nautilus_file_ref (file));
     }
 
-    g_object_unref (old_location);
-    g_object_unref (new_location);
-
-    g_hash_table_foreach (hash, call_files_changed_unref_free_list, NULL);
-    g_hash_table_destroy (hash);
+    g_hash_table_foreach (moved_files, call_files_changed_unref_free_list, NULL);
 }
 
 void
