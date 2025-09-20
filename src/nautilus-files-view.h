@@ -123,5 +123,9 @@ void              nautilus_files_view_update_actions_state       (NautilusFilesV
 /* testing-only */
 NautilusViewModel *
 nautilus_files_view_get_private_model (NautilusFilesView *self);
+GActionGroup *
+nautilus_files_view_get_private_action_group (NautilusFilesView *self);
+NautilusListBase *
+nautilus_files_view_get_private_list_base (NautilusFilesView *self);
 
 G_END_DECLS
