@@ -1015,25 +1015,6 @@ get_parent_directory (GFile *location)
     return NULL;
 }
 
-/* If a directory object exists for this one's parent, then
- * return it, otherwise return NULL.
- */
-static NautilusDirectory *
-get_parent_directory_if_exists (GFile *location)
-{
-    NautilusDirectory *directory;
-    GFile *parent;
-
-    parent = g_file_get_parent (location);
-    if (parent)
-    {
-        directory = nautilus_directory_get_internal (parent, FALSE);
-        g_object_unref (parent);
-        return directory;
-    }
-    return NULL;
-}
-
 static void
 hash_table_list_prepend (GHashTable    *table,
                          gconstpointer  key,
@@ -1169,9 +1150,8 @@ nautilus_directory_notify_files_added (GList *files)
     for (GList *p = files; p != NULL; p = p->next)
     {
         GFile *location = p->data;
-
-        /* See if the directory is already known. */
-        g_autoptr (NautilusDirectory) directory = get_parent_directory_if_exists (location);
+        g_autoptr (GFile) parent = g_file_get_parent (location);
+        NautilusDirectory *directory = lookup_existing (parent);
 
         if (directory == NULL)
         {
@@ -1179,8 +1159,6 @@ nautilus_directory_notify_files_added (GList *files)
              * monitored, but the corresponding file is,
              * we must invalidate it's item count.
              */
-
-            g_autoptr (GFile) parent = g_file_get_parent (location);
 
             if (parent == NULL)
             {
@@ -1310,7 +1288,8 @@ nautilus_directory_notify_files_removed (GList *files)
         GFile *location = p->data;
 
         /* Update file count for parent directory if anyone might care. */
-        g_autoptr (NautilusDirectory) parent_directory = get_parent_directory_if_exists (location);
+        g_autoptr (GFile) parent = g_file_get_parent (location);
+        NautilusDirectory *parent_directory = lookup_existing (parent);
 
         if (parent_directory != NULL)
         {
