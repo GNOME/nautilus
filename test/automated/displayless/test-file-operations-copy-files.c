@@ -521,31 +521,31 @@ test_copy_fourth_hierarchy (void)
 static void
 setup_test_suite (void)
 {
-    g_test_add_func ("/test-copy-one-file/1.0",
+    g_test_add_func ("/copy/one-file",
                      test_copy_one_file);
-    g_test_add_func ("/test-copy-one-empty-directory/1.0",
+    g_test_add_func ("/copy/one-empty-directory",
                      test_copy_one_empty_directory);
-    g_test_add_func ("/test-copy-files/1.0",
+    g_test_add_func ("/copy/files/1.0",
                      test_copy_files_small);
-    g_test_add_func ("/test-copy-files/1.1",
+    g_test_add_func ("/copy/files/1.1",
                      test_copy_files_medium);
-    g_test_add_func ("/test-copy-files/1.2",
+    g_test_add_func ("/copy/files/1.2",
                      test_copy_files_large);
-    g_test_add_func ("/test-copy-directories/1.0",
+    g_test_add_func ("/copy/directories/1.0",
                      test_copy_directories_small);
-    g_test_add_func ("/test-copy-directories/1.1",
+    g_test_add_func ("/copy/directories/1.1",
                      test_copy_directories_medium);
-    g_test_add_func ("/test-copy-directories/1.2",
+    g_test_add_func ("/copy/directories/1.2",
                      test_copy_directories_large);
-    g_test_add_func ("/test-copy-hierarchy/1.0",
+    g_test_add_func ("/copy/hierarchy/1.0",
                      test_copy_full_directory);
-    g_test_add_func ("/test-copy-hierarchy/1.1",
+    g_test_add_func ("/copy/hierarchy/1.1",
                      test_copy_first_hierarchy);
-    g_test_add_func ("/test-copy-hierarchy/1.2",
+    g_test_add_func ("/copy/hierarchy/1.2",
                      test_copy_second_hierarchy);
-    g_test_add_func ("/test-copy-hierarchy/1.3",
+    g_test_add_func ("/copy/hierarchy/1.3",
                      test_copy_third_hierarchy);
-    g_test_add_func ("/test-copy-hierarchy/1.4",
+    g_test_add_func ("/copy/hierarchy/1.4",
                      test_copy_fourth_hierarchy);
 }
 
