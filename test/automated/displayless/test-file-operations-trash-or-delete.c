@@ -447,33 +447,34 @@ test_delete_third_hierarchy (void)
 static void
 setup_test_suite (void)
 {
-    g_test_add_func ("/test-trash-one-file/1.0",
+    g_test_add_func ("/trash/one-file/1.0",
                      test_trash_one_file);
-    g_test_add_func ("/test-trash-more-files/1.0",
+    g_test_add_func ("/trash/more-files/1.0",
                      test_trash_more_files);
-    g_test_add_func ("/test-delete-one-file/1.0",
-                     test_delete_one_file);
-    g_test_add_func ("/test-delete-more-files/1.0",
-                     test_delete_more_files);
-    g_test_add_func ("/test-trash-one-empty-directory/1.0",
+    g_test_add_func ("/trash/one-empty-directory/1.0",
                      test_trash_one_empty_directory);
-    g_test_add_func ("/test-trash-more-empty-directories/1.0",
+    g_test_add_func ("/trash/more-empty-directories/1.0",
                      test_trash_more_empty_directories);
-    g_test_add_func ("/test-delete-one-empty-directory/1.0",
-                     test_delete_one_empty_directory);
-    g_test_add_func ("/test-delete-more-directories/1.0",
-                     test_delete_more_empty_directories);
-    g_test_add_func ("/test-trash-one-full-directory/1.0",
+    g_test_add_func ("/trash/one-full-directory/1.0",
                      test_trash_full_directory);
-    g_test_add_func ("/test-trash-one-full-directory/1.1",
+    g_test_add_func ("/trash/one-full-directory/1.1",
                      test_trash_first_hierarchy);
-    g_test_add_func ("/test-trash-more-full-directories/1.2",
+    g_test_add_func ("/trash/more-full-directories/1.2",
                      test_trash_third_hierarchy);
-    g_test_add_func ("/test-delete-one-full-directory/1.0",
+
+    g_test_add_func ("/delete/one-file/1.0",
+                     test_delete_one_file);
+    g_test_add_func ("/delete/more-files/1.0",
+                     test_delete_more_files);
+    g_test_add_func ("/delete/one-empty-directory/1.0",
+                     test_delete_one_empty_directory);
+    g_test_add_func ("/delete/more-directories/1.0",
+                     test_delete_more_empty_directories);
+    g_test_add_func ("/delete/one-full-directory/1.0",
                      test_delete_full_directory);
-    g_test_add_func ("/test-delete-one-full-directory/1.1",
+    g_test_add_func ("/delete/one-full-directory/1.1",
                      test_delete_first_hierarchy);
-    g_test_add_func ("/test-delete-more-full-directories/1.6",
+    g_test_add_func ("/delete/more-full-directories/1.6",
                      test_delete_third_hierarchy);
 }
 
