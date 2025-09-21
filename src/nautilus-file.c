@@ -745,37 +745,22 @@ static NautilusFileInfo *
 nautilus_file_get_internal (GFile    *location,
                             gboolean  create)
 {
-    gboolean self_owned;
-    NautilusDirectory *directory;
     NautilusFile *file;
-    GFile *parent;
-    char *basename;
 
     g_assert (location != NULL);
 
-    parent = g_file_get_parent (location);
-
-    self_owned = FALSE;
-    if (parent == NULL)
-    {
-        self_owned = TRUE;
-        parent = g_object_ref (location);
-    }
+    g_autoptr (GFile) parent = g_file_get_parent (location);
+    gboolean self_owned = (parent == NULL);
+    GFile *dir_location = self_owned ? location : parent;
 
     /* Get object that represents the directory. */
-    directory = nautilus_directory_get_internal (parent, create);
-
-    g_object_unref (parent);
+    g_autoptr (NautilusDirectory) directory = nautilus_directory_get_internal (dir_location, create);
 
     /* Get the name for the file. */
-    if (self_owned && directory != NULL)
-    {
-        basename = nautilus_directory_get_name_for_self_as_new_file (directory);
-    }
-    else
-    {
-        basename = g_file_get_basename (location);
-    }
+    g_autofree char *basename = (self_owned && directory != NULL)
+                                ? nautilus_directory_get_name_for_self_as_new_file (directory)
+                                : g_file_get_basename (location);
+
     /* Check to see if it's a file that's already known. */
     if (directory == NULL)
     {
@@ -808,9 +793,6 @@ nautilus_file_get_internal (GFile    *location,
             nautilus_directory_add_file (directory, file);
         }
     }
-
-    g_free (basename);
-    nautilus_directory_unref (directory);
 
     return NAUTILUS_FILE_INFO (file);
 }
