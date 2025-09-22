@@ -609,21 +609,38 @@ nautilus_file_set_directory (NautilusFile      *file,
 }
 
 static NautilusFile *
-nautilus_file_new_from_filename (NautilusDirectory *directory,
-                                 const char        *filename,
-                                 gboolean           self_owned)
+nautilus_file_new_self_owned (NautilusDirectory *directory)
 {
-    NautilusFile *file;
+    g_autofree char *filename = nautilus_directory_get_name_for_self_as_new_file (directory);
+    NautilusFile *file = nautilus_directory_new_as_file (directory, TRUE);
 
+    file->details->name = g_ref_string_new (filename);
+    g_warn_if_fail (directory->details->as_file == NULL);
+    directory->details->as_file = file;
+
+#ifdef NAUTILUS_FILE_DEBUG_REF
+    DEBUG_REF_PRINTF ("%10p ref'd", file);
+#endif
+
+    return file;
+}
+
+static NautilusFile *
+nautilus_file_new_from_filename (NautilusDirectory *directory,
+                                 const char        *filename)
+{
     g_assert (filename != NULL);
     g_assert (filename[0] != '\0');
 
-    file = nautilus_directory_new_as_file (directory, self_owned);
+    /* Any not self-owned file must be a NautilusVfsFile */
+    NautilusFile *file = nautilus_directory_new_as_vfs_file (directory);
     file->details->name = g_ref_string_new (filename);
 
 #ifdef NAUTILUS_FILE_DEBUG_REF
     DEBUG_REF_PRINTF ("%10p ref'd", file);
 #endif
+
+    nautilus_directory_add_file (directory, file);
 
     return file;
 }
@@ -751,7 +768,7 @@ nautilus_file_get_internal (GFile    *location,
 
     /* Get the name for the file. */
     g_autofree char *basename = (self_owned && directory != NULL)
-                                ? nautilus_directory_get_name_for_self_as_new_file (directory)
+                                ? NULL
                                 : g_file_get_basename (location);
 
     /* Check to see if it's a file that's already known. */
@@ -775,15 +792,13 @@ nautilus_file_get_internal (GFile    *location,
     }
     else if (create)
     {
-        file = nautilus_file_new_from_filename (directory, basename, self_owned);
         if (self_owned)
         {
-            g_assert (directory->details->as_file == NULL);
-            directory->details->as_file = file;
+            file = nautilus_file_new_self_owned (directory);
         }
         else
         {
-            nautilus_directory_add_file (directory, file);
+            file = nautilus_file_new_from_filename (directory, basename);
         }
     }
 
