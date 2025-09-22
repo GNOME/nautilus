@@ -117,13 +117,17 @@ real_is_editable (NautilusDirectory *directory)
     return TRUE;
 }
 
+NautilusFile *
+nautilus_directory_new_as_vfs_file (NautilusDirectory *directory)
+{
+    return g_object_new (NAUTILUS_TYPE_VFS_FILE, "directory", directory, NULL);
+}
+
 static NautilusFile *
 real_new_as_file (NautilusDirectory *directory,
                   gboolean           self_owned)
 {
-    return NAUTILUS_FILE (g_object_new (NAUTILUS_TYPE_VFS_FILE,
-                                        "directory", directory,
-                                        NULL));
+    return nautilus_directory_new_as_vfs_file (directory);
 }
 
 static gboolean
