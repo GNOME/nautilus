@@ -762,7 +762,9 @@ nautilus_file_get_internal (GFile    *location,
     GFile *dir_location = self_owned ? location : parent;
 
     /* Get object that represents the directory. */
-    g_autoptr (NautilusDirectory) directory = nautilus_directory_get_internal (dir_location, create);
+    g_autoptr (NautilusDirectory) directory = (create)
+                                              ? nautilus_directory_get (dir_location)
+                                              : nautilus_directory_get_existing (dir_location);
 
     if (self_owned)
     {

@@ -472,34 +472,6 @@ lookup_existing (GFile *location)
  * If two windows are viewing the same uri, the directory object is shared.
  */
 NautilusDirectory *
-nautilus_directory_get_internal (GFile    *location,
-                                 gboolean  create)
-{
-    NautilusDirectory *directory = lookup_existing (location);
-
-    if (directory != NULL)
-    {
-        nautilus_directory_ref (directory);
-    }
-    else if (create)
-    {
-        /* Create a new directory object instead. */
-        directory = nautilus_directory_new (location);
-        if (directory == NULL)
-        {
-            return NULL;
-        }
-
-        /* Put it in the hash table. */
-        g_hash_table_insert (directories,
-                             directory->details->location,
-                             directory);
-    }
-
-    return directory;
-}
-
-NautilusDirectory *
 nautilus_directory_get (GFile *location)
 {
     if (location == NULL)
@@ -507,7 +479,20 @@ nautilus_directory_get (GFile *location)
         return NULL;
     }
 
-    return nautilus_directory_get_internal (location, TRUE);
+    NautilusDirectory *directory = lookup_existing (location);
+
+    if (directory != NULL)
+    {
+        return nautilus_directory_ref (directory);
+    }
+
+    /* Create a new directory object instead. */
+    directory = nautilus_directory_new (location);
+
+    /* Put it in the hash table. */
+    g_hash_table_insert (directories, directory->details->location, directory);
+
+    return directory;
 }
 
 NautilusDirectory *
@@ -532,7 +517,7 @@ nautilus_directory_get_by_uri (const char *uri)
 
     location = g_file_new_for_uri (uri);
 
-    directory = nautilus_directory_get_internal (location, TRUE);
+    directory = nautilus_directory_get (location);
     g_object_unref (location);
     return directory;
 }
@@ -984,7 +969,7 @@ get_parent_directory (GFile *location)
     parent = g_file_get_parent (location);
     if (parent)
     {
-        directory = nautilus_directory_get_internal (parent, TRUE);
+        directory = nautilus_directory_get (parent);
         g_object_unref (parent);
         return directory;
     }

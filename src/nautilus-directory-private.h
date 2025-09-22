@@ -196,8 +196,6 @@ void               emit_change_signals_for_all_files_in_all_directories (void);
 void               nautilus_directory_emit_done_loading               (NautilusDirectory         *directory);
 void               nautilus_directory_emit_load_error                 (NautilusDirectory         *directory,
 								       GError                    *error);
-NautilusDirectory *nautilus_directory_get_internal                    (GFile                     *location,
-								       gboolean                   create);
 char *             nautilus_directory_get_name_for_self_as_new_file   (NautilusDirectory         *directory);
 Request            nautilus_directory_set_up_request                  (NautilusFileAttributes     file_attributes);
 
