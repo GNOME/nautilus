@@ -757,8 +757,6 @@ static NautilusFile *
 nautilus_file_get_internal (GFile    *location,
                             gboolean  create)
 {
-    NautilusFile *file;
-
     g_autoptr (GFile) parent = g_file_get_parent (location);
     gboolean self_owned = (parent == NULL);
     GFile *dir_location = self_owned ? location : parent;
@@ -766,43 +764,39 @@ nautilus_file_get_internal (GFile    *location,
     /* Get object that represents the directory. */
     g_autoptr (NautilusDirectory) directory = nautilus_directory_get_internal (dir_location, create);
 
-    /* Get the name for the file. */
-    g_autofree char *basename = (self_owned && directory != NULL)
-                                ? NULL
-                                : g_file_get_basename (location);
-
-    /* Check to see if it's a file that's already known. */
-    if (directory == NULL)
+    if (self_owned)
     {
-        file = NULL;
-    }
-    else if (self_owned)
-    {
-        file = directory->details->as_file;
+        if (directory != NULL && directory->details->as_file != NULL)
+        {
+            return nautilus_file_ref (directory->details->as_file);
+        }
+        else if (create)
+        {
+            return nautilus_file_new_self_owned (directory);
+        }
     }
     else
     {
-        file = nautilus_directory_find_file_by_name (directory, basename);
+        g_autofree char *basename = g_file_get_basename (location);
+
+        if (directory != NULL)
+        {
+            /* Check if file is already known */
+            NautilusFile *file = nautilus_directory_find_file_by_name (directory, basename);
+
+            if (file != NULL)
+            {
+                return nautilus_file_ref (file);
+            }
+        }
+
+        if (create)
+        {
+            return nautilus_file_new_from_filename (directory, basename);
+        }
     }
 
-    /* Ref or create the file. */
-    if (file != NULL)
-    {
-        nautilus_file_ref (file);
-    }
-    else if (create)
-    {
-        if (self_owned)
-        {
-            file = nautilus_file_new_self_owned (directory);
-        }
-        else
-        {
-            file = nautilus_file_new_from_filename (directory, basename);
-        }
-    }
-
-    return file;
+    return NULL;
 }
 
 NautilusFile *
