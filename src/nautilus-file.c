@@ -608,14 +608,13 @@ nautilus_file_set_directory (NautilusFile      *file,
     g_object_notify_by_pspec (G_OBJECT (file), properties[PROP_DIRECTORY]);
 }
 
-NautilusFile *
+static NautilusFile *
 nautilus_file_new_from_filename (NautilusDirectory *directory,
                                  const char        *filename,
                                  gboolean           self_owned)
 {
     NautilusFile *file;
 
-    g_assert (NAUTILUS_IS_DIRECTORY (directory));
     g_assert (filename != NULL);
     g_assert (filename[0] != '\0');
 
