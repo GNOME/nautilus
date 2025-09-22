@@ -663,20 +663,9 @@ search_engine_finished (NautilusSearchEngine         *engine,
 }
 
 static NautilusFile *
-search_new_as_file (NautilusDirectory *directory,
-                    gboolean           self_owned)
+search_new_as_file (NautilusDirectory *directory)
 {
-    if (!self_owned)
-    {
-        /* This doesn't normally happen, unless the user somehow types in a uri
-         * that references a file like this.
-         * See https://bugzilla.gnome.org/show_bug.cgi?id=349840 */
-        return NAUTILUS_DIRECTORY_CLASS (nautilus_search_directory_parent_class)->new_as_file (directory, self_owned);
-    }
-
-    return NAUTILUS_FILE (g_object_new (NAUTILUS_TYPE_SEARCH_DIRECTORY_FILE,
-                                        "directory", directory,
-                                        NULL));
+    return g_object_new (NAUTILUS_TYPE_SEARCH_DIRECTORY_FILE, "directory", directory, NULL);
 }
 
 static void

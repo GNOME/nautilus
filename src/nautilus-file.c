@@ -612,7 +612,7 @@ static NautilusFile *
 nautilus_file_new_self_owned (NautilusDirectory *directory)
 {
     g_autofree char *filename = nautilus_directory_get_name_for_self_as_new_file (directory);
-    NautilusFile *file = nautilus_directory_new_as_file (directory, TRUE);
+    NautilusFile *file = nautilus_directory_new_as_file (directory);
 
     file->details->name = g_ref_string_new (filename);
     g_warn_if_fail (directory->details->as_file == NULL);
