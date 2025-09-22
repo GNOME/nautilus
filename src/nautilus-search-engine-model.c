@@ -231,7 +231,7 @@ search_engine_model_start (NautilusSearchProvider *provider,
     g_set_object (&model->query, query);
 
     g_autoptr (GFile) query_location = nautilus_query_get_location (model->query);
-    g_autoptr (NautilusDirectory) directory = nautilus_directory_get (query_location);
+    g_autoptr (NautilusDirectory) directory = nautilus_directory_new (query_location);
     g_set_object (&model->directory, directory);
 
     if (model->query_pending)

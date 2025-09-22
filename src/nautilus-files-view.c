@@ -3570,7 +3570,7 @@ void
 nautilus_files_view_set_location (NautilusFilesView *self,
                                   GFile             *location)
 {
-    g_autoptr (NautilusDirectory) directory = nautilus_directory_get (location);
+    g_autoptr (NautilusDirectory) directory = nautilus_directory_new (location);
 
     if (NAUTILUS_IS_SEARCH_DIRECTORY (directory))
     {
@@ -8990,7 +8990,7 @@ nautilus_files_view_set_search_query (NautilusFilesView *self,
             uri = nautilus_search_directory_generate_new_uri ();
             location = g_file_new_for_uri (uri);
 
-            directory = nautilus_directory_get (location);
+            directory = nautilus_directory_new (location);
             g_assert (NAUTILUS_IS_SEARCH_DIRECTORY (directory));
             nautilus_search_directory_set_query (NAUTILUS_SEARCH_DIRECTORY (directory), query);
 

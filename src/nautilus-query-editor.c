@@ -700,7 +700,7 @@ nautilus_query_editor_set_location (NautilusQueryEditor *editor,
      * like what happens with the slot when updating the query editor location.
      * However here we want the real location used as a model for the search,
      * not the search directory invented uri. */
-    directory = nautilus_directory_get (location);
+    directory = nautilus_directory_new (location);
     if (NAUTILUS_IS_SEARCH_DIRECTORY (directory))
     {
         NautilusSearchDirectory *search = NAUTILUS_SEARCH_DIRECTORY (directory);

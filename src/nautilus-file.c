@@ -763,7 +763,7 @@ nautilus_file_get_internal (GFile    *location,
 
     /* Get object that represents the directory. */
     g_autoptr (NautilusDirectory) directory = (create)
-                                              ? nautilus_directory_get (dir_location)
+                                              ? nautilus_directory_new (dir_location)
                                               : nautilus_directory_get_existing (dir_location);
 
     if (self_owned)
