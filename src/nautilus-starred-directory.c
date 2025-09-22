@@ -175,18 +175,9 @@ on_starred_files_changed (NautilusTagManager *tag_manager,
 }
 
 static NautilusFile *
-real_new_as_file (NautilusDirectory *directory,
-                  gboolean           self_owned)
+real_new_as_file (NautilusDirectory *directory)
 {
-    if (!self_owned)
-    {
-        g_warning ("Creating a file within starred://. This shouldn't happen.");
-        return NAUTILUS_DIRECTORY_CLASS (nautilus_starred_directory_parent_class)->new_as_file (directory, self_owned);
-    }
-
-    return NAUTILUS_FILE (g_object_new (NAUTILUS_TYPE_INTERNAL_PLACE_FILE,
-                                        "directory", directory,
-                                        NULL));
+    return g_object_new (NAUTILUS_TYPE_INTERNAL_PLACE_FILE, "directory", directory, NULL);
 }
 
 static gboolean
