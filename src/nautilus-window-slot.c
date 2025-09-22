@@ -1489,7 +1489,7 @@ check_force_reload (GFile                      *location,
      * after determining an initial view (in the components), then
      * we end up fetching things twice.
      */
-    directory = nautilus_directory_get (location);
+    directory = nautilus_directory_new (location);
     file = nautilus_file_new (location);
 
     if (type == NAUTILUS_LOCATION_CHANGE_RELOAD)
@@ -3036,7 +3036,7 @@ nautilus_window_slot_stop_loading (NautilusWindowSlot *self)
     GFile *location;
     NautilusDirectory *directory;
     location = nautilus_window_slot_get_location (self);
-    directory = nautilus_directory_get (self->location);
+    directory = nautilus_directory_new (self->location);
 
     if (self->content_view != NULL)
     {

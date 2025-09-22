@@ -158,7 +158,7 @@ GType              nautilus_directory_get_type                 (void);
  * Returns a referenced object, not a floating one. Unref when finished.
  * If two windows are viewing the same uri, the directory object is shared.
  */
-NautilusDirectory *nautilus_directory_get                      (GFile                     *location);
+NautilusDirectory *nautilus_directory_new                      (GFile                     *location);
 NautilusDirectory *nautilus_directory_get_by_uri               (const char                *uri);
 NautilusDirectory *nautilus_directory_get_for_file             (NautilusFile              *file);
 

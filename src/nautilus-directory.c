@@ -57,7 +57,7 @@ static GParamSpec *properties[NUM_PROPERTIES] = { NULL, };
 
 static GHashTable *directories;
 
-static NautilusDirectory *nautilus_directory_new (GFile *location);
+static NautilusDirectory *create_directory_with_extensions (GFile *location);
 static void               set_directory_location (NautilusDirectory *directory,
                                                   GFile             *location);
 
@@ -472,7 +472,7 @@ lookup_existing (GFile *location)
  * If two windows are viewing the same uri, the directory object is shared.
  */
 NautilusDirectory *
-nautilus_directory_get (GFile *location)
+nautilus_directory_new (GFile *location)
 {
     if (location == NULL)
     {
@@ -487,7 +487,7 @@ nautilus_directory_get (GFile *location)
     }
 
     /* Create a new directory object instead. */
-    directory = nautilus_directory_new (location);
+    directory = create_directory_with_extensions (location);
 
     /* Put it in the hash table. */
     g_hash_table_insert (directories, directory->details->location, directory);
@@ -517,7 +517,7 @@ nautilus_directory_get_by_uri (const char *uri)
 
     location = g_file_new_for_uri (uri);
 
-    directory = nautilus_directory_get (location);
+    directory = nautilus_directory_new (location);
     g_object_unref (location);
     return directory;
 }
@@ -644,7 +644,7 @@ nautilus_directory_provider_get_all (void)
 }
 
 static NautilusDirectory *
-nautilus_directory_new (GFile *location)
+create_directory_with_extensions (GFile *location)
 {
     GList *extensions = nautilus_directory_provider_get_all ();
 
@@ -969,7 +969,7 @@ get_parent_directory (GFile *location)
     parent = g_file_get_parent (location);
     if (parent)
     {
-        directory = nautilus_directory_get (parent);
+        directory = nautilus_directory_new (parent);
         g_object_unref (parent);
         return directory;
     }

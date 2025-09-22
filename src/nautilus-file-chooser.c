@@ -488,7 +488,7 @@ on_location_changed (NautilusFileChooser *self)
         return;
     }
 
-    directory = nautilus_directory_get (location);
+    directory = nautilus_directory_new (location);
     nautilus_filename_validator_set_containing_directory (self->validator, directory);
     nautilus_filename_validator_validate (self->validator);
 }
