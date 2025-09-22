@@ -204,6 +204,7 @@ Request            nautilus_directory_set_up_request                  (NautilusF
 /* Interface to the file list. */
 NautilusFile *     nautilus_directory_find_file_by_name               (NautilusDirectory         *directory,
 								       const char                *filename);
+NautilusFile *     nautilus_directory_new_as_vfs_file                 (NautilusDirectory         *directory);
 
 void               nautilus_directory_add_file                        (NautilusDirectory         *directory,
 								       NautilusFile              *file);

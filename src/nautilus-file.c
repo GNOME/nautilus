@@ -722,14 +722,10 @@ NautilusFile *
 nautilus_file_new_from_info (NautilusDirectory *directory,
                              GFileInfo         *info)
 {
-    NautilusFile *file;
-
     g_return_val_if_fail (NAUTILUS_IS_DIRECTORY (directory), NULL);
     g_return_val_if_fail (info != NULL, NULL);
 
-    file = NAUTILUS_FILE (g_object_new (NAUTILUS_TYPE_VFS_FILE,
-                                        "directory", directory,
-                                        NULL));
+    NautilusFile *file = nautilus_directory_new_as_vfs_file (directory);
 
     update_info_and_name (file, info);
 
