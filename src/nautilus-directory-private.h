@@ -214,8 +214,6 @@ FileMonitors *     nautilus_directory_remove_file_monitors            (NautilusD
 void               nautilus_directory_add_file_monitors               (NautilusDirectory         *directory,
 								       NautilusFile              *file,
 								       FileMonitors              *monitors);
-void               nautilus_directory_add_file                        (NautilusDirectory         *directory,
-								       NautilusFile              *file);
 GList *            nautilus_directory_begin_file_name_change          (NautilusDirectory         *directory,
 								       NautilusFile              *file);
 void               nautilus_directory_end_file_name_change            (NautilusDirectory         *directory,
