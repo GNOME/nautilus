@@ -118,9 +118,8 @@ real_is_editable (NautilusDirectory *directory)
 }
 
 static NautilusFile *
-real_new_file_from_filename (NautilusDirectory *directory,
-                             const char        *filename,
-                             gboolean           self_owned)
+real_new_as_file (NautilusDirectory *directory,
+                  gboolean           self_owned)
 {
     return NAUTILUS_FILE (g_object_new (NAUTILUS_TYPE_VFS_FILE,
                                         "directory", directory,
@@ -260,7 +259,7 @@ nautilus_directory_class_init (NautilusDirectoryClass *klass)
     klass->is_not_empty = real_is_not_empty;
     klass->get_file_list = real_get_file_list;
     klass->is_editable = real_is_editable;
-    klass->new_file_from_filename = real_new_file_from_filename;
+    klass->new_as_file = real_new_as_file;
     klass->handles_location = real_handles_location;
 
     object_class->finalize = nautilus_directory_finalize;
@@ -639,17 +638,12 @@ nautilus_directory_get_location (NautilusDirectory *directory)
 }
 
 NautilusFile *
-nautilus_directory_new_file_from_filename (NautilusDirectory *directory,
-                                           const char        *filename,
-                                           gboolean           self_owned)
+nautilus_directory_new_as_file (NautilusDirectory *directory,
+                                gboolean           self_owned)
 {
-    g_assert (NAUTILUS_IS_DIRECTORY (directory));
-    g_assert (filename != NULL);
-    g_assert (filename[0] != '\0');
+    NautilusDirectoryClass *dir_class = NAUTILUS_DIRECTORY_CLASS (G_OBJECT_GET_CLASS (directory));
 
-    return NAUTILUS_DIRECTORY_CLASS (G_OBJECT_GET_CLASS (directory))->new_file_from_filename (directory,
-                                                                                              filename,
-                                                                                              self_owned);
+    return dir_class->new_as_file (directory, self_owned);
 }
 
 static GList *

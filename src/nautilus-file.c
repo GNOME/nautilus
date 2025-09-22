@@ -619,7 +619,7 @@ nautilus_file_new_from_filename (NautilusDirectory *directory,
     g_assert (filename != NULL);
     g_assert (filename[0] != '\0');
 
-    file = nautilus_directory_new_file_from_filename (directory, filename, self_owned);
+    file = nautilus_directory_new_as_file (directory, self_owned);
     file->details->name = g_ref_string_new (filename);
 
 #ifdef NAUTILUS_FILE_DEBUG_REF
