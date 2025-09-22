@@ -143,9 +143,8 @@ typedef struct
 
         /* Subclasses can use this to create custom files when asked by the user
          * or the nautilus cache. */
-        NautilusFile * (* new_file_from_filename) (NautilusDirectory *directory,
-                                                   const char        *filename,
-                                                   gboolean           self_owned);
+        NautilusFile * (* new_as_file) (NautilusDirectory *directory,
+		                                gboolean           self_owned);
         /* Subclasses can say if they handle the location provided or should the
          * nautilus file class handle it.
          */
@@ -247,6 +246,5 @@ gboolean           nautilus_directory_is_editable              (NautilusDirector
 
 void               nautilus_directory_dump                     (NautilusDirectory         *directory);
 
-NautilusFile *     nautilus_directory_new_file_from_filename   (NautilusDirectory *directory,
-                                                                const char        *filename,
+NautilusFile *     nautilus_directory_new_as_file              (NautilusDirectory *directory,
                                                                 gboolean           self_owned);

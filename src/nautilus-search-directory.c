@@ -663,16 +663,15 @@ search_engine_finished (NautilusSearchEngine         *engine,
 }
 
 static NautilusFile *
-search_new_file_from_filename (NautilusDirectory *directory,
-                               const char        *filename,
-                               gboolean           self_owned)
+search_new_as_file (NautilusDirectory *directory,
+                    gboolean           self_owned)
 {
     if (!self_owned)
     {
         /* This doesn't normally happen, unless the user somehow types in a uri
          * that references a file like this.
          * See https://bugzilla.gnome.org/show_bug.cgi?id=349840 */
-        return NAUTILUS_DIRECTORY_CLASS (nautilus_search_directory_parent_class)->new_file_from_filename (directory, filename, self_owned);
+        return NAUTILUS_DIRECTORY_CLASS (nautilus_search_directory_parent_class)->new_as_file (directory, self_owned);
     }
 
     return NAUTILUS_FILE (g_object_new (NAUTILUS_TYPE_SEARCH_DIRECTORY_FILE,
@@ -918,7 +917,7 @@ nautilus_search_directory_class_init (NautilusSearchDirectoryClass *class)
     oclass->get_property = search_get_property;
     oclass->set_property = search_set_property;
 
-    directory_class->new_file_from_filename = search_new_file_from_filename;
+    directory_class->new_as_file = search_new_as_file;
 
     directory_class->are_all_files_seen = search_are_all_files_seen;
     directory_class->contains_file = search_contains_file;

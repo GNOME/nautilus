@@ -175,14 +175,13 @@ on_starred_files_changed (NautilusTagManager *tag_manager,
 }
 
 static NautilusFile *
-real_new_file_from_filename (NautilusDirectory *directory,
-                             const char        *filename,
-                             gboolean           self_owned)
+real_new_as_file (NautilusDirectory *directory,
+                  gboolean           self_owned)
 {
     if (!self_owned)
     {
         g_warning ("Creating a file within starred://. This shouldn't happen.");
-        return NAUTILUS_DIRECTORY_CLASS (nautilus_starred_directory_parent_class)->new_file_from_filename (directory, filename, self_owned);
+        return NAUTILUS_DIRECTORY_CLASS (nautilus_starred_directory_parent_class)->new_as_file (directory, self_owned);
     }
 
     return NAUTILUS_FILE (g_object_new (NAUTILUS_TYPE_INTERNAL_PLACE_FILE,
@@ -513,7 +512,7 @@ nautilus_starred_directory_class_init (NautilusFavoriteDirectoryClass *klass)
     oclass->finalize = nautilus_starred_directory_finalize;
     oclass->dispose = nautilus_starred_directory_dispose;
 
-    directory_class->new_file_from_filename = real_new_file_from_filename;
+    directory_class->new_as_file = real_new_as_file;
     directory_class->handles_location = real_handles_location;
     directory_class->contains_file = real_contains_file;
     directory_class->is_editable = real_is_editable;
