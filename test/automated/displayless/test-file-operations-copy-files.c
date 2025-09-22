@@ -69,6 +69,215 @@ test_copy_one_empty_directory (void)
 }
 
 static void
+duplicate_callback (GHashTable *debuting_uris,
+                    gboolean    success,
+                    gpointer    callback_data)
+{
+    gboolean *success_data = callback_data;
+
+    g_assert_true (success);
+
+    *success_data = success;
+}
+
+typedef struct
+{
+    GStrv file_hierarchy;
+    /* Null means reusing file_hierarchy */
+    GStrv files_to_dup;
+    GStrv dup_hierarchy;
+} DuplicateTestCase;
+
+static void
+run_dup_testcases (DuplicateTestCase test_cases[],
+                   gsize             n)
+{
+    for (guint i = 0; i < n; i++)
+    {
+        const GStrv file_hierarchy = test_cases[i].file_hierarchy;
+        const GStrv files_to_dup = test_cases[i].files_to_dup != NULL
+                                   ? test_cases[i].files_to_dup
+                                   : test_cases[i].file_hierarchy;
+        const GStrv dup_hierarchy = test_cases[i].dup_hierarchy;
+        g_autolist (GFile) file_list = file_hierarchy_get_files_list (files_to_dup, "", FALSE);
+        gboolean success = FALSE;
+
+        file_hierarchy_create (file_hierarchy, "");
+        nautilus_file_operations_duplicate (file_list,
+                                            NULL,
+                                            NULL,
+                                            duplicate_callback,
+                                            &success);
+
+        ITER_CONTEXT_WHILE (!success);
+
+        file_hierarchy_assert_exists (file_hierarchy, "", TRUE);
+        file_hierarchy_assert_exists (dup_hierarchy, "", TRUE);
+
+        test_operation_undo ();
+
+        file_hierarchy_assert_exists (file_hierarchy, "", TRUE);
+        file_hierarchy_assert_exists (dup_hierarchy, "", FALSE);
+
+        test_operation_redo ();
+
+        file_hierarchy_assert_exists (file_hierarchy, "", TRUE);
+        file_hierarchy_assert_exists (dup_hierarchy, "", TRUE);
+
+        test_clear_tmp_dir ();
+    }
+}
+
+static void
+test_duplicate_files (void)
+{
+    DuplicateTestCase test_cases[] =
+    {
+        /* Single file */
+        {
+            (char *[]){
+                "file_1",
+                NULL
+            },
+            NULL,
+            (char *[]){
+                "file_1 (Copy)",
+                NULL
+            }
+        },
+        /* Already duplicated file */
+        {
+            (char *[]){
+                "file_1",
+                "file_1 (Copy)",
+                "file_1 (Copy 2)",
+                "file_1 (Copy 3)",
+                "file_1 (Copy 4)",
+                NULL
+            },
+            (char *[]){
+                "file_1",
+                NULL
+            },
+            (char *[]){
+                "file_1 (Copy 5)",
+                NULL
+            }
+        },
+        /* Multiple files */
+        {
+            (char *[]){
+                "file_1",
+                "file_2",
+                NULL
+            },
+            NULL,
+            (char *[]){
+                "file_1 (Copy)",
+                "file_2 (Copy)",
+                NULL
+            }
+        },
+        /* Already duplicated files */
+        {
+            (char *[]){
+                "file_1 (Copy)",
+                "file_2 (Copy)",
+                NULL
+            },
+            NULL,
+            (char *[]){
+                "file_1 (Copy 2)",
+                "file_2 (Copy 2)",
+                NULL
+            }
+        },
+    };
+
+    run_dup_testcases (test_cases, G_N_ELEMENTS (test_cases));
+}
+
+static void
+test_duplicate_directories (void)
+{
+#define FULL_DIR(name) \
+        name "/", \
+        name "/dir_child/", \
+        name "/dir_child/dir_grandchild"
+
+    DuplicateTestCase test_cases[] =
+    {
+        /* Single full directory */
+        {
+            (char *[]){
+                FULL_DIR ("dir_1"),
+                NULL
+            },
+            (char *[]){
+                "dir_1/",
+                NULL
+            },
+            (char *[]){
+                FULL_DIR ("dir_1 (Copy)"),
+                NULL
+            },
+        },
+        /* Already duplicated full directory */
+        {
+            (char *[]){
+                FULL_DIR ("dir_1"),
+                FULL_DIR ("dir_1 (Copy)"),
+                FULL_DIR ("dir_1 (Copy 2)"),
+                FULL_DIR ("dir_1 (Copy 3)"),
+                NULL
+            },
+            (char *[]){
+                "dir_1",
+                NULL
+            },
+            (char *[]){
+                FULL_DIR ("dir_1 (Copy 4)"),
+                NULL
+            },
+        },
+        /* Multiple directories */
+        {
+            (char *[]){
+                FULL_DIR ("dir_1"),
+                FULL_DIR ("dir_2"),
+                NULL
+            },
+            (char *[]){
+                "dir_1/",
+                "dir_2/",
+                NULL
+            },
+            (char *[]){
+                FULL_DIR ("dir_1 (Copy)"),
+                FULL_DIR ("dir_2 (Copy)"),
+                NULL
+            },
+        },
+        /* Already duplicated directories */
+        {
+            (char *[]){
+                FULL_DIR ("dir_1 (Copy)"),
+                FULL_DIR ("dir_2 (Copy)"),
+                NULL
+            },
+            NULL,
+            (char *[]){
+                FULL_DIR ("dir_1 (Copy 2)"),
+                FULL_DIR ("dir_2 (Copy 2)"),
+                NULL
+            },
+        },
+    };
+
+    run_dup_testcases (test_cases, G_N_ELEMENTS (test_cases));
+}
+
+static void
 copy_multiple_files (const gchar *prefix,
                      GFile       *src,
                      GFile       *dest,
@@ -547,6 +756,11 @@ setup_test_suite (void)
                      test_copy_third_hierarchy);
     g_test_add_func ("/copy/hierarchy/1.4",
                      test_copy_fourth_hierarchy);
+
+    g_test_add_func ("/duplicate/files/1.0",
+                     test_duplicate_files);
+    g_test_add_func ("/duplicate/directories/1.0",
+                     test_duplicate_directories);
 }
 
 int
