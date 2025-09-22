@@ -741,13 +741,11 @@ nautilus_file_new_from_info (NautilusDirectory *directory,
     return file;
 }
 
-static NautilusFileInfo *
+static NautilusFile *
 nautilus_file_get_internal (GFile    *location,
                             gboolean  create)
 {
     NautilusFile *file;
-
-    g_assert (location != NULL);
 
     g_autoptr (GFile) parent = g_file_get_parent (location);
     gboolean self_owned = (parent == NULL);
@@ -794,7 +792,7 @@ nautilus_file_get_internal (GFile    *location,
         }
     }
 
-    return NAUTILUS_FILE_INFO (file);
+    return file;
 }
 
 NautilusFile *
@@ -802,7 +800,7 @@ nautilus_file_get (GFile *location)
 {
     g_return_val_if_fail (G_IS_FILE (location), NULL);
 
-    return NAUTILUS_FILE (nautilus_file_get_internal (location, TRUE));
+    return nautilus_file_get_internal (location, TRUE);
 }
 
 NautilusFile *
@@ -810,7 +808,7 @@ nautilus_file_get_existing (GFile *location)
 {
     g_return_val_if_fail (G_IS_FILE (location), NULL);
 
-    return NAUTILUS_FILE (nautilus_file_get_internal (location, FALSE));
+    return nautilus_file_get_internal (location, FALSE);
 }
 
 NautilusFile *
@@ -8864,10 +8862,19 @@ default_no_op (NautilusFile *file)
     /* Dummy default impl */
 }
 
+static NautilusFileInfo *
+nautilus_file_get_info (GFile    *location,
+                        gboolean  create)
+{
+    return NAUTILUS_FILE_INFO ((create)
+                               ? nautilus_file_get (location)
+                               : nautilus_file_get_existing (location));
+}
+
 static void
 nautilus_file_class_init (NautilusFileClass *class)
 {
-    nautilus_file_info_getter = nautilus_file_get_internal;
+    nautilus_file_info_getter = nautilus_file_get_info;
 
     attribute_name_q = g_quark_from_static_string ("name");
     attribute_size_q = g_quark_from_static_string ("size");
