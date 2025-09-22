@@ -1448,7 +1448,7 @@ check_force_reload (NautilusWindowSlot *self)
         /* We need to invalidate file attributes as well due to how mounting works
          * in the window slot and to avoid other caching issues.
          * Read handle_mount_if_needed for one example */
-        g_autoptr (NautilusDirectory) directory = nautilus_directory_get (self->pending_location);
+        g_autoptr (NautilusDirectory) directory = nautilus_directory_new (self->pending_location);
 
         nautilus_file_invalidate_all_attributes (self->pending_file);
         nautilus_directory_force_reload (directory);

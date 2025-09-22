@@ -181,7 +181,7 @@ nautilus_dnd_get_preferred_action (NautilusFile *target_file,
     }
 
     /* First check target imperatives */
-    directory = nautilus_directory_get_for_file (target_file);
+    directory = nautilus_directory_new_for_file (target_file);
 
     if (nautilus_is_file_roller_installed () &&
         nautilus_file_is_archive (target_file))

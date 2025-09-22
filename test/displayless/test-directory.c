@@ -63,19 +63,19 @@ callback_counter_await (CallbackCounter *data)
 static void
 test_directory_duplicate_pointers (void)
 {
-    g_autoptr (NautilusDirectory) directory = nautilus_directory_get_by_uri ("file:///etc");
+    g_autoptr (NautilusDirectory) directory = nautilus_directory_new_for_uri ("file:///etc");
     g_autoptr (NautilusFile) file = nautilus_file_new_for_uri ("file:///etc/passwd");
 
     /* Assert that the NautilusFile reuses the existing NautilusDirectory instance.. */
     g_assert_cmpuint (nautilus_directory_number_outstanding (), ==, 1);
 
-    g_assert_true (nautilus_directory_get_by_uri ("file:///etc") == directory);
+    g_assert_true (nautilus_directory_new_for_uri ("file:///etc") == directory);
     nautilus_directory_unref (directory);
 
-    g_assert_true (nautilus_directory_get_by_uri ("file:///etc/") == directory);
+    g_assert_true (nautilus_directory_new_for_uri ("file:///etc/") == directory);
     nautilus_directory_unref (directory);
 
-    g_assert_true (nautilus_directory_get_by_uri ("file:///etc////") == directory);
+    g_assert_true (nautilus_directory_new_for_uri ("file:///etc////") == directory);
     nautilus_directory_unref (directory);
 }
 
@@ -83,7 +83,7 @@ test_directory_duplicate_pointers (void)
 static void
 test_directory_hash_table_cleanup (void)
 {
-    NautilusDirectory *directory = nautilus_directory_get_by_uri ("file:///etc");
+    NautilusDirectory *directory = nautilus_directory_new_for_uri ("file:///etc");
 
     g_assert_cmpuint (nautilus_directory_number_outstanding (), ==, 1);
 
@@ -111,7 +111,7 @@ callback_counter_directory_callback (NautilusDirectory *directory,
 static void
 test_directory_call_when_ready (void)
 {
-    g_autoptr (NautilusDirectory) directory = nautilus_directory_get_by_uri ("file:///etc");
+    g_autoptr (NautilusDirectory) directory = nautilus_directory_new_for_uri ("file:///etc");
     g_autoptr (CallbackCounter) data = callback_counter_new (1);
 
     g_assert_cmpuint (nautilus_directory_number_outstanding (), ==, 1);

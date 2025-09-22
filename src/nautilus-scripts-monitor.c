@@ -220,7 +220,7 @@ get_menu_for_directory (NautilusScriptsMonitor *self,
             uri = nautilus_file_get_uri (file);
             if (directory_belongs_in_scripts_menu (self, uri))
             {
-                dir = nautilus_directory_get_by_uri (uri);
+                dir = nautilus_directory_new_for_uri (uri);
                 add_directory_to_scripts_directory_list (self, dir);
 
                 children_menu = get_menu_for_directory (self, dir, closure, data);
@@ -266,7 +266,7 @@ nautilus_scripts_monitor_get_menu (NautilusScriptsMonitor *self,
         return NULL;
     }
 
-    g_autoptr (NautilusDirectory) directory = nautilus_directory_get_by_uri (self->scripts_directory_uri);
+    g_autoptr (NautilusDirectory) directory = nautilus_directory_new_for_uri (self->scripts_directory_uri);
 
     return get_menu_for_directory (self, directory, closure, data);
 }
@@ -354,7 +354,7 @@ scripts_init_callback (GObject      *source_object,
 
     if (self->scripts_directory_uri != NULL)
     {
-        g_autoptr (NautilusDirectory) scripts_directory = nautilus_directory_get_by_uri (self->scripts_directory_uri);
+        g_autoptr (NautilusDirectory) scripts_directory = nautilus_directory_new_for_uri (self->scripts_directory_uri);
 
         add_directory_to_scripts_directory_list (self, scripts_directory);
     }

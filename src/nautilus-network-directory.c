@@ -545,7 +545,7 @@ nautilus_network_directory_finalize (GObject *object)
 static void
 nautilus_network_directory_init (NautilusNetworkDirectory *self)
 {
-    self->computer_backend_directory = nautilus_directory_get_by_uri (SCHEME_COMPUTER ":///");
+    self->computer_backend_directory = nautilus_directory_new_for_uri (SCHEME_COMPUTER ":///");
     g_signal_connect_object (self->computer_backend_directory, "files-added",
                              G_CALLBACK (on_computer_backend_directory_files_added), self, G_CONNECT_SWAPPED);
     g_signal_connect_object (self->computer_backend_directory, "files-changed",
@@ -555,7 +555,7 @@ nautilus_network_directory_init (NautilusNetworkDirectory *self)
     g_signal_connect_object (self->computer_backend_directory, "load-error",
                              G_CALLBACK (nautilus_directory_emit_load_error), self, G_CONNECT_SWAPPED);
 
-    self->network_backend_directory = nautilus_directory_get_by_uri (SCHEME_NETWORK ":///");
+    self->network_backend_directory = nautilus_directory_new_for_uri (SCHEME_NETWORK ":///");
     g_signal_connect_object (self->network_backend_directory, "files-added",
                              G_CALLBACK (nautilus_directory_emit_files_added), self, G_CONNECT_SWAPPED);
     g_signal_connect_object (self->network_backend_directory, "files-changed",

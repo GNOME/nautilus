@@ -196,7 +196,7 @@ nautilus_rename_file_popover_show_for_file (NautilusRenameFilePopover *self,
     }
     else
     {
-        containing_directory = nautilus_directory_get_for_file (self->target_file);
+        containing_directory = nautilus_directory_new_for_file (self->target_file);
     }
 
     nautilus_filename_validator_set_containing_directory (self->validator,

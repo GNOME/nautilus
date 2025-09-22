@@ -41,7 +41,7 @@ static GParamSpec *properties[NUM_PROPERTIES] = { NULL, };
 
 static GHashTable *directories;
 
-static NautilusDirectory *nautilus_directory_new (GFile *location);
+static NautilusDirectory *create_directory_with_extensions (GFile *location);
 static void               set_directory_location (NautilusDirectory *directory,
                                                   GFile             *location);
 
@@ -434,6 +434,13 @@ lookup_existing (GFile *location)
     return g_hash_table_lookup (directories, location);
 }
 
+/** Deprecated, use nautilus_directory_new */
+NautilusDirectory *
+nautilus_directory_get (GFile *location)
+{
+    return nautilus_directory_new (location);
+}
+
 /**
  * nautilus_directory_get_by_uri:
  * @uri: URI of directory to get.
@@ -444,7 +451,7 @@ lookup_existing (GFile *location)
  * If two windows are viewing the same uri, the directory object is shared.
  */
 NautilusDirectory *
-nautilus_directory_get (GFile *location)
+nautilus_directory_new (GFile *location)
 {
     if (location == NULL)
     {
@@ -459,7 +466,7 @@ nautilus_directory_get (GFile *location)
     }
 
     /* Create a new directory object instead. */
-    directory = nautilus_directory_new (location);
+    directory = create_directory_with_extensions (location);
 
     /* Put it in the hash table. */
     g_hash_table_insert (directories, directory->details->location, directory);
@@ -475,9 +482,15 @@ nautilus_directory_get_existing (GFile *location)
     return (directory != NULL) ? nautilus_directory_ref (directory) : NULL;
 }
 
-
+/** Deprecated, use nautilus_directory_new_for_uri */
 NautilusDirectory *
 nautilus_directory_get_by_uri (const char *uri)
+{
+    return nautilus_directory_new_for_uri (uri);
+}
+
+NautilusDirectory *
+nautilus_directory_new_for_uri (const char *uri)
 {
     NautilusDirectory *directory;
     GFile *location;
@@ -489,13 +502,20 @@ nautilus_directory_get_by_uri (const char *uri)
 
     location = g_file_new_for_uri (uri);
 
-    directory = nautilus_directory_get (location);
+    directory = nautilus_directory_new (location);
     g_object_unref (location);
     return directory;
 }
 
+/** Deprecated, use nautilus_directory_new_for_file */
 NautilusDirectory *
 nautilus_directory_get_for_file (NautilusFile *file)
+{
+    return nautilus_directory_new_for_file (file);
+}
+
+NautilusDirectory *
+nautilus_directory_new_for_file (NautilusFile *file)
 {
     char *uri;
     NautilusDirectory *directory;
@@ -503,7 +523,7 @@ nautilus_directory_get_for_file (NautilusFile *file)
     g_return_val_if_fail (NAUTILUS_IS_FILE (file), NULL);
 
     uri = nautilus_file_get_uri (file);
-    directory = nautilus_directory_get_by_uri (uri);
+    directory = nautilus_directory_new_for_uri (uri);
     g_free (uri);
     return directory;
 }
@@ -616,7 +636,7 @@ nautilus_directory_provider_get_all (void)
 }
 
 static NautilusDirectory *
-nautilus_directory_new (GFile *location)
+create_directory_with_extensions (GFile *location)
 {
     GList *extensions = nautilus_directory_provider_get_all ();
 
@@ -936,7 +956,7 @@ get_parent_directory (GFile *location)
     parent = g_file_get_parent (location);
     if (parent)
     {
-        directory = nautilus_directory_get (parent);
+        directory = nautilus_directory_new (parent);
         g_object_unref (parent);
         return directory;
     }

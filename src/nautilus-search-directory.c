@@ -853,7 +853,7 @@ static void
 update_base_model (NautilusSearchDirectory *self)
 {
     g_autoptr (GFile) query_location = nautilus_search_directory_get_search_location (self);
-    g_autoptr (NautilusDirectory) base_model = nautilus_directory_get (query_location);
+    g_autoptr (NautilusDirectory) base_model = nautilus_directory_new (query_location);
 
     if (self->base_model != base_model)
     {

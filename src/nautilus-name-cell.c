@@ -303,7 +303,7 @@ on_item_is_loading_changed (NautilusNameCell *self)
     }
     else
     {
-        g_autoptr (NautilusDirectory) directory = nautilus_directory_get_for_file (nautilus_view_item_get_file (item));
+        g_autoptr (NautilusDirectory) directory = nautilus_directory_new_for_file (nautilus_view_item_get_file (item));
 
         gtk_tree_expander_set_hide_expander (GTK_TREE_EXPANDER (self->expander),
                                              !nautilus_directory_is_not_empty (directory));

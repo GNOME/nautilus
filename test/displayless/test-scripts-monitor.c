@@ -137,7 +137,7 @@ get_scripts_directory (void)
 {
     g_autoptr (GFile) location = get_scripts_relative_location (NULL);
 
-    return nautilus_directory_get (location);
+    return nautilus_directory_new (location);
 }
 
 static NautilusDirectory *
@@ -145,7 +145,7 @@ get_scripts_subdirectory (const gchar *relative_path)
 {
     g_autoptr (GFile) location = get_scripts_relative_location (relative_path);
 
-    return nautilus_directory_get (location);
+    return nautilus_directory_new (location);
 }
 
 static void

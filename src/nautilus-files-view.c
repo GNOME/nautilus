@@ -2033,7 +2033,7 @@ nautilus_files_view_new_folder_dialog_new (NautilusFilesView *view,
     g_autofree char *common_prefix = NULL;
 
     uri = nautilus_files_view_get_backing_uri (view);
-    containing_directory = nautilus_directory_get_by_uri (uri);
+    containing_directory = nautilus_directory_new_for_uri (uri);
     view->selection_source = NAUTILUS_SELECTION_SOURCE_OP_START;
 
     if (with_selection)
@@ -2225,7 +2225,7 @@ nautilus_files_view_compress_dialog_new (NautilusFilesView *view)
     NautilusCompressDialog *compress_dialog;
 
     uri = nautilus_files_view_get_backing_uri (view);
-    containing_directory = nautilus_directory_get_by_uri (uri);
+    containing_directory = nautilus_directory_new_for_uri (uri);
 
     if (is_single_selection)
     {
@@ -3091,7 +3091,7 @@ on_load_subdirectory (NautilusListBase *list_base,
                       gpointer          user_data)
 {
     NautilusFilesView *self = NAUTILUS_FILES_VIEW (user_data);
-    g_autoptr (NautilusDirectory) directory = nautilus_directory_get_for_file (nautilus_view_item_get_file (item));
+    g_autoptr (NautilusDirectory) directory = nautilus_directory_new_for_file (nautilus_view_item_get_file (item));
 
     if (!nautilus_files_view_has_subdirectory (self, directory))
     {
@@ -3105,7 +3105,7 @@ on_unload_subdirectory (NautilusListBase *list_base,
                         gpointer          user_data)
 {
     NautilusFilesView *self = NAUTILUS_FILES_VIEW (user_data);
-    g_autoptr (NautilusDirectory) directory = nautilus_directory_get_for_file (nautilus_view_item_get_file (item));
+    g_autoptr (NautilusDirectory) directory = nautilus_directory_new_for_file (nautilus_view_item_get_file (item));
 
     if (nautilus_files_view_has_subdirectory (self, directory))
     {
@@ -3533,7 +3533,7 @@ void
 nautilus_files_view_set_location (NautilusFilesView *self,
                                   GFile             *location)
 {
-    g_autoptr (NautilusDirectory) directory = nautilus_directory_get (location);
+    g_autoptr (NautilusDirectory) directory = nautilus_directory_new (location);
 
     if (NAUTILUS_IS_SEARCH_DIRECTORY (directory))
     {
@@ -5269,7 +5269,7 @@ update_templates_directory (NautilusFilesView *view)
     if (nautilus_should_use_templates_directory ())
     {
         templates_uri = nautilus_get_templates_directory_uri ();
-        templates_directory = nautilus_directory_get_by_uri (templates_uri);
+        templates_directory = nautilus_directory_new_for_uri (templates_uri);
         g_free (templates_uri);
         add_directory_to_templates_directory_list (view, templates_directory);
         nautilus_directory_unref (templates_directory);
@@ -5373,7 +5373,7 @@ update_directory_in_templates_menu (NautilusFilesView *view,
             {
                 g_autoptr (GMenuModel) children_menu = NULL;
 
-                dir = nautilus_directory_get_by_uri (uri);
+                dir = nautilus_directory_new_for_uri (uri);
                 add_directory_to_templates_directory_list (view, dir);
 
                 children_menu = update_directory_in_templates_menu (view, dir);
@@ -5442,7 +5442,7 @@ update_templates_menu (NautilusFilesView *view,
         }
     }
 
-    directory = nautilus_directory_get_by_uri (templates_directory_uri);
+    directory = nautilus_directory_new_for_uri (templates_directory_uri);
     submenu = update_directory_in_templates_menu (view, directory);
 
     real_set_templates_menu (view, submenu);
@@ -8659,7 +8659,7 @@ nautilus_files_view_set_search_query (NautilusFilesView *self,
             uri = nautilus_search_directory_generate_new_uri ();
             location = g_file_new_for_uri (uri);
 
-            directory = nautilus_directory_get (location);
+            directory = nautilus_directory_new (location);
             g_assert (NAUTILUS_IS_SEARCH_DIRECTORY (directory));
             nautilus_search_directory_set_query (NAUTILUS_SEARCH_DIRECTORY (directory), query);
 
@@ -9104,7 +9104,7 @@ nautilus_files_view_init (NautilusFilesView *self)
     if (nautilus_should_use_templates_directory ())
     {
         templates_uri = nautilus_get_templates_directory_uri ();
-        templates_directory = nautilus_directory_get_by_uri (templates_uri);
+        templates_directory = nautilus_directory_new_for_uri (templates_uri);
         g_free (templates_uri);
         add_directory_to_templates_directory_list (self, templates_directory);
         nautilus_directory_unref (templates_directory);

@@ -72,7 +72,7 @@ main (int    argc,
         uri = argv[1];
     }
     g_print ("loading %s", uri);
-    directory = nautilus_directory_get_by_uri (uri);
+    directory = nautilus_directory_new_for_uri (uri);
 
     g_signal_connect (directory, "files-added", G_CALLBACK (files_added), NULL);
     g_signal_connect (directory, "files-changed", G_CALLBACK (files_changed), NULL);

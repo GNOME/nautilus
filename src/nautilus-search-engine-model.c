@@ -193,7 +193,7 @@ should_search (NautilusSearchProvider *provider,
                NautilusQuery          *query)
 {
     g_autoptr (GFile) location = nautilus_query_get_location (query);
-    g_autoptr (NautilusDirectory) directory = nautilus_directory_get (location);
+    g_autoptr (NautilusDirectory) directory = nautilus_directory_new (location);
 
     return directory != NULL;
 }
@@ -207,7 +207,7 @@ start_search (NautilusSearchProvider *provider)
     model = NAUTILUS_SEARCH_ENGINE_MODEL (provider);
 
     g_autoptr (GFile) query_location = nautilus_query_get_location (query);
-    g_autoptr (NautilusDirectory) directory = nautilus_directory_get (query_location);
+    g_autoptr (NautilusDirectory) directory = nautilus_directory_new (query_location);
     g_set_object (&model->directory, directory);
 
     nautilus_directory_call_when_ready (model->directory,

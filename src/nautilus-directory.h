@@ -138,14 +138,21 @@ typedef struct
 /* Basic GObject requirements. */
 GType              nautilus_directory_get_type                 (void);
 
+G_DEPRECATED
+NautilusDirectory *nautilus_directory_get                      (GFile                     *location);
+G_DEPRECATED
+NautilusDirectory *nautilus_directory_get_by_uri               (const char                *uri);
+G_DEPRECATED
+NautilusDirectory *nautilus_directory_get_for_file             (NautilusFile              *file);
+
 /* Get a directory given a uri.
  * Creates the appropriate subclass given the uri mappings.
  * Returns a referenced object, not a floating one. Unref when finished.
  * If two windows are viewing the same uri, the directory object is shared.
  */
-NautilusDirectory *nautilus_directory_get                      (GFile                     *location);
-NautilusDirectory *nautilus_directory_get_by_uri               (const char                *uri);
-NautilusDirectory *nautilus_directory_get_for_file             (NautilusFile              *file);
+NautilusDirectory *nautilus_directory_new                      (GFile                     *location);
+NautilusDirectory *nautilus_directory_new_for_uri               (const char                *uri);
+NautilusDirectory *nautilus_directory_new_for_file             (NautilusFile              *file);
 
 /* Covers for g_object_ref and g_object_unref that provide two conveniences:
  * 1) Using these is type safe.
