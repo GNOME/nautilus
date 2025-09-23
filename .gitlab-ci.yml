@@ -75,7 +75,7 @@ workflow:
 .nautilus.fedora:
     variables:
         FDO_DISTRIBUTION_VERSION: rawhide
-        FDO_DISTRIBUTION_TAG: '2025-06-30.1'
+        FDO_DISTRIBUTION_TAG: '2025-09-23'
         FDO_DISTRIBUTION_COMPRESSION_FORMAT: zstd:chunked
     needs:
       - job: "update image"
