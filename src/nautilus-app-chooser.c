@@ -131,7 +131,7 @@ focus_app_chooser_widget (NautilusAppChooser *self)
     g_return_if_fail (GTK_IS_SCROLLED_WINDOW (child));
 
     child = gtk_widget_get_first_child (child);
-    g_return_if_fail (GTK_IS_TREE_VIEW (child));
+    g_return_if_fail (GTK_IS_LIST_VIEW (child));
 
     gtk_widget_grab_focus (child);
 
