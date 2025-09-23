@@ -1041,9 +1041,7 @@ call_files_added_free_list (gpointer key,
     g_assert (value != NULL);
     g_assert (user_data == NULL);
 
-    g_signal_emit (key,
-                   signals[FILES_ADDED], 0,
-                   value);
+    nautilus_directory_emit_files_added (key, value);
     g_list_free (value);
 }
 
