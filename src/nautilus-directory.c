@@ -1046,26 +1046,17 @@ call_files_added_free_list (gpointer key,
 }
 
 static void
-call_files_changed_common (NautilusDirectory *self,
+call_files_changed_common (NautilusDirectory *directory,
                            GList             *file_list)
 {
-    GList *node;
-    NautilusFile *file;
-
-    for (node = file_list; node != NULL; node = node->next)
+    for (GList *node = file_list; node != NULL; node = node->next)
     {
-        NautilusDirectory *directory;
-
-        file = node->data;
-        directory = nautilus_file_get_directory (file);
-
-        if (directory == self)
-        {
-            nautilus_directory_add_file_to_work_queue (self, file);
-        }
+        NautilusFile *file = node->data;
+        nautilus_directory_add_file_to_work_queue (directory, file);
     }
-    nautilus_directory_async_state_changed (self);
-    nautilus_directory_emit_change_signals (self, file_list);
+
+    nautilus_directory_async_state_changed (directory);
+    nautilus_directory_emit_change_signals (directory, file_list);
 }
 
 static void
