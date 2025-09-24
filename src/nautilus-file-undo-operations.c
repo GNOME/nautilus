@@ -920,7 +920,7 @@ create_empty_redo_func (NautilusFileUndoInfoCreate     *self,
 
     parent = g_file_get_parent (self->target_file);
     parent_uri = g_file_get_uri (parent);
-    new_name = g_file_get_parse_name (self->target_file);
+    new_name = g_file_get_basename (self->target_file);
     nautilus_file_operations_new_file (NULL, parent_uri,
                                        new_name,
                                        self->template,
