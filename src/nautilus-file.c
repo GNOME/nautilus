@@ -5714,6 +5714,8 @@ nautilus_file_set_permissions (NautilusFile                  *file,
                                                              file->details->permissions,
                                                              new_permissions);
         nautilus_file_undo_manager_set_action (undo_info);
+
+        g_object_unref (undo_info);
     }
 
     info = g_file_info_new ();
