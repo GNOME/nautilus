@@ -1016,15 +1016,20 @@ get_parent_directory (GFile *location)
 }
 
 static void
-hash_table_list_prepend (GHashTable    *table,
-                         gconstpointer  key,
-                         gpointer       data)
+hash_table_list_insert (GHashTable    *table,
+                        gconstpointer  key,
+                        gpointer       data)
 {
-    GList *list;
+    GList *list = g_hash_table_lookup (table, key);
 
-    list = g_hash_table_lookup (table, key);
-    list = g_list_prepend (list, data);
-    g_hash_table_insert (table, (gpointer) key, list);
+    if (list != NULL)
+    {
+        list = g_list_insert (list, data, 1);
+    }
+    else
+    {
+        g_hash_table_insert (table, (gpointer) key, g_list_prepend (NULL, data));
+    }
 }
 
 static void
@@ -1193,9 +1198,7 @@ nautilus_directory_notify_files_added (GList *files)
         }
         else
         {
-            hash_table_list_prepend (added_lists,
-                                     directory,
-                                     g_object_ref (location));
+            hash_table_list_insert (added_lists, directory, g_object_ref (location));
         }
     }
 
@@ -1232,7 +1235,7 @@ nautilus_directory_notify_files_changed (GList *files)
             file->details->file_info_is_up_to_date = FALSE;
             nautilus_file_invalidate_extension_info_internal (file);
 
-            hash_table_list_prepend (changed_lists, directory, g_steal_pointer (&file));
+            hash_table_list_insert (changed_lists, directory, g_steal_pointer (&file));
         }
         else
         {
@@ -1297,7 +1300,7 @@ nautilus_directory_notify_files_removed (GList *files)
 
             /* Mark it gone and prepare to send the changed signal. */
             nautilus_file_mark_gone (file);
-            hash_table_list_prepend (changed_lists, directory, g_steal_pointer (&file));
+            hash_table_list_insert (changed_lists, directory, g_steal_pointer (&file));
         }
     }
 
@@ -1418,7 +1421,7 @@ nautilus_directory_moved (const char *old_uri,
         NautilusFile *file = node->data;
         NautilusDirectory *directory = nautilus_file_get_directory (file);
 
-        hash_table_list_prepend (moved_files, directory, nautilus_file_ref (file));
+        hash_table_list_insert (moved_files, directory, nautilus_file_ref (file));
     }
 
     g_hash_table_foreach (moved_files, call_files_changed_unref_free_list, NULL);
@@ -1458,7 +1461,7 @@ nautilus_directory_notify_files_moved (GList *file_pairs)
 
             /* Mark it gone and prepare to send the changed signal. */
             nautilus_file_mark_gone (to_file);
-            hash_table_list_prepend (changed_lists, directory, to_file);
+            hash_table_list_insert (changed_lists, directory, to_file);
             hash_table_add_uncontained (parent_directories, directory);
             unref_list = g_list_prepend (unref_list, g_steal_pointer (&to_file));
         }
@@ -1470,7 +1473,7 @@ nautilus_directory_notify_files_moved (GList *file_pairs)
             NautilusFile *affected_file = NAUTILUS_FILE (node->data);
             NautilusDirectory *directory = nautilus_file_get_directory (affected_file);
 
-            hash_table_list_prepend (changed_lists, directory, affected_file);
+            hash_table_list_insert (changed_lists, directory, affected_file);
         }
         unref_list = g_list_concat (unref_list, affected_files);
 
@@ -1503,14 +1506,10 @@ nautilus_directory_notify_files_moved (GList *file_pairs)
             /* Update file attributes */
             nautilus_file_invalidate_attributes (from_file, NAUTILUS_FILE_ATTRIBUTE_INFO);
 
-            hash_table_list_prepend (changed_lists,
-                                     old_directory,
-                                     from_file);
+            hash_table_list_insert (changed_lists, old_directory, from_file);
             if (old_directory != new_directory)
             {
-                hash_table_list_prepend (added_lists,
-                                         new_directory,
-                                         from_file);
+                hash_table_list_insert (added_lists, new_directory, from_file);
             }
 
             /* Unref each file once to balance out nautilus_file_get_by_uri. */
