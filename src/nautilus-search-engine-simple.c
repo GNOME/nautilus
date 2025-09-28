@@ -276,8 +276,6 @@ visit_directory (GFile            *dir,
 {
     g_autoptr (GPtrArray) date_range = NULL;
     NautilusSearchTimeType type;
-    GFileEnumerator *enumerator;
-    GFileInfo *info;
     GFile *child;
     const char *mime_type, *display_name;
     gdouble match;
@@ -288,14 +286,11 @@ visit_directory (GFile            *dir,
     GDateTime *end_date;
     gchar *uri;
 
-    enumerator = g_file_enumerate_children (dir,
-                                            data->mime_types->len > 0 ?
-                                            STD_ATTRIBUTES_WITH_CONTENT_TYPE
-                                            :
-                                            STD_ATTRIBUTES
-                                            ,
-                                            G_FILE_QUERY_INFO_NOFOLLOW_SYMLINKS,
-                                            data->cancellable, NULL);
+    g_autoptr (GFileEnumerator) enumerator = g_file_enumerate_children (
+        dir,
+        data->mime_types->len > 0 ? STD_ATTRIBUTES_WITH_CONTENT_TYPE : STD_ATTRIBUTES,
+        G_FILE_QUERY_INFO_NOFOLLOW_SYMLINKS,
+        data->cancellable, NULL);
 
     if (enumerator == NULL)
     {
@@ -308,7 +303,9 @@ visit_directory (GFile            *dir,
     gboolean recursion_enabled = nautilus_query_recursive (data->query);
     gboolean per_location_recursive_check = nautilus_query_recursive_local_only (data->query);
 
-    while ((info = g_file_enumerator_next_file (enumerator, data->cancellable, NULL)) != NULL)
+    GFileInfo *info;
+    while (g_file_enumerator_iterate (enumerator, &info, NULL, data->cancellable, NULL) &&
+           info != NULL)
     {
         g_autoptr (GDateTime) mtime = NULL;
         g_autoptr (GDateTime) atime = NULL;
@@ -318,7 +315,7 @@ visit_directory (GFile            *dir,
         display_name = g_file_info_get_display_name (info);
         if (display_name == NULL)
         {
-            goto next;
+            continue;
         }
 
         if (!nautilus_query_get_show_hidden_files (data->query))
@@ -330,7 +327,7 @@ visit_directory (GFile            *dir,
 
             if (is_hidden)
             {
-                goto next;
+                continue;
             }
         }
 
@@ -474,11 +471,7 @@ visit_directory (GFile            *dir,
         }
 
         g_object_unref (child);
-next:
-        g_object_unref (info);
     }
-
-    g_object_unref (enumerator);
 }
 
 
