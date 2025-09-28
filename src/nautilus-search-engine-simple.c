@@ -279,7 +279,7 @@ visit_directory (GFile            *dir,
     GFile *child;
     const char *mime_type, *display_name;
     gdouble match;
-    gboolean is_hidden, found;
+    gboolean found;
     const char *id;
     gboolean visited;
     GDateTime *initial_date;
@@ -300,6 +300,7 @@ visit_directory (GFile            *dir,
     type = nautilus_query_get_search_type (data->query);
     date_range = nautilus_query_get_date_range (data->query);
 
+    gboolean show_hidden = nautilus_query_get_show_hidden_files (data->query);
     gboolean recursion_enabled = nautilus_query_recursive (data->query);
     gboolean per_location_recursive_check = nautilus_query_recursive_local_only (data->query);
 
@@ -318,17 +319,11 @@ visit_directory (GFile            *dir,
             continue;
         }
 
-        if (!nautilus_query_get_show_hidden_files (data->query))
+        if (!show_hidden &&
+            (g_file_info_get_attribute_boolean (info, G_FILE_ATTRIBUTE_STANDARD_IS_HIDDEN) ||
+             g_file_info_get_attribute_boolean (info, G_FILE_ATTRIBUTE_STANDARD_IS_BACKUP)))
         {
-            is_hidden = g_file_info_get_attribute_boolean (info,
-                                                           G_FILE_ATTRIBUTE_STANDARD_IS_HIDDEN) ||
-                        g_file_info_get_attribute_boolean (info,
-                                                           G_FILE_ATTRIBUTE_STANDARD_IS_BACKUP);
-
-            if (is_hidden)
-            {
-                continue;
-            }
+            continue;
         }
 
         child = g_file_get_child (dir, g_file_info_get_name (info));
