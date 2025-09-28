@@ -1,6 +1,7 @@
 tracker_sandbox = find_program('localsearch')
 
 tests = {
+  'test-bookmarks': {},
   'test-directory': {},
   'test-file': {},
   'test-file-metadata': {},
