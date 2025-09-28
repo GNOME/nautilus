@@ -4010,7 +4010,8 @@ files_view_end_file_changes (NautilusFilesView *self)
     if (g_hash_table_size (self->pending_reveal) > 0 &&
         g_hash_table_size (self->awaiting_acknowledge) == 0)
     {
-        NautilusFileList *selection = g_hash_table_get_keys (self->pending_reveal);
+        g_autoptr (NautilusFileList) selection = g_hash_table_get_keys (self->pending_reveal);
+
         nautilus_files_view_set_selection (self, selection);
         g_hash_table_remove_all (self->pending_reveal);
     }
