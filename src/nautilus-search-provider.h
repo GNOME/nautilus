@@ -32,6 +32,10 @@ struct _NautilusSearchProviderClass
 {
         GObjectClass parent_class;
 
+        /** Whether a search for given @query should run. Optional. */
+        gboolean (*should_search) (NautilusSearchProvider *provider,
+                                   NautilusQuery          *query);
+
         /**
          * Returns: Whether search provider was started
          */

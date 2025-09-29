@@ -43,7 +43,6 @@ struct _NautilusSearchEngineRecent
     NautilusSearchProvider parent_instance;
 
     NautilusQuery *query;
-    gboolean running;
     GtkRecentManager *recent_manager;
     GPtrArray *hits;
     guint add_hits_idle_id;
@@ -86,7 +85,6 @@ search_thread_add_hits_idle (gpointer user_data)
         g_debug ("Recent engine add hits");
     }
 
-    self->running = FALSE;
     g_clear_pointer (&self->hits, g_ptr_array_unref);
 
     g_debug ("Recent engine finished");
@@ -324,7 +322,6 @@ search_engine_recent_start (NautilusSearchProvider *provider,
     g_set_object (&self->query, query);
     g_debug ("Recent engine start");
 
-    self->running = TRUE;
     thread = g_thread_new ("nautilus-search-recent", recent_thread_func,
                            g_object_ref (self));
 
@@ -333,9 +330,6 @@ search_engine_recent_start (NautilusSearchProvider *provider,
 static void
 nautilus_search_engine_recent_stop (NautilusSearchProvider *provider)
 {
-    NautilusSearchEngineRecent *self = NAUTILUS_SEARCH_ENGINE_RECENT (provider);
-
-    self->running = FALSE;
 }
 
 static void
