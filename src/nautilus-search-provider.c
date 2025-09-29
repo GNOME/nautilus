@@ -86,6 +86,11 @@ nautilus_search_provider_start (NautilusSearchProvider *self,
     /* Can't start provider again before it finished */
     g_return_val_if_fail (priv->cancellable == NULL, FALSE);
 
+    if (!klass->should_search (self, query))
+    {
+        return FALSE;
+    }
+
     priv->cancellable = g_cancellable_new ();
 
     return klass->start (self, query);
@@ -180,12 +185,21 @@ search_provider_dispose (GObject *object)
     G_OBJECT_CLASS (nautilus_search_provider_parent_class)->dispose (object);
 }
 
+static gboolean
+default_should_search (NautilusSearchProvider *provider,
+                       NautilusQuery          *query)
+{
+    return TRUE;
+}
+
 static void
 nautilus_search_provider_class_init (NautilusSearchProviderClass *klass)
 {
     GObjectClass *object_class = G_OBJECT_CLASS (klass);
+    NautilusSearchProviderClass *search_provider_class = NAUTILUS_SEARCH_PROVIDER_CLASS (klass);
 
     object_class->dispose = search_provider_dispose;
+    search_provider_class->should_search = default_should_search;
 
     setup_signals ();
 }

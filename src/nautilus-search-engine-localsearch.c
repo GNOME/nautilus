@@ -54,7 +54,6 @@ struct _NautilusSearchEngineLocalsearch
     NautilusQuery *query;
     GHashTable *statements;
 
-    gboolean query_pending;
     GQueue *hits_pending;
 
     gboolean fts_enabled;
@@ -122,8 +121,6 @@ search_finished (NautilusSearchEngineLocalsearch *self,
         g_queue_foreach (self->hits_pending, (GFunc) g_object_unref, NULL);
         g_queue_clear (self->hits_pending);
     }
-
-    self->query_pending = FALSE;
 
     if (g_error_matches (error, G_IO_ERROR, G_IO_ERROR_CANCELLED))
     {
@@ -437,6 +434,15 @@ create_statement (NautilusSearchProvider *provider,
 }
 
 static gboolean
+should_search (NautilusSearchProvider *provider,
+               NautilusQuery          *query)
+{
+    NautilusSearchEngineLocalsearch *self = (NautilusSearchEngineLocalsearch *) provider;
+
+    return self->connection != NULL;
+}
+
+static gboolean
 search_engine_localsearch_start (NautilusSearchProvider *provider,
                                  NautilusQuery          *query)
 {
@@ -449,19 +455,8 @@ search_engine_localsearch_start (NautilusSearchProvider *provider,
 
     g_set_object (&self->query, query);
 
-    if (self->query_pending)
-    {
-        return FALSE;
-    }
-
-    if (self->connection == NULL)
-    {
-        return FALSE;
-    }
-
     g_debug ("Tracker engine start");
     g_object_ref (self);
-    self->query_pending = TRUE;
 
     g_autoptr (GFile) location = nautilus_query_get_location (self->query);
 
@@ -570,13 +565,7 @@ search_engine_localsearch_start (NautilusSearchProvider *provider,
 static void
 nautilus_search_engine_localsearch_stop (NautilusSearchProvider *provider)
 {
-    NautilusSearchEngineLocalsearch *self = NAUTILUS_SEARCH_ENGINE_LOCALSEARCH (provider);
-
-    if (self->query_pending)
-    {
-        g_debug ("Tracker engine stop");
-        self->query_pending = FALSE;
-    }
+    g_debug ("Tracker engine stop");
 }
 
 static void
@@ -586,6 +575,7 @@ nautilus_search_engine_localsearch_class_init (NautilusSearchEngineLocalsearchCl
     NautilusSearchProviderClass *search_provider_class = NAUTILUS_SEARCH_PROVIDER_CLASS (class);
 
     gobject_class->finalize = finalize;
+    search_provider_class->should_search = should_search;
     search_provider_class->start = search_engine_localsearch_start;
     search_provider_class->stop = nautilus_search_engine_localsearch_stop;
 }
