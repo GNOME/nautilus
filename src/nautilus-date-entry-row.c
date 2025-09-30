@@ -187,7 +187,11 @@ nautilus_date_entry_row_init (NautilusDateEntryRow *self)
 static void
 date_entry_row_dispose (GObject *object)
 {
+    NautilusDateEntryRow *self = NAUTILUS_DATE_ENTRY_ROW (object);
+
     gtk_widget_dispose_template (GTK_WIDGET (object), NAUTILUS_TYPE_DATE_ENTRY_ROW);
+
+    g_clear_pointer (&self->date_time, g_date_time_unref);
 
     G_OBJECT_CLASS (nautilus_date_entry_row_parent_class)->dispose (object);
 }
