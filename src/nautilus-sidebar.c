@@ -3259,6 +3259,7 @@ on_row_dragged (GtkGestureDrag     *gesture,
 
         g_object_unref (content);
 
+        gdk_drag_set_hotspot (drag, start_x, start_y);
         g_signal_connect (drag, "dnd-finished", G_CALLBACK (dnd_finished_cb), sidebar);
         g_signal_connect (drag, "cancel", G_CALLBACK (dnd_cancel_cb), sidebar);
 
