@@ -40,8 +40,6 @@ typedef struct
     NautilusSearchEngineSimple *engine;
     GCancellable *cancellable;
 
-    GList *found_list;
-
     GQueue *directories;     /* GFiles */
 
     GHashTable *visited;
