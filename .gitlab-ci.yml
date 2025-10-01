@@ -188,7 +188,7 @@ coverage:
         - meson compile -C $MESON_BUILD_DIR
         # Run the tests inside a headless wayland compositor, and ignore errors
         # from the return code.
-        - wlheadless-run -c mutter -- meson test --suite display --suite displayless -C $MESON_BUILD_DIR || true
+        - wlheadless-run -c mutter -- meson test --suite display --suite displayless --print-errorlogs -C $MESON_BUILD_DIR || true
         - ninja coverage -C $MESON_BUILD_DIR
     artifacts:
         expose_as: 'Coverage'
