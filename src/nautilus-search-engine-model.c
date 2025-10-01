@@ -230,17 +230,15 @@ start_search (NautilusSearchProvider *provider)
 }
 
 static void
-nautilus_search_engine_model_stop (NautilusSearchProvider *provider)
+search_engine_model_stop (NautilusSearchProvider *provider)
 {
-    NautilusSearchEngineModel *model;
+    NautilusSearchEngineModel *self = NAUTILUS_SEARCH_ENGINE_MODEL (provider);
 
-    model = NAUTILUS_SEARCH_ENGINE_MODEL (provider);
+    nautilus_directory_cancel_callback (self->directory,
+                                        model_directory_ready_cb, self);
+    search_finished_idle (self);
 
-    nautilus_directory_cancel_callback (model->directory,
-                                        model_directory_ready_cb, model);
-    search_finished_idle (model);
-
-    g_clear_object (&model->directory);
+    g_clear_object (&self->directory);
 }
 
 static void
@@ -253,7 +251,7 @@ nautilus_search_engine_model_class_init (NautilusSearchEngineModelClass *class)
     search_provider_class->get_name = get_name;
     search_provider_class->should_search = should_search;
     search_provider_class->start_search = start_search;
-    search_provider_class->stop = nautilus_search_engine_model_stop;
+    search_provider_class->stop_search = search_engine_model_stop;
 }
 
 static void

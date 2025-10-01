@@ -36,7 +36,8 @@ struct _NautilusSearchProviderClass
                                    NautilusQuery          *query);
         /** Starts a search. Only called when should_search() returned TRUE. */
         void (*start_search) (NautilusSearchProvider *provider);
-        void (*stop) (NautilusSearchProvider *provider);
+        /** Stop an ongoing search. Optional. */
+        void (*stop_search) (NautilusSearchProvider *provider);
 };
 
 /* Interface Functions */

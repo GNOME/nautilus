@@ -164,7 +164,7 @@ nautilus_search_provider_stop (NautilusSearchProvider *self)
         g_debug ("Search provider '%s' stopping", search_provider_name (self));
         g_cancellable_cancel (priv->cancellable);
 
-        klass->stop (self);
+        klass->stop_search (self);
     }
 }
 
@@ -326,6 +326,11 @@ default_search_delay (NautilusSearchProvider *provider)
 }
 
 static void
+default_stop_search (NautilusSearchProvider *provider)
+{
+}
+
+static void
 nautilus_search_provider_class_init (NautilusSearchProviderClass *klass)
 {
     GObjectClass *object_class = G_OBJECT_CLASS (klass);
@@ -335,6 +340,7 @@ nautilus_search_provider_class_init (NautilusSearchProviderClass *klass)
     search_provider_class->run_in_thread = default_run_in_thread;
     search_provider_class->should_search = default_should_search;
     search_provider_class->search_delay = default_search_delay;
+    search_provider_class->stop_search = default_stop_search;
 
     setup_signals ();
 }

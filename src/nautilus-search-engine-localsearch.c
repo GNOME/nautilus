@@ -504,11 +504,6 @@ start_search (NautilusSearchProvider *provider)
 }
 
 static void
-nautilus_search_engine_localsearch_stop (NautilusSearchProvider *provider)
-{
-}
-
-static void
 nautilus_search_engine_localsearch_class_init (NautilusSearchEngineLocalsearchClass *class)
 {
     GObjectClass *gobject_class = G_OBJECT_CLASS (class);
@@ -518,7 +513,6 @@ nautilus_search_engine_localsearch_class_init (NautilusSearchEngineLocalsearchCl
     search_provider_class->get_name = get_name;
     search_provider_class->should_search = should_search;
     search_provider_class->start_search = start_search;
-    search_provider_class->stop = nautilus_search_engine_localsearch_stop;
 }
 
 static void

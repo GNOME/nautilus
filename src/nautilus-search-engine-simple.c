@@ -316,11 +316,6 @@ start_search (NautilusSearchProvider *provider)
 }
 
 static void
-nautilus_search_engine_simple_stop (NautilusSearchProvider *provider)
-{
-}
-
-static void
 nautilus_search_engine_simple_class_init (NautilusSearchEngineSimpleClass *class)
 {
     GObjectClass *gobject_class = G_OBJECT_CLASS (class);
@@ -332,7 +327,6 @@ nautilus_search_engine_simple_class_init (NautilusSearchEngineSimpleClass *class
     search_provider_class->search_delay = search_delay;
     search_provider_class->should_search = should_search;
     search_provider_class->start_search = start_search;
-    search_provider_class->stop = nautilus_search_engine_simple_stop;
 }
 
 static void
