@@ -205,7 +205,6 @@ on_row_drag_prepare (GtkDragSource *source,
                      gpointer       user_data)
 {
     GtkWidget *widget = gtk_event_controller_get_widget (GTK_EVENT_CONTROLLER (source));
-    g_autoptr (GdkPaintable) paintable = gtk_widget_paintable_new (widget);
     NautilusColumn *column = user_data;
     NautilusColumnChooser *chooser;
 
@@ -216,8 +215,18 @@ on_row_drag_prepare (GtkDragSource *source,
     }
 
     chooser->drag_column = column;
-    gtk_drag_source_set_icon (source, paintable, 0, 0);
+
     return gdk_content_provider_new_typed (NAUTILUS_TYPE_COLUMN, user_data);
+}
+
+static void
+drag_begin_cb (GtkDragSource *source,
+               GdkDrag       *drag)
+{
+    /* Use a dummy widget so that GTK doesn't automatically use a generic
+     * placeholder icon. */
+    gtk_drag_icon_set_child (GTK_DRAG_ICON (gtk_drag_icon_get_for_drag (drag)),
+                             gtk_box_new (GTK_ORIENTATION_VERTICAL, 0));
 }
 
 static gboolean
@@ -370,6 +379,7 @@ add_list_box_row (GObject  *item,
     controller = GTK_EVENT_CONTROLLER (gtk_drag_source_new ());
     gtk_drag_source_set_actions (GTK_DRAG_SOURCE (controller), GDK_ACTION_MOVE);
     g_signal_connect (controller, "prepare", G_CALLBACK (on_row_drag_prepare), column);
+    g_signal_connect (controller, "drag-begin", G_CALLBACK (drag_begin_cb), NULL);
     g_signal_connect (controller, "drag-cancel", G_CALLBACK (on_row_drag_cancel), chooser);
     gtk_widget_add_controller (row, controller);
 
