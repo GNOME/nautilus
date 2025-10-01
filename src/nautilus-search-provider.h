@@ -37,7 +37,7 @@ struct _NautilusSearchProviderClass
         guint (*search_delay) (NautilusSearchProvider *provider);
 
         void (*start_search) (NautilusSearchProvider *provider);
-        void (*stop) (NautilusSearchProvider *provider);
+        void (*stop_search) (NautilusSearchProvider *provider);
 };
 
 /* Interface Functions */

@@ -278,11 +278,6 @@ start_search (NautilusSearchProvider *provider)
     thread = g_thread_new ("nautilus-search-recent", (GThreadFunc) recent_thread_func, self);
 }
 static void
-nautilus_search_engine_recent_stop (NautilusSearchProvider *provider)
-{
-}
-
-static void
 nautilus_search_engine_recent_class_init (NautilusSearchEngineRecentClass *klass)
 {
     GObjectClass *object_class = G_OBJECT_CLASS (klass);
@@ -291,7 +286,6 @@ nautilus_search_engine_recent_class_init (NautilusSearchEngineRecentClass *klass
     NautilusSearchProviderClass *search_provider_class = NAUTILUS_SEARCH_PROVIDER_CLASS (klass);
     search_provider_class->get_name = get_name;
     search_provider_class->start_search = start_search;
-    search_provider_class->stop = nautilus_search_engine_recent_stop;
 }
 
 static void
