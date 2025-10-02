@@ -129,6 +129,24 @@ style check:
         - if: $CI_COMMIT_BRANCH !~ /^gnome-.*$/
 
 
+fedora_rawhide@x86_64:
+    extends:
+        - .fdo.distribution-image@fedora
+        - .nautilus.fedora
+        - .vars-devel
+    stage: test
+    script:
+        # This line is needed for mutter to not err while starting XWayland,
+        # which we currently can't disable.
+        - mkdir -m 1777 /tmp/.X11-unix
+        - meson setup -Dextensions=false -Db_coverage=true -Dtests=all $MESON_BUILD_DIR
+        - meson compile -C $MESON_BUILD_DIR
+        # Run the tests inside a headless wayland compositor.
+        - wlheadless-run -c mutter -- meson test --suite display --suite displayless --print-errorlogs -C $MESON_BUILD_DIR
+    artifacts:
+        paths:
+            - $MESON_BUILD_DIR
+
 flatpak@x86_64:
     extends: ['.flatpak@x86_64', '.vars-devel']
 
@@ -174,17 +192,12 @@ coverage:
         - .fdo.distribution-image@fedora
         - .nautilus.fedora
     stage: analyze
+    needs:
+        - job: fedora_rawhide@x86_64
+          artifacts: true
     rules:
         - allow_failure: true
     script:
-        # This line is needed for mutter to not err while starting XWayland,
-        # which we currently can't disable.
-        - mkdir -m 1777 /tmp/.X11-unix
-        - meson setup -Dextensions=false -Db_coverage=true -Dtests=all $MESON_BUILD_DIR
-        - meson compile -C $MESON_BUILD_DIR
-        # Run the tests inside a headless wayland compositor, and ignore errors
-        # from the return code.
-        - wlheadless-run -c mutter -- meson test --suite display --suite displayless --print-errorlogs -C $MESON_BUILD_DIR || true
         - ninja coverage -C $MESON_BUILD_DIR
     artifacts:
         expose_as: 'Coverage'
