@@ -235,6 +235,7 @@ libnautilus_sources = [
   'nautilus-search-hit.c',
   'nautilus-search-hit.h',
   'nautilus-search-popover.c',
+  'nautilus-search-popover.h',
   'nautilus-search-provider.c',
   'nautilus-search-provider.h',
   'nautilus-shell-search-provider.c',
