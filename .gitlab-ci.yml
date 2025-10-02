@@ -141,8 +141,9 @@ fedora_rawhide@x86_64:
         - mkdir -m 1777 /tmp/.X11-unix
         - meson setup -Dextensions=false -Db_coverage=true -Dtests=all $MESON_BUILD_DIR
         - meson compile -C $MESON_BUILD_DIR
-        # Run the tests inside a headless wayland compositor.
-        - wlheadless-run -c mutter -- meson test --suite display --suite displayless --print-errorlogs -C $MESON_BUILD_DIR
+        # Run the tests inside an XWayland server inside a headless Wayland compositor.
+        # FIXME: Use wlheadless-run again, which broke during an image update
+        - xwfb-run -c mutter -- meson test --suite display --suite displayless --print-errorlogs -C $MESON_BUILD_DIR
     artifacts:
         paths:
             - $MESON_BUILD_DIR
@@ -176,8 +177,9 @@ asan:
         - mkdir -m 1777 /tmp/.X11-unix
         - meson setup -Db_sanitize=address -Dextensions=false -Dintrospection=false -Dtests=all $MESON_BUILD_DIR
         - meson compile -C $MESON_BUILD_DIR
-        # Run the tests inside a headless wayland compositor.
-        - wlheadless-run -c mutter -- meson test --suite display --suite displayless -C $MESON_BUILD_DIR
+        # Run the tests inside an XWayland server inside a headless Wayland compositor.
+        # FIXME: Use wlheadless-run again, which broke during an image update
+        - xwfb-run -c mutter -- meson test --suite display --suite displayless --print-errorlogs -C $MESON_BUILD_DIR
     artifacts:
         name: 'Address Sanitizer-built test results'
         when: on_failure
