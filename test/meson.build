@@ -14,6 +14,9 @@
 # G_TEST_BUILDDIR and G_TEST_SRCDIR cannot be preset, since
 # the test sources are scattered.
 test_env = [
+  'GTK_A11Y=none',
+  'GSK_DEBUG=all',
+  'GDK_DEBUG=all',
   'GSETTINGS_BACKEND=memory',
   'GSETTINGS_SCHEMA_DIR=@0@'.format(join_paths(meson.project_build_root(), 'data')),
   'RUNNING_TESTS=@0@'.format('TRUE')
