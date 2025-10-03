@@ -174,7 +174,7 @@ vfs_file_set_metadata (NautilusFile *file,
                                    NULL);
     }
 
-    if (g_strcmp0 (g_getenv ("RUNNING_TESTS"), "TRUE") == 0)
+    if (g_test_initialized ())
     {
         nautilus_file_update_metadata_from_info (file, info);
         return;
@@ -207,7 +207,7 @@ vfs_file_set_metadata_as_list (NautilusFile  *file,
         g_file_info_set_attribute_stringv (info, gio_key, value);
     }
 
-    if (g_strcmp0 (g_getenv ("RUNNING_TESTS"), "TRUE") == 0)
+    if (g_test_initialized ())
     {
         nautilus_file_update_metadata_from_info (file, info);
         return;

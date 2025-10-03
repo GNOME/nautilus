@@ -658,7 +658,7 @@ can_delete_without_confirm (GFile *file)
      */
     if (g_file_has_uri_scheme (file, SCHEME_BURN) ||
         g_file_has_uri_scheme (file, SCHEME_RECENT) ||
-        !g_strcmp0 (g_getenv ("RUNNING_TESTS"), "TRUE"))
+        g_test_initialized ())
     {
         return TRUE;
     }
@@ -1094,10 +1094,9 @@ inhibit_power_manager (CommonJob  *job,
 {
     /* Since we might never initiate the app (in the case of testing), we can't
      * inhibit its power manager. This would emit a warning that terminates the
-     * testing. So we avoid doing this by checking if the RUNNING_TESTS
-     * environment variable is set to "TRUE".
+     * testing. So we avoid doing this by checking g_test_initialized ().
      */
-    if (g_strcmp0 (g_getenv ("RUNNING_TESTS"), "TRUE") == 0)
+    if (g_test_initialized ())
     {
         return;
     }

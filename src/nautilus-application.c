@@ -1163,7 +1163,7 @@ nautilus_application_startup (GApplication *app)
 
     nautilus_init_application_actions (self);
 
-    if (g_strcmp0 (g_getenv ("RUNNING_TESTS"), "TRUE") != 0)
+    if (!g_test_initialized ())
     {
         maybe_migrate_gtk_filechooser_preferences ();
     }
@@ -1196,7 +1196,7 @@ nautilus_application_dbus_register (GApplication     *app,
         return FALSE;
     }
 
-    if (g_strcmp0 (g_getenv ("RUNNING_TESTS"), "TRUE") != 0)
+    if (!g_test_initialized ())
     {
         self->portal_implementation = nautilus_portal_new ();
         if (!nautilus_portal_register (self->portal_implementation, connection, error))
