@@ -1,13 +1,13 @@
 include:
-  - project: "GNOME/citemplates"
-    file: "flatpak/flatpak_ci_initiative.yml"
-  - project: "Infrastructure/freedesktop-ci-templates"
-    file: "templates/fedora.yml"
-  - component: gitlab.gnome.org/GNOME/citemplates/release-service@master
-    inputs:
-      job-stage: release
-      dist-job-name: "flatpak@x86_64"
-      tarball-artifact-path: "${TARBALL_ARTIFACT_PATH}"
+    - project: "GNOME/citemplates"
+      file: "flatpak/flatpak_ci_initiative.yml"
+    - project: "Infrastructure/freedesktop-ci-templates"
+      file: "templates/fedora.yml"
+    - component: gitlab.gnome.org/GNOME/citemplates/release-service@master
+      inputs:
+          job-stage: release
+          dist-job-name: "flatpak@x86_64"
+          tarball-artifact-path: "${TARBALL_ARTIFACT_PATH}"
 
 variables:
     DEPENDENCIES:
@@ -62,15 +62,16 @@ stages:
         - when: always
 
 workflow:
-  rules:
-    # Run merge request pipelines, for main or release branches, for manually
-    # triggered pipelines (source "web"), and tags, but not for translation updates
-    - if: ($CI_PIPELINE_SOURCE == "merge_request_event" ||
-           $CI_COMMIT_TAG && $CI_COMMIT_REF_PROTECTED ||
-           $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH ||
-           $CI_COMMIT_BRANCH =~ /^gnome-.*$/ ||
-           $CI_PIPELINE_SOURCE == "web") &&
-          $CI_COMMIT_TITLE !~ /^Update.*translation$/
+    rules:
+        # Run merge request pipelines, for main or release branches, for
+        # manually triggered pipelines (source "web"), and tags, but not for
+        # translation updates
+        - if: ($CI_PIPELINE_SOURCE == "merge_request_event" ||
+               $CI_COMMIT_TAG && $CI_COMMIT_REF_PROTECTED ||
+               $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH ||
+               $CI_COMMIT_BRANCH =~ /^gnome-.*$/ ||
+               $CI_PIPELINE_SOURCE == "web") &&
+              $CI_COMMIT_TITLE !~ /^Update.*translation$/
 
 .nautilus.fedora:
     variables:
@@ -78,14 +79,14 @@ workflow:
         FDO_DISTRIBUTION_TAG: '2025-10-02'
         FDO_DISTRIBUTION_COMPRESSION_FORMAT: zstd:chunked
     needs:
-      - job: "update image"
-        optional: true
+        - job: "update image"
+          optional: true
 
 
 update image:
     extends:
-    - .fdo.container-build@fedora
-    - .nautilus.fedora
+        - .fdo.container-build@fedora
+        - .nautilus.fedora
     stage: image
     needs: []
     variables:
@@ -163,7 +164,7 @@ asan:
         name: 'Address Sanitizer-built test results'
         when: on_failure
         paths:
-          - $MESON_BUILD_DIR/meson-logs/testlog.txt
+            - $MESON_BUILD_DIR/meson-logs/testlog.txt
         reports:
             junit: $MESON_BUILD_DIR/meson-logs/testlog.junit.xml
         expire_in: 7 days
@@ -188,8 +189,8 @@ coverage:
     artifacts:
         expose_as: 'Coverage'
         paths:
-          - $MESON_BUILD_DIR/meson-logs/coveragereport/index.html
-          - $MESON_BUILD_DIR/meson-logs/coveragereport
+            - $MESON_BUILD_DIR/meson-logs/coveragereport/index.html
+            - $MESON_BUILD_DIR/meson-logs/coveragereport
         reports:
             coverage_report:
                 coverage_format: cobertura
