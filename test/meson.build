@@ -19,7 +19,6 @@ test_env = [
   'GDK_DEBUG=all',
   'GSETTINGS_BACKEND=memory',
   'GSETTINGS_SCHEMA_DIR=@0@'.format(join_paths(meson.project_build_root(), 'data')),
-  'RUNNING_TESTS=@0@'.format('TRUE')
 ]
 
 subdir('automated')
