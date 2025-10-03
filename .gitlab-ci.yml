@@ -82,24 +82,24 @@ workflow:
         optional: true
 
 
-flatpak@x86_64:
-    extends: ['.flatpak@x86_64', '.vars-devel']
-
-flatpak@aarch64:
-    when: manual
+update image:
+    extends:
+    - .fdo.container-build@fedora
+    - .nautilus.fedora
+    stage: image
+    needs: []
+    variables:
+        GIT_STRATEGY: none
+        FDO_DISTRIBUTION_PACKAGES: $DEPENDENCIES
+        FDO_DISTRIBUTION_EXEC: ".gitlab/image-script.sh"
+        CFLAGS: "-fno-omit-frame-pointer"
     rules:
-        - if: $CI_PROJECT_NAMESPACE == "GNOME" && $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
-          when: always
-        - allow_failure: true
-    extends: ['.flatpak@aarch64', '.vars-devel']
+        - changes:
+            - .gitlab-ci.yml
+            - .gitlab/**/*
+        - if: $CI_PROJECT_NAMESPACE != "GNOME"
+          when: never
 
-nightly@x86_64:
-    extends: '.publish_nightly'
-    needs: ['flatpak@x86_64']
-
-nightly@aarch64:
-    extends: '.publish_nightly'
-    needs: ['flatpak@aarch64']
 
 potfile:
     extends:
@@ -127,23 +127,18 @@ style check:
     rules:
         - if: $CI_COMMIT_BRANCH !~ /^gnome-.*$/
 
-update image:
-    extends:
-    - .fdo.container-build@fedora
-    - .nautilus.fedora
-    stage: image
-    needs: []
-    variables:
-        GIT_STRATEGY: none
-        FDO_DISTRIBUTION_PACKAGES: $DEPENDENCIES
-        FDO_DISTRIBUTION_EXEC: ".gitlab/image-script.sh"
-        CFLAGS: "-fno-omit-frame-pointer"
+
+flatpak@x86_64:
+    extends: ['.flatpak@x86_64', '.vars-devel']
+
+flatpak@aarch64:
+    when: manual
     rules:
-        - changes:
-            - .gitlab-ci.yml
-            - .gitlab/**/*
-        - if: $CI_PROJECT_NAMESPACE != "GNOME"
-          when: never
+        - if: $CI_PROJECT_NAMESPACE == "GNOME" && $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
+          when: always
+        - allow_failure: true
+    extends: ['.flatpak@aarch64', '.vars-devel']
+
 
 asan:
     extends:
@@ -201,6 +196,15 @@ coverage:
                 path: $MESON_BUILD_DIR/meson-logs/coverage.xml
         expire_in: 2 weeks
     coverage: '/^\s*lines:\s+([\d.]+\%)\s*/'
+
+
+nightly@x86_64:
+    extends: '.publish_nightly'
+    needs: ['flatpak@x86_64']
+
+nightly@aarch64:
+    extends: '.publish_nightly'
+    needs: ['flatpak@aarch64']
 
 pages:
     extends:
