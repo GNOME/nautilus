@@ -48,6 +48,3 @@ void nautilus_launch_application_from_command_array (GdkDisplay                 
                                                      const char                        *command_string,
                                                      gboolean                           use_terminal,
                                                      const char * const *               parameters);
-void nautilus_launch_desktop_file                   (const char                        *desktop_file_uri,
-                                                     const GList                       *parameter_uris,
-                                                     GtkWidget                         *parent);
