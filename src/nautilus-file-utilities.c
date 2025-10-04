@@ -938,7 +938,7 @@ nautilus_get_common_filename_prefix_from_filenames (const char * const *filename
 glong
 nautilus_get_max_child_name_length_for_location (GFile *location)
 {
-    g_autofree gchar *path = NULL;
+    const gchar *path;
     glong name_max;
     glong path_max;
     glong max_child_name_length;
@@ -951,7 +951,7 @@ nautilus_get_max_child_name_length_for_location (GFile *location)
         return -1;
     }
 
-    path = g_file_get_path (location);
+    path = g_file_peek_path (location);
 
     g_return_val_if_fail (path != NULL, -1);
 

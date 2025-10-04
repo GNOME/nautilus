@@ -1833,7 +1833,7 @@ nautilus_window_slot_display_view_selection_failure (GtkWindow    *window,
         {
             case G_IO_ERROR_NOT_FOUND:
             {
-                g_autofree char *file_path = g_file_get_path (location);
+                const char *file_path = g_file_get_path (location);
 
                 if (file_path != NULL)
                 {

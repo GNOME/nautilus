@@ -95,9 +95,7 @@ autorun (GMount *mount)
     g_autoptr (GFile) program_to_spawn = NULL;
     g_autoptr (GFile) program_parameter_file = NULL;
     g_autofree char *error_string = NULL;
-    g_autofree char *path_to_spawn = NULL;
-    g_autofree char *cwd_for_program = NULL;
-    g_autofree char *program_parameter = NULL;
+    const gchar *path_to_spawn = NULL, *cwd_for_program = NULL, *program_parameter = NULL;
     gboolean executable = TRUE;
 
     root = g_mount_get_root (mount);
@@ -125,14 +123,14 @@ autorun (GMount *mount)
 
     if (program_to_spawn != NULL)
     {
-        path_to_spawn = g_file_get_path (program_to_spawn);
+        path_to_spawn = g_file_peek_path (program_to_spawn);
     }
     if (program_parameter_file != NULL)
     {
-        program_parameter = g_file_get_path (program_parameter_file);
+        program_parameter = g_file_peek_path (program_parameter_file);
     }
 
-    cwd_for_program = g_file_get_path (root);
+    cwd_for_program = g_file_peek_path (root);
 
     if (path_to_spawn != NULL && cwd_for_program != NULL)
     {

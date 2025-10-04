@@ -5655,7 +5655,7 @@ get_dialog_initial_location (NautilusFilesView *view,
     else
     {
         location = nautilus_directory_get_location (view->directory);
-        g_autofree gchar *path = g_file_get_path (location);
+        const gchar *path = g_file_peek_path (location);
 
         if (path == NULL || *path == '\0')
         {
