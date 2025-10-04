@@ -684,14 +684,10 @@ nautilus_directory_is_local_or_fuse (NautilusDirectory *directory)
     }
     else
     {
-        g_autofree char *path = NULL;
-
         /* Non-native files may have local paths in FUSE mounts. The only way to
          * know if that's the case is to test if GIO reports a path.
          */
-        path = g_file_get_path (directory->details->location);
-
-        return (path != NULL);
+        return (g_file_peek_path (directory->details->location) != NULL);
     }
 }
 

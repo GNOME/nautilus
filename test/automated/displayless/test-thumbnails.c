@@ -77,7 +77,7 @@ make_image_file (GFile  *file,
 {
     g_autoptr (GdkPixbuf) pixbuf = gdk_pixbuf_new (GDK_COLORSPACE_RGB, FALSE, 8,
                                                    ICON_SIZE, ICON_SIZE);
-    g_autofree gchar *image_path = g_file_get_path (file);
+    const gchar *image_path = g_file_peek_path (file);
     g_autoptr (GError) error = NULL;
 
     gdk_pixbuf_fill (pixbuf, 0xff0000);

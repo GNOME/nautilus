@@ -2536,13 +2536,12 @@ setup_open_in_disks (NautilusPropertiesWindow *self)
     }
     else
     {
-        g_autoptr (GFile) location = NULL;
-        g_autofree gchar *path = NULL;
-        g_autoptr (GUnixMountEntry) mount_entry = NULL;
+        g_autoptr (GFile) location = nautilus_file_get_location (get_file (self));
+        const gchar *path = g_file_peek_path (location);
+        g_autoptr (GUnixMountEntry) mount_entry = (path != NULL)
+                                                  ? g_unix_mount_entry_at (path, NULL)
+                                                  : NULL;
 
-        location = nautilus_file_get_location (get_file (self));
-        path = g_file_get_path (location);
-        mount_entry = (path != NULL) ? g_unix_mount_entry_at (path, NULL) : NULL;
         if (mount_entry != NULL)
         {
             self->device_identifier = g_strdup (g_unix_mount_entry_get_device_path (mount_entry));

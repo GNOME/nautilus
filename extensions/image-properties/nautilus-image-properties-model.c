@@ -240,7 +240,7 @@ nautilus_image_properties_model_load_from_file_info (NautilusImagesPropertiesMod
     g_autoptr (GError) error = NULL;
     g_autofree char *uri = nautilus_file_info_get_uri (file_info);
     g_autoptr (GFile) file = g_file_new_for_uri (uri);
-    g_autofree char *path = g_file_get_path (file);
+    const char *path = g_file_peek_path (file);
 
     g_return_if_fail (path != NULL);
 

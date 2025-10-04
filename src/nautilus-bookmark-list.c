@@ -548,16 +548,12 @@ save_io_thread (GTask        *task,
                 gpointer      task_data,
                 GCancellable *cancellable)
 {
+    g_autoptr (GFile) file = nautilus_bookmark_list_get_file ();
+    g_autoptr (GFile) parent = g_file_get_parent (file);
+    const gchar *path = g_file_peek_path (parent);
     gchar *contents;
-    g_autofree gchar *path = NULL;
-    g_autoptr (GFile) parent = NULL;
-    g_autoptr (GFile) file = NULL;
     gboolean success;
     GError *error = NULL;
-
-    file = nautilus_bookmark_list_get_file ();
-    parent = g_file_get_parent (file);
-    path = g_file_get_path (parent);
 
     if (g_mkdir_with_parents (path, 0700) == -1)
     {

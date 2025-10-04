@@ -564,7 +564,7 @@ result_list_attributes_ready_cb (GList    *file_list,
                                    ? nautilus_bookmark_get_name (bookmark)
                                    : nautilus_file_get_display_name (file);
 
-        g_autofree gchar *path = g_file_get_path (file_location);
+        const gchar *path = g_file_peek_path (file_location);
         g_autofree gchar *description = (path != NULL ? g_path_get_dirname (path) : NULL);
 
         g_variant_builder_add (&meta, "{sv}",

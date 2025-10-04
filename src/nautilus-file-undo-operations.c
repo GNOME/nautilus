@@ -435,10 +435,9 @@ ext_strings_func (NautilusFileUndoInfo  *info,
     NautilusFileUndoInfoExt *self = NAUTILUS_FILE_UNDO_INFO_EXT (info);
     NautilusFileUndoOp op_type = nautilus_file_undo_info_get_op_type (info);
     gint count = nautilus_file_undo_info_get_item_count (info);
-    gchar *name = NULL, *source, *destination;
-
-    source = g_file_get_path (self->src_dir);
-    destination = g_file_get_path (self->dest_dir);
+    const gchar *source = g_file_peek_path (self->src_dir);
+    const gchar *destination = g_file_peek_path (self->dest_dir);
+    g_autofree gchar *name = NULL;
 
     if (count <= 1)
     {
@@ -571,10 +570,6 @@ ext_strings_func (NautilusFileUndoInfo  *info,
     {
         g_assert_not_reached ();
     }
-
-    g_free (name);
-    g_free (source);
-    g_free (destination);
 }
 
 static void
@@ -1620,24 +1615,14 @@ trash_strings_func (NautilusFileUndoInfo  *info,
     }
     else
     {
-        GList *keys;
-        char *name, *orig_path;
-        GFile *file;
+        g_autoptr (GList) keys = g_hash_table_get_keys (self->trashed);
+        GFile *file = keys->data;
+        g_autofree char *basename = g_file_get_basename (file);
+        const gchar *orig_path = g_file_peek_path (file);
+        g_autofree char *parse_name = g_file_get_parse_name (file);
 
-        keys = g_hash_table_get_keys (self->trashed);
-        file = keys->data;
-        name = g_file_get_basename (file);
-        orig_path = g_file_get_path (file);
-        *undo_description = g_strdup_printf (_("Restore “%s” to “%s”"), name, orig_path);
-
-        g_free (name);
-        g_free (orig_path);
-        g_list_free (keys);
-
-        name = g_file_get_parse_name (file);
-        *redo_description = g_strdup_printf (_("Move “%s” to trash"), name);
-
-        g_free (name);
+        *undo_description = g_strdup_printf (_("Restore “%s” to “%s”"), basename, orig_path);
+        *redo_description = g_strdup_printf (_("Move “%s” to trash"), parse_name);
     }
 
     *undo_label = g_strdup (_("_Undo Trash"));
@@ -1932,17 +1917,13 @@ rec_permissions_strings_func (NautilusFileUndoInfo  *info,
                               gchar                **redo_description)
 {
     NautilusFileUndoInfoRecPermissions *self = NAUTILUS_FILE_UNDO_INFO_REC_PERMISSIONS (info);
-    char *name;
-
-    name = g_file_get_path (self->dest_dir);
+    const gchar *name = g_file_peek_path (self->dest_dir);
 
     *undo_description = g_strdup_printf (_("Restore original permissions of items enclosed in “%s”"), name);
     *redo_description = g_strdup_printf (_("Set permissions of items enclosed in “%s”"), name);
 
     *undo_label = g_strdup (_("_Undo Change Permissions"));
     *redo_label = g_strdup (_("_Redo Change Permissions"));
-
-    g_free (name);
 }
 
 static void
