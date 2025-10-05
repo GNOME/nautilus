@@ -7484,6 +7484,8 @@ save_image_thread_func (GTask        *task,
     g_autoptr (GError) output_error = NULL;
     g_autoptr (GFileOutputStream) stream = NULL;
     g_autofree gchar *basename = g_strconcat (job->base_name, ".png", NULL);
+    gconstpointer bytes_buffer;
+    size_t bytes_len;
 
     for (size_t i = 1; stream == NULL; i += 1)
     {
@@ -7513,7 +7515,13 @@ save_image_thread_func (GTask        *task,
     bytes = gdk_texture_save_to_png_bytes (job->texture);
     nautilus_progress_info_set_progress (job->common.progress, .65, 1);
     nautilus_progress_info_set_details (job->common.progress, "");
-    g_output_stream_write_bytes (G_OUTPUT_STREAM (stream), bytes, job->common.cancellable, &output_error);
+    bytes_buffer = g_bytes_get_data (bytes, &bytes_len);
+    g_output_stream_write_all (G_OUTPUT_STREAM (stream),
+                               bytes_buffer,
+                               bytes_len,
+                               NULL,
+                               job->common.cancellable,
+                               &output_error);
     if (output_error == NULL)
     {
         job->success = TRUE;
