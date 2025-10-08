@@ -12,8 +12,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: nautilus.HEAD.ro\n"
 "Report-Msgid-Bugs-To: https://gitlab.gnome.org/GNOME/nautilus/issues\n"
-"POT-Creation-Date: 2025-07-11 17:26+0000\n"
-"PO-Revision-Date: 2025-07-13 22:25+0200\n"
+"POT-Creation-Date: 2025-09-15 21:54+0000\n"
+"PO-Revision-Date: 2025-10-08 14:48+0200\n"
 "Last-Translator: Antonio Marin <gnmer.6qxyg@slmail.me>\n"
 "Language-Team: Romanian <gnomero-list@lists.sourceforge.net>\n"
 "Language: ro\n"
@@ -26,18 +26,18 @@ msgstr ""
 "X-Project-Style: gnome\n"
 "X-Poedit-SourceCharset: UTF-8\n"
 
-#: data/nautilus-autorun-software.desktop.in:3
+#: data/nautilus-autorun-software.desktop.in:2
 msgid "Run Software"
 msgstr "Pornește programul"
 
 #: data/org.gnome.Nautilus.metainfo.xml.in.in:5
-#: data/org.gnome.Nautilus.desktop.in.in:3 src/nautilus-mime-actions.c:102
+#: data/org.gnome.Nautilus.desktop.in.in:2 src/nautilus-mime-actions.c:102
 #: src/nautilus-portal.c:521 src/resources/ui/nautilus-window.ui:123
 msgid "Files"
 msgstr "Fișiere"
 
 #: data/org.gnome.Nautilus.metainfo.xml.in.in:6
-#: data/org.gnome.Nautilus.desktop.in.in:4
+#: data/org.gnome.Nautilus.desktop.in.in:3
 msgid "Access and organize files"
 msgstr "Accesează și organizează fișiere"
 
@@ -84,13 +84,13 @@ msgid "Search"
 msgstr "Caută"
 
 #. Translators: Search terms to find this application. Do NOT translate or localize the semicolons! The list MUST also end with a semicolon!
-#: data/org.gnome.Nautilus.desktop.in.in:6
+#: data/org.gnome.Nautilus.desktop.in.in:5
 msgid "folder;manager;explore;disk;filesystem;nautilus;"
 msgstr ""
 "folder;manager;explore;disk;filesystem;nautilus;dosar;administrator;explorează;disc;sistem "
 "de fișiere;"
 
-#: data/org.gnome.Nautilus.desktop.in.in:21
+#: data/org.gnome.Nautilus.desktop.in.in:20
 msgid "New Window"
 msgstr "Fereastră nouă"
 
@@ -1423,73 +1423,73 @@ msgstr "Elementul nu a putut fi redenumit."
 msgid "Renaming “%s” to “%s”."
 msgstr "Se redenumește „%s” la „%s”."
 
-#: src/nautilus-file.c:1298 src/nautilus-vfs-file.c:271
+#: src/nautilus-file.c:1305 src/nautilus-vfs-file.c:271
 msgid "This file cannot be mounted"
 msgstr "Fișierul nu poate fi montat"
 
-#: src/nautilus-file.c:1352
+#: src/nautilus-file.c:1359
 msgid "This file cannot be unmounted"
 msgstr "Fișierul nu poate fi demontat"
 
-#: src/nautilus-file.c:1399
+#: src/nautilus-file.c:1406
 msgid "This file cannot be ejected"
 msgstr "Fișierul nu poate fi scos"
 
-#: src/nautilus-file.c:1444 src/nautilus-vfs-file.c:462
+#: src/nautilus-file.c:1451 src/nautilus-vfs-file.c:462
 msgid "This file cannot be started"
 msgstr "Fișierul nu poate fi pornit"
 
-#: src/nautilus-file.c:1503 src/nautilus-file.c:1543
+#: src/nautilus-file.c:1510 src/nautilus-file.c:1550
 msgid "This file cannot be stopped"
 msgstr "Fișierul nu poate fi oprit"
 
-#: src/nautilus-file.c:1899
+#: src/nautilus-file.c:1906
 #, c-format
 msgid "Slashes are not allowed in filenames"
 msgstr "Bara oblică nu este permisă în numele fișierelor"
 
-#: src/nautilus-file.c:1942
+#: src/nautilus-file.c:1949
 #, c-format
 msgid "Toplevel files cannot be renamed"
 msgstr "Fișierele de nivel superior nu pot fi redenumite"
 
-#: src/nautilus-file.c:2022
+#: src/nautilus-file.c:2029
 #, c-format
 msgid "File not found"
 msgstr "Fișierul nu a fost găsit"
 
-#: src/nautilus-file.c:5436
+#: src/nautilus-file.c:5445
 #, c-format
 msgid "Not allowed to set permissions"
 msgstr "Permisiunile nu pot fi modificate"
 
-#: src/nautilus-file.c:5780
+#: src/nautilus-file.c:5789
 #, c-format
 msgid "Not allowed to set owner"
 msgstr "Nu este permisă definirea proprietarului"
 
-#: src/nautilus-file.c:5799
+#: src/nautilus-file.c:5808
 #, c-format
 msgid "Specified owner “%s” doesn’t exist"
 msgstr "Proprietarul specificat „%s” nu există"
 
-#: src/nautilus-file.c:6089
+#: src/nautilus-file.c:6098
 #, c-format
 msgid "Not allowed to set group"
 msgstr "Nu este permisă definirea grupului"
 
-#: src/nautilus-file.c:6108
+#: src/nautilus-file.c:6117
 #, c-format
 msgid "Specified group “%s” doesn’t exist"
 msgstr "Grupul specificat „%s” nu există"
 
 #. Translators: This is a username followed by "(You)" to indicate the file is owned by the current user
-#: src/nautilus-file.c:6248
+#: src/nautilus-file.c:6257
 #, c-format
 msgid "%s (You)"
 msgstr "%s (Tu)"
 
-#: src/nautilus-file.c:6280
+#: src/nautilus-file.c:6289
 #, c-format
 msgid "%'u item"
 msgid_plural "%'u items"
@@ -1497,7 +1497,7 @@ msgstr[0] "%'u element"
 msgstr[1] "%'u elemente"
 msgstr[2] "%'u de elemente"
 
-#: src/nautilus-file.c:6281
+#: src/nautilus-file.c:6290
 #, c-format
 msgid "%'u folder"
 msgid_plural "%'u folders"
@@ -1505,7 +1505,7 @@ msgstr[0] "%'u dosar"
 msgstr[1] "%'u dosare"
 msgstr[2] "%'u de dosare"
 
-#: src/nautilus-file.c:6282
+#: src/nautilus-file.c:6291
 #, c-format
 msgid "%'u file"
 msgid_plural "%'u files"
@@ -1513,7 +1513,7 @@ msgstr[0] "%'u fișier"
 msgstr[1] "%'u fișiere"
 msgstr[2] "%'u de fișiere"
 
-#: src/nautilus-file.c:6366 src/nautilus-properties-window.c:2098
+#: src/nautilus-file.c:6375 src/nautilus-properties-window.c:2098
 #, c-format
 msgid "%s byte"
 msgid_plural "%s bytes"
@@ -1522,93 +1522,93 @@ msgstr[1] "%s octeți"
 msgstr[2] "%s de octeți"
 
 #. This means no contents at all were readable
-#: src/nautilus-file.c:6770
+#: src/nautilus-file.c:6779
 msgid "? bytes"
 msgstr "? octeți"
 
 #. This means no contents at all were readable
-#: src/nautilus-file.c:6782
+#: src/nautilus-file.c:6791
 msgid "? items"
 msgstr "? elemente"
 
 #. Translators: This about a file type.
-#: src/nautilus-file.c:6791
+#: src/nautilus-file.c:6800
 msgid "Unknown type"
 msgstr "Tip necunoscut"
 
 #. Fallback, use for both unknown attributes and attributes
 #. * for which we have no more appropriate default.
 #.
-#: src/nautilus-file.c:6822
+#: src/nautilus-file.c:6831
 msgid "Unknown"
 msgstr "Necunoscut"
 
-#: src/nautilus-file.c:6859 src/nautilus-file.c:6867 src/nautilus-file.c:6926
+#: src/nautilus-file.c:6868 src/nautilus-file.c:6876 src/nautilus-file.c:6935
 msgid "Program"
 msgstr "Program"
 
-#: src/nautilus-file.c:6860
+#: src/nautilus-file.c:6869
 msgid "Audio"
 msgstr "Audio"
 
-#: src/nautilus-file.c:6861
+#: src/nautilus-file.c:6870
 msgid "Font"
 msgstr "Tip de litere"
 
-#: src/nautilus-file.c:6862
+#: src/nautilus-file.c:6871
 msgid "Image"
 msgstr "Imagine"
 
-#: src/nautilus-file.c:6863
+#: src/nautilus-file.c:6872
 msgid "Archive"
 msgstr "Arhivă"
 
-#: src/nautilus-file.c:6864
+#: src/nautilus-file.c:6873
 msgid "Markup"
 msgstr "Evidențiere"
 
-#: src/nautilus-file.c:6865 src/nautilus-file.c:6866
+#: src/nautilus-file.c:6874 src/nautilus-file.c:6875
 msgid "Text"
 msgstr "Text"
 
-#: src/nautilus-file.c:6868 src/nautilus-mime-actions.c:301
+#: src/nautilus-file.c:6877 src/nautilus-mime-actions.c:301
 msgid "Video"
 msgstr "Video"
 
-#: src/nautilus-file.c:6869
+#: src/nautilus-file.c:6878
 msgid "Contacts"
 msgstr "Contacte"
 
-#: src/nautilus-file.c:6870
+#: src/nautilus-file.c:6879
 msgid "Calendar"
 msgstr "Calendar"
 
-#: src/nautilus-file.c:6871
+#: src/nautilus-file.c:6880
 msgid "Document"
 msgstr "Document"
 
-#: src/nautilus-file.c:6872 src/nautilus-mime-actions.c:262
+#: src/nautilus-file.c:6881 src/nautilus-mime-actions.c:262
 msgid "Presentation"
 msgstr "Prezentare"
 
-#: src/nautilus-file.c:6873 src/nautilus-mime-actions.c:274
+#: src/nautilus-file.c:6882 src/nautilus-mime-actions.c:274
 msgid "Spreadsheet"
 msgstr "Foaie de calcul"
 
 #. Refers to a file type which is known but not one of the basic types
-#: src/nautilus-file.c:6906
+#: src/nautilus-file.c:6915
 msgid "Other"
 msgstr "Altele"
 
-#: src/nautilus-file.c:6928
+#: src/nautilus-file.c:6937
 msgid "Binary"
 msgstr "Binar"
 
-#: src/nautilus-file.c:6933
+#: src/nautilus-file.c:6942
 msgid "Folder"
 msgstr "Dosar"
 
-#: src/nautilus-file.c:6991
+#: src/nautilus-file.c:7000
 msgid "Link"
 msgstr "Legătură"
 
@@ -1617,17 +1617,17 @@ msgstr "Legătură"
 #. * to that kind of file (e.g. "link to folder").
 #.
 #. Translators: File name for new symlink. %s is target's name
-#: src/nautilus-file.c:6997 src/nautilus-filename-utilities.c:254
+#: src/nautilus-file.c:7006 src/nautilus-filename-utilities.c:254
 #, c-format
 msgid "Link to %s"
 msgstr "Legătură la %s"
 
-#: src/nautilus-file.c:7013 src/nautilus-file.c:7029 src/nautilus-file.c:7045
+#: src/nautilus-file.c:7022 src/nautilus-file.c:7038 src/nautilus-file.c:7054
 msgid "Link (broken)"
 msgstr "Legătură (întreruptă)"
 
 #. Translators: This refers to available space in a folder; e.g.: 100 MB Free
-#: src/nautilus-file.c:7206
+#: src/nautilus-file.c:7215
 #, c-format
 msgid "%s Free"
 msgstr "%s liber"
@@ -5761,11 +5761,11 @@ msgstr "Fișiere cu stea"
 # Dacă se modifică traducerea aici, va trebui modificată și în modulul xdg-user-dirs care se găsește în freedesktop.org (non-GNOME).
 #: src/gtk/nautilusgtkplacessidebar.c:704
 msgid "Desktop"
-msgstr "Desktop"
+msgstr "Birou"
 
 #: src/gtk/nautilusgtkplacessidebar.c:706
 msgid "Open the contents of your desktop in a folder"
-msgstr "Deschide conținutul desktopului dintr-un dosar"
+msgstr "Deschide conținutul biroului dintr-un dosar"
 
 #: src/gtk/nautilusgtkplacessidebar.c:718
 msgid "Open Network Locations"
