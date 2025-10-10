@@ -37,11 +37,13 @@ typedef struct
 {
     GList *files;
     gboolean success;
+    GMainLoop *loop;
 } ArchiveCallbackData;
 
 #define ARCHIVE_CALLBACK_DATA_INIT(file) { \
             &(GList){ .data = file }, \
             FALSE, \
+            NULL, \
 };
 
 static void
@@ -56,6 +58,11 @@ compression_callback (GFile    *new_file,
     g_assert (g_file_equal (new_file, data->files->data));
 
     data->success = success;
+
+    if (data->loop != NULL)
+    {
+        g_main_loop_quit (data->loop);
+    }
 }
 
 static gint
@@ -79,6 +86,11 @@ extraction_callback (GList    *outputs,
     }
 
     data->success = outputs != NULL;
+
+    if (data->loop != NULL)
+    {
+        g_main_loop_quit (data->loop);
+    }
 }
 
 static void
@@ -172,7 +184,7 @@ test_archive_file (void)
     g_autolist (GFile) extracted_files = file_hierarchy_get_files_list (extracted_files_hier,
                                                                         "",
                                                                         TRUE);
-    ArchiveCallbackData data = { extracted_files, FALSE };
+    ArchiveCallbackData data = { extracted_files, FALSE, NULL };
 
     /* Delete original files so that they can be replace with extracted ones. */
     file_hierarchy_delete (compressed_files_hier, "");
@@ -209,17 +221,19 @@ test_archive_file (void)
 static void
 test_archive_file_long (void)
 {
-    /* Create a and compress a 8 MiB file using XZ to take longer. */
-    gsize file_size = 8 * 1024 * 1024;
+    /* Create a and compress a 16 MiB file using XZ to take longer. */
+    gsize file_size = 16 * 1024 * 1024;
     g_autoptr (GFile) tmp_dir = g_file_new_for_path (test_get_tmp_dir ());
     g_autoptr (GFile) big_file = g_file_get_child (tmp_dir, "my_big_file");
     g_autoptr (GFile) archive_file = g_file_get_child (tmp_dir, "my_big_file.tar.xz");
     AutoarFormat format = AUTOAR_FORMAT_TAR;
     AutoarFilter filter = AUTOAR_FILTER_XZ;
     ArchiveCallbackData data = ARCHIVE_CALLBACK_DATA_INIT (archive_file);
+    g_autoptr (GMainLoop) loop = g_main_loop_new (NULL, FALSE);
     g_autoptr (GError) error = NULL;
 
     create_random_file (big_file, file_size);
+    data.loop = loop;
 
     /*
      * Compression
@@ -233,7 +247,7 @@ test_archive_file_long (void)
                                        NULL,
                                        compression_callback,
                                        &data);
-    ITER_CONTEXT_WHILE (!data.success);
+    g_main_loop_run (loop);
 
     g_assert_true (data.success);
     g_assert_true (g_file_query_exists (archive_file, NULL));
@@ -267,6 +281,7 @@ test_archive_file_long (void)
         .data = big_file
     };
     data.success = FALSE;
+    data.loop = loop;
     g_file_delete (big_file, NULL, &error);
     g_assert_no_error (error);
     g_assert_false (g_file_query_exists (big_file, NULL));
@@ -277,7 +292,7 @@ test_archive_file_long (void)
                                             NULL,
                                             extraction_callback,
                                             &data);
-    ITER_CONTEXT_WHILE (!data.success);
+    g_main_loop_run (loop);
 
     g_assert_true (data.success);
     g_assert_true (g_file_query_exists (big_file, NULL));
@@ -408,7 +423,7 @@ test_archive_full_dir (void)
      */
     g_autolist (GFile) extracted_files = file_hierarchy_get_files_list (extracted_files_hier, "",
                                                                         TRUE);
-    ArchiveCallbackData data = { extracted_files, FALSE };
+    ArchiveCallbackData data = { extracted_files, FALSE, NULL };
 
     /* Delete original files so that they can be replace with extracted ones. */
     file_hierarchy_delete (compressed_files_hier, "");
@@ -471,7 +486,7 @@ test_archive_full_dir_early_cancel (void)
     g_autoptr (NautilusProgressInfoManager) progress_manager = NULL;
     GList *progress_infos;
     NautilusProgressInfo *info;
-    ArchiveCallbackData data = { NULL, FALSE };
+    ArchiveCallbackData data = { NULL, FALSE, NULL };
 
     /*
      * Compression
@@ -604,7 +619,7 @@ test_archive_files (void)
      */
     g_autolist (GFile) extracted_files = file_hierarchy_get_files_list (extracted_files_hier, "",
                                                                         TRUE);
-    ArchiveCallbackData data = { extracted_files, FALSE };
+    ArchiveCallbackData data = { extracted_files, FALSE, NULL };
 
     /* Delete original files so that they can be replace with extracted ones. */
     file_hierarchy_delete (compressed_files_hier, "");
@@ -702,7 +717,7 @@ test_archives_files (void)
      */
     g_autolist (GFile) extracted_files = file_hierarchy_get_files_list (extracted_files_hier, "",
                                                                         TRUE);
-    ArchiveCallbackData data = { extracted_files, FALSE };
+    ArchiveCallbackData data = { extracted_files, FALSE, NULL };
 
     /* Delete original files so that they can be replace with extracted ones. */
     file_hierarchy_delete (first_compressed_hier, "");
