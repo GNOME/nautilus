@@ -1821,35 +1821,33 @@ call_ready_callbacks_at_idle (gpointer callback_data)
 {
     /* Ensure the directory is alive until the end of this scope */
     g_autoptr (NautilusDirectory) directory = nautilus_directory_ref (NAUTILUS_DIRECTORY (callback_data));
-    g_autoptr (GPtrArray) values = NULL;
+    GHashTableIter hash_iter;
+    GList *node;
 
-    /* Steal all ready callbacks, new callbacks will end up in empty table. */
-    values = g_hash_table_steal_all_values (directory->details->call_when_ready_hash.ready);
     directory->details->call_ready_idle_id = 0;
 
-    if (values->len == 0)
+    if (g_hash_table_size (directory->details->call_when_ready_hash.ready) == 0)
     {
         /* Return early in case all ready callbacks were cancelled, don't emit state change */
         return;
     }
 
-    for (guint i = 0; i < values->len; i++)
+    g_hash_table_iter_init (&hash_iter, directory->details->call_when_ready_hash.ready);
+
+    /* Check if any callbacks are ready and call them if they are. */
+    while (g_hash_table_iter_next (&hash_iter, NULL, (gpointer *) &node))
     {
-        for (GList *node = values->pdata[i]; node != NULL; node = node->next)
-        {
-            ReadyCallback *callback = node->data;
+        ReadyCallback callback = *(ReadyCallback *) (node->data);
 
-            request_counter_remove_request (directory->details->call_when_ready_counters,
-                                            callback->request);
+        /* Callbacks are one-shots, so remove it now. */
+        remove_callback_link (directory, node, TRUE);
 
-            ready_callback_call (directory, callback);
-        }
-    }
+        /* Call the callback. */
+        ready_callback_call (directory, &callback);
 
-    /* Cleanup */
-    for (guint i = 0; i < values->len; i++)
-    {
-        g_list_free_full (values->pdata[i], g_free);
+        /* Need to parse the node from the hash table again because it might
+         * have been freed */
+        g_hash_table_iter_init (&hash_iter, directory->details->call_when_ready_hash.ready);
     }
 
     nautilus_directory_async_state_changed (directory);
