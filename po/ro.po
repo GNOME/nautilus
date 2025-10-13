@@ -12,8 +12,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: nautilus.HEAD.ro\n"
 "Report-Msgid-Bugs-To: https://gitlab.gnome.org/GNOME/nautilus/issues\n"
-"POT-Creation-Date: 2025-10-08 12:50+0000\n"
-"PO-Revision-Date: 2025-10-09 14:41+0200\n"
+"POT-Creation-Date: 2025-10-12 14:05+0000\n"
+"PO-Revision-Date: 2025-10-13 11:01+0200\n"
 "Last-Translator: Antonio Marin <gnmer.6qxyg@slmail.me>\n"
 "Language-Team: Romanian <gnomero-list@lists.sourceforge.net>\n"
 "Language: ro\n"
@@ -1859,8 +1859,8 @@ msgstr[2] "Se șterg %'d de fișiere"
 #: src/nautilus-file-operations.c:1397 src/nautilus-file-operations.c:1743
 #: src/nautilus-file-operations.c:1751 src/nautilus-file-operations.c:1791
 #: src/nautilus-file-operations.c:3693 src/nautilus-file-operations.c:3701
-#: src/nautilus-file-operations.c:3772 src/nautilus-file-operations.c:8496
-#: src/nautilus-file-operations.c:8564
+#: src/nautilus-file-operations.c:3772 src/nautilus-file-operations.c:8504
+#: src/nautilus-file-operations.c:8572
 #, c-format
 msgid "%'d / %'d"
 msgstr "%'d / %'d"
@@ -2238,8 +2238,8 @@ msgstr[2] "S-au duplicat %'d de fișiere în „%s”"
 #. To translators: %s will expand to a size like "2 bytes" or "3 MB", so something like "4 kB / 4 MB"
 #. To translators: %s will expand to a size like "2 bytes" or "3 MB".
 #: src/nautilus-file-operations.c:3683 src/nautilus-file-operations.c:3743
-#: src/nautilus-file-operations.c:8009 src/nautilus-file-operations.c:8236
-#: src/nautilus-file-operations.c:8491 src/nautilus-file-operations.c:8534
+#: src/nautilus-file-operations.c:8017 src/nautilus-file-operations.c:8244
+#: src/nautilus-file-operations.c:8499 src/nautilus-file-operations.c:8542
 #, c-format
 msgid "%s / %s"
 msgstr "%s / %s"
@@ -2262,8 +2262,8 @@ msgstr "%s / %s"
 #. *
 #. * The singular/plural form will be used depending on the remaining time (i.e. the %s argument).
 #.
-#: src/nautilus-file-operations.c:3727 src/nautilus-file-operations.c:8027
-#: src/nautilus-file-operations.c:8523
+#: src/nautilus-file-operations.c:3727 src/nautilus-file-operations.c:8035
+#: src/nautilus-file-operations.c:8531
 #, c-format
 msgid "%s / %s — %s left (%s/s)"
 msgid_plural "%s / %s — %s left (%s/s)"
@@ -2276,7 +2276,7 @@ msgstr[2] "%s / %s — %s rămase (%s/s)"
 #. *
 #. * The singular/plural form will be used depending on the remaining time (i.e. the %s argument).
 #.
-#: src/nautilus-file-operations.c:3761 src/nautilus-file-operations.c:8553
+#: src/nautilus-file-operations.c:3761 src/nautilus-file-operations.c:8561
 #, c-format
 msgid "%'d / %'d — %s left (%s/s)"
 msgid_plural "%'d / %'d — %s left (%s/s)"
@@ -2461,66 +2461,66 @@ msgstr "Eroare la crearea fișierului „%s”."
 msgid "There was an error creating the directory in %s."
 msgstr "S-a produs o eroare la crearea dosarului în %s."
 
-#: src/nautilus-file-operations.c:7512
+#: src/nautilus-file-operations.c:7514
 msgid "Saving image to file"
 msgstr "Se salvează imaginea în fișier"
 
-#: src/nautilus-file-operations.c:7521
+#: src/nautilus-file-operations.c:7529
 msgid "Successfully saved image to file"
 msgstr "Imaginea a fost salvată cu succes în fișier"
 
-#: src/nautilus-file-operations.c:7551
+#: src/nautilus-file-operations.c:7559
 msgid "Failed to save image"
 msgstr "Nu s-a putut salva imaginea"
 
 #. Translators: This is used to auto-generate a file name for pasted images from
 #. * the clipboard i.e. "Pasted image.png", "Pasted image 1.png", ...
-#: src/nautilus-file-operations.c:7613
+#: src/nautilus-file-operations.c:7621
 msgid "Pasted image"
 msgstr "Imagine lipită"
 
-#: src/nautilus-file-operations.c:7620
+#: src/nautilus-file-operations.c:7628
 msgid "Retrieving clipboard data"
 msgstr "Se încarcă datele copiate"
 
-#: src/nautilus-file-operations.c:7652
+#: src/nautilus-file-operations.c:7660
 msgid "Retrieving image data"
 msgstr "Se încarcă datele imaginii"
 
-#: src/nautilus-file-operations.c:7870
+#: src/nautilus-file-operations.c:7878
 msgid "Emptying Trash"
 msgstr "Se golește coșul de gunoi"
 
-#: src/nautilus-file-operations.c:7913
+#: src/nautilus-file-operations.c:7921
 msgid "Verifying destination"
 msgstr "Se verifică destinația"
 
-#: src/nautilus-file-operations.c:7967
+#: src/nautilus-file-operations.c:7975
 #, c-format
 msgid "Extracting “%s”"
 msgstr "Se extrage „%s”"
 
-#: src/nautilus-file-operations.c:8093 src/nautilus-file-operations.c:8183
+#: src/nautilus-file-operations.c:8101 src/nautilus-file-operations.c:8191
 #, c-format
 msgid "Error extracting “%s”"
 msgstr "Eroare la extragerea „%s”"
 
-#: src/nautilus-file-operations.c:8100
+#: src/nautilus-file-operations.c:8108
 #, c-format
 msgid "There was an error while extracting “%s”."
 msgstr "A apărut o eroare la extragerea „%s”."
 
-#: src/nautilus-file-operations.c:8186
+#: src/nautilus-file-operations.c:8194
 #, c-format
 msgid "Not enough free space to extract “%s”"
 msgstr "Nu este destul spațiu liber pentru a extrage %s"
 
-#: src/nautilus-file-operations.c:8219
+#: src/nautilus-file-operations.c:8227
 #, c-format
 msgid "Extracted “%s” to “%s”"
 msgstr "S-a extras „%s” în „%s”"
 
-#: src/nautilus-file-operations.c:8225
+#: src/nautilus-file-operations.c:8233
 #, c-format
 msgid "Extracted %'d file to “%s”"
 msgid_plural "Extracted %'d files to “%s”"
@@ -2528,20 +2528,20 @@ msgstr[0] "S-a extras %'d fișier în „%s”"
 msgstr[1] "S-au extras %'d fișiere în „%s”"
 msgstr[2] "S-au extras %'d de fișiere în „%s”"
 
-#: src/nautilus-file-operations.c:8259
+#: src/nautilus-file-operations.c:8267
 msgid "Preparing to extract"
 msgstr "Se pregătește de extragere"
 
-#: src/nautilus-file-operations.c:8387
+#: src/nautilus-file-operations.c:8395
 msgid "Extracting Files"
 msgstr "Se extrag fișiere"
 
-#: src/nautilus-file-operations.c:8447
+#: src/nautilus-file-operations.c:8455
 #, c-format
 msgid "Compressing “%s” into “%s”"
 msgstr "Se comprimă „%s” în „%s”"
 
-#: src/nautilus-file-operations.c:8453
+#: src/nautilus-file-operations.c:8461
 #, c-format
 msgid "Compressing %'d file into “%s”"
 msgid_plural "Compressing %'d files into “%s”"
@@ -2549,12 +2549,12 @@ msgstr[0] "Se comprimă %'d fișier în „%s”"
 msgstr[1] "Se comprimă %'d fișiere în „%s”"
 msgstr[2] "Se comprimă %'d de fișiere în „%s”"
 
-#: src/nautilus-file-operations.c:8601
+#: src/nautilus-file-operations.c:8609
 #, c-format
 msgid "Error compressing “%s” into “%s”"
 msgstr "Eroare la comprimarea „%s” în „%s”"
 
-#: src/nautilus-file-operations.c:8607
+#: src/nautilus-file-operations.c:8615
 #, c-format
 msgid "Error compressing %'d file into “%s”"
 msgid_plural "Error compressing %'d files into “%s”"
@@ -2562,16 +2562,16 @@ msgstr[0] "Eroare la comprimarea %'d fișier în „%s”"
 msgstr[1] "Eroare la comprimarea a %'d fișiere în „%s”"
 msgstr[2] "Eroare la comprimarea a %'d de fișiere în „%s”"
 
-#: src/nautilus-file-operations.c:8617
+#: src/nautilus-file-operations.c:8625
 msgid "There was an error while compressing files."
 msgstr "A apărut o eroare în timpul comprimării fișierelor."
 
-#: src/nautilus-file-operations.c:8642
+#: src/nautilus-file-operations.c:8650
 #, c-format
 msgid "Compressed “%s” into “%s”"
 msgstr "S-a comprimat „%s” în „%s”"
 
-#: src/nautilus-file-operations.c:8648
+#: src/nautilus-file-operations.c:8656
 #, c-format
 msgid "Compressed %'d file into “%s”"
 msgid_plural "Compressed %'d files into “%s”"
@@ -2579,7 +2579,7 @@ msgstr[0] "S-a comprimat %'d fișier în „%s”"
 msgstr[1] "S-au comprimat %'d fișiere în „%s”"
 msgstr[2] "S-au comprimat %'d de fișiere în „%s”"
 
-#: src/nautilus-file-operations.c:8767
+#: src/nautilus-file-operations.c:8775
 msgid "Compressing Files"
 msgstr "Se comprimă fișiere"
 
@@ -3115,15 +3115,15 @@ msgstr "_Refă crearea dosarului"
 #: src/nautilus-file-undo-operations.c:849
 #, c-format
 msgid "Create new file “%s” from template "
-msgstr "Creează un fișier nou „%s” din șablon "
+msgstr "Creează un fișier nou „%s” după model "
 
 #: src/nautilus-file-undo-operations.c:851
 msgid "_Undo Create From Template"
-msgstr "An_ulează crearea din șablon"
+msgstr "An_ulează crearea după model"
 
 #: src/nautilus-file-undo-operations.c:852
 msgid "_Redo Create From Template"
-msgstr "_Refă crearea din șablon"
+msgstr "_Refă crearea după model"
 
 #: src/nautilus-file-undo-operations.c:1063
 #: src/nautilus-file-undo-operations.c:1064
