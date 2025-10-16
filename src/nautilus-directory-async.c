@@ -33,6 +33,7 @@
 #include "nautilus-metadata.h"
 #include "nautilus-monitor.h"
 #include "nautilus-signaller.h"
+#include "nautilus-thumbnails.h"
 
 /* turn this on to check if async. job calls are balanced */
 #if 0
@@ -3276,26 +3277,48 @@ thumbnail_info_start (NautilusDirectory *directory,
                              state);
 }
 
+static void
+scale_down_when_large (GdkPixbuf **pixbuf)
+{
+    gint width = gdk_pixbuf_get_width (*pixbuf), height = gdk_pixbuf_get_height (*pixbuf);
+    gint biggest_dimension = MAX (width, height);
+    gint max_size = nautilus_thumbnail_get_max_size ();
+
+    if (biggest_dimension <= max_size)
+    {
+        return;
+    }
+
+    gboolean wide = width > height;
+    double scale = (double) max_size / (double) biggest_dimension;
+    gint new_width = wide ? max_size : width * scale;
+    gint new_height = wide ? height * scale : max_size;
+    GdkPixbuf *new_pixbuf = gdk_pixbuf_scale_simple (*pixbuf,
+                                                     new_width,
+                                                     new_height,
+                                                     GDK_INTERP_BILINEAR);
+
+    g_clear_object (pixbuf);
+    *pixbuf = new_pixbuf;
+}
+
 /* Currently, GDK Pixbuf will decode the image on the main thread, even when
  * using the async variant of the function. Until that is fixed, use a GTask to
  * perform the decoding in a different thread. */
 static void
-thumbnail_from_stream_at_scale_thread (GTask        *task,
-                                       gpointer      source_object,
-                                       gpointer      task_data,
-                                       GCancellable *cancellable)
+thumbnail_from_stream_thread (GTask        *task,
+                              gpointer      source_object,
+                              gpointer      task_data,
+                              GCancellable *cancellable)
 {
     GInputStream *self = source_object;
-    gint size = GPOINTER_TO_INT (task_data);
     GError *error = NULL;
-    GdkPixbuf *pixbuf = gdk_pixbuf_new_from_stream_at_scale (self,
-                                                             size, size,
-                                                             TRUE,
-                                                             cancellable,
-                                                             &error);
+    GdkPixbuf *pixbuf = gdk_pixbuf_new_from_stream (self, cancellable, &error);
 
     if (pixbuf != NULL)
     {
+        scale_down_when_large (&pixbuf);
+
         g_task_return_pointer (task, pixbuf, g_object_unref);
     }
     else
@@ -3305,22 +3328,20 @@ thumbnail_from_stream_at_scale_thread (GTask        *task,
 }
 
 static void
-thumbnail_from_stream_at_scale_async (GInputStream        *stream,
-                                      gint32               size,
-                                      GCancellable        *cancellable,
-                                      GAsyncReadyCallback  callback,
-                                      gpointer             user_data)
+thumbnail_from_stream_async (GInputStream        *stream,
+                             GCancellable        *cancellable,
+                             GAsyncReadyCallback  callback,
+                             gpointer             user_data)
 {
     g_autoptr (GTask) task = NULL;
 
     task = g_task_new (stream, cancellable, callback, user_data);
-    g_task_set_task_data (task, GINT_TO_POINTER (size), NULL);
-    g_task_run_in_thread (task, thumbnail_from_stream_at_scale_thread);
+    g_task_run_in_thread (task, thumbnail_from_stream_thread);
 }
 
 static GdkPixbuf *
-thumbnail_from_stream_at_scale_finish (GAsyncResult  *result,
-                                       GError       **error)
+thumbnail_from_stream_finish (GAsyncResult  *result,
+                              GError       **error)
 {
     return g_task_propagate_pointer (G_TASK (result), error);
 }
@@ -3406,7 +3427,7 @@ thumbnail_pixbuf_ready_callback (GObject      *source_object,
         return;
     }
 
-    pixbuf = thumbnail_from_stream_at_scale_finish (res, NULL);
+    pixbuf = thumbnail_from_stream_finish (res, NULL);
 
     if (pixbuf)
     {
@@ -3446,17 +3467,10 @@ thumbnail_file_read_callback (GObject      *source_object,
 
     if (stream)
     {
-        /* Scale very large images down to the max. size we need.
-         * cf. nautilus_file_get_icon() */
-        int max_thumbnail_size = NAUTILUS_GRID_ICON_SIZE_EXTRA_LARGE *
-                                 NAUTILUS_GRID_ICON_SIZE_MEDIUM /
-                                 NAUTILUS_GRID_ICON_SIZE_SMALL;
-
-        thumbnail_from_stream_at_scale_async (G_INPUT_STREAM (stream),
-                                              max_thumbnail_size,
-                                              state->cancellable,
-                                              thumbnail_pixbuf_ready_callback,
-                                              state);
+        thumbnail_from_stream_async (G_INPUT_STREAM (stream),
+                                     state->cancellable,
+                                     thumbnail_pixbuf_ready_callback,
+                                     state);
     }
     else
     {
