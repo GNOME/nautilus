@@ -4843,12 +4843,12 @@ nautilus_file_get_thumbnail_icon (NautilusFile          *file,
         g_autoptr (GtkSnapshot) snapshot = gtk_snapshot_new ();
         GskRoundedRect rounded_rect;
 
-        if (MAX (width, height) > size)
+        if (MAX (width, height) != size)
         {
-            float scale_down_factor = MAX (width, height) / size;
+            double scale_factor = size / MAX (width, height);
 
-            width = width / scale_down_factor;
-            height = height / scale_down_factor;
+            width = round (width * scale_factor);
+            height = round (height * scale_factor);
         }
 
         gsk_rounded_rect_init_from_rect (&rounded_rect,
