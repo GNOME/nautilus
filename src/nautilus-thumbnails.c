@@ -184,6 +184,40 @@ get_thumbnail_factory (void)
     return thumbnail_factory;
 }
 
+guint
+nautilus_thumbnail_get_max_size (void)
+{
+    GnomeDesktopThumbnailSize size = get_thumbnail_scale ();
+
+    switch (size)
+    {
+        case GNOME_DESKTOP_THUMBNAIL_SIZE_NORMAL:
+        {
+            return 128;
+        }
+
+        case GNOME_DESKTOP_THUMBNAIL_SIZE_LARGE:
+        {
+            return 256;
+        }
+
+        case GNOME_DESKTOP_THUMBNAIL_SIZE_XLARGE:
+        {
+            return 512;
+        }
+
+        case GNOME_DESKTOP_THUMBNAIL_SIZE_XXLARGE:
+        {
+            return 1024;
+        }
+
+        default:
+        {
+            g_assert_not_reached ();
+        }
+    }
+}
+
 char *
 nautilus_thumbnail_get_path_for_uri (const char *uri)
 {

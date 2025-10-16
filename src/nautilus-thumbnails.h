@@ -25,6 +25,8 @@
 
 #include <gdk-pixbuf/gdk-pixbuf.h>
 
+guint      nautilus_thumbnail_get_max_size          (void);
+
 /* Returns NULL if there's no thumbnail yet. */
 void       nautilus_create_thumbnail                (NautilusFile *file);
 gboolean   nautilus_can_thumbnail                   (NautilusFile *file);
