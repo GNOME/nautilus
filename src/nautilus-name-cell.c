@@ -173,7 +173,7 @@ update_icon (NautilusNameCell *self)
     g_autoptr (GdkPaintable) icon_paintable = nautilus_file_get_icon_paintable (file, icon_size,
                                                                                 scale_factor, flags);
     int icon_height;
-    int extra_margin;
+    float extra_margin;
 
     gtk_picture_set_paintable (GTK_PICTURE (self->icon), icon_paintable);
 
@@ -184,9 +184,11 @@ update_icon (NautilusNameCell *self)
      * Instead we must add margins on both sides of the icon which, summed up
      * with the icon's actual width, equal the desired item width. */
     icon_height = gdk_paintable_get_intrinsic_height (icon_paintable);
-    extra_margin = (icon_size - icon_height) / 2;
-    gtk_widget_set_margin_top (self->fixed_height_box, extra_margin);
-    gtk_widget_set_margin_bottom (self->fixed_height_box, extra_margin);
+    extra_margin = (icon_size - icon_height) / 2.0;
+    /* Need to distribute margin unevenly when the required margin is
+     * fractional using ceil() and floor() since margin only accepts integers. */
+    gtk_widget_set_margin_top (self->fixed_height_box, ceil (extra_margin));
+    gtk_widget_set_margin_bottom (self->fixed_height_box, floor (extra_margin));
 
     if (icon_size >= NAUTILUS_THUMBNAIL_MINIMUM_ICON_SIZE &&
         nautilus_file_has_thumbnail (file) &&
