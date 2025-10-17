@@ -17,6 +17,8 @@
 #include <gio/gio.h>
 #include <gdk-pixbuf/gdk-pixbuf.h>
 
+#define ICON_SIZE 256
+
 static void
 file_ready_cb (NautilusFile *file,
                gpointer      callback_data)
@@ -39,7 +41,8 @@ static void
 make_image_file (GFile  *file,
                  GList **image_files)
 {
-    g_autoptr (GdkPixbuf) pixbuf = gdk_pixbuf_new (GDK_COLORSPACE_RGB, FALSE, 8, 256, 256);
+    g_autoptr (GdkPixbuf) pixbuf = gdk_pixbuf_new (GDK_COLORSPACE_RGB, FALSE, 8,
+                                                   ICON_SIZE, ICON_SIZE);
     g_autofree gchar *image_path = g_file_get_path (file);
     g_autoptr (GError) error = NULL;
 
@@ -163,6 +166,7 @@ test_thumbnail_image (void)
     g_autofree gchar *uri = g_file_get_uri (image_location);
     g_autofree gchar *thumbnail_path = nautilus_thumbnail_get_path_for_uri (uri);
     g_autoptr (GFile) thumbnail_location = g_file_new_for_path (thumbnail_path);
+    g_autoptr (GdkPaintable) icon_paintable = NULL;
 
     nautilus_create_thumbnail (image_file);
 
@@ -172,6 +176,13 @@ test_thumbnail_image (void)
     g_assert_true (g_file_query_exists (thumbnail_location, NULL));
     g_assert_true (nautilus_file_has_thumbnail (image_file));
     g_assert_cmpstr (nautilus_file_get_thumbnail_path (image_file), ==, thumbnail_path);
+
+    icon_paintable = nautilus_file_get_icon_paintable (image_file,
+                                                       ICON_SIZE,
+                                                       1,
+                                                       NAUTILUS_FILE_ICON_FLAGS_USE_THUMBNAILS);
+    g_assert_cmpint (gdk_paintable_get_intrinsic_width (icon_paintable), ==, ICON_SIZE);
+    g_assert_cmpint (gdk_paintable_get_intrinsic_height (icon_paintable), ==, ICON_SIZE);
 
     g_assert_true (g_file_delete (thumbnail_location, NULL, NULL));
 
