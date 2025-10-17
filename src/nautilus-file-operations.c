@@ -100,6 +100,9 @@ typedef struct
     gchar *target_name;
     NautilusCopyCallback done_callback;
     gpointer done_callback_data;
+
+    /* Cache to avoid repetitive queries */
+    gchar *dest_fs_type;
 } CopyMoveJob;
 
 typedef struct
@@ -3944,7 +3947,6 @@ copy_move_file (CopyMoveJob  *job,
                 GFile        *dest_dir,
                 gboolean      same_fs,
                 gboolean      unique_names,
-                char        **dest_fs_type,
                 SourceInfo   *source_info,
                 TransferInfo *transfer_info,
                 GHashTable   *debuting_files,
@@ -3959,18 +3961,18 @@ typedef enum
 } CreateDestDirResult;
 
 static CreateDestDirResult
-create_dest_dir (CommonJob  *job,
-                 GFile      *src,
-                 GFile     **dest,
-                 gboolean    same_fs,
-                 char      **dest_fs_type)
+create_dest_dir (CopyMoveJob  *copy_job,
+                 GFile        *src,
+                 GFile       **dest,
+                 gboolean      same_fs)
 {
+    CommonJob *job = &copy_job->common;
     GFile *new_dest, *dest_dir;
     int response;
     gboolean handled_invalid_filename;
     gboolean res;
 
-    handled_invalid_filename = *dest_fs_type != NULL;
+    handled_invalid_filename = copy_job->dest_fs_type != NULL;
 
     while (TRUE)
     {
@@ -4007,15 +4009,15 @@ create_dest_dir (CommonJob  *job,
             {
                 handled_invalid_filename = TRUE;
 
-                g_assert (*dest_fs_type == NULL);
+                g_assert (copy_job->dest_fs_type == NULL);
 
                 dest_dir = g_file_get_parent (*dest);
 
                 if (dest_dir != NULL)
                 {
-                    *dest_fs_type = query_fs_type (dest_dir, job->cancellable);
+                    copy_job->dest_fs_type = query_fs_type (dest_dir, job->cancellable);
 
-                    new_dest = get_target_file (src, dest_dir, *dest_fs_type, same_fs);
+                    new_dest = get_target_file (src, dest_dir, copy_job->dest_fs_type, same_fs);
                     g_object_unref (dest_dir);
 
                     if (!g_file_equal (*dest, new_dest))
@@ -4098,7 +4100,6 @@ copy_move_directory (CopyMoveJob   *copy_job,
                      GFile        **dest,
                      gboolean       same_fs,
                      gboolean       create_dest,
-                     char         **parent_dest_fs_type,
                      SourceInfo    *source_info,
                      TransferInfo  *transfer_info,
                      GHashTable    *debuting_files,
@@ -4121,7 +4122,7 @@ copy_move_directory (CopyMoveJob   *copy_job,
     {
         g_autofree char *attrs_to_read = NULL;
 
-        switch (create_dest_dir (job, src, dest, same_fs, parent_dest_fs_type))
+        switch (create_dest_dir (copy_job, src, dest, same_fs))
         {
             case CREATE_DEST_DIR_RETRY:
             {
@@ -4169,7 +4170,6 @@ copy_move_directory (CopyMoveJob   *copy_job,
     }
 
     gboolean local_skipped_file = FALSE;
-    g_autofree char *dest_fs_type = NULL;
 
     skip_error = should_skip_readdir_error (job, src);
 
@@ -4190,7 +4190,7 @@ copy_move_directory (CopyMoveJob   *copy_job,
                 src_file = g_file_get_child (src,
                                              g_file_info_get_name (info));
                 local_skipped_file = !copy_move_file (copy_job, src_file, *dest, same_fs, FALSE,
-                                                      &dest_fs_type, source_info, transfer_info,
+                                                      source_info, transfer_info,
                                                       NULL, FALSE, reset_perms);
 
                 if (local_skipped_file)
@@ -4579,7 +4579,6 @@ copy_move_file (CopyMoveJob   *copy_job,
                 GFile         *dest_dir,
                 gboolean       same_fs,
                 gboolean       unique_names,
-                char         **dest_fs_type,
                 SourceInfo    *source_info,
                 TransferInfo  *transfer_info,
                 GHashTable    *debuting_files,
@@ -4607,15 +4606,15 @@ copy_move_file (CopyMoveJob   *copy_job,
     /* another file in the same directory might have handled the invalid
      * filename condition for us
      */
-    handled_invalid_filename = *dest_fs_type != NULL;
+    handled_invalid_filename = copy_job->dest_fs_type != NULL;
 
     if (unique_names)
     {
-        dest = get_unique_target_file (src, dest_dir, job->cancellable, *dest_fs_type, unique_name_nr++);
+        dest = get_unique_target_file (src, dest_dir, job->cancellable, copy_job->dest_fs_type, unique_name_nr++);
     }
     else if (copy_job->target_name != NULL)
     {
-        dest = get_target_file_with_custom_name (src, dest_dir, *dest_fs_type, same_fs,
+        dest = get_target_file_with_custom_name (src, dest_dir, copy_job->dest_fs_type, same_fs,
                                                  copy_job->target_name);
     }
     else if (g_file_has_uri_scheme (src, "google-drive") &&
@@ -4629,7 +4628,7 @@ copy_move_file (CopyMoveJob   *copy_job,
     }
     else
     {
-        dest = get_target_file (src, dest_dir, *dest_fs_type, same_fs);
+        dest = get_target_file (src, dest_dir, copy_job->dest_fs_type, same_fs);
     }
 
     /* Don't allow recursive move/copy into itself.
@@ -4773,16 +4772,20 @@ copy_move_file (CopyMoveJob   *copy_job,
         {
             handled_invalid_filename = TRUE;
 
-            g_assert (*dest_fs_type == NULL);
-            *dest_fs_type = query_fs_type (dest_dir, job->cancellable);
+            g_assert (copy_job->dest_fs_type == NULL);
+            copy_job->dest_fs_type = query_fs_type (dest_dir, job->cancellable);
 
             if (unique_names)
             {
-                new_dest = get_unique_target_file (src, dest_dir, job->cancellable, *dest_fs_type, unique_name_nr);
+                new_dest = get_unique_target_file (src,
+                                                   dest_dir,
+                                                   job->cancellable,
+                                                   copy_job->dest_fs_type,
+                                                   unique_name_nr);
             }
             else
             {
-                new_dest = get_target_file (src, dest_dir, *dest_fs_type, same_fs);
+                new_dest = get_target_file (src, dest_dir, copy_job->dest_fs_type, same_fs);
             }
 
             if (!g_file_equal (dest, new_dest))
@@ -4810,7 +4813,12 @@ copy_move_file (CopyMoveJob   *copy_job,
             if (unique_names)
             {
                 g_object_unref (dest);
-                dest = get_unique_target_file (src, dest_dir, job->cancellable, *dest_fs_type, unique_name_nr++);
+                dest = get_unique_target_file (src,
+                                               dest_dir,
+                                               job->cancellable,
+                                               copy_job->dest_fs_type,
+                                               unique_name_nr++);
+
                 continue;
             }
 
@@ -4957,13 +4965,14 @@ copy_move_file (CopyMoveJob   *copy_job,
             gboolean skipped_file = FALSE;
 
             if (!copy_move_directory (copy_job, src, &dest, same_fs,
-                                      would_recurse, dest_fs_type,
+                                      would_recurse,
                                       source_info, transfer_info,
                                       debuting_files, &skipped_file,
                                       reset_perms))
             {
                 /* destination changed, since it was an invalid file name */
-                g_assert (*dest_fs_type != NULL);
+                g_assert (copy_job->dest_fs_type != NULL);
+
                 handled_invalid_filename = TRUE;
                 continue;
             }
@@ -5013,11 +5022,9 @@ copy_files (CopyMoveJob  *job,
     gboolean same_fs;
     gboolean unique_names;
     GFile *source_dir;
-    char *dest_fs_type;
     GFileInfo *inf;
     gboolean reset_perms;
 
-    dest_fs_type = NULL;
     reset_perms = FALSE;
 
     common = &job->common;
@@ -5065,7 +5072,6 @@ copy_files (CopyMoveJob  *job,
         {
             if (!copy_move_file (job, src, dest,
                                  same_fs, unique_names,
-                                 &dest_fs_type,
                                  source_info, transfer_info,
                                  job->debuting_files,
                                  FALSE,
@@ -5076,8 +5082,6 @@ copy_files (CopyMoveJob  *job,
             }
         }
     }
-
-    g_free (dest_fs_type);
 }
 
 static void
@@ -5104,6 +5108,8 @@ copy_task_done (GObject      *source_object,
     g_free (job->target_name);
 
     g_clear_object (&job->fake_display_source);
+
+    g_clear_pointer (&job->dest_fs_type, g_free);
 
     finalize_common ((CommonJob *) job);
 
@@ -5321,7 +5327,6 @@ move_file_prepare (CopyMoveJob  *move_job,
                    GFile        *src,
                    GFile        *dest_dir,
                    gboolean      same_fs,
-                   char        **dest_fs_type,
                    GHashTable   *debuting_files,
                    GList       **fallback_files,
                    int           total,
@@ -5336,7 +5341,7 @@ move_file_prepare (CopyMoveJob  *move_job,
     gboolean handled_invalid_filename;
 
     overwrite = FALSE;
-    handled_invalid_filename = *dest_fs_type != NULL;
+    handled_invalid_filename = move_job->dest_fs_type != NULL;
 
     job = (CommonJob *) move_job;
 
@@ -5351,7 +5356,7 @@ move_file_prepare (CopyMoveJob  *move_job,
     }
     else
     {
-        dest = get_target_file (src, dest_dir, *dest_fs_type, same_fs);
+        dest = get_target_file (src, dest_dir, move_job->dest_fs_type, same_fs);
     }
 
 
@@ -5442,10 +5447,10 @@ move_file_prepare (CopyMoveJob  *move_job,
         {
             handled_invalid_filename = TRUE;
 
-            g_assert (*dest_fs_type == NULL);
-            *dest_fs_type = query_fs_type (dest_dir, job->cancellable);
+            g_assert (move_job->dest_fs_type == NULL);
+            move_job->dest_fs_type = query_fs_type (dest_dir, job->cancellable);
 
-            new_dest = get_target_file (src, dest_dir, *dest_fs_type, same_fs);
+            new_dest = get_target_file (src, dest_dir, move_job->dest_fs_type, same_fs);
             if (!g_file_equal (dest, new_dest))
             {
                 g_object_unref (dest);
@@ -5577,7 +5582,6 @@ move_file_prepare (CopyMoveJob  *move_job,
 static void
 move_files_prepare (CopyMoveJob  *job,
                     const char   *dest_fs_id,
-                    char        **dest_fs_type,
                     GList       **fallbacks)
 {
     CommonJob *common;
@@ -5605,7 +5609,7 @@ move_files_prepare (CopyMoveJob  *job,
         }
 
         move_file_prepare (job, src, job->destination,
-                           same_fs, dest_fs_type,
+                           same_fs,
                            job->debuting_files,
                            fallbacks,
                            total,
@@ -5620,7 +5624,6 @@ static void
 move_files (CopyMoveJob   *job,
             GList         *fallbacks,
             const char    *dest_fs_id,
-            char         **dest_fs_type,
             SourceInfo    *source_info,
             TransferInfo  *transfer_info)
 {
@@ -5647,7 +5650,7 @@ move_files (CopyMoveJob   *job,
         }
 
         if (!copy_move_file (job, src, job->destination,
-                             same_fs, FALSE, dest_fs_type,
+                             same_fs, FALSE,
                              source_info, transfer_info,
                              job->debuting_files,
                              fallback->overwrite, FALSE))
@@ -5677,6 +5680,7 @@ move_task_done (GObject      *source_object,
     g_list_free_full (job->files, g_object_unref);
     g_object_unref (job->destination);
     g_hash_table_unref (job->debuting_files);
+    g_clear_pointer (&job->dest_fs_type, g_free);
 
     finalize_common ((CommonJob *) job);
 
@@ -5761,7 +5765,6 @@ nautilus_file_operations_move (GTask        *task,
     g_auto (SourceInfo) source_info = SOURCE_INFO_INIT;
     TransferInfo transfer_info;
     g_autofree char *dest_fs_id = NULL;
-    g_autofree char *dest_fs_type = NULL;
     GList *fallback_files;
 
     job = task_data;
@@ -5804,7 +5807,7 @@ nautilus_file_operations_move (GTask        *task,
     }
 
     /* This moves all files that we can do without copy + delete */
-    move_files_prepare (job, dest_fs_id, &dest_fs_type, &fallbacks);
+    move_files_prepare (job, dest_fs_id, &fallbacks);
     if (job_aborted (common))
     {
         return;
@@ -5853,7 +5856,7 @@ nautilus_file_operations_move (GTask        *task,
     memset (&transfer_info, 0, sizeof (transfer_info));
     move_files (job,
                 fallbacks,
-                dest_fs_id, &dest_fs_type,
+                dest_fs_id,
                 &source_info, &transfer_info);
 }
 
@@ -5912,7 +5915,6 @@ static void
 link_file (CopyMoveJob  *job,
            GFile        *src,
            GFile        *dest_dir,
-           char        **dest_fs_type,
            GHashTable   *debuting_files,
            int           total,
            int           files_left)
@@ -5937,9 +5939,9 @@ link_file (CopyMoveJob  *job,
     }
     g_object_unref (src_dir);
 
-    handled_invalid_filename = *dest_fs_type != NULL;
+    handled_invalid_filename = job->dest_fs_type != NULL;
 
-    dest = get_target_file_for_link (src, dest_dir, *dest_fs_type, count);
+    dest = get_target_file_for_link (src, dest_dir, job->dest_fs_type, count);
 
     while (TRUE)
     {
@@ -5981,10 +5983,10 @@ link_file (CopyMoveJob  *job,
         {
             handled_invalid_filename = TRUE;
 
-            g_assert (*dest_fs_type == NULL);
-            *dest_fs_type = query_fs_type (dest_dir, common->cancellable);
+            g_assert (job->dest_fs_type == NULL);
+            job->dest_fs_type = query_fs_type (dest_dir, common->cancellable);
 
-            new_dest = get_target_file_for_link (src, dest_dir, *dest_fs_type, count);
+            new_dest = get_target_file_for_link (src, dest_dir, job->dest_fs_type, count);
 
             if (!g_file_equal (dest, new_dest))
             {
@@ -6002,7 +6004,7 @@ link_file (CopyMoveJob  *job,
         if (error != NULL && IS_IO_ERROR (error, EXISTS))
         {
             g_object_unref (dest);
-            dest = get_target_file_for_link (src, dest_dir, *dest_fs_type, count++);
+            dest = get_target_file_for_link (src, dest_dir, job->dest_fs_type, count++);
             continue;
         }
         else if (error != NULL && !IS_IO_ERROR (error, CANCELLED))
@@ -6081,7 +6083,6 @@ link_task_thread_func (GTask        *task,
     CopyMoveJob *job;
     CommonJob *common;
     GFile *src;
-    g_autofree char *dest_fs_type = NULL;
     int total, left;
     int i;
     GList *l;
@@ -6112,7 +6113,7 @@ link_task_thread_func (GTask        *task,
         src = l->data;
 
         link_file (job, src, job->destination,
-                   &dest_fs_type, job->debuting_files,
+                   job->debuting_files,
                    total, left);
         report_preparing_link_progress (job, total, --left);
         i++;
