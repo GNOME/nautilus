@@ -161,6 +161,9 @@ update_icon (NautilusNameCell *self)
         gtk_widget_remove_css_class (self->icon, "hidden-file");
         gtk_widget_remove_css_class (self->icon, "thumbnail");
 
+        gtk_widget_set_margin_top (self->fixed_height_box, 0);
+        gtk_widget_set_margin_bottom (self->fixed_height_box, 0);
+
         return;
     }
 
