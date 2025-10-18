@@ -36,7 +36,6 @@
 #include "nautilus-scheme.h"
 #include "nautilus-search-directory.h"
 #include "nautilus-search-popover.h"
-#include "nautilus-mime-actions.h"
 #include "nautilus-localsearch-utilities.h"
 #include "nautilus-ui-utilities.h"
 
@@ -517,30 +516,13 @@ search_popover_date_range_changed_cb (NautilusQueryEditor *editor,
 
 static void
 search_popover_mime_type_changed_cb (NautilusQueryEditor *editor,
-                                     gint                 mimetype_group,
-                                     const gchar         *mimetype)
+                                     GPtrArray           *mimetypes)
 {
-    g_autoptr (GPtrArray) mimetypes = NULL;
-
     if (editor->query == NULL)
     {
         create_query (editor);
     }
 
-    /* group 0 is anything */
-    if (mimetype_group == 0)
-    {
-        mimetypes = nautilus_mime_types_group_get_mimetypes (mimetype_group);
-    }
-    else if (mimetype_group > 0)
-    {
-        mimetypes = nautilus_mime_types_group_get_mimetypes (mimetype_group);
-    }
-    else
-    {
-        mimetypes = g_ptr_array_new_full (1, g_free);
-        g_ptr_array_add (mimetypes, g_strdup (mimetype));
-    }
     nautilus_query_set_mime_types (editor->query, mimetypes);
 
     update_filter_button (editor);
