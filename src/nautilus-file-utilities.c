@@ -147,12 +147,17 @@ nautilus_get_home_directory_uri (void)
 gboolean
 nautilus_should_use_templates_directory (void)
 {
-    const char *dir;
-    gboolean res;
+    const char *templates_dir = g_get_user_special_dir (G_USER_DIRECTORY_TEMPLATES);
 
-    dir = g_get_user_special_dir (G_USER_DIRECTORY_TEMPLATES);
-    res = dir && (g_strcmp0 (dir, g_get_home_dir ()) != 0);
-    return res;
+    if (templates_dir == NULL || *templates_dir == '\0')
+    {
+        return FALSE;
+    }
+
+    g_autoptr (GFile) templates_location = g_file_new_for_path (templates_dir);
+
+    return !nautilus_is_home_directory (templates_location) &&
+           !nautilus_is_root_directory (templates_location);
 }
 
 char *
