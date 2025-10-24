@@ -28,14 +28,15 @@ typedef gpointer (* KeyCreateFunc) (gpointer item);
 
 typedef struct NautilusHashQueue NautilusHashQueue;
 
-NautilusHashQueue *nautilus_hash_queue_new      (GHashFunc          hash_func,
-                                                 GEqualFunc         equal_func,
-                                                 KeyCreateFunc      key_create_func,
-                                                 GDestroyNotify     key_destroy_func);
+NautilusHashQueue * nautilus_hash_queue_new     (GHashFunc      hash_func,
+                                                 GEqualFunc     equal_func,
+                                                 GDestroyNotify key_destroy_func,
+                                                 GDestroyNotify value_destroy_func);
 void               nautilus_hash_queue_destroy  (NautilusHashQueue *queue);
 
 void               nautilus_hash_queue_enqueue  (NautilusHashQueue *queue,
-                                                 gpointer           item);
+                                                 gpointer           key,
+                                                 gpointer           value);
 void               nautilus_hash_queue_remove   (NautilusHashQueue *queue,
                                                  gconstpointer      key);
 gpointer           nautilus_hash_queue_find_item             (NautilusHashQueue *queue,

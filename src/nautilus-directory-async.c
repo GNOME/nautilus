@@ -4340,7 +4340,7 @@ nautilus_directory_add_file_to_work_queue (NautilusDirectory *directory,
     g_return_if_fail (file->details->directory == directory);
 
     nautilus_hash_queue_enqueue (directory->details->high_priority_queue,
-                                 file);
+                                 g_object_ref (file), file);
 }
 
 void
@@ -4387,7 +4387,7 @@ move_file_to_low_priority_queue (NautilusDirectory *directory,
 {
     /* Must add before removing to avoid ref underflow */
     nautilus_hash_queue_enqueue (directory->details->low_priority_queue,
-                                 file);
+                                 g_object_ref (file), file);
     nautilus_hash_queue_remove (directory->details->high_priority_queue,
                                 file);
 }
@@ -4398,7 +4398,7 @@ move_file_to_extension_queue (NautilusDirectory *directory,
 {
     /* Must add before removing to avoid ref underflow */
     nautilus_hash_queue_enqueue (directory->details->extension_queue,
-                                 file);
+                                 g_object_ref (file), file);
     nautilus_hash_queue_remove (directory->details->low_priority_queue,
                                 file);
 }

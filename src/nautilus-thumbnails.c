@@ -126,13 +126,6 @@ free_thumbnail_info (NautilusThumbnailInfo *info)
 }
 G_DEFINE_AUTOPTR_CLEANUP_FUNC (NautilusThumbnailInfo, free_thumbnail_info)
 
-static gpointer
-create_info_key (gpointer item)
-{
-    NautilusThumbnailInfo *info = item;
-    return info->image_uri;
-}
-
 static GnomeDesktopThumbnailSize
 get_thumbnail_scale (void)
 {
@@ -386,7 +379,7 @@ nautilus_create_thumbnail (NautilusFile *file)
 
     if (G_UNLIKELY (thumbnails_to_make == NULL))
     {
-        thumbnails_to_make = nautilus_hash_queue_new (g_str_hash, g_str_equal, create_info_key, NULL);
+        thumbnails_to_make = nautilus_hash_queue_new (g_str_hash, g_str_equal, NULL, NULL);
         currently_thumbnailing_hash = g_hash_table_new (g_str_hash,
                                                         g_str_equal);
     }
@@ -405,7 +398,8 @@ nautilus_create_thumbnail (NautilusFile *file)
         /* Add the thumbnail to the list. */
         g_debug ("(Main Thread) Adding thumbnail: %s",
                  info->image_uri);
-        nautilus_hash_queue_enqueue (thumbnails_to_make, g_steal_pointer (&info));
+        nautilus_hash_queue_enqueue (thumbnails_to_make, info->image_uri, info);
+        g_steal_pointer (&info);
 
         /* If we didn't schedule the thumbnail function to start on idle, do
          *  that now. We don't want to start it until all the other work is
@@ -445,7 +439,7 @@ thumbnail_finalize (NautilusThumbnailInfo *info)
     {
         info->original_file_mtime = info->updated_file_mtime;
 
-        nautilus_hash_queue_enqueue (thumbnails_to_make, info);
+        nautilus_hash_queue_enqueue (thumbnails_to_make, info->image_uri, info);
     }
 
     if (nautilus_hash_queue_is_empty (thumbnails_to_make))
@@ -612,7 +606,7 @@ thumbnail_starter_cb (gpointer data)
             backoff_time = THUMBNAIL_CREATION_DELAY_SECS - (current_time - current_orig_mtime);
             backoff_time_min = MIN (backoff_time, backoff_time_min);
 
-            nautilus_hash_queue_enqueue (thumbnails_to_make, info);
+            nautilus_hash_queue_enqueue (thumbnails_to_make, info->image_uri, info);
             ignored_thumbnails += 1;
             continue;
         }
