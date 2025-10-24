@@ -31,18 +31,20 @@ struct NautilusHashQueue
 {
     GQueue parent;
     GHashTable *item_to_link_map;
-    KeyCreateFunc key_create_func;
     GDestroyNotify key_destroy_func;
+    GDestroyNotify value_destroy_func;
 };
 
 /**
  * nautilus_hash_queue_new:
  * @hash_func: a function to create a hash value from a key
  * @key_equal_func: a function to check two keys for equality
- * @key_create_func: a function to create a hashable key from an enqueued value
  * @key_destroy_func: (nullable): a function to free the memory allocated for
  *     the key used when removing the entry from the #GHashTable, or `NULL` if
  *     you don't want to supply such a function.
+ * @value_destroy_func: (nullable): a function to free the memory allocated for
+ *     the value used when removing the entry from the #GHashTable, or `NULL`
+ *     if you don't want to supply such a function.
  *
  * Creates a new #NautilusHashQueue.
  *
@@ -51,16 +53,17 @@ struct NautilusHashQueue
 NautilusHashQueue *
 nautilus_hash_queue_new (GHashFunc      hash_func,
                          GEqualFunc     equal_func,
-                         KeyCreateFunc  key_create_func,
-                         GDestroyNotify key_destroy_func)
+                         GDestroyNotify key_destroy_func,
+                         GDestroyNotify value_destroy_func)
 {
     NautilusHashQueue *queue;
 
     queue = g_new0 (NautilusHashQueue, 1);
     g_queue_init ((GQueue *) queue);
-    queue->item_to_link_map = g_hash_table_new_full (hash_func, equal_func, key_destroy_func, NULL);
-    queue->key_create_func = key_create_func;
+    queue->item_to_link_map = g_hash_table_new_full (hash_func, equal_func,
+                                                     key_destroy_func, value_destroy_func);
     queue->key_destroy_func = key_destroy_func;
+    queue->value_destroy_func = value_destroy_func;
 
     return queue;
 }
@@ -76,10 +79,9 @@ nautilus_hash_queue_destroy (NautilusHashQueue *queue)
 /** Add an item to the tail of the queue, unless it's already in the queue. */
 void
 nautilus_hash_queue_enqueue (NautilusHashQueue *queue,
-                             gpointer           item)
+                             gpointer           key,
+                             gpointer           value)
 {
-    gpointer key = queue->key_create_func != NULL ? queue->key_create_func (item) : item;
-
     if (g_hash_table_lookup (queue->item_to_link_map, key) != NULL)
     {
         /* It's already on the queue. */
@@ -87,10 +89,15 @@ nautilus_hash_queue_enqueue (NautilusHashQueue *queue,
         {
             queue->key_destroy_func (key);
         }
+        if (queue->value_destroy_func != NULL)
+        {
+            queue->value_destroy_func (value);
+        }
+
         return;
     }
 
-    g_queue_push_tail ((GQueue *) queue, item);
+    g_queue_push_tail ((GQueue *) queue, value);
     g_hash_table_insert (queue->item_to_link_map, key, queue->parent.tail);
 }
 
@@ -106,6 +113,11 @@ nautilus_hash_queue_remove (NautilusHashQueue *queue,
 
     if (g_hash_table_steal_extended (queue->item_to_link_map, key, &map_key, (gpointer *) &link))
     {
+        if (queue->value_destroy_func != NULL)
+        {
+            queue->value_destroy_func (link->data);
+        }
+
         g_queue_delete_link ((GQueue *) queue, link);
 
         if (queue->key_destroy_func != NULL)
