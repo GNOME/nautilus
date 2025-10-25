@@ -424,7 +424,6 @@ thumbnail_finalize (NautilusThumbnailInfo *info)
 {
     g_autoptr (NautilusFile) file = nautilus_file_get_by_uri (info->image_uri);
 
-    nautilus_file_set_is_thumbnailing (file, FALSE);
     g_hash_table_remove (currently_thumbnailing_hash, info->image_uri);
     running_threads -= 1;
 
@@ -433,6 +432,7 @@ thumbnail_finalize (NautilusThumbnailInfo *info)
     if (info->original_file_mtime == info->updated_file_mtime ||
         g_cancellable_is_cancelled (info->cancellable))
     {
+        nautilus_file_set_is_thumbnailing (file, FALSE);
         free_thumbnail_info (info);
     }
     else
