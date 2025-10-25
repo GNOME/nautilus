@@ -63,6 +63,7 @@ typedef struct
     char *mime_type;
     time_t original_file_mtime;
     time_t updated_file_mtime;
+    GdkPixbuf *pixbuf;
 
     GCancellable *cancellable;
 } NautilusThumbnailInfo;
@@ -122,6 +123,7 @@ free_thumbnail_info (NautilusThumbnailInfo *info)
     g_free (info->image_uri);
     g_free (info->mime_type);
     g_clear_object (&info->cancellable);
+    g_clear_object (&info->pixbuf);
     g_free (info);
 }
 G_DEFINE_AUTOPTR_CLEANUP_FUNC (NautilusThumbnailInfo, free_thumbnail_info)
@@ -422,8 +424,6 @@ nautilus_create_thumbnail (NautilusFile *file)
 static void
 thumbnail_finalize (NautilusThumbnailInfo *info)
 {
-    g_autoptr (NautilusFile) file = nautilus_file_get_by_uri (info->image_uri);
-
     g_hash_table_remove (currently_thumbnailing_hash, info->image_uri);
     running_threads -= 1;
 
@@ -432,7 +432,19 @@ thumbnail_finalize (NautilusThumbnailInfo *info)
     if (info->original_file_mtime == info->updated_file_mtime ||
         g_cancellable_is_cancelled (info->cancellable))
     {
-        nautilus_file_set_is_thumbnailing (file, FALSE);
+        g_autoptr (NautilusFile) file = nautilus_file_get_existing_by_uri (info->image_uri);
+
+        if (file != NULL)
+        {
+            if (info->pixbuf != NULL)
+            {
+                nautilus_file_set_thumbnail (file, info->pixbuf);
+            }
+
+            nautilus_file_set_is_thumbnailing (file, FALSE);
+            nautilus_file_changed (file);
+        }
+
         free_thumbnail_info (info);
     }
     else
@@ -502,8 +514,7 @@ thumbnail_generated_cb (GObject      *source_object,
     GnomeDesktopThumbnailFactory *thumbnail_factory = GNOME_DESKTOP_THUMBNAIL_FACTORY (source_object);
     NautilusThumbnailInfo *info = data;
     g_autoptr (GError) error = NULL;
-    g_autoptr (GdkPixbuf) pixbuf = NULL;
-    g_autoptr (NautilusFile) file = NULL;
+    GdkPixbuf *pixbuf = NULL;
 
     pixbuf = gnome_desktop_thumbnail_factory_generate_thumbnail_finish (thumbnail_factory,
                                                                         result,
@@ -518,8 +529,6 @@ thumbnail_generated_cb (GObject      *source_object,
         return;
     }
 
-    file = nautilus_file_get_by_uri (info->image_uri);
-
     if (pixbuf != NULL)
     {
         g_autofree gchar *mtime = g_strdup_printf ("%" G_GINT64_FORMAT,
@@ -532,7 +541,7 @@ thumbnail_generated_cb (GObject      *source_object,
          *  only the written thumbnail file.
          */
         gdk_pixbuf_set_option (pixbuf, "tEXt::Thumb::MTime", mtime);
-        nautilus_file_set_thumbnail (file, pixbuf);
+        self->pixbuf = pixbuf;
 
         gnome_desktop_thumbnail_factory_save_thumbnail_async (thumbnail_factory,
                                                               pixbuf,
@@ -554,8 +563,6 @@ thumbnail_generated_cb (GObject      *source_object,
                                                                        thumbnail_failed_cb,
                                                                        info);
     }
-
-    nautilus_file_changed (file);
 }
 
 /* This function is added as a very low priority idle function to start the
