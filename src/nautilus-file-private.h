@@ -89,6 +89,7 @@ struct NautilusFilePrivate
 	char *thumbnail_path;
 	GdkTexture *thumbnail;
 	time_t thumbnail_mtime;
+        GCancellable *thumbnail_cancellable;
 
 	char *activation_uri;
 
@@ -265,8 +266,6 @@ void                   nautilus_file_info_providers_done                (Nautilu
 
 
 /* Thumbnailing: */
-void          nautilus_file_set_is_thumbnailing            (NautilusFile           *file,
-							    gboolean                is_thumbnailing);
 gboolean          nautilus_file_set_thumbnail              (NautilusFile           *file,
                                                             GdkPixbuf              *pixbuf);
 
