@@ -89,6 +89,7 @@ struct NautilusFilePrivate
 	char *thumbnail_path;
 	GdkTexture *thumbnail;
 	time_t thumbnail_mtime;
+        GCancellable *thumbnail_cancellable;
 
 	char *activation_uri;
 

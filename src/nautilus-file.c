@@ -867,6 +867,8 @@ nautilus_file_dispose (GObject *object)
         g_autofree gchar *uri = nautilus_file_get_uri (file);
 
         nautilus_thumbnail_remove_from_queue (uri);
+        g_clear_object (&file->details->thumbnail_cancellable);
+        file->details->is_thumbnailing = FALSE;
     }
 
     G_OBJECT_CLASS (nautilus_file_parent_class)->dispose (object);
@@ -4986,6 +4988,32 @@ nautilus_file_should_create_thumbnail (NautilusFile *file)
            nautilus_can_thumbnail (file);
 }
 
+static void
+file_thumbnailing_done_cb (GObject      *source_object,
+                           GAsyncResult *res,
+                           gpointer      data)
+{
+    g_autoptr (GError) error = NULL;
+    g_autoptr (GdkPixbuf) pixbuf = nautilus_create_thumbnail_finish (res, &error);
+
+    if (g_error_matches (error, G_IO_ERROR, G_IO_ERROR_CANCELLED))
+    {
+        /* The operation was cancelled and the file was disposed, bailout. */
+        return;
+    }
+
+    NautilusFile *file = data;
+
+    if (pixbuf != NULL)
+    {
+        nautilus_file_set_thumbnail (file, pixbuf);
+    }
+
+    g_clear_object (&file->details->thumbnail_cancellable);
+    file->details->is_thumbnailing = FALSE;
+    nautilus_file_changed (file);
+}
+
 static NautilusIconInfo *
 nautilus_file_get_thumbnail_icon (NautilusFile          *file,
                                   int                    size,
@@ -5040,7 +5068,25 @@ nautilus_file_get_thumbnail_icon (NautilusFile          *file,
     }
     else if (nautilus_file_should_create_thumbnail (file))
     {
-        nautilus_create_thumbnail (file);
+        g_autofree gchar *uri = nautilus_file_get_uri (file);
+        time_t modified_time = 0;
+
+        file->details->thumbnail_cancellable = g_cancellable_new ();
+
+        if (file->details->got_file_info &&
+            file->details->file_info_is_up_to_date &&
+            file->details->mtime != 0)
+        {
+            modified_time = file->details->mtime;
+        }
+
+        nautilus_file_set_is_thumbnailing (file, TRUE);
+        nautilus_create_thumbnail_async (uri,
+                                         nautilus_file_get_mime_type (file),
+                                         modified_time,
+                                         file->details->thumbnail_cancellable,
+                                         file_thumbnailing_done_cb,
+                                         file);
     }
 
     if (paintable != NULL)
