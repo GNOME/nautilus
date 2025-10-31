@@ -39,6 +39,7 @@
                     <!-- Add any new buttons to get_type_buttons() list -->
                     <child>
                       <object class="GtkButton" id="audio_button">
+                        <property name="accessible-role">checkbox</property>
                         <property name="child">
                           <object class="AdwButtonContent">
                             <property name="icon-name">audio-x-generic-symbolic</property>
@@ -51,6 +52,7 @@
                     </child>
                     <child>
                       <object class="GtkButton" id="documents_button">
+                        <property name="accessible-role">checkbox</property>
                         <property name="child">
                           <object class="AdwButtonContent">
                             <property name="icon-name">rich-text-symbolic</property>
@@ -63,6 +65,7 @@
                     </child>
                     <child>
                       <object class="GtkButton" id="folders_button">
+                        <property name="accessible-role">checkbox</property>
                         <property name="child">
                           <object class="AdwButtonContent">
                             <property name="icon-name">folder-symbolic</property>
@@ -75,6 +78,7 @@
                     </child>
                     <child>
                       <object class="GtkButton" id="images_button">
+                        <property name="accessible-role">checkbox</property>
                         <property name="child">
                           <object class="AdwButtonContent">
                             <property name="icon-name">image-print-symbolic</property>
@@ -87,6 +91,7 @@
                     </child>
                     <child>
                       <object class="GtkButton" id="pdf_button">
+                        <property name="accessible-role">checkbox</property>
                         <property name="child">
                           <object class="AdwButtonContent">
                             <property name="icon-name">rich-text-symbolic</property>
@@ -99,6 +104,7 @@
                     </child>
                     <child>
                       <object class="GtkButton" id="spreadsheets_button">
+                        <property name="accessible-role">checkbox</property>
                         <property name="child">
                           <object class="AdwButtonContent">
                             <property name="icon-name">x-office-spreadsheet-symbolic</property>
@@ -111,6 +117,7 @@
                     </child>
                     <child>
                       <object class="GtkButton" id="text_button">
+                        <property name="accessible-role">checkbox</property>
                         <property name="child">
                           <object class="AdwButtonContent">
                             <property name="icon-name">paper-symbolic</property>
@@ -123,6 +130,7 @@
                     </child>
                     <child>
                       <object class="GtkButton" id="videos_button">
+                        <property name="accessible-role">checkbox</property>
                         <property name="child">
                           <object class="AdwButtonContent">
                             <property name="icon-name">camera-video-symbolic</property>
@@ -136,6 +144,7 @@
                     <child>
                       <object class="GtkButton" id="specific_type_button">
                         <property name="visible">False</property>
+                        <property name="accessible-role">checkbox</property>
                         <signal name="clicked" handler="file_types_button_clicked" object="NautilusSearchPopover" swapped="yes"/>
                       </object>
                     </child>

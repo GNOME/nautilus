@@ -130,10 +130,16 @@ toggle_active_button (GtkButton *button)
     if (!gtk_widget_has_css_class (GTK_WIDGET (button), "accent"))
     {
         gtk_widget_add_css_class (GTK_WIDGET (button), "accent");
+        gtk_accessible_update_state (GTK_ACCESSIBLE (button),
+                                     GTK_ACCESSIBLE_STATE_CHECKED, GTK_ACCESSIBLE_TRISTATE_TRUE,
+                                     -1);
     }
     else
     {
         gtk_widget_remove_css_class (GTK_WIDGET (button), "accent");
+        gtk_accessible_update_state (GTK_ACCESSIBLE (button),
+                                     GTK_ACCESSIBLE_STATE_CHECKED, GTK_ACCESSIBLE_TRISTATE_FALSE,
+                                     -1);
     }
 }
 
@@ -149,6 +155,10 @@ set_active_type_button (GtkButton *button,
     {
         gtk_widget_remove_css_class (GTK_WIDGET (button), "accent");
     }
+
+    gtk_accessible_update_state (GTK_ACCESSIBLE (button),
+                                 GTK_ACCESSIBLE_STATE_CHECKED, active,
+                                 -1);
 }
 
 static void
