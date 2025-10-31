@@ -9,7 +9,6 @@
 #include "test-utilities.h"
 
 #include <nautilus-application.h>
-#include <nautilus-file.h>
 #include <nautilus-file-utilities.h>
 #include <nautilus-thumbnails.h>
 
@@ -18,15 +17,6 @@
 #include <gdk-pixbuf/gdk-pixbuf.h>
 
 #define ICON_SIZE 256
-
-static void
-file_ready_cb (NautilusFile *file,
-               gpointer      callback_data)
-{
-    gboolean *file_is_ready = callback_data;
-
-    *file_is_ready = TRUE;
-}
 
 typedef struct
 {
@@ -116,16 +106,16 @@ test_thumbnail_test_queue (void)
     for (GList *l = image_locations; l != NULL; l = l->next)
     {
         GFile *image_location = l->data;
-        NautilusFile *image_file = nautilus_file_get (image_location);
-        gboolean file_is_ready = FALSE;
+        g_autofree gchar *uri = g_file_get_uri (image_location);
+        g_autoptr (GFileInfo) info = g_file_query_info (image_location,
+                                                        "standard::*,"
+                                                        "time::*",
+                                                        G_FILE_QUERY_INFO_NONE,
+                                                        NULL, NULL);
+        const gchar *mime_type = g_file_info_get_content_type (info);
+        guint64 mtime = g_file_info_get_attribute_uint64 (info, G_FILE_ATTRIBUTE_TIME_MODIFIED);
 
-        nautilus_file_call_when_ready (image_file,
-                                       NAUTILUS_FILE_ATTRIBUTE_INFO | NAUTILUS_FILE_ATTRIBUTES_FOR_ICON,
-                                       file_ready_cb, &file_is_ready);
-
-        ITER_CONTEXT_WHILE (!file_is_ready);
-
-        if (!nautilus_can_thumbnail (image_file))
+        if (!nautilus_can_thumbnail (uri, mime_type, mtime))
         {
             g_test_skip ("System has no thumbnailer for images, but this test is meant to test "
                          "thumbnailing an image.");
@@ -134,11 +124,7 @@ test_thumbnail_test_queue (void)
             return;
         }
 
-        g_autofree gchar *uri = nautilus_file_get_uri (image_file);
-
-        nautilus_create_thumbnail_async (uri,
-                                         nautilus_file_get_mime_type (image_file),
-                                         nautilus_file_get_mtime (image_file),
+        nautilus_create_thumbnail_async (uri, mime_type, mtime,
                                          NULL, NULL, NULL);
     }
 
@@ -192,23 +178,20 @@ test_thumbnail_image (void)
     g_autoptr (GFile) image_location = g_file_new_build_filename (test_get_tmp_dir (),
                                                                   "Image.png",
                                                                   NULL);
-    g_autoptr (NautilusFile) image_file = nautilus_file_get (image_location);
-    gboolean file_is_ready = FALSE;
-    const gchar *mime_type;
-    guint64 mtime;
+    g_autofree gchar *uri = g_file_get_uri (image_location);
 
     make_image_file (image_location, NULL);
-    nautilus_file_call_when_ready (image_file,
-                                   NAUTILUS_FILE_ATTRIBUTE_INFO | NAUTILUS_FILE_ATTRIBUTES_FOR_ICON,
-                                   file_ready_cb, &file_is_ready);
 
-    ITER_CONTEXT_WHILE (!file_is_ready);
+    g_autoptr (GFileInfo) info = g_file_query_info (image_location,
+                                                    "standard::*,time::*",
+                                                    G_FILE_QUERY_INFO_NONE,
+                                                    NULL, NULL);
+    const gchar *mime_type = g_file_info_get_content_type (info);
+    guint64 mtime = g_file_info_get_attribute_uint64 (info, G_FILE_ATTRIBUTE_TIME_MODIFIED);
 
-    mime_type = nautilus_file_get_mime_type (image_file);
-    mtime = nautilus_file_get_mtime (image_file);
     g_assert_true (nautilus_thumbnail_is_mimetype_limited_by_size (mime_type));
 
-    if (!nautilus_can_thumbnail (image_file))
+    if (!nautilus_can_thumbnail (uri, mime_type, mtime))
     {
         g_test_skip ("System has no thumbnailer for images, but this test is meant to test "
                      "thumbnailing an image.");
@@ -217,7 +200,6 @@ test_thumbnail_image (void)
         return;
     }
 
-    g_autofree gchar *uri = g_file_get_uri (image_location);
     g_autofree gchar *thumbnail_path = nautilus_thumbnail_get_path_for_uri (uri);
     g_autoptr (GFile) thumbnail_location = g_file_new_for_path (thumbnail_path);
     g_autoptr (GdkPaintable) icon_paintable = NULL;
@@ -269,24 +251,17 @@ static void
 test_thumbnail_text (void)
 {
     g_autoptr (GFile) text_location = make_text_file ();
-    g_autoptr (NautilusFile) text_file = nautilus_file_get (text_location);
-    gboolean file_is_ready = FALSE;
     g_autofree gchar *uri = g_file_get_uri (text_location);
-    const gchar *mime_type;
-    guint64 mtime;
-
-    nautilus_file_call_when_ready (text_file,
-                                   NAUTILUS_FILE_ATTRIBUTE_INFO | NAUTILUS_FILE_ATTRIBUTES_FOR_ICON,
-                                   file_ready_cb, &file_is_ready);
-
-    ITER_CONTEXT_WHILE (!file_is_ready);
-
-    mime_type = nautilus_file_get_mime_type (text_file);
-    mtime = nautilus_file_get_mtime (text_file);
+    g_autoptr (GFileInfo) info = g_file_query_info (text_location,
+                                                    "standard::*,time::*",
+                                                    G_FILE_QUERY_INFO_NONE,
+                                                    NULL, NULL);
+    const gchar *mime_type = g_file_info_get_content_type (info);
+    guint64 mtime = g_file_info_get_attribute_uint64 (info, G_FILE_ATTRIBUTE_TIME_MODIFIED);
 
     g_assert_false (nautilus_thumbnail_is_mimetype_limited_by_size (mime_type));
 
-    if (nautilus_can_thumbnail (text_file))
+    if (nautilus_can_thumbnail (uri, mime_type, mtime))
     {
         g_test_skip ("System has a thumbnailer for text files, but this test is meant to test"
                      "a file that don't have one.");
