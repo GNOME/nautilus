@@ -4980,12 +4980,20 @@ nautilus_file_has_thumbnail (NautilusFile *file)
 static gboolean
 nautilus_file_should_create_thumbnail (NautilusFile *file)
 {
-    return file->details->thumbnail_info_is_up_to_date &&
-           file->details->thumbnail_path == NULL &&
-           file->details->can_read &&
-           !file->details->is_thumbnailing &&
-           !file->details->thumbnailing_failed &&
-           nautilus_can_thumbnail (file);
+    if (file->details->thumbnail_info_is_up_to_date &&
+        file->details->thumbnail_path == NULL &&
+        file->details->can_read &&
+        !file->details->is_thumbnailing &&
+        !file->details->thumbnailing_failed)
+    {
+        g_autofree gchar *uri = nautilus_file_get_uri (file);
+
+        return nautilus_can_thumbnail (uri,
+                                       nautilus_file_get_mime_type (file),
+                                       nautilus_file_get_mtime (file));
+    }
+
+    return FALSE;
 }
 
 static void

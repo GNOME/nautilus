@@ -40,8 +40,6 @@
 #include <signal.h>
 #include <libgnome-desktop/gnome-desktop-thumbnail.h>
 
-#include "nautilus-file-private.h"
-
 /* Should never be a reasonable actual mtime */
 #define INVALID_MTIME 0
 
@@ -343,25 +341,16 @@ nautilus_thumbnail_is_mimetype_limited_by_size (const char *mime_type)
 }
 
 gboolean
-nautilus_can_thumbnail (NautilusFile *file)
+nautilus_can_thumbnail (const gchar *uri,
+                        const gchar *mime_type,
+                        time_t       modified_time)
 {
-    GnomeDesktopThumbnailFactory *factory;
-    gboolean res;
-    char *uri;
-    time_t mtime;
-    const char *mime_type = nautilus_file_get_mime_type (file);
+    GnomeDesktopThumbnailFactory *factory = get_thumbnail_factory ();
 
-    uri = nautilus_file_get_uri (file);
-    mtime = nautilus_file_get_mtime (file);
-
-    factory = get_thumbnail_factory ();
-    res = gnome_desktop_thumbnail_factory_can_thumbnail (factory,
-                                                         uri,
-                                                         mime_type,
-                                                         mtime);
-    g_free (uri);
-
-    return res;
+    return gnome_desktop_thumbnail_factory_can_thumbnail (factory,
+                                                          uri,
+                                                          mime_type,
+                                                          modified_time);
 }
 
 void
