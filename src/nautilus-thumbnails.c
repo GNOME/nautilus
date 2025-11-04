@@ -65,6 +65,7 @@ typedef struct
 
     GCancellable *cancellable;
     GAsyncReadyCallback callback;
+    GError *error;
     gpointer user_data;
 } NautilusThumbnailInfo;
 
@@ -124,6 +125,7 @@ free_thumbnail_info (NautilusThumbnailInfo *info)
     g_free (info->mime_type);
     g_clear_object (&info->cancellable);
     g_clear_object (&info->pixbuf);
+    g_clear_error (&info->error);
     g_free (info);
 }
 G_DEFINE_AUTOPTR_CLEANUP_FUNC (NautilusThumbnailInfo, free_thumbnail_info)
@@ -438,6 +440,16 @@ nautilus_create_thumbnail_finish (GAsyncResult  *res,
         return NULL;
     }
 
+    if (info->error != NULL)
+    {
+        if (error != NULL)
+        {
+            *error = g_error_copy (info->error);
+        }
+
+        return NULL;
+    }
+
     return info->pixbuf != NULL ? g_object_ref (info->pixbuf) : NULL;
 }
 
@@ -567,6 +579,7 @@ thumbnail_generated_cb (GObject      *source_object,
     }
     else
     {
+        info->error = g_error_copy (error);
         g_debug ("(Thumbnail Async Thread) Thumbnail failed: %s (%s)",
                  info->image_uri, error->message);
 
