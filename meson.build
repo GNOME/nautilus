@@ -121,8 +121,14 @@ gi_docgen = find_program('gi-docgen', required: get_option('docs'))
 gtk_x11 = dependency('gtk4-x11', required: false)
 gtk_wayland = dependency('gtk4-wayland', required: false)
 dependency('wayland-client', required: gtk_wayland.found())
-selinux = dependency('libselinux', version: '>= 2.0', required: get_option('selinux'))
-cloudproviders = dependency('cloudproviders', version: '>= 0.3.1', required: get_option('cloudproviders'))
+selinux = []
+if get_option('selinux')
+  selinux = dependency('libselinux', version: '>= 2.0')
+endif
+cloudproviders = []
+if get_option('cloudproviders')
+  cloudproviders = dependency('cloudproviders', version: '>= 0.3.1')
+endif
 if get_option('extensions')
   gexiv = dependency('gexiv2', version: '>= 0.14.2')
   gdkpixbuf = dependency('gdk-pixbuf-2.0', version: '>= 2.30.0')
