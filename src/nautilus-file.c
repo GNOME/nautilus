@@ -4542,6 +4542,15 @@ get_mount_icon (NautilusFile *file,
     return mount_icon;
 }
 
+static gboolean
+has_custom_icon (NautilusFile *file)
+{
+    g_autofree gchar *custom_icon_uri = get_custom_icon_metadata_uri (file);
+
+    return custom_icon_uri != NULL ||
+           get_custom_icon_metadata_name (file) != NULL;
+}
+
 static GIcon *
 get_custom_icon (NautilusFile *file)
 {
@@ -4698,9 +4707,13 @@ get_speed_tradeoff_preference_for_file (NautilusFile               *file,
 gboolean
 nautilus_file_should_show_thumbnail (NautilusFile *file)
 {
-    const char *mime_type;
+    if (has_custom_icon (file))
+    {
+        return FALSE;
+    }
 
-    mime_type = file->details->mime_type;
+    const char *mime_type = file->details->mime_type;
+
     if (mime_type == NULL)
     {
         mime_type = "application/octet-stream";
