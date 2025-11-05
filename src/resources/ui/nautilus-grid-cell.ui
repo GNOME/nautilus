@@ -4,11 +4,9 @@
   <template class="NautilusGridCell" parent="NautilusViewCell">
     <property name="valign">start</property>
     <child>
-      <object class="GtkPicture" id="icon">
+      <object class="NautilusImage" id="icon">
         <property name="halign">center</property>
         <property name="valign">center</property>
-        <property name="can-shrink">False</property>
-        <property name="content-fit">scale-down</property>
       </object>
     </child>
     <child>

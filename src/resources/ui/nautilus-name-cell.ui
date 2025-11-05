@@ -17,22 +17,22 @@
             <property name="halign">fill</property>
             <property name="valign">center</property>
             <child>
-              <object class="GtkBox" id="fixed_height_box">
-                <property name="orientation">vertical</property>
-                <property name="halign">center</property>
-                <property name="height-request">16</property>
+              <object class="GtkCenterBox" id="fixed_height_box">
                 <property name="valign">center</property>
-                <child>
-                  <object class="GtkPicture" id="icon">
-                    <property name="halign">center</property>
+                <binding name="width-request">
+                  <lookup name="icon-size">NautilusNameCell</lookup>
+                </binding>
+                <binding name="height-request">
+                  <lookup name="icon-size">NautilusNameCell</lookup>
+                </binding>
+                <property name="center-widget">
+                  <object class="NautilusImage" id="icon">
                     <property name="valign">center</property>
-                    <property name="can-shrink">False</property>
-                    <property name="content-fit">cover</property>
                     <accessibility>
                       <relation name="labelled-by">label</relation>
                     </accessibility>
                   </object>
-                </child>
+                </property>
               </object>
             </child>
             <child>
