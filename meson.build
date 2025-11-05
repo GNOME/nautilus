@@ -103,6 +103,9 @@ glib_ver = '>= 2.84.0'
 
 libm = cc.find_library('m')
 
+libgxdp_subproject = subproject('libgxdp', default_options: 'disable_portals=false')
+libgxdp = libgxdp_subproject.get_variable('libgxdp_dep')
+
 gio = dependency('gio-2.0', version: glib_ver)
 gio_unix = dependency('gio-unix-2.0', version: glib_ver)
 glib = dependency('glib-2.0', version: glib_ver)
@@ -111,7 +114,6 @@ gnome_autoar = dependency('gnome-autoar-0', version: '>= 0.4.4')
 gnome_desktop = dependency('gnome-desktop-4', version: '>= 43')
 gtk = dependency('gtk4', version: '>= 4.20.0')
 libadwaita = dependency('libadwaita-1', version: '>= 1.6.beta')
-libgxdp = dependency('libgxdp')
 libportal = dependency('libportal', version: '>= 0.7')
 libportal_gtk4 = dependency('libportal-gtk4', version: '>= 0.5')
 tracker_sparql = dependency('tracker-sparql-3.0', version: '>= 3.2')
