@@ -4712,9 +4712,15 @@ get_speed_tradeoff_preference_for_file (NautilusFile               *file,
 gboolean
 nautilus_file_should_show_thumbnail (NautilusFile *file)
 {
-    const char *mime_type;
+    g_autoptr (GIcon) custom_gicon = get_custom_icon (file);
 
-    mime_type = file->details->mime_type;
+    if (custom_gicon != NULL)
+    {
+        return FALSE;
+    }
+
+    const char *mime_type = file->details->mime_type;
+
     if (mime_type == NULL)
     {
         mime_type = "application/octet-stream";
