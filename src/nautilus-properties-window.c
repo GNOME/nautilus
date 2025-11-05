@@ -3898,7 +3898,8 @@ nautilus_properties_window_present (GList                            *files,
         parent_window == NULL ? NULL : GTK_WINDOW (parent_window));
 
     nautilus_file_list_call_when_ready (startup_data->files,
-                                        NAUTILUS_FILE_ATTRIBUTE_INFO,
+                                        NAUTILUS_FILE_ATTRIBUTE_INFO |
+                                        NAUTILUS_FILE_ATTRIBUTES_FOR_ICON,
                                         &startup_data->handle,
                                         is_directory_ready_callback,
                                         startup_data);
