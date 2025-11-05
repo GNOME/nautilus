@@ -2923,7 +2923,6 @@ add_directory_to_directory_list (NautilusFilesView  *view,
         nautilus_directory_ref (directory);
 
         attributes =
-            NAUTILUS_FILE_ATTRIBUTES_FOR_ICON |
             NAUTILUS_FILE_ATTRIBUTE_INFO |
             NAUTILUS_FILE_ATTRIBUTE_DIRECTORY_ITEM_COUNT;
 
@@ -4645,7 +4644,6 @@ nautilus_files_view_add_subdirectory (NautilusFilesView *self,
     nautilus_directory_ref (directory);
 
     attributes =
-        NAUTILUS_FILE_ATTRIBUTES_FOR_ICON |
         NAUTILUS_FILE_ATTRIBUTE_DIRECTORY_ITEM_COUNT |
         NAUTILUS_FILE_ATTRIBUTE_INFO |
         NAUTILUS_FILE_ATTRIBUTE_MOUNT |
@@ -8532,13 +8530,11 @@ finish_loading (NautilusFilesView *self)
     self->load_error_handler_id = g_signal_connect (self->directory, "load-error",
                                                     G_CALLBACK (load_error_callback), self);
 
-    /* Monitor the things needed to get the right icon. Also
-     * monitor a directory's item count because the "size"
+    /* Monitor a directory's item count because the "size"
      * attribute is based on that, and the file's metadata
      * and possible custom name.
      */
     attributes =
-        NAUTILUS_FILE_ATTRIBUTES_FOR_ICON |
         NAUTILUS_FILE_ATTRIBUTE_DIRECTORY_ITEM_COUNT |
         NAUTILUS_FILE_ATTRIBUTE_INFO |
         NAUTILUS_FILE_ATTRIBUTE_MOUNT |
