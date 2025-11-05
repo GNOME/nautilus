@@ -9,6 +9,7 @@
 #include "nautilus-directory.h"
 #include "nautilus-file.h"
 #include "nautilus-file-utilities.h"
+#include "nautilus-image.h"
 #include "nautilus-icon-info.h"
 #include "nautilus-thumbnails.h"
 #include "nautilus-ui-utilities.h"
@@ -37,6 +38,7 @@ struct _NautilusNameCell
     GtkWidget *path;
 
     gboolean show_snippet;
+    gboolean in_file_change;
     guint loading_timeout_id;
 };
 
@@ -135,70 +137,47 @@ static void
 update_icon (NautilusNameCell *self)
 {
     g_autoptr (NautilusViewItem) item = nautilus_view_cell_get_item (NAUTILUS_VIEW_CELL (self));
-    guint icon_size;
     gboolean is_cut;
 
     g_return_if_fail (item != NULL);
 
-    g_object_get (self, "icon-size", &icon_size, NULL);
     g_object_get (item, "is-cut", &is_cut, NULL);
-
-    /* Set the same width for all icons regardless of aspect ratio.
-     * Don't set the width here because it would get GtkPicture w4h confused.
-     */
-    gtk_widget_set_size_request (self->fixed_height_box, icon_size, -1);
 
     if (is_cut)
     {
-        /* This is needed to retain a size for the icon so that we can know
-         * where to draw for cut items. */
-        GtkSnapshot *snapshot = gtk_snapshot_new ();
-        g_autoptr (GdkPaintable) paintable =
-            gtk_snapshot_free_to_paintable (snapshot,
-                                            &GRAPHENE_SIZE_INIT (icon_size, icon_size));
-
-        gtk_picture_set_paintable (GTK_PICTURE (self->icon), paintable);
+        gtk_widget_set_visible (self->icon, FALSE);
         gtk_widget_remove_css_class (self->icon, "hidden-file");
-        gtk_widget_remove_css_class (self->icon, "thumbnail");
-
-        gtk_widget_set_margin_top (self->fixed_height_box, 0);
-        gtk_widget_set_margin_bottom (self->fixed_height_box, 0);
 
         return;
     }
 
+    guint icon_size;
+    g_autoptr (GdkPaintable) icon_paintable = NULL;
     NautilusFile *file = nautilus_view_item_get_file (item);
     gint scale_factor = gtk_widget_get_scale_factor (GTK_WIDGET (self));
-    NautilusFileIconFlags flags = NAUTILUS_FILE_ICON_FLAGS_USE_THUMBNAILS;
-    g_autoptr (GdkPaintable) icon_paintable = nautilus_file_get_icon_paintable (file, icon_size,
-                                                                                scale_factor, flags);
-    int icon_height;
-    float extra_margin;
+    NautilusFileIconFlags flags = NAUTILUS_FILE_ICON_FLAGS_NONE;
+    gboolean show_thumbnail;
 
-    gtk_picture_set_paintable (GTK_PICTURE (self->icon), icon_paintable);
+    g_object_get (self, "icon-size", &icon_size, NULL);
+    icon_paintable = nautilus_file_get_icon_paintable (file, icon_size, scale_factor, flags);
+    show_thumbnail = icon_size >= NAUTILUS_THUMBNAIL_MINIMUM_ICON_SIZE &&
+                     nautilus_file_should_show_thumbnail (file);
 
-    /* Give all items the same minimum width. This cannot be done by setting the
-     * width request directly, as above, because it would get mess up with
-     * height for width calculations.
-     *
-     * Instead we must add margins on both sides of the icon which, summed up
-     * with the icon's actual width, equal the desired item width. */
-    icon_height = gdk_paintable_get_intrinsic_height (icon_paintable);
-    extra_margin = (icon_size - icon_height) / 2.0;
-    /* Need to distribute margin unevenly when the required margin is
-     * fractional using ceil() and floor() since margin only accepts integers. */
-    gtk_widget_set_margin_top (self->fixed_height_box, ceil (extra_margin));
-    gtk_widget_set_margin_bottom (self->fixed_height_box, floor (extra_margin));
+    gtk_widget_set_visible (self->icon, TRUE);
+    nautilus_image_set_size (NAUTILUS_IMAGE (self->icon), icon_size);
+    nautilus_image_set_fallback (NAUTILUS_IMAGE (self->icon), icon_paintable);
 
-    if (icon_size >= NAUTILUS_THUMBNAIL_MINIMUM_ICON_SIZE &&
-        nautilus_file_has_thumbnail (file) &&
-        nautilus_file_should_show_thumbnail (file))
+    if (self->in_file_change ||
+        !show_thumbnail)
     {
-        gtk_widget_add_css_class (self->icon, "thumbnail");
+        nautilus_image_set_source (NAUTILUS_IMAGE (self->icon), NULL);
     }
-    else
+
+    if (show_thumbnail)
     {
-        gtk_widget_remove_css_class (self->icon, "thumbnail");
+        g_autoptr (GFile) location = nautilus_file_get_location (file);
+
+        nautilus_image_set_source (NAUTILUS_IMAGE (self->icon), location);
     }
 
     if (nautilus_file_is_hidden_file (file))
@@ -250,9 +229,13 @@ update_emblems (NautilusNameCell *self)
 static void
 on_file_changed (NautilusNameCell *self)
 {
+    self->in_file_change = TRUE;
+
     update_icon (self);
     update_labels (self);
     update_emblems (self);
+
+    self->in_file_change = FALSE;
 }
 
 static void
@@ -267,7 +250,7 @@ on_icon_size_changed (NautilusNameCell *self)
     }
 
     update_icon (self);
-    gtk_widget_queue_draw (GTK_WIDGET (self));
+    gtk_widget_queue_resize (GTK_WIDGET (self));
 }
 
 static void
@@ -444,7 +427,7 @@ snapshot (GtkWidget   *widget,
     {
         graphene_rect_t dash_bounds;
 
-        if (gtk_widget_compute_bounds (self->icon, widget, &dash_bounds))
+        if (gtk_widget_compute_bounds (self->fixed_height_box, widget, &dash_bounds))
         {
             AdwStyleManager *style_manager = adw_style_manager_get_default ();
             gboolean is_high_contrast = adw_style_manager_get_high_contrast (style_manager);
@@ -500,6 +483,8 @@ nautilus_name_cell_class_init (NautilusNameCellClass *klass)
     object_class->finalize = nautilus_name_cell_finalize;
 
     widget_class->snapshot = snapshot;
+
+    g_type_ensure (NAUTILUS_TYPE_IMAGE);
 
     gtk_widget_class_set_layout_manager_type (widget_class, GTK_TYPE_BIN_LAYOUT);
     gtk_widget_class_set_template_from_resource (widget_class, "/org/gnome/nautilus/ui/nautilus-name-cell.ui");

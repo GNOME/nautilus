@@ -9,6 +9,7 @@
 #include "nautilus-file.h"
 #include "nautilus-global-preferences.h"
 #include "nautilus-icon-info.h"
+#include "nautilus-image.h"
 #include "nautilus-tag-manager.h"
 #include "nautilus-thumbnails.h"
 #include "nautilus-ui-utilities.h"
@@ -29,6 +30,8 @@ struct _NautilusGridCell
     GtkWidget *first_caption;
     GtkWidget *second_caption;
     GtkWidget *third_caption;
+
+    gboolean in_file_change;
 };
 
 G_DEFINE_TYPE (NautilusGridCell, nautilus_grid_cell, NAUTILUS_TYPE_VIEW_CELL)
@@ -45,9 +48,8 @@ update_icon (NautilusGridCell *self)
 
     if (is_cut)
     {
-        gtk_picture_set_paintable (GTK_PICTURE (self->icon), NULL);
+        gtk_widget_set_visible (self->icon, FALSE);
         gtk_widget_remove_css_class (self->icon, "hidden-file");
-        gtk_widget_remove_css_class (self->icon, "thumbnail");
 
         return;
     }
@@ -56,22 +58,26 @@ update_icon (NautilusGridCell *self)
     NautilusFile *file = nautilus_view_item_get_file (item);
     guint icon_size;
     gint scale_factor = gtk_widget_get_scale_factor (GTK_WIDGET (self));
-    NautilusFileIconFlags flags = NAUTILUS_FILE_ICON_FLAGS_USE_THUMBNAILS;
+    NautilusFileIconFlags flags = NAUTILUS_FILE_ICON_FLAGS_NONE;
+    gboolean show_thumbnail = nautilus_file_should_show_thumbnail (file);
 
     g_object_get (self, "icon-size", &icon_size, NULL);
-
     icon_paintable = nautilus_file_get_icon_paintable (file, icon_size, scale_factor, flags);
+    gtk_widget_set_visible (self->icon, TRUE);
+    nautilus_image_set_size (NAUTILUS_IMAGE (self->icon), icon_size);
+    nautilus_image_set_fallback (NAUTILUS_IMAGE (self->icon), icon_paintable);
 
-    gtk_picture_set_paintable (GTK_PICTURE (self->icon), icon_paintable);
-
-    if (nautilus_file_has_thumbnail (file) &&
-        nautilus_file_should_show_thumbnail (file))
+    if (self->in_file_change ||
+        !show_thumbnail)
     {
-        gtk_widget_add_css_class (self->icon, "thumbnail");
+        nautilus_image_set_source (NAUTILUS_IMAGE (self->icon), NULL);
     }
-    else
+
+    if (show_thumbnail)
     {
-        gtk_widget_remove_css_class (self->icon, "thumbnail");
+        g_autoptr (GFile) location = nautilus_file_get_location (file);
+
+        nautilus_image_set_source (NAUTILUS_IMAGE (self->icon), location);
     }
 
     if (nautilus_file_is_hidden_file (file))
@@ -163,9 +169,13 @@ update_emblems (NautilusGridCell *self)
 static void
 on_file_changed (NautilusGridCell *self)
 {
+    self->in_file_change = TRUE;
+
     update_icon (self);
     update_emblems (self);
     update_captions (self);
+
+    self->in_file_change = FALSE;
 }
 
 static void
@@ -452,6 +462,8 @@ nautilus_grid_cell_class_init (NautilusGridCellClass *klass)
     widget_class->size_allocate = nautilus_grid_cell_size_allocate;
 
     widget_class->snapshot = snapshot;
+
+    g_type_ensure (NAUTILUS_TYPE_IMAGE);
 
     gtk_widget_class_set_template_from_resource (widget_class, "/org/gnome/nautilus/ui/nautilus-grid-cell.ui");
 
