@@ -852,7 +852,6 @@ nautilus_file_dispose (GObject *object)
     {
         g_autofree gchar *uri = nautilus_file_get_uri (file);
 
-        nautilus_thumbnail_remove_from_queue (uri);
         g_clear_object (&file->details->thumbnail_cancellable);
         file->details->is_thumbnailing = FALSE;
     }
