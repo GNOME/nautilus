@@ -3339,7 +3339,7 @@ compare_volume (GVolume *a,
     /* Always sort loop devices last */
     if (volume_1_is_loop != volume_2_is_loop)
     {
-        return volume_2_is_loop - volume_1_is_loop;
+        return volume_1_is_loop - volume_2_is_loop;
     }
 
     return (g_strcmp0 (volume_id_1, volume_id_2));
