@@ -94,6 +94,7 @@ test_thumbnail_test_queue (void)
     g_auto (GStrv) files_hier = NULL;
     g_autolist (GFile) image_locations = NULL;
     guint n_images = MAX (g_get_num_processors (), 4);
+    g_autoptr (GPtrArray) cancellables_array = g_ptr_array_new_with_free_func ((GDestroyNotify) g_object_unref);
 
     for (uint i = 0; i < 2 * n_images; i++)
     {
@@ -114,6 +115,7 @@ test_thumbnail_test_queue (void)
                                                         NULL, NULL);
         const gchar *mime_type = g_file_info_get_content_type (info);
         guint64 mtime = g_file_info_get_attribute_uint64 (info, G_FILE_ATTRIBUTE_TIME_MODIFIED);
+        GCancellable *cancellable = g_cancellable_new ();
 
         if (!nautilus_can_thumbnail (uri, mime_type, mtime))
         {
@@ -125,17 +127,14 @@ test_thumbnail_test_queue (void)
         }
 
         nautilus_create_thumbnail_async (uri, mime_type, mtime,
-                                         NULL, NULL, NULL);
+                                         cancellable, NULL, NULL);
+
+        g_ptr_array_add (cancellables_array, cancellable);
     }
 
     /* Cancel all then enqeue again */
-    for (GList *l = image_locations; l != NULL; l = l->next)
-    {
-        GFile *image_location = l->data;
-        g_autofree gchar *image_uri = g_file_get_uri (image_location);
+    g_ptr_array_foreach (cancellables_array, (GFunc) g_cancellable_cancel, NULL);
 
-        nautilus_thumbnail_remove_from_queue (image_uri);
-    }
     for (GList *l = image_locations; l != NULL; l = l->next)
     {
         GFile *image_location = l->data;
