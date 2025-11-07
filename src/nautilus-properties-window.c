@@ -652,8 +652,6 @@ nautilus_properties_window_drag_drop_cb (GtkDropTarget *target,
                                          gdouble        y,
                                          gpointer       user_data)
 {
-    GSList *file_list;
-    gboolean exactly_one;
     GtkImage *image;
     GtkWindow *window;
 
@@ -665,8 +663,14 @@ nautilus_properties_window_drag_drop_cb (GtkDropTarget *target,
         return;
     }
 
-    file_list = g_value_get_boxed (value);
-    exactly_one = file_list != NULL && g_slist_next (file_list) == NULL;
+    GSList *file_list = g_value_get_boxed (value);
+
+    if (file_list == NULL)
+    {
+        return;
+    }
+
+    gboolean exactly_one = file_list != NULL && g_slist_next (file_list) == NULL;
 
     if (!exactly_one)
     {
