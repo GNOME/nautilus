@@ -58,6 +58,7 @@ gboolean file_name_conflicts_with_results       (GList        *selection,
 
 GString* markup_hightlight_text                 (const char  *label,
                                                  const gchar *substring,
+                                                 const gchar *replacement_text,
                                                  const gchar *text_color,
                                                  const gchar *background_color);
 

@@ -125,6 +125,7 @@ batch_rename_get_tag_text_representation (TagConstants tag_constants)
 GString *
 markup_hightlight_text (const char  *label,
                         const gchar *substring,
+                        const gchar *replacement_text,
                         const gchar *text_color,
                         const gchar *background_color)
 {
@@ -136,9 +137,10 @@ markup_hightlight_text (const char  *label,
     }
 
     g_autofree gchar *escaped_substring = g_markup_escape_text (substring, -1);
+    g_autofree gchar *escaped_replacement = g_markup_escape_text (replacement_text, -1);
     g_autofree gchar *highlighted_string = g_strdup_printf ("<span background='%s' color='%s'>%s</span>",
                                                             background_color, text_color,
-                                                            escaped_substring);
+                                                            escaped_replacement);
 
     g_string_replace (new_label, escaped_substring, highlighted_string, -1);
 

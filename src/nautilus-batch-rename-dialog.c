@@ -616,9 +616,6 @@ update_listbox (NautilusBatchRenameDialog *dialog)
         g_autoptr (NautilusBatchRenameItem) item = g_list_model_get_item (G_LIST_MODEL (dialog->batch_listmodel), i);
         GString *new_name = l1->data;
         const char *old_name = nautilus_file_get_name (NAUTILUS_FILE (l2->data));
-        g_autofree gchar *new_name_escaped = g_markup_escape_text (new_name->str, -1);
-
-        nautilus_batch_rename_item_set_name_after (item, new_name_escaped);
 
         if (g_strcmp0 (new_name->str, "") == 0)
         {
@@ -628,15 +625,28 @@ update_listbox (NautilusBatchRenameDialog *dialog)
         if (dialog->mode == NAUTILUS_BATCH_RENAME_DIALOG_FORMAT)
         {
             g_autofree gchar *old_name_escaped = g_markup_escape_text (old_name, -1);
+            g_autofree gchar *new_name_escaped = g_markup_escape_text (new_name->str, -1);
+
             nautilus_batch_rename_item_set_name_before (item, old_name_escaped);
+            nautilus_batch_rename_item_set_name_after (item, new_name_escaped);
         }
         else
         {
             const gchar *replaced_text = gtk_editable_get_text (GTK_EDITABLE (dialog->find_entry));
-            g_autoptr (GString) highlighted_name = markup_hightlight_text (old_name, replaced_text,
-                                                                           "white", "#f57900");
+            const gchar *replacement_text = gtk_editable_get_text (GTK_EDITABLE (dialog->replace_entry));
+            g_autoptr (GString) old_highlighted_name = markup_hightlight_text (old_name,
+                                                                               replaced_text,
+                                                                               replaced_text,
+                                                                               "white",
+                                                                               "#c43602");
+            g_autoptr (GString) new_highlighted_name = markup_hightlight_text (old_name,
+                                                                               replaced_text,
+                                                                               replacement_text,
+                                                                               "black",
+                                                                               "#57ba00");
 
-            nautilus_batch_rename_item_set_name_before (item, highlighted_name->str);
+            nautilus_batch_rename_item_set_name_before (item, old_highlighted_name->str);
+            nautilus_batch_rename_item_set_name_after (item, new_highlighted_name->str);
         }
     }
 
