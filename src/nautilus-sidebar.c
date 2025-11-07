@@ -1222,9 +1222,12 @@ check_valid_drop_target (NautilusSidebar    *sidebar,
     else if (G_VALUE_HOLDS (value, GDK_TYPE_FILE_LIST))
     {
         /* Dragging a file */
-        if (uri != NULL)
+        GSList *file_list = g_value_get_boxed (value);
+
+        if (uri != NULL &&
+            file_list != NULL)
         {
-            drag_action = emit_drag_action_requested (sidebar, dest_file, g_value_get_boxed (value));
+            drag_action = emit_drag_action_requested (sidebar, dest_file, file_list);
             valid = drag_action > 0;
         }
         else
@@ -1448,12 +1451,15 @@ drag_motion_callback (GtkDropTarget   *target,
         }
         else
         {
+            GSList *file_list = g_value_get_boxed (value);
+
             /* uri may be NULL for unmounted volumes, for example, so we don't allow drops there */
-            if (drop_target_uri != NULL)
+            if (drop_target_uri != NULL &&
+                file_list != NULL)
             {
                 GFile *dest_file = g_file_new_for_uri (drop_target_uri);
 
-                action = emit_drag_action_requested (sidebar, file, g_value_get_boxed (value));
+                action = emit_drag_action_requested (sidebar, file, file_list);
 
                 g_object_unref (dest_file);
             }
@@ -1534,7 +1540,7 @@ drag_drop_callback (GtkDropTarget   *target,
     int target_order_index;
     NautilusSidebarRowType target_place_type;
     NautilusSidebarSectionType target_section_type;
-    char *target_uri;
+    g_autofree gchar *target_uri = NULL;
     GtkListBoxRow *target_row;
     gboolean result;
 
@@ -1578,10 +1584,19 @@ drag_drop_callback (GtkDropTarget   *target,
     }
     else if (G_VALUE_HOLDS (value, GDK_TYPE_FILE_LIST))
     {
+        GSList *file_list = g_value_get_boxed (value);
+
+        if (file_list == NULL)
+        {
+            stop_drop_feedback (sidebar);
+
+            return FALSE;
+        }
+
         /* Dropping URIs! */
         if (target_place_type == NAUTILUS_SIDEBAR_ROW_NEW_BOOKMARK)
         {
-            drop_files_as_bookmarks (sidebar, g_value_get_boxed (value), target_order_index);
+            drop_files_as_bookmarks (sidebar, file_list, target_order_index);
         }
         else
         {
@@ -1603,7 +1618,7 @@ drag_drop_callback (GtkDropTarget   *target,
 
             emit_drag_perform_drop (sidebar,
                                     dest_file,
-                                    g_value_get_boxed (value),
+                                    file_list,
                                     actions);
 
             g_object_unref (dest_file);
@@ -1617,7 +1632,7 @@ drag_drop_callback (GtkDropTarget   *target,
 
 out:
     stop_drop_feedback (sidebar);
-    g_free (target_uri);
+
     return result;
 }
 
