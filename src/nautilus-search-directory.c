@@ -640,12 +640,6 @@ search_engine_finished (NautilusSearchEngine         *engine,
         on_search_directory_search_ready_and_valid (self);
         nautilus_directory_emit_done_loading (NAUTILUS_DIRECTORY (self));
     }
-    else if (status == NAUTILUS_SEARCH_PROVIDER_STATUS_RESTARTING)
-    {
-        /* Remove file monitors of the files from an old search that just
-         * actually finished */
-        reset_file_list (self);
-    }
 }
 
 static NautilusFile *
