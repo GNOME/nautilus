@@ -46,7 +46,7 @@ struct _NautilusSearchEngine
     NautilusSearchProvider *simple;
 
     GHashTable *uris;
-    guint providers_running;
+    guint providers_started;
     guint providers_finished;
 
     NautilusQuery *query;
@@ -87,7 +87,7 @@ search_engine_start_provider (NautilusSearchProvider *provider,
     }
     else if (nautilus_search_provider_start (provider, self->query))
     {
-        self->providers_running++;
+        self->providers_started++;
     }
 }
 
@@ -96,7 +96,7 @@ search_engine_start_real (NautilusSearchEngine *self)
 {
     g_return_if_fail (self->running);
 
-    self->providers_running = 0;
+    self->providers_started = 0;
     self->providers_finished = 0;
 
     self->starting = TRUE;
@@ -199,7 +199,7 @@ check_providers_status (NautilusSearchEngine *self)
 {
     g_assert (self->running);
 
-    if (self->starting || self->providers_finished < self->providers_running)
+    if (self->starting || self->providers_finished < self->providers_started)
     {
         return;
     }
