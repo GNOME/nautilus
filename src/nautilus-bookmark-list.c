@@ -343,16 +343,18 @@ nautilus_bookmark_list_move_item (NautilusBookmarkList *bookmarks,
 {
     guint index;
     GList *link_to_move = bookmark_list_get_node (bookmarks, location, &index);
-
-    if (index == destination)
-    {
-        return;
-    }
-
+    
     if (link_to_move == NULL)
     {
         g_autofree char *uri = g_file_get_uri (location);
+
         g_warning ("Attempted moving unknown bookmark of %s", uri);
+
+        return;
+    }
+
+    if (index == destination)
+    {
         return;
     }
 
