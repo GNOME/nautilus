@@ -1244,7 +1244,6 @@ nautilus_directory_notify_files_changed (GList *files)
     GHashTable *changed_lists;
     GList *node;
     GFile *location;
-    g_autoptr (NautilusDirectory) dir = NULL;
     NautilusFile *file;
 
     /* Make a list of changed files in each directory. */
@@ -1274,8 +1273,8 @@ nautilus_directory_notify_files_changed (GList *files)
         else
         {
             g_autoptr (GFile) parent = g_file_get_parent (location);
+            g_autoptr (NautilusDirectory) dir = nautilus_directory_get_existing (parent);
 
-            dir = nautilus_directory_get_existing (parent);
             if (dir != NULL && dir->details->new_files_in_progress != NULL &&
                 files != dir->details->files_changed_while_adding)
             {
