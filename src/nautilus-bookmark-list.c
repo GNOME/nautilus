@@ -343,7 +343,7 @@ nautilus_bookmark_list_move_item (NautilusBookmarkList *bookmarks,
 {
     guint index;
     GList *link_to_move = bookmark_list_get_node (bookmarks, location, &index);
-    
+
     if (link_to_move == NULL)
     {
         g_autofree char *uri = g_file_get_uri (location);
