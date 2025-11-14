@@ -1451,14 +1451,8 @@ static void
 application_unhandled_uri (ActivateParameters *parameters,
                            char               *uri)
 {
-    gboolean show_install_mime;
-    NautilusFile *file;
-    ActivateParametersInstall *parameters_install;
-
-    file = nautilus_file_get_by_uri (uri);
-
     /* copy the parts of parameters we are interested in as the orignal will be unref'd */
-    parameters_install = g_new0 (ActivateParametersInstall, 1);
+    ActivateParametersInstall *parameters_install = g_new0 (ActivateParametersInstall, 1);
     parameters_install->slot = parameters->slot;
     g_object_add_weak_pointer (G_OBJECT (parameters_install->slot), (gpointer *) &parameters_install->slot);
     if (parameters->parent_window)
@@ -1467,39 +1461,28 @@ application_unhandled_uri (ActivateParameters *parameters,
         g_object_add_weak_pointer (G_OBJECT (parameters_install->parent_window), (gpointer *) &parameters_install->parent_window);
     }
     parameters_install->activation_directory = g_strdup (parameters->activation_directory);
-    parameters_install->file = file;
+    parameters_install->file = nautilus_file_get_by_uri (uri);
     parameters_install->files = get_file_list_for_launch_locations (parameters->locations);
     parameters_install->flags = parameters->flags;
     parameters_install->user_confirmation = parameters->user_confirmation;
 
-    show_install_mime = TRUE;
-
-    /* There is no use trying to look for handlers of application/octet-stream */
-    if (g_content_type_is_unknown (nautilus_file_get_mime_type (file)))
+    if (!g_content_type_is_unknown (nautilus_file_get_mime_type (parameters_install->file)))
     {
-        show_install_mime = FALSE;
+        g_dbus_proxy_new_for_bus (G_BUS_TYPE_SESSION,
+                                  G_DBUS_PROXY_FLAGS_DO_NOT_AUTO_START,
+                                  NULL,
+                                  "org.freedesktop.PackageKit",
+                                  "/org/freedesktop/PackageKit",
+                                  "org.freedesktop.PackageKit.Modify2",
+                                  NULL,
+                                  pk_proxy_appeared_cb,
+                                  parameters_install);
     }
-
-    if (!show_install_mime)
+    else
     {
-        goto out;
+        /* Don't look for handlers of unknown types, i.e. application/octet-stream */
+        show_unhandled_type_error (parameters_install);
     }
-
-    g_dbus_proxy_new_for_bus (G_BUS_TYPE_SESSION,
-                              G_DBUS_PROXY_FLAGS_DO_NOT_AUTO_START,
-                              NULL,
-                              "org.freedesktop.PackageKit",
-                              "/org/freedesktop/PackageKit",
-                              "org.freedesktop.PackageKit.Modify2",
-                              NULL,
-                              pk_proxy_appeared_cb,
-                              parameters_install);
-
-    return;
-
-out:
-    /* show an unhelpful dialog */
-    show_unhandled_type_error (parameters_install);
 }
 
 static void
