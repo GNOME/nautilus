@@ -34,14 +34,16 @@ option(
 )
 option(
   'selinux',
-  type: 'boolean',
-  value: false,
+  type: 'feature',
+  value: 'enabled',
+  deprecated: {'true': 'enabled', 'false': 'disabled'},
   description: 'Enable SELinux context support in file properties dialog',
 )
 option(
   'cloudproviders',
-  type: 'boolean',
-  value: true,
+  type: 'feature',
+  value: 'enabled',
+  deprecated: {'true': 'enabled', 'false': 'disabled'},
   description: 'Enable the cloudproviders support',
 )
 ################

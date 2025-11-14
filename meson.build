@@ -8,7 +8,7 @@ project('nautilus', 'c',
   #  * Set release date in data/org.gnome.Nautilus.metainfo.xml.in.in
   version: '50.alpha',
 
-  meson_version: '>= 0.59.0',
+  meson_version: '>= 0.60.0',
   license: 'GPL-3.0-or-later'
 )
 
@@ -169,8 +169,8 @@ conf.set_quoted('PROFILE', profile)
 conf.set_quoted('VERSION', version_string)
 
 conf.set('ENABLE_PACKAGEKIT', get_option('packagekit'))
-conf.set('HAVE_SELINUX', get_option('selinux'))
-conf.set('HAVE_CLOUDPROVIDERS', get_option('cloudproviders'))
+conf.set('HAVE_SELINUX', selinux.found())
+conf.set('HAVE_CLOUDPROVIDERS', cloudproviders.found())
 
 if gtk_x11.found()
   conf.set('HAVE_GTK_X11', 1)
@@ -254,8 +254,8 @@ gnome.post_install(
 #### Summary ####
 
 summary('Extensions', get_option('extensions').to_string(), section: 'Features')
-summary('Cloud providers support', get_option('cloudproviders'), section: 'Features')
-summary('SELinux support', get_option('selinux'), section: 'Features')
+summary('Cloud providers support', cloudproviders.found(), section: 'Features')
+summary('SELinux support', selinux.found(), section: 'Features')
 
 summary('Profile', get_option('profile'), section: 'Build')
 summary('Debugging', get_option('debug'), section: 'Build')
