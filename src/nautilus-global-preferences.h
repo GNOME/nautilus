@@ -41,9 +41,6 @@ G_BEGIN_DECLS
 /* Drag and drop preferences */
 #define NAUTILUS_PREFERENCES_OPEN_FOLDER_ON_DND_HOVER   	"open-folder-on-dnd-hover"
 
-/* Installing new packages when unknown mime type activated */
-#define NAUTILUS_PREFERENCES_INSTALL_MIME_ACTIVATION		"install-mime-activation"
-
 /* Spatial or browser mode */
 #define NAUTILUS_PREFERENCES_NEW_TAB_POSITION			"tabs-open-position"
 

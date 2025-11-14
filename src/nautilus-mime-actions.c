@@ -1377,8 +1377,8 @@ pk_proxy_appeared_cb (GObject      *source,
 
     if (error != NULL || name_owner == NULL)
     {
-        g_warning ("Couldn't call Modify on the PackageKit interface: %s",
-                   error != NULL ? error->message : "no owner for PackageKit");
+        g_debug ("Couldn't call Modify on the PackageKit interface: %s",
+                 error != NULL ? error->message : "no owner for PackageKit");
         g_clear_error (&error);
 
         /* show an unhelpful dialog */
@@ -1438,13 +1438,8 @@ application_unhandled_uri (ActivateParameters *parameters,
     parameters_install->flags = parameters->flags;
     parameters_install->user_confirmation = parameters->user_confirmation;
 
-#ifdef ENABLE_PACKAGEKIT
-    /* allow an admin to disable the PackageKit search functionality */
-    show_install_mime = g_settings_get_boolean (nautilus_preferences, NAUTILUS_PREFERENCES_INSTALL_MIME_ACTIVATION);
-#else
-    /* we have no install functionality */
-    show_install_mime = FALSE;
-#endif
+    show_install_mime = TRUE;
+
     /* There is no use trying to look for handlers of application/octet-stream */
     if (g_content_type_is_unknown (nautilus_file_get_mime_type (file)))
     {
@@ -1457,7 +1452,7 @@ application_unhandled_uri (ActivateParameters *parameters,
     }
 
     g_dbus_proxy_new_for_bus (G_BUS_TYPE_SESSION,
-                              G_DBUS_PROXY_FLAGS_NONE,
+                              G_DBUS_PROXY_FLAGS_DO_NOT_AUTO_START,
                               NULL,
                               "org.freedesktop.PackageKit",
                               "/org/freedesktop/PackageKit",

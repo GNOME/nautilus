@@ -168,7 +168,6 @@ conf.set_quoted('PACKAGE_VERSION', meson.project_version())
 conf.set_quoted('PROFILE', profile)
 conf.set_quoted('VERSION', version_string)
 
-conf.set('ENABLE_PACKAGEKIT', get_option('packagekit'))
 conf.set('HAVE_SELINUX', selinux.found())
 conf.set('HAVE_CLOUDPROVIDERS', cloudproviders.found())
 
