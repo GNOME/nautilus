@@ -593,7 +593,6 @@ on_cursor_callback (GObject      *object,
     const gchar *artist_name;
     const gchar *title;
     const gchar *album_name;
-    NautilusFile *file;
 
     file_metadata = NULL;
 
@@ -627,7 +626,7 @@ on_cursor_callback (GObject      *object,
 
     /* Search for the metadata object corresponding to the file */
     file_uri = tracker_sparql_cursor_get_string (cursor, URL_INDEX, NULL);
-    file = nautilus_file_get_by_uri (file_uri);
+    g_autoptr (NautilusFile) file = nautilus_file_get_by_uri (file_uri);
 
     file_metadata = g_hash_table_lookup (query_data->selection_metadata, file);
     if (G_UNLIKELY (file_metadata == NULL))
