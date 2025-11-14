@@ -2187,6 +2187,22 @@ empty_trash_cb (GSimpleAction *action,
 }
 
 static void
+action_history_trash_settings (GSimpleAction *action,
+                               GVariant      *parameter,
+                               gpointer       data)
+{
+    NautilusSidebar *self = data;
+    GtkWindow *window = GTK_WINDOW (gtk_widget_get_root (GTK_WIDGET (self)));
+    const gchar *parameters = "('launch-panel', [<('privacy', [<'usage'>])>], @a{sv} {})";
+
+    nautilus_dbus_launcher_call (nautilus_dbus_launcher_get (),
+                                 NAUTILUS_DBUS_LAUNCHER_SETTINGS,
+                                 "Activate",
+                                 g_variant_new_parsed (parameters),
+                                 window);
+}
+
+static void
 remove_bookmark (NautilusSidebarRow *row)
 {
     NautilusSidebarRowType type;
@@ -2759,6 +2775,7 @@ static GActionEntry entries[] =
     { .name = "stop", .activate = stop_shortcut_cb},
     { .name = "properties", .activate = properties_cb},
     { .name = "empty-trash", .activate = empty_trash_cb},
+    { .name = "history-trash-settings", .activate = action_history_trash_settings},
     { .name = "format", .activate = format_cb},
 };
 
@@ -2884,9 +2901,8 @@ create_row_popover (NautilusSidebar    *sidebar,
     gboolean show_stop;
     g_autofree gchar *uri = NULL;
     g_autoptr (GFile) file = NULL;
-    gboolean show_properties;
     g_autoptr (GFile) trash = NULL;
-    gboolean is_trash;
+    gboolean is_trash = FALSE, is_recent = FALSE, show_properties = FALSE;
 #ifdef HAVE_CLOUDPROVIDERS
     CloudProvidersAccount *cloud_provider_account;
 #endif
@@ -2905,12 +2921,8 @@ create_row_popover (NautilusSidebar    *sidebar,
         file = g_file_new_for_uri (uri);
         trash = g_file_new_for_uri (SCHEME_TRASH ":///");
         is_trash = g_file_equal (trash, file);
+        is_recent = g_file_has_uri_scheme (file, SCHEME_RECENT);
         show_properties = (g_file_is_native (file) || is_trash || mount != NULL);
-    }
-    else
-    {
-        show_properties = FALSE;
-        is_trash = FALSE;
     }
 
 #ifdef HAVE_CLOUDPROVIDERS
@@ -2977,15 +2989,27 @@ create_row_popover (NautilusSidebar    *sidebar,
     g_menu_append_section (menu, NULL, G_MENU_MODEL (section));
     g_object_unref (section);
 
+    if (is_recent)
+    {
+        g_autoptr (GMenu) settings_section = g_menu_new ();
+
+        g_menu_insert (settings_section, 0,
+                       _("File History _Settings…"), "row.history-trash-settings");
+
+        g_menu_append_section (menu, NULL, G_MENU_MODEL (settings_section));
+    }
+
     if (is_trash)
     {
-        section = g_menu_new ();
-        item = g_menu_item_new (_("_Empty Trash…"), "row.empty-trash");
-        g_menu_append_item (section, item);
-        g_object_unref (item);
+        g_autoptr (GMenu) settings_section = g_menu_new ();
+        g_autoptr (GMenu) empty_section = g_menu_new ();
 
-        g_menu_append_section (menu, NULL, G_MENU_MODEL (section));
-        g_object_unref (section);
+        g_menu_insert (settings_section, 0, _("Trash _Settings…"), "row.history-trash-settings");
+
+        g_menu_insert (empty_section, 0, _("_Empty Trash…"), "row.empty-trash");
+
+        g_menu_append_section (menu, NULL, G_MENU_MODEL (settings_section));
+        g_menu_append_section (menu, NULL, G_MENU_MODEL (empty_section));
     }
 
     section = g_menu_new ();
