@@ -1208,7 +1208,7 @@ open_with_response_cb (GtkDialog *dialog,
 }
 
 static void
-choose_program (GtkDialog *message_dialog,
+choose_program (AdwDialog *message_dialog,
                 gchar     *response,
                 gpointer   callback_data)
 {
@@ -1230,8 +1230,8 @@ choose_program (GtkDialog *message_dialog,
     location = nautilus_file_get_location (file);
     nautilus_file_ref (file);
 
-    /* Destroy the message dialog after ref:ing the file */
-    gtk_window_destroy (GTK_WINDOW (message_dialog));
+    /* Close the dialog after ref:ing the file */
+    adw_dialog_close (message_dialog);
 
     dialog = gtk_app_chooser_dialog_new (parameters->parent_window,
                                          GTK_DIALOG_MODAL,
