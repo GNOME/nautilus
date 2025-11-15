@@ -38,7 +38,6 @@
 #include "nautilus-scheme.h"
 #include "nautilus-signaller.h"
 #include "nautilus-ui-utilities.h"
-#include "nautilus-video-mime-types.h"
 #include "nautilus-window-slot.h"
 
 typedef enum
@@ -796,12 +795,12 @@ ensure_video_types_hash (void)
 
     for (GList *l = mime_types; l != NULL; l = l->next)
     {
-        for (uint i = 0; video_mime_types[i] != NULL; i++)
+        const char *content_type = l->data;
+        g_autofree char *generic_icon_name = g_content_type_get_generic_icon_name (content_type);
+
+        if (g_str_equal (generic_icon_name, "video-x-generic"))
         {
-            if (g_content_type_equals (video_mime_types[i], l->data))
-            {
-                g_hash_table_add (video_content_types_hash, (gpointer) video_mime_types[i]);
-            }
+            g_hash_table_add (video_content_types_hash, g_steal_pointer (&l->data));
         }
     }
 

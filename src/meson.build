@@ -270,7 +270,6 @@ libnautilus_sources = [
   'nautilus-vfs-directory.h',
   'nautilus-vfs-file.c',
   'nautilus-vfs-file.h',
-  'nautilus-video-mime-types.h',
   'nautilus-view-cell.c',
   'nautilus-view-cell.h',
   'nautilus-view-controls.c',
