@@ -2,24 +2,8 @@
    commit in the nautilus module without filing a bug against totem */
 G_GNUC_UNUSED static const char *video_mime_types[] = {
 "application/mxf",
-"application/ram",
-"application/sdp",
-"application/vnd.apple.mpegurl",
 "application/vnd.ms-asf",
-"application/vnd.ms-wpl",
 "application/vnd.rn-realmedia",
-"application/vnd.rn-realmedia-vbr",
-"application/x-extension-m4a",
-"application/x-extension-mp4",
-"application/x-flash-video",
-"application/x-matroska",
-"application/x-netshow-channel",
-"application/x-quicktimeplayer",
-"application/x-shorten",
-"image/vnd.rn-realpix",
-"image/x-pict",
-"misc/ultravox",
-"text/x-google-video-pointer",
 "video/3gp",
 "video/3gpp",
 "video/3gpp2",
@@ -68,6 +52,5 @@ G_GNUC_UNUSED static const char *video_mime_types[] = {
 "video/x-theora",
 "video/x-theora+ogg",
 "video/x-totem-stream",
-"audio/x-pn-realaudio",
 NULL
 };
