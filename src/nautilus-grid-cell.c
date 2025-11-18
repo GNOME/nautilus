@@ -476,6 +476,7 @@ nautilus_grid_cell_init (NautilusGridCell *self)
     g_signal_connect (self, "unmap", G_CALLBACK (on_map_changed), GINT_TO_POINTER (FALSE));
     g_signal_connect (self, "notify::icon-size",
                       G_CALLBACK (on_icon_size_changed), NULL);
+    g_signal_connect (self, "notify::scale-factor", G_CALLBACK (on_icon_size_changed), NULL);
 
     g_signal_connect_object (nautilus_tag_manager_get (), "starred-changed",
                              G_CALLBACK (on_starred_changed), self, G_CONNECT_DEFAULT);
