@@ -1250,6 +1250,8 @@ nautilus_application_window_removed (GtkApplication *app,
         nautilus_previewer_call_close ();
         nautilus_progress_persistence_handler_make_persistent (self->progress_handler);
     }
+
+    schedule_dbus_location_update (self);
 }
 
 /* Manage the local instance command line options. This is only necessary to
