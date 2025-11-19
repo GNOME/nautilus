@@ -4611,21 +4611,6 @@ nautilus_file_should_show_thumbnail (NautilusFile *file)
     return get_speed_tradeoff_preference_for_file (file, show_file_thumbs);
 }
 
-void
-nautilus_file_prioritize (NautilusFile *file)
-{
-    g_return_if_fail (file != NULL && NAUTILUS_IS_FILE (file));
-
-    nautilus_directory_prioritze_file (file->details->directory, file);
-
-    if (file->details->thumbnail_cancellable != NULL)
-    {
-        g_autofree char *uri = nautilus_file_get_uri (file);
-
-        nautilus_thumbnail_prioritize (uri);
-    }
-}
-
 static GList *
 sort_keyword_list_and_remove_duplicates (GList *keywords)
 {

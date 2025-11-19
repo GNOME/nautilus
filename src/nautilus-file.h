@@ -406,7 +406,6 @@ int                     nautilus_file_compare_display_name              (Nautilu
 gboolean                nautilus_file_is_hidden_file                    (NautilusFile                   *file);
 gboolean                nautilus_file_should_show                       (NautilusFile                   *file,
 									 gboolean                        show_hidden);
-void                    nautilus_file_prioritize                        (NautilusFile                   *file);
 
 
 /* Get the URI that's used when activating the file.

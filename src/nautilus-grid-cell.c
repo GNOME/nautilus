@@ -236,27 +236,6 @@ on_starred_changed (NautilusTagManager *tag_manager,
 }
 
 static void
-on_map_changed (GtkWidget *widget,
-                gpointer   user_data)
-{
-    NautilusViewCell *cell = NAUTILUS_VIEW_CELL (widget);
-    gboolean is_mapped = GPOINTER_TO_INT (user_data);
-    g_autoptr (NautilusViewItem) item = nautilus_view_cell_get_item (cell);
-
-    g_return_if_fail (item != NULL);
-
-    NautilusFile *file = nautilus_view_item_get_file (item);
-
-    if (nautilus_file_is_thumbnailing (file) ||
-        !nautilus_file_check_if_ready (file,
-                                       NAUTILUS_FILE_ATTRIBUTE_THUMBNAIL_INFO |
-                                       NAUTILUS_FILE_ATTRIBUTE_THUMBNAIL_BUFFER))
-    {
-        nautilus_view_item_prioritize (item, is_mapped);
-    }
-}
-
-static void
 nautilus_grid_cell_dispose (GObject *object)
 {
     NautilusGridCell *self = (NautilusGridCell *) object;
@@ -484,8 +463,6 @@ nautilus_grid_cell_init (NautilusGridCell *self)
 {
     gtk_widget_init_template (GTK_WIDGET (self));
 
-    g_signal_connect (self, "map", G_CALLBACK (on_map_changed), GINT_TO_POINTER (TRUE));
-    g_signal_connect (self, "unmap", G_CALLBACK (on_map_changed), GINT_TO_POINTER (FALSE));
     g_signal_connect (self, "notify::icon-size",
                       G_CALLBACK (on_icon_size_changed), NULL);
     g_signal_connect (self, "notify::scale-factor", G_CALLBACK (on_icon_size_changed), NULL);

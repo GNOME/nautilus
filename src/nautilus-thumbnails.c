@@ -241,17 +241,6 @@ nautilus_thumbnail_get_path_for_uri (const char *uri)
     return gnome_desktop_thumbnail_path_for_uri (uri, get_thumbnail_scale ());
 }
 
-void
-nautilus_thumbnail_prioritize (const char *file_uri)
-{
-    if (G_UNLIKELY (thumbnails_to_make == NULL))
-    {
-        return;
-    }
-
-    nautilus_hash_queue_move_existing_to_head (thumbnails_to_make, file_uri);
-}
-
 /***************************************************************************
  * Thumbnail Thread Functions.
  ***************************************************************************/
