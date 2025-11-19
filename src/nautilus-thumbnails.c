@@ -252,17 +252,6 @@ nautilus_thumbnail_prioritize (const char *file_uri)
     nautilus_hash_queue_move_existing_to_head (thumbnails_to_make, file_uri);
 }
 
-void
-nautilus_thumbnail_deprioritize (const char *file_uri)
-{
-    if (G_UNLIKELY (thumbnails_to_make == NULL))
-    {
-        return;
-    }
-
-    nautilus_hash_queue_move_existing_to_tail (thumbnails_to_make, file_uri);
-}
-
 /***************************************************************************
  * Thumbnail Thread Functions.
  ***************************************************************************/
