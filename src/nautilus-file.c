@@ -852,6 +852,7 @@ nautilus_file_dispose (GObject *object)
     {
         g_autofree gchar *uri = nautilus_file_get_uri (file);
 
+        g_cancellable_cancel (file->details->thumbnail_cancellable);
         g_clear_object (&file->details->thumbnail_cancellable);
     }
 
@@ -4890,6 +4891,12 @@ nautilus_file_get_thumbnail_icon (NautilusFile          *file,
     {
         g_autofree gchar *uri = nautilus_file_get_uri (file);
         time_t modified_time = 0;
+
+        if (file->details->thumbnail_cancellable != NULL)
+        {
+            g_cancellable_cancel (file->details->thumbnail_cancellable);
+            g_clear_object (&file->details->thumbnail_cancellable);
+        }
 
         file->details->thumbnail_cancellable = g_cancellable_new ();
 
