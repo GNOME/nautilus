@@ -156,8 +156,6 @@ struct NautilusFilePrivate
         guint thumbnail_info_is_up_to_date  : 1;
 	guint thumbnail_is_up_to_date       : 1;
 	guint thumbnailing_failed           : 1;
-	
-	guint is_thumbnailing               : 1;
 
 	guint is_symlink                    : 1;
 	guint is_mountpoint                 : 1;

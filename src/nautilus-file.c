@@ -848,12 +848,11 @@ nautilus_file_dispose (GObject *object)
 {
     NautilusFile *file = NAUTILUS_FILE (object);
 
-    if (file->details->is_thumbnailing)
+    if (file->details->thumbnail_cancellable != NULL)
     {
         g_autofree gchar *uri = nautilus_file_get_uri (file);
 
         g_clear_object (&file->details->thumbnail_cancellable);
-        file->details->is_thumbnailing = FALSE;
     }
 
     G_OBJECT_CLASS (nautilus_file_parent_class)->dispose (object);
@@ -4617,7 +4616,7 @@ nautilus_file_prioritize (NautilusFile *file)
 
     nautilus_directory_prioritze_file (file->details->directory, file);
 
-    if (nautilus_file_is_thumbnailing (file))
+    if (file->details->thumbnail_cancellable != NULL)
     {
         g_autofree char *uri = nautilus_file_get_uri (file);
 
@@ -4794,7 +4793,7 @@ nautilus_file_should_create_thumbnail (NautilusFile *file)
     if (file->details->thumbnail_info_is_up_to_date &&
         file->details->thumbnail_path == NULL &&
         file->details->can_read &&
-        !file->details->is_thumbnailing &&
+        file->details->thumbnail_cancellable == NULL &&
         !file->details->thumbnailing_failed)
     {
         g_autofree gchar *uri = nautilus_file_get_uri (file);
@@ -4829,7 +4828,6 @@ file_thumbnailing_done_cb (GObject      *source_object,
     }
 
     g_clear_object (&file->details->thumbnail_cancellable);
-    file->details->is_thumbnailing = FALSE;
     nautilus_file_changed (file);
 }
 
@@ -4899,7 +4897,6 @@ nautilus_file_get_thumbnail_icon (NautilusFile          *file,
             modified_time = file->details->mtime;
         }
 
-        file->details->is_thumbnailing = TRUE;
         nautilus_create_thumbnail_async (uri,
                                          nautilus_file_get_mime_type (file),
                                          modified_time,
@@ -4912,7 +4909,7 @@ nautilus_file_get_thumbnail_icon (NautilusFile          *file,
     {
         icon = nautilus_icon_info_new_for_paintable (paintable);
     }
-    else if (file->details->is_thumbnailing ||
+    else if (file->details->thumbnail_cancellable != NULL ||
              (nautilus_file_check_if_ready (file, NAUTILUS_FILE_ATTRIBUTE_THUMBNAIL_INFO) &&
               !nautilus_file_check_if_ready (file, NAUTILUS_FILE_ATTRIBUTE_THUMBNAIL_BUFFER)))
     {
@@ -7987,7 +7984,7 @@ nautilus_file_is_thumbnailing (NautilusFile *file)
 {
     g_return_val_if_fail (NAUTILUS_IS_FILE (file), FALSE);
 
-    return file->details->is_thumbnailing;
+    return file->details->thumbnail_cancellable != NULL;
 }
 
 gboolean
