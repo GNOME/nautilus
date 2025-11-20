@@ -99,6 +99,7 @@ nautilus_progress_info_finalize (GObject *object)
 
     info = NAUTILUS_PROGRESS_INFO (object);
 
+    g_free (info->short_status);
     g_free (info->status);
     g_free (info->details);
     g_clear_pointer (&info->progress_timer, g_timer_destroy);
