@@ -325,7 +325,7 @@ nautilus_query_get_mime_type_str (NautilusQuery *self)
         g_string_append (mimetype_str, g_ptr_array_index (self->mime_types, i));
     }
 
-    return g_string_free_and_steal (mimetype_str);
+    return g_string_free_and_steal (g_steal_pointer (&mimetype_str));
 }
 
 /**
