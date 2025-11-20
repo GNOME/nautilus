@@ -428,6 +428,7 @@ totem_properties_view_finalize (GObject *object)
             gst_discoverer_stop (props->priv->disco);
             g_clear_object (&props->priv->disco);
         }
+        g_clear_object (&props->priv->store);
         g_free (props->priv);
     }
     props->priv = NULL;
