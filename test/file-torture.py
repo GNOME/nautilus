@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 #
-# file-torture.py - Simple torture test for file notificatins in Nautilus
+# file-torture.py - Simple torture test for file notifications in Nautilus
 # Copyright (C) 2006 Federico Mena-Quintero
 #
 # This program is free software; you can redistribute it and/or modify
@@ -252,7 +252,7 @@ def main ():
     try:
         os.mkdir (output_dir)
     except:
-        1 # nothing
+        pass  # directory exists or cannot be created; ignore as before
 
     while True:
         op = operations [random_gen.randrange (len (operations))]

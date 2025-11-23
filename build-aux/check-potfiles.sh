@@ -27,7 +27,7 @@ fi
 
 cat >&2 <<EOT
 
-The following files are missing from po/POTFILES.po:
+The following files are missing from po/POTFILES.in:
 
 EOT
 for f in $missing; do

@@ -10,7 +10,7 @@ fi
 
 if [ ! -x "$BUILD_AUX/lineup-parameters" ];
 then
-    echo "Script lineup-parameters does not exists."
+    echo "Script lineup-parameters does not exist."
     exit 1
 fi
 
