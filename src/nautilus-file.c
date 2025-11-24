@@ -56,6 +56,7 @@
 #include "nautilus-global-preferences.h"
 #include "nautilus-icon-info.h"
 #include "nautilus-metadata.h"
+#include "nautilus-mime-actions.h"
 #include "nautilus-module.h"
 #include "nautilus-scheme.h"
 #include "nautilus-signaller.h"
@@ -63,7 +64,6 @@
 #include "nautilus-thumbnails.h"
 #include "nautilus-ui-utilities.h"
 #include "nautilus-vfs-file.h"
-#include "nautilus-video-mime-types.h"
 
 #ifdef HAVE_SELINUX
 #include <selinux/selinux.h>
@@ -4741,49 +4741,6 @@ nautilus_file_should_show_thumbnail (NautilusFile *file)
     return get_speed_tradeoff_preference_for_file (file, show_file_thumbs);
 }
 
-static GHashTable *video_mime_types_hash;
-
-static void
-ensure_video_types_hash (void)
-{
-    if (G_LIKELY (video_mime_types_hash != NULL))
-    {
-        return;
-    }
-
-    GList *mime_types = g_content_types_get_registered ();
-    video_mime_types_hash = g_hash_table_new (g_str_hash, g_str_equal);
-
-    for (GList *l = mime_types; l != NULL; l = l->next)
-    {
-        for (uint i = 0; video_mime_types[i] != NULL; i++)
-        {
-            if (g_content_type_equals (video_mime_types[i], l->data))
-            {
-                g_hash_table_add (video_mime_types_hash, (gpointer) video_mime_types[i]);
-            }
-        }
-    }
-
-    g_list_free_full (mime_types, g_free);
-}
-
-static gboolean
-nautilus_is_video_file (NautilusFile *file)
-{
-    const char *mime_type;
-
-    mime_type = file->details->mime_type;
-    if (mime_type == NULL)
-    {
-        return FALSE;
-    }
-
-    ensure_video_types_hash ();
-
-    return g_hash_table_contains (video_mime_types_hash, mime_type);
-}
-
 void
 nautilus_file_prioritize (NautilusFile *file)
 {
@@ -5057,7 +5014,7 @@ nautilus_file_get_thumbnail_icon (NautilusFile          *file,
                                 width, height);
 
         if (size >= NAUTILUS_GRID_ICON_SIZE_SMALL &&
-            nautilus_is_video_file (file))
+            nautilus_mime_is_video (file->details->mime_type))
         {
             nautilus_ui_frame_video (snapshot, width, height);
         }

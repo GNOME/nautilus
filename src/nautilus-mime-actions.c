@@ -38,6 +38,7 @@
 #include "nautilus-scheme.h"
 #include "nautilus-signaller.h"
 #include "nautilus-ui-utilities.h"
+#include "nautilus-video-mime-types.h"
 #include "nautilus-window-slot.h"
 
 typedef enum
@@ -778,6 +779,41 @@ get_activation_action (NautilusFile *file)
     g_free (activation_uri);
 
     return action;
+}
+
+static GHashTable *video_content_types_hash;
+
+static void
+ensure_video_types_hash (void)
+{
+    if (G_LIKELY (video_content_types_hash != NULL))
+    {
+        return;
+    }
+
+    GList *mime_types = g_content_types_get_registered ();
+    video_content_types_hash = g_hash_table_new (g_str_hash, g_str_equal);
+
+    for (GList *l = mime_types; l != NULL; l = l->next)
+    {
+        for (uint i = 0; video_mime_types[i] != NULL; i++)
+        {
+            if (g_content_type_equals (video_mime_types[i], l->data))
+            {
+                g_hash_table_add (video_content_types_hash, (gpointer) video_mime_types[i]);
+            }
+        }
+    }
+
+    g_list_free_full (mime_types, g_free);
+}
+
+gboolean
+nautilus_mime_is_video (const char *content_type)
+{
+    ensure_video_types_hash ();
+
+    return g_hash_table_contains (video_content_types_hash, content_type);
 }
 
 gboolean
