@@ -33,6 +33,7 @@ GAppInfo *             nautilus_mime_get_default_application_for_file     (Nauti
 
 GAppInfo *             nautilus_mime_get_default_application_for_files    (GList                   *files);
 
+gboolean               nautilus_mime_is_video                             (const char              *content_type);
 gboolean               nautilus_mime_file_extracts                        (NautilusFile            *file);
 gboolean               nautilus_mime_file_opens_in_external_app           (NautilusFile            *file);
 gboolean               nautilus_mime_file_launches                        (NautilusFile            *file);

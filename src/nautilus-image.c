@@ -14,10 +14,10 @@
 #include "nautilus-global-preferences.h"
 #include "nautilus-hash-queue.h"
 #include "nautilus-icon-info.h"
+#include "nautilus-mime-actions.h"
 #include "nautilus-scheme.h"
 #include "nautilus-thumbnails.h"
 #include "nautilus-ui-utilities.h"
-#include "nautilus-video-mime-types.h"
 
 #include <adwaita.h>
 #include <gtk/gtk.h>
@@ -138,46 +138,6 @@ thumbnail_cache_add (GFile      *file,
     new_item->mtime = mtime;
 
     nautilus_hash_queue_enqueue (thumbnail_cache, file, new_item);
-}
-
-static GHashTable *
-get_video_types_hash (void)
-{
-    static GHashTable *video_mime_types_hash;
-
-    if (G_LIKELY (video_mime_types_hash != NULL))
-    {
-        return video_mime_types_hash;
-    }
-
-    GList *mime_types = g_content_types_get_registered ();
-    video_mime_types_hash = g_hash_table_new (g_str_hash, g_str_equal);
-
-    for (GList *l = mime_types; l != NULL; l = l->next)
-    {
-        for (uint i = 0; video_mime_types[i] != NULL; i++)
-        {
-            if (g_content_type_equals (video_mime_types[i], l->data))
-            {
-                g_hash_table_add (video_mime_types_hash, (gpointer) video_mime_types[i]);
-            }
-        }
-    }
-
-    g_list_free_full (mime_types, g_free);
-
-    return video_mime_types_hash;
-}
-
-static gboolean
-content_type_is_video (const char *content_type)
-{
-    if (content_type == NULL || *content_type == '\0')
-    {
-        return FALSE;
-    }
-
-    return g_hash_table_contains (get_video_types_hash (), content_type);
 }
 
 #define LOADING_ICON_NAME "image-loading"
@@ -723,7 +683,7 @@ real_snapshot (GtkWidget   *widget,
                                 width, height);
 
         if (self->size >= NAUTILUS_GRID_ICON_SIZE_SMALL &&
-            content_type_is_video (self->source_content_type))
+            nautilus_mime_is_video (self->source_content_type))
         {
             nautilus_ui_frame_video (snapshot, width, height);
         }
