@@ -56,7 +56,8 @@ static gchar *exported_window_handle = NULL;
 
 static void real_call_show_file (const gchar *uri,
                                  const gchar *window_handle,
-                                 gboolean     close_if_already_visible);
+                                 gboolean     close_if_already_visible,
+                                 const char  *activation_token);
 static void create_new_bus (void);
 static void previewer_selection_event (GDBusConnection *connection,
                                        const gchar     *sender_name,
@@ -71,6 +72,7 @@ typedef struct
 {
     gchar *uri;
     gboolean close_if_already_visible;
+    char *activation_token;
 } PreviewExportData;
 
 static void
@@ -78,6 +80,7 @@ preview_export_data_free (gpointer _data)
 {
     PreviewExportData *data = _data;
     g_free (data->uri);
+    g_free (data->activation_token);
     g_free (data);
 }
 
@@ -91,7 +94,7 @@ wayland_window_handle_exported (GdkToplevel *toplevel,
     PreviewExportData *data = user_data;
     g_autofree char *wayland_handle = g_strdup_printf ("wayland:%s", wayland_handle_str);
 
-    real_call_show_file (data->uri, wayland_handle, data->close_if_already_visible);
+    real_call_show_file (data->uri, wayland_handle, data->close_if_already_visible, data->activation_token);
 }
 #endif
 
@@ -246,11 +249,18 @@ nautilus_previewer_call_show_file (const gchar        *uri,
 
     GtkRoot *window = gtk_widget_get_root (GTK_WIDGET (slot));
 
+    g_autoptr (GdkAppLaunchContext) launch_context = gdk_display_get_app_launch_context (
+        gtk_root_get_display (window));
+    g_autofree char *activation_token = g_app_launch_context_get_startup_notify_id (
+        G_APP_LAUNCH_CONTEXT (launch_context),
+        NULL,
+        NULL);
+
     /* Reuse existing handle if called again for the same window. */
     if (current_window == window &&
         exported_window_handle != NULL)
     {
-        real_call_show_file (uri, exported_window_handle, close_if_already_visible);
+        real_call_show_file (uri, exported_window_handle, close_if_already_visible, activation_token);
         return;
     }
 
@@ -265,7 +275,7 @@ nautilus_previewer_call_show_file (const gchar        *uri,
         guint xid = (guint) gdk_x11_surface_get_xid (gdk_surface);
         g_autofree char *window_handle = g_strdup_printf ("x11:%x", xid);
 
-        real_call_show_file (uri, window_handle, close_if_already_visible);
+        real_call_show_file (uri, window_handle, close_if_already_visible, activation_token);
         return;
     }
 #endif
@@ -276,6 +286,7 @@ nautilus_previewer_call_show_file (const gchar        *uri,
 
         data->uri = g_strdup (uri);
         data->close_if_already_visible = close_if_already_visible;
+        data->activation_token = g_strdup (activation_token);
 
         if (gdk_wayland_toplevel_export_handle (GDK_WAYLAND_TOPLEVEL (gdk_surface),
                                                 wayland_window_handle_exported,
@@ -292,13 +303,14 @@ nautilus_previewer_call_show_file (const gchar        *uri,
     g_warning ("Couldn't export handle, unsupported windowing system");
 
     /* Let's use a fallback, so at least a preview will be displayed */
-    real_call_show_file (uri, "x11:0", close_if_already_visible);
+    real_call_show_file (uri, "x11:0", close_if_already_visible, activation_token);
 }
 
 static void
 real_call_show_file (const gchar *uri,
                      const gchar *window_handle,
-                     gboolean     close_if_already_visible)
+                     gboolean     close_if_already_visible,
+                     const char  *activation_token)
 {
     g_set_str (&exported_window_handle, window_handle);
 
@@ -307,10 +319,17 @@ real_call_show_file (const gchar *uri,
         return;
     }
 
+    if (activation_token == NULL)
+    {
+        activation_token = "";
+    }
+
+    GVariant *parameters = g_variant_new (
+        "(ssbs)",
+        uri, window_handle, close_if_already_visible, activation_token);
     g_dbus_proxy_call (previewer_proxy,
                        "ShowFile",
-                       g_variant_new ("(ssb)",
-                                      uri, window_handle, close_if_already_visible),
+                       parameters,
                        G_DBUS_CALL_FLAGS_NONE,
                        -1,
                        cancellable,
