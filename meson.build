@@ -103,6 +103,13 @@ glib_ver = '>= 2.84.0'
 
 libm = cc.find_library('m')
 
+subproject('libgxdp',
+  default_options: [
+    'tests=false',
+    'werror=false',
+  ],
+)
+
 gio = dependency('gio-2.0', version: glib_ver)
 gio_unix = dependency('gio-unix-2.0', version: glib_ver)
 glib = dependency('glib-2.0', version: glib_ver)

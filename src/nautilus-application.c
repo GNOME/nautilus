@@ -1126,8 +1126,13 @@ nautilus_application_startup (GApplication *app)
      * it during the chain-up. */
     g_autoptr (GError) error = NULL;
 
-    gxdp_set_use_portals (TRUE);
-    gxdp_init_gtk (GXDP_SERVICE_CLIENT_TYPE_FILE_CHOOSER, &error);
+    g_auto (GStrv) implemented_portals = g_new (char *, 1);
+    implemented_portals[0] = "org.freedesktop.portal.FileChooser";
+
+    gxdp_init_gtk (GXDP_SERVICE_CLIENT_TYPE_FILE_CHOOSER,
+                   (const char **) implemented_portals,
+                   &error);
+
     if (error != NULL)
     {
         g_message ("Failed to initialize display server connection: %s",
