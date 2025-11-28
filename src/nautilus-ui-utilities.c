@@ -344,7 +344,10 @@ nautilus_show_ok_dialog (const gchar *primary_text,
                          const gchar *secondary_text,
                          GtkWindow   *parent)
 {
-    GtkWidget *dialog;
+    AdwAlertDialog *dialog = ADW_ALERT_DIALOG (adw_alert_dialog_new (primary_text, secondary_text));
+
+    adw_alert_dialog_add_response (dialog, "ok", _("_OK"));
+    adw_alert_dialog_set_default_response (dialog, "ok");
 
     if (parent == NULL)
     {
@@ -353,11 +356,7 @@ nautilus_show_ok_dialog (const gchar *primary_text,
         parent = gtk_application_get_active_window (app);
     }
 
-    dialog = adw_message_dialog_new (parent, primary_text, secondary_text);
-    adw_message_dialog_add_response (ADW_MESSAGE_DIALOG (dialog), "ok", _("_OK"));
-    adw_message_dialog_set_default_response (ADW_MESSAGE_DIALOG (dialog), "ok");
-
-    gtk_window_present (GTK_WINDOW (dialog));
+    adw_dialog_present (ADW_DIALOG (dialog), GTK_WIDGET (parent));
 }
 
 static void
