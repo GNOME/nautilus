@@ -4826,7 +4826,7 @@ get_target_file_from_source_display_name (CopyMoveJob *copy_job,
     CommonJob *job;
     g_autoptr (GError) error = NULL;
     g_autoptr (GFileInfo) info = NULL;
-    gchar *primary, *secondary;
+    gchar *primary;
     GFile *dest = NULL;
 
     job = (CommonJob *) copy_job;
@@ -4842,12 +4842,11 @@ get_target_file_from_source_display_name (CopyMoveJob *copy_job,
         {
             primary = g_strdup (_("Error while copying."));
         }
-        secondary = g_strdup (_("There was an error getting information about the source."));
 
         run_error (job,
                    primary,
-                   secondary,
                    error->message,
+                   NULL,
                    FALSE,
                    CANCEL,
                    NULL);
