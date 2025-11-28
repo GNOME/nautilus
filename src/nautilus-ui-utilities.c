@@ -347,7 +347,12 @@ show_dialog (const gchar    *primary_text,
 {
     GtkWidget *dialog;
 
-    g_return_val_if_fail (parent != NULL, NULL);
+    if (parent == NULL)
+    {
+        GtkApplication *app = GTK_APPLICATION (g_application_get_default ());
+
+        parent = gtk_application_get_active_window (app);
+    }
 
     dialog = adw_message_dialog_new (parent, primary_text, secondary_text);
     adw_message_dialog_add_response (ADW_MESSAGE_DIALOG (dialog), "ok", _("_OK"));

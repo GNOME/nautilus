@@ -166,7 +166,6 @@ check_required_directories (NautilusApplication *self)
         GSList *l;
         char *error_string;
         g_autofree char *detail_string = NULL;
-        AdwMessageDialog *dialog;
 
         ret = FALSE;
 
@@ -194,10 +193,7 @@ check_required_directories (NautilusApplication *self)
                                              directories_as_string->str);
         }
 
-        dialog = show_dialog (error_string, detail_string, NULL, GTK_MESSAGE_ERROR);
-        /* We need the main event loop so the user has a chance to see the dialog. */
-        gtk_application_add_window (GTK_APPLICATION (self),
-                                    GTK_WINDOW (dialog));
+        show_dialog (error_string, detail_string, NULL, GTK_MESSAGE_ERROR);
 
         g_string_free (directories_as_string, TRUE);
     }
