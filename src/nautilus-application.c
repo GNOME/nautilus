@@ -139,69 +139,18 @@ nautilus_application_get_bookmarks (NautilusApplication *self)
     return self->bookmark_list;
 }
 
-static gboolean
+static void
 check_required_directories (NautilusApplication *self)
 {
-    char *user_directory;
-    GSList *directories;
-    gboolean ret;
-
-    g_assert (NAUTILUS_IS_APPLICATION (self));
-
-    ret = TRUE;
-
-    user_directory = nautilus_get_user_directory ();
-
-    directories = NULL;
+    g_autofree char *user_directory = nautilus_get_user_directory ();
 
     if (!g_file_test (user_directory, G_FILE_TEST_IS_DIR))
     {
-        directories = g_slist_prepend (directories, user_directory);
+        nautilus_show_ok_dialog (
+            _("No Home Directory"),
+            _("Make sure the directory exists and has correct access permissions set."),
+            NULL);
     }
-
-    if (directories != NULL)
-    {
-        int failed_count;
-        GString *directories_as_string;
-        GSList *l;
-        char *error_string;
-        g_autofree char *detail_string = NULL;
-
-        ret = FALSE;
-
-        failed_count = g_slist_length (directories);
-
-        directories_as_string = g_string_new ((const char *) directories->data);
-        for (l = directories->next; l != NULL; l = l->next)
-        {
-            g_string_append_printf (directories_as_string, ", %s", (const char *) l->data);
-        }
-
-        error_string = _("Oops! Something went wrong.");
-        if (failed_count == 1)
-        {
-            detail_string = g_strdup_printf (_("Unable to create a required folder. "
-                                               "Please create the following folder, or "
-                                               "set permissions such that it can be created:\n%s"),
-                                             directories_as_string->str);
-        }
-        else
-        {
-            detail_string = g_strdup_printf (_("Unable to create required folders. "
-                                               "Please create the following folders, or "
-                                               "set permissions such that they can be created:\n%s"),
-                                             directories_as_string->str);
-        }
-
-        nautilus_show_ok_dialog (error_string, detail_string, NULL);
-
-        g_string_free (directories_as_string, TRUE);
-    }
-
-    g_slist_free (directories);
-    g_free (user_directory);
-
-    return ret;
 }
 
 static void
