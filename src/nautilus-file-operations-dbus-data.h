@@ -29,6 +29,4 @@ void                            nautilus_file_operations_dbus_data_unref        
 
 const char                     *nautilus_file_operations_dbus_data_get_parent_handle (NautilusFileOperationsDBusData *self);
 
-guint32                         nautilus_file_operations_dbus_data_get_timestamp     (NautilusFileOperationsDBusData *self);
-
 G_DEFINE_AUTOPTR_CLEANUP_FUNC (NautilusFileOperationsDBusData, nautilus_file_operations_dbus_data_unref)

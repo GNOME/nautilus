@@ -23,8 +23,6 @@ struct _NautilusFileOperationsDBusData
     gatomicrefcount ref_count;
 
     char *parent_handle;
-
-    guint32 timestamp;
 };
 
 NautilusFileOperationsDBusData *
@@ -39,7 +37,6 @@ nautilus_file_operations_dbus_data_new (GVariant *platform_data)
     g_variant_dict_init (&dict, platform_data);
 
     g_variant_dict_lookup (&dict, "parent-handle", "s", &self->parent_handle);
-    g_variant_dict_lookup (&dict, "timestamp", "u", &self->timestamp);
 
     return self;
 }
@@ -66,10 +63,4 @@ const char *
 nautilus_file_operations_dbus_data_get_parent_handle (NautilusFileOperationsDBusData *self)
 {
     return self->parent_handle;
-}
-
-guint32
-nautilus_file_operations_dbus_data_get_timestamp (NautilusFileOperationsDBusData *self)
-{
-    return self->timestamp;
 }

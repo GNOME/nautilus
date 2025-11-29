@@ -864,18 +864,9 @@ do_run_simple_dialog (gpointer _data)
 
     if (data->dbus_data != NULL)
     {
-        guint32 timestamp;
-
-        timestamp = nautilus_file_operations_dbus_data_get_timestamp (data->dbus_data);
-
         if (nautilus_file_operations_dbus_data_get_parent_handle (data->dbus_data) != NULL)
         {
             g_signal_connect (dialog, "realize", G_CALLBACK (dialog_realize_cb), data->dbus_data);
-        }
-
-        if (timestamp != 0)
-        {
-            gtk_window_present_with_time (GTK_WINDOW (dialog), timestamp);
         }
     }
 
