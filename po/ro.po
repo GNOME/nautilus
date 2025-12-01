@@ -12,8 +12,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: nautilus.HEAD.ro\n"
 "Report-Msgid-Bugs-To: https://gitlab.gnome.org/GNOME/nautilus/issues\n"
-"POT-Creation-Date: 2025-09-05 11:51+0000\n"
-"PO-Revision-Date: 2025-09-06 18:31+0200\n"
+"POT-Creation-Date: 2025-11-28 22:00+0000\n"
+"PO-Revision-Date: 2025-12-01 15:38+0100\n"
 "Last-Translator: Antonio Marin <gnmer.6qxyg@slmail.me>\n"
 "Language-Team: Romanian <gnomero-list@lists.sourceforge.net>\n"
 "Language: ro\n"
@@ -68,11 +68,11 @@ msgstr ""
 "ramificată. Funcționalitatea sa poate fi extinsă cu ajutorul modulelor și a "
 "scripturilor."
 
-#: data/org.gnome.Nautilus.metainfo.xml.in.in:60 src/nautilus-files-view.c:9657
+#: data/org.gnome.Nautilus.metainfo.xml.in.in:60 src/nautilus-files-view.c:9661
 msgid "Grid View"
 msgstr "Afișare tip grilă"
 
-#: data/org.gnome.Nautilus.metainfo.xml.in.in:64 src/nautilus-files-view.c:9664
+#: data/org.gnome.Nautilus.metainfo.xml.in.in:64 src/nautilus-files-view.c:9668
 msgid "List View"
 msgstr "Afișare tip listă"
 
@@ -1043,7 +1043,7 @@ msgstr "Copierile din Nautilus nu trebuie să aibă rânduri goale."
 msgid "View More"
 msgstr "Mai multe"
 
-#: src/nautilus-column-utilities.c:69 src/nautilus-sidebar.c:2004
+#: src/nautilus-column-utilities.c:69 src/nautilus-sidebar.c:2019
 msgid "Name"
 msgstr "Nume"
 
@@ -1363,73 +1363,73 @@ msgstr "Elementul nu a putut fi redenumit."
 msgid "Renaming “%s” to “%s”."
 msgstr "Se redenumește „%s” la „%s”."
 
-#: src/nautilus-file.c:1299 src/nautilus-vfs-file.c:271
+#: src/nautilus-file.c:1306 src/nautilus-vfs-file.c:271
 msgid "This file cannot be mounted"
 msgstr "Fișierul nu poate fi montat"
 
-#: src/nautilus-file.c:1353
+#: src/nautilus-file.c:1360
 msgid "This file cannot be unmounted"
 msgstr "Fișierul nu poate fi demontat"
 
-#: src/nautilus-file.c:1400
+#: src/nautilus-file.c:1407
 msgid "This file cannot be ejected"
 msgstr "Fișierul nu poate fi scos"
 
-#: src/nautilus-file.c:1445 src/nautilus-vfs-file.c:462
+#: src/nautilus-file.c:1452 src/nautilus-vfs-file.c:462
 msgid "This file cannot be started"
 msgstr "Fișierul nu poate fi pornit"
 
-#: src/nautilus-file.c:1504 src/nautilus-file.c:1544
+#: src/nautilus-file.c:1511 src/nautilus-file.c:1551
 msgid "This file cannot be stopped"
 msgstr "Fișierul nu poate fi oprit"
 
-#: src/nautilus-file.c:1901
+#: src/nautilus-file.c:1908
 #, c-format
 msgid "Slashes are not allowed in filenames"
 msgstr "Bara oblică nu este permisă în numele fișierelor"
 
-#: src/nautilus-file.c:1944
+#: src/nautilus-file.c:1951
 #, c-format
 msgid "Toplevel files cannot be renamed"
 msgstr "Fișierele de nivel superior nu pot fi redenumite"
 
-#: src/nautilus-file.c:2024
+#: src/nautilus-file.c:2031
 #, c-format
 msgid "File not found"
 msgstr "Fișierul nu a fost găsit"
 
-#: src/nautilus-file.c:5484
+#: src/nautilus-file.c:5492
 #, c-format
 msgid "Not allowed to set permissions"
 msgstr "Permisiunile nu pot fi modificate"
 
-#: src/nautilus-file.c:5828
+#: src/nautilus-file.c:5838
 #, c-format
 msgid "Not allowed to set owner"
 msgstr "Nu este permisă definirea proprietarului"
 
-#: src/nautilus-file.c:5847
+#: src/nautilus-file.c:5857
 #, c-format
 msgid "Specified owner “%s” doesn’t exist"
 msgstr "Proprietarul specificat „%s” nu există"
 
-#: src/nautilus-file.c:6137
+#: src/nautilus-file.c:6147
 #, c-format
 msgid "Not allowed to set group"
 msgstr "Nu este permisă definirea grupului"
 
-#: src/nautilus-file.c:6156
+#: src/nautilus-file.c:6166
 #, c-format
 msgid "Specified group “%s” doesn’t exist"
 msgstr "Grupul specificat „%s” nu există"
 
 #. Translators: This is a username followed by "(You)" to indicate the file is owned by the current user
-#: src/nautilus-file.c:6296
+#: src/nautilus-file.c:6306
 #, c-format
 msgid "%s (You)"
 msgstr "%s (Tu)"
 
-#: src/nautilus-file.c:6328
+#: src/nautilus-file.c:6338
 #, c-format
 msgid "%'u item"
 msgid_plural "%'u items"
@@ -1437,7 +1437,7 @@ msgstr[0] "%'u element"
 msgstr[1] "%'u elemente"
 msgstr[2] "%'u de elemente"
 
-#: src/nautilus-file.c:6329
+#: src/nautilus-file.c:6339
 #, c-format
 msgid "%'u folder"
 msgid_plural "%'u folders"
@@ -1445,7 +1445,7 @@ msgstr[0] "%'u dosar"
 msgstr[1] "%'u dosare"
 msgstr[2] "%'u de dosare"
 
-#: src/nautilus-file.c:6330
+#: src/nautilus-file.c:6340
 #, c-format
 msgid "%'u file"
 msgid_plural "%'u files"
@@ -1453,7 +1453,7 @@ msgstr[0] "%'u fișier"
 msgstr[1] "%'u fișiere"
 msgstr[2] "%'u de fișiere"
 
-#: src/nautilus-file.c:6414 src/nautilus-properties-window.c:2105
+#: src/nautilus-file.c:6424 src/nautilus-properties-window.c:2109
 #, c-format
 msgid "%s byte"
 msgid_plural "%s bytes"
@@ -1462,93 +1462,93 @@ msgstr[1] "%s octeți"
 msgstr[2] "%s de octeți"
 
 #. This means no contents at all were readable
-#: src/nautilus-file.c:6818
+#: src/nautilus-file.c:6828
 msgid "? bytes"
 msgstr "? octeți"
 
 #. This means no contents at all were readable
-#: src/nautilus-file.c:6830
+#: src/nautilus-file.c:6840
 msgid "? items"
 msgstr "? elemente"
 
 #. Translators: This about a file type.
-#: src/nautilus-file.c:6839
+#: src/nautilus-file.c:6849
 msgid "Unknown type"
 msgstr "Tip necunoscut"
 
 #. Fallback, use for both unknown attributes and attributes
 #. * for which we have no more appropriate default.
 #.
-#: src/nautilus-file.c:6870
+#: src/nautilus-file.c:6880
 msgid "Unknown"
 msgstr "Necunoscut"
 
-#: src/nautilus-file.c:6920 src/nautilus-file.c:6928 src/nautilus-file.c:6987
+#: src/nautilus-file.c:6930 src/nautilus-file.c:6938 src/nautilus-file.c:6997
 msgid "Program"
 msgstr "Program"
 
-#: src/nautilus-file.c:6921
+#: src/nautilus-file.c:6931
 msgid "Audio"
 msgstr "Audio"
 
-#: src/nautilus-file.c:6922
+#: src/nautilus-file.c:6932
 msgid "Font"
 msgstr "Tip de litere"
 
-#: src/nautilus-file.c:6923
+#: src/nautilus-file.c:6933
 msgid "Image"
 msgstr "Imagine"
 
-#: src/nautilus-file.c:6924
+#: src/nautilus-file.c:6934
 msgid "Archive"
 msgstr "Arhivă"
 
-#: src/nautilus-file.c:6925
+#: src/nautilus-file.c:6935
 msgid "Markup"
 msgstr "Evidențiere"
 
-#: src/nautilus-file.c:6926 src/nautilus-file.c:6927
+#: src/nautilus-file.c:6936 src/nautilus-file.c:6937
 msgid "Text"
 msgstr "Text"
 
-#: src/nautilus-file.c:6929 src/nautilus-mime-actions.c:301
+#: src/nautilus-file.c:6939 src/nautilus-mime-actions.c:301
 msgid "Video"
 msgstr "Video"
 
-#: src/nautilus-file.c:6930
+#: src/nautilus-file.c:6940
 msgid "Contacts"
 msgstr "Contacte"
 
-#: src/nautilus-file.c:6931
+#: src/nautilus-file.c:6941
 msgid "Calendar"
 msgstr "Calendar"
 
-#: src/nautilus-file.c:6932
+#: src/nautilus-file.c:6942
 msgid "Document"
 msgstr "Document"
 
-#: src/nautilus-file.c:6933 src/nautilus-mime-actions.c:262
+#: src/nautilus-file.c:6943 src/nautilus-mime-actions.c:262
 msgid "Presentation"
 msgstr "Prezentare"
 
-#: src/nautilus-file.c:6934 src/nautilus-mime-actions.c:274
+#: src/nautilus-file.c:6944 src/nautilus-mime-actions.c:274
 msgid "Spreadsheet"
 msgstr "Foaie de calcul"
 
 #. Refers to a file type which is known but not one of the basic types
-#: src/nautilus-file.c:6967
+#: src/nautilus-file.c:6977
 msgid "Other"
 msgstr "Altele"
 
-#: src/nautilus-file.c:6989
+#: src/nautilus-file.c:6999
 msgid "Binary"
 msgstr "Binar"
 
-#: src/nautilus-file.c:6994
+#: src/nautilus-file.c:7004
 msgid "Folder"
 msgstr "Dosar"
 
-#: src/nautilus-file.c:7052
+#: src/nautilus-file.c:7062
 msgid "Link"
 msgstr "Legătură"
 
@@ -1557,17 +1557,17 @@ msgstr "Legătură"
 #. * to that kind of file (e.g. "link to folder").
 #.
 #. Translators: File name for new symlink. %s is target's name
-#: src/nautilus-file.c:7058 src/nautilus-filename-utilities.c:253
+#: src/nautilus-file.c:7068 src/nautilus-filename-utilities.c:253
 #, c-format
 msgid "Link to %s"
 msgstr "Legătură la %s"
 
-#: src/nautilus-file.c:7074 src/nautilus-file.c:7090 src/nautilus-file.c:7106
+#: src/nautilus-file.c:7084 src/nautilus-file.c:7100 src/nautilus-file.c:7116
 msgid "Link (broken)"
 msgstr "Legătură (întreruptă)"
 
 #. Translators: This refers to available space in a folder; e.g.: 100 MB Free
-#: src/nautilus-file.c:7267
+#: src/nautilus-file.c:7277
 #, c-format
 msgid "%s Free"
 msgstr "%s liber"
@@ -1575,7 +1575,7 @@ msgstr "%s liber"
 #. Translators: A "." is added in between file name and starring
 #. * action description as a useful pause in the screen reader
 #. * announcement.
-#: src/nautilus-file.c:8637
+#: src/nautilus-file.c:8647
 #, c-format
 msgid "%s. Starred"
 msgstr "%s. Cu stea"
@@ -1716,7 +1716,7 @@ msgstr[0] "%'d oră"
 msgstr[1] "%'d ore"
 msgstr[2] "%'d de ore"
 
-#: src/nautilus-file-operations.c:485 src/nautilus-properties-window.c:908
+#: src/nautilus-file-operations.c:485 src/nautilus-properties-window.c:912
 msgid "unknown"
 msgstr "necunoscut"
 
@@ -1807,8 +1807,8 @@ msgstr[2] "Se șterg %'d de fișiere"
 #: src/nautilus-file-operations.c:1410 src/nautilus-file-operations.c:1756
 #: src/nautilus-file-operations.c:1764 src/nautilus-file-operations.c:1804
 #: src/nautilus-file-operations.c:3689 src/nautilus-file-operations.c:3697
-#: src/nautilus-file-operations.c:3768 src/nautilus-file-operations.c:8460
-#: src/nautilus-file-operations.c:8528
+#: src/nautilus-file-operations.c:3768 src/nautilus-file-operations.c:8468
+#: src/nautilus-file-operations.c:8536
 #, c-format
 msgid "%'d / %'d"
 msgstr "%'d / %'d"
@@ -1909,8 +1909,8 @@ msgid "Deleting Files"
 msgstr "Se șterg fișierele"
 
 #. Translators: %s is a file name formatted for display
-#: src/nautilus-file-operations.c:2334 src/nautilus-files-view.c:6527
-#: src/nautilus-sidebar.c:2348 src/nautilus-sidebar.c:2377
+#: src/nautilus-file-operations.c:2334 src/nautilus-files-view.c:6531
+#: src/nautilus-sidebar.c:2363 src/nautilus-sidebar.c:2392
 #, c-format
 msgid "Unable to eject “%s”"
 msgstr "Nu s-a putut scoate „%s”"
@@ -1944,8 +1944,8 @@ msgid "_Empty"
 msgstr "_Golește"
 
 #. Translators: %s is a file name formatted for display
-#: src/nautilus-file-operations.c:2656 src/nautilus-files-view.c:6478
-#: src/nautilus-sidebar.c:1770
+#: src/nautilus-file-operations.c:2656 src/nautilus-files-view.c:6482
+#: src/nautilus-sidebar.c:1785
 #, c-format
 msgid "Unable to access “%s”"
 msgstr "Nu s-a putut accesa „%s”"
@@ -2185,8 +2185,8 @@ msgstr[2] "S-au duplicat %'d de fișiere în „%s”"
 #. To translators: %s will expand to a size like "2 bytes" or "3 MB", so something like "4 kB / 4 MB"
 #. To translators: %s will expand to a size like "2 bytes" or "3 MB".
 #: src/nautilus-file-operations.c:3679 src/nautilus-file-operations.c:3739
-#: src/nautilus-file-operations.c:7973 src/nautilus-file-operations.c:8200
-#: src/nautilus-file-operations.c:8455 src/nautilus-file-operations.c:8498
+#: src/nautilus-file-operations.c:7981 src/nautilus-file-operations.c:8208
+#: src/nautilus-file-operations.c:8463 src/nautilus-file-operations.c:8506
 #, c-format
 msgid "%s / %s"
 msgstr "%s / %s"
@@ -2209,8 +2209,8 @@ msgstr "%s / %s"
 #. *
 #. * The singular/plural form will be used depending on the remaining time (i.e. the %s argument).
 #.
-#: src/nautilus-file-operations.c:3723 src/nautilus-file-operations.c:7991
-#: src/nautilus-file-operations.c:8487
+#: src/nautilus-file-operations.c:3723 src/nautilus-file-operations.c:7999
+#: src/nautilus-file-operations.c:8495
 #, c-format
 msgid "%s / %s — %s left (%s/s)"
 msgid_plural "%s / %s — %s left (%s/s)"
@@ -2223,7 +2223,7 @@ msgstr[2] "%s / %s — %s rămase (%s/s)"
 #. *
 #. * The singular/plural form will be used depending on the remaining time (i.e. the %s argument).
 #.
-#: src/nautilus-file-operations.c:3757 src/nautilus-file-operations.c:8517
+#: src/nautilus-file-operations.c:3757 src/nautilus-file-operations.c:8525
 #, c-format
 msgid "%'d / %'d — %s left (%s/s)"
 msgid_plural "%'d / %'d — %s left (%s/s)"
@@ -2310,7 +2310,7 @@ msgstr "Fișierul sursă ar fi suprascris de destinație."
 #: src/nautilus-file-operations.c:5256 src/nautilus-file-operations.c:5344
 #, c-format
 msgid "Error while copying “%s”."
-msgstr "Eroare la copierea lui „%s”."
+msgstr "Eroare la copierea „%s”."
 
 #: src/nautilus-file-operations.c:5259
 #, c-format
@@ -2408,66 +2408,66 @@ msgstr "Eroare la crearea fișierului „%s”."
 msgid "There was an error creating the directory in %s."
 msgstr "S-a produs o eroare la crearea dosarului în %s."
 
-#: src/nautilus-file-operations.c:7476
+#: src/nautilus-file-operations.c:7478
 msgid "Saving image to file"
 msgstr "Se salvează imaginea în fișier"
 
-#: src/nautilus-file-operations.c:7485
+#: src/nautilus-file-operations.c:7493
 msgid "Successfully saved image to file"
 msgstr "Imaginea a fost salvată cu succes în fișier"
 
-#: src/nautilus-file-operations.c:7515
+#: src/nautilus-file-operations.c:7523
 msgid "Failed to save image"
 msgstr "Nu s-a putut salva imaginea"
 
 #. Translators: This is used to auto-generate a file name for pasted images from
 #. * the clipboard i.e. "Pasted image.png", "Pasted image 1.png", ...
-#: src/nautilus-file-operations.c:7577
+#: src/nautilus-file-operations.c:7585
 msgid "Pasted image"
 msgstr "Imagine lipită"
 
-#: src/nautilus-file-operations.c:7584
+#: src/nautilus-file-operations.c:7592
 msgid "Retrieving clipboard data"
 msgstr "Se încarcă datele copiate"
 
-#: src/nautilus-file-operations.c:7616
+#: src/nautilus-file-operations.c:7624
 msgid "Retrieving image data"
 msgstr "Se încarcă datele imaginii"
 
-#: src/nautilus-file-operations.c:7834
+#: src/nautilus-file-operations.c:7842
 msgid "Emptying Trash"
 msgstr "Se golește coșul de gunoi"
 
-#: src/nautilus-file-operations.c:7877
+#: src/nautilus-file-operations.c:7885
 msgid "Verifying destination"
 msgstr "Se verifică destinația"
 
-#: src/nautilus-file-operations.c:7931
+#: src/nautilus-file-operations.c:7939
 #, c-format
 msgid "Extracting “%s”"
 msgstr "Se extrage „%s”"
 
-#: src/nautilus-file-operations.c:8057 src/nautilus-file-operations.c:8147
+#: src/nautilus-file-operations.c:8065 src/nautilus-file-operations.c:8155
 #, c-format
 msgid "Error extracting “%s”"
 msgstr "Eroare la extragerea „%s”"
 
-#: src/nautilus-file-operations.c:8064
+#: src/nautilus-file-operations.c:8072
 #, c-format
 msgid "There was an error while extracting “%s”."
 msgstr "A apărut o eroare la extragerea „%s”."
 
-#: src/nautilus-file-operations.c:8150
+#: src/nautilus-file-operations.c:8158
 #, c-format
 msgid "Not enough free space to extract “%s”"
 msgstr "Nu este destul spațiu liber pentru a extrage %s"
 
-#: src/nautilus-file-operations.c:8183
+#: src/nautilus-file-operations.c:8191
 #, c-format
 msgid "Extracted “%s” to “%s”"
 msgstr "S-a extras „%s” în „%s”"
 
-#: src/nautilus-file-operations.c:8189
+#: src/nautilus-file-operations.c:8197
 #, c-format
 msgid "Extracted %'d file to “%s”"
 msgid_plural "Extracted %'d files to “%s”"
@@ -2475,20 +2475,20 @@ msgstr[0] "S-a extras %'d fișier în „%s”"
 msgstr[1] "S-au extras %'d fișiere în „%s”"
 msgstr[2] "S-au extras %'d de fișiere în „%s”"
 
-#: src/nautilus-file-operations.c:8223
+#: src/nautilus-file-operations.c:8231
 msgid "Preparing to extract"
 msgstr "Se pregătește de extragere"
 
-#: src/nautilus-file-operations.c:8351
+#: src/nautilus-file-operations.c:8359
 msgid "Extracting Files"
 msgstr "Se extrag fișiere"
 
-#: src/nautilus-file-operations.c:8411
+#: src/nautilus-file-operations.c:8419
 #, c-format
 msgid "Compressing “%s” into “%s”"
 msgstr "Se comprimă „%s” în „%s”"
 
-#: src/nautilus-file-operations.c:8417
+#: src/nautilus-file-operations.c:8425
 #, c-format
 msgid "Compressing %'d file into “%s”"
 msgid_plural "Compressing %'d files into “%s”"
@@ -2496,12 +2496,12 @@ msgstr[0] "Se comprimă %'d fișier în „%s”"
 msgstr[1] "Se comprimă %'d fișiere în „%s”"
 msgstr[2] "Se comprimă %'d de fișiere în „%s”"
 
-#: src/nautilus-file-operations.c:8565
+#: src/nautilus-file-operations.c:8573
 #, c-format
 msgid "Error compressing “%s” into “%s”"
 msgstr "Eroare la comprimarea „%s” în „%s”"
 
-#: src/nautilus-file-operations.c:8571
+#: src/nautilus-file-operations.c:8579
 #, c-format
 msgid "Error compressing %'d file into “%s”"
 msgid_plural "Error compressing %'d files into “%s”"
@@ -2509,16 +2509,16 @@ msgstr[0] "Eroare la comprimarea %'d fișier în „%s”"
 msgstr[1] "Eroare la comprimarea a %'d fișiere în „%s”"
 msgstr[2] "Eroare la comprimarea a %'d de fișiere în „%s”"
 
-#: src/nautilus-file-operations.c:8581
+#: src/nautilus-file-operations.c:8589
 msgid "There was an error while compressing files."
 msgstr "A apărut o eroare în timpul comprimării fișierelor."
 
-#: src/nautilus-file-operations.c:8606
+#: src/nautilus-file-operations.c:8614
 #, c-format
 msgid "Compressed “%s” into “%s”"
 msgstr "S-a comprimat „%s” în „%s”"
 
-#: src/nautilus-file-operations.c:8612
+#: src/nautilus-file-operations.c:8620
 #, c-format
 msgid "Compressed %'d file into “%s”"
 msgid_plural "Compressed %'d files into “%s”"
@@ -2526,7 +2526,7 @@ msgstr[0] "S-a comprimat %'d fișier în „%s”"
 msgstr[1] "S-au comprimat %'d fișiere în „%s”"
 msgstr[2] "S-au comprimat %'d de fișiere în „%s”"
 
-#: src/nautilus-file-operations.c:8731
+#: src/nautilus-file-operations.c:8739
 msgid "Compressing Files"
 msgstr "Se comprimă fișiere"
 
@@ -2542,33 +2542,33 @@ msgstr "Se încarcă…"
 msgid "Examples: "
 msgstr "Exemple: "
 
-#: src/nautilus-files-view.c:2787 src/nautilus-files-view.c:2794
-#: src/nautilus-files-view.c:2801 src/nautilus-files-view.c:2808
+#: src/nautilus-files-view.c:2790 src/nautilus-files-view.c:2797
+#: src/nautilus-files-view.c:2804 src/nautilus-files-view.c:2811
 msgid "Could not paste files"
 msgstr "Fișierele nu s-au putut lipi"
 
-#: src/nautilus-files-view.c:2788
+#: src/nautilus-files-view.c:2791
 msgid "Cannot paste files into Starred"
 msgstr "Fișierele nu s-au putut lipi în „Cu stea”"
 
-#: src/nautilus-files-view.c:2795
+#: src/nautilus-files-view.c:2798
 msgid "Cannot paste files into Recent"
 msgstr "Fișierele nu s-au putut lipi în Recente"
 
-#: src/nautilus-files-view.c:2802
+#: src/nautilus-files-view.c:2805
 msgid "Cannot paste files into Trash"
 msgstr "Fișierele nu s-au putut lipi în Coșul de gunoi"
 
-#: src/nautilus-files-view.c:2809
+#: src/nautilus-files-view.c:2812
 msgid "Permissions do not allow pasting files in this directory"
 msgstr "Nu este permisă lipirea de fișiere în acest dosar"
 
-#: src/nautilus-files-view.c:3402 src/nautilus-files-view.c:3449
+#: src/nautilus-files-view.c:3405 src/nautilus-files-view.c:3452
 #, c-format
 msgid "“%s” selected"
 msgstr "Ales „%s”"
 
-#: src/nautilus-files-view.c:3406
+#: src/nautilus-files-view.c:3409
 #, c-format
 msgid "%'d folder selected"
 msgid_plural "%'d folders selected"
@@ -2576,7 +2576,7 @@ msgstr[0] "%'d dosar ales"
 msgstr[1] "%'d dosare alese"
 msgstr[2] "%'d de dosare alese"
 
-#: src/nautilus-files-view.c:3420
+#: src/nautilus-files-view.c:3423
 #, c-format
 msgid "(containing %'d item)"
 msgid_plural "(containing %'d items)"
@@ -2585,7 +2585,7 @@ msgstr[1] "(conține %'d elemente)"
 msgstr[2] "(conține %'d de elemente)"
 
 #. translators: this is preceded with a string of form 'N folders' (N more than 1)
-#: src/nautilus-files-view.c:3435
+#: src/nautilus-files-view.c:3438
 #, c-format
 msgid "(containing a total of %'d item)"
 msgid_plural "(containing a total of %'d items)"
@@ -2593,7 +2593,7 @@ msgstr[0] "(conțin în total %'d element)"
 msgstr[1] "(conțin în total %'d elemente)"
 msgstr[2] "(conțin în total %'d de elemente)"
 
-#: src/nautilus-files-view.c:3454
+#: src/nautilus-files-view.c:3457
 #, c-format
 msgid "%'d item selected"
 msgid_plural "%'d items selected"
@@ -2602,7 +2602,7 @@ msgstr[1] "%'d elemente alese"
 msgstr[2] "%'d de elemente alese"
 
 #. Folders selected also, use "other" terminology
-#: src/nautilus-files-view.c:3463
+#: src/nautilus-files-view.c:3466
 #, c-format
 msgid "%'d other item selected"
 msgid_plural "%'d other items selected"
@@ -2614,7 +2614,7 @@ msgstr[2] "%'d de alte elemente alese"
 #. * needs to use something other than parentheses. The
 #. * the message in parentheses is the size of the selected items.
 #.
-#: src/nautilus-files-view.c:3478
+#: src/nautilus-files-view.c:3481
 #, c-format
 msgid "(%s)"
 msgstr "(%s)"
@@ -2626,98 +2626,98 @@ msgstr "(%s)"
 #. * message about the number of other items and the
 #. * total size of those items.
 #.
-#: src/nautilus-files-view.c:3528
+#: src/nautilus-files-view.c:3531
 #, c-format
 msgid "%s, %s"
 msgstr "%s, %s"
 
-#: src/nautilus-files-view.c:3604
+#: src/nautilus-files-view.c:3607
 msgid "Search _Settings"
 msgstr "Opțiuni de _căutare"
 
-#: src/nautilus-files-view.c:3616
+#: src/nautilus-files-view.c:3619
 msgid "Search _Everywhere"
 msgstr "Caută p_este tot"
 
-#: src/nautilus-files-view.c:3646
+#: src/nautilus-files-view.c:3649
 msgid "More locations can be added to search in the settings"
 msgstr "În Configurări pot fi adăugate alte locuri"
 
 #. Translators: %s is the name of the search location formatted for display
-#: src/nautilus-files-view.c:3654
+#: src/nautilus-files-view.c:3657
 #, c-format
 msgid "No matches in “%s”"
 msgstr "Nicio potrivire în „%s”"
 
-#: src/nautilus-files-view.c:3662
+#: src/nautilus-files-view.c:3665
 #: src/resources/ui/nautilus-search-types-dialog.ui:70
 msgid "No Results Found"
 msgstr "Niciun rezultat"
 
-#: src/nautilus-files-view.c:3667
+#: src/nautilus-files-view.c:3670
 msgid "Trash is Empty"
 msgstr "Coșul de gunoi este gol"
 
-#: src/nautilus-files-view.c:3673
+#: src/nautilus-files-view.c:3676
 msgid "No Starred Files"
 msgstr "Nu sunt fișiere cu stea"
 
-#: src/nautilus-files-view.c:3679
+#: src/nautilus-files-view.c:3682
 msgid "No Recent Files"
 msgstr "Nu sunt fișiere recente"
 
-#: src/nautilus-files-view.c:3685
+#: src/nautilus-files-view.c:3688
 msgid "No Known Connections"
 msgstr "Nicio conexiune cunoscută"
 
-#: src/nautilus-files-view.c:3686
+#: src/nautilus-files-view.c:3689
 msgid "Enter an address to connect to a network location."
 msgstr "Introdu o adresă pentru a te conecta la un loc în rețea."
 
-#: src/nautilus-files-view.c:3691
+#: src/nautilus-files-view.c:3694
 msgid "Folder is Empty"
 msgstr "Dosarul este gol"
 
-#: src/nautilus-files-view.c:5746
+#: src/nautilus-files-view.c:5750
 msgid "Select Move Destination"
 msgstr "Alege destinația pentru mutare"
 
-#: src/nautilus-files-view.c:5750
+#: src/nautilus-files-view.c:5754
 msgid "Select Copy Destination"
 msgstr "Alege destinația pentru copiere"
 
-#: src/nautilus-files-view.c:5761 src/nautilus-files-view.c:6128
-#: src/nautilus-portal.c:431 src/nautilus-properties-window.c:4027
+#: src/nautilus-files-view.c:5765 src/nautilus-files-view.c:6132
+#: src/nautilus-portal.c:431 src/nautilus-properties-window.c:4031
 #: src/resources/ui/nautilus-files-view-select-items.ui:23
 msgid "_Select"
 msgstr "_Alege"
 
-#: src/nautilus-files-view.c:6127
+#: src/nautilus-files-view.c:6131
 msgid "Select Extract Destination"
 msgstr "Alege destinația pentru extracție"
 
-#: src/nautilus-files-view.c:6203
+#: src/nautilus-files-view.c:6207
 msgid "Error sending email."
 msgstr "Eroare la trimiterea e-mailului."
 
 #. Translators: %s is a file name formatted for display
-#: src/nautilus-files-view.c:6504
+#: src/nautilus-files-view.c:6508
 #, c-format
 msgid "Unable to remove “%s”"
 msgstr "Nu s-a putut elimina „%s”"
 
-#: src/nautilus-files-view.c:6549
+#: src/nautilus-files-view.c:6553
 msgid "Unable to stop drive"
 msgstr "Nu s-a putut opri unitatea"
 
 #. Translators: %s is a file name formatted for display
-#: src/nautilus-files-view.c:6660 src/nautilus-sidebar.c:1721
-#: src/nautilus-sidebar.c:2592
+#: src/nautilus-files-view.c:6664 src/nautilus-sidebar.c:1736
+#: src/nautilus-sidebar.c:2607
 #, c-format
 msgid "Unable to start “%s”"
 msgstr "Nu s-a putut porni „%s”"
 
-#: src/nautilus-files-view.c:7756
+#: src/nautilus-files-view.c:7760
 #, c-format
 msgid "New Folder with Selection (%'d Item)"
 msgid_plural "New Folder with Selection (%'d Items)"
@@ -2725,63 +2725,63 @@ msgstr[0] "Dosar nou cu selecție (%'d element)"
 msgstr[1] "Dosar nou cu selecție (%'d elemente)"
 msgstr[2] "Dosar nou cu selecție (%'d de elemente)"
 
-#: src/nautilus-files-view.c:7811
+#: src/nautilus-files-view.c:7815
 #, c-format
 msgid "Open With %s"
 msgstr "Deschide cu %s"
 
-#: src/nautilus-files-view.c:7822
+#: src/nautilus-files-view.c:7826
 msgid "Run"
 msgstr "Pornește"
 
-#: src/nautilus-files-view.c:7827
+#: src/nautilus-files-view.c:7831
 #: src/resources/ui/nautilus-operations-ui-manager-request-passphrase.ui:17
 msgid "Extract"
 msgstr "Extrage"
 
-#: src/nautilus-files-view.c:7828
+#: src/nautilus-files-view.c:7832
 msgid "Extract to…"
 msgstr "Extrage în…"
 
-#: src/nautilus-files-view.c:7832
+#: src/nautilus-files-view.c:7836
 #: src/resources/ui/nautilus-files-view-context-menus.ui:93
 msgid "Open"
 msgstr "Deschide"
 
-#: src/nautilus-files-view.c:7911 src/nautilus-sidebar.c:3030
+#: src/nautilus-files-view.c:7915 src/nautilus-sidebar.c:3045
 #: src/resources/ui/nautilus-files-view-context-menus.ui:159
 msgid "_Start"
 msgstr "_Start"
 
-#: src/nautilus-files-view.c:7917
+#: src/nautilus-files-view.c:7921
 msgid "_Connect"
 msgstr "_Conectează"
 
-#: src/nautilus-files-view.c:7923
+#: src/nautilus-files-view.c:7927
 msgid "_Start Multi-disk Drive"
 msgstr "Pornește unitatea multi-di_sc"
 
-#: src/nautilus-files-view.c:7929
+#: src/nautilus-files-view.c:7933
 msgid "U_nlock Drive"
 msgstr "Deblochează u_nitatea"
 
-#: src/nautilus-files-view.c:7947
+#: src/nautilus-files-view.c:7951
 msgid "Stop Drive"
 msgstr "Oprește unitatea"
 
-#: src/nautilus-files-view.c:7953 src/nautilus-sidebar.c:3061
+#: src/nautilus-files-view.c:7957 src/nautilus-sidebar.c:3076
 msgid "_Safely Remove Drive"
 msgstr "_Scoate în siguranță unitatea"
 
-#: src/nautilus-files-view.c:7959
+#: src/nautilus-files-view.c:7963
 msgid "_Disconnect"
 msgstr "_Deconectează"
 
-#: src/nautilus-files-view.c:7965
+#: src/nautilus-files-view.c:7969
 msgid "_Stop Multi-disk Drive"
 msgstr "Oprește unitatea multi-di_sc"
 
-#: src/nautilus-files-view.c:7971
+#: src/nautilus-files-view.c:7975
 msgid "_Lock Drive"
 msgstr "B_lochează unitatea"
 
@@ -2828,7 +2828,7 @@ msgid "Move %d item to “%s”"
 msgid_plural "Move %d items to “%s”"
 msgstr[0] "Mută %d element în „%s”"
 msgstr[1] "Mută %d elemente în „%s”"
-msgstr[2] "Mută %d elemente în „%s”"
+msgstr[2] "Mută %d de elemente în „%s”"
 
 #: src/nautilus-file-undo-operations.c:460
 #, c-format
@@ -2881,7 +2881,7 @@ msgstr[1] "Mută %d elemente înapoi în coșul de gunoi"
 msgstr[2] "Mută %d de elemente înapoi în coșul de gunoi"
 
 #: src/nautilus-file-undo-operations.c:486
-#: src/nautilus-file-undo-operations.c:1631
+#: src/nautilus-file-undo-operations.c:1629
 #, c-format
 msgid "Restore %d item from trash"
 msgid_plural "Restore %d items from trash"
@@ -2934,8 +2934,8 @@ msgstr[2] "_Refă copierea a %d de elemente"
 #: src/nautilus-file-undo-operations.c:516
 #: src/nautilus-file-undo-operations.c:543
 #: src/nautilus-file-undo-operations.c:831
-#: src/nautilus-file-undo-operations.c:2388
-#: src/nautilus-file-undo-operations.c:2551
+#: src/nautilus-file-undo-operations.c:2386
+#: src/nautilus-file-undo-operations.c:2549
 #, c-format
 msgid "Delete “%s”"
 msgstr "Șterge „%s”"
@@ -3061,15 +3061,15 @@ msgstr "_Refă crearea dosarului"
 #: src/nautilus-file-undo-operations.c:849
 #, c-format
 msgid "Create new file “%s” from template "
-msgstr "Creează un fișier nou „%s” din șablon "
+msgstr "Creează un fișier nou „%s” după model "
 
 #: src/nautilus-file-undo-operations.c:851
 msgid "_Undo Create From Template"
-msgstr "An_ulează crearea din șablon"
+msgstr "An_ulează crearea după model"
 
 #: src/nautilus-file-undo-operations.c:852
 msgid "_Redo Create From Template"
-msgstr "_Refă crearea din șablon"
+msgstr "_Refă crearea după model"
 
 #: src/nautilus-file-undo-operations.c:1063
 #: src/nautilus-file-undo-operations.c:1064
@@ -3102,8 +3102,8 @@ msgstr "An_ulează redenumirea masivă"
 msgid "_Redo Batch Rename"
 msgstr "_Refă redenumirea masivă"
 
-#: src/nautilus-file-undo-operations.c:1411
-#: src/nautilus-file-undo-operations.c:1428
+#: src/nautilus-file-undo-operations.c:1409
+#: src/nautilus-file-undo-operations.c:1426
 #, c-format
 msgid "Unstar %d file"
 msgid_plural "Unstar %d files"
@@ -3111,8 +3111,8 @@ msgstr[0] "Elimină steaua pentru %d fișier"
 msgstr[1] "Elimină steaua pentru %d fișiere"
 msgstr[2] "Elimină steaua pentru %d de fișiere"
 
-#: src/nautilus-file-undo-operations.c:1415
-#: src/nautilus-file-undo-operations.c:1424
+#: src/nautilus-file-undo-operations.c:1413
+#: src/nautilus-file-undo-operations.c:1422
 #, c-format
 msgid "Star %d file"
 msgid_plural "Star %d files"
@@ -3120,23 +3120,23 @@ msgstr[0] "Adaugă stea pentru un fișier"
 msgstr[1] "Adaugă stea pentru %d fișiere"
 msgstr[2] "Adaugă stea pentru %d de fișiere"
 
-#: src/nautilus-file-undo-operations.c:1419
+#: src/nautilus-file-undo-operations.c:1417
 msgid "_Undo Starring"
 msgstr "An_ulează marcarea cu stea"
 
-#: src/nautilus-file-undo-operations.c:1420
+#: src/nautilus-file-undo-operations.c:1418
 msgid "_Redo Starring"
 msgstr "_Refă marcarea cu stea"
 
-#: src/nautilus-file-undo-operations.c:1432
+#: src/nautilus-file-undo-operations.c:1430
 msgid "_Undo Unstarring"
 msgstr "An_ulează eliminarea stelei"
 
-#: src/nautilus-file-undo-operations.c:1433
+#: src/nautilus-file-undo-operations.c:1431
 msgid "_Redo Unstarring"
 msgstr "_Refă eliminarea stelei"
 
-#: src/nautilus-file-undo-operations.c:1634
+#: src/nautilus-file-undo-operations.c:1632
 #, c-format
 msgid "Move %d item to trash"
 msgid_plural "Move %d items to trash"
@@ -3144,99 +3144,99 @@ msgstr[0] "Mută %d element în coșul de gunoi"
 msgstr[1] "Mută %d elemente în coșul de gunoi"
 msgstr[2] "Mută %d de elemente în coșul de gunoi"
 
-#: src/nautilus-file-undo-operations.c:1648
+#: src/nautilus-file-undo-operations.c:1646
 #, c-format
 msgid "Restore “%s” to “%s”"
 msgstr "Restabilește „%s” la „%s”"
 
-#: src/nautilus-file-undo-operations.c:1655
+#: src/nautilus-file-undo-operations.c:1653
 #, c-format
 msgid "Move “%s” to trash"
 msgstr "Mută „%s” în coșul de gunoi"
 
-#: src/nautilus-file-undo-operations.c:1660
+#: src/nautilus-file-undo-operations.c:1658
 msgid "_Undo Trash"
 msgstr "An_ulează mutarea în coșul de gunoi"
 
-#: src/nautilus-file-undo-operations.c:1661
+#: src/nautilus-file-undo-operations.c:1659
 msgid "_Redo Trash"
 msgstr "_Refă mutarea în coșul de gunoi"
 
-#: src/nautilus-file-undo-operations.c:1956
+#: src/nautilus-file-undo-operations.c:1954
 #, c-format
 msgid "Restore original permissions of items enclosed in “%s”"
 msgstr "Restabilește permisiunile originale ale elementelor conținute în „%s”"
 
-#: src/nautilus-file-undo-operations.c:1957
+#: src/nautilus-file-undo-operations.c:1955
 #, c-format
 msgid "Set permissions of items enclosed in “%s”"
 msgstr "Definește permisiunile elementelor conținute în „%s”"
 
-#: src/nautilus-file-undo-operations.c:1959
-#: src/nautilus-file-undo-operations.c:2112
+#: src/nautilus-file-undo-operations.c:1957
+#: src/nautilus-file-undo-operations.c:2110
 msgid "_Undo Change Permissions"
 msgstr "An_ulează schimbarea permisiunilor"
 
-#: src/nautilus-file-undo-operations.c:1960
-#: src/nautilus-file-undo-operations.c:2113
+#: src/nautilus-file-undo-operations.c:1958
+#: src/nautilus-file-undo-operations.c:2111
 msgid "_Redo Change Permissions"
 msgstr "_Refă schimbarea permisiunilor"
 
-#: src/nautilus-file-undo-operations.c:2109
+#: src/nautilus-file-undo-operations.c:2107
 #, c-format
 msgid "Restore original permissions of “%s”"
 msgstr "Restabilește permisiunile originale pentru „%s”"
 
-#: src/nautilus-file-undo-operations.c:2110
+#: src/nautilus-file-undo-operations.c:2108
 #, c-format
 msgid "Set permissions of “%s”"
 msgstr "Definește permisiunile pentru „%s”"
 
-#: src/nautilus-file-undo-operations.c:2222
+#: src/nautilus-file-undo-operations.c:2220
 #, c-format
 msgid "Restore group of “%s” to “%s”"
 msgstr "Restabilește grupul lui „%s” ca fiind „%s”"
 
-#: src/nautilus-file-undo-operations.c:2224
+#: src/nautilus-file-undo-operations.c:2222
 #, c-format
 msgid "Set group of “%s” to “%s”"
 msgstr "Definește grupul lui „%s” ca fiind „%s”"
 
-#: src/nautilus-file-undo-operations.c:2227
+#: src/nautilus-file-undo-operations.c:2225
 msgid "_Undo Change Group"
 msgstr "An_ulează schimbarea grupului"
 
-#: src/nautilus-file-undo-operations.c:2228
+#: src/nautilus-file-undo-operations.c:2226
 msgid "_Redo Change Group"
 msgstr "_Refă schimbarea grupului"
 
-#: src/nautilus-file-undo-operations.c:2232
+#: src/nautilus-file-undo-operations.c:2230
 #, c-format
 msgid "Restore owner of “%s” to “%s”"
 msgstr "Restabilește deținătorul lui „%s” ca fiind „%s”"
 
-#: src/nautilus-file-undo-operations.c:2234
+#: src/nautilus-file-undo-operations.c:2232
 #, c-format
 msgid "Set owner of “%s” to “%s”"
 msgstr "Definește proprietarul lui „%s” ca fiind „%s”"
 
-#: src/nautilus-file-undo-operations.c:2237
+#: src/nautilus-file-undo-operations.c:2235
 msgid "_Undo Change Owner"
 msgstr "An_ulează schimbarea proprietarului"
 
-#: src/nautilus-file-undo-operations.c:2238
+#: src/nautilus-file-undo-operations.c:2236
 msgid "_Redo Change Owner"
 msgstr "_Refă schimbarea proprietarului"
 
-#: src/nautilus-file-undo-operations.c:2374
+#: src/nautilus-file-undo-operations.c:2372
 msgid "_Undo Extract"
 msgstr "An_ulează extragerea"
 
-#: src/nautilus-file-undo-operations.c:2375
+#: src/nautilus-file-undo-operations.c:2373
 msgid "_Redo Extract"
 msgstr "_Refă extragerea"
 
-#: src/nautilus-file-undo-operations.c:2392
+#: src/nautilus-file-undo-operations.c:2390
 #, c-format
 msgid "Delete %d extracted file"
 msgid_plural "Delete %d extracted files"
@@ -3244,12 +3244,12 @@ msgstr[0] "Șterge %d fișier extras"
 msgstr[1] "Șterge %d fișiere extrase"
 msgstr[2] "Șterge %d de fișiere extrase"
 
-#: src/nautilus-file-undo-operations.c:2406
+#: src/nautilus-file-undo-operations.c:2404
 #, c-format
 msgid "Extract “%s”"
 msgstr "Extrage „%s”"
 
-#: src/nautilus-file-undo-operations.c:2410
+#: src/nautilus-file-undo-operations.c:2408
 #, c-format
 msgid "Extract %d file"
 msgid_plural "Extract %d files"
@@ -3257,12 +3257,12 @@ msgstr[0] "Extrage %d fișier"
 msgstr[1] "Extrage %d fișiere"
 msgstr[2] "Extrage %d de fișiere"
 
-#: src/nautilus-file-undo-operations.c:2562
+#: src/nautilus-file-undo-operations.c:2560
 #, c-format
 msgid "Compress “%s”"
 msgstr "Comprimă „%s”"
 
-#: src/nautilus-file-undo-operations.c:2566
+#: src/nautilus-file-undo-operations.c:2564
 #, c-format
 msgid "Compress %d file"
 msgid_plural "Compress %d files"
@@ -3270,55 +3270,55 @@ msgstr[0] "Comprimă %d fișier"
 msgstr[1] "Comprimă %d fișiere"
 msgstr[2] "Comprimă %d de fișiere"
 
-#: src/nautilus-file-undo-operations.c:2572
+#: src/nautilus-file-undo-operations.c:2570
 msgid "_Undo Compress"
 msgstr "An_ulează comprimarea"
 
-#: src/nautilus-file-undo-operations.c:2573
+#: src/nautilus-file-undo-operations.c:2571
 msgid "_Redo Compress"
 msgstr "_Refă comprimarea"
 
-#: src/nautilus-file-utilities.c:567
+#: src/nautilus-file-utilities.c:572
 #, c-format
 msgid "Could not determine original location of “%s” "
 msgstr "Nu s-a putut stabili locul original pentru „%s” "
 
-#: src/nautilus-file-utilities.c:571
+#: src/nautilus-file-utilities.c:576
 msgid "The item cannot be restored from trash"
 msgstr "Elementul nu a putut fi recuperat din coșul de gunoi"
 
 #. translators: these describe the contents of removable media
-#: src/nautilus-file-utilities.c:694
+#: src/nautilus-file-utilities.c:699
 msgid "Photo CD"
 msgstr "CD foto"
 
-#: src/nautilus-file-utilities.c:698 src/nautilus-file-utilities.c:745
+#: src/nautilus-file-utilities.c:703 src/nautilus-file-utilities.c:750
 msgid "Contains digital photos"
 msgstr "Conține fotografii digitale"
 
-#: src/nautilus-file-utilities.c:702
+#: src/nautilus-file-utilities.c:707
 msgid "Contains music"
 msgstr "Conține muzică"
 
-#: src/nautilus-file-utilities.c:706
+#: src/nautilus-file-utilities.c:711
 msgid "Contains software to run"
 msgstr "Conține programe de pornit"
 
-#: src/nautilus-file-utilities.c:710
+#: src/nautilus-file-utilities.c:715
 msgid "Contains software to install"
 msgstr "Conține programe de instalat"
 
-#: src/nautilus-file-utilities.c:716
+#: src/nautilus-file-utilities.c:721
 #, c-format
 msgid "Detected as “%s”"
 msgstr "Detectat ca „%s”"
 
 #. translators: these describe the contents of removable media
-#: src/nautilus-file-utilities.c:737
+#: src/nautilus-file-utilities.c:742
 msgid "Contains music and photos"
 msgstr "Conține muzică și fotografii"
 
-#: src/nautilus-file-utilities.c:741
+#: src/nautilus-file-utilities.c:746
 msgid "Contains photos and music"
 msgstr "Conține fotografii și muzică"
 
@@ -3401,7 +3401,7 @@ msgstr ""
 msgid "_Learn More"
 msgstr "Af_lă mai multe"
 
-#: src/nautilus-location-banner.c:240 src/nautilus-sidebar.c:2982
+#: src/nautilus-location-banner.c:240 src/nautilus-sidebar.c:2997
 msgid "_Empty Trash…"
 msgstr "Goleșt_e coșul…"
 
@@ -3811,7 +3811,7 @@ msgstr "Opțiuni dosar actual"
 
 #. Translators: This is the label used in the pathbar when seeing
 #. * the root directory (also known as /)
-#: src/nautilus-pathbar.c:407 src/nautilus-properties-window.c:857
+#: src/nautilus-pathbar.c:407 src/nautilus-properties-window.c:861
 msgid "Operating System"
 msgstr "Sistem de operare"
 
@@ -3821,8 +3821,8 @@ msgstr "Sistem de operare"
 msgid "Administrator Root"
 msgstr "Dosarul administratorului"
 
-#: src/nautilus-portal.c:431 src/nautilus-sidebar.c:2819
-#: src/nautilus-sidebar.c:2937 src/resources/ui/nautilus-app-chooser.ui:24
+#: src/nautilus-portal.c:431 src/nautilus-sidebar.c:2834
+#: src/nautilus-sidebar.c:2952 src/resources/ui/nautilus-app-chooser.ui:24
 #: src/resources/ui/nautilus-files-view-context-menus.ui:87
 msgid "_Open"
 msgstr "_Deschide"
@@ -3990,59 +3990,59 @@ msgstr "Simbolul personalizat a fost eliminat"
 msgid "_Undo"
 msgstr "An_ulează"
 
-#: src/nautilus-properties-window.c:673
+#: src/nautilus-properties-window.c:677
 msgid "You cannot assign more than one custom icon at a time!"
 msgstr ""
 "Nu poate fi atribuit mai mult de un simbol personalizat în același timp!"
 
-#: src/nautilus-properties-window.c:674
+#: src/nautilus-properties-window.c:678
 msgid "Please drop just one image to set a custom icon."
 msgstr "Așează o singură imagine pentru a pune un simbol personalizat."
 
-#: src/nautilus-properties-window.c:690
+#: src/nautilus-properties-window.c:694
 msgid "The file that you dropped is not local."
 msgstr "Fișierul așezat nu este local."
 
-#: src/nautilus-properties-window.c:691 src/nautilus-properties-window.c:698
+#: src/nautilus-properties-window.c:695 src/nautilus-properties-window.c:702
 msgid "You can only use local images as custom icons."
 msgstr "Pot fi folosite doar fișiere locale pentru simboluri personalizate."
 
-#: src/nautilus-properties-window.c:697
+#: src/nautilus-properties-window.c:701
 msgid "The file that you dropped is not an image."
 msgstr "Fișierul așezat nu este o imagine."
 
 #. Unmarks a file as starred (starred)
-#: src/nautilus-properties-window.c:747 src/nautilus-star-cell.c:72
+#: src/nautilus-properties-window.c:751 src/nautilus-star-cell.c:72
 #: src/resources/ui/nautilus-files-view-context-menus.ui:256
 msgid "Unstar"
 msgstr "Elimină steaua"
 
-#: src/nautilus-properties-window.c:747 src/nautilus-star-cell.c:72
+#: src/nautilus-properties-window.c:751 src/nautilus-star-cell.c:72
 msgctxt "Verb"
 msgid "Star"
 msgstr "Pune steaua"
 
-#: src/nautilus-properties-window.c:1592
+#: src/nautilus-properties-window.c:1596
 msgid "Cancel Group Change?"
 msgstr "Se anulează schimbarea grupului?"
 
-#: src/nautilus-properties-window.c:1741
+#: src/nautilus-properties-window.c:1745
 msgid "Cancel Owner Change?"
 msgstr "Se anulează schimbarea proprietarului?"
 
-#: src/nautilus-properties-window.c:1891 src/nautilus-properties-window.c:1938
+#: src/nautilus-properties-window.c:1895 src/nautilus-properties-window.c:1942
 msgid "Multiple"
 msgstr "Multiplu"
 
-#: src/nautilus-properties-window.c:2072
+#: src/nautilus-properties-window.c:2076
 msgid "Empty folder"
 msgstr "Dosar gol"
 
-#: src/nautilus-properties-window.c:2076
+#: src/nautilus-properties-window.c:2080
 msgid "Contents unreadable"
 msgstr "Conținut ilegibil"
 
-#: src/nautilus-properties-window.c:2088
+#: src/nautilus-properties-window.c:2092
 #, c-format
 msgid "%'d item, with size %s"
 msgid_plural "%'d items, totalling %s"
@@ -4050,26 +4050,26 @@ msgstr[0] "%'d element, cu dimensiunea de %s"
 msgstr[1] "%'d elemente, totalizând %s"
 msgstr[2] "%'d de elemente, totalizând %s"
 
-#: src/nautilus-properties-window.c:2098
+#: src/nautilus-properties-window.c:2102
 msgid "(some contents unreadable)"
 msgstr "(o parte din conținut e ilegibil)"
 
 #. Translators: %s will be filled with a filesystem type, such as 'ext4' or 'msdos'.
-#: src/nautilus-properties-window.c:2430
+#: src/nautilus-properties-window.c:2434
 #, c-format
 msgid "%s Filesystem"
 msgstr "Sistem de fișiere %s"
 
-#: src/nautilus-properties-window.c:3535
+#: src/nautilus-properties-window.c:3539
 #, c-format
 msgid "The permissions of “%s” could not be determined."
 msgstr "Permisiunile lui „%s” nu au putut fi determinate."
 
-#: src/nautilus-properties-window.c:3897
+#: src/nautilus-properties-window.c:3901
 msgid "Creating Properties window."
 msgstr "Crearea ferestrei cu proprietăți."
 
-#: src/nautilus-properties-window.c:4026
+#: src/nautilus-properties-window.c:4030
 msgid "Select Custom Icon"
 msgstr "Alege simbolul personalizat"
 
@@ -4147,15 +4147,15 @@ msgstr "Caută „%s”"
 msgid "Unable to complete the requested search"
 msgstr "Nu s-a putut completa căutarea dorită"
 
-#: src/nautilus-search-popover.c:547
+#: src/nautilus-search-popover.c:548
 msgid "Date Used"
 msgstr "Data utilizării"
 
-#: src/nautilus-search-popover.c:551
+#: src/nautilus-search-popover.c:552
 msgid "Date Created"
 msgstr "Data creării"
 
-#: src/nautilus-search-popover.c:555
+#: src/nautilus-search-popover.c:556
 msgid "Date Modified"
 msgstr "Data modificării"
 
@@ -4198,14 +4198,14 @@ msgstr "Fișiere recente"
 msgid "Starred Files"
 msgstr "Fișiere cu stea"
 
-# Dacă se modifică traducerea aici, va trebui modificată și în modulul xdg-user-dirs care se găsește în freedesktop.org (non-GNOME).
+# Dacă se modifică aici trebuie modificat și aici: https://translationproject.org/domain/xdg-user-dirs.html
 #: src/nautilus-sidebar.c:733
 msgid "Desktop"
-msgstr "Desktop"
+msgstr "Birou"
 
 #: src/nautilus-sidebar.c:735
 msgid "Open the contents of your desktop in a folder"
-msgstr "Deschide conținutul desktopului dintr-un dosar"
+msgstr "Deschide conținutul biroului dintr-un dosar"
 
 #: src/nautilus-sidebar.c:747
 msgid "Open Network Locations"
@@ -4232,119 +4232,119 @@ msgstr "Adaugă un nou preferat"
 #. Translators: This means that unlocking an encrypted storage
 #. * device failed. %s is the name of the device.
 #.
-#: src/nautilus-sidebar.c:1766
+#: src/nautilus-sidebar.c:1781
 #, c-format
 msgid "Error unlocking “%s”"
 msgstr "Eroare la deblocarea „%s”"
 
-#: src/nautilus-sidebar.c:1920
+#: src/nautilus-sidebar.c:1935
 msgid "This name is already taken"
 msgstr "Acest nume este luat deja"
 
-#: src/nautilus-sidebar.c:2010 src/nautilus-sidebar.c:2971
+#: src/nautilus-sidebar.c:2025 src/nautilus-sidebar.c:2986
 #: src/resources/ui/nautilus-batch-rename-dialog.ui:126
 #: src/resources/ui/nautilus-file-conflict-dialog.ui:30
 #: src/resources/ui/nautilus-rename-file-popover.ui:47
 msgid "_Rename"
 msgstr "_Redenumește"
 
-#: src/nautilus-sidebar.c:2319
+#: src/nautilus-sidebar.c:2334
 #, c-format
 msgid "Unable to stop “%s”"
 msgstr "Nu se poate opri „%s”"
 
-#: src/nautilus-sidebar.c:2544
+#: src/nautilus-sidebar.c:2559
 #, c-format
 msgid "Unable to poll “%s” for media changes"
 msgstr "Nu se poate interoga „%s” pentru modificări media"
 
-#: src/nautilus-sidebar.c:2827 src/nautilus-sidebar.c:2945
+#: src/nautilus-sidebar.c:2842 src/nautilus-sidebar.c:2960
 #: src/resources/ui/nautilus-files-view-context-menus.ui:98
 #: src/resources/ui/nautilus-pathbar-context-menu.ui:10
 msgid "Open in New _Tab"
 msgstr "Deschide în_tr-o filă nouă"
 
-#: src/nautilus-sidebar.c:2834 src/nautilus-sidebar.c:2954
+#: src/nautilus-sidebar.c:2849 src/nautilus-sidebar.c:2969
 #: src/resources/ui/nautilus-files-view-context-menus.ui:103
 #: src/resources/ui/nautilus-pathbar-context-menu.ui:6
 msgid "Open in New _Window"
 msgstr "Deschide într-o _fereastră nouă"
 
-#: src/nautilus-sidebar.c:2966
+#: src/nautilus-sidebar.c:2981
 msgid "_Remove from Bookmarks"
 msgstr "_Elimină din Preferate"
 
-#: src/nautilus-sidebar.c:2995
+#: src/nautilus-sidebar.c:3010
 #: src/resources/ui/nautilus-files-view-context-menus.ui:144
 msgid "_Mount"
 msgstr "_Montează"
 
-#: src/nautilus-sidebar.c:3004
+#: src/nautilus-sidebar.c:3019
 #: src/resources/ui/nautilus-files-view-context-menus.ui:149
 msgid "_Unmount"
 msgstr "De_montează"
 
-#: src/nautilus-sidebar.c:3011
+#: src/nautilus-sidebar.c:3026
 #: src/resources/ui/nautilus-files-view-context-menus.ui:154
 msgid "_Eject"
 msgstr "Scoat_e"
 
-#: src/nautilus-sidebar.c:3021
+#: src/nautilus-sidebar.c:3036
 #: src/resources/ui/nautilus-files-view-context-menus.ui:169
 msgid "_Detect Media"
 msgstr "_Detectează mediul de stocare"
 
-#: src/nautilus-sidebar.c:3034
+#: src/nautilus-sidebar.c:3049
 msgid "_Power On"
 msgstr "_Pornește"
 
-#: src/nautilus-sidebar.c:3038
+#: src/nautilus-sidebar.c:3053
 msgid "_Connect Drive"
 msgstr "_Conectează unitatea"
 
-#: src/nautilus-sidebar.c:3042
+#: src/nautilus-sidebar.c:3057
 msgid "_Start Multi-disk Device"
 msgstr "Pornește unitatea multi-di_sc"
 
-#: src/nautilus-sidebar.c:3046
+#: src/nautilus-sidebar.c:3061
 msgid "_Unlock Device"
 msgstr "Deblochează dispozitivul"
 
-#: src/nautilus-sidebar.c:3057
+#: src/nautilus-sidebar.c:3072
 #: src/resources/ui/nautilus-files-view-context-menus.ui:164
 msgid "_Stop"
 msgstr "_Stop"
 
-#: src/nautilus-sidebar.c:3065
+#: src/nautilus-sidebar.c:3080
 msgid "_Disconnect Drive"
 msgstr "_Deconectează unitatea"
 
-#: src/nautilus-sidebar.c:3069
+#: src/nautilus-sidebar.c:3084
 msgid "_Stop Multi-disk Device"
 msgstr "Oprește unitatea multi-di_sc"
 
-#: src/nautilus-sidebar.c:3073
+#: src/nautilus-sidebar.c:3088
 msgid "_Lock Device"
 msgstr "Blochează dispozitivul"
 
-#: src/nautilus-sidebar.c:3083
+#: src/nautilus-sidebar.c:3098
 msgid "Format…"
 msgstr "Formatare…"
 
-#: src/nautilus-sidebar.c:3094 src/resources/ui/nautilus-properties-window.ui:5
+#: src/nautilus-sidebar.c:3109 src/resources/ui/nautilus-properties-window.ui:5
 #: src/resources/ui/nautilus-properties-window.ui:16
 msgid "Properties"
 msgstr "Proprietăți"
 
-#: src/nautilus-sidebar.c:3620
+#: src/nautilus-sidebar.c:3636
 msgid "Device"
 msgstr "Dispozitiv"
 
-#: src/nautilus-sidebar.c:3662
+#: src/nautilus-sidebar.c:3678
 msgid "Sidebar"
 msgstr "Panoul lateral"
 
-#: src/nautilus-sidebar.c:3664
+#: src/nautilus-sidebar.c:3680
 msgid "List of common shortcuts, mountpoints, and bookmarks."
 msgstr "Lista scurtăturilor comune, punctelor de montare și a preferatelor."
 
