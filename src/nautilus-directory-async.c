@@ -2356,8 +2356,9 @@ nautilus_directory_callbacks_has_unsatisfied_request (NautilusDirectory *directo
 
     for (; node != NULL; node = node->next)
     {
-        callback = node->data;
-        if (REQUEST_WANTS_TYPE (callback->request, request_type_wanted))
+        ReadyCallback *callback = node->data;
+
+        if (REQUEST_WANTS_TYPE (callback->request, request_type))
         {
             return TRUE;
         }
@@ -2368,8 +2369,8 @@ nautilus_directory_callbacks_has_unsatisfied_request (NautilusDirectory *directo
         node = g_hash_table_lookup (directory->details->call_when_ready_hash.unsatisfied, NULL);
         for (; node != NULL; node = node->next)
         {
-            callback = node->data;
-            if (REQUEST_WANTS_TYPE (callback->request, request_type_wanted))
+            ReadyCallback *callback = node->data;
+            if (REQUEST_WANTS_TYPE (callback->request, request_type))
             {
                 return TRUE;
             }
