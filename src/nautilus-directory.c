@@ -315,8 +315,7 @@ nautilus_directory_init (NautilusDirectory *directory)
     directory->details->high_priority_queue = nautilus_hash_queue_new (g_direct_hash, g_direct_equal, g_object_unref, NULL);
     directory->details->low_priority_queue = nautilus_hash_queue_new (g_direct_hash, g_direct_equal, g_object_unref, NULL);
     directory->details->extension_queue = nautilus_hash_queue_new (g_direct_hash, g_direct_equal, g_object_unref, NULL);
-    directory->details->call_when_ready_hash.unsatisfied = g_hash_table_new (NULL, NULL);
-    directory->details->call_when_ready_hash.ready = g_hash_table_new (NULL, NULL);
+    directory->details->callbacks = nautilus_directory_callbacks_new ();
     directory->details->monitor_table = g_hash_table_new (NULL, NULL);
 }
 
