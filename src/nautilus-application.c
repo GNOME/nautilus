@@ -1158,7 +1158,6 @@ update_dbus_opened_locations (NautilusApplication *self)
     g_auto (GVariantBuilder) windows_to_locations_builder = G_VARIANT_BUILDER_INIT (
         G_VARIANT_TYPE ("a{sas}"));
 
-    g_return_if_fail (NAUTILUS_IS_APPLICATION (self));
     g_return_if_fail (dbus_object_path != NULL);
 
     for (GList *l = self->windows; l != NULL; l = l->next)
@@ -1218,6 +1217,8 @@ static void
 nautilus_application_window_added (GtkApplication *app,
                                    GtkWindow      *window)
 {
+    g_return_if_fail (NAUTILUS_IS_APPLICATION (app));
+
     NautilusApplication *self = NAUTILUS_APPLICATION (app);
 
     GTK_APPLICATION_CLASS (nautilus_application_parent_class)->window_added (app, window);
@@ -1234,6 +1235,8 @@ static void
 nautilus_application_window_removed (GtkApplication *app,
                                      GtkWindow      *window)
 {
+    g_return_if_fail (NAUTILUS_IS_APPLICATION (app));
+
     NautilusApplication *self = NAUTILUS_APPLICATION (app);
 
     GTK_APPLICATION_CLASS (nautilus_application_parent_class)->window_removed (app, window);
