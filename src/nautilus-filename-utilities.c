@@ -453,3 +453,46 @@ nautilus_filename_strip_extension (const char *filename)
 
     return g_strndup (filename, extension - filename);
 }
+
+/**
+ * nautilus_filename_strip:
+ * @filename: a string to remove leading and trailing whitespaces from
+ *
+ * Removes leading and trailing whitespace from a string.
+ *
+ * Similar to g_strstrip but this handles any unicode character.
+ *
+ * Returns: @filename
+ */
+char *
+nautilus_filename_strip (char *filename)
+{
+    g_return_val_if_fail (filename != NULL, NULL);
+
+    /* find first non-whitespace char */
+    char *start = filename;
+
+    while (*start != '\0' && g_unichar_isspace (*start))
+    {
+        start = g_utf8_next_char (start);
+    }
+
+    /* find last non-whitespace char */
+    gsize len = strlen (start);
+    char *end = start + len;
+    char *end_search = g_utf8_prev_char (end);
+
+    while (end_search > start && g_unichar_isspace (*end_search))
+    {
+        end = end_search;
+        end_search = g_utf8_prev_char (end_search);
+    }
+
+    /* Move stripped string to start and set end character */
+    gsize new_len = end - start;
+
+    memmove (filename, start, new_len);
+    filename[new_len] = '\0';
+
+    return filename;
+}
