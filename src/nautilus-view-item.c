@@ -219,23 +219,23 @@ free_weak_ref (gpointer data)
     g_free (weak_ref);
 }
 
+static GPtrArray *files_to_prioritize = NULL;
+
 static GPtrArray *
 get_priority_array (void)
 {
-    static GPtrArray *priority_files = NULL;
-
-    if (G_UNLIKELY (priority_files == NULL))
+    if (files_to_prioritize == NULL)
     {
-        priority_files = g_ptr_array_new_with_free_func (free_weak_ref);
+        files_to_prioritize = g_ptr_array_new_with_free_func (free_weak_ref);
     }
 
-    return priority_files;
+    return files_to_prioritize;
 }
 
 static void
 prioritize_idle_callback (gpointer data)
 {
-    GPtrArray *priority_files = get_priority_array ();
+    g_autoptr (GPtrArray) priority_files = g_steal_pointer (&files_to_prioritize);
 
     priorization_timeout = 0;
 
@@ -248,7 +248,6 @@ prioritize_idle_callback (gpointer data)
             NautilusFile *file = nautilus_view_item_get_file (item);
 
             nautilus_file_prioritize (file);
-            g_ptr_array_remove_index_fast (priority_files, i);
         }
     }
 }
