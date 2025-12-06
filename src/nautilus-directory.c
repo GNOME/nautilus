@@ -994,15 +994,20 @@ hash_table_list_insert (GHashTable    *table,
 }
 
 static void
-call_files_changed_common (NautilusDirectory *directory,
-                           GList             *file_list)
+add_to_directory_work_queue (NautilusDirectory *directory,
+                             GList             *file_list)
 {
     for (GList *node = file_list; node != NULL; node = node->next)
     {
         NautilusFile *file = node->data;
         nautilus_directory_add_file_to_work_queue (directory, file);
     }
+}
 
+static void
+notify_directory_changes (NautilusDirectory *directory,
+                          GList             *file_list)
+{
     nautilus_directory_async_state_changed (directory);
     nautilus_directory_emit_change_signals (directory, file_list);
 }
@@ -1139,7 +1144,8 @@ nautilus_directory_notify_files_changed (GList *files)
     }
 
     /* Now send out the changed signals. */
-    g_hash_table_foreach (changed_lists, (GHFunc) call_files_changed_common, NULL);
+    g_hash_table_foreach (changed_lists, (GHFunc) add_to_directory_work_queue, NULL);
+    g_hash_table_foreach (changed_lists, (GHFunc) notify_directory_changes, NULL);
 }
 
 void
@@ -1191,7 +1197,8 @@ nautilus_directory_notify_files_removed (GList *files)
     }
 
     /* Now send out the changed signals. */
-    g_hash_table_foreach (changed_lists, (GHFunc) call_files_changed_common, NULL);
+    g_hash_table_foreach (changed_lists, (GHFunc) add_to_directory_work_queue, NULL);
+    g_hash_table_foreach (changed_lists, (GHFunc) notify_directory_changes, NULL);
 
     /* Invalidate count for each parent directory. */
     g_hash_table_foreach (parent_directories, (GHFunc) nautilus_directory_invalidate_count, NULL);
@@ -1310,7 +1317,8 @@ nautilus_directory_moved (const char *old_uri,
         hash_table_list_insert (moved_files, directory, nautilus_file_ref (file));
     }
 
-    g_hash_table_foreach (moved_files, (GHFunc) call_files_changed_common, NULL);
+    g_hash_table_foreach (moved_files, (GHFunc) add_to_directory_work_queue, NULL);
+    g_hash_table_foreach (moved_files, (GHFunc) notify_directory_changes, NULL);
 }
 
 void
@@ -1399,7 +1407,7 @@ nautilus_directory_notify_files_moved (GList *file_pairs)
     }
 
     /* Now send out the changed and added signals for existing file objects. */
-    g_hash_table_foreach (changed_lists, (GHFunc) call_files_changed_common, NULL);
+    g_hash_table_foreach (changed_lists, (GHFunc) notify_directory_changes, NULL);
     g_hash_table_foreach (added_lists, (GHFunc) nautilus_directory_emit_files_added, NULL);
 
     /* Invalidate count for each parent directory. */
