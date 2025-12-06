@@ -90,8 +90,6 @@ static gboolean
 is_tentative (NautilusFile *file,
               gpointer      callback_data)
 {
-    g_assert (callback_data == NULL);
-
     /* Avoid returning files with !is_added, because these
      * will later be sent with the files_added signal, and a
      * user doing get_file_list + files_added monitoring will
@@ -140,7 +138,7 @@ nautilus_directory_finalize (GObject *object)
     g_hash_table_remove (directories, directory->details->location);
 
     nautilus_directory_cancel (directory);
-    g_assert (directory->details->count_in_progress == NULL);
+    g_warn_if_fail (directory->details->count_in_progress == NULL);
 
     if (g_hash_table_size (directory->details->monitor_table) != 0)
     {
@@ -179,7 +177,7 @@ nautilus_directory_finalize (GObject *object)
         g_object_unref (directory->details->location);
     }
 
-    g_assert (directory->details->file_list == NULL);
+    g_warn_if_fail (directory->details->file_list == NULL);
     g_hash_table_destroy (directory->details->file_hash);
 
     nautilus_hash_queue_destroy (directory->details->high_priority_queue);
@@ -188,9 +186,9 @@ nautilus_directory_finalize (GObject *object)
     g_clear_pointer (&directory->details->call_when_ready_hash.unsatisfied, g_hash_table_unref);
     g_clear_pointer (&directory->details->call_when_ready_hash.ready, g_hash_table_unref);
     g_clear_list (&directory->details->files_changed_while_adding, g_object_unref);
-    g_assert (directory->details->directory_load_in_progress == NULL);
-    g_assert (directory->details->count_in_progress == NULL);
-    g_assert (directory->details->dequeue_pending_idle_id == 0);
+    g_warn_if_fail (directory->details->directory_load_in_progress == NULL);
+    g_warn_if_fail (directory->details->count_in_progress == NULL);
+    g_warn_if_fail (directory->details->dequeue_pending_idle_id == 0);
     g_list_free_full (directory->details->pending_file_info, g_object_unref);
 
     G_OBJECT_CLASS (nautilus_directory_parent_class)->finalize (object);
@@ -350,8 +348,6 @@ nautilus_directory_unref (NautilusDirectory *directory)
 static void
 filtering_changed_callback (gpointer callback_data)
 {
-    g_assert (callback_data == NULL);
-
     g_autolist (NautilusDirectory) dirs = g_hash_table_get_values (directories);
     g_list_foreach (dirs, (GFunc) g_object_ref, NULL);
 
@@ -403,13 +399,9 @@ async_state_changed_one (gpointer key,
                          gpointer value,
                          gpointer user_data)
 {
-    NautilusDirectory *directory;
+    g_return_if_fail (NAUTILUS_IS_DIRECTORY (value));
 
-    g_assert (key != NULL);
-    g_assert (NAUTILUS_IS_DIRECTORY (value));
-    g_assert (user_data == NULL);
-
-    directory = NAUTILUS_DIRECTORY (value);
+    NautilusDirectory *directory = value;
 
     nautilus_directory_async_state_changed (directory);
     emit_change_signals_for_all_files (directory);
@@ -418,8 +410,6 @@ async_state_changed_one (gpointer key,
 static void
 async_data_preference_changed_callback (gpointer callback_data)
 {
-    g_assert (callback_data == NULL);
-
     /* Preference involving fetched async data has changed, so
      * we have to kick off refetching all async data, and tell
      * each file that it (might have) changed.
@@ -711,7 +701,7 @@ nautilus_directory_is_local_or_fuse (NautilusDirectory *directory)
 gboolean
 nautilus_directory_is_in_trash (NautilusDirectory *directory)
 {
-    g_assert (NAUTILUS_IS_DIRECTORY (directory));
+    g_return_val_if_fail (NAUTILUS_IS_DIRECTORY (directory), FALSE);
 
     if (directory->details->location == NULL)
     {
@@ -724,7 +714,7 @@ nautilus_directory_is_in_trash (NautilusDirectory *directory)
 gboolean
 nautilus_directory_is_in_recent (NautilusDirectory *directory)
 {
-    g_assert (NAUTILUS_IS_DIRECTORY (directory));
+    g_return_val_if_fail (NAUTILUS_IS_DIRECTORY (directory), FALSE);
 
     if (directory->details->location == NULL)
     {
@@ -737,7 +727,7 @@ nautilus_directory_is_in_recent (NautilusDirectory *directory)
 gboolean
 nautilus_directory_is_in_starred (NautilusDirectory *directory)
 {
-    g_assert (NAUTILUS_IS_DIRECTORY (directory));
+    g_return_val_if_fail (NAUTILUS_IS_DIRECTORY (directory), FALSE);
 
     if (directory->details->location == NULL)
     {
@@ -750,7 +740,7 @@ nautilus_directory_is_in_starred (NautilusDirectory *directory)
 gboolean
 nautilus_directory_is_in_admin (NautilusDirectory *directory)
 {
-    g_assert (NAUTILUS_IS_DIRECTORY (directory));
+    g_return_val_if_fail (NAUTILUS_IS_DIRECTORY (directory), FALSE);
 
     if (directory->details->location == NULL)
     {
@@ -775,10 +765,11 @@ add_to_hash_table (NautilusDirectory *directory,
 {
     const char *name = nautilus_file_get_name (file);
 
-    g_assert (name != NULL);
-    g_assert (node != NULL);
-    g_assert (g_hash_table_lookup (directory->details->file_hash,
-                                   name) == NULL);
+    g_return_if_fail (name != NULL);
+    g_return_if_fail (node != NULL);
+    g_return_if_fail (g_hash_table_lookup (directory->details->file_hash,
+                                           name) == NULL);
+
     g_hash_table_insert (directory->details->file_hash, g_strdup (name), node);
 }
 
@@ -805,14 +796,11 @@ void
 nautilus_directory_add_file (NautilusDirectory *directory,
                              NautilusFile      *file)
 {
-    GList *node;
-    gboolean add_to_work_queue;
-
-    g_assert (NAUTILUS_IS_DIRECTORY (directory));
-    g_assert (NAUTILUS_IS_FILE (file));
+    g_return_if_fail (NAUTILUS_IS_DIRECTORY (directory));
+    g_return_if_fail (NAUTILUS_IS_FILE (file));
 
     /* Add to list. */
-    node = g_list_prepend (directory->details->file_list, file);
+    GList *node = g_list_prepend (directory->details->file_list, file);
     directory->details->file_list = node;
 
     /* Add to hash table. */
@@ -820,7 +808,7 @@ nautilus_directory_add_file (NautilusDirectory *directory,
 
     directory->details->confirmed_file_count++;
 
-    add_to_work_queue = FALSE;
+    gboolean add_to_work_queue = FALSE;
     if (nautilus_directory_is_file_list_monitored (directory))
     {
         /* Ref if we are monitoring, since monitoring owns the file list. */
@@ -845,15 +833,13 @@ void
 nautilus_directory_remove_file (NautilusDirectory *directory,
                                 NautilusFile      *file)
 {
-    GList *node;
-
-    g_assert (NAUTILUS_IS_DIRECTORY (directory));
-    g_assert (NAUTILUS_IS_FILE (file));
+    g_return_if_fail (NAUTILUS_IS_DIRECTORY (directory));
+    g_return_if_fail (NAUTILUS_IS_FILE (file));
 
     /* Find the list node in the hash table. */
-    node = extract_from_hash_table (directory, file);
-    g_assert (node != NULL);
-    g_assert (node->data == file);
+    GList *node = extract_from_hash_table (directory, file);
+    g_return_if_fail (node != NULL);
+    g_return_if_fail (node->data == file);
 
     /* Remove the item from the list. */
     directory->details->file_list = g_list_remove_link
@@ -887,6 +873,9 @@ nautilus_directory_end_file_name_change (NautilusDirectory *directory,
                                          NautilusFile      *file,
                                          GList             *node)
 {
+    g_return_if_fail (NAUTILUS_IS_DIRECTORY (directory));
+    g_return_if_fail (NAUTILUS_IS_FILE (file));
+
     /* Add the list node to the hash table. */
     if (node != NULL)
     {
@@ -1225,7 +1214,7 @@ change_directory_location (NautilusDirectory *directory,
      * to be moved. But if that did somehow happen, this function
      * wouldn't do enough to handle it.
      */
-    g_assert (directory->details->as_file == NULL);
+    g_return_if_fail (directory->details->as_file == NULL);
 
     g_hash_table_remove (directories,
                          directory->details->location);
