@@ -42,3 +42,6 @@ nautilus_filename_shorten_base (char       **filename,
 
 char *
 nautilus_filename_strip_extension (const char *filename);
+
+char *
+nautilus_filename_strip (char *filename);
