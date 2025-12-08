@@ -33,7 +33,7 @@
 #include "nautilus-scheme.h"
 #include "nautilus-trash-monitor.h"
 
-#define FILE_SHARING_SCHEMA_ID "org.gnome.desktop.file-sharing"
+#define USER_SHARE_CONNECTIONS "enabled-connections"
 
 typedef enum
 {
@@ -132,6 +132,16 @@ on_remove_old_trash_files_changed (GSettings *settings,
                                      NAUTILUS_LOCATION_BANNER_TRASH);
 }
 
+static void
+on_user_share_setting_changed (GSettings *settings,
+                               gchar     *key,
+                               gpointer   callback_data)
+{
+    AdwBanner *banner = ADW_BANNER (callback_data);
+
+    set_mode (banner, NAUTILUS_LOCATION_BANNER_SHARING);
+}
+
 static gboolean
 is_scripts_location (GFile *location)
 {
@@ -162,7 +172,7 @@ get_mode_for_location (GFile *location)
     {
         return NAUTILUS_LOCATION_BANNER_SCRIPTS;
     }
-    else if (check_schema_available (FILE_SHARING_SCHEMA_ID) && nautilus_file_is_public_share_folder (file))
+    else if (gnome_user_share_preferences != NULL && nautilus_file_is_public_share_folder (file))
     {
         return NAUTILUS_LOCATION_BANNER_SHARING;
     }
@@ -197,6 +207,10 @@ set_mode (AdwBanner                  *banner,
     g_signal_handlers_disconnect_by_data (banner, &nautilus_location_banner_load);
     g_signal_handlers_disconnect_by_data (gnome_privacy_preferences, banner);
     g_signal_handlers_disconnect_by_data (nautilus_trash_monitor_get (), banner);
+    if (gnome_user_share_preferences != NULL)
+    {
+        g_signal_handlers_disconnect_by_data (gnome_user_share_preferences, banner);
+    }
 
     switch (mode)
     {
@@ -215,7 +229,25 @@ set_mode (AdwBanner                  *banner,
 
         case NAUTILUS_LOCATION_BANNER_SHARING:
         {
-            adw_banner_set_title (banner, _("Turn on File Sharing to share the contents of this folder over the network"));
+            /* mode is only set when gnome_user_share_preferences exist */
+            g_auto (GStrv) connections = g_settings_get_strv (gnome_user_share_preferences,
+                                                              USER_SHARE_CONNECTIONS);
+
+            g_signal_connect_object (gnome_user_share_preferences,
+                                     "changed::" USER_SHARE_CONNECTIONS,
+                                     G_CALLBACK (on_user_share_setting_changed),
+                                     banner, 0);
+
+            if (connections != NULL && connections[0] != NULL)
+            {
+                adw_banner_set_title (
+                    banner, _("This folder is shared over the network"));
+            }
+            else
+            {
+                adw_banner_set_title (
+                    banner, _("Turn on File Sharing to share this folder over the network"));
+            }
             button_label = _("Sharing Settings");
             callback = G_CALLBACK (on_sharing_clicked);
         }

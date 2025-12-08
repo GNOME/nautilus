@@ -148,6 +148,7 @@ extern GSettings *gtk_filechooser_preferences;
 extern GSettings *gnome_lockdown_preferences;
 extern GSettings *gnome_interface_preferences;
 extern GSettings *gnome_privacy_preferences;
+extern GSettings *gnome_user_share_preferences;
 extern GSettings *localsearch_preferences;
 
 G_END_DECLS
