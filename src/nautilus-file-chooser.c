@@ -428,20 +428,18 @@ on_filename_entry_changed (NautilusFileChooser *self)
 {
     GtkEditable *editable = GTK_EDITABLE (self->filename_entry);
     const char *current_text = gtk_editable_get_text (editable);
-    char *check_text_ptr = strchr (current_text, '\n');
+    const char *newline_check = strchr (current_text, '\n');
 
-    if (check_text_ptr != NULL)
+    if (newline_check != NULL)
     {
         g_autofree char *clean_text = g_strdup (current_text);
+        char *newline_pos = clean_text + (newline_check - current_text);
 
-
-        check_text_ptr = clean_text + (check_text_ptr - current_text);
         do
         {
-            *check_text_ptr = ' ';
+            *newline_pos = ' ';
         }
-        while ((check_text_ptr = strchr (clean_text, '\n')) != NULL);
-
+        while ((newline_pos = strchr (clean_text, '\n')) != NULL);
 
         gtk_editable_set_text (editable, clean_text);
     }
