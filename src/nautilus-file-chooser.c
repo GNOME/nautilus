@@ -432,16 +432,11 @@ on_filename_entry_changed (NautilusFileChooser *self)
 
     if (newline_check != NULL)
     {
-        g_autofree char *clean_text = g_strdup (current_text);
-        char *newline_pos = clean_text + (newline_check - current_text);
+        g_autoptr (GString) clean_text = g_string_new (current_text);
 
-        do
-        {
-            *newline_pos = ' ';
-        }
-        while ((newline_pos = strchr (clean_text, '\n')) != NULL);
+        g_string_replace (clean_text, "\n", " ", 0);
 
-        gtk_editable_set_text (editable, clean_text);
+        gtk_editable_set_text (editable, clean_text->str);
     }
 
     gboolean is_not_suggested_text = (g_strcmp0 (self->suggested_name, current_text) != 0 &&
