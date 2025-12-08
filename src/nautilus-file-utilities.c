@@ -1048,7 +1048,7 @@ check_schema_available (const gchar *schema_id)
 
     if (nautilus_application_is_sandboxed ())
     {
-        return TRUE;
+        return FALSE;
     }
 
     source = g_settings_schema_source_get_default ();
