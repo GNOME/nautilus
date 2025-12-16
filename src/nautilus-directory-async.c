@@ -1321,7 +1321,11 @@ nautilus_directory_call_when_ready_internal (NautilusDirectory         *director
     {
         if (file_callback != NULL || directory_callback != NULL)
         {
-            g_warning ("tried to add a new callback while an old one was pending");
+            g_autofree char *uri = file != NULL
+                                   ? nautilus_file_get_uri (file)
+                                   : nautilus_directory_get_uri (directory);
+            g_warning ("Tried to add a duplicate callback for '%s'. "
+                       "Make sure to cancel previous callback", uri);
         }
         /* NULL callback means, just read it. Conflicts are ok. */
         return;
