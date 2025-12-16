@@ -547,6 +547,13 @@ nautilus_sidebar_row_dispose (GObject *object)
     gtk_list_box_row_set_child (GTK_LIST_BOX_ROW (self), NULL);
     gtk_widget_dispose_template (GTK_WIDGET (self), NAUTILUS_TYPE_SIDEBAR_ROW);
 
+    if (self->file != NULL)
+    {
+        g_signal_handlers_disconnect_by_func (self->file, on_file_changed, self);
+        nautilus_file_cancel_call_when_ready (self->file, dummy_callback, self);
+        g_clear_object (&self->file);
+    }
+
     G_OBJECT_CLASS (nautilus_sidebar_row_parent_class)->dispose (object);
 }
 
@@ -565,7 +572,6 @@ nautilus_sidebar_row_finalize (GObject *object)
     self->eject_tooltip = NULL;
     g_free (self->uri);
     self->uri = NULL;
-    nautilus_file_unref (self->file);
     g_clear_object (&self->drive);
     g_clear_object (&self->volume);
     g_clear_object (&self->mount);
