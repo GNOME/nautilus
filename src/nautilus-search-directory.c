@@ -357,21 +357,15 @@ search_callback_file_ready_callback (NautilusFile *file,
 static void
 search_callback_add_file_callbacks (SearchCallback *callback)
 {
-    GList *file_list_copy, *list;
-    NautilusFile *file;
-
-    file_list_copy = g_list_copy (callback->file_list);
-
-    for (list = file_list_copy; list != NULL; list = list->next)
+    for (GList *l = callback->file_list; l != NULL; l = l->next)
     {
-        file = list->data;
+        NautilusFile *file = l->data;
 
         nautilus_file_call_when_ready (file,
                                        callback->wait_for_attributes,
                                        search_callback_file_ready_callback,
                                        callback);
     }
-    g_list_free (file_list_copy);
 }
 
 static SearchCallback *
