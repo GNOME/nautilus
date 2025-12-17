@@ -181,18 +181,7 @@ real_call_when_ready (NautilusDirectory         *directory,
                       NautilusDirectoryCallback  callback,
                       gpointer                   callback_data)
 {
-    GList *file_list;
-    NautilusFavoriteDirectory *starred;
-
-    starred = NAUTILUS_STARRED_DIRECTORY (directory);
-
-    file_list = nautilus_file_list_copy (starred->files);
-
-    callback (NAUTILUS_DIRECTORY (directory),
-              file_list,
-              callback_data);
-
-    nautilus_file_list_free (file_list);
+    callback (directory, callback_data);
 }
 
 static gboolean
@@ -225,7 +214,7 @@ real_file_monitor_add (NautilusDirectory         *directory,
 
     if (callback != NULL)
     {
-        (*callback)(directory, starred->files, callback_data);
+        (*callback)(directory, callback_data);
     }
 
     for (list = starred->files; list != NULL; list = list->next)

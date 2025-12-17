@@ -654,7 +654,6 @@ nautilus_directory_monitor_add_internal (NautilusDirectory         *directory,
                                          gpointer                   callback_data)
 {
     Monitor *monitor;
-    GList *file_list;
 
     g_assert (NAUTILUS_IS_DIRECTORY (directory));
 
@@ -679,9 +678,7 @@ nautilus_directory_monitor_add_internal (NautilusDirectory         *directory,
     {
         g_assert (file == NULL);
 
-        file_list = nautilus_directory_get_file_list (directory);
-        (*callback)(directory, file_list, callback_data);
-        nautilus_file_list_free (file_list);
+        (*callback)(directory, callback_data);
     }
 
     /* Start the "real" monitoring (FAM or whatever).
@@ -1178,8 +1175,6 @@ static void
 ready_callback_call (NautilusDirectory   *directory,
                      const ReadyCallback *callback)
 {
-    GList *file_list;
-
     /* Call the callback. */
     if (callback->file != NULL)
     {
@@ -1191,22 +1186,8 @@ ready_callback_call (NautilusDirectory   *directory,
     }
     else if (callback->callback.directory != NULL)
     {
-        if (directory == NULL ||
-            !(IS_ATTRIBUTE_SET (callback->attributes, NAUTILUS_ATTRIBUTE_FILE_LIST)))
-        {
-            file_list = NULL;
-        }
-        else
-        {
-            file_list = nautilus_directory_get_file_list (directory);
-        }
-
-        /* Pass back the file list if the user was waiting for it. */
         (*callback->callback.directory)(directory,
-                                        file_list,
                                         callback->callback_data);
-
-        nautilus_file_list_free (file_list);
     }
 }
 

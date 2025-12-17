@@ -258,7 +258,6 @@ filename_validator_process_new_name (NautilusFilenameValidator *self)
 
 static void
 on_directory_info_ready_to_validate (NautilusDirectory *directory,
-                                     GList             *files,
                                      gpointer           user_data)
 {
     NautilusFilenameValidator *self = NAUTILUS_FILENAME_VALIDATOR (user_data);
@@ -305,7 +304,6 @@ nautilus_filename_validator_validate (NautilusFilenameValidator *self)
 
 static void
 on_directory_info_ready_to_try_accept (NautilusDirectory *directory,
-                                       GList             *files,
                                        gpointer           user_data)
 {
     NautilusFilenameValidator *self = NAUTILUS_FILENAME_VALIDATOR (user_data);

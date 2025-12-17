@@ -171,7 +171,6 @@ real_force_reload (NautilusDirectory *directory)
 
 static void
 on_backend_directory_ready (NautilusDirectory *backend_directory,
-                            GList             *unused_parameter,
                             gpointer           callback_data)
 {
     NetworkCallback *network_callback = callback_data;
@@ -195,13 +194,11 @@ on_backend_directory_ready (NautilusDirectory *backend_directory,
         network_callback->network_backend_ready &&
         network_callback->self->recent_servers_done_loading)
     {
-        g_autolist (NautilusFile) files = nautilus_directory_get_file_list (NAUTILUS_DIRECTORY (self));
-
         /* Remove from list before calling to avoid double removal */
         self->callback_list = g_list_remove (self->callback_list, network_callback);
 
         /* Invoke ready callback */
-        (*network_callback->callback)(NAUTILUS_DIRECTORY (self), files, network_callback->callback_data);
+        (*network_callback->callback)(NAUTILUS_DIRECTORY (self), network_callback->callback_data);
 
         g_free (network_callback);
     }
@@ -226,7 +223,7 @@ on_recent_servers_loading_changed (GObject    *object,
         for (GList *l = self->callback_list, *next; l != NULL; l = next)
         {
             next = l->next;
-            on_backend_directory_ready (self_as_directory, NULL, l->data);
+            on_backend_directory_ready (self_as_directory, l->data);
         }
     }
 }
@@ -448,9 +445,7 @@ real_file_monitor_add (NautilusDirectory         *directory,
 
     if (callback != NULL)
     {
-        g_autolist (NautilusFile) files = nautilus_directory_get_file_list (directory);
-
-        (*callback)(directory, files, callback_data);
+        (*callback)(directory, callback_data);
     }
 }
 

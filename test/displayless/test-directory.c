@@ -101,7 +101,6 @@ test_directory_hash_table_cleanup (void)
 
 static void
 callback_counter_directory_callback (NautilusDirectory *directory,
-                                     NautilusFileList  *files,
                                      gpointer           user_data)
 {
     callback_counter_callback (user_data);

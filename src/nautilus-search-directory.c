@@ -210,7 +210,7 @@ search_monitor_add (NautilusDirectory         *directory,
 
     if (callback != NULL)
     {
-        (*callback)(directory, files_list, callback_data);
+        (*callback)(directory, callback_data);
     }
 
     for (list = files_list; list != NULL; list = list->next)
@@ -310,7 +310,6 @@ static void
 search_callback_invoke_and_destroy (SearchCallback *search_callback)
 {
     search_callback->callback (NAUTILUS_DIRECTORY (search_callback->search_directory),
-                               search_callback->file_list,
                                search_callback->callback_data);
 
     search_callback->search_directory->callback_list =

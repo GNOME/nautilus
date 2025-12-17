@@ -54,8 +54,7 @@ struct _NautilusDirectory
 };
 
 typedef void (*NautilusDirectoryCallback) (NautilusDirectory *directory,
-					   GList             *files,
-					   gpointer           callback_data);
+                                           gpointer           callback_data);
 
 typedef struct
 {

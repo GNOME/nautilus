@@ -75,7 +75,6 @@ search_finished_idle (NautilusSearchEngineModel *model)
 
 static void
 model_directory_ready_cb (NautilusDirectory *directory,
-                          GList             *list,
                           gpointer           user_data)
 {
     NautilusSearchEngineModel *model = user_data;

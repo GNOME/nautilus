@@ -641,7 +641,6 @@ file_load_attributes (NautilusFile       *file,
 
 static void
 directory_ready_cb (NautilusDirectory *directory,
-                    NautilusFileList  *files,
                     gpointer           user_data)
 {
     gboolean *ready = user_data;

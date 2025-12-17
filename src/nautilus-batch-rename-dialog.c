@@ -811,12 +811,10 @@ check_conflict_for_files (NautilusBatchRenameDialog *dialog,
 
 static void
 on_directory_attributes_ready_for_conflicts_check (NautilusDirectory *conflict_directory,
-                                                   GList             *files,
                                                    gpointer           callback_data)
 {
-    NautilusBatchRenameDialog *self;
-
-    self = NAUTILUS_BATCH_RENAME_DIALOG (callback_data);
+    NautilusBatchRenameDialog *self = callback_data;
+    g_autolist (NautilusFile) files = nautilus_directory_get_file_list (conflict_directory);
 
     check_conflict_for_files (self, conflict_directory, files);
 

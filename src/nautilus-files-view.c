@@ -275,7 +275,6 @@ static void     disconnect_directory_handlers (NautilusFilesView *view);
 static void     metadata_for_directory_as_file_ready_callback (NautilusFile *file,
                                                                gpointer      callback_data);
 static void     metadata_for_files_in_directory_ready_callback (NautilusDirectory *directory,
-                                                                GList             *files,
                                                                 gpointer           callback_data);
 static void     nautilus_files_view_trash_state_changed_callback (NautilusTrashMonitor *trash,
                                                                   gboolean              state,
@@ -2885,7 +2884,6 @@ scripts_added_or_changed_callback (NautilusScriptsMonitor *scripts,
 
 static void
 templates_added_or_changed_callback (NautilusDirectory *directory,
-                                     GList             *files,
                                      gpointer           callback_data)
 {
     NautilusFilesView *self = callback_data;
@@ -4575,6 +4573,15 @@ files_added_callback (NautilusDirectory *directory,
 }
 
 static void
+monitor_files_added_callback (NautilusDirectory *directory,
+                              gpointer           callback_data)
+{
+    g_autolist (NautilusFile) files = nautilus_directory_get_file_list (directory);
+
+    files_added_callback (directory, files, callback_data);
+}
+
+static void
 files_changed_callback (NautilusDirectory *directory,
                         GList             *files,
                         gpointer           callback_data)
@@ -4675,7 +4682,7 @@ nautilus_files_view_add_subdirectory (NautilusFilesView *self,
                                          &self->directory,
                                          self->show_hidden_files,
                                          attributes,
-                                         files_added_callback, self);
+                                         monitor_files_added_callback, self);
 
     g_signal_connect
         (directory, "files-added",
@@ -8216,7 +8223,7 @@ finish_loading (NautilusFilesView *self)
                                          &self->directory,
                                          self->show_hidden_files,
                                          attributes,
-                                         files_added_callback, self);
+                                         monitor_files_added_callback, self);
 
     /* If escaping search we can release the search directory now that the view
      * is now monitoring the base directory directly. */
@@ -8255,7 +8262,6 @@ metadata_for_directory_as_file_ready_callback (NautilusFile *file,
 
 static void
 metadata_for_files_in_directory_ready_callback (NautilusDirectory *directory,
-                                                GList             *files,
                                                 gpointer           callback_data)
 {
     NautilusFilesView *self = callback_data;
