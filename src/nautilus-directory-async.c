@@ -105,11 +105,7 @@ struct DeepCountState
 typedef struct
 {
     NautilusFile *file;     /* Which file, NULL means all. */
-    union
-    {
-        NautilusDirectoryCallback directory;
-        NautilusFileCallback file;
-    } callback;
+    GCallback callback;
     gpointer callback_data;
     NautilusAttributes attributes;
 } ReadyCallback;
@@ -1150,19 +1146,9 @@ ready_callback_key_compare (gconstpointer a,
     const ReadyCallback *callback_a = a;
     const ReadyCallback *callback_b = b;
 
-    if (callback_a->file != callback_b->file)
-    {
-        return -1;
-    }
-
-    if (callback_a->file == NULL ?
-        (callback_a->callback.directory != callback_b->callback.directory) :
-        (callback_a->callback.file != callback_b->callback.file))
-    {
-        return -1;
-    }
-
-    if (callback_a->callback_data != callback_b->callback_data)
+    if (callback_a->file != callback_b->file ||
+        callback_a->callback != callback_b->callback ||
+        callback_a->callback_data != callback_b->callback_data)
     {
         return -1;
     }
@@ -1175,19 +1161,21 @@ static void
 ready_callback_call (NautilusDirectory   *directory,
                      const ReadyCallback *callback)
 {
-    /* Call the callback. */
-    if (callback->file != NULL)
+    if (callback->callback == NULL)
     {
-        if (callback->callback.file)
-        {
-            (*callback->callback.file)(callback->file,
-                                       callback->callback_data);
-        }
+        /* Nothing to call */
     }
-    else if (callback->callback.directory != NULL)
+    else if (callback->file != NULL)
     {
-        (*callback->callback.directory)(directory,
-                                        callback->callback_data);
+        NautilusFileCallback file_callback = (NautilusFileCallback) callback->callback;
+
+        (file_callback) (callback->file, callback->callback_data);
+    }
+    else
+    {
+        NautilusDirectoryCallback dir_callback = (NautilusDirectoryCallback) callback->callback;
+
+        (dir_callback) (directory, callback->callback_data);
     }
 }
 
@@ -1210,11 +1198,11 @@ nautilus_directory_call_when_ready_internal (NautilusDirectory         *director
     callback.file = file;
     if (file == NULL)
     {
-        callback.callback.directory = directory_callback;
+        callback.callback = G_CALLBACK (directory_callback);
     }
     else
     {
-        callback.callback.file = file_callback;
+        callback.callback = G_CALLBACK (file_callback);
     }
     callback.callback_data = callback_data;
     callback.attributes = attributes;
@@ -1358,11 +1346,11 @@ nautilus_directory_cancel_callback_internal (NautilusDirectory         *director
     callback.file = file;
     if (file == NULL)
     {
-        callback.callback.directory = directory_callback;
+        callback.callback = G_CALLBACK (directory_callback);
     }
     else
     {
-        callback.callback.file = file_callback;
+        callback.callback = G_CALLBACK (file_callback);
     }
     callback.callback_data = callback_data;
 
