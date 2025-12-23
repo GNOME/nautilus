@@ -3854,21 +3854,19 @@ pre_copy_move (NautilusFilesView *directory_view)
     return copy_move_done_data;
 }
 
-/* This function is used to pull out any debuting uris that were added
- * and (as a side effect) remove them from the debuting uri hash table.
+/* This function is used to tell apart debuting uris that were added and
+ * completely new uris. As a side effect added debuting uri are removed
+ * from the debuting uri hash table.
  */
 static gboolean
-copy_move_done_partition_func (NautilusFile *file,
-                               gpointer      callback_data)
+copy_move_done_was_not_debuting (NautilusFile *added_file,
+                                 gpointer      callback_data)
 {
-    GFile *location;
-    gboolean result;
+    GHashTable *debuting_files = callback_data;
+    g_autoptr (GFile) location = nautilus_file_get_location (added_file);
+    gboolean was_debuting = g_hash_table_remove (debuting_files, location);
 
-    location = nautilus_file_get_location (file);
-    result = g_hash_table_remove ((GHashTable *) callback_data, location);
-    g_object_unref (location);
-
-    return result;
+    return !was_debuting;
 }
 
 static gboolean
@@ -3920,10 +3918,9 @@ copy_move_done_callback (GHashTable *debuting_files,
         debuting_files_data->debuting_files = g_hash_table_ref (debuting_files);
         debuting_files_data->added_files = nautilus_file_list_filter (copy_move_done_data->added_files,
                                                                       &failed_files,
-                                                                      copy_move_done_partition_func,
+                                                                      copy_move_done_was_not_debuting,
                                                                       debuting_files);
-        nautilus_file_list_free (copy_move_done_data->added_files);
-        copy_move_done_data->added_files = failed_files;
+        nautilus_file_list_free (failed_files);
 
         /* We're passed the same data used by pre_copy_move_add_files_callback, so disconnecting
          * it will free data. We've already siphoned off the added_files we need, and stashed the
