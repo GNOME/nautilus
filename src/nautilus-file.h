@@ -450,10 +450,10 @@ void                    nautilus_file_list_call_when_ready              (GList  
 									 gpointer                        callback_data);
 void                    nautilus_file_list_cancel_call_when_ready       (NautilusFileListHandle         *handle);
 
-GList *                 nautilus_file_list_filter                       (GList                          *files,
-                                                                         GList                         **failed,
+NautilusFileList *      nautilus_file_list_filter                       (NautilusFileList               *file_list,
                                                                          NautilusFileFilterFunc          filter_function,
                                                                          gpointer                        user_data);
+
 gboolean                nautilus_file_list_are_all_folders              (const GList                    *files);
 
 /* Debugging */

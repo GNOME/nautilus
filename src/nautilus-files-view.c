@@ -1271,12 +1271,11 @@ nautilus_files_view_activate_files (NautilusFilesView *view,
     }
 
     g_autolist (NautilusFile) files_to_extract = NULL;
-    g_autolist (NautilusFile) dummy = NULL;
-    g_autolist (NautilusFile) files_to_activate =
-        nautilus_file_list_filter (g_list_copy (files),
-                                   &dummy,
-                                   activate_or_extract_split,
-                                   &files_to_extract);
+    g_autolist (NautilusFile) files_to_activate = nautilus_file_list_copy (files);
+
+    files_to_activate = nautilus_file_list_filter (files_to_activate,
+                                                   activate_or_extract_split,
+                                                   &files_to_extract);
     files_to_extract = g_list_reverse (files_to_extract);
 
     if (nautilus_files_view_supports_extract_here (view))
@@ -3920,7 +3919,6 @@ copy_move_done_callback (GHashTable *debuting_files,
     NautilusFilesView *directory_view;
     CopyMoveDoneData *copy_move_done_data;
     DebutingFilesData *debuting_files_data;
-    GList *failed_files;
 
     copy_move_done_data = (CopyMoveDoneData *) data;
     directory_view = copy_move_done_data->directory_view;
@@ -3931,11 +3929,12 @@ copy_move_done_callback (GHashTable *debuting_files,
 
         debuting_files_data = g_new (DebutingFilesData, 1);
         debuting_files_data->debuting_files = g_hash_table_ref (debuting_files);
-        debuting_files_data->added_files = nautilus_file_list_filter (copy_move_done_data->added_files,
-                                                                      &failed_files,
-                                                                      copy_move_done_was_not_debuting,
-                                                                      debuting_files);
-        nautilus_file_list_free (failed_files);
+        NautilusFileList *added_files = nautilus_file_list_copy (copy_move_done_data->added_files);
+
+        added_files = nautilus_file_list_filter (added_files,
+                                                 copy_move_done_was_not_debuting,
+                                                 debuting_files);
+        debuting_files_data->added_files = added_files;
 
         /* We're passed the same data used by pre_copy_move_add_files_callback, so disconnecting
          * it will free data. We've already siphoned off the added_files we need, and stashed the
@@ -5263,7 +5262,6 @@ static GMenu *
 update_directory_in_scripts_menu (NautilusFilesView *view,
                                   NautilusDirectory *directory)
 {
-    GList *file_list, *filtered, *node, *removed_files;
     GMenu *menu, *children_menu;
     GMenuItem *menu_item;
     gboolean any_scripts;
@@ -5282,20 +5280,18 @@ update_directory_in_scripts_menu (NautilusFilesView *view,
         nautilus_load_custom_accel_for_scripts ();
     }
 
-    file_list = nautilus_directory_get_file_list (directory);
-    filtered = nautilus_file_list_filter (file_list,
-                                          &removed_files,
-                                          filter_hidden_scripts,
-                                          NULL);
-    nautilus_file_list_free (removed_files);
-    nautilus_file_list_free (file_list);
-    menu = g_menu_new ();
+    g_autolist (NautilusFile) file_list = nautilus_directory_get_file_list (directory);
 
-    filtered = nautilus_file_list_sort_by_display_name (filtered);
+    file_list = nautilus_file_list_filter (file_list, filter_hidden_scripts, NULL);
+    file_list = nautilus_file_list_sort_by_display_name (file_list);
+
+    menu = g_menu_new ();
 
     num = 0;
     any_scripts = FALSE;
-    for (node = filtered; num < TEMPLATE_LIMIT && node != NULL; node = node->next, num++)
+    for (NautilusFileList *node = file_list;
+         num < TEMPLATE_LIMIT && node != NULL;
+         node = node->next, num++)
     {
         file = node->data;
         if (nautilus_file_is_directory (file))
@@ -5329,8 +5325,6 @@ update_directory_in_scripts_menu (NautilusFilesView *view,
             any_scripts = TRUE;
         }
     }
-
-    nautilus_file_list_free (filtered);
 
     if (!any_scripts)
     {
@@ -5505,13 +5499,10 @@ filter_templates (GList    *files,
                   gboolean  show_hidden)
 {
     GList *filtered_files;
-    GList *removed_files;
 
     filtered_files = nautilus_file_list_filter (files,
-                                                &removed_files,
                                                 filter_templates_callback,
                                                 GINT_TO_POINTER (show_hidden));
-    nautilus_file_list_free (removed_files);
 
     return filtered_files;
 }
@@ -5541,7 +5532,6 @@ update_directory_in_templates_menu (NautilusFilesView *view,
      * for example. See https://gitlab.gnome.org/GNOME/nautilus/issues/1413.
      */
     filtered = filter_templates (file_list, view->show_hidden_files);
-    nautilus_file_list_free (file_list);
     templates_directory_uri = nautilus_get_templates_directory_uri ();
     menu = g_menu_new ();
 
