@@ -4125,38 +4125,37 @@ nautilus_file_is_in_search (NautilusFile *file)
     return g_file_has_uri_scheme (location, SCHEME_SEARCH);
 }
 
-/* This functions filters a file list when its items match a certain condition
- * in the filter function. This function preserves the ordering.
+/**
+ * nautilus_file_list_filter
+ * @file_list: (transfer full): A list of files to filter
+ * @filter_function: Function that decides which items to keep in list
+ * @user_data: Passed as is to @filter_function
+ *
+ * Removes and frees all files from the given list that don't pass the given
+ * filter function.
+ *
+ * Returns: (transfer full): the filtered file list
  */
-GList *
-nautilus_file_list_filter (GList                   *files,
-                           GList                  **failed,
-                           NautilusFileFilterFunc   filter_function,
-                           gpointer                 user_data)
+NautilusFileList *
+nautilus_file_list_filter (NautilusFileList       *file_list,
+                           NautilusFileFilterFunc  filter_function,
+                           gpointer                user_data)
 {
-    GList *filtered = NULL;
-    GList *l;
-    GList *reversed;
+    GList *next = NULL;
 
-    *failed = NULL;
-
-    reversed = g_list_copy (files);
-    reversed = g_list_reverse (reversed);
-    for (l = reversed; l != NULL; l = l->next)
+    for (NautilusFileList *node = file_list; node != NULL; node = next)
     {
-        if (filter_function (l->data, user_data))
+        NautilusFile *file = node->data;
+        next = node->next;
+
+        if (!filter_function (file, user_data))
         {
-            filtered = g_list_prepend (filtered, nautilus_file_ref (l->data));
-        }
-        else
-        {
-            *failed = g_list_prepend (*failed, nautilus_file_ref (l->data));
+            nautilus_file_unref (file);
+            file_list = g_list_delete_link (file_list, node);
         }
     }
 
-    g_list_free (reversed);
-
-    return filtered;
+    return file_list;
 }
 
 gboolean
