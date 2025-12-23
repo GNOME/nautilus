@@ -1233,6 +1233,25 @@ nautilus_files_view_preview_selection_event (NautilusFilesView *self,
     nautilus_list_base_preview_selection_event (self->list_base, direction);
 }
 
+static gboolean
+activate_or_extract_split (NautilusFile *file,
+                           gpointer      callback_data)
+{
+    if (nautilus_mime_file_extracts (file))
+    {
+        NautilusFileList **extract_list_ptr = callback_data;
+
+        *extract_list_ptr = g_list_prepend (*extract_list_ptr,
+                                            nautilus_file_ref (file));
+
+        return FALSE;
+    }
+    else
+    {
+        return TRUE;
+    }
+}
+
 static void
 nautilus_files_view_activate_files (NautilusFilesView *view,
                                     GList             *files,
@@ -1244,8 +1263,6 @@ nautilus_files_view_activate_files (NautilusFilesView *view,
         return;
     }
 
-    GList *files_to_extract;
-    GList *files_to_activate;
     char *path;
 
     if (files == NULL)
@@ -1253,10 +1270,14 @@ nautilus_files_view_activate_files (NautilusFilesView *view,
         return;
     }
 
-    files_to_extract = nautilus_file_list_filter (files,
-                                                  &files_to_activate,
-                                                  (NautilusFileFilterFunc) nautilus_mime_file_extracts,
-                                                  NULL);
+    g_autolist (NautilusFile) files_to_extract = NULL;
+    g_autolist (NautilusFile) dummy = NULL;
+    g_autolist (NautilusFile) files_to_activate =
+        nautilus_file_list_filter (g_list_copy (files),
+                                   &dummy,
+                                   activate_or_extract_split,
+                                   &files_to_extract);
+    files_to_extract = g_list_reverse (files_to_extract);
 
     if (nautilus_files_view_supports_extract_here (view))
     {
@@ -1285,8 +1306,6 @@ nautilus_files_view_activate_files (NautilusFilesView *view,
                                   confirm_multiple);
 
     g_free (path);
-    g_list_free (files_to_extract);
-    g_list_free (files_to_activate);
 }
 
 void
