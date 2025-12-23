@@ -99,13 +99,11 @@ is_not_tentative (NautilusFile *file,
 static GList *
 real_get_file_list (NautilusDirectory *directory)
 {
-    GList *tentative_files, *non_tentative_files;
+    NautilusFileList *file_list_copy = nautilus_file_list_copy (directory->details->file_list);
 
-    non_tentative_files = nautilus_file_list_filter (directory->details->file_list,
-                                                 &tentative_files, is_not_tentative, NULL);
-    nautilus_file_list_free (tentative_files);
-
-    return non_tentative_files;
+    return nautilus_file_list_filter (file_list_copy,
+                                      is_not_tentative,
+                                      NULL);
 }
 
 static gboolean
