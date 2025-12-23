@@ -87,14 +87,13 @@ real_is_not_empty (NautilusDirectory *directory)
 }
 
 static gboolean
-is_tentative (NautilusFile *file,
-              gpointer      callback_data)
+is_not_tentative (NautilusFile *file,
+                  gpointer      callback_data)
 {
-    /* Avoid returning files with !is_added, because these
-     * will later be sent with the files_added signal, and a
-     * user doing get_file_list + files_added monitoring will
-     * then see the file twice */
-    return !file->details->got_file_info || !file->details->is_added;
+    /* Files that are not added yet will will later be sent with the
+     * files_added signal, and a user doing get_file_list + files_added
+     * monitoring will then see the file twice */
+    return file->details->got_file_info && file->details->is_added;
 }
 
 static GList *
@@ -102,8 +101,8 @@ real_get_file_list (NautilusDirectory *directory)
 {
     GList *tentative_files, *non_tentative_files;
 
-    tentative_files = nautilus_file_list_filter (directory->details->file_list,
-                                                 &non_tentative_files, is_tentative, NULL);
+    non_tentative_files = nautilus_file_list_filter (directory->details->file_list,
+                                                 &tentative_files, is_not_tentative, NULL);
     nautilus_file_list_free (tentative_files);
 
     return non_tentative_files;
