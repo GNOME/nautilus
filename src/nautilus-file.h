@@ -407,8 +407,6 @@ gboolean                nautilus_file_is_hidden_file                    (Nautilu
 gboolean                nautilus_file_should_show                       (NautilusFile                   *file,
 									 gboolean                        show_hidden);
 void                    nautilus_file_prioritize                        (NautilusFile                   *file);
-GList                  *nautilus_file_list_filter_hidden                (GList                          *files,
-									 gboolean                        show_hidden);
 
 
 /* Get the URI that's used when activating the file.
