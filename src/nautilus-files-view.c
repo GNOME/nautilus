@@ -5252,11 +5252,18 @@ nautilus_load_custom_accel_for_scripts (void)
     g_free (path);
 }
 
+static gboolean
+filter_hidden_scripts (NautilusFile *file,
+                       gpointer      callback_data)
+{
+    return nautilus_file_should_show (file, FALSE);
+}
+
 static GMenu *
 update_directory_in_scripts_menu (NautilusFilesView *view,
                                   NautilusDirectory *directory)
 {
-    GList *file_list, *filtered, *node;
+    GList *file_list, *filtered, *node, *removed_files;
     GMenu *menu, *children_menu;
     GMenuItem *menu_item;
     gboolean any_scripts;
@@ -5276,7 +5283,11 @@ update_directory_in_scripts_menu (NautilusFilesView *view,
     }
 
     file_list = nautilus_directory_get_file_list (directory);
-    filtered = nautilus_file_list_filter_hidden (file_list, FALSE);
+    filtered = nautilus_file_list_filter (file_list,
+                                          &removed_files,
+                                          filter_hidden_scripts,
+                                          NULL);
+    nautilus_file_list_free (removed_files);
     nautilus_file_list_free (file_list);
     menu = g_menu_new ();
 
@@ -5525,8 +5536,7 @@ update_directory_in_templates_menu (NautilusFilesView *view,
     file_list = nautilus_directory_get_file_list (directory);
 
     /*
-     * The nautilus_file_list_filter_hidden() function isn't used here, because
-     * we want to show hidden files, but not directories. This is a compromise
+     * We want to show hidden files, but not directories. This is a compromise
      * to allow creating hidden files but to prevent content from .git directory
      * for example. See https://gitlab.gnome.org/GNOME/nautilus/issues/1413.
      */

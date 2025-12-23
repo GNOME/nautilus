@@ -4125,38 +4125,6 @@ nautilus_file_is_in_search (NautilusFile *file)
     return g_file_has_uri_scheme (location, SCHEME_SEARCH);
 }
 
-static gboolean
-filter_hidden_partition_callback (NautilusFile *file,
-                                  gpointer      callback_data)
-{
-    FilterOptions options;
-
-    options = GPOINTER_TO_INT (callback_data);
-
-    return nautilus_file_should_show (file,
-                                      options & SHOW_HIDDEN);
-}
-
-GList *
-nautilus_file_list_filter_hidden (GList    *files,
-                                  gboolean  show_hidden)
-{
-    GList *filtered_files;
-    GList *removed_files;
-
-    /* FIXME bugzilla.gnome.org 40653:
-     * Eventually this should become a generic filtering thingy.
-     */
-
-    filtered_files = nautilus_file_list_filter (files,
-                                                &removed_files,
-                                                filter_hidden_partition_callback,
-                                                GINT_TO_POINTER ((show_hidden ? SHOW_HIDDEN : 0)));
-    nautilus_file_list_free (removed_files);
-
-    return filtered_files;
-}
-
 /* This functions filters a file list when its items match a certain condition
  * in the filter function. This function preserves the ordering.
  */
