@@ -5476,11 +5476,16 @@ static gboolean
 filter_templates_callback (NautilusFile *file,
                            gpointer      callback_data)
 {
-    gboolean show_hidden = GPOINTER_TO_INT (callback_data);
+    /*
+     * We want to show hidden files, but not directories. This is a compromise
+     * to allow creating hidden files but to prevent content from .git directory
+     * for example. See https://gitlab.gnome.org/GNOME/nautilus/issues/1413.
+     */
+    NautilusFilesView *view = callback_data;
 
     if (nautilus_file_is_hidden_file (file))
     {
-        if (!show_hidden)
+        if (!view->show_hidden_files)
         {
             return FALSE;
         }
@@ -5494,24 +5499,10 @@ filter_templates_callback (NautilusFile *file,
     return TRUE;
 }
 
-static GList *
-filter_templates (GList    *files,
-                  gboolean  show_hidden)
-{
-    GList *filtered_files;
-
-    filtered_files = nautilus_file_list_filter (files,
-                                                filter_templates_callback,
-                                                GINT_TO_POINTER (show_hidden));
-
-    return filtered_files;
-}
-
 static GMenuModel *
 update_directory_in_templates_menu (NautilusFilesView *view,
                                     NautilusDirectory *directory)
 {
-    GList *file_list, *filtered, *node;
     GMenu *menu;
     GMenuItem *menu_item;
     gboolean any_templates;
@@ -5524,22 +5515,17 @@ update_directory_in_templates_menu (NautilusFilesView *view,
     g_return_val_if_fail (NAUTILUS_IS_FILES_VIEW (view), NULL);
     g_return_val_if_fail (NAUTILUS_IS_DIRECTORY (directory), NULL);
 
-    file_list = nautilus_directory_get_file_list (directory);
+    g_autolist (NautilusFile) file_list = nautilus_directory_get_file_list (directory);
 
-    /*
-     * We want to show hidden files, but not directories. This is a compromise
-     * to allow creating hidden files but to prevent content from .git directory
-     * for example. See https://gitlab.gnome.org/GNOME/nautilus/issues/1413.
-     */
-    filtered = filter_templates (file_list, view->show_hidden_files);
+    file_list = nautilus_file_list_filter (file_list, filter_templates_callback, view);
+    file_list = nautilus_file_list_sort_by_display_name (file_list);
+
     templates_directory_uri = nautilus_get_templates_directory_uri ();
     menu = g_menu_new ();
 
-    filtered = nautilus_file_list_sort_by_display_name (filtered);
-
     num = 0;
     any_templates = FALSE;
-    for (node = filtered; num < TEMPLATE_LIMIT && node != NULL; node = node->next, num++)
+    for (GList *node = file_list; num < TEMPLATE_LIMIT && node != NULL; node = node->next, num++)
     {
         file = node->data;
         if (nautilus_file_is_directory (file))
@@ -5577,7 +5563,6 @@ update_directory_in_templates_menu (NautilusFilesView *view,
         }
     }
 
-    nautilus_file_list_free (filtered);
     g_free (templates_directory_uri);
 
     if (!any_templates)
