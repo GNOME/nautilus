@@ -454,18 +454,15 @@ static void
 nautilus_image_properties_model_load_from_file_info (NautilusImagesPropertiesModel *self,
                                                      NautilusFileInfo              *file_info)
 {
-    g_autofree char *uri = NULL;
-    g_autoptr (GFile) file = NULL;
-    g_autofree char *path = NULL;
-    FileOpenData *data;
-
     g_return_if_fail (file_info != NULL);
 
-    self->cancellable = g_cancellable_new ();
+    g_autoptr (GError) error = NULL;
+    g_autofree char *uri = nautilus_file_info_get_uri (file_info);
+    g_autoptr (GFile) file = g_file_new_for_uri (uri);
+    g_autofree char *path = g_file_get_path (file);
+    FileOpenData *data;
 
-    uri = nautilus_file_info_get_uri (file_info);
-    file = g_file_new_for_uri (uri);
-    path = g_file_get_path (file);
+    self->cancellable = g_cancellable_new ();
 
     /* gexiv2 metadata init */
     self->md_ready = gexiv2_initialize ();
@@ -478,8 +475,6 @@ nautilus_image_properties_model_load_from_file_info (NautilusImagesPropertiesMod
         self->md = gexiv2_metadata_new ();
         if (path != NULL)
         {
-            g_autoptr (GError) error = NULL;
-
             if (!gexiv2_metadata_open_path (self->md, path, &error))
             {
                 g_warning ("gexiv2 metadata not supported for '%s': %s", path, error->message);
