@@ -107,8 +107,6 @@ append_basic_info (NautilusImagesPropertiesModel *self)
 {
     GdkPixbufFormat *format;
     GExiv2Orientation orientation = GEXIV2_ORIENTATION_UNSPECIFIED;
-    int width;
-    int height;
     g_autofree char *name = NULL;
     g_autofree char *desc = NULL;
     g_autofree char *value = NULL;
@@ -125,18 +123,19 @@ append_basic_info (NautilusImagesPropertiesModel *self)
         orientation = gexiv2_metadata_get_orientation (self->md, NULL);
     }
 
+    int width = self->width;
+    int height = self->height;
+
     if (orientation == GEXIV2_ORIENTATION_ROT_90
         || orientation == GEXIV2_ORIENTATION_ROT_270
         || orientation == GEXIV2_ORIENTATION_ROT_90_HFLIP
         || orientation == GEXIV2_ORIENTATION_ROT_90_VFLIP)
     {
-        width = self->height;
-        height = self->width;
-    }
-    else
-    {
-        width = self->width;
-        height = self->height;
+        /* Swap height and width due to orientation */
+        int swap = width;
+
+        width = height;
+        height = swap;
     }
 
     g_free (value);
