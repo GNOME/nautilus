@@ -1226,12 +1226,21 @@ change_directory_location (NautilusDirectory *directory,
                          directory);
 }
 
+typedef struct
+{
+    NautilusDirectory *directory;
+    GFile *location;
+} FileWithLocation;
+
 static NautilusFileList *
 nautilus_directory_moved_internal (GFile *old_location,
                                    GFile *new_location)
 {
-    NautilusFileList *affected_files = NULL;
+    GList *moved = NULL;
 
+    /* The GHashTableIter gets invalidated on change_directory_location
+     * calls, so gather all moved directories into a list first.
+     */
     GHashTableIter directories_iter;
     g_hash_table_iter_init (&directories_iter, directories);
     gpointer value;
@@ -1248,7 +1257,8 @@ nautilus_directory_moved_internal (GFile *old_location,
             continue;
         }
 
-        g_autoptr (GFile) new_directory_location = NULL;
+        GFile *new_directory_location;
+
         if (is_equal)
         {
             new_directory_location = g_object_ref (new_location);
@@ -1271,6 +1281,20 @@ nautilus_directory_moved_internal (GFile *old_location,
 
             new_directory_location = g_file_resolve_relative_path (new_location, relative_path);
         }
+
+        FileWithLocation *file_with_location = g_new0 (FileWithLocation, 1);
+        file_with_location->directory = nautilus_directory_ref (directory);
+        file_with_location->location = new_directory_location;
+        moved = g_list_prepend (moved, file_with_location);
+    }
+
+    NautilusFileList *affected_files = NULL;
+
+    for (GList *node = moved; node != NULL; node = node->next)
+    {
+        g_autofree FileWithLocation *file_with_location = node->data;
+        g_autoptr (NautilusDirectory) directory = file_with_location->directory;
+        g_autoptr (GFile) new_directory_location = file_with_location->location;
 
         change_directory_location (directory, new_directory_location);
 
