@@ -1197,13 +1197,10 @@ static void
 set_directory_location (NautilusDirectory *directory,
                         GFile             *location)
 {
-    if (directory->details->location)
+    if (g_set_object (&directory->details->location, location))
     {
-        g_object_unref (directory->details->location);
+        g_object_notify_by_pspec (G_OBJECT (directory), properties[PROP_LOCATION]);
     }
-    directory->details->location = g_object_ref (location);
-
-    g_object_notify_by_pspec (G_OBJECT (directory), properties[PROP_LOCATION]);
 }
 
 static void
