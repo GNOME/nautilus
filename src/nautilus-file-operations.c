@@ -2639,7 +2639,6 @@ scan_dir (GFile      *dir,
           GQueue     *dirs)
 {
     GFileInfo *info;
-    GError *error;
     GFile *subdir;
     GFileEnumerator *enumerator;
     int response;
@@ -2670,13 +2669,14 @@ scan_dir (GFile      *dir,
 
     while (TRUE)
     {
+        g_autoptr (GError) error = NULL;
+
         if (dir_info != NULL)
         {
             dir_info->num_files_children = 0;
             dir_info->num_bytes_children = 0;
         }
 
-        error = NULL;
         enumerator = g_file_enumerate_children (dir,
                                                 G_FILE_ATTRIBUTE_STANDARD_NAME ","
                                                 G_FILE_ATTRIBUTE_STANDARD_TYPE ","
@@ -2686,7 +2686,6 @@ scan_dir (GFile      *dir,
                                                 &error);
         if (enumerator)
         {
-            error = NULL;
             while ((info = g_file_enumerator_next_file (enumerator, job->cancellable, &error)) != NULL)
             {
                 count_file (info, job, source_info, dir_info);
@@ -2704,11 +2703,7 @@ scan_dir (GFile      *dir,
             g_file_enumerator_close (enumerator, job->cancellable, NULL);
             g_object_unref (enumerator);
 
-            if (error && IS_IO_ERROR (error, CANCELLED))
-            {
-                g_error_free (error);
-            }
-            else if (error)
+            if (error != NULL && !IS_IO_ERROR (error, CANCELLED))
             {
                 g_autofree gchar *basename = NULL;
                 g_autofree gchar *primary = get_scan_primary (source_info->op);
@@ -2736,8 +2731,6 @@ scan_dir (GFile      *dir,
                                        details,
                                        RESPONSE_SKIP | RESPONSE_RETRY);
 
-                g_error_free (error);
-
                 if (response == RESPONSE_CANCEL)
                 {
                     abort_job (job);
@@ -2761,15 +2754,10 @@ scan_dir (GFile      *dir,
         }
         else if (job->skip_all_error)
         {
-            g_error_free (error);
             skip_file (job, dir);
             skip_subdirs = TRUE;
         }
-        else if (IS_IO_ERROR (error, CANCELLED))
-        {
-            g_error_free (error);
-        }
-        else
+        else if (!IS_IO_ERROR (error, CANCELLED))
         {
             g_autofree gchar *basename = NULL;
             g_autofree gchar *primary = get_scan_primary (source_info->op);
@@ -2797,8 +2785,6 @@ scan_dir (GFile      *dir,
                                    secondary,
                                    details,
                                    RESPONSE_SKIP | RESPONSE_SKIP_ALL | RESPONSE_RETRY);
-
-            g_error_free (error);
 
             if (response == RESPONSE_CANCEL)
             {
@@ -2846,7 +2832,6 @@ scan_file (GFile      *file,
            CommonJob  *job)
 {
     GFileInfo *info;
-    GError *error;
     GQueue *dirs;
     GFile *dir;
     int response;
@@ -2855,7 +2840,8 @@ scan_file (GFile      *file,
 
     while (TRUE)
     {
-        error = NULL;
+        g_autoptr (GError) error = NULL;
+
         info = g_file_query_info (file,
                                   G_FILE_ATTRIBUTE_STANDARD_TYPE ","
                                   G_FILE_ATTRIBUTE_STANDARD_SIZE,
@@ -2877,14 +2863,9 @@ scan_file (GFile      *file,
         }
         else if (job->skip_all_error)
         {
-            g_error_free (error);
             skip_file (job, file);
         }
-        else if (IS_IO_ERROR (error, CANCELLED))
-        {
-            g_error_free (error);
-        }
-        else
+        else if (!IS_IO_ERROR (error, CANCELLED))
         {
             g_autofree gchar *basename = NULL;
             g_autofree gchar *primary = get_scan_primary (source_info->op);
@@ -2912,8 +2893,6 @@ scan_file (GFile      *file,
                                    secondary,
                                    details,
                                    RESPONSE_SKIP | RESPONSE_SKIP_ALL | RESPONSE_RETRY);
-
-            g_error_free (error);
 
             if (response == RESPONSE_CANCEL)
             {
@@ -2989,7 +2968,6 @@ verify_destination (CommonJob   *job,
                     SourceInfo  *source_info)
 {
     GFileInfo *info, *fsinfo;
-    GError *error;
     const char *fs_type;
     guint64 free_size;
     guint64 size_difference;
@@ -3005,7 +2983,8 @@ verify_destination (CommonJob   *job,
 
     while (TRUE)
     {
-        error = NULL;
+        g_autoptr (GError) error = NULL;
+
         info = g_file_query_info (dest,
                                   G_FILE_ATTRIBUTE_STANDARD_TYPE ","
                                   G_FILE_ATTRIBUTE_ID_FILESYSTEM,
@@ -3017,7 +2996,6 @@ verify_destination (CommonJob   *job,
         {
             if (IS_IO_ERROR (error, CANCELLED))
             {
-                g_error_free (error);
                 return;
             }
 
@@ -3041,8 +3019,6 @@ verify_destination (CommonJob   *job,
                                    secondary,
                                    details,
                                    RESPONSE_RETRY);
-
-            g_error_free (error);
 
             if (response == RESPONSE_CANCEL)
             {
@@ -3191,8 +3167,6 @@ verify_destination (CommonJob   *job,
         const char *body = _("The destination is read-only.");
 
         nautilus_show_ok_dialog (heading, body, GTK_WIDGET (job->parent_window));
-
-        g_error_free (error);
 
         abort_job (job);
     }
@@ -3994,7 +3968,6 @@ create_dest_dir (CommonJob  *job,
                  gboolean    same_fs,
                  char      **dest_fs_type)
 {
-    GError *error;
     GFile *new_dest, *dest_dir;
     int response;
     gboolean handled_invalid_filename;
@@ -4006,8 +3979,8 @@ create_dest_dir (CommonJob  *job,
     {
         /* First create the directory, then copy stuff to it before
          *  copying the attributes, because we need to be sure we can write to it */
+        g_autoptr (GError) error = NULL;
 
-        error = NULL;
         res = g_file_make_directory (*dest, job->cancellable, &error);
 
         if (res)
@@ -4030,7 +4003,6 @@ create_dest_dir (CommonJob  *job,
         {
             if (IS_IO_ERROR (error, CANCELLED))
             {
-                g_error_free (error);
                 return CREATE_DEST_DIR_FAILED;
             }
             else if (IS_IO_ERROR (error, INVALID_FILENAME) &&
@@ -4053,7 +4025,6 @@ create_dest_dir (CommonJob  *job,
                     {
                         g_object_unref (*dest);
                         *dest = new_dest;
-                        g_error_free (error);
                         return CREATE_DEST_DIR_RETRY;
                     }
                     else
@@ -4085,8 +4056,6 @@ create_dest_dir (CommonJob  *job,
                                    secondary,
                                    details,
                                    RESPONSE_SKIP | RESPONSE_RETRY);
-
-            g_error_free (error);
 
             if (response == RESPONSE_CANCEL)
             {
@@ -4141,7 +4110,6 @@ copy_move_directory (CopyMoveJob   *copy_job,
 {
     g_autoptr (GFileInfo) src_info = NULL;
     GFileInfo *info;
-    GError *error;
     GFile *src_file;
     GFileEnumerator *enumerator;
     char *dest_fs_type;
@@ -4212,7 +4180,8 @@ copy_move_directory (CopyMoveJob   *copy_job,
 
     while (TRUE)
     {
-        error = NULL;
+        g_autoptr (GError) error = NULL;
+
         enumerator = g_file_enumerate_children (src,
                                                 G_FILE_ATTRIBUTE_STANDARD_NAME,
                                                 G_FILE_QUERY_INFO_NOFOLLOW_SYMLINKS,
@@ -4220,8 +4189,6 @@ copy_move_directory (CopyMoveJob   *copy_job,
                                                 &error);
         if (enumerator)
         {
-            error = NULL;
-
             while (!job_aborted (job) &&
                    (info = g_file_enumerator_next_file (enumerator, job->cancellable, skip_error ? NULL : &error)) != NULL)
             {
@@ -4243,11 +4210,7 @@ copy_move_directory (CopyMoveJob   *copy_job,
             g_file_enumerator_close (enumerator, job->cancellable, NULL);
             g_object_unref (enumerator);
 
-            if (error && IS_IO_ERROR (error, CANCELLED))
-            {
-                g_error_free (error);
-            }
-            else if (error)
+            if (error != NULL && !IS_IO_ERROR (error, CANCELLED))
             {
                 g_autofree gchar *basename = NULL;
                 const char *primary;
@@ -4282,8 +4245,6 @@ copy_move_directory (CopyMoveJob   *copy_job,
                                        secondary,
                                        details,
                                        RESPONSE_SKIP_FILES);
-
-                g_error_free (error);
 
                 if (response == RESPONSE_CANCEL)
                 {
@@ -4325,11 +4286,7 @@ copy_move_directory (CopyMoveJob   *copy_job,
                 g_hash_table_replace (debuting_files, g_object_ref (*dest), GINT_TO_POINTER (create_dest));
             }
         }
-        else if (IS_IO_ERROR (error, CANCELLED))
-        {
-            g_error_free (error);
-        }
-        else
+        else if (!IS_IO_ERROR (error, CANCELLED))
         {
             g_autofree gchar *basename = NULL;
             const char *primary;
@@ -4364,8 +4321,6 @@ copy_move_directory (CopyMoveJob   *copy_job,
                                    secondary,
                                    details,
                                    RESPONSE_SKIP | RESPONSE_RETRY);
-
-            g_error_free (error);
 
             if (response == RESPONSE_CANCEL)
             {
@@ -4404,6 +4359,8 @@ copy_move_directory (CopyMoveJob   *copy_job,
         !*skipped_file &&
         !local_skipped_file)
     {
+        g_autoptr (GError) error = NULL;
+
         if (!g_file_delete (src, job->cancellable, &error))
         {
             if (job->skip_all_error)
@@ -4426,7 +4383,6 @@ copy_move_directory (CopyMoveJob   *copy_job,
             *skipped_file = !skip;
 
 skip:
-            g_error_free (error);
         }
     }
 
@@ -4638,7 +4594,6 @@ copy_move_file (CopyMoveJob   *copy_job,
                 gboolean       reset_perms)
 {
     GFile *dest, *new_dest;
-    GError *error;
     GFileCopyFlags flags;
     ProgressData pdata;
     gboolean would_recurse;
@@ -4739,7 +4694,8 @@ copy_move_file (CopyMoveJob   *copy_job,
 
     while (TRUE)
     {
-        error = NULL;
+        g_autoptr (GError) error = NULL;
+
         flags = G_FILE_COPY_NOFOLLOW_SYMLINKS;
         if (overwrite)
         {
@@ -4845,7 +4801,6 @@ copy_move_file (CopyMoveJob   *copy_job,
                 g_object_unref (dest);
                 dest = new_dest;
 
-                g_error_free (error);
                 continue;
             }
             else
@@ -4862,8 +4817,6 @@ copy_move_file (CopyMoveJob   *copy_job,
             gboolean destination_is_directory;
             gboolean is_merge;
             FileConflictResponse *response;
-
-            g_error_free (error);
 
             if (unique_names)
             {
@@ -4953,19 +4906,17 @@ copy_move_file (CopyMoveJob   *copy_job,
 
             is_merge = error->code == G_IO_ERROR_WOULD_MERGE;
             would_recurse = error->code == G_IO_ERROR_WOULD_RECURSE;
-            g_error_free (error);
 
             if (overwrite && would_recurse)
             {
-                error = NULL;
+                g_autoptr (GError) delete_error = NULL;
 
                 /* Copying a dir onto file, first remove the file */
-                if (!g_file_delete (dest, job->cancellable, &error) &&
-                    !IS_IO_ERROR (error, NOT_FOUND))
+                if (!g_file_delete (dest, job->cancellable, &delete_error) &&
+                    !IS_IO_ERROR (delete_error, NOT_FOUND))
                 {
                     if (job->skip_all_error)
                     {
-                        g_error_free (error);
                         goto out;
                     }
 
@@ -4987,7 +4938,7 @@ copy_move_file (CopyMoveJob   *copy_job,
                     secondary = g_strdup_printf (_("Could not remove the already existing file "
                                                    "with the same name in %s."),
                                                  filename);
-                    details = error->message;
+                    details = delete_error->message;
 
                     /* setting TRUE on show_all here, as we could have
                      * another error on the same file later.
@@ -4999,14 +4950,7 @@ copy_move_file (CopyMoveJob   *copy_job,
                                       source_info->num_files,
                                       TRUE);
 
-                    g_error_free (error);
-
                     goto out;
-                }
-                if (error)
-                {
-                    g_error_free (error);
-                    error = NULL;
                 }
                 nautilus_file_changes_queue_file_removed (dest);
             }
@@ -5036,16 +4980,11 @@ copy_move_file (CopyMoveJob   *copy_job,
             g_object_unref (dest);
             return;
         }
-        else if (IS_IO_ERROR (error, CANCELLED))
-        {
-            g_error_free (error);
-        }
         /* Other error */
-        else
+        else if (!IS_IO_ERROR (error, CANCELLED))
         {
             if (job->skip_all_error)
             {
-                g_error_free (error);
                 goto out;
             }
 
@@ -5062,7 +5001,6 @@ copy_move_file (CopyMoveJob   *copy_job,
                               details,
                               source_info->num_files,
                               source_info->num_files > transfer_info->num_files);
-            g_error_free (error);
         }
 
         break;
@@ -5408,7 +5346,6 @@ move_file_prepare (CopyMoveJob  *move_job,
 {
     GFile *new_dest;
     g_autoptr (GFile) dest = NULL;
-    GError *error;
     CommonJob *job;
     gboolean overwrite;
     GFileCopyFlags flags;
@@ -5486,13 +5423,14 @@ move_file_prepare (CopyMoveJob  *move_job,
 
     while (TRUE)
     {
+        g_autoptr (GError) error = NULL;
+
         flags = G_FILE_COPY_NOFOLLOW_SYMLINKS | G_FILE_COPY_NO_FALLBACK_FOR_MOVE;
         if (overwrite)
         {
             flags |= G_FILE_COPY_OVERWRITE;
         }
 
-        error = NULL;
         if (g_file_move (src, dest,
                          flags,
                          job->cancellable,
@@ -5519,8 +5457,6 @@ move_file_prepare (CopyMoveJob  *move_job,
         if (IS_IO_ERROR (error, INVALID_FILENAME) &&
             !handled_invalid_filename)
         {
-            g_error_free (error);
-
             handled_invalid_filename = TRUE;
 
             g_assert (*dest_fs_type == NULL);
@@ -5549,8 +5485,6 @@ move_file_prepare (CopyMoveJob  *move_job,
 
             source_is_directory = is_dir (src, job->cancellable);
             destination_is_directory = is_dir (dest, job->cancellable);
-
-            g_error_free (error);
 
             is_merge = FALSE;
             if (source_is_directory && destination_is_directory)
@@ -5625,22 +5559,16 @@ move_file_prepare (CopyMoveJob  *move_job,
                  IS_IO_ERROR (error, WOULD_MERGE) ||
                  IS_IO_ERROR (error, NOT_SUPPORTED))
         {
-            g_error_free (error);
-
             fallback = move_copy_file_callback_new (src,
                                                     overwrite);
             *fallback_files = g_list_prepend (*fallback_files, fallback);
         }
-        else if (IS_IO_ERROR (error, CANCELLED))
+        else if (!IS_IO_ERROR (error, CANCELLED))
         {
-            g_error_free (error);
-        }
-        /* Other error */
-        else
-        {
+            /* Other error */
+
             if (job->skip_all_error)
             {
-                g_error_free (error);
                 return;
             }
 
@@ -5657,8 +5585,6 @@ move_file_prepare (CopyMoveJob  *move_job,
                               details,
                               total,
                               files_left > 1);
-
-            g_error_free (error);
         }
 
         break;
@@ -6022,7 +5948,6 @@ link_file (CopyMoveJob  *job,
     int count;
     char *path;
     gboolean not_local;
-    GError *error;
     CommonJob *common;
     gboolean handled_invalid_filename;
 
@@ -6043,7 +5968,8 @@ link_file (CopyMoveJob  *job,
 
     while (TRUE)
     {
-        error = NULL;
+        g_autoptr (GError) error = NULL;
+
         not_local = FALSE;
 
         path = get_abs_path_for_symlink (src, dest);
@@ -6089,7 +6015,6 @@ link_file (CopyMoveJob  *job,
             {
                 g_object_unref (dest);
                 dest = new_dest;
-                g_error_free (error);
 
                 continue;
             }
@@ -6103,16 +6028,11 @@ link_file (CopyMoveJob  *job,
         {
             g_object_unref (dest);
             dest = get_target_file_for_link (src, dest_dir, *dest_fs_type, count++);
-            g_error_free (error);
             continue;
         }
-        else if (error != NULL && IS_IO_ERROR (error, CANCELLED))
+        else if (error != NULL && !IS_IO_ERROR (error, CANCELLED))
         {
-            g_error_free (error);
-        }
-        /* Other error */
-        else if (error != NULL)
-        {
+            /* Other error */
             if (common->skip_all_error)
             {
                 return;
@@ -6147,11 +6067,6 @@ link_file (CopyMoveJob  *job,
                               details,
                               total,
                               files_left > 1);
-
-            if (error)
-            {
-                g_error_free (error);
-            }
         }
 
         break;
@@ -6705,7 +6620,6 @@ create_task_thread_func (GTask        *task,
     g_autofree gchar *dest_uri = NULL;
     g_autofree char *filename = NULL;
     g_autofree char *dest_fs_type = NULL;
-    GError *error;
     gboolean res;
     gboolean filename_is_utf8;
     void *data;
@@ -6776,7 +6690,8 @@ create_task_thread_func (GTask        *task,
 
     while (TRUE)
     {
-        error = NULL;
+        g_autoptr (GError) error = NULL;
+
         if (job->make_dir)
         {
             res = g_file_make_directory (dest,
@@ -6947,7 +6862,6 @@ create_task_thread_func (GTask        *task,
                         dest = g_file_get_child (job->dest_dir, new_filename);
                     }
 
-                    g_error_free (error);
                     continue;
                 }
             }
@@ -6967,16 +6881,12 @@ create_task_thread_func (GTask        *task,
                 {
                     dest = g_file_get_child (job->dest_dir, filename2);
                 }
-                g_error_free (error);
+
                 continue;
             }
-            else if (IS_IO_ERROR (error, CANCELLED))
+            else if (!IS_IO_ERROR (error, CANCELLED))
             {
-                g_error_free (error);
-            }
-            /* Other error */
-            else
-            {
+                /* Other error */
                 g_autofree gchar *basename = get_basename (dest);
                 g_autofree gchar *parse_name = NULL;
                 g_autofree char *primary = NULL;
@@ -7003,8 +6913,6 @@ create_task_thread_func (GTask        *task,
                                   details,
                                   1,
                                   FALSE);
-
-                g_error_free (error);
             }
         }
 
