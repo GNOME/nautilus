@@ -4108,10 +4108,8 @@ copy_move_directory (CopyMoveJob   *copy_job,
     GFileInfo *info;
     GFile *src_file;
     GFileEnumerator *enumerator;
-    char *dest_fs_type;
     int response;
     gboolean skip_error;
-    gboolean local_skipped_file;
     CommonJob *job;
     GFileCopyFlags flags;
 
@@ -4169,8 +4167,8 @@ copy_move_directory (CopyMoveJob   *copy_job,
         }
     }
 
-    local_skipped_file = FALSE;
-    dest_fs_type = NULL;
+    gboolean local_skipped_file = FALSE;
+    g_autofree char *dest_fs_type = NULL;
 
     skip_error = should_skip_readdir_error (job, src);
 
@@ -4362,7 +4360,7 @@ copy_move_directory (CopyMoveJob   *copy_job,
             if (job->skip_all_error)
             {
                 *skipped_file = TRUE;
-                goto skip;
+                return TRUE;
             }
 
             g_autofree gchar *basename = get_basename (src);
@@ -4377,12 +4375,9 @@ copy_move_directory (CopyMoveJob   *copy_job,
                                               source_info->num_files,
                                               source_info->num_files > transfer_info->num_files);
             *skipped_file = !skip;
-
-skip:
         }
     }
 
-    g_free (dest_fs_type);
     return TRUE;
 }
 
@@ -5290,6 +5285,8 @@ typedef struct
     gboolean overwrite;
 } MoveFileCopyFallback;
 
+G_DEFINE_AUTOPTR_CLEANUP_FUNC (MoveFileCopyFallback, g_free)
+
 static MoveFileCopyFallback *
 move_copy_file_callback_new (GFile    *file,
                              gboolean  overwrite)
@@ -5760,7 +5757,6 @@ nautilus_file_operations_move (GTask        *task,
 {
     CopyMoveJob *job;
     CommonJob *common;
-    GList *fallbacks;
     g_auto (SourceInfo) source_info = SOURCE_INFO_INIT;
     TransferInfo transfer_info;
     g_autofree char *dest_fs_id = NULL;
@@ -5795,7 +5791,7 @@ nautilus_file_operations_move (GTask        *task,
 
     nautilus_progress_info_start (job->common.progress);
 
-    fallbacks = NULL;
+    g_autolist (MoveFileCopyFallback) fallbacks = NULL;
 
     verify_destination (&job->common,
                         job->destination,
@@ -5803,14 +5799,14 @@ nautilus_file_operations_move (GTask        *task,
                         NULL);
     if (job_aborted (common))
     {
-        goto aborted;
+        return;
     }
 
     /* This moves all files that we can do without copy + delete */
     move_files_prepare (job, dest_fs_id, &dest_fs_type, &fallbacks);
     if (job_aborted (common))
     {
-        goto aborted;
+        return;
     }
 
     if (fallbacks == NULL)
@@ -5841,7 +5837,7 @@ nautilus_file_operations_move (GTask        *task,
 
     if (job_aborted (common))
     {
-        goto aborted;
+        return;
     }
 
     verify_destination (&job->common,
@@ -5850,7 +5846,7 @@ nautilus_file_operations_move (GTask        *task,
                         &source_info);
     if (job_aborted (common))
     {
-        goto aborted;
+        return;
     }
 
     memset (&transfer_info, 0, sizeof (transfer_info));
@@ -5858,9 +5854,6 @@ nautilus_file_operations_move (GTask        *task,
                 fallbacks,
                 dest_fs_id, &dest_fs_type,
                 &source_info, &transfer_info);
-
-aborted:
-    g_list_free_full (fallbacks, g_free);
 }
 
 static void
