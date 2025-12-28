@@ -118,7 +118,6 @@ test_thumbnail_test_queue (void)
                                                         NULL, NULL);
         const gchar *mime_type = g_file_info_get_content_type (info);
         guint64 mtime = g_file_info_get_attribute_uint64 (info, G_FILE_ATTRIBUTE_TIME_MODIFIED);
-        GCancellable *cancellable = g_cancellable_new ();
 
         if (!nautilus_can_thumbnail (uri, mime_type, mtime))
         {
@@ -128,6 +127,8 @@ test_thumbnail_test_queue (void)
 
             return;
         }
+
+        GCancellable *cancellable = g_cancellable_new ();
 
         nautilus_create_thumbnail_async (uri, mime_type, mtime,
                                          cancellable, NULL, NULL);
