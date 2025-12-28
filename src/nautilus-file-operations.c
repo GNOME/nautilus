@@ -5385,7 +5385,8 @@ move_file_prepare (CopyMoveJob  *move_job,
                    int           total,
                    int           files_left)
 {
-    GFile *dest, *new_dest;
+    GFile *new_dest;
+    g_autoptr (GFile) dest = NULL;
     GError *error;
     CommonJob *job;
     gboolean overwrite;
@@ -5420,7 +5421,7 @@ move_file_prepare (CopyMoveJob  *move_job,
     {
         if (job->skip_all_error)
         {
-            goto out;
+            return;
         }
 
         const char *primary = move_job->is_move ?
@@ -5435,7 +5436,7 @@ move_file_prepare (CopyMoveJob  *move_job,
                           total,
                           files_left > 1);
 
-        goto out;
+        return;
     }
 
     /* Don't allow moving over the source or one of the parents of the source.
@@ -5444,7 +5445,7 @@ move_file_prepare (CopyMoveJob  *move_job,
     {
         if (job->skip_all_error)
         {
-            goto out;
+            return;
         }
 
         const char *primary = move_job->is_move ?
@@ -5459,7 +5460,7 @@ move_file_prepare (CopyMoveJob  *move_job,
                           total,
                           files_left > 1);
 
-        goto out;
+        return;
     }
 
 
@@ -5479,17 +5480,17 @@ retry:
                      NULL,
                      &error))
     {
-        if (debuting_files)
-        {
-            g_hash_table_replace (debuting_files, dest, GINT_TO_POINTER (TRUE));
-        }
-
         nautilus_file_changes_queue_file_moved (src, dest);
 
         if (job->undo_info != NULL)
         {
             nautilus_file_undo_info_ext_add_origin_target_pair (NAUTILUS_FILE_UNDO_INFO_EXT (job->undo_info),
                                                                 src, dest);
+        }
+
+        if (debuting_files != NULL)
+        {
+            g_hash_table_replace (debuting_files, g_steal_pointer (&dest), GINT_TO_POINTER (TRUE));
         }
 
         return;
@@ -5552,7 +5553,7 @@ retry:
 
         if (job->skip_all_conflict)
         {
-            goto out;
+            return;
         }
 
         response = handle_copy_move_conflict (job, src, dest, dest_dir, destination_is_directory);
@@ -5620,7 +5621,7 @@ retry:
         if (job->skip_all_error)
         {
             g_error_free (error);
-            goto out;
+            return;
         }
 
         g_autofree gchar *basename = get_basename (src);
@@ -5639,9 +5640,6 @@ retry:
 
         g_error_free (error);
     }
-
-out:
-    g_object_unref (dest);
 }
 
 static void
