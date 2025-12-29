@@ -39,24 +39,11 @@ static void finish_rename (NautilusFile *file,
                            gboolean      stop_timer,
                            GError       *error);
 
-static char *
-get_truncated_name_for_file (NautilusFile *file)
-{
-    const char *file_name;
-
-    g_assert (NAUTILUS_IS_FILE (file));
-
-    file_name = nautilus_file_get_display_name (file);
-
-    return g_utf8_truncate_middle (file_name, MAXIMUM_DISPLAYED_FILE_NAME_LENGTH);
-}
-
 void
 nautilus_report_error_loading_directory (NautilusFile *file,
                                          GError       *error,
                                          GtkWidget    *parent)
 {
-    g_autofree char *truncated_name = NULL;
     g_autofree char *message = NULL;
 
     if (error == NULL ||
@@ -72,35 +59,31 @@ nautilus_report_error_loading_directory (NautilusFile *file,
         return;
     }
 
-    truncated_name = get_truncated_name_for_file (file);
-
     if (error->domain == G_IO_ERROR)
     {
+        const char *file_name = nautilus_file_get_display_name (file);
+
         switch (error->code)
         {
             case G_IO_ERROR_PERMISSION_DENIED:
             {
                 message = g_strdup_printf (_("You do not have the permissions necessary to view the contents of “%s”."),
-                                           truncated_name);
+                                           file_name);
             }
             break;
 
             case G_IO_ERROR_NOT_FOUND:
             {
                 message = g_strdup_printf (_("“%s” could not be found. Perhaps it has recently been deleted."),
-                                           truncated_name);
+                                           file_name);
             }
             break;
 
             default:
             {
-                g_autofree char *truncated_error_message = NULL;
-
-                truncated_error_message = g_utf8_truncate_middle (error->message,
-                                                                  MAXIMUM_DISPLAYED_ERROR_MESSAGE_LENGTH);
-
-                message = g_strdup_printf (_("Sorry, could not display all the contents of “%s”: %s"), truncated_name,
-                                           truncated_error_message);
+                message = g_strdup_printf (_("Sorry, could not display all the contents of “%s”: %s"),
+                                           file_name,
+                                           error->message);
             }
             break;
         }
@@ -120,15 +103,12 @@ nautilus_report_error_setting_group (NautilusFile *file,
                                      GError       *error,
                                      GtkWidget    *parent)
 {
-    g_autofree char *truncated_name = NULL;
     g_autofree char *message = NULL;
 
     if (error == NULL)
     {
         return;
     }
-
-    truncated_name = get_truncated_name_for_file (file);
 
     if (error->domain == G_IO_ERROR)
     {
@@ -137,7 +117,7 @@ nautilus_report_error_setting_group (NautilusFile *file,
             case G_IO_ERROR_PERMISSION_DENIED:
             {
                 message = g_strdup_printf (_("You do not have the permissions necessary to change the group of “%s”."),
-                                           truncated_name);
+                                           nautilus_file_get_display_name (file));
             }
             break;
 
@@ -150,17 +130,13 @@ nautilus_report_error_setting_group (NautilusFile *file,
 
     if (message == NULL)
     {
-        g_autofree char *truncated_error_message = NULL;
-
-        truncated_error_message = g_utf8_truncate_middle (error->message,
-                                                          MAXIMUM_DISPLAYED_ERROR_MESSAGE_LENGTH);
-
         /* We should invent decent error messages for every case we actually experience. */
         g_warning ("Hit unhandled case %s:%d in nautilus_report_error_setting_group",
                    g_quark_to_string (error->domain), error->code);
         /* fall through */
-        message = g_strdup_printf (_("Sorry, could not change the group of “%s”: %s"), truncated_name,
-                                   truncated_error_message);
+        message = g_strdup_printf (_("Sorry, could not change the group of “%s”: %s"),
+                                   nautilus_file_get_display_name (file),
+                                   error->message);
     }
 
 
@@ -174,8 +150,6 @@ nautilus_report_error_setting_owner (NautilusFile *file,
                                      GError       *error,
                                      GtkWidget    *parent)
 {
-    g_autofree char *truncated_name = NULL;
-    g_autofree char *truncated_error_message = NULL;
     g_autofree char *message = NULL;
 
     if (error == NULL)
@@ -183,12 +157,9 @@ nautilus_report_error_setting_owner (NautilusFile *file,
         return;
     }
 
-    truncated_name = get_truncated_name_for_file (file);
-
-    truncated_error_message = g_utf8_truncate_middle (error->message,
-                                                      MAXIMUM_DISPLAYED_ERROR_MESSAGE_LENGTH);
     message = g_strdup_printf (_("Sorry, could not change the owner of “%s”: %s"),
-                               truncated_name, truncated_error_message);
+                               nautilus_file_get_display_name (file),
+                               error->message);
 
     nautilus_show_ok_dialog (_("The owner could not be changed."),
                              message,
@@ -200,8 +171,6 @@ nautilus_report_error_setting_permissions (NautilusFile *file,
                                            GError       *error,
                                            GtkWidget    *parent)
 {
-    g_autofree char *truncated_name = NULL;
-    g_autofree char *truncated_error_message = NULL;
     g_autofree char *message = NULL;
 
     if (error == NULL)
@@ -209,12 +178,9 @@ nautilus_report_error_setting_permissions (NautilusFile *file,
         return;
     }
 
-    truncated_name = get_truncated_name_for_file (file);
-
-    truncated_error_message = g_utf8_truncate_middle (error->message,
-                                                      MAXIMUM_DISPLAYED_ERROR_MESSAGE_LENGTH);
     message = g_strdup_printf (_("Sorry, could not change the permissions of “%s”: %s"),
-                               truncated_name, truncated_error_message);
+                               nautilus_file_get_display_name (file),
+                               error->message);
 
     nautilus_show_ok_dialog (_("The permissions could not be changed."),
                              message,
@@ -233,15 +199,9 @@ nautilus_report_error_renaming_file (NautilusFile *file,
                                      GError       *error,
                                      GtkWidget    *parent)
 {
-    g_autofree char *truncated_old_name = NULL;
-    g_autofree char *truncated_new_name = NULL;
     g_autofree char *message = NULL;
 
-    /* Truncate names for display since very long file names with no spaces
-     * in them won't get wrapped, and can create insanely wide dialog boxes.
-     */
-    truncated_old_name = get_truncated_name_for_file (file);
-    truncated_new_name = g_utf8_truncate_middle (new_name, MAXIMUM_DISPLAYED_FILE_NAME_LENGTH);
+    const char *file_name = nautilus_file_get_display_name (file);
 
     if (error->domain == G_IO_ERROR)
     {
@@ -251,7 +211,7 @@ nautilus_report_error_renaming_file (NautilusFile *file,
             {
                 message = g_strdup_printf (_("The name “%s” is already used in this location. "
                                              "Please use a different name."),
-                                           truncated_new_name);
+                                           new_name);
             }
             break;
 
@@ -259,14 +219,14 @@ nautilus_report_error_renaming_file (NautilusFile *file,
             {
                 message = g_strdup_printf (_("There is no “%s” in this location. "
                                              "Perhaps it was just moved or deleted?"),
-                                           truncated_old_name);
+                                           file_name);
             }
             break;
 
             case G_IO_ERROR_PERMISSION_DENIED:
             {
                 message = g_strdup_printf (_("You do not have the permissions necessary to rename “%s”."),
-                                           truncated_old_name);
+                                           file_name);
             }
             break;
 
@@ -279,13 +239,13 @@ nautilus_report_error_renaming_file (NautilusFile *file,
                 {
                     message = g_strdup_printf (_("The name “%s” is not valid because it contains the character “%c”. "
                                                  "Please use a different name."),
-                                               truncated_new_name, *forbidden_char);
+                                               new_name, *forbidden_char);
                 }
                 if (message == NULL)
                 {
                     message = g_strdup_printf (_("The name “%s” is not valid. "
                                                  "Please use a different name."),
-                                               truncated_new_name);
+                                               new_name);
                 }
             }
             break;
@@ -294,7 +254,7 @@ nautilus_report_error_renaming_file (NautilusFile *file,
             {
                 message = g_strdup_printf (_("The name “%s” is too long. "
                                              "Please use a different name."),
-                                           truncated_new_name);
+                                           new_name);
             }
             break;
 
@@ -303,7 +263,7 @@ nautilus_report_error_renaming_file (NautilusFile *file,
                 message = g_strdup_printf (_("Could not rename “%s” because a process is using it."
                                              " If it's open in another application, close it before"
                                              " renaming it."),
-                                           truncated_old_name);
+                                           file_name);
             }
             break;
 
@@ -316,18 +276,13 @@ nautilus_report_error_renaming_file (NautilusFile *file,
 
     if (message == NULL)
     {
-        g_autofree char *truncated_error_message = NULL;
-
-        truncated_error_message = g_utf8_truncate_middle (error->message,
-                                                          MAXIMUM_DISPLAYED_ERROR_MESSAGE_LENGTH);
-
         /* We should invent decent error messages for every case we actually experience. */
         g_warning ("Hit unhandled case %s:%d in nautilus_report_error_renaming_file",
                    g_quark_to_string (error->domain), error->code);
         /* fall through */
         message = g_strdup_printf (_("Sorry, could not rename “%s” to “%s”: %s"),
-                                   truncated_old_name, truncated_new_name,
-                                   truncated_error_message);
+                                   file_name, new_name,
+                                   error->message);
     }
 
     nautilus_show_ok_dialog (_("The item could not be renamed."),
@@ -410,8 +365,6 @@ nautilus_rename_file (NautilusFile *file,
 {
     g_autoptr (GError) error = NULL;
     NautilusRenameData *data;
-    g_autofree char *truncated_old_name = NULL;
-    g_autofree char *truncated_new_name = NULL;
     g_autofree char *wait_message = NULL;
     g_autofree char *uri = NULL;
 
@@ -432,11 +385,9 @@ nautilus_rename_file (NautilusFile *file,
                             data, (GDestroyNotify) nautilus_rename_data_free);
 
     /* Start the timed wait to cancel the rename. */
-    truncated_old_name = get_truncated_name_for_file (file);
-    truncated_new_name = g_utf8_truncate_middle (new_name, MAXIMUM_DISPLAYED_FILE_NAME_LENGTH);
     wait_message = g_strdup_printf (_("Renaming “%s” to “%s”."),
-                                    truncated_old_name,
-                                    truncated_new_name);
+                                    nautilus_file_get_display_name (file),
+                                    new_name);
     eel_timed_wait_start (cancel_rename_callback, file, wait_message,
                           NULL);     /* FIXME bugzilla.gnome.org 42395: Parent this? */
 
