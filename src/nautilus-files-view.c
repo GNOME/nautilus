@@ -4608,7 +4608,7 @@ load_error_callback (NautilusDirectory *directory,
 
     nautilus_report_error_loading_directory (view->directory_as_file,
                                              error,
-                                             nautilus_files_view_get_containing_window (view));
+                                             GTK_WIDGET (view));
 }
 
 gboolean

@@ -54,7 +54,7 @@ get_truncated_name_for_file (NautilusFile *file)
 void
 nautilus_report_error_loading_directory (NautilusFile *file,
                                          GError       *error,
-                                         GtkWindow    *parent_window)
+                                         GtkWidget    *parent)
 {
     g_autofree char *truncated_name = NULL;
     g_autofree char *message = NULL;
@@ -112,13 +112,13 @@ nautilus_report_error_loading_directory (NautilusFile *file,
 
     nautilus_show_ok_dialog (_("This location could not be displayed."),
                              message,
-                             GTK_WIDGET (parent_window));
+                             parent);
 }
 
 void
 nautilus_report_error_setting_group (NautilusFile *file,
                                      GError       *error,
-                                     GtkWindow    *parent_window)
+                                     GtkWidget    *parent)
 {
     g_autofree char *truncated_name = NULL;
     g_autofree char *message = NULL;
@@ -166,13 +166,13 @@ nautilus_report_error_setting_group (NautilusFile *file,
 
     nautilus_show_ok_dialog (_("The group could not be changed."),
                              message,
-                             GTK_WIDGET (parent_window));
+                             parent);
 }
 
 void
 nautilus_report_error_setting_owner (NautilusFile *file,
                                      GError       *error,
-                                     GtkWindow    *parent_window)
+                                     GtkWidget    *parent)
 {
     g_autofree char *truncated_name = NULL;
     g_autofree char *truncated_error_message = NULL;
@@ -192,13 +192,13 @@ nautilus_report_error_setting_owner (NautilusFile *file,
 
     nautilus_show_ok_dialog (_("The owner could not be changed."),
                              message,
-                             GTK_WIDGET (parent_window));
+                             parent);
 }
 
 void
 nautilus_report_error_setting_permissions (NautilusFile *file,
                                            GError       *error,
-                                           GtkWindow    *parent_window)
+                                           GtkWidget    *parent)
 {
     g_autofree char *truncated_name = NULL;
     g_autofree char *truncated_error_message = NULL;
@@ -218,7 +218,7 @@ nautilus_report_error_setting_permissions (NautilusFile *file,
 
     nautilus_show_ok_dialog (_("The permissions could not be changed."),
                              message,
-                             GTK_WIDGET (parent_window));
+                             parent);
 }
 
 typedef struct _NautilusRenameData
@@ -232,7 +232,7 @@ void
 nautilus_report_error_renaming_file (NautilusFile *file,
                                      const char   *new_name,
                                      GError       *error,
-                                     GtkWindow    *parent_window)
+                                     GtkWidget    *parent)
 {
     g_autofree char *truncated_old_name = NULL;
     g_autofree char *truncated_new_name = NULL;
@@ -333,7 +333,7 @@ nautilus_report_error_renaming_file (NautilusFile *file,
 
     nautilus_show_ok_dialog (_("The item could not be renamed."),
                              message,
-                             GTK_WIDGET (parent_window));
+                             parent);
 }
 
 static void
@@ -366,7 +366,7 @@ rename_callback (NautilusFile *file,
             GtkWindow *window = gtk_application_get_active_window (app);
 
             /* If rename failed, notify the user. */
-            nautilus_report_error_renaming_file (file, data->name, error, window);
+            nautilus_report_error_renaming_file (file, data->name, error, GTK_WIDGET (window));
         }
         else
         {

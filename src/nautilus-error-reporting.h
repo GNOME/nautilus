@@ -35,20 +35,20 @@
 
 void nautilus_report_error_loading_directory	 (NautilusFile   *file,
 						  GError         *error,
-						  GtkWindow	 *parent_window);
+						  GtkWidget	 *parent);
 void nautilus_report_error_renaming_file         (NautilusFile *file,
 						  const char *new_name,
 						  GError *error,
-						  GtkWindow *parent_window);
+						  GtkWidget *parent);
 void nautilus_report_error_setting_permissions (NautilusFile   *file,
 						GError         *error,
-						GtkWindow	 *parent_window);
+						GtkWidget    *parent);
 void nautilus_report_error_setting_owner       (NautilusFile   *file,
 						GError         *error,  
-						GtkWindow	 *parent_window);
+						GtkWidget    *parent);
 void nautilus_report_error_setting_group       (NautilusFile   *file,
 						GError         *error,
-						GtkWindow	 *parent_window);
+						GtkWidget    *parent);
 
 /* FIXME bugzilla.gnome.org 42394: Should this file be renamed or should this function be moved? */
 void nautilus_rename_file                      (NautilusFile   *file,

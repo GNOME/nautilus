@@ -1546,20 +1546,19 @@ group_change_callback (NautilusFile *file,
                        GError       *error,
                        GroupChange  *change)
 {
-    NautilusPropertiesWindow *self;
-
     g_assert (NAUTILUS_IS_PROPERTIES_WINDOW (change->window));
     g_assert (NAUTILUS_IS_FILE (change->file));
     g_assert (change->group != NULL);
+
+    NautilusPropertiesWindow *self = NAUTILUS_PROPERTIES_WINDOW (change->window);
 
     if (!change->cancelled)
     {
         /* Report the error if it's an error. */
         eel_timed_wait_stop ((EelCancelCallback) cancel_group_change_callback, change);
-        nautilus_report_error_setting_group (change->file, error, change->window);
+        nautilus_report_error_setting_group (change->file, error, GTK_WIDGET (self));
     }
 
-    self = NAUTILUS_PROPERTIES_WINDOW (change->window);
     if (self->group_change == change)
     {
         self->group_change = NULL;
@@ -1695,17 +1694,17 @@ owner_change_callback (NautilusFile *file,
                        GError       *error,
                        OwnerChange  *change)
 {
-    NautilusPropertiesWindow *self;
-
     g_assert (NAUTILUS_IS_PROPERTIES_WINDOW (change->window));
     g_assert (NAUTILUS_IS_FILE (change->file));
     g_assert (change->owner != NULL);
+
+    NautilusPropertiesWindow *self = NAUTILUS_PROPERTIES_WINDOW (change->window);
 
     if (!change->cancelled)
     {
         /* Report the error if it's an error. */
         eel_timed_wait_stop ((EelCancelCallback) cancel_owner_change_callback, change);
-        nautilus_report_error_setting_owner (file, error, change->window);
+        nautilus_report_error_setting_owner (file, error, GTK_WIDGET (self));
     }
 
     self = NAUTILUS_PROPERTIES_WINDOW (change->window);
@@ -2825,7 +2824,7 @@ permission_change_callback (NautilusFile *file,
     end_long_operation (self);
 
     /* Report the error if it's an error. */
-    nautilus_report_error_setting_permissions (file, error, GTK_WINDOW (self));
+    nautilus_report_error_setting_permissions (file, error, GTK_WIDGET (self));
 }
 
 static void
