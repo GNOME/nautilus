@@ -164,7 +164,7 @@ autorun (GMount *mount)
 }
 
 static void
-autorun_software_dialog_response (GtkDialog *dialog,
+autorun_software_dialog_response (AdwDialog *dialog,
                                   gchar     *response,
                                   GMount    *mount)
 {

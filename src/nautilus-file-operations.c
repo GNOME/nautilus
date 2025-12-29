@@ -2310,7 +2310,7 @@ empty_trash_for_unmount_done (gboolean success,
 }
 
 static void
-empty_trash_prompt_cb (GtkDialog *dialog,
+empty_trash_prompt_cb (AdwDialog *dialog,
                        char      *response,
                        gpointer   user_data)
 {

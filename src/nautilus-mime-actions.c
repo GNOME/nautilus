@@ -621,7 +621,7 @@ typedef struct
 } TrashBrokenSymbolicLinkData;
 
 static void
-trash_symbolic_link_cb (GtkDialog *dialog,
+trash_symbolic_link_cb (AdwDialog *dialog,
                         char      *response,
                         gpointer   user_data)
 {
@@ -1075,7 +1075,7 @@ activate_mount_op_active (GtkMountOperation  *operation,
 }
 
 static void
-on_confirm_multiple_windows_response (GtkDialog          *dialog,
+on_confirm_multiple_windows_response (AdwDialog          *dialog,
                                       gchar              *response,
                                       ActivateParameters *parameters)
 {
@@ -1373,7 +1373,7 @@ search_for_application_mime_type (ActivateParametersInstall *parameters_install,
 }
 
 static void
-application_unhandled_file_install (GtkDialog                 *dialog,
+application_unhandled_file_install (AdwDialog                 *dialog,
                                     gchar                     *response,
                                     ActivateParametersInstall *parameters_install)
 {
