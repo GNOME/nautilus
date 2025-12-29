@@ -47,8 +47,3 @@ void nautilus_report_error_setting_owner       (NautilusFile   *file,
 void nautilus_report_error_setting_group       (NautilusFile   *file,
 						GError         *error,
 						GtkWidget    *parent);
-
-/* FIXME bugzilla.gnome.org 42394: Should this file be renamed or should this function be moved? */
-void nautilus_rename_file                      (NautilusFile   *file,
-						const char     *new_name,
-						GtkWidget      *parent);

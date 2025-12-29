@@ -31,13 +31,6 @@
 #include <string.h>
 #include <glib/gi18n.h>
 #include "nautilus-file.h"
-#include <eel/eel-stock-dialogs.h>
-
-#define NEW_NAME_TAG "Nautilus: new name"
-
-static void finish_rename (NautilusFile *file,
-                           gboolean      stop_timer,
-                           GError       *error);
 
 void
 nautilus_report_error_loading_directory (NautilusFile *file,
@@ -187,12 +180,6 @@ nautilus_report_error_setting_permissions (NautilusFile *file,
                              parent);
 }
 
-typedef struct _NautilusRenameData
-{
-    char *name;
-    GtkWidget *parent;
-} NautilusRenameData;
-
 void
 nautilus_report_error_renaming_file (NautilusFile *file,
                                      const char   *new_name,
@@ -288,113 +275,4 @@ nautilus_report_error_renaming_file (NautilusFile *file,
     nautilus_show_ok_dialog (_("The item could not be renamed."),
                              message,
                              parent);
-}
-
-static void
-nautilus_rename_data_free (NautilusRenameData *data)
-{
-    g_free (data->name);
-    g_free (data);
-}
-
-static void
-rename_callback (NautilusFile *file,
-                 GFile        *result_location,
-                 GError       *error,
-                 gpointer      callback_data)
-{
-    NautilusRenameData *data;
-    gboolean cancelled = FALSE;
-
-    g_assert (NAUTILUS_IS_FILE (file));
-    g_assert (callback_data == NULL);
-
-    data = g_object_get_data (G_OBJECT (file), NEW_NAME_TAG);
-    g_assert (data != NULL);
-
-    if (error)
-    {
-        if (!(error->domain == G_IO_ERROR && error->code == G_IO_ERROR_CANCELLED))
-        {
-            /* If rename failed, notify the user. */
-            nautilus_report_error_renaming_file (file, data->name, error, data->parent);
-        }
-        else
-        {
-            cancelled = TRUE;
-        }
-    }
-
-    finish_rename (file, !cancelled, error);
-}
-
-static void
-cancel_rename_callback (gpointer callback_data)
-{
-    nautilus_file_cancel (NAUTILUS_FILE (callback_data), rename_callback, NULL);
-}
-
-static void
-finish_rename (NautilusFile *file,
-               gboolean      stop_timer,
-               GError       *error)
-{
-    NautilusRenameData *data;
-
-    data = g_object_get_data (G_OBJECT (file), NEW_NAME_TAG);
-    if (data == NULL)
-    {
-        return;
-    }
-
-    /* Cancel both the rename and the timed wait. */
-    nautilus_file_cancel (file, rename_callback, NULL);
-    if (stop_timer)
-    {
-        eel_timed_wait_stop (cancel_rename_callback, file);
-    }
-
-    /* Let go of file name. */
-    g_object_set_data (G_OBJECT (file), NEW_NAME_TAG, NULL);
-}
-
-void
-nautilus_rename_file (NautilusFile *file,
-                      const char   *new_name,
-                      GtkWidget    *parent)
-{
-    g_autoptr (GError) error = NULL;
-    NautilusRenameData *data;
-    g_autofree char *wait_message = NULL;
-    g_autofree char *uri = NULL;
-
-    g_return_if_fail (NAUTILUS_IS_FILE (file));
-    g_return_if_fail (new_name != NULL);
-
-    /* Stop any earlier rename that's already in progress. */
-    error = g_error_new (G_IO_ERROR, G_IO_ERROR_CANCELLED, "Cancelled");
-    finish_rename (file, TRUE, error);
-
-    data = g_new0 (NautilusRenameData, 1);
-    data->name = g_strdup (new_name);
-    data->parent = parent;
-
-    /* Attach the new name to the file. */
-    g_object_set_data_full (G_OBJECT (file),
-                            NEW_NAME_TAG,
-                            data, (GDestroyNotify) nautilus_rename_data_free);
-
-    /* Start the timed wait to cancel the rename. */
-    wait_message = g_strdup_printf (_("Renaming “%s” to “%s”."),
-                                    nautilus_file_get_display_name (file),
-                                    new_name);
-    eel_timed_wait_start (cancel_rename_callback, file, wait_message,
-                          NULL);     /* FIXME bugzilla.gnome.org 42395: Parent this? */
-
-    uri = nautilus_file_get_uri (file);
-    g_debug ("Renaming file %s to %s", uri, new_name);
-
-    /* Start the rename. */
-    nautilus_file_rename (file, new_name,
-                          rename_callback, NULL);
 }
