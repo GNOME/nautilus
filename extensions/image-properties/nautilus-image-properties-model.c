@@ -374,6 +374,9 @@ size_prepared_callback (GdkPixbufLoader *loader,
     self->height = height;
     self->width = width;
     self->got_size = TRUE;
+
+    gdk_pixbuf_loader_set_size (loader, 1, 1);
+
     self->pixbuf_still_loading = FALSE;
 }
 
