@@ -657,6 +657,7 @@ run_passphrase_dialog (gpointer user_data)
 
     g_signal_connect (dialog, "response", G_CALLBACK (on_request_passphrase_cb), data);
     adw_dialog_present (ADW_DIALOG (dialog), GTK_WIDGET (data->parent_window));
+    gtk_widget_grab_focus (GTK_WIDGET (data->passphrase_entry));
 
     return G_SOURCE_REMOVE;
 }
