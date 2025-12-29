@@ -224,8 +224,7 @@ nautilus_report_error_setting_permissions (NautilusFile *file,
 typedef struct _NautilusRenameData
 {
     char *name;
-    NautilusFileOperationCallback callback;
-    gpointer callback_data;
+    GtkWidget *parent;
 } NautilusRenameData;
 
 void
@@ -362,11 +361,8 @@ rename_callback (NautilusFile *file,
     {
         if (!(error->domain == G_IO_ERROR && error->code == G_IO_ERROR_CANCELLED))
         {
-            GtkApplication *app = GTK_APPLICATION (g_application_get_default ());
-            GtkWindow *window = gtk_application_get_active_window (app);
-
             /* If rename failed, notify the user. */
-            nautilus_report_error_renaming_file (file, data->name, error, GTK_WIDGET (window));
+            nautilus_report_error_renaming_file (file, data->name, error, data->parent);
         }
         else
         {
@@ -403,20 +399,14 @@ finish_rename (NautilusFile *file,
         eel_timed_wait_stop (cancel_rename_callback, file);
     }
 
-    if (data->callback != NULL)
-    {
-        data->callback (file, NULL, error, data->callback_data);
-    }
-
     /* Let go of file name. */
     g_object_set_data (G_OBJECT (file), NEW_NAME_TAG, NULL);
 }
 
 void
-nautilus_rename_file (NautilusFile                  *file,
-                      const char                    *new_name,
-                      NautilusFileOperationCallback  callback,
-                      gpointer                       callback_data)
+nautilus_rename_file (NautilusFile *file,
+                      const char   *new_name,
+                      GtkWidget    *parent)
 {
     g_autoptr (GError) error = NULL;
     NautilusRenameData *data;
@@ -434,8 +424,7 @@ nautilus_rename_file (NautilusFile                  *file,
 
     data = g_new0 (NautilusRenameData, 1);
     data->name = g_strdup (new_name);
-    data->callback = callback;
-    data->callback_data = callback_data;
+    data->parent = parent;
 
     /* Attach the new name to the file. */
     g_object_set_data_full (G_OBJECT (file),

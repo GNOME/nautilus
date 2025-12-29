@@ -1957,7 +1957,7 @@ rename_file_popover_callback (NautilusFile *target_file,
     /* Put it on the queue for reveal after the view acknowledges the change */
     g_hash_table_add (self->awaiting_acknowledge, target_file);
 
-    nautilus_rename_file (target_file, new_name, NULL, NULL);
+    nautilus_rename_file (target_file, new_name, GTK_WIDGET (self));
 }
 
 static gboolean
