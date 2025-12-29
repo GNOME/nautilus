@@ -7059,8 +7059,7 @@ clipboard_image_received_callback (GObject      *source_object,
 #define NEW_NAME_TAG "Nautilus: new name"
 
 static void finish_rename (NautilusFile *file,
-                           gboolean      stop_timer,
-                           GError       *error);
+                           gboolean      stop_timer);
 
 typedef struct _NautilusRenameData
 {
@@ -7103,7 +7102,7 @@ rename_callback (NautilusFile *file,
         }
     }
 
-    finish_rename (file, !cancelled, error);
+    finish_rename (file, !cancelled);
 }
 
 static void
@@ -7114,8 +7113,7 @@ cancel_rename_callback (gpointer callback_data)
 
 static void
 finish_rename (NautilusFile *file,
-               gboolean      stop_timer,
-               GError       *error)
+               gboolean      stop_timer)
 {
     NautilusRenameData *data;
 
@@ -7141,7 +7139,6 @@ nautilus_file_operations_rename (NautilusFile *file,
                                  const char   *new_name,
                                  GtkWidget    *parent)
 {
-    g_autoptr (GError) error = NULL;
     NautilusRenameData *data;
     g_autofree char *wait_message = NULL;
     g_autofree char *uri = NULL;
@@ -7150,8 +7147,7 @@ nautilus_file_operations_rename (NautilusFile *file,
     g_return_if_fail (new_name != NULL);
 
     /* Stop any earlier rename that's already in progress. */
-    error = g_error_new (G_IO_ERROR, G_IO_ERROR_CANCELLED, "Cancelled");
-    finish_rename (file, TRUE, error);
+    finish_rename (file, TRUE);
 
     data = g_new0 (NautilusRenameData, 1);
     data->name = g_strdup (new_name);
