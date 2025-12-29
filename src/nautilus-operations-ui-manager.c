@@ -625,9 +625,9 @@ typedef struct
 } PassphraseRequestData;
 
 static void
-on_request_passphrase_cb (AdwMessageDialog *dialog,
-                          gchar            *response,
-                          gpointer          user_data)
+on_request_passphrase_cb (AdwAlertDialog *dialog,
+                          gchar          *response,
+                          gpointer        user_data)
 {
     PassphraseRequestData *data = user_data;
 
@@ -651,13 +651,12 @@ run_passphrase_dialog (gpointer user_data)
     dialog = gtk_builder_get_object (builder, "request_passphrase_dialog");
     data->passphrase_entry = GTK_PASSWORD_ENTRY (gtk_builder_get_object (builder, "entry"));
 
-    adw_message_dialog_format_body (ADW_MESSAGE_DIALOG (dialog),
-                                    _("“%s” is password-protected."),
-                                    data->basename);
+    adw_alert_dialog_format_body (ADW_ALERT_DIALOG (dialog),
+                                  _("“%s” is password-protected."),
+                                  data->basename);
 
     g_signal_connect (dialog, "response", G_CALLBACK (on_request_passphrase_cb), data);
-    gtk_window_set_transient_for (GTK_WINDOW (dialog), data->parent_window);
-    gtk_window_present (GTK_WINDOW (dialog));
+    adw_dialog_present (ADW_DIALOG (dialog), GTK_WIDGET (data->parent_window));
 
     return G_SOURCE_REMOVE;
 }

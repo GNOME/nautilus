@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <interface>
   <requires lib="gtk" version="4.0"/>
-  <object class="AdwMessageDialog" id="request_passphrase_dialog">
+  <object class="AdwAlertDialog" id="request_passphrase_dialog">
     <property name="heading" translatable="yes">Password Required</property>
     <property name="default-response">extract</property>
     <property name="close-response">cancel</property>
