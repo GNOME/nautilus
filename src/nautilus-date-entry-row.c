@@ -50,7 +50,7 @@ date_entry_row_set_date_time (NautilusDateEntryRow *self,
         return;
     }
 
-    gtk_calendar_select_day (self->calendar, self->date_time);
+    gtk_calendar_set_date (self->calendar, self->date_time);
 
     if (update_entry)
     {
