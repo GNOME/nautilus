@@ -544,13 +544,13 @@ action_help (GSimpleAction *action,
              GVariant      *parameter,
              gpointer       user_data)
 {
-    GtkWindow *window;
     AdwDialog *dialog;
     GtkApplication *application = user_data;
     GError *error = NULL;
+    GtkWindow *window = gtk_application_get_active_window (application);
+    g_autoptr (GtkUriLauncher) launcher = gtk_uri_launcher_new ("help:gnome-help/files");
 
-    window = gtk_application_get_active_window (application);
-    gtk_show_uri (window, "help:gnome-help/files", GDK_CURRENT_TIME);
+    gtk_uri_launcher_launch (launcher, window, NULL, NULL, NULL);
 
     if (error)
     {
