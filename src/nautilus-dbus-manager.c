@@ -24,7 +24,6 @@
 #include <config.h>
 
 #include "nautilus-dbus-manager.h"
-#include "nautilus-generated.h"
 #include "nautilus-generated2.h"
 
 #include "nautilus-file-operations.h"
@@ -36,7 +35,6 @@ struct _NautilusDBusManager
 {
     GObject parent;
 
-    NautilusDBusFileOperations *file_operations;
     NautilusDBusFileOperations2 *file_operations2;
 };
 
@@ -46,12 +44,6 @@ static void
 nautilus_dbus_manager_dispose (GObject *object)
 {
     NautilusDBusManager *self = (NautilusDBusManager *) object;
-
-    if (self->file_operations)
-    {
-        g_object_unref (self->file_operations);
-        self->file_operations = NULL;
-    }
 
     if (self->file_operations2)
     {
@@ -90,16 +82,6 @@ handle_redo_internal (NautilusFileOperationsDBusData *dbus_data)
 }
 
 static gboolean
-handle_redo (NautilusDBusFileOperations *object,
-             GDBusMethodInvocation      *invocation)
-{
-    handle_redo_internal (NULL);
-
-    nautilus_dbus_file_operations_complete_redo (object, invocation);
-    return TRUE; /* invocation was handled */
-}
-
-static gboolean
 handle_redo2 (NautilusDBusFileOperations2 *object,
               GDBusMethodInvocation       *invocation,
               GVariant                    *platform_data)
@@ -127,16 +109,6 @@ handle_undo_internal (NautilusFileOperationsDBusData *dbus_data)
                                             G_CALLBACK (undo_redo_on_finished),
                                             handler_id);
     nautilus_file_undo_manager_undo (NULL, dbus_data);
-}
-
-static gboolean
-handle_undo (NautilusDBusFileOperations *object,
-             GDBusMethodInvocation      *invocation)
-{
-    handle_undo_internal (NULL);
-
-    nautilus_dbus_file_operations_complete_undo (object, invocation);
-    return TRUE; /* invocation was handled */
 }
 
 static gboolean
@@ -171,32 +143,6 @@ handle_create_folder_internal (const gchar                    *parent_uri,
     nautilus_file_operations_new_folder (NULL, dbus_data,
                                          parent_uri, new_folder_name,
                                          create_folder_on_finished, NULL);
-}
-
-static gboolean
-handle_create_folder (NautilusDBusFileOperations *object,
-                      GDBusMethodInvocation      *invocation,
-                      const gchar                *uri)
-{
-    g_autoptr (GFile) file = NULL;
-    g_autoptr (GFile) parent_file = NULL;
-    g_autofree gchar *basename = NULL;
-    g_autofree gchar *parent_file_uri = NULL;
-
-    file = g_file_new_for_uri (uri);
-    basename = g_file_get_basename (file);
-    parent_file = g_file_get_parent (file);
-    if (parent_file == NULL || basename == NULL)
-    {
-        g_dbus_method_invocation_return_error (invocation, G_IO_ERROR, G_IO_ERROR_INVALID_ARGUMENT, "Invalid uri: %s", uri);
-        return TRUE;
-    }
-    parent_file_uri = g_file_get_uri (parent_file);
-
-    handle_create_folder_internal (parent_file_uri, basename, NULL);
-
-    nautilus_dbus_file_operations_complete_create_folder (object, invocation);
-    return TRUE; /* invocation was handled */
 }
 
 static gboolean
@@ -246,18 +192,6 @@ handle_copy_uris_internal (const char                     **sources,
 }
 
 static gboolean
-handle_copy_uris (NautilusDBusFileOperations  *object,
-                  GDBusMethodInvocation       *invocation,
-                  const gchar                **sources,
-                  const gchar                 *destination)
-{
-    handle_copy_uris_internal (sources, destination, NULL);
-
-    nautilus_dbus_file_operations_complete_copy_uris (object, invocation);
-    return TRUE; /* invocation was handled */
-}
-
-static gboolean
 handle_copy_uris2 (NautilusDBusFileOperations2  *object,
                    GDBusMethodInvocation        *invocation,
                    const gchar                 **sources,
@@ -296,18 +230,6 @@ handle_move_uris_internal (const char                     **sources,
 }
 
 static gboolean
-handle_move_uris (NautilusDBusFileOperations  *object,
-                  GDBusMethodInvocation       *invocation,
-                  const gchar                **sources,
-                  const gchar                 *destination)
-{
-    handle_move_uris_internal (sources, destination, NULL);
-
-    nautilus_dbus_file_operations_complete_copy_uris (object, invocation);
-    return TRUE; /* invocation was handled */
-}
-
-static gboolean
 handle_move_uris2 (NautilusDBusFileOperations2  *object,
                    GDBusMethodInvocation        *invocation,
                    const gchar                 **sources,
@@ -330,16 +252,6 @@ handle_empty_trash_internal (gboolean                        ask_confirmation,
                              NautilusFileOperationsDBusData *dbus_data)
 {
     nautilus_file_operations_empty_trash (NULL, ask_confirmation, dbus_data);
-}
-
-static gboolean
-handle_empty_trash (NautilusDBusFileOperations *object,
-                    GDBusMethodInvocation      *invocation)
-{
-    handle_empty_trash_internal (TRUE, NULL);
-
-    nautilus_dbus_file_operations_complete_empty_trash (object, invocation);
-    return TRUE; /* invocation was handled */
 }
 
 static gboolean
@@ -383,17 +295,6 @@ handle_trash_uris_internal (const char                     **uris,
     nautilus_file_operations_trash_or_delete_async (source_files, NULL,
                                                     dbus_data,
                                                     trash_on_finished, NULL);
-}
-
-static gboolean
-handle_trash_files (NautilusDBusFileOperations  *object,
-                    GDBusMethodInvocation       *invocation,
-                    const gchar                **sources)
-{
-    handle_trash_uris_internal (sources, NULL);
-
-    nautilus_dbus_file_operations_complete_trash_files (object, invocation);
-    return TRUE; /* invocation was handled */
 }
 
 static gboolean
@@ -477,19 +378,6 @@ handle_rename_uri_internal (const gchar                    *uri,
 }
 
 static gboolean
-handle_rename_file (NautilusDBusFileOperations *object,
-                    GDBusMethodInvocation      *invocation,
-                    const gchar                *uri,
-                    const gchar                *new_name)
-{
-    handle_rename_uri_internal (uri, new_name, NULL);
-
-    nautilus_dbus_file_operations_complete_rename_file (object, invocation);
-
-    return TRUE; /* invocation was handled */
-}
-
-static gboolean
 handle_rename_uri2 (NautilusDBusFileOperations2 *object,
                     GDBusMethodInvocation       *invocation,
                     const gchar                 *uri,
@@ -513,8 +401,6 @@ undo_manager_changed (NautilusDBusManager *self)
     NautilusFileUndoManagerState undo_state;
 
     undo_state = nautilus_file_undo_manager_get_state ();
-    nautilus_dbus_file_operations_set_undo_status (self->file_operations,
-                                                   undo_state);
     nautilus_dbus_file_operations2_set_undo_status (self->file_operations2,
                                                     undo_state);
 }
@@ -522,39 +408,19 @@ undo_manager_changed (NautilusDBusManager *self)
 static void
 nautilus_dbus_manager_init (NautilusDBusManager *self)
 {
-    G_GNUC_BEGIN_IGNORE_DEPRECATIONS
-    self->file_operations = nautilus_dbus_file_operations_skeleton_new ();
-    G_GNUC_END_IGNORE_DEPRECATIONS
-
     self->file_operations2 = nautilus_dbus_file_operations2_skeleton_new ();
 
-    g_signal_connect (self->file_operations,
-                      "handle-copy-uris",
-                      G_CALLBACK (handle_copy_uris),
-                      self);
     g_signal_connect (self->file_operations2,
                       "handle-copy-uris",
                       G_CALLBACK (handle_copy_uris2),
-                      self);
-    g_signal_connect (self->file_operations,
-                      "handle-move-uris",
-                      G_CALLBACK (handle_move_uris),
                       self);
     g_signal_connect (self->file_operations2,
                       "handle-move-uris",
                       G_CALLBACK (handle_move_uris2),
                       self);
-    g_signal_connect (self->file_operations,
-                      "handle-empty-trash",
-                      G_CALLBACK (handle_empty_trash),
-                      self);
     g_signal_connect (self->file_operations2,
                       "handle-empty-trash",
                       G_CALLBACK (handle_empty_trash2),
-                      self);
-    g_signal_connect (self->file_operations,
-                      "handle-trash-files",
-                      G_CALLBACK (handle_trash_files),
                       self);
     g_signal_connect (self->file_operations2,
                       "handle-trash-uris",
@@ -564,33 +430,17 @@ nautilus_dbus_manager_init (NautilusDBusManager *self)
                       "handle-delete-uris",
                       G_CALLBACK (handle_delete_uris2),
                       self);
-    g_signal_connect (self->file_operations,
-                      "handle-create-folder",
-                      G_CALLBACK (handle_create_folder),
-                      self);
     g_signal_connect (self->file_operations2,
                       "handle-create-folder",
                       G_CALLBACK (handle_create_folder2),
-                      self);
-    g_signal_connect (self->file_operations,
-                      "handle-rename-file",
-                      G_CALLBACK (handle_rename_file),
                       self);
     g_signal_connect (self->file_operations2,
                       "handle-rename-uri",
                       G_CALLBACK (handle_rename_uri2),
                       self);
-    g_signal_connect (self->file_operations,
-                      "handle-undo",
-                      G_CALLBACK (handle_undo),
-                      self);
     g_signal_connect (self->file_operations2,
                       "handle-undo",
                       G_CALLBACK (handle_undo2),
-                      self);
-    g_signal_connect (self->file_operations,
-                      "handle-redo",
-                      G_CALLBACK (handle_redo),
                       self);
     g_signal_connect (self->file_operations2,
                       "handle-redo",
@@ -617,21 +467,12 @@ nautilus_dbus_manager_register (NautilusDBusManager  *self,
                                 GDBusConnection      *connection,
                                 GError              **error)
 {
-    gboolean success1;
-    gboolean success2;
-    gboolean success;
+    gboolean success = TRUE;
 
-    success1 = g_dbus_interface_skeleton_export (G_DBUS_INTERFACE_SKELETON (self->file_operations),
-                                                 connection,
-                                                 "/org/gnome/Nautilus" PROFILE,
-                                                 error);
-
-    success2 = g_dbus_interface_skeleton_export (G_DBUS_INTERFACE_SKELETON (self->file_operations2),
+    success &= g_dbus_interface_skeleton_export (G_DBUS_INTERFACE_SKELETON (self->file_operations2),
                                                  connection,
                                                  "/org/gnome/Nautilus" PROFILE "/FileOperations2",
                                                  error);
-
-    success = success1 && success2;
 
     if (success)
     {
@@ -650,7 +491,6 @@ nautilus_dbus_manager_register (NautilusDBusManager  *self,
 void
 nautilus_dbus_manager_unregister (NautilusDBusManager *self)
 {
-    g_dbus_interface_skeleton_unexport (G_DBUS_INTERFACE_SKELETON (self->file_operations));
     g_dbus_interface_skeleton_unexport (G_DBUS_INTERFACE_SKELETON (self->file_operations2));
 
     g_signal_handlers_disconnect_by_data (nautilus_file_undo_manager_get (), self);

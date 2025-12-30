@@ -34,14 +34,6 @@ libnautilus_sources = [
     namespace: 'NautilusFreedesktop'
   ),
   gnome.gdbus_codegen(
-    'nautilus-generated',
-    join_paths(
-      meson.project_source_root(), 'data', 'dbus-interfaces.xml'
-    ),
-    interface_prefix: 'org.gnome.Nautilus',
-    namespace: 'NautilusDBus'
-  ),
-  gnome.gdbus_codegen(
     'nautilus-generated2',
     join_paths(
       meson.project_source_root(), 'data', 'dbus-interfaces2.xml'
