@@ -4184,7 +4184,7 @@ nautilus_file_get_boolean_metadata (NautilusFile *file,
 {
     g_return_val_if_fail (key != NULL, default_metadata);
     g_return_val_if_fail (key[0] != '\0', default_metadata);
-    g_return_val_if_fail (file == NULL || NAUTILUS_IS_FILE (file), default_metadata);
+    g_return_val_if_fail (NAUTILUS_IS_FILE (file), default_metadata);
 
     if (file == NULL)
     {
