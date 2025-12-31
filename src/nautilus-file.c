@@ -4087,7 +4087,7 @@ nautilus_file_get_metadata (NautilusFile *file,
 {
     g_return_val_if_fail (key != NULL, default_metadata);
     g_return_val_if_fail (key[0] != '\0', default_metadata);
-    g_return_val_if_fail (file == NULL || NAUTILUS_IS_FILE (file), default_metadata);
+    g_return_val_if_fail (NAUTILUS_IS_FILE (file), default_metadata);
 
     if (file == NULL ||
         file->details->metadata == NULL)
@@ -4431,11 +4431,6 @@ get_custom_icon (NautilusFile *file)
     GFile *icon_file;
     GIcon *icon;
 
-    if (file == NULL)
-    {
-        return NULL;
-    }
-
     icon = NULL;
 
     /* Metadata takes precedence; first we look at the custom
@@ -4580,6 +4575,8 @@ get_speed_tradeoff_preference_for_file (NautilusFile               *file,
 gboolean
 nautilus_file_should_show_thumbnail (NautilusFile *file)
 {
+    g_return_val_if_fail (NAUTILUS_IS_FILE (file), FALSE);
+
     if (has_custom_icon (file))
     {
         return FALSE;
@@ -4740,10 +4737,7 @@ GIcon *
 nautilus_file_get_gicon (NautilusFile          *file,
                          NautilusFileIconFlags  flags)
 {
-    if (file == NULL)
-    {
-        return NULL;
-    }
+    g_return_val_if_fail (NAUTILUS_IS_FILE (file), NULL);
 
     GIcon *icon = get_custom_icon (file);
 
@@ -4922,7 +4916,7 @@ nautilus_file_get_icon (NautilusFile          *file,
                         int                    scale,
                         NautilusFileIconFlags  flags)
 {
-    g_return_val_if_fail (file != NULL, NULL);
+    g_return_val_if_fail (NAUTILUS_IS_FILE (file), NULL);
 
     g_autoptr (GIcon) custom_gicon = get_custom_icon (file);
 
