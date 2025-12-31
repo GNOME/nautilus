@@ -4080,6 +4080,22 @@ nautilus_file_list_are_all_folders (const GList *files)
     return TRUE;
 }
 
+static const char *
+nautilus_file_get_metadata_impl (NautilusFile *file,
+                                 const char   *key,
+                                 const char   *default_metadata)
+{
+    if (file->details->metadata == NULL)
+    {
+        return default_metadata;
+    }
+
+    guint id = nautilus_metadata_get_id (key);
+    const char *value = g_hash_table_lookup (file->details->metadata, GUINT_TO_POINTER (id));
+
+    return (value != NULL) ? value : default_metadata;
+}
+
 const char *
 nautilus_file_get_metadata (NautilusFile *file,
                             const char   *key,
@@ -4089,16 +4105,7 @@ nautilus_file_get_metadata (NautilusFile *file,
     g_return_val_if_fail (key[0] != '\0', default_metadata);
     g_return_val_if_fail (NAUTILUS_IS_FILE (file), default_metadata);
 
-    if (file == NULL ||
-        file->details->metadata == NULL)
-    {
-        return default_metadata;
-    }
-
-    guint id = nautilus_metadata_get_id (key);
-    const char *value = g_hash_table_lookup (file->details->metadata, GUINT_TO_POINTER (id));
-
-    return (value != NULL) ? value : default_metadata;
+    return nautilus_file_get_metadata_impl (file, key, default_metadata);
 }
 
 /**
@@ -4191,7 +4198,7 @@ nautilus_file_get_boolean_metadata (NautilusFile *file,
         return default_metadata;
     }
 
-    const char *value = nautilus_file_get_metadata (file, key, default_metadata ? "true" : "false");
+    const char *value = nautilus_file_get_metadata_impl (file, key, default_metadata ? "true" : "false");
 
     g_assert (value != NULL);
 
@@ -4349,7 +4356,7 @@ is_uri_relative (const char *uri)
 static char *
 get_custom_icon_metadata_uri (NautilusFile *file)
 {
-    const char *uri = nautilus_file_get_metadata (file, NAUTILUS_METADATA_KEY_CUSTOM_ICON, NULL);
+    const char *uri = nautilus_file_get_metadata_impl (file, NAUTILUS_METADATA_KEY_CUSTOM_ICON, NULL);
 
     if (uri != NULL &&
         nautilus_file_is_directory (file) &&
@@ -4367,7 +4374,7 @@ get_custom_icon_metadata_uri (NautilusFile *file)
 static const char *
 get_custom_icon_metadata_name (NautilusFile *file)
 {
-    return nautilus_file_get_metadata (file, NAUTILUS_METADATA_KEY_CUSTOM_ICON_NAME, NULL);
+    return nautilus_file_get_metadata_impl (file, NAUTILUS_METADATA_KEY_CUSTOM_ICON_NAME, NULL);
 }
 
 static GIcon *
