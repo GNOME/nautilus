@@ -292,7 +292,7 @@ loadable_icon_key_free (LoadableIconKey *key)
 static guint
 themed_icon_key_hash (ThemedIconKey *key)
 {
-    return g_str_hash (key->icon_name) ^ int_hash (key->size);
+    return g_str_hash (key->icon_name) ^ int_hash (key->scale) ^ int_hash (key->size);
 }
 
 static gboolean
