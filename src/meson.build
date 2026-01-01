@@ -330,15 +330,9 @@ nautilus = executable(
   install: true
 )
 
-nautilus_autorun_software_sources = [
-  'nautilus-autorun-software.c',
-  'nautilus-icon-info.c',
-  'nautilus-icon-info.h'
-]
-
 executable(
   'nautilus-autorun-software',
-  nautilus_autorun_software_sources,
+  'nautilus-autorun-software.c',
   include_directories: nautilus_include_dirs,
   dependencies: [
     config_h,
