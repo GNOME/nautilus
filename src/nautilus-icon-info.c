@@ -356,7 +356,6 @@ nautilus_icon_info_lookup (GIcon *icon,
                            int    scale)
 {
     NautilusIconInfo *icon_info;
-    g_autoptr (GtkIconPaintable) icon_paintable = NULL;
 
     if (G_IS_LOADABLE_ICON (icon))
     {
@@ -418,17 +417,17 @@ nautilus_icon_info_lookup (GIcon *icon,
 
         return g_object_ref (icon_info);
     }
-
-    GtkIconTheme *theme = gtk_icon_theme_get_for_display (gdk_display_get_default ());
-    if (!gtk_icon_theme_has_gicon (theme, icon))
+    else if (G_IS_THEMED_ICON (icon))
     {
-        return nautilus_icon_info_new_for_paintable (NULL);
-    }
+        GtkIconTheme *theme = gtk_icon_theme_get_for_display (gdk_display_get_default ());
 
-    icon_paintable = lookup_themed_icon (theme, icon, size, scale);
+        if (!gtk_icon_theme_has_gicon (theme, icon))
+        {
+            return nautilus_icon_info_new_for_paintable (NULL);
+        }
 
-    if (G_IS_THEMED_ICON (icon))
-    {
+        g_autoptr (GtkIconPaintable) icon_paintable = lookup_themed_icon (theme, icon, size, scale);
+
         ThemedIconKey lookup_key;
         ThemedIconKey *key;
         const char *icon_name;
@@ -461,7 +460,8 @@ nautilus_icon_info_lookup (GIcon *icon,
     }
     else
     {
-        return nautilus_icon_info_new_for_icon_paintable (icon_paintable);
+        /* Only GLoadableIcon and GThemedIcon are known and supported */
+        g_assert_not_reached ();
     }
 }
 
