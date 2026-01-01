@@ -192,9 +192,7 @@ reap_old_icon (gpointer key,
 static gboolean
 reap_cache (gpointer data)
 {
-    gboolean reapable_icons_left;
-
-    reapable_icons_left = TRUE;
+    gboolean reapable_icons_left = FALSE;
 
     time_now = g_get_monotonic_time ();
 
