@@ -660,19 +660,14 @@ nautilus_ui_draw_icon_dashed_border (GtkSnapshot     *snapshot,
 
 void
 nautilus_ui_draw_symbolic_icon (GtkSnapshot           *snapshot,
-                                const gchar           *icon_name,
+                                const gchar           *resource,
                                 const graphene_rect_t *rect,
                                 GdkRGBA                color,
                                 int                    scale)
 {
-    g_autoptr (GIcon) gicon = g_themed_icon_new (icon_name);
-    g_autoptr (NautilusIconInfo) icon = nautilus_icon_info_lookup (gicon,
-                                                                   2.0 * rect->size.width,
-                                                                   scale);
-    g_autoptr (GdkPaintable) paintable = nautilus_icon_info_get_paintable (icon);
+    g_autoptr (GtkSymbolicPaintable) paintable =
+        GTK_SYMBOLIC_PAINTABLE (gtk_svg_new_from_resource (resource));
     const GdkRGBA colors[] = {color};
-
-    g_assert (GTK_IS_SYMBOLIC_PAINTABLE (paintable));
 
     gtk_snapshot_save (snapshot);
     gtk_snapshot_translate (snapshot, &rect->origin);
