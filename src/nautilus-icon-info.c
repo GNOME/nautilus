@@ -19,6 +19,9 @@
 
 #include "nautilus-enums.h"
 
+#include <glycin.h>
+#include <glycin-gtk4.h>
+
 struct _NautilusIconInfo
 {
     GObject parent;
@@ -365,11 +368,9 @@ nautilus_icon_info_lookup (GIcon *icon,
 
     if (G_IS_LOADABLE_ICON (icon))
     {
-        g_autoptr (GdkPixbuf) pixbuf = NULL;
         g_autoptr (GdkPaintable) paintable = NULL;
         LoadableIconKey lookup_key;
         LoadableIconKey *key;
-        GInputStream *stream;
 
         if (loadable_icon_cache == NULL)
         {
@@ -390,30 +391,31 @@ nautilus_icon_info_lookup (GIcon *icon,
             return g_object_ref (icon_info);
         }
 
-        stream = g_loadable_icon_load (G_LOADABLE_ICON (icon),
-                                       size * scale,
-                                       NULL, NULL, NULL);
+        g_autoptr (GInputStream) stream = g_loadable_icon_load (G_LOADABLE_ICON (icon),
+                                                                size * scale,
+                                                                NULL, NULL, NULL);
         if (stream)
         {
-            pixbuf = gdk_pixbuf_new_from_stream_at_scale (stream,
-                                                          size * scale, size * scale,
-                                                          TRUE,
-                                                          NULL, NULL);
-            g_input_stream_close (stream, NULL, NULL);
-            g_object_unref (stream);
-        }
+            g_autoptr (GlyLoader) loader = gly_loader_new_for_stream (stream);
+            g_autoptr (GlyImage) image = gly_loader_load (loader, NULL);
 
-        if (pixbuf != NULL)
-        {
-            double width = gdk_pixbuf_get_width (pixbuf) / scale;
-            double height = gdk_pixbuf_get_height (pixbuf) / scale;
-            g_autoptr (GdkTexture) texture = gdk_texture_new_for_pixbuf (pixbuf);
-            g_autoptr (GtkSnapshot) snapshot = gtk_snapshot_new ();
+            if (image != NULL)
+            {
+                g_autoptr (GlyFrame) frame = gly_image_next_frame (image, NULL);
 
-            gdk_paintable_snapshot (GDK_PAINTABLE (texture),
-                                    GDK_SNAPSHOT (snapshot),
-                                    width, height);
-            paintable = gtk_snapshot_to_paintable (snapshot, NULL);
+                if (frame != NULL)
+                {
+                    double width = gly_frame_get_width (frame) / scale;
+                    double height = gly_frame_get_height (frame) / scale;
+                    g_autoptr (GdkTexture) texture = gly_gtk_frame_get_texture (frame);
+                    g_autoptr (GtkSnapshot) snapshot = gtk_snapshot_new ();
+
+                    gdk_paintable_snapshot (GDK_PAINTABLE (texture),
+                                            GDK_SNAPSHOT (snapshot),
+                                            width, height);
+                    paintable = gtk_snapshot_to_paintable (snapshot, NULL);
+                }
+            }
         }
 
         icon_info = nautilus_icon_info_new_for_paintable (paintable);
