@@ -57,11 +57,10 @@ void        nautilus_ui_frame_video                 (GtkSnapshot       *snapshot
 void        nautilus_ui_draw_icon_dashed_border     (GtkSnapshot     *snapshot,
                                                      graphene_rect_t *rect,
                                                      GdkRGBA          color);
-void        nautilus_ui_draw_symbolic_icon          (GtkSnapshot           *snapshot,
-                                                     const gchar           *icon_name,
+void        nautilus_ui_draw_svg                    (GtkSnapshot           *snapshot,
+                                                     GtkSvg                *svg,
                                                      const graphene_rect_t *rect,
-                                                     GdkRGBA                color,
-                                                     int                    scale);
+                                                     GdkRGBA                color);
 GdkPaintable *
 nautilus_ui_draw_stacked_icons (GQueue    *icons,
                                 uint       size,
