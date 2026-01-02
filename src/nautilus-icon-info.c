@@ -247,9 +247,15 @@ nautilus_icon_info_clear_caches (void)
 }
 
 static guint
+int_hash (int v)
+{
+    return g_direct_hash (GINT_TO_POINTER (v));
+}
+
+static guint
 loadable_icon_key_hash (LoadableIconKey *key)
 {
-    return g_icon_hash (key->icon) ^ key->scale ^ key->size;
+    return g_icon_hash (key->icon) ^ int_hash (key->scale) ^ int_hash (key->size);
 }
 
 static gboolean
@@ -286,7 +292,7 @@ loadable_icon_key_free (LoadableIconKey *key)
 static guint
 themed_icon_key_hash (ThemedIconKey *key)
 {
-    return g_str_hash (key->icon_name) ^ key->size;
+    return g_str_hash (key->icon_name) ^ int_hash (key->size);
 }
 
 static gboolean
