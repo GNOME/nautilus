@@ -4937,12 +4937,6 @@ nautilus_file_get_icon (NautilusFile          *file,
     {
         g_autoptr (GIcon) gicon = nautilus_file_get_gicon (file, flags);
         icon = nautilus_icon_info_lookup (gicon, size, scale);
-
-        if (nautilus_icon_info_is_fallback (icon))
-        {
-            g_object_unref (icon);
-            icon = nautilus_icon_info_lookup (nautilus_icon_info_get_default_file_icon (), size, scale);
-        }
     }
 
     return icon;
