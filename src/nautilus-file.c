@@ -2900,6 +2900,8 @@ update_info_internal (NautilusFile *file,
 
     if (changed)
     {
+        file->details->thumbnailing_failed = FALSE;
+
         add_to_link_hash_table (file);
 
         update_links_if_target (file);
