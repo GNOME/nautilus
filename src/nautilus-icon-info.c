@@ -512,25 +512,6 @@ nautilus_icon_info_get_paintable (NautilusIconInfo *icon)
     return res;
 }
 
-GdkTexture *
-nautilus_icon_info_get_texture (NautilusIconInfo *icon)
-{
-    g_autoptr (GdkPaintable) paintable = NULL;
-    GdkTexture *res;
-
-    paintable = nautilus_icon_info_get_paintable_nodefault (icon);
-    if (GDK_IS_TEXTURE (paintable))
-    {
-        res = GDK_TEXTURE (g_steal_pointer (&paintable));
-    }
-    else
-    {
-        res = gdk_texture_new_from_resource ("/org/gnome/nautilus/image/text-x-preview.png");
-    }
-
-    return res;
-}
-
 const char *
 nautilus_icon_info_get_used_name (NautilusIconInfo *icon)
 {

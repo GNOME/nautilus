@@ -21,7 +21,6 @@ NautilusIconInfo *    nautilus_icon_info_lookup                       (GIcon    
 								       int                scale);
 gboolean              nautilus_icon_info_is_fallback                  (NautilusIconInfo  *icon);
 GdkPaintable *        nautilus_icon_info_get_paintable                (NautilusIconInfo  *icon);
-GdkTexture *          nautilus_icon_info_get_texture                  (NautilusIconInfo  *icon);
 const char *          nautilus_icon_info_get_used_name                (NautilusIconInfo  *icon);
 
 void                  nautilus_icon_info_clear_caches                 (void);

@@ -549,12 +549,6 @@ result_list_attributes_ready_cb (GList    *file_list,
                                  gpointer  user_data)
 {
     ResultMetasData *data = user_data;
-
-    /* Get scale of monitor 0, which is assumed to be the one that shows the shell */
-    g_autoptr (GdkMonitor) shell_monitor =
-        g_list_model_get_item (gdk_display_get_monitors (gdk_display_get_default ()), 0);
-    int icon_scale = gdk_monitor_get_scale_factor (shell_monitor);
-
     NautilusBookmarkList *bookmarks = nautilus_application_get_bookmarks (NAUTILUS_APPLICATION (g_application_get_default ()));
 
     for (GList *l = file_list; l != NULL; l = l->next)
@@ -592,16 +586,10 @@ result_list_attributes_ready_cb (GList    *file_list,
         {
             gicon = nautilus_bookmark_get_icon (bookmark);
         }
-        else
-        {
-            gicon = nautilus_file_get_gicon (file, 0);
-        }
 
         if (gicon == NULL)
         {
-            gicon = G_ICON (nautilus_file_get_icon_texture (file, 128,
-                                                            icon_scale,
-                                                            NAUTILUS_FILE_ICON_FLAGS_USE_THUMBNAILS));
+            gicon = nautilus_file_get_gicon (file, 0);
         }
 
         g_autoptr (GVariant) icon_variant = g_icon_serialize (gicon);
