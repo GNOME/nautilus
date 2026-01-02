@@ -420,7 +420,7 @@ snapshot (GtkWidget   *widget,
         icon_color = color;
         icon_color.alpha *= dim_opacity;
         nautilus_ui_draw_symbolic_icon (snapshot,
-                                        "cut-large-symbolic",
+                                        "/org/gnome/nautilus/icons/scalable/actions/cut-large-symbolic.svg",
                                         &icon_bounds,
                                         icon_color,
                                         gtk_widget_get_scale_factor (widget));

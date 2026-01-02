@@ -412,7 +412,7 @@ snapshot (GtkWidget   *widget,
             guint icon_size;
             GdkRGBA color, dashed_border_color, icon_color;
             gboolean use_small_icon;
-            gchar *icon_name;
+            gchar *resource;
             const double border_opacity = is_high_contrast ? 0.5 : 0.15;
             const double dim_opacity = is_high_contrast ? 0.9 : 0.55;
             graphene_rect_t icon_bounds = dash_bounds;
@@ -420,7 +420,9 @@ snapshot (GtkWidget   *widget,
             g_object_get (self, "icon-size", &icon_size, NULL);
             gtk_widget_get_color (widget, &color);
             use_small_icon = icon_size <= NAUTILUS_LIST_ICON_SIZE_MEDIUM;
-            icon_name = use_small_icon ? "cut-symbolic" : "cut-large-symbolic";
+            resource = use_small_icon
+                        ? "/org/gnome/nautilus/icons/scalable/actions/cut-symbolic.svg"
+                        : "/org/gnome/nautilus/icons/scalable/actions/cut-large-symbolic.svg";
 
             if (icon_size >= NAUTILUS_THUMBNAIL_MINIMUM_ICON_SIZE)
             {
@@ -437,7 +439,7 @@ snapshot (GtkWidget   *widget,
             icon_color = color;
             icon_color.alpha *= dim_opacity;
             nautilus_ui_draw_symbolic_icon (snapshot,
-                                            icon_name,
+                                            resource,
                                             &icon_bounds,
                                             icon_color,
                                             gtk_widget_get_scale_factor (widget));

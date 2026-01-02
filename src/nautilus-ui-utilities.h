@@ -61,7 +61,7 @@ void        nautilus_ui_draw_icon_dashed_border     (GtkSnapshot     *snapshot,
                                                      graphene_rect_t *rect,
                                                      GdkRGBA          color);
 void        nautilus_ui_draw_symbolic_icon          (GtkSnapshot           *snapshot,
-                                                     const gchar           *icon_name,
+                                                     const gchar           *resource,
                                                      const graphene_rect_t *rect,
                                                      GdkRGBA                color,
                                                      int                    scale);
