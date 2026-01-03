@@ -330,11 +330,17 @@ themed_icon_key_free (ThemedIconKey *key)
 }
 
 static GtkIconPaintable *
-lookup_themed_icon (GtkIconTheme *theme,
-                    GIcon        *icon,
-                    int           size,
-                    float         scale)
+lookup_themed_icon (GIcon *icon,
+                    int    size,
+                    float  scale)
 {
+    GtkIconTheme *theme = gtk_icon_theme_get_for_display (gdk_display_get_default ());
+
+    if (!gtk_icon_theme_has_gicon (theme, icon))
+    {
+        return NULL;
+    }
+
     const gchar *generic_app_icon_name = "application-x-generic";
     g_autoptr (GtkIconPaintable) icon_paintable = gtk_icon_theme_lookup_by_gicon (theme, icon, size, scale,
                                                                                   GTK_TEXT_DIR_NONE, 0);
@@ -427,14 +433,12 @@ nautilus_icon_info_lookup (GIcon *icon,
     }
     else if (G_IS_THEMED_ICON (icon))
     {
-        GtkIconTheme *theme = gtk_icon_theme_get_for_display (gdk_display_get_default ());
+        g_autoptr (GtkIconPaintable) icon_paintable = lookup_themed_icon (icon, size, scale);
 
-        if (!gtk_icon_theme_has_gicon (theme, icon))
+        if (icon_paintable == NULL)
         {
             return nautilus_icon_info_new_for_paintable (NULL);
         }
-
-        g_autoptr (GtkIconPaintable) icon_paintable = lookup_themed_icon (theme, icon, size, scale);
 
         ThemedIconKey lookup_key;
         ThemedIconKey *key;
