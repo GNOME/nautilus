@@ -286,6 +286,8 @@ nautilus_deps = [
   config_h,
   eel_2,
   gio_unix,
+  glycin,
+  glycin_gtk4,
   gmodule,
   gnome_autoar,
   gnome_desktop,

@@ -22,6 +22,8 @@ variables:
         mutter
         glibc-devel
         glib2-devel
+        glycin-devel
+        glycin-gtk4-devel
         gtk4-devel
         libadwaita-devel
         libselinux-devel
@@ -76,7 +78,7 @@ workflow:
 .nautilus.fedora:
     variables:
         FDO_DISTRIBUTION_VERSION: rawhide
-        FDO_DISTRIBUTION_TAG: '2025-10-02'
+        FDO_DISTRIBUTION_TAG: '2026-01-01'
         FDO_DISTRIBUTION_COMPRESSION_FORMAT: zstd:chunked
     needs:
         - job: "update image"
