@@ -498,41 +498,28 @@ navigate_permissions_page (NautilusPropertiesWidget *self,
     adw_navigation_view_push_by_tag (self->nav_view, "permissions");
 }
 
-static void
-get_image_for_properties_widget (NautilusPropertiesWidget  *self,
-                                 char                     **icon_name,
-                                 GdkPaintable             **icon_paintable)
+static NautilusIconInfo *
+get_image_for_properties_widget (NautilusPropertiesWidget *self)
 {
-    g_autoptr (NautilusIconInfo) icon = NULL;
-    GList *l;
-    gint icon_scale;
+    NautilusIconInfo *icon = NULL;
+    gint icon_scale = gtk_widget_get_scale_factor (GTK_WIDGET (self));
 
-    icon_scale = gtk_widget_get_scale_factor (GTK_WIDGET (self));
-
-    for (l = self->files; l != NULL; l = l->next)
+    for (NautilusFileList *l = self->files; l != NULL; l = l->next)
     {
-        NautilusFile *file;
-        g_autoptr (NautilusIconInfo) new_icon = NULL;
+        NautilusFile *file = l->data;
+        g_autoptr (NautilusIconInfo) new_icon =
+            nautilus_file_get_icon (file, NAUTILUS_GRID_ICON_SIZE_MEDIUM, icon_scale,
+                                    NAUTILUS_FILE_ICON_FLAGS_USE_THUMBNAILS |
+                                    NAUTILUS_FILE_ICON_FLAGS_USE_MOUNT_ICON);
 
-        file = NAUTILUS_FILE (l->data);
-
-        if (!icon)
+        if (icon == NULL)
         {
-            icon = nautilus_file_get_icon (file, NAUTILUS_GRID_ICON_SIZE_MEDIUM, icon_scale,
-                                           NAUTILUS_FILE_ICON_FLAGS_USE_THUMBNAILS |
-                                           NAUTILUS_FILE_ICON_FLAGS_USE_MOUNT_ICON);
+            icon = g_steal_pointer (&new_icon);
         }
-        else
+        else if (new_icon == NULL || new_icon != icon)
         {
-            new_icon = nautilus_file_get_icon (file, NAUTILUS_GRID_ICON_SIZE_MEDIUM, icon_scale,
-                                               NAUTILUS_FILE_ICON_FLAGS_USE_THUMBNAILS |
-                                               NAUTILUS_FILE_ICON_FLAGS_USE_MOUNT_ICON);
-            if (!new_icon || new_icon != icon)
-            {
-                g_object_unref (icon);
-                icon = NULL;
-                break;
-            }
+            g_clear_object (&icon);
+            break;
         }
     }
 
@@ -544,26 +531,17 @@ get_image_for_properties_widget (NautilusPropertiesWidget  *self,
         icon = nautilus_icon_info_lookup (gicon, NAUTILUS_GRID_ICON_SIZE_MEDIUM, icon_scale);
     }
 
-    if (icon_name != NULL)
-    {
-        *icon_name = g_strdup (nautilus_icon_info_get_used_name (icon));
-    }
-
-    if (icon_paintable != NULL)
-    {
-        *icon_paintable = nautilus_icon_info_get_paintable (icon);
-    }
+    return icon;
 }
 
 
 static void
 update_properties_widget_icon (NautilusPropertiesWidget *self)
 {
-    g_autoptr (GdkPaintable) paintable = NULL;
-    g_autofree char *name = NULL;
     gint pixel_size;
-
-    get_image_for_properties_widget (self, &name, &paintable);
+    g_autoptr (NautilusIconInfo) icon_info = get_image_for_properties_widget (self);
+    g_autoptr (GdkPaintable) paintable = nautilus_icon_info_get_paintable (icon_info);
+    const char *name = nautilus_icon_info_get_used_name (icon_info);
 
     if (name != NULL)
     {
