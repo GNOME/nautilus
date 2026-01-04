@@ -833,38 +833,41 @@ setup_image_widget (NautilusPropertiesWidget *self)
 static void
 update_name_field (NautilusPropertiesWidget *self)
 {
-    g_autoptr (GString) name_str = g_string_new ("");
-    g_autofree gchar *os_name = NULL;
-    gchar *name_value;
-    guint file_counter = 0;
-
-    for (GList *l = self->files; l != NULL && file_counter <= PROPERTIES_MAX_NAMES; l = l->next)
+    if (is_multi_file_window (self))
     {
-        NautilusFile *file = NAUTILUS_FILE (l->data);
+        g_autoptr (GString) name_str = g_string_new ("");
+        guint file_counter = 0;
 
-        if (!nautilus_file_is_gone (file))
+        for (GList *l = self->files; l != NULL && file_counter <= PROPERTIES_MAX_NAMES; l = l->next)
         {
-            file_counter += 1;
-            if (file_counter > 1)
+            NautilusFile *file = NAUTILUS_FILE (l->data);
+
+            if (!nautilus_file_is_gone (file))
             {
-                g_string_append (name_str, ", ");
+                file_counter += 1;
+                if (file_counter > 1)
+                {
+                    g_string_append (name_str, ", ");
+                }
+
+                g_string_append (name_str, nautilus_file_get_display_name (file));
             }
-
-            g_string_append (name_str, nautilus_file_get_display_name (file));
         }
-    }
 
-    if (!is_multi_file_window (self) && is_root_directory (get_file (self)))
+        gtk_label_set_text (self->name_value_label, name_str->str);
+    }
+    else if (is_root_directory (get_file (self)))
     {
-        os_name = g_get_os_info (G_OS_INFO_KEY_NAME);
-        name_value = (os_name != NULL) ? os_name : _("Operating System");
+        g_autofree gchar *os_name = g_get_os_info (G_OS_INFO_KEY_NAME);
+
+        gtk_label_set_text (self->name_value_label,
+                            (os_name != NULL) ? os_name : _("Operating System"));
     }
     else
     {
-        name_value = name_str->str;
+        gtk_label_set_text (self->name_value_label,
+                            nautilus_file_get_display_name (get_file (self)));
     }
-
-    gtk_label_set_text (self->name_value_label, name_value);
 
     /* We wish the label to be selectable, but not selected by default. */
     gtk_label_select_region (self->name_value_label, -1, -1);
