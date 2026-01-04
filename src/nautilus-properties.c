@@ -49,12 +49,6 @@
 #include "nautilus-tag-manager.h"
 #include "nautilus-ui-utilities.h"
 
-/* Put an upper limit on the number of names added to the properties widget.
- * This improves performance when selecting a large number of files. Moreover,
- * it is unlikely for many names to fit in the allocated text area.
- */
-#define PROPERTIES_MAX_NAMES 50
-
 #define NAUTILUS_TYPE_PROPERTIES_WIDGET (nautilus_properties_widget_get_type ())
 G_DECLARE_FINAL_TYPE (NautilusPropertiesWidget, nautilus_properties_widget,
                       NAUTILUS, PROPERTIES_WIDGET,
@@ -833,12 +827,25 @@ setup_image_widget (NautilusPropertiesWidget *self)
 static void
 update_name_field (NautilusPropertiesWidget *self)
 {
-    if (is_multi_file_window (self))
+    /* Upper limit on how many names to show, above this use a generic fallback */
+    const guint max_listed_items = 5;
+    guint number_of_files = g_list_length (self->files);
+
+    if (number_of_files > max_listed_items)
+    {
+        g_autofree char *item_str = g_strdup_printf (ngettext ("%d Selected Item",
+                                                               "%d Selected Items",
+                                                               number_of_files),
+                                                     number_of_files);
+
+        gtk_label_set_text (self->name_value_label, item_str);
+    }
+    else if (number_of_files > 1)
     {
         g_autoptr (GString) name_str = g_string_new ("");
         guint file_counter = 0;
 
-        for (GList *l = self->files; l != NULL && file_counter <= PROPERTIES_MAX_NAMES; l = l->next)
+        for (NautilusFileList *l = self->files; l != NULL; l = l->next)
         {
             NautilusFile *file = NAUTILUS_FILE (l->data);
 
