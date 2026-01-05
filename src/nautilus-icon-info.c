@@ -26,7 +26,7 @@ struct _NautilusIconInfo
 {
     GObject parent;
 
-    gboolean sole_owner;
+    gboolean only_in_cache;
     guint64 last_use_time;
     GdkPaintable *paintable;
 
@@ -47,7 +47,7 @@ static void
 nautilus_icon_info_init (NautilusIconInfo *icon)
 {
     icon->last_use_time = g_get_monotonic_time ();
-    icon->sole_owner = TRUE;
+    icon->only_in_cache = TRUE;
 }
 
 static void
@@ -59,7 +59,7 @@ paintable_toggle_notify (gpointer  info,
 
     if (is_last_ref)
     {
-        icon->sole_owner = TRUE;
+        icon->only_in_cache = TRUE;
         g_object_remove_toggle_ref (object,
                                     paintable_toggle_notify,
                                     info);
@@ -75,7 +75,7 @@ nautilus_icon_info_finalize (GObject *object)
 
     icon = NAUTILUS_ICON_INFO (object);
 
-    if (!icon->sole_owner && icon->paintable)
+    if (!icon->only_in_cache && icon->paintable)
     {
         g_object_remove_toggle_ref (G_OBJECT (icon->paintable),
                                     paintable_toggle_notify,
@@ -204,7 +204,7 @@ reap_old_icon (gpointer key,
     NautilusIconInfo *icon = value;
     gboolean *reapable_icons_left = user_info;
 
-    if (icon->sole_owner)
+    if (icon->only_in_cache)
     {
         if (time_now - icon->last_use_time > 30 * G_USEC_PER_SEC)
         {
@@ -516,9 +516,9 @@ nautilus_icon_info_get_paintable_nodefault (NautilusIconInfo *icon)
 {
     GdkPaintable *res = g_object_ref (icon->paintable);
 
-    if (icon->sole_owner)
+    if (icon->only_in_cache)
     {
-        icon->sole_owner = FALSE;
+        icon->only_in_cache = FALSE;
         g_object_add_toggle_ref (G_OBJECT (res),
                                  paintable_toggle_notify,
                                  icon);
