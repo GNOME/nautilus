@@ -65,6 +65,9 @@ void        nautilus_ui_draw_symbolic_icon          (GtkSnapshot           *snap
                                                      const graphene_rect_t *rect,
                                                      GdkRGBA                color,
                                                      int                    scale);
+GdkPaintable *
+nautilus_ui_draw_stacked_icons (GQueue *icons,
+                                uint    size);
 
 gboolean    nautilus_date_time_is_between_dates     (GDateTime         *date,
                                                      GDateTime         *initial_date,

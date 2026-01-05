@@ -684,3 +684,68 @@ nautilus_ui_draw_symbolic_icon (GtkSnapshot           *snapshot,
                                               G_N_ELEMENTS (colors));
     gtk_snapshot_restore (snapshot);
 }
+
+GdkPaintable *
+nautilus_ui_draw_stacked_icons (GQueue *icons,
+                                uint    size)
+{
+    g_autoptr (GtkSnapshot) snapshot = gtk_snapshot_new ();
+    /* A wide shadow for the pile of icons gives a sense of floating. */
+    GskShadow stack_shadow = {.color = {0, 0, 0, .alpha = 0.15}, .dx = 0, .dy = 2, .radius = 10 };
+    /* A slight shadow swhich makes each icon in the stack look separate. */
+    GskShadow icon_shadow = {.color = {0, 0, 0, .alpha = 0.30}, .dx = 0, .dy = 1, .radius = 1 };
+
+    /* When there are 2 or 3 identical icons, we need to space them more,
+     * otherwise it would be hard to tell there is more than one icon at all.
+     * The more icons we have, the easier it is to notice multiple icons are
+     * stacked, and the more compact we want to be.
+     *
+     *  1 icon          2 icons         3 icons         4+ icons
+     *  .--------.      .--------.      .--------.      .--------.
+     *  |        |      |        |      |        |      |        |
+     *  |        |      |        |      |        |      |        |
+     *  |        |      |        |      |        |      |        |
+     *  |        |      |        |      |        |      |        |
+     *  '--------'      |--------|      |--------|      |--------|
+     *                  |        |      |        |      |--------|
+     *                  |        |      |--------|      |--------|
+     *                  '--------'      |        |      |--------|
+     *                                  '--------'      '--------'
+     */
+    guint n_icons = g_queue_get_length (icons);
+    float dx = (n_icons % 2 == 1) ? 6 : -6;
+    float dy = (n_icons == 2) ? 10 : (n_icons == 3) ? 6 : (n_icons >= 4) ? 4 : 0;
+
+    /* We want the first icon on top of every other. So we need to start drawing
+     * the stack from the bottom, that is, from the last icon. This requires us
+     * to jump to the last position and then move upwards one step at a time.
+     * Also, add 10px horizontal offset, for shadow, to workaround this GTK bug:
+     * https://gitlab.gnome.org/GNOME/gtk/-/issues/2341
+     */
+    gtk_snapshot_translate (snapshot, &GRAPHENE_POINT_INIT (10 + (dx / 2), dy * n_icons));
+    gtk_snapshot_push_shadow (snapshot, &stack_shadow, 1);
+    for (GList *l = g_queue_peek_tail_link (icons); l != NULL; l = l->prev)
+    {
+        double w = gdk_paintable_get_intrinsic_width (l->data);
+        double h = gdk_paintable_get_intrinsic_height (l->data);
+        /* Offsets needed to center thumbnails. Floored to keep images sharp. */
+        float x = floor ((size - w) / 2);
+        float y = floor ((size - h) / 2);
+
+        gtk_snapshot_translate (snapshot, &GRAPHENE_POINT_INIT (-dx, -dy));
+
+        /* Alternate horizontal offset direction to give a rough pile look. */
+        dx = -dx;
+
+        gtk_snapshot_translate (snapshot, &GRAPHENE_POINT_INIT (x, y));
+        gtk_snapshot_push_shadow (snapshot, &icon_shadow, 1);
+
+        gdk_paintable_snapshot (l->data, snapshot, w, h);
+
+        gtk_snapshot_pop (snapshot); /* End of icon shadow */
+        gtk_snapshot_translate (snapshot, &GRAPHENE_POINT_INIT (-x, -y));
+    }
+    gtk_snapshot_pop (snapshot); /* End of stack shadow */
+
+    return gtk_snapshot_to_paintable (snapshot, NULL);
+}
