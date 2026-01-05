@@ -118,6 +118,21 @@ nautilus_icon_info_new_for_paintable (GdkPaintable *paintable)
     return icon;
 }
 
+GIcon *
+nautilus_icon_info_get_default_file_icon (void)
+{
+    static GIcon *fallback_icon = NULL;
+
+    if (G_UNLIKELY (fallback_icon == NULL))
+    {
+        char *icon_names[3] = {"application-x-generic", "text-x-generic", NULL};
+
+        fallback_icon = g_themed_icon_new_from_names (icon_names, -1);
+    }
+
+    return fallback_icon;
+}
+
 static NautilusIconInfo *
 nautilus_icon_info_new_for_icon_paintable (GtkIconPaintable *icon_paintable)
 {

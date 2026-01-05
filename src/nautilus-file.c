@@ -4466,19 +4466,6 @@ get_custom_icon (NautilusFile *file)
     return icon;
 }
 
-static GIcon *
-get_default_file_icon (void)
-{
-    static GIcon *fallback_icon = NULL;
-    if (fallback_icon == NULL)
-    {
-        fallback_icon = g_themed_icon_new_from_names ((char *[]){"application-x-generic",
-                                                                 "text-x-generic"}, 2);
-    }
-
-    return fallback_icon;
-}
-
 static GFilesystemPreviewType
 get_filesystem_use_preview (NautilusFile *file,
                             NautilusFile *parent)
@@ -4762,7 +4749,7 @@ nautilus_file_get_gicon (NautilusFile          *file,
         return g_object_ref (file->details->icon);
     }
 
-    return g_object_ref (get_default_file_icon ());
+    return g_object_ref (nautilus_icon_info_get_default_file_icon ());
 }
 
 const char *
@@ -4954,7 +4941,7 @@ nautilus_file_get_icon (NautilusFile          *file,
         if (nautilus_icon_info_is_fallback (icon))
         {
             g_object_unref (icon);
-            icon = nautilus_icon_info_lookup (get_default_file_icon (), size, scale);
+            icon = nautilus_icon_info_lookup (nautilus_icon_info_get_default_file_icon (), size, scale);
         }
     }
 
