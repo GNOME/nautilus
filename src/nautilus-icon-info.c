@@ -57,12 +57,10 @@ paintable_toggle_notify (gpointer  info,
 {
     NautilusIconInfo *icon = info;
 
+    icon->only_in_cache = is_last_ref;
+
     if (is_last_ref)
     {
-        icon->only_in_cache = TRUE;
-        g_object_remove_toggle_ref (object,
-                                    paintable_toggle_notify,
-                                    info);
         icon->last_use_time = g_get_monotonic_time ();
         schedule_reap_cache ();
     }
@@ -75,14 +73,14 @@ nautilus_icon_info_finalize (GObject *object)
 
     icon = NAUTILUS_ICON_INFO (object);
 
-    if (!icon->only_in_cache && icon->paintable)
+    if (icon->only_in_cache)
     {
+        /* Cleaning up the last reference from the cache */
         g_object_remove_toggle_ref (G_OBJECT (icon->paintable),
                                     paintable_toggle_notify,
                                     icon);
     }
-
-    if (icon->paintable)
+    else
     {
         g_object_unref (icon->paintable);
     }
@@ -108,7 +106,10 @@ nautilus_icon_info_new_for_paintable (GdkPaintable *paintable)
 
     NautilusIconInfo *self = g_object_new (NAUTILUS_TYPE_ICON_INFO, NULL);
 
-    self->paintable = g_object_ref (paintable);
+    self->paintable = paintable;
+    g_object_add_toggle_ref (G_OBJECT (self->paintable),
+                             paintable_toggle_notify,
+                             self);
 
     return self;
 }
@@ -511,30 +512,10 @@ nautilus_icon_info_lookup (GIcon *icon,
     }
 }
 
-static GdkPaintable *
-nautilus_icon_info_get_paintable_nodefault (NautilusIconInfo *icon)
-{
-    GdkPaintable *res = g_object_ref (icon->paintable);
-
-    if (icon->only_in_cache)
-    {
-        icon->only_in_cache = FALSE;
-        g_object_add_toggle_ref (G_OBJECT (res),
-                                 paintable_toggle_notify,
-                                 icon);
-    }
-
-    return res;
-}
-
 GdkPaintable *
 nautilus_icon_info_get_paintable (NautilusIconInfo *icon)
 {
-    GdkPaintable *res;
-
-    res = nautilus_icon_info_get_paintable_nodefault (icon);
-
-    return res;
+    return g_object_ref (icon->paintable);
 }
 
 const char *
