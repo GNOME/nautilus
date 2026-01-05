@@ -104,16 +104,13 @@ nautilus_icon_info_class_init (NautilusIconInfoClass *icon_info_class)
 NautilusIconInfo *
 nautilus_icon_info_new_for_paintable (GdkPaintable *paintable)
 {
-    NautilusIconInfo *icon;
+    g_return_val_if_fail (paintable != NULL, NULL);
 
-    icon = g_object_new (NAUTILUS_TYPE_ICON_INFO, NULL);
+    NautilusIconInfo *self = g_object_new (NAUTILUS_TYPE_ICON_INFO, NULL);
 
-    if (paintable != NULL)
-    {
-        icon->paintable = g_object_ref (paintable);
-    }
+    self->paintable = g_object_ref (paintable);
 
-    return icon;
+    return self;
 }
 
 GIcon *
@@ -517,23 +514,14 @@ nautilus_icon_info_lookup (GIcon *icon,
 static GdkPaintable *
 nautilus_icon_info_get_paintable_nodefault (NautilusIconInfo *icon)
 {
-    GdkPaintable *res;
+    GdkPaintable *res = g_object_ref (icon->paintable);
 
-    if (icon->paintable == NULL)
+    if (icon->sole_owner)
     {
-        res = NULL;
-    }
-    else
-    {
-        res = g_object_ref (icon->paintable);
-
-        if (icon->sole_owner)
-        {
-            icon->sole_owner = FALSE;
-            g_object_add_toggle_ref (G_OBJECT (res),
-                                     paintable_toggle_notify,
-                                     icon);
-        }
+        icon->sole_owner = FALSE;
+        g_object_add_toggle_ref (G_OBJECT (res),
+                                 paintable_toggle_notify,
+                                 icon);
     }
 
     return res;
@@ -545,10 +533,6 @@ nautilus_icon_info_get_paintable (NautilusIconInfo *icon)
     GdkPaintable *res;
 
     res = nautilus_icon_info_get_paintable_nodefault (icon);
-    if (res == NULL)
-    {
-        res = GDK_PAINTABLE (gdk_texture_new_from_resource ("/org/gnome/nautilus/image/text-x-preview.png"));
-    }
 
     return res;
 }
