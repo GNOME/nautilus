@@ -292,19 +292,21 @@ GdkPaintable *
 get_paintable_for_drag_selection (GList *selection,
                                   int    scale)
 {
-    g_autoqueue (GdkPaintable) icons = g_queue_new ();
-    NautilusFileIconFlags flags;
-    GdkPaintable *icon;
-    guint icon_size = NAUTILUS_DRAG_SURFACE_ICON_SIZE;
-
     g_return_val_if_fail (NAUTILUS_IS_FILE (selection->data), NULL);
 
-    flags = NAUTILUS_FILE_ICON_FLAGS_USE_THUMBNAILS;
-    for (GList *l = selection;
+    g_autoqueue (GdkPaintable) icons = g_queue_new ();
+    NautilusFileIconFlags flags = NAUTILUS_FILE_ICON_FLAGS_USE_THUMBNAILS;
+    guint icon_size = NAUTILUS_DRAG_SURFACE_ICON_SIZE;
+
+    for (NautilusFileList *l = selection;
          l != NULL && g_queue_get_length (icons) <= MAX_DRAWN_DRAG_ICONS;
          l = l->next)
     {
-        icon = nautilus_file_get_icon_paintable (l->data, icon_size, scale, flags);
+        GdkPaintable *icon = nautilus_file_get_icon_paintable (l->data,
+                                                               icon_size,
+                                                               scale,
+                                                               flags);
+
         g_queue_push_tail (icons, icon);
     }
 
