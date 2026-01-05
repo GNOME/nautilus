@@ -372,7 +372,7 @@ nautilus_icon_info_lookup (GIcon *icon,
         LoadableIconKey lookup_key;
         LoadableIconKey *key;
 
-        if (loadable_icon_cache == NULL)
+        if (G_UNLIKELY (loadable_icon_cache == NULL))
         {
             loadable_icon_cache =
                 g_hash_table_new_full ((GHashFunc) loadable_icon_key_hash,
@@ -440,7 +440,7 @@ nautilus_icon_info_lookup (GIcon *icon,
         ThemedIconKey *key;
         const char *icon_name;
 
-        if (themed_icon_cache == NULL)
+        if (G_UNLIKELY (themed_icon_cache == NULL))
         {
             themed_icon_cache =
                 g_hash_table_new_full ((GHashFunc) themed_icon_key_hash,
