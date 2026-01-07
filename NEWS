@@ -1,3 +1,46 @@
+Major Changes in 50.alpha
+=========================
+* Enhancements:
+- Improved thumbnail loading through new custom widget (Khalid Abu Shawarib)
+- Significantly increase code coverage by adding tests for thumbnail sizes, batch renaming, redoing, bookmarks, and many more (Khalid Abu Shawarib)
+- Improve batch renaming cyclic collision handling (Khalid Abu Shawarib)
+- Strip whitespaces in editable file names (Abhinandan Thakur, Peter Eisenmann)
+- Strip newlines from file name in file chooser (M B SURYANARAYANAN, Khalid Abu Shawarib)
+- Reduce memory usage by trimming on window/tab closure (tytan652, Peter Eisenmann)
+- Use shorter operation status message in sidebar (Corey Berla, Peter Eisenmann)
+- Support multiple file type search filters (Khalid Abu Shawarib)
+- Use highlight for batch rename replacement text (Abhinandan Thakur)
+- Use AdwAlertDialog for file operation dialogs (Peter Eisenmann)
+- Add settings menu item to context menu for trash and recent (Khalid Abu Shawarib)
+- Focus password entry on extraction (Peter Eisenmann)
+- Make file type filter buttons more accessible (Khalid Abu Shawarib)
+- Add Fedora CI (Khalid Abu Shawarib)
+- Add alternative bindings for copy and paste (Tomasz Hołubowicz)
+- Remove drag icon from column chooser (Khalid Abu Shawarib)
+- Pass activation_token to previewer (Tau Gärtli)
+
+* Bugfixes:
+- Fix potential outdated view item usage (Peter Eisenmann)
+
+* Cleanups:
+- Read image properties without GdkPixbuf (Peter Eisenmann)
+- Drop superfluous thumbnail prioritizing (Khalid Abu Shawarib)
+- Detect videos via xdg/shared-mime-info over intern list (Peter Eisenmann)
+- Drop usages of goto (Peter Eisenmann)
+- Replace some deprecated GTK APIs (Peter Eisenmann)
+- Use media queries for high contrast style (Peter Eisenmann)
+- Avoid redundant folder name in completion toast (Shone Binu)
+- Cleanup bookmark list API to use GFile (Peter Eisenmann)
+- Make NautilusHashQueue more useful with destroy funcs (Khalid Abu Shawarib)
+- Continued search-related rework (Peter Eisenmann)
+- Cleanup controls in metainfo (Maximiliano)
+- NautilusFile/Directory constructor-related cleanups (Peter Eisenmann)
+- Remove NautilusWindowSlot usage from NautilusApplication (Peter Eisenmann)
+- Drop deprecated FileOperations interface (Peter Eisenmann)
+- Deprecate packagekit build option (Peter Eisenmann)
+
+* Translation updates (GNOME Translation Project contributors)
+
 Major Changes in 49.2
 =====================
 * Bugfixes:
