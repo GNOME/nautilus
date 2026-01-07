@@ -2942,7 +2942,10 @@ nautilus_file_update_thumbnail_info (NautilusFile *file,
         changed = TRUE;
     }
 
-    gboolean thumbnailing_failed = g_file_info_get_attribute_boolean (info,
+    gboolean cache_is_valid = g_file_info_get_attribute_boolean (info,
+                                                                 G_FILE_ATTRIBUTE_THUMBNAIL_IS_VALID);
+    gboolean thumbnailing_failed = cache_is_valid &&
+                                   g_file_info_get_attribute_boolean (info,
                                                                       G_FILE_ATTRIBUTE_THUMBNAILING_FAILED);
     if (file->details->thumbnailing_failed != thumbnailing_failed)
     {
