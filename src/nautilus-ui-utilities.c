@@ -685,13 +685,19 @@ nautilus_ui_draw_symbolic_icon (GtkSnapshot           *snapshot,
     gtk_snapshot_restore (snapshot);
 }
 
+#define STACK_SHADOW_RADIUS 10
+
 GdkPaintable *
 nautilus_ui_draw_stacked_icons (GQueue *icons,
                                 uint    size)
 {
     g_autoptr (GtkSnapshot) snapshot = gtk_snapshot_new ();
     /* A wide shadow for the pile of icons gives a sense of floating. */
-    GskShadow stack_shadow = {.color = {0, 0, 0, .alpha = 0.15}, .dx = 0, .dy = 2, .radius = 10 };
+    GskShadow stack_shadow =
+    {
+        .color = {0, 0, 0, .alpha = 0.15}, .dx = 0, .dy = 2,
+        .radius = STACK_SHADOW_RADIUS
+    };
     /* A slight shadow swhich makes each icon in the stack look separate. */
     GskShadow icon_shadow = {.color = {0, 0, 0, .alpha = 0.30}, .dx = 0, .dy = 1, .radius = 1 };
 
@@ -719,10 +725,12 @@ nautilus_ui_draw_stacked_icons (GQueue *icons,
     /* We want the first icon on top of every other. So we need to start drawing
      * the stack from the bottom, that is, from the last icon. This requires us
      * to jump to the last position and then move upwards one step at a time.
-     * Also, add 10px horizontal offset, for shadow, to workaround this GTK bug:
-     * https://gitlab.gnome.org/GNOME/gtk/-/issues/2341
+     * Also, add an offset for the shadow itself.
      */
-    gtk_snapshot_translate (snapshot, &GRAPHENE_POINT_INIT (10 + (dx / 2), dy * n_icons));
+    graphene_point_t shadow_offset = GRAPHENE_POINT_INIT (STACK_SHADOW_RADIUS + (dx / 2),
+                                                          STACK_SHADOW_RADIUS + dy * n_icons);
+
+    gtk_snapshot_translate (snapshot, &shadow_offset);
     gtk_snapshot_push_shadow (snapshot, &stack_shadow, 1);
     for (GList *l = g_queue_peek_tail_link (icons); l != NULL; l = l->prev)
     {
