@@ -768,6 +768,7 @@ nautilus_sidebar_row_new_placeholder (void)
 
     row->section_type = NAUTILUS_SIDEBAR_SECTION_BOOKMARKS;
     row->place_type = NAUTILUS_SIDEBAR_ROW_BOOKMARK_PLACEHOLDER;
+    gtk_list_box_row_set_child (GTK_LIST_BOX_ROW (row), NULL);
 
     gtk_widget_add_css_class (GTK_WIDGET (row), "sidebar-placeholder-row");
 
