@@ -1,3 +1,30 @@
+Major Changes in 49.2
+=====================
+* Bugfixes:
+- Fix handling of unset XDG directories (Khalid Abu Shawarib)
+- Reduce memory usage of thumbnails by correct scaling (Khalid Abu Shawarib)
+- Fix potential rescaling of item when switching to cut icon (Sebastian Keller, Khalid Abu Shawarib)
+- Fix crash on empty file lists in drops (Khalid Abu Shawarib)
+- Correct sorting of loopback devices (Khalid Abu Shawarib)
+- Don't skip the first file from batch rename progress monitoring (Khalid Abu Shawarib)
+
+* Translation updates (GNOME Translation Project contributors)
+
+Major Changes in 49.1
+=====================
+* Bugfixes:
+- Fix crash due to internal callback handling (Khalid Abu Shawarib)
+- Fix pasting images with bigger sizes (Zander Brown)
+- Fix contrast of cut items (Jakub Steiner, Khalid Abu Shawarib)
+- Use correct start point for sidebar drag'n'drop (Khalid Abu Shawarib)
+- Fix default app chooser focus (Peter Eisenmann)
+- Fix running long-running archive operation tests (Khalid Abu Shawarib)
+
+* Known regression:
+- Searching in app chooser does not work anymore since 49.0
+
+* Translation updates (GNOME Translation Project contributors)
+
 Major Changes in 49.0
 =====================
 * Enhancements:
