@@ -501,37 +501,50 @@ navigate_permissions_page (NautilusPropertiesWidget *self,
 static NautilusIconInfo *
 get_image_for_properties_widget (NautilusPropertiesWidget *self)
 {
-    NautilusIconInfo *icon = NULL;
-    gint icon_scale = gtk_widget_get_scale_factor (GTK_WIDGET (self));
+    /* Show a limited number of icons */
+    const uint max_icons = 5;
+
+    gint scale = gtk_widget_get_scale_factor (GTK_WIDGET (self));
+    NautilusFileIconFlags flags = NAUTILUS_FILE_ICON_FLAGS_USE_THUMBNAILS |
+                                  NAUTILUS_FILE_ICON_FLAGS_USE_MOUNT_ICON;
+    guint size = NAUTILUS_GRID_ICON_SIZE_MEDIUM;
+    g_autolist (NautilusIconInfo) shown_icons = NULL;
 
     for (NautilusFileList *l = self->files; l != NULL; l = l->next)
     {
         NautilusFile *file = l->data;
-        g_autoptr (NautilusIconInfo) new_icon =
-            nautilus_file_get_icon (file, NAUTILUS_GRID_ICON_SIZE_MEDIUM, icon_scale,
-                                    NAUTILUS_FILE_ICON_FLAGS_USE_THUMBNAILS |
-                                    NAUTILUS_FILE_ICON_FLAGS_USE_MOUNT_ICON);
+        g_autoptr (NautilusIconInfo) info = nautilus_file_get_icon (file, size, scale, flags);
 
-        if (icon == NULL)
+        if (g_list_find (shown_icons, info) == NULL)
         {
-            icon = g_steal_pointer (&new_icon);
-        }
-        else if (new_icon == NULL || new_icon != icon)
-        {
-            g_clear_object (&icon);
-            break;
+            shown_icons = g_list_append (shown_icons, g_steal_pointer (&info));
+
+            if (g_list_length (shown_icons) >= max_icons)
+            {
+                break;
+            }
         }
     }
 
-    if (!icon)
+    if (g_list_length (shown_icons) == 1)
     {
-        g_autoptr (GIcon) gicon = g_themed_icon_new_from_names ((char *[]){"application-x-generic",
-                                                                           "text-x-generic"}, 2);
-
-        icon = nautilus_icon_info_lookup (gicon, NAUTILUS_GRID_ICON_SIZE_MEDIUM, icon_scale);
+        return g_steal_pointer (&shown_icons->data);
     }
+    else
+    {
+        g_autoqueue (GdkPaintable) icons = g_queue_new ();
 
-    return icon;
+        for (GList *l = shown_icons; l != NULL; l = l->next)
+        {
+            NautilusIconInfo *info = l->data;
+
+            g_queue_push_tail (icons, nautilus_icon_info_get_paintable (info));
+        }
+
+        GdkPaintable *stacked_icons = nautilus_ui_draw_stacked_icons (icons, size);
+
+        return nautilus_icon_info_new_for_paintable (stacked_icons);
+    }
 }
 
 
