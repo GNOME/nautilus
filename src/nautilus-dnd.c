@@ -286,7 +286,7 @@ nautilus_dnd_perform_drop (NautilusFilesView *view,
     return FALSE;
 }
 
-#define MAX_DRAWN_DRAG_ICONS 10
+#define MAX_DRAWN_DRAG_ICONS 6
 
 GdkPaintable *
 get_paintable_for_drag_selection (GList *selection,
@@ -299,7 +299,7 @@ get_paintable_for_drag_selection (GList *selection,
     guint icon_size = NAUTILUS_DRAG_SURFACE_ICON_SIZE;
 
     for (NautilusFileList *l = selection;
-         l != NULL && g_queue_get_length (icons) <= MAX_DRAWN_DRAG_ICONS;
+         l != NULL && g_queue_get_length (icons) < MAX_DRAWN_DRAG_ICONS;
          l = l->next)
     {
         GdkPaintable *icon = nautilus_file_get_icon_paintable (l->data,
