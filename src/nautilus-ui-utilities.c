@@ -707,19 +707,19 @@ nautilus_ui_draw_stacked_icons (GQueue *icons,
      * stacked, and the more compact we want to be.
      *
      *  1 icon          2 icons         3 icons         4+ icons
-     *  .--------.      .--------.      .--------.      .--------.
-     *  |        |      |        |      |        |      |        |
-     *  |        |      |        |      |        |      |        |
-     *  |        |      |        |      |        |      |        |
-     *  |        |      |        |      |        |      |        |
-     *  '--------'      |--------|      |--------|      |--------|
-     *                  |        |      |        |      |--------|
-     *                  |        |      |--------|      |--------|
-     *                  '--------'      |        |      |--------|
-     *                                  '--------'      '--------'
+     *  .--------.      .--------.      .--------.     .--------.
+     *  |        |      |        |      |        |     |        |
+     *  |        |      |        |      |        |-.   |        |.
+     *  |        |      |        |--.   |        | |   |        ||.
+     *  |        |      |        |  |   |        | |-. |        |||.
+     *  '--------'      '--------'  |   '--------' | | '--------'|||.
+     *                     |        |     |        | |  '--------'|||
+     *                     |        |     '--------' |   '--------'||
+     *                     '--------'       |        |    '--------'|
+     *                                      '--------'     '--------'
      */
     guint n_icons = g_queue_get_length (icons);
-    float dx = (n_icons % 2 == 1) ? 6 : -6;
+    float dx = (n_icons == 2) ? 10 : (n_icons == 3) ? 6 : (n_icons >= 4) ? 4 : 0;
     float dy = (n_icons == 2) ? 10 : (n_icons == 3) ? 6 : (n_icons >= 4) ? 4 : 0;
 
     /* We want the first icon on top of every other. So we need to start drawing
@@ -727,7 +727,7 @@ nautilus_ui_draw_stacked_icons (GQueue *icons,
      * to jump to the last position and then move upwards one step at a time.
      * Also, add an offset for the shadow itself.
      */
-    graphene_point_t shadow_offset = GRAPHENE_POINT_INIT (STACK_SHADOW_RADIUS + (dx / 2),
+    graphene_point_t shadow_offset = GRAPHENE_POINT_INIT (STACK_SHADOW_RADIUS + dx * n_icons,
                                                           STACK_SHADOW_RADIUS + dy * n_icons);
 
     gtk_snapshot_translate (snapshot, &shadow_offset);
@@ -741,9 +741,6 @@ nautilus_ui_draw_stacked_icons (GQueue *icons,
         float y = floor ((size - h) / 2);
 
         gtk_snapshot_translate (snapshot, &GRAPHENE_POINT_INIT (-dx, -dy));
-
-        /* Alternate horizontal offset direction to give a rough pile look. */
-        dx = -dx;
 
         gtk_snapshot_translate (snapshot, &GRAPHENE_POINT_INIT (x, y));
         gtk_snapshot_push_shadow (snapshot, &icon_shadow, 1);
