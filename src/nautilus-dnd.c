@@ -286,7 +286,7 @@ nautilus_dnd_perform_drop (NautilusFilesView *view,
     return FALSE;
 }
 
-#define MAX_DRAWN_DRAG_ICONS 10
+#define MAX_DRAWN_DRAG_ICONS 6
 
 GdkPaintable *
 get_paintable_for_drag_selection (GList *selection,
