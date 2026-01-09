@@ -1,0 +1,100 @@
+using Gtk 4.0;
+using Adw 1;
+
+template $NautilusCompressDialog: Adw.Dialog {
+  title: _("Compress Files and Folders");
+  content-height: 440;
+  content-width: 500;
+  default-widget: activation_button;
+
+  child: Adw.ToolbarView {
+    [top]
+    Adw.HeaderBar {
+      show-start-title-buttons: false;
+      show-end-title-buttons: false;
+
+      [start]
+      Button {
+        label: _("_Cancel");
+        use-underline: true;
+        clicked => $adw_dialog_close() swapped;
+      }
+
+      [end]
+      Button activation_button {
+        label: _("C_ompress");
+        use-underline: true;
+        sensitive: bind $are_name_and_passphrase_ready(
+          validator.passed,
+          extension_combo_row.selected-item,
+          passphrase_entry.text,
+          passphrase_confirm_entry.text
+          ) as <bool>;
+        clicked => $nautilus_filename_validator_try_accept(validator);
+
+        styles [
+          "suggested-action",
+        ]
+      }
+    }
+
+    content: Adw.PreferencesPage {
+      Adw.PreferencesGroup {
+        Adw.EntryRow name_entry {
+          title: _("Archive _Name");
+          use-underline: true;
+          changed => $nautilus_filename_validator_validate(validator);
+          entry-activated => $on_name_entry_activated() swapped;
+        }
+
+        Revealer {
+          reveal-child: bind validator.has-feedback no-sync-create;
+
+          child: Label {
+            label: bind validator.feedback-text no-sync-create;
+            margin-top: 6;
+            xalign: 0;
+
+            styles [
+              "warning",
+              "caption",
+            ]
+          };
+        }
+      }
+
+      Adw.PreferencesGroup {
+        Adw.ComboRow extension_combo_row {
+          title: _("Co_mpression Method");
+          use-underline: true;
+          notify::selected-item => $update_selected_format() swapped;
+        }
+      }
+
+      Adw.PreferencesGroup passphrase_group {
+        title: _("Encryption");
+        description: _(
+          "Encrypt contents of the archive with a password when the compression method supports password-protection."
+        );
+
+        Adw.PasswordEntryRow passphrase_entry {
+          title: _("_Password");
+          use-underline: true;
+          entry-activated => $gtk_widget_grab_focus(passphrase_confirm_entry);
+        }
+
+        Adw.PasswordEntryRow passphrase_confirm_entry {
+          title: _("_Confirm Password");
+          use-underline: true;
+          activates-default: true;
+        }
+      }
+    };
+  };
+}
+
+$NautilusFilenameValidator validator {
+  new-name: bind $maybe_append_extension(name_entry.text, extension_combo_row.selected-item) as <string>;
+  name-accepted => $on_name_accepted() swapped;
+  notify::has-feedback => $on_feedback_changed(template);
+}

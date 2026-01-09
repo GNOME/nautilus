@@ -30,6 +30,7 @@ variables:
         gettext
         libgexiv2-devel
         localsearch
+        blueprint-compiler
         dbus-daemon
         gnome-desktop4-devel
         gnome-autoar-devel
@@ -78,7 +79,7 @@ workflow:
 .nautilus.fedora:
     variables:
         FDO_DISTRIBUTION_VERSION: rawhide
-        FDO_DISTRIBUTION_TAG: '2026-01-01'
+        FDO_DISTRIBUTION_TAG: '2026-01-29'
         FDO_DISTRIBUTION_COMPRESSION_FORMAT: zstd:chunked
     needs:
         - job: "update image"

@@ -1,0 +1,78 @@
+using Gtk 4.0;
+using Adw 1;
+
+menu view_menu {
+  section {
+    label: _("Icon Size");
+    display-hint: "inline-buttons";
+
+    item {
+      custom: "zoom-out";
+    }
+
+    item {
+      custom: "zoom-in";
+    }
+  }
+
+  section {
+    /* Translators: a menu item in a group of sorting options in a toolbar menu, with criterions such as "A-Z" or "Last Modified". */
+    label: C_("menu item", "Sort");
+  }
+
+  section {
+    item {
+      label: _("Show _Hidden Files");
+      action: "view.show-hidden-files";
+      accel: "<control>h";
+    }
+  }
+
+  section {
+    item {
+      label: _("_Visible Columns…");
+      action: "view.visible-columns";
+      hidden-when: "action-disabled";
+    }
+  }
+}
+
+template $NautilusViewControls: Adw.Bin {
+  child: Adw.SplitButton view_split_button {
+    halign: center;
+    valign: center;
+
+    /* Translators: This is a noun, meaning the options pertaining to the view. */
+    dropdown-tooltip: _("View Options");
+    action-name: "slot.files-view-mode-toggle";
+
+    popover: PopoverMenu {
+      menu-model: view_menu;
+
+      [zoom-out]
+      Button {
+        icon-name: "zoom-out-symbolic";
+        action-name: "view.zoom-out";
+        tooltip-text: _("Zoom Out");
+
+        styles [
+          "flat",
+        ]
+      }
+
+      [zoom-in]
+      Button {
+        icon-name: "zoom-in-symbolic";
+        action-name: "view.zoom-in";
+        tooltip-text: _("Zoom In");
+
+        styles [
+          "flat",
+        ]
+      }
+    };
+
+    icon-name: bind template.window-slot as <$NautilusWindowSlot>.icon-name;
+    tooltip-text: bind template.window-slot as <$NautilusWindowSlot>.tooltip;
+  };
+}

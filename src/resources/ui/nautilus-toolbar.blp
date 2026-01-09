@@ -1,0 +1,104 @@
+using Gtk 4.0;
+using Adw 1;
+
+template $NautilusToolbar: Adw.Bin {
+  Adw.HeaderBar {
+    [title]
+    Box header_toolbar {
+      spacing: 6;
+
+      Stack toolbar_switcher {
+        valign: center;
+        hexpand: false;
+        transition-type: crossfade;
+
+        StackPage {
+          name: "pathbar";
+
+          child: $NautilusPathBar path_bar {
+            valign: "center";
+            window-slot: bind template.window-slot;
+          };
+        }
+
+        StackPage {
+          name: "location";
+
+          child: Box {
+            styles [
+              "linked",
+            ]
+
+            $NautilusLocationEntry location_entry {}
+
+            Button {
+              icon-name: "window-close-symbolic";
+              tooltip-text: _("Cancel");
+              clicked => $nautilus_toolbar_close_location_entry() swapped;
+            }
+          };
+        }
+
+        StackPage {
+          name: "search";
+
+          child: Box search_container {
+            orientation: vertical;
+          };
+        }
+      }
+
+      Stack search_button_stack {
+        hhomogeneous: true;
+        transition-type: crossfade;
+
+        ToggleButton search_button {
+          tooltip-text: _("Search Current Folder");
+          halign: center;
+          valign: center;
+          action-name: "slot.search-visible";
+          icon-name: "nautilus-folder-search-symbolic";
+          active: bind template.window-slot as <$NautilusWindowSlot>.search-visible;
+        }
+
+        Adw.Bin search_button_placeholder {}
+      }
+    }
+
+    [start]
+    ToggleButton show_sidebar_button {
+      visible: bind template.show-sidebar-button bidirectional;
+      active: bind template.sidebar-button-active bidirectional;
+      tooltip-text: _("Show Sidebar");
+      icon-name: "sidebar-show-symbolic";
+    }
+
+    [start]
+    Stack history_controls_stack {
+      visible: bind template.show-history-controls;
+      hhomogeneous: true;
+      transition-type: crossfade;
+
+      $NautilusHistoryControls history_controls {
+        window-slot: bind template.window-slot;
+      }
+
+      Adw.Bin history_controls_placeholder {}
+    }
+
+    [end]
+    $NautilusViewControls {
+      visible: bind template.show-view-controls;
+      window-slot: bind template.window-slot;
+    }
+
+    [end]
+    Button new_folder_button {
+      visible: bind template.show-new-folder-button;
+      icon-name: "folder-new-symbolic";
+      tooltip-text: _("New Folder");
+      action-name: "view.new-folder";
+      focus-on-click: false;
+    }
+  }
+}

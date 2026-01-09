@@ -119,6 +119,7 @@ tinysparql = dependency('tinysparql-3.0', version: '>= 3.8')
 icu_dep = dependency('icu-uc', version: '>=56')
 icu_i18n_dep = dependency('icu-i18n', version: '>=56')
 
+blueprint_cmd = find_program('blueprint-compiler', required : true, version : '>= 0.19.0')
 gi_docgen = find_program('gi-docgen', required: get_option('docs'))
 gtk_x11 = dependency('gtk4-x11', required: false)
 gtk_wayland = dependency('gtk4-wayland', required: false)

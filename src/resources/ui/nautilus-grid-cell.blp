@@ -1,0 +1,81 @@
+using Gtk 4.0;
+
+template $NautilusGridCell: $NautilusViewCell {
+  valign: "start";
+
+  $NautilusImage icon {
+    halign: center;
+    valign: center;
+  }
+
+  Box emblems_box {
+    orientation: vertical;
+    halign: end;
+    spacing: 6;
+    margin-start: 2;
+
+    styles [
+      "dim-label",
+    ]
+  }
+
+  Box labels_box {
+    orientation: vertical;
+
+    styles [
+      "icon-ui-labels-box",
+    ]
+
+    Label label {
+      has-tooltip: true;
+      ellipsize: middle;
+      justify: center;
+      lines: 3;
+      wrap: true;
+      wrap-mode: word_char;
+      attributes: "0 -1 insert-hyphens false";
+      query-tooltip => $on_label_query_tooltip();
+      label: bind template.item as <$NautilusViewItem>.file as <$NautilusFile>.display-name;
+    }
+
+    Label first_caption {
+      ellipsize: end;
+      justify: center;
+      lines: 2;
+      wrap: true;
+      wrap-mode: word_char;
+      valign: start;
+
+      styles [
+        "caption",
+        "dim-label",
+      ]
+    }
+
+    Label second_caption {
+      ellipsize: end;
+      justify: center;
+      lines: 2;
+      wrap: true;
+      wrap-mode: word_char;
+
+      styles [
+        "caption",
+        "dim-label",
+      ]
+    }
+
+    Label third_caption {
+      ellipsize: end;
+      justify: center;
+      lines: 2;
+      wrap: true;
+      wrap-mode: word_char;
+
+      styles [
+        "caption",
+        "dim-label",
+      ]
+    }
+  }
+}

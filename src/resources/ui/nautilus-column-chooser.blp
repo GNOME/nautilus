@@ -1,0 +1,69 @@
+using Gtk 4.0;
+using Adw 1;
+
+template $NautilusColumnChooser: Adw.Dialog {
+  content-width: 360;
+  content-height: 480;
+  can-close: false;
+
+  child: Adw.ToolbarView {
+    [top]
+    Adw.HeaderBar {
+      title-widget: Adw.WindowTitle window_title {
+        title: _("Visible Columns");
+      };
+    }
+
+    content: Box {
+      orientation: vertical;
+
+      Adw.Banner banner {
+        title: _("This folder uses custom settings");
+        button-label: _("_Revert");
+        button-clicked => $use_default_clicked_callback();
+      }
+
+      Adw.PreferencesPage {
+        Adw.PreferencesGroup {
+          ListBox list_box {
+            selection-mode: none;
+
+            styles [
+              "boxed-list",
+            ]
+          }
+        }
+      }
+    };
+
+    [bottom]
+    ListBox use_custom_box {
+      selection-mode: none;
+
+      Adw.SwitchRow use_custom_row {
+        hexpand: true;
+        selectable: false;
+        title: _("_Only Apply to Current Folder");
+        use-underline: true;
+      }
+
+      styles [
+        "background",
+      ]
+    }
+  };
+}
+
+menu row_button_menu {
+  section {
+    item {
+      label: _("Move _Up");
+      action: "column-chooser.move-up";
+    }
+
+    item {
+      label: _("Move _Down");
+      action: "column-chooser.move-down";
+    }
+  }
+}

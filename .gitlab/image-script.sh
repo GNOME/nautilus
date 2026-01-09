@@ -44,4 +44,13 @@ dnf builddep -y libadwaita \
     && cd .. \
     && rm -rf libadwaita
 
+dnf builddep -y --allowerasing blueprint-compiler \
+    && git clone --depth 1 https://gitlab.gnome.org/GNOME/blueprint-compiler.git \
+    && cd blueprint-compiler \
+    && meson setup _build --prefix /usr \
+    && ninja -C _build \
+    && ninja install -C _build \
+    && cd .. \
+    && rm -rf blueprint-compiler
+
 dnf clean all

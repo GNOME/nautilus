@@ -1,11 +1,11 @@
 #!/usr/bin/env bash
 
 srcdirs="eel extensions src libnautilus-extension"
-uidirs="src/resources/ui src/gtk"
+uidirs="src/resources/ui"
 desktopdirs="data"
 
-# find source files that contain gettext keywords
-files=$(grep -lR --include='*.c' '\(gettext\|[^I_)]_\)(' $srcdirs)
+# Blueprint and C source files that contain gettext keywords
+files=$(grep -lR --include='*.blp' --include='*.c' '\(gettext\|[^I_)]_\)(' $srcdirs)
 
 # find ui files that contain translatable string
 files="$files "$(grep -lRi --include='*.ui' 'translatable="[ty1]' $uidirs)

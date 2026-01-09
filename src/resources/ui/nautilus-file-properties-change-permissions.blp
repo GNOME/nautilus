@@ -1,0 +1,84 @@
+using Gtk 4.0;
+using Adw 1;
+
+Adw.Dialog change_permissions_dialog {
+  title: _("Change Permissions for Enclosed Files");
+
+  child: Adw.ToolbarView toolbar_view {
+    [top]
+    Adw.HeaderBar {
+      show-start-title-buttons: false;
+      show-end-title-buttons: false;
+
+      [start]
+      Button cancel_button {
+        label: _("_Cancel");
+        use-underline: true;
+        can-shrink: true;
+      }
+
+      [end]
+      Button change_button {
+        label: _("C_hange");
+        use-underline: true;
+        can-shrink: true;
+
+        styles [
+          "suggested-action",
+        ]
+      }
+    }
+
+    content: Adw.PreferencesPage {
+      Adw.PreferencesGroup {
+        title: _("Owner");
+
+        Adw.ComboRow file_owner_combo_row {
+          title: _("_Files");
+          use-underline: true;
+        }
+
+        Adw.ComboRow folder_owner_combo_row {
+          title: _("F_olders");
+          use-underline: true;
+        }
+      }
+
+      Adw.PreferencesGroup {
+        title: _("Group");
+
+        Adw.ComboRow file_group_combo_row {
+          title: _("Fi_les");
+          use-underline: true;
+        }
+
+        Adw.ComboRow folder_group_combo_row {
+          title: _("Fol_ders");
+          use-underline: true;
+        }
+      }
+
+      Adw.PreferencesGroup {
+        title: _("Others");
+
+        Adw.ComboRow file_other_combo_row {
+          title: _("Fil_es");
+          use-underline: true;
+        }
+
+        Adw.ComboRow folder_other_combo_row {
+          title: _("Folde_rs");
+          use-underline: true;
+        }
+      }
+    };
+  };
+
+  ShortcutController {
+    scope: managed;
+
+    Shortcut esc_shortcut {
+      trigger: "Escape";
+    }
+  }
+}

@@ -1,0 +1,71 @@
+using Gtk 4.0;
+using Adw 1;
+
+template $NautilusProgressIndicator: Adw.Bin {
+  hexpand: true;
+
+  child: MenuButton operations_button {
+    tooltip-text: _("Show File Operations");
+    direction: right;
+
+    popover: Popover operations_popover {
+      position: bind template.popover-position;
+
+      child: ScrolledWindow {
+        hscrollbar-policy: never;
+        max-content-height: 270;
+        propagate-natural-height: true;
+
+        child: ListBox operations_list {
+          margin-start: 6;
+          margin-end: 6;
+          margin-top: 6;
+          margin-bottom: 6;
+          selection-mode: none;
+          activate-on-single-click: false;
+
+          styles [
+            "operations-list",
+          ]
+        };
+      };
+
+      notify::visible => $on_operations_popover_notify_visible(template);
+    };
+
+    styles [
+      "flat",
+    ]
+
+    child: ListView sidebar_list {
+      valign: center;
+
+      factory: BuilderListItemFactory {
+        template ListItem {
+          activatable: false;
+          focusable: false;
+          selectable: false;
+
+          child: Box {
+            spacing: 9;
+
+            Image progress_icon {
+              pixel-size: 14;
+              margin-start: 3;
+              paintable: bind $get_paintable(template.item) as <$GdkPaintable>;
+            }
+
+            Label {
+              ellipsize: end;
+              label: bind template.item as <$NautilusProgressInfo>.short-status;
+            }
+          };
+        }
+      };
+    };
+  };
+
+  styles [
+    "nautilus-progress-indicator",
+  ]
+}

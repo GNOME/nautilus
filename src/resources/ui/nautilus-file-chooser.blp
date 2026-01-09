@@ -1,0 +1,349 @@
+using Gtk 4.0;
+using Adw 1;
+
+template $NautilusFileChooser: Adw.Window {
+  width-request: 360;
+  height-request: 348;
+  default-widget: accept_button;
+
+  content: $NautilusShortcutManager {
+    child: Adw.ToastOverlay {
+      child: Adw.OverlaySplitView split_view {
+        max-sidebar-width: 240;
+        sidebar-width-unit: px;
+        sidebar-width-fraction: 0.2;
+
+        styles [
+          "view",
+        ]
+
+        sidebar: Adw.ToolbarView {
+          [top]
+          Adw.HeaderBar {
+            [start]
+            ToggleButton {
+              tooltip-text: _("Search Everywhere");
+              action-name: "slot.search-global";
+              icon-name: "edit-find-symbolic";
+            }
+
+            title-widget: Label title_widget {
+              ellipsize: end;
+              wrap: false;
+              single-line-mode: true;
+              width-chars: 5;
+              has-tooltip: true;
+              label: bind template.title no-sync-create;
+            };
+          }
+
+          content: $NautilusSidebar places_sidebar {
+            vexpand: "true";
+            window-slot: bind slot_container.child;
+          };
+        };
+
+        content: Adw.ToolbarView {
+          [top]
+          $NautilusToolbar toolbar {
+            show-history-controls: "true";
+            window-slot: bind slot_container.child;
+            show-new-folder-button: bind new_folder_button.visible;
+            show-view-controls: bind view_controls.visible;
+          }
+
+          content: Adw.Bin slot_container {};
+
+          [bottom]
+          Adw.MultiLayoutView bottom_toolbar {
+            Adw.Layout {
+              name: "wide";
+
+              content: CenterBox {
+                [start]
+                Box {
+                  styles [
+                    "toolbar",
+                  ]
+
+                  Adw.LayoutSlot {
+                    id: "filter-dropdown";
+                    visible: bind filters_dropdown.visible;
+                  }
+                }
+
+                [center]
+                Adw.LayoutSlot {
+                  id: "filename-widget";
+                }
+
+                [end]
+                Box {
+                  styles [
+                    "toolbar",
+                  ]
+
+                  Adw.LayoutSlot {
+                    id: "choices-menu-button";
+                    valign: center;
+                    visible: bind choices_menu_button.visible;
+                  }
+
+                  Adw.LayoutSlot {
+                    id: "accept-button";
+                  }
+                }
+              };
+            }
+
+            Adw.Layout {
+              name: "narrow";
+
+              content: Box {
+                orientation: vertical;
+
+                Adw.LayoutSlot {
+                  id: "filename-widget";
+                  visible: bind filename_widget.visible;
+
+                  styles [
+                    "toolbar",
+                    "no-bottom-padding",
+                  ]
+                }
+
+                CenterBox {
+                  [start]
+                  Box {
+                    valign: center;
+
+                    styles [
+                      "toolbar",
+                    ]
+
+                    ToggleButton {
+                      active: bind split_view.show-sidebar bidirectional;
+                      tooltip-text: _("Show Sidebar");
+                      icon-name: "sidebar-show-symbolic";
+
+                      ShortcutController {
+                        scope: managed;
+
+                        Shortcut {
+                          trigger: "F9";
+                          action: "activate";
+                        }
+                      }
+                    }
+
+                    Adw.LayoutSlot {
+                      id: "filter-dropdown";
+                      visible: bind filters_dropdown.visible;
+                    }
+                  }
+
+                  [center]
+                  Adw.LayoutSlot {
+                    id: "accept-button";
+                  }
+
+                  [end]
+                  Box {
+                    valign: center;
+
+                    styles [
+                      "toolbar",
+                    ]
+
+                    Button new_folder_button {
+                      visible: false;
+                      icon-name: "folder-new-symbolic";
+                      tooltip-text: _("New Folder");
+                      action-name: "view.new-folder";
+                      focus-on-click: false;
+                    }
+
+                    Adw.LayoutSlot {
+                      id: "choices-menu-button";
+                      visible: bind choices_menu_button.visible;
+                    }
+
+                    $NautilusViewControls view_controls {
+                      window-slot: bind slot_container.child;
+                    }
+                  }
+                }
+              };
+            }
+
+            [filename-widget]
+            Stack filename_widget {
+              Overlay filename_button_container {
+                valign: center;
+
+                Button {
+                  tooltip-text: _("Edit File Name");
+
+                  accessibility {
+                    labelled-by: [
+                      filename_label,
+                    ];
+                  }
+
+                  clicked => $open_filename_entry(template);
+
+                  child: CenterBox {
+                    [start]
+                    Adw.Bin filename_button_start {}
+
+                    [center]
+                    Label filename_label {
+                      label: bind filename_entry.text;
+                      ellipsize: middle;
+                    }
+
+                    [end]
+                    Image filename_button_end {
+                      margin-start: 12;
+                      icon-name: "document-edit-symbolic";
+                    }
+                  };
+                }
+
+                [overlay]
+                Button filename_undo_button {
+                  tooltip-text: _("Reset File Name");
+                  icon-name: "edit-undo-symbolic";
+                  visible: false;
+                  halign: start;
+                  clicked => $on_filename_undo_button_clicked(template);
+
+                  styles [
+                    "flat",
+                  ]
+                }
+              }
+
+              Entry filename_entry {
+                tooltip-text: _("File Name");
+                valign: center;
+                max-width-chars: 30;
+                activates-default: true;
+                changed => $on_filename_entry_changed(template);
+
+                EventControllerFocus {
+                  leave => $on_filename_entry_focus_leave(template);
+                }
+              }
+            }
+
+            [accept-button]
+            Button accept_button {
+              label: "_Select";
+              use-underline: true;
+              margin-top: 6;
+              margin-bottom: 6;
+              margin-start: 6;
+              margin-end: 6;
+              sensitive: bind $nautilus_file_chooser_can_accept(
+                slot_container.child as <$NautilusWindowSlot>.selection,
+                slot_container.child as <$NautilusWindowSlot>.location,
+                validator.passed
+                ) as <bool>;
+              clicked => $on_accept_button_clicked() swapped;
+
+              styles [
+                "pill",
+                "suggested-action",
+              ]
+            }
+
+            [choices-menu-button]
+            MenuButton choices_menu_button {
+              icon-name: "nautilus-file-chooser-options-symbolic";
+
+              /* Translators: 'Show' is a verb */
+              tooltip-text: C_("File Chooser tooltips", "Show Options");
+            }
+
+            [filter-dropdown]
+            DropDown filters_dropdown {
+              valign: center;
+              tooltip-text: _("Visible Files Filter");
+
+              factory: BuilderListItemFactory {
+                template ListItem {
+                  child: Label {
+                    xalign: 0;
+                    ellipsize: middle;
+                    label: bind template.item as <FileFilter>.name;
+                    width-chars: bind $get_filter_width_chars(template.item as <FileFilter>.name) as <int>;
+                  };
+                }
+              };
+
+              styles [
+                "flat-dropdown",
+              ]
+            }
+
+            DropTarget {
+              actions: copy;
+              formats: "GdkFileList";
+              drop => $on_file_drop();
+            }
+          }
+        };
+      };
+    };
+  };
+
+  Adw.Breakpoint breakpoint {
+    condition ("max-width: 682sp")
+
+    setters {
+      split_view.collapsed: true;
+      toolbar.show-new-folder-button: false;
+      toolbar.show-view-controls: false;
+      bottom_toolbar.layout-name: "narrow";
+      filters_dropdown.show-arrow: false;
+      filters_dropdown.factory: builder_list_item_image;
+    }
+  }
+
+  ShortcutController {
+    scope: managed;
+
+    Shortcut {
+      trigger: "Escape";
+      action: "action(window.close)";
+    }
+  }
+
+  styles [
+    "nautilus-file-chooser",
+  ]
+}
+
+$NautilusFilenameValidator validator {
+  allow-overwrite: "true";
+  new-name: bind filename_entry.text;
+  notify::has-feedback => $on_validator_has_feedback_changed() swapped;
+  notify::will-overwrite => $on_validator_will_overwrite_changed() swapped;
+}
+
+BuilderListItemFactory builder_list_item_image {
+  template ListItem {
+    child: Image {
+      icon-name: "funnel-outline-symbolic";
+    };
+  }
+}
+
+SizeGroup {
+  widgets [
+    filename_button_start,
+    filename_button_end,
+    filename_undo_button,
+  ]
+}

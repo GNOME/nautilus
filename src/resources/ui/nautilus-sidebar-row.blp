@@ -1,0 +1,74 @@
+using Gtk 4.0;
+using Adw 1;
+
+template $NautilusSidebarRow: ListBoxRow {
+  focus-on-click: false;
+
+  styles [
+    "sidebar-row",
+  ]
+
+  child: Revealer revealer {
+    reveal-child: true;
+    notify::child-revealed => $on_child_revealed();
+
+    styles [
+      "sidebar-revealer",
+    ]
+
+    Box {
+      Image start_icon_widget {
+        styles [
+          "sidebarrow-icon",
+        ]
+
+        accessibility {
+          labelled-by: [
+            label_widget,
+          ];
+        }
+      }
+
+      Label label_widget {
+        hexpand: true;
+        xalign: 0;
+        ellipsize: middle;
+
+        styles [
+          "sidebar-label",
+        ]
+      }
+
+      Image end_icon_widget {
+        visible: false;
+        hexpand: true;
+        halign: end;
+        valign: center;
+
+        styles [
+          "sidebarrow-icon",
+        ]
+      }
+
+      Button eject_button {
+        halign: center;
+        valign: center;
+        margin-start: 4;
+        icon-name: "media-eject-symbolic";
+
+        styles [
+          "sidebar-button",
+        ]
+      }
+
+      Adw.Spinner busy_spinner {
+        halign: center;
+        valign: center;
+        margin-start: 4;
+        margin-end: 4;
+        visible: false;
+        opacity: 0.7;
+      }
+    }
+  };
+}

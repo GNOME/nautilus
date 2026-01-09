@@ -1,0 +1,660 @@
+using Gtk 4.0;
+using Adw 1;
+
+template $NautilusPropertiesWindow: Adw.Window {
+  modal: true;
+  width-request: 360;
+  height-request: 294;
+  default-width: 480;
+
+  Adw.ToastOverlay toast_overlay {
+    child: Adw.NavigationView nav_view {
+      Adw.NavigationPage {
+        title: _("Properties");
+        tag: "main";
+
+        child: Adw.ToolbarView {
+          [top]
+          Adw.HeaderBar {
+            show-title: false;
+
+            [start]
+            Button star_button {
+              visible: false;
+              valign: start;
+              clicked => $star_clicked() swapped;
+
+              styles [
+                "star",
+              ]
+            }
+          }
+
+          content: Adw.PreferencesPage {
+            Adw.PreferencesGroup {
+              Box {
+                orientation: vertical;
+                spacing: 12;
+
+                CenterBox {
+                  [center]
+                  Stack icon_stack {
+                    halign: center;
+                    valign: start;
+                    hhomogeneous: false;
+                    vhomogeneous: false;
+
+                    StackPage {
+                      child: Image icon_image {
+                        icon-name: "image-missing";
+
+                        styles [
+                          "icon-dropshadow",
+                        ]
+
+                        accessibility {
+                          labelled-by: [
+                            name_value_label,
+                          ];
+                        }
+                      };
+                    }
+
+                    StackPage {
+                      child: Overlay icon_overlay {
+                        Frame {
+                          styles [
+                            "image-frame",
+                          ]
+
+                          Image {
+                            paintable: bind icon_image.paintable;
+                            pixel-size: bind icon_image.pixel-size;
+
+                            styles [
+                              "icon-dropshadow",
+                            ]
+                          }
+                        }
+
+                        [overlay]
+                        Adw.Bin {
+                          halign: end;
+                          valign: end;
+
+                          styles [
+                            "cutout",
+                            "background",
+                          ]
+
+                          child: Button select_icon_button {
+                            tooltip-text: _("Set Custom Icon");
+                            focusable: true;
+                            icon-name: "document-edit-symbolic";
+                            clicked => $select_image_button_callback();
+
+                            styles [
+                              "circular",
+                            ]
+                          };
+                        }
+
+                        [overlay]
+                        Adw.Bin {
+                          halign: end;
+                          valign: start;
+
+                          styles [
+                            "cutout",
+                            "background",
+                          ]
+
+                          child: Button reset_icon_button {
+                            tooltip-text: _("Remove Custom Icon");
+                            focusable: true;
+                            icon-name: "remove-custom-icon-symbolic";
+                            clicked => $reset_icon() swapped;
+
+                            styles [
+                              "circular",
+                            ]
+                          };
+                        }
+                      };
+                    }
+                  }
+                }
+
+                Box {
+                  orientation: vertical;
+                  spacing: 6;
+
+                  Label name_value_label {
+                    selectable: true;
+                    ellipsize: end;
+                    max-width-chars: 24;
+                    wrap: true;
+                    wrap-mode: word_char;
+                    lines: 3;
+                    justify: center;
+
+                    styles [
+                      "title-3",
+                    ]
+                  }
+
+                  Label type_value_label {
+                    ellipsize: end;
+                    selectable: true;
+                    visible: false;
+                  }
+
+                  Label type_file_system_label {
+                    ellipsize: end;
+                    label: _("Unknown Filesystem");
+                    selectable: true;
+                    visible: false;
+                  }
+
+                  Label size_value_label {
+                    visible: false;
+                    selectable: true;
+                    ellipsize: end;
+
+                    styles [
+                      "caption",
+                    ]
+                  }
+
+                  Box contents_box {
+                    halign: center;
+                    visible: false;
+                    spacing: 12;
+
+                    Label contents_value_label {
+                      selectable: true;
+                      ellipsize: end;
+                      justify: center;
+                    }
+
+                    Adw.Spinner contents_spinner {
+                      visible: false;
+                    }
+                  }
+
+                  Label free_space_value_label {
+                    visible: false;
+                    selectable: true;
+                    ellipsize: end;
+                    max-width-chars: 24;
+
+                    styles [
+                      "caption",
+                    ]
+                  }
+                }
+              }
+            }
+
+            Adw.PreferencesGroup disk_group {
+              visible: false;
+
+              Adw.PreferencesRow volume_usage_row {
+                activatable: false;
+                selectable: false;
+
+                Box {
+                  margin-bottom: 12;
+                  margin-end: 12;
+                  margin-start: 12;
+                  margin-top: 18;
+                  spacing: 12;
+                  orientation: vertical;
+
+                  LevelBar disk_space_level_bar {
+                    hexpand: true;
+                  }
+
+                  Box {
+                    spacing: 12;
+                    halign: center;
+
+                    Box {
+                      spacing: 3;
+
+                      Label disk_space_capacity_value {
+                        styles [
+                          "dim-label",
+                        ]
+                      }
+
+                      Label {
+                        label: _("total");
+
+                        styles [
+                          "dim-label",
+                        ]
+                      }
+                    }
+
+                    Box {
+                      spacing: 3;
+
+                      Label {
+                        label: "●";
+                        accessible-role: presentation;
+
+                        styles [
+                          "disk-space-used",
+                        ]
+                      }
+
+                      Label disk_space_used_value {
+                        styles [
+                          "caption-style",
+                          "dim-label",
+                        ]
+                      }
+
+                      Label {
+                        /* Translators: Refers to the capacity of the filesystem */
+                        label: _("used");
+
+                        styles [
+                          "caption-style",
+                          "dim-label",
+                        ]
+                      }
+                    }
+
+                    Box {
+                      spacing: 3;
+
+                      Label {
+                        label: "●";
+                        accessible-role: presentation;
+
+                        styles [
+                          "disk-space-free",
+                        ]
+                      }
+
+                      Label disk_space_free_value {
+                        styles [
+                          "caption-style",
+                          "dim-label",
+                        ]
+                      }
+
+                      Label {
+                        /* Translators: Refers to the capacity of the filesystem */
+                        label: _("free");
+
+                        styles [
+                          "caption-style",
+                          "dim-label",
+                        ]
+                      }
+                    }
+                  }
+                }
+              }
+
+              Adw.ButtonRow open_in_disks_button_row {
+                /* Translators: Disks refers to GNOME Disks. */
+                title: _("_Open in Disks");
+                end-icon-name: "external-link-symbolic";
+                use-underline: true;
+                activated => $open_in_disks(template);
+              }
+            }
+
+            Adw.PreferencesGroup locations_group {
+              visible: false;
+
+              Adw.ActionRow link_target_row {
+                title: _("_Link Target");
+                visible: false;
+                selectable: false;
+                subtitle-selectable: true;
+                use-underline: true;
+                use-markup: false;
+
+                styles [
+                  "property",
+                ]
+
+                activate => $open_link_target() swapped;
+
+                [suffix]
+                Button open_link_target_button {
+                  tooltip-text: _("Open the Target's Location");
+                  icon-name: "folder-open-symbolic";
+                  valign: center;
+                  clicked => $open_link_target() swapped;
+
+                  styles [
+                    "flat",
+                  ]
+                }
+              }
+
+              Adw.ActionRow parent_folder_row {
+                title: _("Parent _Folder");
+                visible: false;
+                selectable: false;
+                subtitle-selectable: true;
+                use-underline: true;
+                use-markup: false;
+
+                styles [
+                  "property",
+                ]
+
+                activate => $open_parent_folder() swapped;
+
+                [suffix]
+                Button open_parent_folder_button {
+                  tooltip-text: _("Open Parent Folder");
+                  icon-name: "folder-open-symbolic";
+                  valign: center;
+                  clicked => $open_parent_folder() swapped;
+
+                  styles [
+                    "flat",
+                  ]
+                }
+              }
+            }
+
+            Adw.PreferencesGroup trashed_group {
+              visible: false;
+
+              Adw.ActionRow original_folder_row {
+                title: _("Original Folder");
+                selectable: false;
+                subtitle-selectable: true;
+                use-markup: false;
+
+                styles [
+                  "property",
+                ]
+              }
+
+              Adw.ActionRow trashed_on_row {
+                title: _("Trashed On");
+                selectable: false;
+                subtitle-selectable: true;
+                subtitle-lines: 1;
+                use-markup: false;
+
+                styles [
+                  "property",
+                  "numeric",
+                ]
+              }
+            }
+
+            Adw.PreferencesGroup times_group {
+              visible: false;
+
+              Adw.ActionRow accessed_row {
+                title: _("Accessed");
+                visible: false;
+                selectable: false;
+                subtitle-selectable: true;
+                subtitle-lines: 1;
+                use-markup: false;
+
+                styles [
+                  "property",
+                  "numeric",
+                ]
+              }
+
+              Adw.ActionRow modified_row {
+                title: _("Modified");
+                visible: false;
+                selectable: false;
+                subtitle-selectable: true;
+                subtitle-lines: 1;
+                use-markup: false;
+
+                styles [
+                  "property",
+                  "numeric",
+                ]
+              }
+
+              Adw.ActionRow created_row {
+                title: _("Created");
+                visible: false;
+                selectable: false;
+                subtitle-selectable: true;
+                subtitle-lines: 1;
+                use-markup: false;
+
+                styles [
+                  "property",
+                  "numeric",
+                ]
+              }
+            }
+
+            Adw.PreferencesGroup {
+              Adw.ActionRow permissions_navigation_row {
+                activatable: true;
+                selectable: false;
+                title: _("_Permissions");
+                use-underline: true;
+                activated => $navigate_permissions_page(template);
+
+                Label permissions_value_label {
+                  ellipsize: end;
+
+                  styles [
+                    "dim-label",
+                  ]
+                }
+
+                Image {
+                  icon-name: "go-next-symbolic";
+                }
+              }
+
+              Adw.SwitchRow execution_row {
+                visible: false;
+                activatable: true;
+                title: _("_Executable as Program");
+                use-underline: true;
+              }
+            }
+
+            Adw.PreferencesGroup extension_models_group {
+              visible: false;
+
+              ListBox extension_models_list_box {
+                selection-mode: none;
+
+                styles [
+                  "boxed-list",
+                ]
+              }
+            }
+          };
+        };
+      }
+
+      Adw.NavigationPage {
+        tag: "permissions";
+        title: _("Set Custom Permissions");
+
+        child: Adw.ToolbarView {
+          [top]
+          Adw.HeaderBar {}
+
+          content: Stack permissions_stack {
+            StackPage {
+              name: "permission-indeterminable";
+
+              child: Adw.StatusPage unknown_permissions_page {
+                icon-name: "dialog-error-symbolic";
+                title: _("Unknown Permissions");
+                description: _("The permissions of the selected files could not be determined");
+              };
+            }
+
+            StackPage {
+              name: "permissions-box";
+
+              child: Box {
+                orientation: vertical;
+
+                Adw.Banner owner_permission_banner {
+                  title: _("Only the owner can edit these permissions");
+                }
+
+                Adw.PreferencesPage {
+                  Adw.PreferencesGroup {
+                    Adw.ComboRow owner_row {
+                      activatable: false;
+                      title: _("_Owner");
+                      use-underline: true;
+                      use-markup: false;
+                      expression: expr item as <StringObject>.string;
+                    }
+
+                    Adw.ComboRow owner_access_row {
+                      visible: false;
+                      activatable: false;
+                      title: _("Access");
+                      use-markup: false;
+                    }
+
+                    Adw.ComboRow owner_folder_access_row {
+                      visible: false;
+                      activatable: false;
+                      title: _("Folder Access");
+                      use-markup: false;
+                    }
+
+                    Adw.ComboRow owner_file_access_row {
+                      visible: false;
+                      activatable: false;
+                      title: _("File Access");
+                      use-markup: false;
+                    }
+                  }
+
+                  Adw.PreferencesGroup {
+                    Adw.ComboRow group_row {
+                      sensitive: false;
+                      activatable: false;
+                      title: _("_Group");
+                      use-underline: true;
+                      use-markup: false;
+                      expression: expr item as <StringObject>.string;
+                    }
+
+                    Adw.ComboRow group_access_row {
+                      visible: false;
+                      activatable: false;
+                      title: _("Access");
+                      use-markup: false;
+                    }
+
+                    Adw.ComboRow group_folder_access_row {
+                      visible: false;
+                      activatable: false;
+                      title: _("Folder Access");
+                      use-markup: false;
+                    }
+
+                    Adw.ComboRow group_file_access_row {
+                      visible: false;
+                      activatable: false;
+                      title: _("File Access");
+                      use-markup: false;
+                    }
+                  }
+
+                  Adw.PreferencesGroup {
+                    title: _("Other Users");
+
+                    Adw.ComboRow others_access_row {
+                      visible: false;
+                      activatable: false;
+                      title: _("Access");
+                      use-markup: false;
+                    }
+
+                    Adw.ComboRow others_folder_access_row {
+                      visible: false;
+                      activatable: false;
+                      title: _("Folder Access");
+                      use-markup: false;
+                    }
+
+                    Adw.ComboRow others_file_access_row {
+                      visible: false;
+                      activatable: false;
+                      title: _("File Access");
+                      use-markup: false;
+                    }
+                  }
+
+                  Adw.PreferencesGroup security_context_group {
+                    visible: false;
+
+                    Adw.ActionRow security_context_row {
+                      title: _("Security Context");
+                      selectable: false;
+                      subtitle-selectable: true;
+                      subtitle-lines: 1;
+                      use-markup: false;
+
+                      styles [
+                        "property",
+                      ]
+                    }
+                  }
+
+                  Adw.PreferencesGroup change_permissions_enclosed_files_group {
+                    visible: false;
+
+                    Adw.ButtonRow {
+                      title: _("Change Permissions for _Enclosed Files…");
+                      use-underline: true;
+                      activated => $on_change_permissions_clicked(template);
+                    }
+                  }
+                }
+              };
+            }
+          };
+        };
+      }
+
+      Adw.NavigationPage {
+        tag: "extension";
+
+        child: Adw.ToolbarView {
+          [top]
+          Adw.HeaderBar {}
+
+          content: Adw.PreferencesPage {
+            Adw.PreferencesGroup {
+              ListBox extension_list_box {
+                selection-mode: none;
+
+                styles [
+                  "boxed-list",
+                ]
+              }
+            }
+          };
+        };
+      }
+    };
+  }
+}

@@ -1,0 +1,433 @@
+using Gtk 4.0;
+using Adw 1;
+using Gio 2.0;
+
+menu add_tag_menu {
+  section {
+    label: _("Automatic Numbers");
+
+    item {
+      label: _("1, 2, 3, 4");
+      action: "dialog.add-numbering-no-zero-pad-tag";
+    }
+
+    item {
+      label: _("01, 02, 03, 04");
+      action: "dialog.add-numbering-one-zero-pad-tag";
+    }
+
+    item {
+      label: _("001, 002, 003, 004");
+      action: "dialog.add-numbering-two-zero-pad-tag";
+    }
+  }
+
+  section {
+    label: _("Metadata");
+
+    item {
+      label: _("Creation Date");
+      action: "dialog.add-creation-date-tag";
+      hidden-when: "action-disabled";
+    }
+
+    item {
+      label: _("Camera Model");
+      action: "dialog.add-equipment-tag";
+      hidden-when: "action-disabled";
+    }
+
+    item {
+      label: _("Season Number");
+      action: "dialog.add-season-number-tag";
+      hidden-when: "action-disabled";
+    }
+
+    item {
+      label: _("Episode Number");
+      action: "dialog.add-episode-number-tag";
+      hidden-when: "action-disabled";
+    }
+
+    item {
+      label: _("Track Number");
+      action: "dialog.add-track-number-tag";
+      hidden-when: "action-disabled";
+    }
+
+    item {
+      label: _("Artist Name");
+      action: "dialog.add-artist-name-tag";
+      hidden-when: "action-disabled";
+    }
+
+    item {
+      label: _("Title");
+      action: "dialog.add-title-tag";
+      hidden-when: "action-disabled";
+    }
+
+    item {
+      label: _("Album Name");
+      action: "dialog.add-album-name-tag";
+      hidden-when: "action-disabled";
+    }
+  }
+
+  section {
+    item {
+      label: _("Original File Name");
+      action: "dialog.add-original-file-name-tag";
+    }
+  }
+}
+
+menu numbering_order_menu {
+  section {
+    item {
+      label: _("Original Name (Ascending)");
+      action: "dialog.numbering-order-changed";
+      target: "name-ascending";
+    }
+
+    item {
+      label: _("Original Name (Descending)");
+      action: "dialog.numbering-order-changed";
+      target: "name-descending";
+    }
+
+    item {
+      label: _("First Modified");
+      action: "dialog.numbering-order-changed";
+      target: "first-modified";
+    }
+
+    item {
+      label: _("Last Modified");
+      action: "dialog.numbering-order-changed";
+      target: "last-modified";
+    }
+  }
+}
+
+template $NautilusBatchRenameDialog: Adw.Dialog {
+  width-request: 360;
+  height-request: 300;
+  content-height: 600;
+  content-width: 600;
+
+  Adw.Breakpoint narrow_breakpoint {
+    condition ("max-width: 480sp")
+
+    setters {
+      stack_switcher.halign: start;
+      stack_switcher.orientation: vertical;
+      numbering_box.orientation: vertical;
+    }
+  }
+
+  child: Adw.ToolbarView toolbar_view {
+    reveal-bottom-bars: false;
+    bottom-bar-style: raised;
+
+    [top]
+    Adw.HeaderBar {
+      show-start-title-buttons: false;
+      show-end-title-buttons: false;
+
+      [start]
+      Button {
+        label: _("_Cancel");
+        use-underline: true;
+        clicked => $batch_rename_dialog_on_cancel() swapped;
+      }
+
+      [end]
+      Button rename_button {
+        label: _("_Rename");
+        use-underline: true;
+        clicked => $prepare_batch_rename() swapped;
+
+        styles [
+          "suggested-action",
+        ]
+      }
+    }
+
+    content: Box {
+      Box {
+        orientation: vertical;
+        spacing: 6;
+        hexpand: true;
+
+        Box stack_switcher {
+          orientation: horizontal;
+          spacing: 12;
+          hexpand: true;
+          halign: center;
+          margin-top: 18;
+          margin-bottom: 18;
+          margin-start: 12;
+          margin-end: 12;
+
+          CheckButton format_mode_button {
+            label: _("Rename _using a template");
+            use-underline: true;
+            active: true;
+            toggled => $batch_rename_dialog_mode_changed() swapped;
+          }
+
+          CheckButton replace_mode_button {
+            label: _("Find and replace _text");
+            use-underline: true;
+            group: format_mode_button;
+            toggled => $batch_rename_dialog_mode_changed() swapped;
+          }
+        }
+
+        Stack mode_stack {
+          vhomogeneous: false;
+          hhomogeneous: true;
+          transition-type: crossfade;
+          transition-duration: 100;
+
+          StackPage {
+            name: "format";
+
+            /* Translators: Translators: This is a noun, not a verb */
+            title: _("Format");
+
+            child: Box {
+              orientation: vertical;
+              margin-start: 18;
+              margin-end: 18;
+              margin-bottom: 12;
+              spacing: 12;
+
+              Adw.Clamp {
+                child: Box {
+                  Entry name_entry {
+                    hexpand: true;
+                    activates-default: true;
+                    activate => $file_names_widget_on_activate() swapped;
+                  }
+
+                  MenuButton {
+                    menu-model: add_tag_menu;
+
+                    child: Adw.ButtonContent {
+                      icon-name: "list-add-symbolic";
+                      label: _("Add");
+                    };
+                  }
+
+                  styles [
+                    "linked",
+                  ]
+                };
+              }
+
+              Revealer numbering_revealer {
+                halign: center;
+
+                child: Box numbering_box {
+                  orientation: horizontal;
+                  spacing: 12;
+
+                  Label numbering_label {
+                    label: _("Automatic Numbering Order");
+                  }
+
+                  MenuButton numbering_order_button {
+                    label: _("Original Name (Ascending)");
+                    menu-model: numbering_order_menu;
+                    always-show-arrow: true;
+                  }
+                };
+              }
+            };
+          }
+
+          StackPage {
+            name: "replace";
+            title: C_("title", "Replace");
+
+            child: Adw.Clamp {
+              child: Grid replace_stack_child {
+                margin-start: 18;
+                margin-end: 18;
+                margin-bottom: 12;
+                hexpand: true;
+                row-spacing: 12;
+                column-spacing: 6;
+
+                Label existing_text_label {
+                  label: _("Existing Text");
+                  sensitive: false;
+
+                  layout {
+                    column: "0";
+                    row: "0";
+                  }
+                }
+
+                Entry find_entry {
+                  hexpand: true;
+                  activates-default: true;
+                  changed => $file_names_widget_entry_on_changed() swapped;
+                  activate => $file_names_widget_on_activate() swapped;
+
+                  layout {
+                    column: "1";
+                    row: "0";
+                    column-span: "3";
+                  }
+
+                  accessibility {
+                    labelled-by: [
+                      existing_text_label,
+                    ];
+                  }
+                }
+
+                Label replace_label {
+                  label: _("Replace With");
+                  sensitive: false;
+
+                  layout {
+                    column: "0";
+                    row: "1";
+                  }
+                }
+
+                Entry replace_entry {
+                  hexpand: true;
+                  changed => $file_names_widget_entry_on_changed() swapped;
+                  activate => $file_names_widget_on_activate() swapped;
+
+                  layout {
+                    column: "1";
+                    row: "1";
+                    column-span: "3";
+                  }
+
+                  accessibility {
+                    labelled-by: [
+                      replace_label,
+                    ];
+                  }
+                }
+              };
+            };
+          }
+        }
+
+        ScrolledWindow scrolled_window {
+          hexpand: false;
+          vexpand: true;
+          max-content-height: 300;
+          min-content-height: 240;
+          max-content-width: 600;
+          min-content-width: 360;
+
+          styles [
+            "batch-rename-preview",
+          ]
+
+          child: ListView batch_listview {
+            factory: BuilderListItemFactory {
+              template ListItem {
+                child: Box batch_row {
+                  orientation: bind $batch_row_orientation(
+                    template.item as <ListItem>
+                      .item as <$NautilusBatchRenameItem>
+                      .dialog as <$NautilusBatchRenameDialog>
+                      .current-breakpoint,
+                    template.item as <$NautilusBatchRenameItem>.dialog
+                    ) as <Orientation>;
+                  spacing: 6;
+                  css-classes: bind $batch_row_conflict_css_name(
+                    template.item as <$NautilusBatchRenameItem>.has-conflict
+                    ) as <$GStrv>;
+
+                  Label original_name_label {
+                    hexpand: true;
+                    xalign: 0;
+                    use-markup: true;
+                    ellipsize: end;
+                    label: bind template.item as <$NautilusBatchRenameItem>.name-before;
+                    tooltip-markup: bind template.item as <$NautilusBatchRenameItem>.name-before;
+                  }
+
+                  Box {
+                    orientation: horizontal;
+                    spacing: 6;
+
+                    Image {
+                      icon-name: "arrow-next-symbolic";
+                    }
+
+                    Label result_label {
+                      hexpand: true;
+                      xalign: 0;
+                      use-markup: true;
+                      ellipsize: end;
+                      label: bind template.item as <$NautilusBatchRenameItem>.name-after;
+                      tooltip-markup: bind template.item as <$NautilusBatchRenameItem>.name-after;
+                    }
+                  }
+                };
+              }
+            };
+
+            show-separators: true;
+
+            model: NoSelection {
+              model: Gio.ListStore batch_listmodel {
+                item-type: typeof<$NautilusBatchRenameItem>;
+              };
+            };
+          };
+        }
+      }
+    };
+
+    [bottom]
+    Box {
+      styles [
+        "toolbar",
+      ]
+
+      Label conflict_label {
+        hexpand: true;
+        xalign: 0;
+      }
+
+      Box {
+        Button conflict_down {
+          icon-name: "go-down-symbolic";
+          tooltip-text: _("Next Conflict");
+          clicked => $select_next_conflict_down() swapped;
+
+          styles [
+            "flat",
+          ]
+        }
+
+        Button conflict_up {
+          icon-name: "go-up-symbolic";
+          tooltip-text: _("Previous Conflict");
+          clicked => $select_next_conflict_up() swapped;
+
+          styles [
+            "flat",
+          ]
+        }
+      }
+    }
+  };
+}
+
+Image done_image {
+  icon-name: "object-select-symbolic";
+}

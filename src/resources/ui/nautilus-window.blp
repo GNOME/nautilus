@@ -1,0 +1,212 @@
+using Gtk 4.0;
+using Adw 1;
+
+menu app_menu {
+  section {
+    item {
+      label: _("New _Window");
+      action: "app.clone-window";
+      verb-icon: "window-new-symbolic";
+    }
+
+    item {
+      label: _("New _Tab");
+      action: "win.new-tab";
+      verb-icon: "tab-new-symbolic";
+    }
+  }
+
+  section undo_redo_section {
+    item {
+      label: _("_Undo");
+      action: "win.undo";
+    }
+
+    item {
+      label: _("_Redo");
+      action: "win.redo";
+    }
+  }
+
+  section {
+    item {
+      label: _("_Preferences");
+      action: "app.preferences";
+    }
+
+    item {
+      label: _("_Keyboard Shortcuts");
+      action: "app.shortcuts";
+    }
+
+    item {
+      label: _("_Help");
+      action: "app.help";
+    }
+
+    item {
+      label: _("_About Files");
+      action: "app.about";
+    }
+  }
+}
+
+menu tab_menu_model {
+  section {
+    item {
+      label: _("_New Tab");
+      action: "win.new-tab";
+    }
+
+    item {
+      label: _("Re_store Closed Tab");
+      action: "win.restore-tab";
+    }
+  }
+
+  section {
+    item {
+      label: _("Move Tab to New _Window");
+      action: "win.tab-move-new-window";
+    }
+
+    item {
+      /* Translators: use “Move Tab _Right” for RTL languages */
+      label: _("Move Tab _Left");
+      action: "win.tab-move-left";
+    }
+
+    item {
+      /* Translators: use “Move Tab _Left” for RTL languages */
+      label: _("Move Tab _Right");
+      action: "win.tab-move-right";
+    }
+  }
+
+  section {
+    item {
+      label: _("_Close Tab");
+      action: "win.close-current-view";
+    }
+
+    item {
+      label: _("Close _Other Tabs");
+      action: "win.close-other-tabs";
+    }
+  }
+}
+
+template $NautilusWindow: Adw.ApplicationWindow {
+  height-request: 380;
+  show-menubar: false;
+  title: bind template.active-slot as <$NautilusWindowSlot>.title;
+
+  styles [
+    "view",
+  ]
+
+  $NautilusShortcutManager {
+    child: Adw.ToastOverlay toast_overlay {
+      child: Adw.OverlaySplitView split_view {
+        enable-show-gesture: false;
+        enable-hide-gesture: false;
+        max-sidebar-width: 240;
+        sidebar-width-unit: px;
+        sidebar-width-fraction: 0.2;
+
+        sidebar: Adw.ToolbarView {
+          reveal-bottom-bars: bind progress_indicator.reveal;
+
+          [top]
+          Adw.HeaderBar {
+            [start]
+            ToggleButton {
+              tooltip-text: _("Search Everywhere");
+              action-name: "slot.search-global";
+              icon-name: "edit-find-symbolic";
+            }
+
+            title-widget: Adw.WindowTitle {
+              title: _("Files");
+            };
+
+            [end]
+            MenuButton {
+              tooltip-text: _("Main Menu");
+              icon-name: "open-menu-symbolic";
+              menu-model: app_menu;
+            }
+          }
+
+          [bottom]
+          Box {
+            styles [
+              "toolbar",
+            ]
+
+            $NautilusProgressIndicator progress_indicator {}
+          }
+
+          content: $NautilusSidebar places_sidebar {
+            vexpand: true;
+            window-slot: bind template.active-slot;
+          };
+        };
+
+        content: Adw.ToolbarView {
+          [top]
+          $NautilusToolbar toolbar {
+            show-view-controls: true;
+            show-history-controls: true;
+            sidebar-button-active: bind split_view.show-sidebar bidirectional;
+            window-slot: bind template.active-slot;
+          }
+
+          [top]
+          Adw.TabBar tab_bar {
+            view: tab_view;
+          }
+
+          content: Adw.TabView tab_view {
+            menu-model: tab_menu_model;
+          };
+
+          [bottom]
+          $NautilusNetworkAddressBar network_address_bar {
+            visible: false;
+          }
+
+          [bottom]
+          ActionBar action_bar {
+            revealed: false;
+
+            [start]
+            $NautilusHistoryControls {
+              window-slot: bind template.active-slot;
+            }
+
+            [end]
+            $NautilusViewControls {
+              window-slot: bind template.active-slot;
+            }
+          }
+        };
+      };
+    };
+  }
+
+  Adw.Breakpoint {
+    condition ("max-width: 682sp")
+
+    setters {
+      split_view.collapsed: true;
+      split_view.enable-show-gesture: true;
+      split_view.enable-hide-gesture: true;
+      toolbar.show-sidebar-button: true;
+      toolbar.show-view-controls: false;
+      toolbar.show-history-controls: false;
+      action_bar.revealed: true;
+      progress_indicator.popover-position: 2;
+    }
+  }
+}
