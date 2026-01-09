@@ -34,6 +34,7 @@
             <property name="lines">3</property>
             <property name="wrap">True</property>
             <property name="wrap-mode">word-char</property>
+            <property name="attributes">0 -1 insert-hyphens false</property>
             <signal name="query-tooltip" handler="on_label_query_tooltip"/>
             <binding name="label">
               <lookup name="display-name" type="NautilusFile">
@@ -42,9 +43,6 @@
                 </lookup>
               </lookup>
             </binding>
-            <attributes>
-              <attribute name="insert-hyphens" value="false"/>
-            </attributes>
           </object>
         </child>
         <child>
