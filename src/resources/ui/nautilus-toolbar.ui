@@ -70,7 +70,7 @@
                     <property name="action_name">slot.search-visible</property>
                     <property name="icon_name">nautilus-folder-search-symbolic</property>
                     <binding name="active">
-                      <lookup name="search-visible">
+                      <lookup name="search-visible" type="NautilusWindowSlot">
                         <lookup name="window-slot">NautilusToolbar</lookup>
                       </lookup>
                     </binding>

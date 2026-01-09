@@ -61,8 +61,8 @@
                         <property name="has-tooltip">true</property>
                         <signal name="query-tooltip" handler="on_label_query_tooltip"/>
                         <binding name="label">
-                          <lookup name="display-name">
-                            <lookup name="file">
+                          <lookup name="display-name" type="NautilusFile">
+                            <lookup name="file" type="NautilusViewItem">
                               <lookup name="item">NautilusNameCell</lookup>
                             </lookup>
                           </lookup>

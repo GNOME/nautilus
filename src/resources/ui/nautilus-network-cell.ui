@@ -29,8 +29,8 @@
                 <property name="max-width-chars">-1</property>
                 <property name="xalign">0.0</property>
                 <binding name="label">
-                  <lookup name="display-name">
-                    <lookup name="file">
+                  <lookup name="display-name" type="NautilusFile">
+                    <lookup name="file" type="NautilusViewItem">
                       <lookup name="item">NautilusNetworkCell</lookup>
                     </lookup>
                   </lookup>
@@ -59,7 +59,7 @@
         <child>
           <object class="AdwSpinner" id="spinner">
             <binding name="visible">
-              <lookup name="loading">
+              <lookup name="loading" type="NautilusViewItem">
                 <lookup name="item">NautilusNetworkCell</lookup>
               </lookup>
             </binding>
