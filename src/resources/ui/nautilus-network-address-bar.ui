@@ -14,11 +14,8 @@
           <object class="GtkLabel">
             <property name="hexpand">true</property>
             <property name="label" translatable="yes">Server Addresses</property>
-            <attributes>
-              <attribute name="weight" value="bold"></attribute>
-            </attributes>
             <style>
-              <class name="dim-label"/>
+              <class name="title-4"/>
             </style>
           </object>
         </child>
@@ -53,9 +50,9 @@
                 <property name="hexpand">true</property>
                 <property name="label" translatable="yes">Available Protocols</property>
                 <property name="xalign">0</property>
-                <attributes>
-                  <attribute name="weight" value="bold"></attribute>
-                </attributes>
+                <style>
+                  <class name="heading"/>
+                </style>
                 <layout>
                   <property name="column">0</property>
                   <property name="row">0</property>
@@ -66,9 +63,9 @@
               <object class="GtkLabel">
                 <property name="label" translatable="yes">Prefix</property>
                 <property name="xalign">0</property>
-                <attributes>
-                  <attribute name="weight" value="bold"></attribute>
-                </attributes>
+                <style>
+                  <class name="heading"/>
+                </style>
                 <layout>
                   <property name="column">1</property>
                   <property name="row">0</property>
