@@ -1,0 +1,127 @@
+using Gtk 4.0;
+using Adw 1;
+
+Adw.PreferencesDialog preferences_dialog {
+  search-enabled: true;
+
+  Adw.PreferencesPage {
+    title: _("General");
+
+    Adw.PreferencesGroup {
+      title: _("General");
+
+      Adw.SwitchRow sort_folders_first_row {
+        title: _("Sort _Folders Before Files");
+        use-underline: true;
+      }
+
+      Adw.SwitchRow use_tree_view_row {
+        title: _("_Expandable Folders in List View");
+        use-underline: true;
+      }
+
+      Adw.ComboRow open_action_row {
+        title: _("_Action to Open Items");
+        use-underline: true;
+      }
+    }
+
+    Adw.PreferencesGroup {
+      title: _("Optional Context Menu Actions");
+      description: _(
+        "Show more actions in the menus. Keyboard shortcuts can be used even if the actions are not shown."
+      );
+
+      Adw.SwitchRow show_create_link_row {
+        title: _("Create _Link");
+        use-underline: true;
+      }
+
+      Adw.SwitchRow show_delete_permanently_row {
+        title: _("_Delete Permanently");
+        use-underline: true;
+      }
+    }
+
+    Adw.PreferencesGroup {
+      title: _("Performance");
+      description: _(
+        "These features may cause slowdowns and excess network usage, especially when browsing files outside this device, such as on a remote server."
+      );
+
+      Adw.ComboRow search_recursive_row {
+        title: _("Search in Su_bfolders");
+        use-underline: true;
+      }
+
+      Adw.ComboRow thumbnails_row {
+        title: _("Show _Thumbnails");
+        use-underline: true;
+      }
+
+      Adw.ComboRow count_row {
+        title: _("_Count Number of Files in Folders");
+        use-underline: true;
+      }
+    }
+
+    Adw.PreferencesGroup {
+      title: _("Date and Time Format");
+      description: _("Choose how dates and times are displayed in list and grid views.");
+
+      Adw.ActionRow date_format_simple_row {
+        title: _("_Simple");
+        use-underline: true;
+
+        [prefix]
+        CheckButton date_format_simple_button {
+          valign: center;
+          action-name: "preferences.date-time-format";
+          action-target: "'simple'";
+        }
+
+        activatable-widget: date_format_simple_button;
+      }
+
+      Adw.ActionRow date_format_detailed_row {
+        title: _("Deta_iled");
+        use-underline: true;
+
+        [prefix]
+        CheckButton date_format_detailed_button {
+          group: date_format_simple_button;
+          valign: center;
+          action-name: "preferences.date-time-format";
+          action-target: "'detailed'";
+        }
+
+        activatable-widget: date_format_detailed_button;
+      }
+    }
+
+    Adw.PreferencesGroup {
+      description: _(
+        "Add information to be displayed beneath file and folder names. More information will appear when zooming closer."
+      );
+      title: _("Grid View Captions");
+
+      Adw.ComboRow captions_0_comborow {
+        /* Translators: This is an ordinal number */
+        title: C_("the n-th position of an icon caption", "Fi_rst");
+        use-underline: true;
+      }
+
+      Adw.ComboRow captions_1_comborow {
+        /* Translators: This is an ordinal number */
+        title: C_("the n-th position of an icon caption", "Seco_nd");
+        use-underline: true;
+      }
+
+      Adw.ComboRow captions_2_comborow {
+        /* Translators: This is an ordinal number */
+        title: C_("the n-th position of an icon caption", "T_hird");
+        use-underline: true;
+      }
+    }
+  }
+}

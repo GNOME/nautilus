@@ -1,0 +1,19 @@
+using Gtk 4.0;
+using Adw 1;
+
+Adw.AlertDialog request_passphrase_dialog {
+  heading: _("Password Required");
+  default-response: "extract";
+  close-response: "cancel";
+
+  extra-child: PasswordEntry entry {
+    activates-default: true;
+    placeholder-text: _("Enter password…");
+    show-peek-icon: true;
+  };
+
+  responses [
+    cancel: _("_Cancel"),
+    extract: _("Extract") suggested,
+  ]
+}

@@ -1,0 +1,310 @@
+using Gtk 4.0;
+using Adw 1;
+
+template $NautilusSearchPopover: Popover {
+  child: ScrolledWindow {
+    propagate-natural-height: true;
+    propagate-natural-width: true;
+
+    child: Box {
+      orientation: vertical;
+      spacing: 12;
+      margin-top: 12;
+      margin-bottom: 12;
+      margin-start: 12;
+      margin-end: 12;
+
+      Box {
+        orientation: vertical;
+        spacing: 6;
+
+        Label type_header {
+          label: _("File Types");
+          hexpand: true;
+          xalign: 0;
+          valign: baseline;
+
+          styles [
+            "heading",
+          ]
+        }
+
+        Adw.WrapBox type_wrap_box {
+          child-spacing: 6;
+          line-spacing: 6;
+          natural-line-length: 340;
+
+          Button audio_button {
+            accessible-role: checkbox;
+
+            child: Adw.ButtonContent {
+              icon-name: "audio-x-generic-symbolic";
+              label: _("_Audio");
+              use-underline: true;
+            };
+
+            clicked => $file_types_button_clicked(template);
+          }
+
+          Button documents_button {
+            accessible-role: checkbox;
+
+            child: Adw.ButtonContent {
+              icon-name: "rich-text-symbolic";
+              label: _("_Documents");
+              use-underline: true;
+            };
+
+            clicked => $file_types_button_clicked(template);
+          }
+
+          Button folders_button {
+            accessible-role: checkbox;
+
+            child: Adw.ButtonContent {
+              icon-name: "folder-symbolic";
+              label: _("_Folders");
+              use-underline: true;
+            };
+
+            clicked => $file_types_button_clicked(template);
+          }
+
+          Button images_button {
+            accessible-role: checkbox;
+
+            child: Adw.ButtonContent {
+              icon-name: "image-print-symbolic";
+              label: _("_Images");
+              use-underline: true;
+            };
+
+            clicked => $file_types_button_clicked(template);
+          }
+
+          Button pdf_button {
+            accessible-role: checkbox;
+
+            child: Adw.ButtonContent {
+              icon-name: "rich-text-symbolic";
+              label: _("_PDF");
+              use-underline: true;
+            };
+
+            clicked => $file_types_button_clicked(template);
+          }
+
+          Button spreadsheets_button {
+            accessible-role: checkbox;
+
+            child: Adw.ButtonContent {
+              icon-name: "x-office-spreadsheet-symbolic";
+              label: _("_Spreadsheets");
+              use-underline: true;
+            };
+
+            clicked => $file_types_button_clicked(template);
+          }
+
+          Button text_button {
+            accessible-role: checkbox;
+
+            child: Adw.ButtonContent {
+              icon-name: "paper-symbolic";
+              label: _("Te_xt");
+              use-underline: true;
+            };
+
+            clicked => $file_types_button_clicked(template);
+          }
+
+          Button videos_button {
+            accessible-role: checkbox;
+
+            child: Adw.ButtonContent {
+              icon-name: "camera-video-symbolic";
+              label: _("_Videos");
+              use-underline: true;
+            };
+
+            clicked => $file_types_button_clicked(template);
+          }
+
+          Button specific_type_button {
+            visible: false;
+            accessible-role: checkbox;
+            clicked => $file_types_button_clicked(template);
+          }
+
+          Button other_types_button {
+            icon-name: "view-more-horizontal-symbolic";
+            tooltip-text: _("Specific Type");
+            clicked => $file_types_button_clicked(template);
+
+            styles [
+              "circular",
+            ]
+          }
+        }
+      }
+
+      Box {
+        orientation: vertical;
+        spacing: 6;
+
+        Box date_header {
+          spacing: 6;
+
+          Label time_type_label {
+            halign: start;
+            xalign: 0;
+            hexpand: true;
+            valign: baseline;
+
+            styles [
+              "heading",
+            ]
+          }
+
+          MenuButton {
+            halign: start;
+            has-frame: false;
+            always-show-arrow: true;
+
+            menu-model: menu {
+              section {
+                item {
+                  /* Translators: This refers to a date time */
+                  label: _("Used");
+                  action: "search-popover.time-type-changed";
+                  target: "last_used";
+                }
+
+                item {
+                  /* Translators: This refers to a date time */
+                  label: _("Modified");
+                  action: "search-popover.time-type-changed";
+                  target: "last_modified";
+                }
+
+                item {
+                  /* Translators: This refers to a date time */
+                  label: _("Created");
+                  action: "search-popover.time-type-changed";
+                  target: "created";
+                }
+              }
+            };
+          }
+        }
+
+        Adw.WrapBox {
+          child-spacing: 6;
+          line-spacing: 6;
+          natural-line-length: 340;
+
+          Button today_button {
+            label: _("_Today");
+            use-underline: true;
+            clicked => $date_button_clicked(template);
+          }
+
+          Button yesterday_button {
+            label: _("_Yesterday");
+            use-underline: true;
+            clicked => $date_button_clicked(template);
+          }
+
+          Button week_button {
+            label: _("Past _Week");
+            use-underline: true;
+            clicked => $date_button_clicked(template);
+          }
+
+          Button month_button {
+            label: _("Past _Month");
+            use-underline: true;
+            clicked => $date_button_clicked(template);
+          }
+
+          Button year_button {
+            label: _("Past Y_ear");
+            use-underline: true;
+            clicked => $date_button_clicked(template);
+          }
+
+          Button specific_date_button {
+            visible: false;
+            clicked => $date_button_clicked(template);
+          }
+
+          Button {
+            icon-name: "view-more-horizontal-symbolic";
+            tooltip-text: _("Custom Date Range");
+            clicked => $show_date_range_dialog_cb(template);
+
+            styles [
+              "circular",
+            ]
+          }
+        }
+      }
+
+      Box other_options_box {
+        orientation: vertical;
+        spacing: 6;
+
+        Box fts_header {
+          Label {
+            label: _("Text Matching");
+            valign: baseline;
+
+            styles [
+              "heading",
+            ]
+          }
+        }
+
+        Adw.WrapBox {
+          child-spacing: 6;
+          line-spacing: 6;
+          natural-line-length: 340;
+
+          Button content_and_filename_button {
+            label: _("_Content & Filename");
+            tooltip-text: _("Search Inside Files");
+            use-underline: true;
+            sensitive: true;
+            clicked => $fts_option_clicked(template);
+          }
+
+          Button filename_only_button {
+            label: _("_Only Filename");
+            tooltip-text: _("Don't Search Inside Files");
+            use-underline: true;
+            sensitive: true;
+            clicked => $fts_option_clicked(template);
+          }
+
+          Button content_only_button {
+            visible: false;
+            label: _("Only Co_ntents");
+            use-underline: true;
+            sensitive: true;
+            clicked => $fts_option_clicked(template);
+          }
+        }
+      }
+    };
+  };
+}
+
+SizeGroup {
+  mode: vertical;
+
+  widgets [
+    type_header,
+    date_header,
+    fts_header,
+  ]
+}

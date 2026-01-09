@@ -1,0 +1,373 @@
+using Gtk 4.0;
+using Adw 1;
+
+Adw.ShortcutsDialog shortcuts_dialog {
+  Adw.ShortcutsSection {
+    title: C_("shortcuts dialog", "Actions");
+
+    Adw.ShortcutsItem {
+      title: C_("shortcuts dialog", "Open");
+      accelerator: "Return <Primary>O";
+    }
+
+    Adw.ShortcutsItem {
+      title: C_("shortcuts dialog", "Open in New Tab");
+      accelerator: "<Primary>Return";
+    }
+
+    Adw.ShortcutsItem {
+      title: C_("shortcuts dialog", "Open in New Window");
+      accelerator: "<shift>Return";
+    }
+
+    Adw.ShortcutsItem {
+      title: C_("shortcuts dialog", "Open Item Location (Search and Recent Only)");
+      accelerator: "<alt><Primary>O";
+    }
+
+    Adw.ShortcutsItem {
+      title: C_("shortcuts dialog", "Open With Default App");
+      accelerator: "<Primary>O <alt>Down";
+    }
+
+    Adw.ShortcutsItem {
+      title: C_("shortcuts dialog", "Open Current Directory in Console");
+      accelerator: "<Primary>period";
+    }
+
+    Adw.ShortcutsItem {
+      title: C_("shortcuts dialog", "Open Current Folder Menu");
+      action-name: "win.current-location-menu";
+    }
+
+    Adw.ShortcutsItem {
+      title: C_("shortcuts dialog", "Open Context Menu");
+      accelerator: "<Shift>F10";
+    }
+  }
+
+  Adw.ShortcutsSection {
+    Adw.ShortcutsItem {
+      title: C_("shortcuts dialog", "Create Folder");
+      accelerator: "<Primary><shift>N";
+    }
+  }
+
+  Adw.ShortcutsSection {
+    Adw.ShortcutsItem {
+      title: C_("shortcuts dialog", "Cut");
+      accelerator: "<Primary>X";
+    }
+
+    Adw.ShortcutsItem {
+      title: C_("shortcuts dialog", "Copy");
+      accelerator: "<Primary>C";
+    }
+
+    Adw.ShortcutsItem {
+      title: C_("shortcuts dialog", "Paste");
+      accelerator: "<Primary>V";
+    }
+  }
+
+  Adw.ShortcutsSection {
+    Adw.ShortcutsItem {
+      title: C_("shortcuts dialog", "Rename");
+      accelerator: "F2";
+    }
+  }
+
+  Adw.ShortcutsSection {
+    Adw.ShortcutsItem {
+      title: C_("shortcuts dialog", "Undo");
+      action-name: "win.undo";
+    }
+
+    Adw.ShortcutsItem {
+      title: C_("shortcuts dialog", "Redo");
+      action-name: "win.redo";
+    }
+  }
+
+  Adw.ShortcutsSection {
+    Adw.ShortcutsItem {
+      title: C_("shortcuts dialog", "Move to Trash");
+      accelerator: "Delete";
+    }
+
+    Adw.ShortcutsItem {
+      title: C_("shortcuts dialog", "Delete Permanently");
+      accelerator: "<shift>Delete";
+    }
+  }
+
+  Adw.ShortcutsSection {
+    Adw.ShortcutsItem {
+      title: C_("shortcuts dialog", "Create Link to Copied Item");
+      accelerator: "<Primary>M";
+    }
+
+    Adw.ShortcutsItem {
+      title: C_("shortcuts dialog", "Create Link to Selected Item");
+      accelerator: "<Primary><shift>M";
+    }
+  }
+
+  Adw.ShortcutsSection {
+    Adw.ShortcutsItem {
+      title: C_("shortcuts dialog", "Show Item Properties");
+      accelerator: "<Primary>I <alt>Return";
+    }
+  }
+
+  Adw.ShortcutsSection {
+    Adw.ShortcutsItem {
+      title: C_("shortcuts dialog", "Bookmark Current Location");
+      accelerator: "<Primary>D";
+    }
+  }
+
+  Adw.ShortcutsSection {
+    title: C_("shortcuts dialog", "View");
+
+    Adw.ShortcutsItem {
+      title: C_("shortcuts dialog", "Zoom In");
+      accelerator: "<Primary>plus";
+    }
+
+    Adw.ShortcutsItem {
+      title: C_("shortcuts dialog", "Zoom Out");
+      accelerator: "<Primary>minus";
+    }
+
+    Adw.ShortcutsItem {
+      title: C_("shortcuts dialog", "Reset Zoom");
+      accelerator: "<Primary>0";
+    }
+  }
+
+  Adw.ShortcutsSection {
+    Adw.ShortcutsItem {
+      title: C_("shortcuts dialog", "List View");
+      accelerator: "<Primary>1";
+    }
+
+    Adw.ShortcutsItem {
+      title: C_("shortcuts dialog", "Grid View");
+      accelerator: "<Primary>2";
+    }
+
+    Adw.ShortcutsItem {
+      title: C_("shortcuts dialog", "Refresh View");
+      accelerator: "F5 <Primary>R";
+    }
+  }
+
+  Adw.ShortcutsSection {
+    Adw.ShortcutsItem {
+      title: C_("shortcuts dialog", "Expand Folder");
+      accelerator: "Right";
+      direction: ltr;
+    }
+
+    Adw.ShortcutsItem {
+      title: C_("shortcuts dialog", "Expand Folder");
+      accelerator: "Left";
+      direction: rtl;
+    }
+
+    Adw.ShortcutsItem {
+      title: C_("shortcuts dialog", "Collapse Folder");
+      accelerator: "Left";
+      direction: ltr;
+    }
+
+    Adw.ShortcutsItem {
+      title: C_("shortcuts dialog", "Collapse Folder");
+      accelerator: "Right";
+      direction: rtl;
+    }
+  }
+
+  Adw.ShortcutsSection {
+    Adw.ShortcutsItem {
+      title: C_("shortcuts dialog", "Show/Hide Hidden Files");
+      accelerator: "<Primary>H";
+    }
+
+    Adw.ShortcutsItem {
+      title: C_("shortcuts dialog", "Show/Hide Sidebar");
+      action-name: "win.toggle-sidebar";
+    }
+  }
+
+  Adw.ShortcutsSection {
+    title: C_("shortcuts dialog", "Select");
+
+    Adw.ShortcutsItem {
+      title: C_("shortcuts dialog", "Select All");
+      accelerator: "<Primary>A";
+    }
+
+    Adw.ShortcutsItem {
+      title: C_("shortcuts dialog", "Invert Selection");
+      accelerator: "<shift><Primary>I";
+    }
+
+    Adw.ShortcutsItem {
+      title: C_("shortcuts dialog", "Select Items Matching");
+      accelerator: "<Primary>S";
+    }
+  }
+
+  Adw.ShortcutsSection {
+    title: C_("shortcuts dialog", "Navigation");
+
+    Adw.ShortcutsItem {
+      title: C_("shortcuts dialog", "Go Back");
+      accelerator: "<alt>Left";
+      direction: ltr;
+    }
+
+    Adw.ShortcutsItem {
+      title: C_("shortcuts dialog", "Go Back");
+      accelerator: "<alt>Right";
+      direction: rtl;
+    }
+
+    Adw.ShortcutsItem {
+      title: C_("shortcuts dialog", "Go Forward");
+      accelerator: "<alt>Right";
+      direction: ltr;
+    }
+
+    Adw.ShortcutsItem {
+      title: C_("shortcuts dialog", "Go Forward");
+      accelerator: "<alt>Left";
+      direction: rtl;
+    }
+
+    Adw.ShortcutsItem {
+      title: C_("shortcuts dialog", "Go Up");
+      accelerator: "<alt>Up";
+    }
+
+    Adw.ShortcutsItem {
+      title: C_("shortcuts dialog", "Go Down");
+      accelerator: "<alt>Down";
+    }
+
+    Adw.ShortcutsItem {
+      title: C_("shortcuts dialog", "Go to Home Folder");
+      accelerator: "<alt>Home";
+    }
+  }
+
+  Adw.ShortcutsSection {
+    Adw.ShortcutsItem {
+      title: C_("shortcuts dialog", "Enter Location");
+      accelerator: "<Primary>L";
+    }
+
+    Adw.ShortcutsItem {
+      title: C_("shortcuts dialog", "Location Bar With Root Location");
+      accelerator: "slash";
+    }
+
+    Adw.ShortcutsItem {
+      title: C_("shortcuts dialog", "Location Bar With Home Location");
+      accelerator: "asciitilde";
+    }
+  }
+
+  Adw.ShortcutsSection {
+    title: C_("shortcuts dialog", "Search");
+
+    Adw.ShortcutsItem {
+      title: C_("shortcuts dialog", "Search Everywhere");
+      accelerator: "<Primary><Shift>F";
+    }
+
+    Adw.ShortcutsItem {
+      title: C_("shortcuts dialog", "Search Current Folder");
+      accelerator: "<Primary>F";
+    }
+  }
+
+  Adw.ShortcutsSection {
+    title: C_("shortcuts dialog", "Windows & Tabs");
+
+    Adw.ShortcutsItem {
+      title: C_("shortcuts dialog", "New Window");
+      action-name: "app.clone-window";
+    }
+
+    Adw.ShortcutsItem {
+      title: C_("shortcuts dialog", "New Tab");
+      action-name: "win.new-tab";
+    }
+
+    Adw.ShortcutsItem {
+      title: C_("shortcuts dialog", "Close Window or Tab");
+      action-name: "win.close-current-view";
+    }
+
+    Adw.ShortcutsItem {
+      title: C_("shortcuts dialog", "Restore Closed Tab");
+      action-name: "win.restore-tab";
+    }
+  }
+
+  Adw.ShortcutsSection {
+    Adw.ShortcutsItem {
+      title: C_("shortcuts dialog", "Go to Previous Tab");
+      accelerator: "<Primary>Page_Up";
+    }
+
+    Adw.ShortcutsItem {
+      title: C_("shortcuts dialog", "Go to Next Tab");
+      accelerator: "<Primary>Page_Down";
+    }
+
+    Adw.ShortcutsItem {
+      title: C_("shortcuts dialog", "Open Tab");
+      accelerator: "<alt>0...8";
+    }
+  }
+
+  Adw.ShortcutsSection {
+    Adw.ShortcutsItem {
+      title: C_("shortcuts dialog", "Move Tab Left");
+      action-name: "win.tab-move-left";
+    }
+
+    Adw.ShortcutsItem {
+      title: C_("shortcuts dialog", "Move Tab Right");
+      action-name: "win.tab-move-right";
+    }
+  }
+
+  Adw.ShortcutsSection {
+    title: C_("shortcuts dialog", "App");
+
+    Adw.ShortcutsItem {
+      title: C_("shortcuts dialog", "Show Preferences");
+      action-name: "app.preferences";
+    }
+
+    Adw.ShortcutsItem {
+      title: C_("shortcuts dialog", "Shortcuts");
+      action-name: "app.shortcuts";
+    }
+
+    Adw.ShortcutsItem {
+      title: C_("shortcuts dialog", "Show Help");
+      action-name: "app.help";
+    }
+
+    Adw.ShortcutsItem {
+      title: C_("shortcuts dialog", "Quit");
+      action-name: "app.quit";
+    }
+  }
+}

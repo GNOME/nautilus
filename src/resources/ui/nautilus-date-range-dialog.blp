@@ -1,0 +1,80 @@
+using Gtk 4.0;
+using Adw 1;
+
+template $NautilusDateRangeDialog: Adw.Dialog {
+  title: _("Add Date Filter");
+  content-height: 362;
+  content-width: 450;
+  default-widget: select_button;
+
+  child: Adw.ToolbarView {
+    [top]
+    Adw.HeaderBar {
+      title-widget: Adw.WindowTitle {
+        title: _("Filter by Date");
+      };
+    }
+
+    content: Adw.PreferencesPage {
+      Adw.PreferencesGroup {
+        Adw.ComboRow date_range_row {
+          title: _("_Date Range");
+          use-underline: true;
+
+          model: StringList {
+            strings [
+              _("Single Day"),
+              _("± 1 day"),
+              _("± 3 days"),
+              _("± 7 days"),
+              _("± 14 days"),
+              _("Specify Range"),
+            ]
+          };
+
+          notify::selected => $changed_range_mode() swapped;
+        }
+      }
+
+      Adw.PreferencesGroup {
+        $NautilusDateEntryRow single_date_row {
+          title: _("_Date");
+          use-underline: true;
+          entry-activated => $try_confirm(template);
+          notify::date-time => $update_confirm_button(template);
+        }
+
+        $NautilusDateEntryRow from_entry_row {
+          title: _("Fro_m");
+          use-underline: true;
+          visible: bind single_date_row.visible inverted;
+          entry-activated => $gtk_widget_grab_focus(to_entry_row);
+          notify::date-time => $update_confirm_button(template);
+        }
+
+        $NautilusDateEntryRow to_entry_row {
+          title: _("_To");
+          use-underline: true;
+          visible: bind single_date_row.visible inverted;
+          entry-activated => $try_confirm(template);
+          notify::date-time => $update_confirm_button(template);
+        }
+      }
+
+      Adw.PreferencesGroup {
+        Button select_button {
+          label: _("_Filter");
+          use-underline: true;
+          margin-top: 12;
+          halign: center;
+          clicked => $try_confirm(template);
+
+          styles [
+            "pill",
+            "suggested-action",
+          ]
+        }
+      }
+    };
+  };
+}

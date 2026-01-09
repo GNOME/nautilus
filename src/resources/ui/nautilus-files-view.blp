@@ -1,0 +1,17 @@
+using Gtk 4.0;
+using Adw 1;
+
+template $NautilusFilesView: Adw.Bin {
+  Overlay overlay {
+    hexpand: true;
+    vexpand: true;
+
+    [overlay]
+    $NautilusFloatingBar floating_bar {
+      halign: end;
+      valign: end;
+      spacing: 8;
+      show-spinner: bind template.loading;
+    }
+  }
+}

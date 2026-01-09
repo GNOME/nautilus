@@ -1,0 +1,67 @@
+using Gtk 4.0;
+using Adw 1;
+
+template $NautilusNetworkCell: $NautilusViewCell {
+  Box top_child {
+    spacing: 6;
+    orientation: horizontal;
+
+    Image icon {
+      halign: center;
+      valign: center;
+
+      styles [
+        "network-icon",
+      ]
+
+      accessibility {
+        labelled-by: [
+          label,
+        ];
+      }
+    }
+
+    Box {
+      orientation: vertical;
+      hexpand: true;
+      valign: center;
+
+      Label label {
+        ellipsize: middle;
+        max-width-chars: -1;
+        xalign: 0.0;
+        label: bind template.item as <$NautilusViewItem>.file as <$NautilusFile>.display-name;
+        attributes: "0 -1 insert-hyphens false";
+      }
+
+      Label target_uri {
+        ellipsize: middle;
+        halign: fill;
+        xalign: 0.0;
+        attributes: "0 -1 insert-hyphens false";
+
+        styles [
+          "caption",
+          "dim-label",
+        ]
+      }
+    }
+
+    Adw.Spinner spinner {
+      visible: bind template.item as <$NautilusViewItem>.loading;
+    }
+
+    Button unmount_button {
+      tooltip-text: _("Disconnect");
+      visible: false;
+      icon-name: "media-eject-symbolic";
+      valign: center;
+      clicked => $on_unmount_clicked(template);
+
+      styles [
+        "flat",
+        "circular",
+      ]
+    }
+  }
+}

@@ -1,0 +1,24 @@
+using Gtk 4.0;
+using Adw 1;
+
+template $NautilusDateEntryRow: Adw.EntryRow {
+  changed => $text_changed();
+
+  [suffix]
+  MenuButton {
+    icon-name: "x-office-calendar-symbolic";
+    tooltip-text: _("Pick Date");
+    direction: left;
+    valign: center;
+
+    popover: Popover popover {
+      child: Calendar calendar {
+        day-selected => $calendar_date_selected(template);
+      };
+    };
+
+    styles [
+      "flat",
+    ]
+  }
+}

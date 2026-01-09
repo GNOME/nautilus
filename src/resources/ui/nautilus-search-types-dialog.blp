@@ -1,0 +1,136 @@
+using Gtk 4.0;
+using Adw 1;
+
+Adw.Dialog file_types_dialog {
+  title: _("Add File Type Filter");
+  content-width: 400;
+  content-height: 600;
+  default-widget: select_button;
+  focus-widget: search_entry;
+
+  child: Adw.ToolbarView toolbar_view {
+    [top]
+    Adw.HeaderBar {
+      show-start-title-buttons: false;
+      show-end-title-buttons: false;
+
+      [start]
+      Button cancel_button {
+        label: _("_Cancel");
+        use-underline: true;
+        can-shrink: true;
+        clicked => $adw_dialog_close(file_types_dialog);
+      }
+
+      [end]
+      Button select_button {
+        label: _("_Add");
+        use-underline: true;
+        can-shrink: true;
+        sensitive: false;
+
+        styles [
+          "suggested-action",
+        ]
+      }
+    }
+
+    [top]
+    Adw.Bin {
+      styles [
+        "toolbar",
+      ]
+
+      child: SearchEntry search_entry {
+        placeholder-text: _("Search for file types");
+        activates-default: true;
+      };
+    }
+
+    content: Stack search_stack {
+      StackPage {
+        name: "start";
+
+        child: Adw.StatusPage {
+          icon-name: "edit-find-symbolic";
+          title: _("Search File Types");
+          description: _("Search by type, name, or description");
+        };
+      }
+
+      StackPage {
+        name: "empty";
+
+        child: Adw.StatusPage {
+          icon-name: "edit-find-symbolic";
+          title: _("No Results Found");
+          description: _("Try a different search");
+        };
+      }
+
+      StackPage {
+        name: "results";
+
+        child: ScrolledWindow {
+          ListView listview {
+            show-separators: true;
+
+            factory: BuilderListItemFactory {
+              template ListItem {
+                child: Box {
+                  margin-start: 16;
+                  margin-end: 16;
+                  margin-top: 14;
+                  margin-bottom: 14;
+                  spacing: 12;
+
+                  Image {
+                    pixel-size: 32;
+                    paintable: bind template.item as <$NautilusMinimalCell>.paintable;
+
+                    accessibility {
+                      labelled-by: [
+                        description,
+                      ];
+                    }
+                  }
+
+                  Box {
+                    orientation: vertical;
+                    spacing: 4;
+
+                    Label description {
+                      halign: start;
+                      hexpand: true;
+                      ellipsize: end;
+                      label: bind template.item as <$NautilusMinimalCell>.title;
+                    }
+
+                    Label {
+                      halign: start;
+                      hexpand: true;
+                      ellipsize: end;
+                      label: bind template.item as <$NautilusMinimalCell>.subtitle;
+
+                      styles [
+                        "caption",
+                        "dim-label",
+                      ]
+                    }
+                  }
+                };
+              }
+            };
+          }
+        };
+      }
+    };
+  };
+}
+
+SizeGroup {
+  widgets [
+    cancel_button,
+    select_button,
+  ]
+}

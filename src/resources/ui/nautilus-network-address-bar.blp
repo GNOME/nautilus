@@ -1,0 +1,115 @@
+using Gtk 4.0;
+
+Popover server_adresses_popover {
+  position: top;
+
+  Box {
+    orientation: vertical;
+    spacing: 6;
+    margin-start: 12;
+    margin-end: 12;
+    margin-top: 12;
+    margin-bottom: 12;
+
+    Label {
+      hexpand: true;
+      label: _("Server Addresses");
+
+      styles [
+        "title-4",
+      ]
+    }
+
+    Label {
+      hexpand: true;
+      label: _("Server addresses are made up of a protocol prefix and an address. Examples:");
+      wrap: true;
+      width-chars: 40;
+      max-width-chars: 40;
+      xalign: 0;
+    }
+
+    Label {
+      hexpand: true;
+      label: "smb://gnome.org, ssh://192.168.0.1, ftp://[2001:db8::1]";
+      wrap: true;
+      width-chars: 40;
+      max-width-chars: 40;
+      xalign: 0;
+    }
+
+    Grid available_protocols_grid {
+      margin-top: 12;
+      hexpand: true;
+      row-spacing: 6;
+      column-spacing: 12;
+
+      Label {
+        hexpand: true;
+        label: _("Available Protocols");
+        xalign: 0;
+
+        styles [
+          "heading",
+        ]
+
+        layout {
+          column: 0;
+          row: 0;
+        }
+      }
+
+      Label {
+        label: _("Prefix");
+        xalign: 0;
+
+        styles [
+          "heading",
+        ]
+
+        layout {
+          column: 1;
+          row: 0;
+        }
+      }
+    }
+  }
+}
+
+template $NautilusNetworkAddressBar: Box {
+  hexpand: true;
+
+  styles [
+    "toolbar",
+  ]
+
+  Entry address_entry {
+    input-purpose: url;
+    input-hints: no_spellcheck | no_emoji;
+    width-chars: 10;
+    max-width-chars: 34;
+    placeholder-text: _("Server address");
+    notify::text => $on_address_entry_text_changed(template);
+    activate => $on_connect_button_clicked(template);
+  }
+
+  Button connect_button {
+    label: _("Con_nect");
+    use-underline: true;
+    can-shrink: true;
+    sensitive: false;
+    valign: center;
+    clicked => $on_connect_button_clicked(template);
+  }
+
+  MenuButton {
+    tooltip-text: _("Server Address Information");
+    popover: server_adresses_popover;
+    icon-name: "info-outline-symbolic";
+
+    styles [
+      "flat",
+      "circular",
+    ]
+  }
+}

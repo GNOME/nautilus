@@ -1,0 +1,71 @@
+using Gtk 4.0;
+
+template $NautilusProgressInfoWidget: Grid {
+  margin-start: 6;
+  margin-end: 6;
+  margin-top: 6;
+  margin-bottom: 6;
+
+  Label status {
+    width-request: 300;
+    margin-bottom: 6;
+    hexpand: true;
+    label: "status";
+    ellipsize: middle;
+    max-width-chars: 40;
+    xalign: 0;
+
+    layout {
+      column: 0;
+      row: 0;
+    }
+  }
+
+  ProgressBar progress_bar {
+    valign: center;
+    margin-start: 2;
+    margin-bottom: 4;
+    hexpand: true;
+    pulse-step: 0.050000000000000003;
+
+    layout {
+      column: 0;
+      row: 1;
+    }
+  }
+
+  Button button {
+    tooltip-text: _("Cancel");
+    valign: center;
+    margin-start: 20;
+    icon-name: "cancel-operation-symbolic";
+
+    styles [
+      "circular",
+    ]
+
+    layout {
+      column: 1;
+      row: 0;
+      row-span: 3;
+    }
+  }
+
+  Label details {
+    label: "label";
+    wrap: true;
+    wrap-mode: word_char;
+    ellipsize: end;
+    xalign: 0;
+
+    styles [
+      "dim-label",
+      "numeric",
+    ]
+
+    layout {
+      column: 0;
+      row: 2;
+    }
+  }
+}

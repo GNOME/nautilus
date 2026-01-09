@@ -1,0 +1,142 @@
+using Gtk 4.0;
+using Adw 1;
+
+template $NautilusFileConflictDialog: Adw.Window {
+  modal: true;
+  resizable: false;
+
+  content: Adw.ToolbarView {
+    [top]
+    Adw.HeaderBar {
+      show-start-title-buttons: false;
+      show-end-title-buttons: false;
+
+      [start]
+      Button cancel_button {
+        label: _("_Cancel");
+        use-underline: true;
+        clicked => $cancel_button_cb() swapped;
+      }
+
+      [end]
+      Button skip_button {
+        label: _("_Skip");
+        use-underline: true;
+        clicked => $skip_button_cb() swapped;
+      }
+
+      [end]
+      Button rename_button {
+        visible: false;
+        label: _("_Rename");
+        use-underline: true;
+        clicked => $rename_button_cb() swapped;
+
+        styles [
+          "suggested-action",
+        ]
+      }
+
+      [end]
+      Button replace_button {
+        label: _("_Replace");
+        use-underline: true;
+        clicked => $replace_button_cb() swapped;
+
+        styles [
+          "suggested-action",
+        ]
+      }
+    }
+
+    content: Box {
+      margin-top: 18;
+      margin-bottom: 18;
+      margin-start: 18;
+      margin-end: 18;
+      spacing: 12;
+      orientation: vertical;
+
+      Label primary_label {
+        justify: center;
+        halign: center;
+        max-width-chars: 50;
+        wrap: true;
+        wrap-mode: word_char;
+
+        styles [
+          "title-2",
+        ]
+      }
+
+      Label secondary_label {
+        justify: center;
+        halign: center;
+        max-width-chars: 50;
+        wrap: true;
+        wrap-mode: word_char;
+      }
+
+      Box {
+        halign: start;
+        orientation: vertical;
+        spacing: 12;
+
+        Box {
+          spacing: 12;
+
+          Picture dest_icon {}
+
+          Label dest_label {}
+        }
+
+        Box {
+          spacing: 12;
+
+          Picture src_icon {}
+
+          Label src_label {}
+        }
+
+        Expander expander {
+          label: _("Select a _new name for the destination");
+          use-underline: true;
+          notify::expanded => $on_expanded_notify();
+
+          Box {
+            margin-top: 6;
+
+            styles [
+              "linked",
+            ]
+
+            Entry entry {
+              activates-default: true;
+              hexpand: true;
+              changed => $entry_text_changed_cb();
+            }
+
+            Button {
+              label: _("R_eset");
+              use-underline: true;
+              clicked => $reset_button_clicked_cb();
+            }
+          }
+        }
+      }
+
+      CheckButton checkbox {
+        label: _("_Apply this action to all files and folders");
+        use-underline: true;
+        toggled => $checkbox_toggled_cb();
+      }
+    };
+  };
+
+  ShortcutController {
+    Shortcut {
+      trigger: "Escape";
+      action: "action(window.close)";
+    }
+  }
+}

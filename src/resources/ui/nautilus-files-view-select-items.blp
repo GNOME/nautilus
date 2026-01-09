@@ -1,0 +1,70 @@
+using Gtk 4.0;
+using Adw 1;
+
+Adw.Dialog select_items_dialog {
+  title: _("Select Items Matching");
+  default-widget: select_button;
+
+  child: Adw.ToolbarView {
+    [top]
+    Adw.HeaderBar {
+      show-start-title-buttons: false;
+      show-end-title-buttons: false;
+
+      [start]
+      Button cancel_button {
+        label: _("_Cancel");
+        use-underline: true;
+        can-shrink: true;
+        clicked => $adw_dialog_close(select_items_dialog);
+      }
+
+      [end]
+      Button select_button {
+        label: _("_Select");
+        can-shrink: true;
+        use-underline: true;
+
+        styles [
+          "suggested-action",
+        ]
+      }
+    }
+
+    content: Box {
+      orientation: vertical;
+      margin-top: 18;
+      margin-bottom: 18;
+      margin-start: 18;
+      margin-end: 18;
+      spacing: 6;
+
+      Label label {
+        halign: start;
+        label: _("Pattern");
+
+        styles [
+          "heading",
+        ]
+      }
+
+      Entry pattern_entry {
+        hexpand: true;
+        activates-default: true;
+        input-hints: no_spellcheck;
+
+        accessibility {
+          labelled-by: [
+            label,
+          ];
+        }
+      }
+
+      Label example {
+        halign: start;
+      }
+    };
+  };
+
+  focus-widget: pattern_entry;
+}

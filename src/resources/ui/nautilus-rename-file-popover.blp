@@ -1,0 +1,60 @@
+using Gtk 4.0;
+
+template $NautilusRenameFilePopover: Popover {
+  closed => $on_closed();
+
+  child: Box {
+    margin-start: 18;
+    margin-end: 18;
+    margin-top: 18;
+    margin-bottom: 18;
+    orientation: vertical;
+
+    Label title_label {
+      margin-bottom: 12;
+
+      styles [
+        "title-2",
+      ]
+    }
+
+    Entry name_entry {
+      accessibility {
+        label: _("New Filename");
+      }
+
+      margin-bottom: 12;
+      changed => $nautilus_filename_validator_validate(validator);
+      activate => $nautilus_filename_validator_try_accept(validator);
+    }
+
+    Revealer {
+      reveal-child: bind validator.has-feedback no-sync-create;
+
+      child: Label {
+        label: bind validator.feedback-text no-sync-create;
+        margin-bottom: 12;
+        max-width-chars: 0;
+        wrap: true;
+        xalign: 0;
+      };
+    }
+
+    Button {
+      label: _("_Rename");
+      sensitive: bind validator.passed;
+      halign: end;
+      use-underline: true;
+      clicked => $nautilus_filename_validator_try_accept(validator);
+
+      styles [
+        "suggested-action",
+      ]
+    }
+  };
+}
+
+$NautilusFilenameValidator validator {
+  new-name: bind name_entry.text no-sync-create;
+  name-accepted => $on_name_accepted() swapped;
+}
