@@ -3299,6 +3299,7 @@ on_row_dragged (GtkGestureDrag     *gesture,
         sidebar->drag_row_height = height;
         gtk_widget_set_size_request (drag_widget, width, height);
         gtk_widget_set_opacity (drag_widget, 0.8);
+        gtk_widget_set_margin_start (drag_widget, 14);
 
         gtk_drag_icon_set_child (GTK_DRAG_ICON (gtk_drag_icon_get_for_drag (drag)), drag_widget);
 
