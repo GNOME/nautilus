@@ -431,7 +431,7 @@ file_info_ready_callback (GObject      *source_object,
         g_set_error (&self->error,
                      G_IO_ERROR,
                      G_IO_ERROR_FAILED,
-                     "Image file is too large: %lu bytes (max: %lu bytes)",
+                     "Image file is too large: %" G_GUINT64_FORMAT " bytes (max: %" G_GUINT64_FORMAT " bytes)",
                      file_size, cached_thumbnail_size_limit);
         handle_loading_error (self);
 
