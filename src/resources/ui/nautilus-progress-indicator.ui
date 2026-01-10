@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <interface>
   <template class="NautilusProgressIndicator" parent="AdwBin">
-    <property name="name">NautilusProgressIndicator</property>
     <property name="hexpand">true</property>
     <property name="child">
       <object class="GtkMenuButton" id="operations_button">
@@ -85,5 +84,8 @@
         </property>
       </object>
     </property>
+    <style>
+      <class name="nautilus-progress-indicator"/>
+    </style>
   </template>
 </interface>

@@ -342,8 +342,8 @@ nautilus_path_bar_init (NautilusPathBar *self)
                                  GTK_WIDGET (self->current_view_menu_popover));
     bind_current_view_menu_model_to_popover (self);
 
-    gtk_widget_set_name (GTK_WIDGET (self), "NautilusPathBar");
     gtk_widget_add_css_class (GTK_WIDGET (self), "linked");
+    gtk_widget_add_css_class (GTK_WIDGET (self), "nautilus-pathbar");
 
     /* Action group */
     self->action_group = G_ACTION_GROUP (g_simple_action_group_new ());
@@ -1218,7 +1218,7 @@ make_button_data (NautilusPathBar *self,
     setup_button_type (button_data, self, path);
     button_data->button = gtk_button_new ();
     gtk_widget_set_focus_on_click (button_data->button, FALSE);
-    gtk_widget_set_name (button_data->button, "NautilusPathButton");
+    gtk_widget_add_css_class (button_data->button, "nautilus-path-button");
 
     /* TODO update button type when xdg directories change */
 

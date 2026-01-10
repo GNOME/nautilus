@@ -586,7 +586,7 @@ nautilus_query_editor_init (NautilusQueryEditor *editor)
     gboolean rtl = (gtk_widget_get_direction (GTK_WIDGET (editor)) == GTK_TEXT_DIR_RTL);
     GtkEventController *controller;
 
-    gtk_widget_set_name (GTK_WIDGET (editor), "NautilusQueryEditor");
+    gtk_widget_add_css_class (GTK_WIDGET (editor), "nautilus-query-editor");
     gtk_widget_add_css_class (GTK_WIDGET (editor), "search");
 
     g_signal_connect (nautilus_preferences,

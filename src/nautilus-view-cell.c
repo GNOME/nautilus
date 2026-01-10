@@ -137,7 +137,7 @@ nautilus_view_cell_set_property (GObject      *object,
 static void
 nautilus_view_cell_init (NautilusViewCell *self)
 {
-    gtk_widget_set_name (GTK_WIDGET (self), "NautilusViewCell");
+    gtk_widget_add_css_class (GTK_WIDGET (self), "nautilus-view-cell");
 }
 
 static void

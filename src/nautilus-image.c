@@ -649,7 +649,7 @@ nautilus_image_set_property (GObject      *object,
 static void
 nautilus_image_init (NautilusImage *self)
 {
-    gtk_widget_set_name (GTK_WIDGET (self), "NautilusImage");
+    gtk_widget_add_css_class (GTK_WIDGET (self), "nautilus-image");
 }
 
 static void
