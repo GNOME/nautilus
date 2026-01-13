@@ -644,19 +644,19 @@ time_type_to_label (NautilusSearchTimeType time_type)
 
 static void
 time_type_changed (GAction               *action,
-                   GVariant              *value,
+                   GVariant              *new_value,
                    NautilusSearchPopover *self)
 {
-    NautilusSearchTimeType time_type = g_variant_get_uint16 (value);
-    NautilusSearchTimeType old_time_type = g_settings_get_enum (nautilus_preferences,
-                                                                "search-filter-time-type");
+    g_autoptr (GVariant) current_value = g_action_get_state (action);
 
-    if (time_type == old_time_type)
+    if (g_variant_equal (current_value, new_value))
     {
         return;
     }
 
-    g_simple_action_set_state (G_SIMPLE_ACTION (action), value);
+    NautilusSearchTimeType time_type = g_variant_get_uint16 (new_value);
+
+    g_simple_action_set_state (G_SIMPLE_ACTION (action), new_value);
 
     g_settings_set_enum (nautilus_preferences, "search-filter-time-type", time_type);
     const char *label = time_type_to_label (time_type);
