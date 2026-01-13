@@ -648,18 +648,20 @@ time_type_changed (GAction               *action,
                    NautilusSearchPopover *self)
 {
     g_autoptr (GVariant) current_value = g_action_get_state (action);
+    const char *time_type_str = g_variant_get_string (new_value, NULL);
 
     if (g_variant_equal (current_value, new_value))
     {
         return;
     }
 
-    NautilusSearchTimeType time_type = g_variant_get_uint16 (new_value);
-
     g_simple_action_set_state (G_SIMPLE_ACTION (action), new_value);
+    g_settings_set_string (nautilus_preferences, "search-filter-time-type", time_type_str);
 
-    g_settings_set_enum (nautilus_preferences, "search-filter-time-type", time_type);
+    NautilusSearchTimeType time_type = g_settings_get_enum (nautilus_preferences,
+                                                            "search-filter-time-type");
     const char *label = time_type_to_label (time_type);
+
     gtk_label_set_label (self->time_type_label, label);
 
     g_signal_emit_by_name (self, "time-type", time_type);
@@ -701,8 +703,10 @@ nautilus_search_popover_init (NautilusSearchPopover *self)
     const char *label = time_type_to_label (time_type);
     gtk_label_set_label (self->time_type_label, label);
 
+    g_autofree char *time_type_str = g_settings_get_string (nautilus_preferences,
+                                                            "search-filter-time-type");
     g_autoptr (GSimpleAction) action = g_simple_action_new_stateful (
-        "time-type-changed", G_VARIANT_TYPE_UINT16, g_variant_new_uint16 (time_type));
+        "time-type-changed", G_VARIANT_TYPE_STRING, g_variant_new_string (time_type_str));
     g_simple_action_set_enabled (action, TRUE);
     g_signal_connect_object (action, "change-state", G_CALLBACK (time_type_changed), self, 0);
 

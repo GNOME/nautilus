@@ -190,21 +190,21 @@
                         <property name="menu-model">
                           <menu>
                             <section>
-                              <!-- Keep target values in sync with NautilusSearchTimeType -->
+                              <!-- See org.gnome.nautilus.SearchFilterTimeType schema enum -->
                               <item>
                                 <attribute name="label" translatable="yes" comments="Translators: This refers to a date time">Used</attribute>
                                 <attribute name="action">search-popover.time-type-changed</attribute>
-                                <attribute name="target" type="q">0</attribute>
+                                <attribute name="target">last_used</attribute>
                               </item>
                               <item>
                                 <attribute name="label" translatable="yes" comments="Translators: This refers to a date time">Modified</attribute>
                                 <attribute name="action">search-popover.time-type-changed</attribute>
-                                <attribute name="target" type="q">1</attribute>
+                                <attribute name="target">last_modified</attribute>
                               </item>
                               <item>
                                 <attribute name="label" translatable="yes" comments="Translators: This refers to a date time">Created</attribute>
                                 <attribute name="action">search-popover.time-type-changed</attribute>
-                                <attribute name="target" type="q">2</attribute>
+                                <attribute name="target">created</attribute>
                               </item>
                             </section>
                           </menu>
