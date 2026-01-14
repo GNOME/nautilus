@@ -17,6 +17,10 @@ menu app_menu {
   }
 
   section undo_redo_section {
+    /* Note: This section is often recreated by undo_manager_changed() to
+     * change the labels of the actions. If you change anything here,
+     * remember to change in the code as well.
+     */
     item {
       label: _("_Undo");
       action: "win.undo";
