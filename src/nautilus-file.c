@@ -1778,8 +1778,7 @@ nautilus_file_can_rename_file (NautilusFile                  *file,
 {
     GError *error;
 
-    /* Return an error for incoming names containing path separators.
-     * But not for .desktop files as '/' are allowed for them */
+    /* Return an error for incoming names containing path separators. */
     if (strstr (new_name, G_DIR_SEPARATOR_S) != NULL)
     {
         error = g_error_new (G_IO_ERROR, G_IO_ERROR_INVALID_ARGUMENT,
