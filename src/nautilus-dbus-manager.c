@@ -357,10 +357,9 @@ handle_delete_uris2 (NautilusDBusFileOperations2  *object,
 }
 
 static void
-rename_file_on_finished (NautilusFile *file,
-                         GFile        *result_location,
-                         GError       *error,
-                         gpointer      callback_data)
+rename_file_on_finished (GFile    *location,
+                         gboolean  success,
+                         gpointer  callback_data)
 {
     g_application_release (g_application_get_default ());
 }
@@ -370,11 +369,15 @@ handle_rename_uri_internal (const gchar                    *uri,
                             const gchar                    *new_name,
                             NautilusFileOperationsDBusData *dbus_data)
 {
-    g_autoptr (NautilusFile) file = nautilus_file_get_by_uri (uri);
+    g_autoptr (GFile) location = g_file_new_for_uri (uri);
 
     g_application_hold (g_application_get_default ());
-    nautilus_file_rename (file, new_name,
-                          rename_file_on_finished, NULL);
+    nautilus_file_operations_rename (location,
+                                     new_name,
+                                     NULL,
+                                     dbus_data,
+                                     rename_file_on_finished,
+                                     NULL);
 }
 
 static gboolean
