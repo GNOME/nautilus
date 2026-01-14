@@ -10,6 +10,7 @@ tests = {
   'test-file-operations-dir-has-files': {},
   'test-file-operations-link': {},
   'test-file-operations-move-files': {},
+  'test-file-operations-rename': {},
   'test-file-operations-trash-or-delete': {},
   'test-file-utilities-get-common-filename-prefix': {},
   'test-filename-common-prefix': {},
