@@ -7135,23 +7135,27 @@ finish_rename (NautilusFile *file,
 }
 
 void
-nautilus_file_operations_rename (NautilusFile *file,
-                                 const char   *new_name,
-                                 GtkWidget    *parent)
+nautilus_file_operations_rename (GFile                          *location,
+                                 const char                     *new_name,
+                                 GtkWidget                      *parent_view,
+                                 NautilusFileOperationsDBusData *dbus_data,
+                                 NautilusOpRenameCallback        done_callback,
+                                 gpointer                        done_callback_data)
 {
+    g_return_if_fail (G_IS_FILE (location));
+    g_return_if_fail (new_name != NULL);
+
+    NautilusFile *file = nautilus_file_get (location);
     NautilusRenameData *data;
     g_autofree char *wait_message = NULL;
     g_autofree char *uri = NULL;
-
-    g_return_if_fail (NAUTILUS_IS_FILE (file));
-    g_return_if_fail (new_name != NULL);
 
     /* Stop any earlier rename that's already in progress. */
     finish_rename (file, TRUE);
 
     data = g_new0 (NautilusRenameData, 1);
     data->name = g_strdup (new_name);
-    data->parent = parent;
+    data->parent = parent_view;
 
     /* Attach the new name to the file. */
     g_object_set_data_full (G_OBJECT (file),
