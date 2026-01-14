@@ -127,6 +127,16 @@ typedef struct
     gpointer done_callback_data;
 } CreateJob;
 
+typedef struct
+{
+    CommonJob common;
+    NautilusFile *file;
+    char *new_name;
+    gboolean cancelled;
+    gboolean success;
+    NautilusOpRenameCallback done_callback;
+    gpointer done_callback_data;
+} RenameJob;
 
 typedef struct
 {
@@ -7056,22 +7066,32 @@ clipboard_image_received_callback (GObject      *source_object,
     g_task_run_in_thread (task, save_image_thread_func);
 }
 
-#define NEW_NAME_TAG "Nautilus: new name"
-
-static void finish_rename (NautilusFile *file,
-                           gboolean      stop_timer);
-
-typedef struct _NautilusRenameData
-{
-    char *name;
-    GtkWidget *parent;
-} NautilusRenameData;
+static void
+finish_rename (RenameJob *job,
+               gboolean   stop_timer);
 
 static void
-nautilus_rename_data_free (NautilusRenameData *data)
+rename_task_done (GObject      *source_object,
+                  GAsyncResult *res,
+                  gpointer      user_data)
 {
-    g_free (data->name);
-    g_free (data);
+    RenameJob *job = user_data;
+
+    if (job->done_callback)
+    {
+        g_autoptr (GFile) renamed_location = nautilus_file_get_location (job->file);
+
+        job->done_callback (renamed_location, job->success, job->done_callback_data);
+    }
+
+    finish_rename (job, !job->cancelled);
+
+    g_clear_object (&job->file);
+    g_free (job->new_name);
+
+    finalize_common ((CommonJob *) job);
+
+    nautilus_file_changes_consume_changes ();
 }
 
 static void
@@ -7080,58 +7100,49 @@ rename_callback (NautilusFile *file,
                  GError       *error,
                  gpointer      callback_data)
 {
-    NautilusRenameData *data;
-    gboolean cancelled = FALSE;
+    RenameJob *job = callback_data;
 
-    g_assert (NAUTILUS_IS_FILE (file));
-    g_assert (callback_data == NULL);
+    g_assert (NAUTILUS_IS_FILE (job->file));
 
-    data = g_object_get_data (G_OBJECT (file), NEW_NAME_TAG);
-    g_assert (data != NULL);
+    job->cancelled = FALSE;
 
-    if (error)
+    if (g_error_matches (error, G_IO_ERROR, G_IO_ERROR_CANCELLED))
     {
-        if (!(error->domain == G_IO_ERROR && error->code == G_IO_ERROR_CANCELLED))
-        {
-            /* If rename failed, notify the user. */
-            nautilus_report_error_renaming_file (file, data->name, error, data->parent);
-        }
-        else
-        {
-            cancelled = TRUE;
-        }
+        job->cancelled = TRUE;
+    }
+    else if (error != NULL)
+    {
+        /* If rename failed, notify the user. */
+        GtkWidget *parent = GTK_WIDGET (((CommonJob *) job)->parent_window);
+
+        nautilus_report_error_renaming_file (job->file, job->new_name, error, parent);
+    }
+    else
+    {
+        job->success = TRUE;
     }
 
-    finish_rename (file, !cancelled);
+    rename_task_done (NULL, NULL, job);
 }
 
 static void
 cancel_rename_callback (gpointer callback_data)
 {
-    nautilus_file_cancel (NAUTILUS_FILE (callback_data), rename_callback, NULL);
+    RenameJob *job = callback_data;
+
+    nautilus_file_cancel (job->file, rename_callback, job);
 }
 
 static void
-finish_rename (NautilusFile *file,
-               gboolean      stop_timer)
+finish_rename (RenameJob *job,
+               gboolean   stop_timer)
 {
-    NautilusRenameData *data;
-
-    data = g_object_get_data (G_OBJECT (file), NEW_NAME_TAG);
-    if (data == NULL)
-    {
-        return;
-    }
-
     /* Cancel both the rename and the timed wait. */
-    nautilus_file_cancel (file, rename_callback, NULL);
+    nautilus_file_cancel (job->file, rename_callback, NULL);
     if (stop_timer)
     {
-        eel_timed_wait_stop (cancel_rename_callback, file);
+        eel_timed_wait_stop (cancel_rename_callback, job);
     }
-
-    /* Let go of file name. */
-    g_object_set_data (G_OBJECT (file), NEW_NAME_TAG, NULL);
 }
 
 void
@@ -7145,36 +7156,34 @@ nautilus_file_operations_rename (GFile                          *location,
     g_return_if_fail (G_IS_FILE (location));
     g_return_if_fail (new_name != NULL);
 
+    RenameJob *job = op_job_new (RenameJob,
+                                 parent_view != NULL
+                                 ? GTK_WINDOW (gtk_widget_get_ancestor (parent_view, GTK_TYPE_WINDOW))
+                                 : NULL,
+                                 dbus_data);
     NautilusFile *file = nautilus_file_get (location);
-    NautilusRenameData *data;
     g_autofree char *wait_message = NULL;
     g_autofree char *uri = NULL;
 
-    /* Stop any earlier rename that's already in progress. */
-    finish_rename (file, TRUE);
+    job->file = file;
+    job->new_name = strdup (new_name);
+    job->done_callback = done_callback;
+    job->done_callback_data = done_callback_data;
 
-    data = g_new0 (NautilusRenameData, 1);
-    data->name = g_strdup (new_name);
-    data->parent = parent_view;
-
-    /* Attach the new name to the file. */
-    g_object_set_data_full (G_OBJECT (file),
-                            NEW_NAME_TAG,
-                            data, (GDestroyNotify) nautilus_rename_data_free);
+    finish_rename (job, TRUE);
 
     /* Start the timed wait to cancel the rename. */
     wait_message = g_strdup_printf (_("Renaming “%s” to “%s”."),
                                     nautilus_file_get_display_name (file),
                                     new_name);
-    eel_timed_wait_start (cancel_rename_callback, file, wait_message,
+    eel_timed_wait_start (cancel_rename_callback, job, wait_message,
                           NULL);     /* FIXME bugzilla.gnome.org 42395: Parent this? */
 
     uri = nautilus_file_get_uri (file);
     g_debug ("Renaming file %s to %s", uri, new_name);
 
     /* Start the rename. */
-    nautilus_file_rename (file, new_name,
-                          rename_callback, NULL);
+    nautilus_file_rename (file, new_name, rename_callback, job);
 }
 
 void
