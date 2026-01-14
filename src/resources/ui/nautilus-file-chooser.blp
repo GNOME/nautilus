@@ -196,6 +196,7 @@ template $NautilusFileChooser: Adw.Window {
                     [start]
                     Adw.Bin filename_button_start {}
 
+                    /* Center the label and don't overlap the overlay */
                     [center]
                     Label filename_label {
                       label: bind filename_entry.text;

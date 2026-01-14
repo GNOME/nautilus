@@ -14,6 +14,7 @@ template $NautilusSearchPopover: Popover {
       margin-start: 12;
       margin-end: 12;
 
+      /* File Type Filter */
       Box {
         orientation: vertical;
         spacing: 6;
@@ -33,6 +34,8 @@ template $NautilusSearchPopover: Popover {
           child-spacing: 6;
           line-spacing: 6;
           natural-line-length: 340;
+
+          /* Add any new buttons to get_type_buttons() list */
 
           Button audio_button {
             accessible-role: checkbox;
@@ -148,6 +151,7 @@ template $NautilusSearchPopover: Popover {
         }
       }
 
+      /* Date Filter */
       Box {
         orientation: vertical;
         spacing: 6;
@@ -171,6 +175,7 @@ template $NautilusSearchPopover: Popover {
             has-frame: false;
             always-show-arrow: true;
 
+            /* See org.gnome.nautilus.SearchFilterTimeType schema enum */
             menu-model: menu {
               section {
                 item {
@@ -250,6 +255,7 @@ template $NautilusSearchPopover: Popover {
         }
       }
 
+      /* Other Filter Options */
       Box other_options_box {
         orientation: vertical;
         spacing: 6;
@@ -287,6 +293,7 @@ template $NautilusSearchPopover: Popover {
           }
 
           Button content_only_button {
+            /* TODO: This is not implemented yet, so it's hidden */
             visible: false;
             label: _("Only Co_ntents");
             use-underline: true;
