@@ -1,14 +1,14 @@
 #!/usr/bin/env bash
 
+menu_dirs="src/resources/menu"
 srcdirs="eel extensions src libnautilus-extension"
-uidirs="src/resources/ui"
 desktopdirs="data"
 
 # Blueprint and C source files that contain gettext keywords
 files=$(grep -lR --include='*.blp' --include='*.c' '\(gettext\|[^I_)]_\)(' $srcdirs)
 
-# find ui files that contain translatable string
-files="$files "$(grep -lRi --include='*.ui' 'translatable="[ty1]' $uidirs)
+# Menu files
+files="$files "$(grep -lRi --include='*.ui' 'translatable="[ty1]' $menu_dirs)
 
 # find .desktop files
 files="$files "$(find $desktopdirs -name '*.desktop*')

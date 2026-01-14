@@ -3,7 +3,12 @@
   <gresource prefix="/org/gnome/nautilus">
     <file alias="appdata" compressed="true" preprocess="xml-stripblanks">./../data/@appid@.metainfo.xml</file>
 
-    <!-- UI files -->
+    <!-- Menu definitions -->
+    <file preprocess="xml-stripblanks">menu/nautilus-files-view-context-menus.ui</file>
+    <file preprocess="xml-stripblanks">menu/nautilus-toolbar-view-menu.ui</file>
+    <file preprocess="xml-stripblanks">menu/nautilus-pathbar-context-menu.ui</file>
+
+    <!-- UI files generated from Blueprint -->
     <file compressed="true">ui/nautilus-preferences-dialog.ui</file>
     <file compressed="true">ui/nautilus-search-popover.ui</file>
     <file preprocess="xml-stripblanks">ui/nautilus-app-chooser.ui</file>
@@ -16,7 +21,6 @@
     <file preprocess="xml-stripblanks">ui/nautilus-file-conflict-dialog.ui</file>
     <file preprocess="xml-stripblanks">ui/nautilus-file-properties-change-permissions.ui</file>
     <file preprocess="xml-stripblanks">ui/nautilus-files-view.ui</file>
-    <file preprocess="xml-stripblanks">ui/nautilus-files-view-context-menus.ui</file>
     <file preprocess="xml-stripblanks">ui/nautilus-files-view-select-items.ui</file>
     <file preprocess="xml-stripblanks">ui/nautilus-grid-cell.ui</file>
     <file preprocess="xml-stripblanks">ui/nautilus-history-controls.ui</file>
@@ -25,7 +29,6 @@
     <file preprocess="xml-stripblanks">ui/nautilus-network-cell.ui</file>
     <file preprocess="xml-stripblanks">ui/nautilus-new-folder-dialog.ui</file>
     <file preprocess="xml-stripblanks">ui/nautilus-operations-ui-manager-request-passphrase.ui</file>
-    <file preprocess="xml-stripblanks">ui/nautilus-pathbar-context-menu.ui</file>
     <file preprocess="xml-stripblanks">ui/nautilus-progress-indicator.ui</file>
     <file preprocess="xml-stripblanks">ui/nautilus-progress-info-widget.ui</file>
     <file preprocess="xml-stripblanks">ui/nautilus-properties-window.ui</file>
@@ -33,7 +36,6 @@
     <file preprocess="xml-stripblanks">ui/nautilus-search-types-dialog.ui</file>
     <file preprocess="xml-stripblanks">ui/nautilus-sidebar-row.ui</file>
     <file preprocess="xml-stripblanks">ui/nautilus-toolbar.ui</file>
-    <file preprocess="xml-stripblanks">ui/nautilus-toolbar-view-menu.ui</file>
     <file preprocess="xml-stripblanks">ui/nautilus-view-controls.ui</file>
     <file preprocess="xml-stripblanks">ui/nautilus-window.ui</file>
     <file preprocess="xml-stripblanks" alias="shortcuts-dialog.ui">ui/shortcuts-dialog.ui</file>
