@@ -8064,7 +8064,7 @@ nautilus_files_view_update_context_menus (NautilusFilesView *self)
     g_autoptr (GtkBuilder) builder = NULL;
     GObject *object;
 
-    builder = gtk_builder_new_from_resource ("/org/gnome/nautilus/ui/nautilus-files-view-context-menus.ui");
+    builder = gtk_builder_new_from_resource ("/org/gnome/nautilus/menu/nautilus-files-view-context-menus.ui");
 
     g_clear_object (&self->background_menu_model);
     g_clear_object (&self->selection_menu_model);
@@ -9413,7 +9413,7 @@ nautilus_files_view_init (NautilusFilesView *self)
     gtk_widget_add_css_class (self->empty_view_page, "view");
 
     /* Toolbar menu */
-    builder = gtk_builder_new_from_resource ("/org/gnome/nautilus/ui/nautilus-toolbar-view-menu.ui");
+    builder = gtk_builder_new_from_resource ("/org/gnome/nautilus/menu/nautilus-toolbar-view-menu.ui");
     self->toolbar_menu_sections = g_new0 (NautilusToolbarMenuSections, 1);
     self->toolbar_menu_sections->sort_section = G_MENU_MODEL (g_object_ref (gtk_builder_get_object (builder, "sort_section")));
 
