@@ -279,11 +279,19 @@ eel_timed_wait_stop (EelCancelCallback cancel_callback,
 
     g_return_if_fail (callback_data != NULL);
 
+    if (timed_wait_hash_table == NULL)
+    {
+        return;
+    }
+
     key.cancel_callback = cancel_callback;
     key.callback_data = callback_data;
     wait = g_hash_table_lookup (timed_wait_hash_table, &key);
 
-    g_return_if_fail (wait != NULL);
+    if (wait == NULL)
+    {
+        return;
+    }
 
     timed_wait_free (wait);
 }
