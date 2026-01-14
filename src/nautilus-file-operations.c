@@ -7112,10 +7112,13 @@ rename_callback (NautilusFile *file,
     }
     else if (error != NULL)
     {
-        /* If rename failed, notify the user. */
-        GtkWidget *parent = GTK_WIDGET (((CommonJob *) job)->parent_window);
+        if (!g_test_initialized ())
+        {
+            /* If rename failed, notify the user. */
+            GtkWidget *parent = GTK_WIDGET (((CommonJob *) job)->parent_window);
 
-        nautilus_report_error_renaming_file (job->file, job->new_name, error, parent);
+            nautilus_report_error_renaming_file (job->file, job->new_name, error, parent);
+        }
     }
     else
     {
