@@ -388,6 +388,73 @@ test_thumbnail_overwrite (void)
     test_clear_tmp_dir ();
 }
 
+static void
+test_thumbnail_rethumbnail_failed_on_mtime_change (void)
+{
+    g_autoptr (GFile) image_location = g_file_new_build_filename (test_get_tmp_dir (),
+                                                                  "Image.png",
+                                                                  NULL);
+    g_autofree gchar *uri = g_file_get_uri (image_location);
+    g_autofree gchar *thumbnail_path = nautilus_thumbnail_get_path_for_uri (uri);
+    g_autoptr (GFile) thumbnail_location = g_file_new_for_path (thumbnail_path);
+    g_autoptr (GError) error = NULL;
+    g_auto (ThumbnailCallbackData) thumbnailing_data = { NULL, FALSE, NULL };
+
+    g_file_set_contents (g_file_peek_path (image_location), "not a valid image", -1, &error);
+    g_assert_no_error (error);
+
+    /* Produce a failed thumbnail */
+    nautilus_create_thumbnail_async (uri,
+                                     "image/png",
+                                     0,
+                                     NULL,
+                                     thumbnailing_done_cb,
+                                     &thumbnailing_data);
+
+    ITER_CONTEXT_WHILE (!thumbnailing_data.done);
+
+    g_assert_false (g_file_query_exists (thumbnail_location, NULL));
+    g_assert_null (thumbnailing_data.pixbuf);
+    g_assert_nonnull (thumbnailing_data.error);
+    thumbnail_data_free (&thumbnailing_data);
+
+    /* Replace the corrupt image with a valid one, updating mtime */
+    make_image_file (image_location);
+
+    g_autofree gchar *mime_type = NULL;
+    guint64 new_mtime = get_file_mime_type_and_mtime (image_location, &mime_type);
+
+    if (!nautilus_can_thumbnail (uri, mime_type, new_mtime))
+    {
+        g_test_skip ("System has no thumbnailer for images, but this test is meant to test "
+                     "rethumbnailing an image after mtime change.");
+        test_clear_tmp_dir ();
+
+        return;
+    }
+
+    /* Attempt thumbnailing again */
+    thumbnailing_data = (ThumbnailCallbackData)
+    {
+        NULL, FALSE, NULL
+    };
+
+    nautilus_create_thumbnail_async (uri,
+                                     mime_type,
+                                     new_mtime,
+                                     NULL,
+                                     thumbnailing_done_cb,
+                                     &thumbnailing_data);
+
+    ITER_CONTEXT_WHILE (!thumbnailing_data.done);
+
+    g_assert_true (g_file_query_exists (thumbnail_location, NULL));
+    g_assert_nonnull (thumbnailing_data.pixbuf);
+    g_assert_no_error (thumbnailing_data.error);
+
+    test_clear_tmp_dir ();
+}
+
 static GFile *
 make_text_file (void)
 {
@@ -472,6 +539,8 @@ main (int   argc,
                      test_thumbnail_cancel);
     g_test_add_func ("/thumbnail/single/overwrite",
                      test_thumbnail_overwrite);
+    g_test_add_func ("/thumbnail/single/rethumbnail/failed-on-mtime-change",
+                     test_thumbnail_rethumbnail_failed_on_mtime_change);
     g_test_add_func ("/thumbnail/queue/deprioritize",
                      test_thumbnail_test_queue);
 
