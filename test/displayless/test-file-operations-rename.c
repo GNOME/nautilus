@@ -98,6 +98,7 @@ test_rename_to_self (void)
     g_output_stream_close (G_OUTPUT_STREAM (stream), NULL, &error);
     g_assert_no_error (error);
 
+    nautilus_file_undo_manager_set_action (NULL);
     nautilus_file_operations_rename (file, "original.txt", NULL, NULL,
                                      rename_done_callback, &callback_data);
 
@@ -107,6 +108,9 @@ test_rename_to_self (void)
     g_assert_nonnull (callback_data.renamed_file);
     g_assert_true (g_file_query_exists (file, NULL));
     g_assert_true (g_file_equal (callback_data.renamed_file, file));
+    g_assert_cmpuint (nautilus_file_undo_manager_get_state (),
+                      ==,
+                      NAUTILUS_FILE_UNDO_MANAGER_STATE_NONE);
 
     test_clear_tmp_dir ();
 }
@@ -126,6 +130,7 @@ test_rename_with_separator (void)
     g_output_stream_close (G_OUTPUT_STREAM (stream), NULL, &error);
     g_assert_no_error (error);
 
+    nautilus_file_undo_manager_set_action (NULL);
     nautilus_file_operations_rename (file, invalid_name, NULL, NULL,
                                      rename_done_callback, &callback_data);
 
@@ -133,6 +138,10 @@ test_rename_with_separator (void)
 
     g_assert_false (callback_data.success);
     g_assert_true (g_file_query_exists (file, NULL));
+    g_assert_cmpuint (nautilus_file_undo_manager_get_state (),
+                      ==,
+                      NAUTILUS_FILE_UNDO_MANAGER_STATE_NONE);
+
 
     test_clear_tmp_dir ();
 }
