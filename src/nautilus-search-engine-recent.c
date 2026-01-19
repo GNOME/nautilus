@@ -313,6 +313,12 @@ get_name (NautilusSearchProvider *provider)
     return "recent";
 }
 
+static gboolean
+run_in_thread (NautilusSearchProvider *provider)
+{
+    return TRUE;
+}
+
 static void
 start_search (NautilusSearchProvider *provider)
 {
@@ -334,6 +340,7 @@ nautilus_search_engine_recent_class_init (NautilusSearchEngineRecentClass *klass
 
     object_class->finalize = nautilus_search_engine_recent_finalize;
     search_provider_class->get_name = get_name;
+    search_provider_class->run_in_thread = run_in_thread;
     search_provider_class->start_search = start_search;
     search_provider_class->stop = nautilus_search_engine_recent_stop;
 }

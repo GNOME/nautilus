@@ -264,6 +264,12 @@ default_should_search (NautilusSearchProvider *provider,
     return TRUE;
 }
 
+static gboolean
+default_run_in_thread (NautilusSearchProvider *provider)
+{
+    return FALSE;
+}
+
 static guint
 default_search_delay (NautilusSearchProvider *provider)
 {
@@ -277,6 +283,7 @@ nautilus_search_provider_class_init (NautilusSearchProviderClass *klass)
     NautilusSearchProviderClass *search_provider_class = NAUTILUS_SEARCH_PROVIDER_CLASS (klass);
 
     object_class->dispose = search_provider_dispose;
+    search_provider_class->run_in_thread = default_run_in_thread;
     search_provider_class->should_search = default_should_search;
     search_provider_class->search_delay = default_search_delay;
 

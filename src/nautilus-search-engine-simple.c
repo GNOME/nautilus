@@ -442,6 +442,12 @@ get_name (NautilusSearchProvider *provider)
     return "simple";
 }
 
+static gboolean
+run_in_thread (NautilusSearchProvider *provider)
+{
+    return TRUE;
+}
+
 static guint
 search_delay (NautilusSearchProvider *provider)
 {
@@ -485,6 +491,7 @@ nautilus_search_engine_simple_class_init (NautilusSearchEngineSimpleClass *class
 
     gobject_class->finalize = finalize;
     search_provider_class->get_name = get_name;
+    search_provider_class->run_in_thread = run_in_thread;
     search_provider_class->search_delay = search_delay;
     search_provider_class->should_search = should_search;
     search_provider_class->start_search = start_search;
