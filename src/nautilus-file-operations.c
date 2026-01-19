@@ -4275,8 +4275,6 @@ copy_move_directory (CopyMoveJob   *copy_job,
                                       job->cancellable,
                                       NULL);
 
-            g_warn_if_fail (info != NULL);
-
             if (info != NULL)
             {
                 transfer_info->num_bytes += g_file_info_get_size (info);
