@@ -1591,6 +1591,32 @@ batch_rename_dialog_setup_title (NautilusBatchRenameDialog *self)
     adw_dialog_set_title (ADW_DIALOG (self), title);
 }
 
+static void
+batch_rename_dialog_setup_size (NautilusBatchRenameDialog *self)
+{
+    static const int base_height = 200;
+    static const int per_item_height = 32;
+    static const int base_width = 600;
+    static const int per_char_width = 10;
+
+    glong longest_name = 0;
+
+    for (NautilusFileList *l = self->selection; l != NULL; l = l->next)
+    {
+        NautilusFile *file = l->data;
+        const char *name = nautilus_file_get_name (file);
+
+        longest_name = MAX (g_utf8_strlen (name, -1), longest_name);
+    }
+
+    /* Calulate height based on number of entries. */
+    int height = base_height + per_item_height * self->selection_size;
+    int width = MAX (base_width, 2 * per_char_width * longest_name);
+
+    adw_dialog_set_content_height (ADW_DIALOG (self), height);
+    adw_dialog_set_content_width (ADW_DIALOG (self), width);
+}
+
 /**
  * nautilus_batch_rename_dialog_new:
  * @selections: (element-type NautilusFile*) (transfer full): a list of files to rename.
@@ -1610,6 +1636,7 @@ nautilus_batch_rename_dialog_new (GList   *selection,
     dialog->distinct_parent_directories = batch_rename_files_get_distinct_parents (selection);
 
     batch_rename_dialog_setup_title (dialog);
+    batch_rename_dialog_setup_size (dialog);
 
     add_tag (dialog, metadata_tags_constants[ORIGINAL_FILE_NAME]);
 
