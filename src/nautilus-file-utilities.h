@@ -131,3 +131,5 @@ gboolean is_external_volume (GVolume *volume);
 
 GList *
 nautilus_location_list_from_file_list (GList *files);
+
+gboolean nautilus_location_is_autofs_mountpoint (GFile *location);

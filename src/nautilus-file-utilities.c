@@ -34,15 +34,22 @@
 #include "nautilus-search-directory.h"
 #include "nautilus-starred-directory.h"
 #include "nautilus-ui-utilities.h"
+#include <fcntl.h>
 #include <glib.h>
 #include <glib/gi18n.h>
 #include <glib/gstdio.h>
 #include <gio/gio.h>
 #include <unistd.h>
 #include <stdlib.h>
+#include <sys/vfs.h>
 
 #define NAUTILUS_USER_DIRECTORY_NAME "nautilus"
 #define DEFAULT_NAUTILUS_DIRECTORY_MODE (0755)
+
+/* From linux/magic.h */
+#ifndef AUTOFS_SUPER_MAGIC
+#define AUTOFS_SUPER_MAGIC 0x0187
+#endif
 
 char *
 nautilus_compute_title_for_location (GFile *location)
@@ -1083,4 +1090,36 @@ is_external_volume (GVolume *volume)
     g_free (id);
 
     return is_external;
+}
+
+/* Checks if the location is an autofs mountpoint without triggering mount.*/
+gboolean
+nautilus_location_is_autofs_mountpoint (GFile *location)
+{
+    g_return_val_if_fail (G_IS_FILE (location), FALSE);
+
+    g_autofree char *path = g_file_get_path (location);
+    struct statfs buf;
+    gint fd;
+
+    if (path == NULL)
+    {
+        return FALSE;
+    }
+
+    fd = g_open (path, O_PATH | O_NOFOLLOW, 0);
+    if (fd < 0)
+    {
+        return FALSE;
+    }
+
+    if (fstatfs (fd, &buf) < 0)
+    {
+        close (fd);
+        return FALSE;
+    }
+
+    close (fd);
+
+    return (buf.f_type == AUTOFS_SUPER_MAGIC);
 }
