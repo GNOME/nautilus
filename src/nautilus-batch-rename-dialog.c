@@ -60,6 +60,7 @@ struct _NautilusBatchRenameDialog
 
     GList *selection;
     GList *new_names;
+    guint selection_size;
     NautilusBatchRenameDialogMode mode;
 
     GActionGroup *action_group;
@@ -463,13 +464,14 @@ batch_rename_dialog_on_cancel (NautilusBatchRenameDialog *dialog,
 static void
 fill_display_listbox (NautilusBatchRenameDialog *dialog)
 {
-    guint items_size = g_list_length (dialog->new_names);
-    g_autoptr (GPtrArray) item_array = g_ptr_array_new_full (items_size, g_object_unref);
+    g_autoptr (GPtrArray) item_array = g_ptr_array_new_full (dialog->selection_size, g_object_unref);
     GList *l1;
     GList *l2;
     guint i;
 
-    for (i = 0, l1 = dialog->new_names, l2 = dialog->selection; i < items_size; i++, l1 = l1->next, l2 = l2->next)
+    for (i = 0, l1 = dialog->new_names, l2 = dialog->selection;
+         i < dialog->selection_size;
+         i++, l1 = l1->next, l2 = l2->next)
     {
         g_autofree gchar *name = g_markup_escape_text (nautilus_file_get_name (NAUTILUS_FILE (l2->data)), -1);
         g_autofree gchar *new_name = g_markup_escape_text (((GString *) l1->data)->str, -1);
@@ -1558,6 +1560,7 @@ nautilus_batch_rename_dialog_new (GList   *selection,
 
     dialog->selection = selection;
     dialog->window = window;
+    dialog->selection_size = g_list_length (selection);
 
     all_targets_are_folders = TRUE;
     for (l = selection; l != NULL; l = l->next)
@@ -1580,7 +1583,7 @@ nautilus_batch_rename_dialog_new (GList   *selection,
     }
 
     dialog_title = g_string_new ("");
-    guint selection_count = g_list_length (selection);
+    guint selection_count = dialog->selection_size;
     if (all_targets_are_folders)
     {
         g_string_append_printf (dialog_title,
