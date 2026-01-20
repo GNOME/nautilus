@@ -407,7 +407,8 @@ on_item_drag_prepare (GtkDragSource *source,
     g_autoslist (GFile) file_list = NULL;
     g_autoptr (GdkPaintable) paintable = NULL;
     GdkDragAction actions;
-    gint scale_factor;
+    gint scale_factor = gtk_widget_get_scale_factor (GTK_WIDGET (self));
+    gboolean rtl = gtk_widget_get_direction (GTK_WIDGET (self)) == GTK_TEXT_DIR_RTL;
     GtkBitsetIter iter;
     guint i;
 
@@ -446,8 +447,7 @@ on_item_drag_prepare (GtkDragSource *source,
 
     gtk_drag_source_set_actions (source, actions);
 
-    scale_factor = gtk_widget_get_scale_factor (GTK_WIDGET (self));
-    paintable = get_paintable_for_drag_selection (selected_files, scale_factor);
+    paintable = get_paintable_for_drag_selection (selected_files, scale_factor, rtl);
 
     gtk_drag_source_set_icon (source, paintable, 0, 0);
 

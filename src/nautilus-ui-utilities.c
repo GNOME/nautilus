@@ -688,8 +688,9 @@ nautilus_ui_draw_symbolic_icon (GtkSnapshot           *snapshot,
 #define STACK_SHADOW_RADIUS 10
 
 GdkPaintable *
-nautilus_ui_draw_stacked_icons (GQueue *icons,
-                                uint    size)
+nautilus_ui_draw_stacked_icons (GQueue   *icons,
+                                uint      size,
+                                gboolean  rtl)
 {
     g_autoptr (GtkSnapshot) snapshot = gtk_snapshot_new ();
     /* A wide shadow for the pile of icons gives a sense of floating. */
@@ -719,8 +720,9 @@ nautilus_ui_draw_stacked_icons (GQueue *icons,
      *                                      '--------'     '--------'
      */
     guint n_icons = g_queue_get_length (icons);
-    float dx = (n_icons == 2) ? 10 : (n_icons == 3) ? 6 : (n_icons >= 4) ? 4 : 0;
-    float dy = (n_icons == 2) ? 10 : (n_icons == 3) ? 6 : (n_icons >= 4) ? 4 : 0;
+    float offset_per_icon = (n_icons == 2) ? 10 : (n_icons == 3) ? 6 : (n_icons >= 4) ? 4 : 0;
+    float dx = (rtl ? -offset_per_icon : offset_per_icon);
+    float dy = offset_per_icon;
 
     /* We want the first icon on top of every other. So we need to start drawing
      * the stack from the bottom, that is, from the last icon. This requires us

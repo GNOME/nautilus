@@ -289,8 +289,9 @@ nautilus_dnd_perform_drop (NautilusFilesView *view,
 #define MAX_DRAWN_DRAG_ICONS 6
 
 GdkPaintable *
-get_paintable_for_drag_selection (GList *selection,
-                                  int    scale)
+get_paintable_for_drag_selection (GList    *selection,
+                                  int       scale,
+                                  gboolean  rtl)
 {
     g_return_val_if_fail (NAUTILUS_IS_FILE (selection->data), NULL);
 
@@ -310,5 +311,5 @@ get_paintable_for_drag_selection (GList *selection,
         g_queue_push_tail (icons, icon);
     }
 
-    return nautilus_ui_draw_stacked_icons (icons, icon_size);
+    return nautilus_ui_draw_stacked_icons (icons, icon_size, rtl);
 }

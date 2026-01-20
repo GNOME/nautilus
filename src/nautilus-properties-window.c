@@ -543,7 +543,8 @@ get_image_for_properties_window (NautilusPropertiesWindow *self)
             g_queue_push_tail (icons, nautilus_icon_info_get_paintable (info));
         }
 
-        GdkPaintable *stacked_icons = nautilus_ui_draw_stacked_icons (icons, size);
+        gboolean rtl = gtk_widget_get_direction (GTK_WIDGET (self)) == GTK_TEXT_DIR_RTL;
+        GdkPaintable *stacked_icons = nautilus_ui_draw_stacked_icons (icons, size, rtl);
 
         return nautilus_icon_info_new_for_paintable (stacked_icons);
     }
