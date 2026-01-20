@@ -2774,7 +2774,8 @@ nautilus_window_slot_dispose (GObject *object)
     g_clear_object (&self->slot_action_group);
     g_clear_object (&self->pending_search_query);
 
-    g_clear_pointer (&self->find_mount_cancellable, g_cancellable_cancel);
+    g_cancellable_cancel (self->find_mount_cancellable);
+    g_clear_object (&self->find_mount_cancellable);
 
     if (self->query_editor)
     {
