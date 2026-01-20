@@ -5068,6 +5068,17 @@ nautilus_file_should_show_directory_item_count (NautilusFile *file)
 {
     g_return_val_if_fail (NAUTILUS_IS_FILE (file), FALSE);
 
+    /* Don't count items in autofs directories to avoid triggering automount. */
+    if (file->details->is_mountpoint)
+    {
+        g_autoptr (GFile) location = nautilus_file_get_location (file);
+
+        if (nautilus_location_is_autofs_mountpoint (location))
+        {
+            return FALSE;
+        }
+    }
+
     return get_speed_tradeoff_preference_for_file (file, show_directory_item_count);
 }
 

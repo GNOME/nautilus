@@ -133,3 +133,5 @@ NautilusQueryRecursive location_settings_search_get_recursive_for_location (GFil
 
 gboolean check_schema_available (const gchar *schema_id);
 gboolean is_external_volume (GVolume *volume);
+
+gboolean nautilus_location_is_autofs_mountpoint (GFile *location);
