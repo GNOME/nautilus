@@ -3781,6 +3781,7 @@ get_target_file_with_custom_name (GFile       *src,
     if (dest == NULL && !same_fs)
     {
         info = g_file_query_info (src,
+                                  G_FILE_ATTRIBUTE_STANDARD_NAME ","
                                   G_FILE_ATTRIBUTE_STANDARD_COPY_NAME ","
                                   G_FILE_ATTRIBUTE_TRASH_ORIG_PATH,
                                   0, NULL, NULL);
@@ -3790,7 +3791,8 @@ get_target_file_with_custom_name (GFile       *src,
             copyname = NULL;
 
             /* if file is being restored from trash make sure it uses its original name */
-            if (g_file_has_uri_scheme (src, SCHEME_TRASH))
+            if (g_file_has_uri_scheme (src, SCHEME_TRASH) &&
+                g_file_info_has_attribute (info, G_FILE_ATTRIBUTE_TRASH_ORIG_PATH))
             {
                 copyname = g_path_get_basename (g_file_info_get_attribute_byte_string (info, G_FILE_ATTRIBUTE_TRASH_ORIG_PATH));
             }
