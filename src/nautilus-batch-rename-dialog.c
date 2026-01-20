@@ -1539,6 +1539,58 @@ nautilus_batch_rename_dialog_class_init (NautilusBatchRenameDialogClass *klass)
     gtk_widget_class_bind_template_callback (widget_class, batch_row_orientation);
 }
 
+static void
+batch_rename_dialog_setup_title (NautilusBatchRenameDialog *self)
+{
+    g_autofree char *title = NULL;
+    gboolean all_targets_are_folders = TRUE;
+    gboolean all_targets_are_regular_files = TRUE;
+
+    for (NautilusFileList *l = self->selection; l != NULL; l = l->next)
+    {
+        if (!nautilus_file_is_directory (l->data))
+        {
+            all_targets_are_folders = FALSE;
+            break;
+        }
+    }
+
+    for (NautilusFileList *l = self->selection; l != NULL; l = l->next)
+    {
+        if (!nautilus_file_is_regular_file (l->data))
+        {
+            all_targets_are_regular_files = FALSE;
+            break;
+        }
+    }
+
+    if (all_targets_are_folders)
+    {
+        title = g_strdup_printf (ngettext ("Rename %d Folder",
+                                           "Rename %d Folders",
+                                           self->selection_size),
+                                 self->selection_size);
+    }
+    else if (all_targets_are_regular_files)
+    {
+        title = g_strdup_printf (ngettext ("Rename %d File",
+                                           "Rename %d Files",
+                                           self->selection_size),
+                                 self->selection_size);
+    }
+    else
+    {
+        /* To translators: %d is the total number of files and folders.
+         * Singular case of the string is never used */
+        title = g_strdup_printf (ngettext ("Rename %d File and Folder",
+                                           "Rename %d Files and Folders",
+                                           self->selection_size),
+                                 self->selection_size);
+    }
+
+    adw_dialog_set_title (ADW_DIALOG (self), title);
+}
+
 /**
  * nautilus_batch_rename_dialog_new:
  * @selections: (element-type NautilusFile*) (transfer full): a list of files to rename.
@@ -1550,70 +1602,14 @@ GtkWidget *
 nautilus_batch_rename_dialog_new (GList   *selection,
                                   GtkRoot *window)
 {
-    NautilusBatchRenameDialog *dialog;
-    GString *dialog_title;
-    GList *l;
-    gboolean all_targets_are_folders;
-    gboolean all_targets_are_regular_files;
-
-    dialog = g_object_new (NAUTILUS_TYPE_BATCH_RENAME_DIALOG, NULL);
+    NautilusBatchRenameDialog *dialog = g_object_new (NAUTILUS_TYPE_BATCH_RENAME_DIALOG, NULL);
 
     dialog->selection = selection;
     dialog->window = window;
     dialog->selection_size = g_list_length (selection);
-
-    all_targets_are_folders = TRUE;
-    for (l = selection; l != NULL; l = l->next)
-    {
-        if (!nautilus_file_is_directory (NAUTILUS_FILE (l->data)))
-        {
-            all_targets_are_folders = FALSE;
-            break;
-        }
-    }
-
-    all_targets_are_regular_files = TRUE;
-    for (l = selection; l != NULL; l = l->next)
-    {
-        if (!nautilus_file_is_regular_file (NAUTILUS_FILE (l->data)))
-        {
-            all_targets_are_regular_files = FALSE;
-            break;
-        }
-    }
-
-    dialog_title = g_string_new ("");
-    guint selection_count = dialog->selection_size;
-    if (all_targets_are_folders)
-    {
-        g_string_append_printf (dialog_title,
-                                ngettext ("Rename %d Folder",
-                                          "Rename %d Folders",
-                                          selection_count),
-                                selection_count);
-    }
-    else if (all_targets_are_regular_files)
-    {
-        g_string_append_printf (dialog_title,
-                                ngettext ("Rename %d File",
-                                          "Rename %d Files",
-                                          selection_count),
-                                selection_count);
-    }
-    else
-    {
-        g_string_append_printf (dialog_title,
-                                /* To translators: %d is the total number of files and folders.
-                                 * Singular case of the string is never used */
-                                ngettext ("Rename %d File and Folder",
-                                          "Rename %d Files and Folders",
-                                          selection_count),
-                                selection_count);
-    }
-
-    adw_dialog_set_title (ADW_DIALOG (dialog), dialog_title->str);
-
     dialog->distinct_parent_directories = batch_rename_files_get_distinct_parents (selection);
+
+    batch_rename_dialog_setup_title (dialog);
 
     add_tag (dialog, metadata_tags_constants[ORIGINAL_FILE_NAME]);
 
@@ -1622,8 +1618,6 @@ nautilus_batch_rename_dialog_new (GList   *selection,
     fill_display_listbox (dialog);
 
     gtk_widget_set_cursor (GTK_WIDGET (window), NULL);
-
-    g_string_free (dialog_title, TRUE);
 
     return GTK_WIDGET (dialog);
 }
