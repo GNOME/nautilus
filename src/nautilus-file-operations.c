@@ -4594,7 +4594,8 @@ copy_move_file (CopyMoveJob   *copy_job,
                 gboolean       overwrite,
                 gboolean       reset_perms)
 {
-    GFile *dest, *new_dest;
+    g_autoptr (GFile) dest = NULL;
+    GFile *new_dest;
     GFileCopyFlags flags;
     ProgressData pdata;
     gboolean would_recurse;
@@ -4767,7 +4768,6 @@ copy_move_file (CopyMoveJob   *copy_job,
                                                                     src, dest);
             }
 
-            g_object_unref (dest);
             return TRUE;
         }
 
@@ -4976,7 +4976,6 @@ copy_move_file (CopyMoveJob   *copy_job,
                 continue;
             }
 
-            g_object_unref (dest);
             return !skipped_file;
         }
         /* Other error */
