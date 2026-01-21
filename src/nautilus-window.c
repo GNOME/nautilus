@@ -25,18 +25,23 @@
 /* nautilus-window.c: Implementation of the main window object */
 #define G_LOG_DOMAIN "nautilus-window"
 
+#include <config.h>
+
 #include "nautilus-window.h"
 
 #include <gdk-pixbuf/gdk-pixbuf.h>
 #include <gdk/gdkkeysyms.h>
 #include <glib/gi18n.h>
 #include <gtk/gtk.h>
-#include <malloc.h>
 #include <math.h>
 #include <sys/time.h>
 
 #ifdef GDK_WINDOWING_WAYLAND
 #include <gdk/wayland/gdkwayland.h>
+#endif
+
+#ifdef HAVE_MALLOC_TRIM
+#include <malloc.h>
 #endif
 
 #include "nautilus-application.h"
@@ -149,6 +154,7 @@ static const GtkPadActionEntry pad_actions[] =
     /* Button number sequence continues in window-slot.c */
 };
 
+#ifdef HAVE_MALLOC_TRIM
 static guint malloc_trim_idle_id = 0;
 
 static gboolean
@@ -159,6 +165,7 @@ malloc_trim_idle_cb (gpointer user_data)
 
     return FALSE;
 }
+#endif
 
 static AdwTabPage *
 get_current_page (NautilusWindow *window)
@@ -691,10 +698,12 @@ window_slot_close (NautilusWindow     *window,
         nautilus_window_close (window);
     }
 
+#ifdef HAVE_MALLOC_TRIM
     if (malloc_trim_idle_id == 0)
     {
         malloc_trim_idle_id = g_idle_add (malloc_trim_idle_cb, NULL);
     }
+#endif
 }
 
 static void

@@ -180,6 +180,8 @@ if gtk_wayland.found()
   conf.set('HAVE_GTK_WAYLAND', 1)
 endif
 
+conf.set('HAVE_MALLOC_TRIM', cc.has_function('malloc_trim'))
+
 ######################################
 # File Configuration (for xml files) #
 ######################################
