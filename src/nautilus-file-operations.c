@@ -1866,7 +1866,7 @@ trash_file (CommonJob     *job,
 
     details = NULL;
     secondary = NULL;
-    if (!IS_IO_ERROR (error, NOT_SUPPORTED))
+    if (!g_error_matches (error, G_IO_ERROR, G_IO_ERROR_NOT_SUPPORTED))
     {
         details = error->message;
     }
