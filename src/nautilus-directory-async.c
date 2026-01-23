@@ -1657,8 +1657,8 @@ lacks_directory_count (NautilusFile *file)
 static gboolean
 should_get_directory_count_now (NautilusFile *file)
 {
-    return lacks_directory_count (file)
-           && !file->details->loading_directory;
+    return !file->details->loading_directory &&
+           lacks_directory_count (file);
 }
 
 static gboolean
