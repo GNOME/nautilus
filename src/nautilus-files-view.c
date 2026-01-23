@@ -4196,7 +4196,7 @@ process_pending_files (NautilusFilesView *self)
     }
     pending_additions = g_list_reverse (pending_additions);
 
-    if (files_added != NULL)
+    if (pending_additions != NULL)
     {
         g_signal_emit (self,
                        signals[ADD_FILES], 0, pending_additions);
