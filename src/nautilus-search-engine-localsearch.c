@@ -53,6 +53,7 @@ struct _NautilusSearchEngineLocalsearch
     TrackerSparqlConnection *connection;
     GHashTable *statements;
 
+    GTimeZone *tz;
     gboolean fts_enabled;
 };
 
@@ -68,6 +69,8 @@ finalize (GObject *object)
     g_clear_pointer (&self->statements, g_hash_table_unref);
     /* This is a singleton, no need to unref. */
     self->connection = NULL;
+
+    g_clear_pointer (&self->tz, g_time_zone_unref);
 
     G_OBJECT_CLASS (nautilus_search_engine_localsearch_parent_class)->finalize (object);
 }
@@ -112,7 +115,6 @@ cursor_callback (GObject      *object,
     const char *atime_str;
     const char *ctime_str;
     const gchar *snippet;
-    g_autoptr (GTimeZone) tz = NULL;
     gdouble rank, match;
     gboolean success;
     gchar *basename;
@@ -161,16 +163,9 @@ cursor_callback (GObject      *object,
         }
     }
 
-    if (mtime_str != NULL ||
-        atime_str != NULL ||
-        ctime_str != NULL)
-    {
-        tz = g_time_zone_new_local ();
-    }
-
     if (mtime_str != NULL)
     {
-        g_autoptr (GDateTime) date = g_date_time_new_from_iso8601 (mtime_str, tz);
+        g_autoptr (GDateTime) date = g_date_time_new_from_iso8601 (mtime_str, self->tz);
 
         if (date == NULL)
         {
@@ -181,7 +176,7 @@ cursor_callback (GObject      *object,
 
     if (atime_str != NULL)
     {
-        g_autoptr (GDateTime) date = g_date_time_new_from_iso8601 (atime_str, tz);
+        g_autoptr (GDateTime) date = g_date_time_new_from_iso8601 (atime_str, self->tz);
 
         if (date == NULL)
         {
@@ -192,7 +187,7 @@ cursor_callback (GObject      *object,
 
     if (ctime_str != NULL)
     {
-        g_autoptr (GDateTime) date = g_date_time_new_from_iso8601 (ctime_str, tz);
+        g_autoptr (GDateTime) date = g_date_time_new_from_iso8601 (ctime_str, self->tz);
 
         if (date == NULL)
         {
@@ -527,6 +522,8 @@ nautilus_search_engine_localsearch_init (NautilusSearchEngineLocalsearch *engine
     {
         g_warning ("Could not establish a connection to Localsearch: %s", error->message);
     }
+
+    engine->tz = g_time_zone_new_local ();
 }
 
 
