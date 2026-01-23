@@ -559,13 +559,11 @@ search_engine_hits_added (NautilusSearchEngine    *engine,
                           GPtrArray               *hits,
                           NautilusSearchDirectory *self)
 {
-    GList *file_list;
+    g_autoptr (GList) file_list = NULL;
     NautilusFile *file;
     g_autoptr (GDateTime) now = g_date_time_new_now_local ();
     SearchMonitor *monitor;
     GList *monitor_list;
-
-    file_list = NULL;
     g_autoptr (GFile) query_location = nautilus_search_directory_get_search_location (self);
 
     for (guint i = 0; i < hits->len; i++)
@@ -588,6 +586,7 @@ search_engine_hits_added (NautilusSearchEngine    *engine,
 
         g_signal_connect (hit_file, "changed", G_CALLBACK (file_changed), self),
 
+        file_list = g_list_prepend (file_list, hit_file);
         g_hash_table_add (self->files_hash, g_steal_pointer (&hit_file));
     }
 
