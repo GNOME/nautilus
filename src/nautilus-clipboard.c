@@ -49,12 +49,11 @@ nautilus_clipboard_to_string (NautilusClipboard *clip)
 {
     GString *uris;
     char *uri;
-    guint i;
     GList *l;
 
     uris = g_string_new (clip->cut ? "cut" : "copy");
 
-    for (i = 0, l = clip->files; l != NULL; l = l->next, i++)
+    for (l = clip->files; l != NULL; l = l->next)
     {
         uri = nautilus_file_get_uri (l->data);
 
