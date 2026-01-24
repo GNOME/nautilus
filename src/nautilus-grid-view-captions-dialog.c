@@ -32,7 +32,7 @@ create_grid_caption_combo_row_items (AdwComboRow *combo_row,
     g_autoptr (GListStore) list_store = g_list_store_new (NAUTILUS_TYPE_COLUMN);
     g_autoptr (NautilusColumn) none = g_object_new (NAUTILUS_TYPE_COLUMN,
                                                     "name", "none",
-                                                    /* Translators: this is referred to captions under icons. */
+                                                    /* Translators: this refers to captions under icons. */
                                                     "label", _("None"),
                                                     NULL);
     g_autoptr (GtkExpression) expression = gtk_property_expression_new (NAUTILUS_TYPE_COLUMN,
@@ -49,7 +49,7 @@ create_grid_caption_combo_row_items (AdwComboRow *combo_row,
 
         g_object_get (G_OBJECT (column), "name", &name, NULL);
 
-        /* Don't show name here, it doesn't make sense.
+        /* Name is always shown.
          * Starred is instead shown as an emblem for the grid view.
          */
         if (g_strcmp0 (name, "name") == 0 ||

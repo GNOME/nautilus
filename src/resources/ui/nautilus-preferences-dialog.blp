@@ -98,30 +98,5 @@ Adw.PreferencesDialog preferences_dialog {
         activatable-widget: date_format_detailed_button;
       }
     }
-
-    Adw.PreferencesGroup {
-      description: _(
-        "Add information to be displayed beneath file and folder names. More information will appear when zooming closer."
-      );
-      title: _("Grid View Captions");
-
-      Adw.ComboRow captions_0_comborow {
-        /* Translators: This is an ordinal number */
-        title: C_("the n-th position of an icon caption", "Fi_rst");
-        use-underline: true;
-      }
-
-      Adw.ComboRow captions_1_comborow {
-        /* Translators: This is an ordinal number */
-        title: C_("the n-th position of an icon caption", "Seco_nd");
-        use-underline: true;
-      }
-
-      Adw.ComboRow captions_2_comborow {
-        /* Translators: This is an ordinal number */
-        title: C_("the n-th position of an icon caption", "T_hird");
-        use-underline: true;
-      }
-    }
   }
 }
