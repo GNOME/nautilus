@@ -118,6 +118,8 @@ libnautilus_sources = [
   'nautilus-grid-cell.h',
   'nautilus-grid-view.c',
   'nautilus-grid-view.h',
+  'nautilus-grid-view-captions-dialog.c',
+  'nautilus-grid-view-captions-dialog.h',
   'nautilus-hash-queue.c',
   'nautilus-hash-queue.h',
   'nautilus-history-controls.c',

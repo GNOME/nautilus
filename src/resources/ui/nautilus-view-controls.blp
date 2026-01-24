@@ -38,6 +38,14 @@ menu view_menu {
       hidden-when: "action-disabled";
     }
   }
+
+  section {
+    item {
+      label: _("Captions…");
+      action: "view.visible-captions";
+      hidden-when: "action-disabled";
+    }
+  }
 }
 
 template $NautilusViewControls: Adw.Bin {

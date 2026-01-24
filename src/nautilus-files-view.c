@@ -55,6 +55,7 @@
 #include "nautilus-floating-bar.h"
 #include "nautilus-global-preferences.h"
 #include "nautilus-grid-view.h"
+#include "nautilus-grid-view-captions-dialog.h"
 #include "nautilus-icon-info.h"
 #include "nautilus-list-view.h"
 #include "nautilus-metadata.h"
@@ -2555,6 +2556,18 @@ action_visible_columns (GSimpleAction *action,
     g_return_if_fail (NAUTILUS_IS_LIST_VIEW (self->list_base));
 
     nautilus_list_view_present_column_editor (NAUTILUS_LIST_VIEW (self->list_base));
+}
+
+static void
+action_visible_captions (GSimpleAction *action,
+                         GVariant      *state,
+                         gpointer       user_data)
+{
+    NautilusFilesView *self = NAUTILUS_FILES_VIEW (user_data);
+
+    g_return_if_fail (NAUTILUS_IS_GRID_VIEW (self->list_base));
+
+    nautilus_grid_view_captions_dialog_present (GTK_WIDGET (self));
 }
 
 static void
@@ -6781,6 +6794,7 @@ const GActionEntry view_entries[] =
     { .name = "sort", .parameter_type = "(sb)", .state = "('invalid',false)", .change_state = action_sort_order_changed },
     { .name = "show-hidden-files", .state = "true", .change_state = action_show_hidden_files },
     { .name = "visible-columns", .activate = action_visible_columns },
+    { .name = "visible-captions", .activate = action_visible_captions },
     /* Background menu */
     { .name = "empty-trash", .activate = action_empty_trash },
     { .name = "new-folder", .activate = action_new_folder },
@@ -7639,6 +7653,11 @@ nautilus_files_view_update_actions_state (NautilusFilesView *self)
                                          "visible-columns");
     g_simple_action_set_enabled (G_SIMPLE_ACTION (action),
                                  NAUTILUS_IS_LIST_VIEW (self->list_base));
+
+    action = g_action_map_lookup_action (G_ACTION_MAP (view_action_group),
+                                         "visible-captions");
+    g_simple_action_set_enabled (G_SIMPLE_ACTION (action),
+                                 NAUTILUS_IS_GRID_VIEW (self->list_base));
 
     update_zoom_actions_state (self);
 
