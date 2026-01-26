@@ -858,7 +858,8 @@ is_ancestor_selected (GtkTreeListRow *row,
 
 static NautilusFileList *
 get_selection_internal (NautilusFilesView *self,
-                        gboolean           for_file_transfer)
+                        gboolean           for_file_transfer,
+                        gboolean          *is_auto)
 {
     g_autoptr (GtkBitset) selection = NULL;
     GtkBitsetIter iter;
@@ -891,6 +892,11 @@ get_selection_internal (NautilusFilesView *self,
         selected_files = g_list_prepend (selected_files, g_object_ref (file));
     }
 
+    if (is_auto != NULL)
+    {
+        *is_auto = self->auto_selection;
+    }
+
     return selected_files;
 }
 
@@ -901,7 +907,7 @@ nautilus_files_view_get_selection_for_file_transfer (NautilusFilesView *view)
 {
     g_return_val_if_fail (NAUTILUS_IS_FILES_VIEW (view), NULL);
 
-    return get_selection_internal (view, TRUE);
+    return get_selection_internal (view, TRUE, NULL);
 }
 
 static void
@@ -1059,11 +1065,12 @@ nautilus_files_view_get_view_id (NautilusFilesView *self)
  * of the currently selected files.
  */
 NautilusFileList *
-nautilus_files_view_get_selection (NautilusFilesView *self)
+nautilus_files_view_get_selection (NautilusFilesView *self,
+                                   gboolean          *is_auto)
 {
     g_return_val_if_fail (NAUTILUS_IS_FILES_VIEW (self), NULL);
 
-    return get_selection_internal (self, FALSE);
+    return get_selection_internal (self, FALSE, is_auto);
 }
 
 typedef struct
@@ -1222,7 +1229,7 @@ nautilus_files_view_preview_update (NautilusFilesView *view)
         return;
     }
 
-    selection = nautilus_files_view_get_selection (view);
+    selection = nautilus_files_view_get_selection (view, NULL);
     if (selection == NULL)
     {
         return;
@@ -1325,7 +1332,7 @@ nautilus_files_view_activate_selection (NautilusFilesView *self,
         return;
     }
 
-    g_autolist (NautilusFile) selection = nautilus_files_view_get_selection (self);
+    g_autolist (NautilusFile) selection = nautilus_files_view_get_selection (self, NULL);
 
     nautilus_files_view_activate_files (self, selection, flags, TRUE);
 }
@@ -1365,7 +1372,7 @@ action_open_item_location (GSimpleAction *action,
     NautilusFile *parent;
     g_autoptr (GFile) parent_location = NULL;
 
-    selection = nautilus_files_view_get_selection (self);
+    selection = nautilus_files_view_get_selection (self, NULL);
 
     if (!selection)
     {
@@ -1403,7 +1410,7 @@ action_open_item_new_tab (GSimpleAction *action,
     g_autolist (NautilusFile) selection = NULL;
 
     view = NAUTILUS_FILES_VIEW (user_data);
-    selection = nautilus_files_view_get_selection (view);
+    selection = nautilus_files_view_get_selection (view, NULL);
 
     nautilus_files_view_activate_files (view,
                                         selection,
@@ -1524,7 +1531,7 @@ open_with_other_program (NautilusFilesView *view)
 
     g_assert (NAUTILUS_IS_FILES_VIEW (view));
 
-    selection = nautilus_files_view_get_selection (view);
+    selection = nautilus_files_view_get_selection (view, NULL);
     choose_program (view, g_steal_pointer (&selection));
 }
 
@@ -1657,7 +1664,7 @@ action_star (GSimpleAction *action,
     g_autolist (NautilusFile) selection = NULL;
 
     view = NAUTILUS_FILES_VIEW (user_data);
-    selection = nautilus_files_view_get_selection (view);
+    selection = nautilus_files_view_get_selection (view, NULL);
 
     nautilus_tag_manager_star_files (nautilus_tag_manager_get (),
                                      G_OBJECT (view),
@@ -1676,7 +1683,7 @@ action_unstar (GSimpleAction *action,
     g_autolist (NautilusFile) selection = NULL;
 
     view = NAUTILUS_FILES_VIEW (user_data);
-    selection = nautilus_files_view_get_selection (view);
+    selection = nautilus_files_view_get_selection (view, NULL);
 
     nautilus_tag_manager_unstar_files (nautilus_tag_manager_get (),
                                        G_OBJECT (view),
@@ -1733,7 +1740,7 @@ action_preview_selection (GSimpleAction *action,
     NautilusFilesView *self = user_data;
     g_autolist (NautilusFile) selection = NULL;
 
-    selection = nautilus_files_view_get_selection (self);
+    selection = nautilus_files_view_get_selection (self, NULL);
 
     g_autofree gchar *uri = nautilus_file_get_uri (selection->data);
 
@@ -2070,7 +2077,7 @@ nautilus_files_view_new_folder_dialog_new (NautilusFilesView *view,
     if (with_selection)
     {
         g_autolist (NautilusFile) selection = NULL;
-        selection = nautilus_files_view_get_selection (view);
+        selection = nautilus_files_view_get_selection (view, NULL);
         common_prefix = nautilus_get_common_filename_prefix (selection, MIN_COMMON_FILENAME_PREFIX_LENGTH);
     }
 
@@ -2428,7 +2435,7 @@ action_open_console (GSimpleAction *action,
                      gpointer       user_data)
 {
     NautilusFilesView *self = user_data;
-    g_autolist (NautilusFile) selection = nautilus_files_view_get_selection (self);
+    g_autolist (NautilusFile) selection = nautilus_files_view_get_selection (self, NULL);
     gboolean is_single_selection = list_len_is_one (selection);
 
     g_return_if_fail (is_single_selection);
@@ -2458,7 +2465,7 @@ action_properties (GSimpleAction *action,
     g_assert (NAUTILUS_IS_FILES_VIEW (user_data));
 
     NautilusFilesView *self = user_data;
-    selection = nautilus_files_view_get_selection (self);
+    selection = nautilus_files_view_get_selection (self, NULL);
     if (selection == NULL)
     {
         if (self->directory_as_file != NULL)
@@ -2634,7 +2641,7 @@ action_open_item_new_window (GSimpleAction *action,
     g_autolist (NautilusFile) selection = NULL;
 
     view = NAUTILUS_FILES_VIEW (user_data);
-    selection = nautilus_files_view_get_selection (view);
+    selection = nautilus_files_view_get_selection (view, NULL);
 
     nautilus_files_view_activate_files (view,
                                         selection,
@@ -3371,7 +3378,7 @@ nautilus_files_view_display_selection_info (NautilusFilesView *view)
         return;
     }
 
-    selection = nautilus_files_view_get_selection (view);
+    selection = nautilus_files_view_get_selection (view, NULL);
 
     folder_item_count_known = TRUE;
     folder_count = 0;
@@ -4274,7 +4281,7 @@ process_pending_files (NautilusFilesView *self)
 
     if (files_changed != NULL)
     {
-        g_autolist (NautilusFile) selection = nautilus_files_view_get_selection (self);
+        g_autolist (NautilusFile) selection = nautilus_files_view_get_selection (self, NULL);
         g_autoptr (GList) files = g_list_copy_deep (files_changed, (GCopyFunc) file_and_directory_get_file, NULL);
 
         if (_g_lists_sort_and_check_for_intersection (&files, &selection))
@@ -4777,7 +4784,7 @@ get_extension_selection_menu_items (NautilusFilesView *view)
     GList *l;
     g_autolist (NautilusFile) selection = NULL;
 
-    selection = nautilus_files_view_get_selection (view);
+    selection = nautilus_files_view_get_selection (view, NULL);
     providers = nautilus_module_get_extensions_for_type (NAUTILUS_TYPE_MENU_PROVIDER);
     items = NULL;
 
@@ -5138,7 +5145,7 @@ run_script (GSimpleAction *action,
 
     old_working_dir = change_to_view_directory (launch_parameters->directory_view);
 
-    selection = nautilus_files_view_get_selection (launch_parameters->directory_view);
+    selection = nautilus_files_view_get_selection (launch_parameters->directory_view, NULL);
     set_script_environment_variables (launch_parameters->directory_view, selection);
 
     NautilusDirectory *directory = launch_parameters->directory_view->directory;
@@ -5910,7 +5917,7 @@ action_paste_files_into (GSimpleAction *action,
     g_autolist (NautilusFile) selection = NULL;
 
     view = NAUTILUS_FILES_VIEW (user_data);
-    selection = nautilus_files_view_get_selection (view);
+    selection = nautilus_files_view_get_selection (view, NULL);
     if (selection != NULL)
     {
         paste_files (view, nautilus_file_get_activation_uri (selection->data), FALSE);
@@ -5926,7 +5933,7 @@ real_action_rename (NautilusFilesView *view)
 
     g_assert (NAUTILUS_IS_FILES_VIEW (view));
 
-    selection = nautilus_files_view_get_selection (view);
+    selection = nautilus_files_view_get_selection (view, NULL);
 
     if (selection != NULL)
     {
@@ -6172,7 +6179,7 @@ action_extract_here (GSimpleAction *action,
 
     view = NAUTILUS_FILES_VIEW (user_data);
 
-    selection = nautilus_files_view_get_selection (view);
+    selection = nautilus_files_view_get_selection (view, NULL);
     location = nautilus_file_get_location (NAUTILUS_FILE (g_list_first (selection)->data));
     /* Get a parent from a random file. We assume all files has a common parent.
      * But don't assume the parent is the view location, since that's not the
@@ -6193,7 +6200,7 @@ action_extract_to (GSimpleAction *action,
 
     view = NAUTILUS_FILES_VIEW (user_data);
 
-    selection = nautilus_files_view_get_selection (view);
+    selection = nautilus_files_view_get_selection (view, NULL);
 
     extract_files_to_chosen_location (view, selection);
 }
@@ -6283,7 +6290,7 @@ action_send_email (GSimpleAction *action,
     gboolean has_directory = FALSE;
 
     strv_builder = g_strv_builder_new ();
-    selection = nautilus_files_view_get_selection (view);
+    selection = nautilus_files_view_get_selection (view, NULL);
 
     for (GList *l = selection; l != NULL; l = l->next)
     {
@@ -6362,7 +6369,7 @@ action_run_in_terminal (GSimpleAction *action,
     g_assert (NAUTILUS_IS_FILES_VIEW (user_data));
 
     NautilusFilesView *view = user_data;
-    g_autolist (NautilusFile) selection = nautilus_files_view_get_selection (view);
+    g_autolist (NautilusFile) selection = nautilus_files_view_get_selection (view, NULL);
 
     if (!can_run_in_terminal (selection))
     {
@@ -6463,7 +6470,7 @@ action_set_as_wallpaper (GSimpleAction *action,
 
     g_assert (NAUTILUS_IS_FILES_VIEW (user_data));
 
-    selection = nautilus_files_view_get_selection (user_data);
+    selection = nautilus_files_view_get_selection (user_data, NULL);
     if (can_set_wallpaper (selection))
     {
         NautilusFile *file;
@@ -6575,7 +6582,7 @@ action_mount_volume (GSimpleAction *action,
     NautilusFilesView *view = NAUTILUS_FILES_VIEW (user_data);
     NautilusFile *file;
     GMountOperation *mount_op;
-    g_autolist (NautilusFile) selection = nautilus_files_view_get_selection (view);
+    g_autolist (NautilusFile) selection = nautilus_files_view_get_selection (view, NULL);
 
     for (NautilusFileList *l = selection; l != NULL; l = l->next)
     {
@@ -6606,7 +6613,7 @@ action_unmount_volume (GSimpleAction *action,
     g_autolist (NautilusFile) selection = NULL;
     GList *l;
 
-    selection = nautilus_files_view_get_selection (view);
+    selection = nautilus_files_view_get_selection (view, NULL);
 
     for (l = selection; l != NULL; l = l->next)
     {
@@ -6637,7 +6644,7 @@ action_eject_volume (GSimpleAction *action,
 
     view = NAUTILUS_FILES_VIEW (user_data);
 
-    selection = nautilus_files_view_get_selection (view);
+    selection = nautilus_files_view_get_selection (view, NULL);
     for (l = selection; l != NULL; l = l->next)
     {
         file = NAUTILUS_FILE (l->data);
@@ -6691,7 +6698,7 @@ action_start_volume (GSimpleAction *action,
 
     view = NAUTILUS_FILES_VIEW (user_data);
 
-    selection = nautilus_files_view_get_selection (view);
+    selection = nautilus_files_view_get_selection (view, NULL);
     for (l = selection; l != NULL; l = l->next)
     {
         file = NAUTILUS_FILE (l->data);
@@ -6718,7 +6725,7 @@ action_stop_volume (GSimpleAction *action,
 
     view = NAUTILUS_FILES_VIEW (user_data);
 
-    selection = nautilus_files_view_get_selection (view);
+    selection = nautilus_files_view_get_selection (view, NULL);
     for (l = selection; l != NULL; l = l->next)
     {
         file = NAUTILUS_FILE (l->data);
@@ -6744,7 +6751,7 @@ action_detect_media (GSimpleAction *action,
     GList *l;
     NautilusFilesView *self = user_data;
 
-    selection = nautilus_files_view_get_selection (self);
+    selection = nautilus_files_view_get_selection (self, NULL);
     for (l = selection; l != NULL; l = l->next)
     {
         file = NAUTILUS_FILE (l->data);
@@ -6762,7 +6769,7 @@ action_copy_network_address (GSimpleAction *action,
                              gpointer       user_data)
 {
     NautilusFilesView *self = NAUTILUS_FILES_VIEW (user_data);
-    g_autolist (NautilusFile) selection = nautilus_files_view_get_selection (self);
+    g_autolist (NautilusFile) selection = nautilus_files_view_get_selection (self, NULL);
 
     g_return_if_fail (list_len_is_one (selection));
 
@@ -6777,7 +6784,7 @@ action_remove_recent_server (GSimpleAction *action,
                              gpointer       user_data)
 {
     NautilusFilesView *self = NAUTILUS_FILES_VIEW (user_data);
-    g_autolist (NautilusFile) selection = nautilus_files_view_get_selection (self);
+    g_autolist (NautilusFile) selection = nautilus_files_view_get_selection (self, NULL);
 
     for (GList *l = selection; l != NULL; l = l->next)
     {
@@ -7244,7 +7251,7 @@ nautilus_files_view_update_actions_state (NautilusFilesView *self)
 
     view_action_group = self->view_action_group;
 
-    selection = nautilus_files_view_get_selection (self);
+    selection = nautilus_files_view_get_selection (self, NULL);
     selection_contains_home_dir = home_dir_in_selection (selection);
     selection_contains_recent = showing_recent_directory (self);
     selection_contains_starred = showing_starred_directory (self);
@@ -7752,7 +7759,7 @@ update_selection_menu (NautilusFilesView *self,
     gint i;
     GDriveStartStopType start_stop_type;
 
-    selection = nautilus_files_view_get_selection (self);
+    selection = nautilus_files_view_get_selection (self, NULL);
 
     show_mount = (selection != NULL);
     show_unmount = (selection != NULL);
@@ -8324,7 +8331,7 @@ nautilus_files_view_notify_selection_changed (NautilusFilesView *view)
 
     if (g_getenv ("G_MESSAGES_DEBUG") != NULL)
     {
-        g_autolist (NautilusFile) selection = nautilus_files_view_get_selection (view);
+        g_autolist (NautilusFile) selection = nautilus_files_view_get_selection (view, NULL);
         nautilus_file_list_debug (selection);
     }
 
@@ -8840,7 +8847,7 @@ nautilus_files_view_get_property (GObject    *object,
 
         case PROP_SELECTION:
         {
-            g_value_set_pointer (value, nautilus_files_view_get_selection (view));
+            g_value_set_pointer (value, nautilus_files_view_get_selection (view, NULL));
         }
         break;
 

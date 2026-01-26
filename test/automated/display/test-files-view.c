@@ -220,6 +220,7 @@ test_selection_actions (void)
     const guint file_count = 10, selected_count = 4;
     g_autoptr (NautilusFileList) selection_set = NULL;
     NautilusFileList *got_selection = NULL;
+    gboolean selection_is_auto = FALSE;
     guint got_count;
 
     /* Need to subtract one since it creates an extra directory. */
@@ -241,9 +242,10 @@ test_selection_actions (void)
     nautilus_files_view_set_selection (files_view, selection_set, TRUE);
 
     /* Retrieve selection and verify it matches what we set */
-    got_selection = nautilus_files_view_get_selection (files_view);
+    got_selection = nautilus_files_view_get_selection (files_view, &selection_is_auto);
     got_count = g_list_length (got_selection);
 
+    g_assert_true (selection_is_auto);
     g_assert_cmpint (got_count, ==, selected_count);
 
     for (NautilusFileList *l = got_selection; l != NULL; l = l->next)
@@ -258,9 +260,10 @@ test_selection_actions (void)
 
     /* Invert selection */
     gtk_widget_activate_action (GTK_WIDGET (files_view), "view.invert-selection", NULL);
-    got_selection = nautilus_files_view_get_selection (files_view);
+    got_selection = nautilus_files_view_get_selection (files_view, &selection_is_auto);
     got_count = g_list_length (got_selection);
 
+    g_assert_false (selection_is_auto);
     g_assert_cmpint (got_count, ==, file_count - selected_count);
 
     for (NautilusFileList *l = got_selection; l != NULL; l = l->next)
@@ -272,19 +275,24 @@ test_selection_actions (void)
         g_assert_null (g_list_find (selection_set, file));
     }
     g_clear_pointer (&got_selection, nautilus_file_list_free);
+    selection_is_auto = TRUE;
 
     /* Select all */
     gtk_widget_activate_action (GTK_WIDGET (files_view), "view.select-all", NULL);
-    got_selection = nautilus_files_view_get_selection (files_view);
+    got_selection = nautilus_files_view_get_selection (files_view, &selection_is_auto);
     got_count = g_list_length (got_selection);
 
+    g_assert_false (selection_is_auto);
     g_assert_cmpint (got_count, ==, file_count);
     g_assert_cmpint (got_count, ==, g_list_model_get_n_items (G_LIST_MODEL (model)));
     g_clear_pointer (&got_selection, nautilus_file_list_free);
+    selection_is_auto = TRUE;
 
     /* Invert selection to clear selection. */
     gtk_widget_activate_action (GTK_WIDGET (files_view), "view.invert-selection", NULL);
-    got_selection = nautilus_files_view_get_selection (files_view);
+    got_selection = nautilus_files_view_get_selection (files_view, &selection_is_auto);
+
+    g_assert_false (selection_is_auto);
     g_assert_null (got_selection);
     g_clear_pointer (&got_selection, nautilus_file_list_free);
 

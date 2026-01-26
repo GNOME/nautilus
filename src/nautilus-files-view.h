@@ -61,7 +61,8 @@ nautilus_files_view_set_search_query (NautilusFilesView *self,
                                       NautilusQuery     *query);
 
 NautilusFileList *
-nautilus_files_view_get_selection (NautilusFilesView *self);
+nautilus_files_view_get_selection (NautilusFilesView *self,
+                                   gboolean          *is_auto);
 void
 nautilus_files_view_set_selection (NautilusFilesView *self,
                                    NautilusFileList  *selection,
