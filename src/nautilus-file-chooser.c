@@ -285,7 +285,7 @@ on_accept_button_clicked (NautilusFileChooser *self)
     }
     else
     {
-        NautilusFileList *selection = nautilus_window_slot_get_selection (self->slot);
+        g_autolist (NautilusFile) selection = nautilus_window_slot_get_selection (self->slot, NULL);
 
         if (mode_can_accept_files (self->mode, selection))
         {
@@ -472,7 +472,7 @@ on_slot_selection_notify (NautilusFileChooser *self)
 {
     g_return_if_fail (self->mode == NAUTILUS_MODE_SAVE_FILE);
 
-    NautilusFileList *selection = nautilus_window_slot_get_selection (self->slot);
+    g_autolist (NautilusFile) selection = nautilus_window_slot_get_selection (self->slot, NULL);
 
     if (mode_can_accept_files (self->mode, selection))
     {

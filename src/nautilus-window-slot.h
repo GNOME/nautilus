@@ -101,7 +101,8 @@ gboolean nautilus_window_slot_get_search_visible           (NautilusWindowSlot *
 
 gboolean nautilus_window_slot_get_search_global            (NautilusWindowSlot *self);
 
-GList* nautilus_window_slot_get_selection                  (NautilusWindowSlot *slot);
+GList* nautilus_window_slot_get_selection                  (NautilusWindowSlot *slot,
+                                                            gboolean           *is_auto);
 
 void     nautilus_window_slot_search                       (NautilusWindowSlot *slot,
                                                             NautilusQuery      *query);

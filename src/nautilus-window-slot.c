@@ -838,7 +838,7 @@ nautilus_window_slot_get_property (GObject    *object,
 
         case PROP_SELECTION:
         {
-            g_value_set_pointer (value, nautilus_window_slot_get_selection (self));
+            g_value_set_pointer (value, self->selection);
         }
         break;
 
@@ -857,9 +857,12 @@ nautilus_window_slot_get_property (GObject    *object,
 }
 
 GList *
-nautilus_window_slot_get_selection (NautilusWindowSlot *self)
+nautilus_window_slot_get_selection (NautilusWindowSlot *self,
+                                    gboolean           *is_auto)
 {
-    return self->selection;
+    /* Use view's selection getter instead of the slot's, as it provides
+     * selection source info */
+    return nautilus_files_view_get_selection (self->content_view, is_auto);
 }
 
 static void
