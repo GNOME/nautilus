@@ -1299,10 +1299,11 @@ nautilus_directory_call_when_ready_internal (NautilusDirectory         *director
         REQUEST_SET_TYPE (callback.request, REQUEST_FILE_LIST);
     }
 
-    /* Handle the NULL case. */
-    if (directory == NULL)
+    /* If request is already satifisfied, call callback immediately. */
+    if (directory == NULL ||
+        request_is_satisfied (directory, file, callback.request))
     {
-        ready_callback_call (NULL, &callback);
+        ready_callback_call (directory, &callback);
         return;
     }
 
