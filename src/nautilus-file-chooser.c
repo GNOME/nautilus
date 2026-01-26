@@ -472,9 +472,12 @@ on_slot_selection_notify (NautilusFileChooser *self)
 {
     g_return_if_fail (self->mode == NAUTILUS_MODE_SAVE_FILE);
 
-    g_autolist (NautilusFile) selection = nautilus_window_slot_get_selection (self->slot, NULL);
+    gboolean selection_is_auto;
+    g_autolist (NautilusFile) selection = nautilus_window_slot_get_selection (self->slot,
+                                                                              &selection_is_auto);
 
-    if (mode_can_accept_files (self->mode, selection))
+    if (!selection_is_auto &&
+        mode_can_accept_files (self->mode, selection))
     {
         NautilusFile *file = NAUTILUS_FILE (selection->data);
 
