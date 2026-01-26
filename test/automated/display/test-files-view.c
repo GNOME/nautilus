@@ -238,7 +238,7 @@ test_selection_actions (void)
     }
 
     /* Set the selection on the view */
-    nautilus_files_view_set_selection (files_view, selection_set);
+    nautilus_files_view_set_selection (files_view, selection_set, TRUE);
 
     /* Retrieve selection and verify it matches what we set */
     got_selection = nautilus_files_view_get_selection (files_view);

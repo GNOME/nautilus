@@ -428,7 +428,7 @@ hide_query_editor (NautilusWindowSlot *self)
         nautilus_window_slot_set_view_id (self, view_id);
 
         /* Apply the saved selection */
-        nautilus_files_view_set_selection (view, selection);
+        nautilus_files_view_set_selection (view, selection, FALSE);
     }
 
     if (nautilus_window_slot_get_active (self))
@@ -1433,7 +1433,7 @@ nautilus_window_slot_open_location_full (NautilusWindowSlot *self,
     {
         if (self->content_view != NULL && new_selection != NULL)
         {
-            nautilus_files_view_set_selection (self->content_view, new_selection);
+            nautilus_files_view_set_selection (self->content_view, new_selection, FALSE);
         }
 
         return;
@@ -2132,7 +2132,7 @@ static void
 apply_pending_location_and_selection_on_view (NautilusWindowSlot *self)
 {
     nautilus_files_view_set_location (self->content_view, self->pending_location);
-    nautilus_files_view_set_selection (self->content_view, self->pending_selection);
+    nautilus_files_view_set_selection (self->content_view, self->pending_selection, TRUE);
 
     nautilus_file_list_free (self->pending_selection);
     self->pending_selection = NULL;
@@ -3039,7 +3039,7 @@ nautilus_window_slot_stop_loading (NautilusWindowSlot *self)
         g_autolist (NautilusFile) selection = nautilus_files_view_get_selection (self->content_view);
 
         nautilus_files_view_set_location (self->content_view, location);
-        nautilus_files_view_set_selection (self->content_view, selection);
+        nautilus_files_view_set_selection (self->content_view, selection, TRUE);
     }
 
     end_location_change (self);

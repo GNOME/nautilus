@@ -64,7 +64,8 @@ NautilusFileList *
 nautilus_files_view_get_selection (NautilusFilesView *self);
 void
 nautilus_files_view_set_selection (NautilusFilesView *self,
-                                   NautilusFileList  *selection);
+                                   NautilusFileList  *selection,
+                                   gboolean           auto_selection);
 
 gboolean
 nautilus_files_view_is_loading (NautilusFilesView *self);
