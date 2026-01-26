@@ -3223,9 +3223,10 @@ nautilus_window_slot_go_up (NautilusWindowSlot *self)
         /* Save the down list from getting flushed by begin_location_change ()*/
         g_autolist (GFile) down_list = g_steal_pointer (&self->down_list);
 
+        down_list = g_list_prepend (down_list, g_object_ref (location));
+
         nautilus_window_slot_open_location_full (self, parent, NULL);
 
-        down_list = g_list_prepend (down_list, g_object_ref (location));
         self->down_list = g_steal_pointer (&down_list);
     }
 }
