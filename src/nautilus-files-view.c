@@ -767,11 +767,14 @@ nautilus_files_view_select_all (NautilusFilesView *self)
 }
 
 static void
-nautilus_files_view_select_first (NautilusFilesView *self)
+nautilus_files_view_select_first (NautilusFilesView *self,
+                                  gboolean           is_auto)
 {
     if (g_list_model_get_n_items (G_LIST_MODEL (self->model)) > 0)
     {
+        self->in_auto_selection = is_auto;
         nautilus_list_base_set_cursor (self->list_base, 0, TRUE, TRUE);
+        self->in_auto_selection = FALSE;
     }
 }
 
@@ -3766,7 +3769,7 @@ done_loading (NautilusFilesView *self,
         if (nautilus_files_view_is_searching (self) &&
             all_files_seen && no_selection && self->pending_selection == NULL)
         {
-            nautilus_files_view_select_first (self);
+            nautilus_files_view_select_first (self, TRUE);
         }
         else if (self->pending_selection != NULL && all_files_seen)
         {
@@ -4321,7 +4324,7 @@ display_pending_files (NautilusFilesView *view)
         !view->pending_selection &&
         nautilus_files_view_is_searching (view))
     {
-        nautilus_files_view_select_first (view);
+        nautilus_files_view_select_first (view, TRUE);
     }
 
     if (view->model != NULL
