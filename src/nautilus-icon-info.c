@@ -441,8 +441,14 @@ nautilus_icon_info_lookup (GIcon *icon,
 
                 if (frame != NULL)
                 {
-                    double width = gly_frame_get_width (frame) / scale;
-                    double height = gly_frame_get_height (frame) / scale;
+                    double iw = gly_frame_get_width (frame);
+                    double ih = gly_frame_get_height (frame);
+
+                    double scale_factor = MIN ((double) size / iw, (double) size / ih);
+
+                    double width = iw * scale_factor;
+                    double height = ih * scale_factor;
+
                     g_autoptr (GdkTexture) texture = gly_gtk_frame_get_texture (frame);
                     g_autoptr (GtkSnapshot) snapshot = gtk_snapshot_new ();
 
