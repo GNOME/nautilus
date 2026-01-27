@@ -59,7 +59,7 @@ typedef struct
 {
     NautilusFile *file;
     char *owner;
-    GtkWindow *window;
+    NautilusPropertiesWindow *window;
     unsigned int timeout;
     gboolean cancelled;
 } OwnerChange;
@@ -68,7 +68,7 @@ typedef struct
 {
     NautilusFile *file;
     char *group;
-    GtkWindow *window;
+    NautilusPropertiesWindow *window;
     unsigned int timeout;
     gboolean cancelled;
 } GroupChange;
@@ -1578,13 +1578,15 @@ schedule_group_change_timeout (GroupChange *change)
     g_assert (NAUTILUS_IS_FILE (change->file));
     g_assert (change->group != NULL);
 
+    GtkWindow *parent_window = GTK_WINDOW (change->window);
+
     change->timeout = 0;
 
     eel_timed_wait_start
         ((EelCancelCallback) cancel_group_change_callback,
         change,
         _("Cancel Group Change?"),
-        change->window);
+        parent_window);
 
     nautilus_file_set_group
         (change->file, change->group,
@@ -1608,7 +1610,7 @@ schedule_group_change (NautilusPropertiesWindow *self,
 
     change->file = nautilus_file_ref (file);
     change->group = g_strdup (group);
-    change->window = GTK_WINDOW (g_object_ref (self));
+    change->window = g_object_ref (self);
     change->timeout =
         g_timeout_add (CHOWN_CHGRP_TIMEOUT,
                        (GSourceFunc) schedule_group_change_timeout,
@@ -1692,7 +1694,7 @@ owner_change_callback (NautilusFile *file,
     g_assert (NAUTILUS_IS_FILE (change->file));
     g_assert (change->owner != NULL);
 
-    NautilusPropertiesWindow *self = NAUTILUS_PROPERTIES_WINDOW (change->window);
+    NautilusPropertiesWindow *self = change->window;
 
     if (!change->cancelled)
     {
@@ -1701,7 +1703,6 @@ owner_change_callback (NautilusFile *file,
         nautilus_report_error_setting_owner (file, error, GTK_WIDGET (self));
     }
 
-    self = NAUTILUS_PROPERTIES_WINDOW (change->window);
     if (self->owner_change == change)
     {
         self->owner_change = NULL;
@@ -1729,11 +1730,13 @@ schedule_owner_change_timeout (OwnerChange *change)
 
     change->timeout = 0;
 
+    GtkWindow *parent_window = GTK_WINDOW (change->window);
+
     eel_timed_wait_start
         ((EelCancelCallback) cancel_owner_change_callback,
         change,
         _("Cancel Owner Change?"),
-        change->window);
+        parent_window);
 
     nautilus_file_set_owner
         (change->file, change->owner,
@@ -1757,7 +1760,7 @@ schedule_owner_change (NautilusPropertiesWindow *self,
 
     change->file = nautilus_file_ref (file);
     change->owner = g_strdup (owner);
-    change->window = GTK_WINDOW (g_object_ref (self));
+    change->window = g_object_ref (self);
     change->timeout =
         g_timeout_add (CHOWN_CHGRP_TIMEOUT,
                        (GSourceFunc) schedule_owner_change_timeout,
