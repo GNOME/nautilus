@@ -408,7 +408,7 @@ typedef struct
     NautilusPropertiesWindowCallback callback;
     gpointer callback_data;
     NautilusFileListHandle *handle;
-    NautilusPropertiesWindow *window;
+    AdwWindow *window;
     gboolean cancelled;
 } StartupData;
 
@@ -3603,7 +3603,6 @@ startup_data_new (GList                            *files,
     data->startup_id = g_strdup (startup_id);
     data->callback = callback;
     data->callback_data = callback_data;
-    data->window = window;
 
     return data;
 }
@@ -3630,7 +3629,7 @@ file_changed_callback (NautilusFile *file,
     }
 }
 
-static NautilusPropertiesWindow *
+static AdwWindow *
 create_properties_window (StartupData *startup_data)
 {
     NautilusPropertiesWindow *window;
@@ -3695,7 +3694,7 @@ create_properties_window (StartupData *startup_data)
     /* Update from initial state */
     properties_window_update (window, NULL);
 
-    return window;
+    return ADW_WINDOW (window);
 }
 
 static void
@@ -3778,7 +3777,7 @@ is_directory_ready_callback (GList    *file_list,
                              gpointer  data)
 {
     StartupData *startup_data = data;
-    NautilusPropertiesWindow *new_window = create_properties_window (startup_data);
+    AdwWindow *new_window = create_properties_window (startup_data);
 
     startup_data->window = new_window;
 
