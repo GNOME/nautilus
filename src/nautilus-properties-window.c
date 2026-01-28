@@ -449,8 +449,8 @@ static void update_group_row (AdwComboRow     *row,
                               PermissionsInfo *permissions_info);
 static void select_image_button_callback (GtkWidget                *widget,
                                           NautilusPropertiesWindow *self);
-static void set_icon (const char               *icon_path,
-                      NautilusPropertiesWindow *self);
+static void set_icon (NautilusPropertiesWindow *self,
+                      const char               *icon_uri);
 static void remove_pending (StartupData *data,
                             gboolean     cancel_call_when_ready,
                             gboolean     cancel_timed_wait);
@@ -675,7 +675,7 @@ nautilus_properties_window_drag_drop_cb (GtkDropTarget *target,
 
         if (uri_is_local_image (uri))
         {
-            set_icon (uri, self);
+            set_icon (self, uri);
         }
         else
         {
@@ -3904,8 +3904,8 @@ real_finalize (GObject *object)
 
 /* icon selection callback to set the image of the file object to the selected file */
 static void
-set_icon (const char               *icon_uri,
-          NautilusPropertiesWindow *self)
+set_icon (NautilusPropertiesWindow *self,
+          const char               *icon_uri)
 {
     g_autofree gchar *icon_path = NULL;
 
@@ -3947,7 +3947,7 @@ custom_icon_file_chooser_response_cb (GtkFileDialog            *dialog,
     if (location != NULL)
     {
         g_autofree gchar *uri = g_file_get_uri (location);
-        set_icon (uri, self);
+        set_icon (self, uri);
     }
     else if (error != NULL &&
              !g_error_matches (error, GTK_DIALOG_ERROR, GTK_DIALOG_ERROR_DISMISSED))
