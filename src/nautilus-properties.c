@@ -586,11 +586,6 @@ update_properties_widget_icon (NautilusPropertiesWidget *self)
 
     get_image_for_properties_widget (self, &name, &paintable);
 
-    if (name != NULL)
-    {
-        gtk_window_set_icon_name (get_parent_window (self), name);
-    }
-
     pixel_size = MAX (gdk_paintable_get_intrinsic_width (paintable),
                       gdk_paintable_get_intrinsic_width (paintable));
 
@@ -3651,17 +3646,12 @@ file_changed_callback (NautilusFile *file,
 }
 
 static AdwWindow *
-create_window_skeleton (GtkWidget *content)
+create_window_skeleton (void)
 {
     g_autoptr (GtkBuilder) builder = gtk_builder_new_from_resource (
         "/org/gnome/nautilus/ui/nautilus-properties-window.ui");
-    AdwWindow *window = ADW_WINDOW (gtk_builder_get_object (builder, "properties_window"));
 
-    g_signal_connect_swapped (content, "hide-properties", G_CALLBACK (gtk_window_close), window);
-
-    adw_window_set_content (window, GTK_WIDGET (content));
-
-    return window;
+    return ADW_WINDOW (gtk_builder_get_object (builder, "properties_window"));
 }
 
 static AdwWindow *
@@ -3669,7 +3659,11 @@ create_properties_window (StartupData *startup_data)
 {
     NautilusPropertiesWidget *widget =
         NAUTILUS_PROPERTIES_WIDGET (g_object_new (NAUTILUS_TYPE_PROPERTIES_WIDGET, NULL));
-    AdwWindow *window = create_window_skeleton (GTK_WIDGET (widget));
+    AdwWindow *window = create_window_skeleton ();
+
+    adw_window_set_content (window, GTK_WIDGET (widget));
+
+    g_signal_connect_swapped (widget, "hide-properties", G_CALLBACK (gtk_window_close), window);
 
     widget->files = nautilus_file_list_copy (startup_data->files);
 
