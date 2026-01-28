@@ -188,6 +188,14 @@ struct _NautilusPropertiesWindow
     GListStore *extensions_list;
 };
 
+enum
+{
+    HIDE,
+    LAST_SIGNAL
+};
+
+static guint signals[LAST_SIGNAL];
+
 typedef enum
 {
     NO_FILES_OR_FOLDERS = (0),
@@ -1334,8 +1342,8 @@ update_files_callback (gpointer data)
 
     if (self->files == NULL)
     {
-        /* Close the window if no files are left */
-        gtk_window_destroy (GTK_WINDOW (self));
+        /* Hide properties if no files are left */
+        g_signal_emit (self, signals[HIDE], 0);
     }
     else
     {
@@ -3646,6 +3654,8 @@ create_properties_window (StartupData *startup_data)
     window = NAUTILUS_PROPERTIES_WINDOW (g_object_new (NAUTILUS_TYPE_PROPERTIES_WINDOW,
                                                        NULL));
 
+    g_signal_connect_swapped (window, "hide-properties", G_CALLBACK (gtk_window_close), window);
+
     window->files = nautilus_file_list_copy (startup_data->files);
 
     if (startup_data->parent_widget)
@@ -4005,6 +4015,14 @@ nautilus_properties_window_class_init (NautilusPropertiesWindowClass *klass)
     oclass = G_OBJECT_CLASS (klass);
     oclass->dispose = real_dispose;
     oclass->finalize = real_finalize;
+
+    signals[HIDE] = g_signal_new ("hide-properties",
+                                  G_TYPE_FROM_CLASS (klass),
+                                  G_SIGNAL_RUN_LAST,
+                                  0,
+                                  NULL, NULL,
+                                  g_cclosure_marshal_VOID__VOID,
+                                  G_TYPE_NONE, 0);
 
     gtk_widget_class_add_binding (widget_class,
                                   GDK_KEY_Escape, 0,
