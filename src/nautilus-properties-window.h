@@ -30,7 +30,7 @@
 
 G_DECLARE_FINAL_TYPE (NautilusPropertiesWindow, nautilus_properties_window,
                       NAUTILUS, PROPERTIES_WINDOW,
-                      AdwWindow)
+                      AdwBin)
 
 typedef void (* NautilusPropertiesWindowCallback) (gpointer    callback_data);
 

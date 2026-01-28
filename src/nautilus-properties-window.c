@@ -75,7 +75,7 @@ typedef struct
 
 struct _NautilusPropertiesWindow
 {
-    AdwWindow parent_instance;
+    AdwBin parent_instance;
 
     GList *files;
     NautilusFileListHandle *handle;
@@ -449,7 +449,16 @@ static void refresh_extension_model_pages (NautilusPropertiesWindow *self);
 static gboolean is_root_directory (NautilusFile *file);
 static gboolean is_volume_properties (NautilusPropertiesWindow *self);
 
-G_DEFINE_TYPE (NautilusPropertiesWindow, nautilus_properties_window, ADW_TYPE_WINDOW);
+G_DEFINE_TYPE (NautilusPropertiesWindow, nautilus_properties_window, ADW_TYPE_BIN);
+
+static GtkWindow *
+get_parent_window (NautilusPropertiesWindow *self)
+{
+    GtkWindow *parent_window = GTK_WINDOW (gtk_widget_get_ancestor (GTK_WIDGET (self),
+                                                                    GTK_TYPE_WINDOW));
+
+    return parent_window;
+}
 
 static gboolean
 is_multi_file_window (NautilusPropertiesWindow *self)
@@ -1573,15 +1582,13 @@ schedule_group_change_timeout (GroupChange *change)
     g_assert (NAUTILUS_IS_FILE (change->file));
     g_assert (change->group != NULL);
 
-    GtkWindow *parent_window = GTK_WINDOW (change->window);
-
     change->timeout = 0;
 
     eel_timed_wait_start
         ((EelCancelCallback) cancel_group_change_callback,
         change,
         _("Cancel Group Change?"),
-        parent_window);
+        get_parent_window (change->window));
 
     nautilus_file_set_group
         (change->file, change->group,
@@ -1725,13 +1732,11 @@ schedule_owner_change_timeout (OwnerChange *change)
 
     change->timeout = 0;
 
-    GtkWindow *parent_window = GTK_WINDOW (change->window);
-
     eel_timed_wait_start
         ((EelCancelCallback) cancel_owner_change_callback,
         change,
         _("Cancel Owner Change?"),
-        parent_window);
+        get_parent_window (change->window));
 
     nautilus_file_set_owner
         (change->file, change->owner,
@@ -2558,7 +2563,7 @@ open_in_disks (NautilusPropertiesWindow *self)
     nautilus_dbus_launcher_call (launcher,
                                  NAUTILUS_DBUS_LAUNCHER_DISKS,
                                  "CommandLine", parameters,
-                                 GTK_WINDOW (self));
+                                 get_parent_window (self));
 }
 
 static void
@@ -3665,7 +3670,7 @@ properties_files_are_ready (GList    *file_list,
         gtk_widget_measure (GTK_WIDGET (self), GTK_ORIENTATION_VERTICAL, current_width,
                             NULL, &natural_height, NULL, NULL);
 
-        gtk_window_set_default_size (GTK_WINDOW (self),
+        gtk_window_set_default_size (get_parent_window (self),
                                      DEFAULT_PROPERTIES_WIDTH,
                                      natural_height);
     }
@@ -3679,9 +3684,6 @@ properties_window_new (NautilusFileList *files)
 
     self->files = nautilus_file_list_copy (files);
 
-    g_signal_connect_swapped (self, "hide-properties",
-                              G_CALLBACK (gtk_window_close), self);
-
     nautilus_file_list_call_when_ready (self->files,
                                         NAUTILUS_FILE_ATTRIBUTE_INFO |
                                         NAUTILUS_FILE_ATTRIBUTES_FOR_ICON,
@@ -3690,6 +3692,18 @@ properties_window_new (NautilusFileList *files)
                                         self);
 
     return self;
+}
+
+static GtkWindow *
+create_properties_window (GtkWidget *content)
+{
+    g_autoptr (GtkBuilder) builder = gtk_builder_new_from_resource (
+        "/org/gnome/nautilus/ui/nautilus-properties-window.ui");
+    AdwWindow *window = ADW_WINDOW (gtk_builder_get_object (builder, "properties_window"));
+
+    adw_window_set_content (window, GTK_WIDGET (content));
+
+    return GTK_WINDOW (window);
 }
 
 void
@@ -3704,17 +3718,20 @@ nautilus_properties_window_present (GList                            *files,
     g_return_if_fail (parent_widget == NULL || GTK_IS_WIDGET (parent_widget));
 
     NautilusPropertiesWindow *self = properties_window_new (files);
+    GtkWindow *window = create_properties_window (GTK_WIDGET (self));
+
+    g_signal_connect_swapped (self, "hide-properties", G_CALLBACK (gtk_window_close), window);
 
     if (parent_widget)
     {
         GtkWindow *parent_window = GTK_WINDOW (gtk_widget_get_ancestor (parent_widget, GTK_TYPE_WINDOW));
 
-        gtk_window_set_display (GTK_WINDOW (self),
+        gtk_window_set_display (window,
                                 gtk_widget_get_display (parent_widget));
 
         if (parent_window != NULL)
         {
-            gtk_window_set_transient_for (GTK_WINDOW (self), parent_window);
+            gtk_window_set_transient_for (window, parent_window);
         }
     }
 
@@ -3724,15 +3741,17 @@ nautilus_properties_window_present (GList                            *files,
 
     if (startup_id != NULL)
     {
-        gtk_window_set_startup_id (GTK_WINDOW (self), startup_id);
+        gtk_window_set_startup_id (window, startup_id);
     }
 
-    gtk_window_present (GTK_WINDOW (self));
+    gtk_window_present (window);
 }
 
 static void
 real_dispose (GObject *object)
 {
+    G_OBJECT_CLASS (nautilus_properties_window_parent_class)->dispose (object);
+
     NautilusPropertiesWindow *self;
 
     self = NAUTILUS_PROPERTIES_WINDOW (object);
@@ -3770,8 +3789,6 @@ real_dispose (GObject *object)
     g_clear_handle_id (&self->update_files_timeout_id, g_source_remove);
 
     gtk_widget_dispose_template (GTK_WIDGET (self), NAUTILUS_TYPE_PROPERTIES_WINDOW);
-
-    G_OBJECT_CLASS (nautilus_properties_window_parent_class)->dispose (object);
 }
 
 static void
@@ -3870,7 +3887,7 @@ select_image_button_callback (GtkWidget                *widget,
     }
 
     gtk_file_dialog_open (dialog,
-                          GTK_WINDOW (self),
+                          get_parent_window (self),
                           NULL,
                           (GAsyncReadyCallback) custom_icon_file_chooser_response_cb,
                           self);
@@ -3894,10 +3911,6 @@ nautilus_properties_window_class_init (NautilusPropertiesWindowClass *klass)
                                   NULL, NULL,
                                   g_cclosure_marshal_VOID__VOID,
                                   G_TYPE_NONE, 0);
-
-    gtk_widget_class_add_binding (widget_class,
-                                  GDK_KEY_Escape, 0,
-                                  (GtkShortcutFunc) gtk_window_close, NULL);
 
     gtk_widget_class_set_template_from_resource (widget_class, "/org/gnome/nautilus/ui/nautilus-properties-widget.ui");
 

@@ -1,17 +1,12 @@
 using Gtk 4.0;
 using Adw 1;
 
-template $NautilusPropertiesWindow: Adw.Window {
-  modal: true;
-  width-request: 360;
-  height-request: 294;
-  default-width: 480;
-
+template $NautilusPropertiesWindow: Adw.Bin {
   styles [
     "nautilus-properties-window",
   ]
 
-  Adw.ToastOverlay toast_overlay {
+  child: Adw.ToastOverlay toast_overlay {
     child: Adw.NavigationView nav_view {
       Adw.NavigationPage {
         title: _("Loading…");
@@ -677,5 +672,5 @@ template $NautilusPropertiesWindow: Adw.Window {
         };
       }
     };
-  }
+  };
 }

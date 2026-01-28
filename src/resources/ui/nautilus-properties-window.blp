@@ -1,0 +1,18 @@
+using Gtk 4.0;
+using Adw 1;
+
+Adw.Window properties_window {
+  modal: true;
+  width-request: 360;
+  height-request: 294;
+  default-width: 480;
+
+  ShortcutController {
+    scope: managed;
+
+    Shortcut {
+      trigger: "Escape";
+      action: "action(window.close)";
+    }
+  }
+}
