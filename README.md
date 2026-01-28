@@ -9,7 +9,7 @@ GNOME, internally known by its historical name `nautilus`.
 Only the latest version of Files as provided upstream is supported. Try out the [Flatpak nightly](https://welcome.gnome.org/en/app/Nautilus/#installing-a-nightly-build) installation before filling issues to ensure the installation is reproducible and doesn't have downstream changes on it. In case you cannot reproduce in the nightly installation, don't hesitate to file an issue in your distribution. This is to ensure the issue is well triaged and reaches the proper people.
 
 ## Runtime dependencies
-- [Bubblewrap](https://github.com/projectatomic/bubblewrap) installed. Used for security reasons.
+- [Bubblewrap](https://github.com/containers/bubblewrap) installed. Used for security reasons.
 - [LocalSearch](https://gitlab.gnome.org/GNOME/localsearch) properly set up and with all features enabled. Used for fast search and metadata extraction, starred files and batch renaming.
 - [xdg-user-dirs-gtk](https://gitlab.gnome.org/GNOME/xdg-user-dirs-gtk) installed.  Used to create the default bookmarks and update localization.
 
