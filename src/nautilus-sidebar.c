@@ -32,7 +32,7 @@
 #include "nautilus-file-operations.h"
 #include "nautilus-file-utilities.h"
 #include "nautilus-global-preferences.h"
-#include "nautilus-properties-window.h"
+#include "nautilus-properties.h"
 #include "nautilus-scheme.h"
 #include "nautilus-sidebar-row.h"
 #include "nautilus-trash-monitor.h"

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <interface>
   <requires lib="gtk" version="4.0"/>
-  <template class="NautilusPropertiesWindow" parent="AdwBin">
+  <template class="NautilusPropertiesWidget" parent="AdwBin">
     <property name="child">
       <object class="AdwToastOverlay" id="toast_overlay">
         <property name="child">
@@ -328,7 +328,7 @@
                                 <property name="title" translatable="yes" comments="Disks refers to GNOME Disks.">_Open in Disks</property>
                                 <property name="end-icon-name">external-link-symbolic</property>
                                 <property name="use-underline">True</property>
-                                <signal name="activated" handler="open_in_disks" object="NautilusPropertiesWindow" swapped="yes"/>
+                                <signal name="activated" handler="open_in_disks" object="NautilusPropertiesWidget" swapped="yes"/>
                               </object>
                             </child>
                           </object>
@@ -472,7 +472,7 @@
                                 <property name="selectable">False</property>
                                 <property name="title" translatable="yes">_Permissions</property>
                                 <property name="use-underline">True</property>
-                                <signal name="activated" handler="navigate_permissions_page" object="NautilusPropertiesWindow" swapped="yes"/>
+                                <signal name="activated" handler="navigate_permissions_page" object="NautilusPropertiesWidget" swapped="yes"/>
                                 <child>
                                   <object class="GtkLabel" id="permissions_value_label">
                                     <property name="ellipsize">end</property>
@@ -685,7 +685,7 @@
                                           <object class="AdwButtonRow">
                                             <property name="title" translatable="yes">Change Permissions for _Enclosed Files…</property>
                                             <property name="use-underline">True</property>
-                                            <signal name="activated" handler="on_change_permissions_clicked" object="NautilusPropertiesWindow" swapped="yes"/>
+                                            <signal name="activated" handler="on_change_permissions_clicked" object="NautilusPropertiesWidget" swapped="yes"/>
                                           </object>
                                         </child>
                                       </object>

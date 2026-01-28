@@ -26,12 +26,6 @@
 #include <adwaita.h>
 #include <gtk/gtk.h>
 
-#define NAUTILUS_TYPE_PROPERTIES_WINDOW (nautilus_properties_window_get_type ())
-
-G_DECLARE_FINAL_TYPE (NautilusPropertiesWindow, nautilus_properties_window,
-                      NAUTILUS, PROPERTIES_WINDOW,
-                      AdwBin)
-
 typedef void (* NautilusPropertiesWindowCallback) (gpointer    callback_data);
 
 void nautilus_properties_window_present (GList                            *files,
