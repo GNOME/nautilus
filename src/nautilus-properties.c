@@ -3651,17 +3651,25 @@ file_changed_callback (NautilusFile *file,
 }
 
 static AdwWindow *
+create_window_skeleton (GtkWidget *content)
+{
+    g_autoptr (GtkBuilder) builder = gtk_builder_new_from_resource (
+        "/org/gnome/nautilus/ui/nautilus-properties-window.ui");
+    AdwWindow *window = ADW_WINDOW (gtk_builder_get_object (builder, "properties_window"));
+
+    g_signal_connect_swapped (content, "hide-properties", G_CALLBACK (gtk_window_close), window);
+
+    adw_window_set_content (window, GTK_WIDGET (content));
+
+    return window;
+}
+
+static AdwWindow *
 create_properties_window (StartupData *startup_data)
 {
-    AdwWindow *window = ADW_WINDOW (adw_window_new ());
     NautilusPropertiesWidget *widget =
         NAUTILUS_PROPERTIES_WIDGET (g_object_new (NAUTILUS_TYPE_PROPERTIES_WIDGET, NULL));
-
-    gtk_widget_set_size_request (GTK_WIDGET (window), 360, 294);
-    gtk_window_set_modal (GTK_WINDOW (window), TRUE);
-    adw_window_set_content (window, GTK_WIDGET (widget));
-
-    g_signal_connect_swapped (widget, "hide-properties", G_CALLBACK (gtk_window_close), window);
+    AdwWindow *window = create_window_skeleton (GTK_WIDGET (widget));
 
     widget->files = nautilus_file_list_copy (startup_data->files);
 
@@ -4012,14 +4020,6 @@ select_image_button_callback (GtkWidget                *widget,
                           self);
 }
 
-static gboolean
-close_parent_window (NautilusPropertiesWidget *self)
-{
-    gtk_window_close (get_parent_window (self));
-
-    return TRUE;
-}
-
 static void
 nautilus_properties_widget_class_init (NautilusPropertiesWidgetClass *klass)
 {
@@ -4038,10 +4038,6 @@ nautilus_properties_widget_class_init (NautilusPropertiesWidgetClass *klass)
                                   NULL, NULL,
                                   g_cclosure_marshal_VOID__VOID,
                                   G_TYPE_NONE, 0);
-
-    gtk_widget_class_add_binding (widget_class,
-                                  GDK_KEY_Escape, 0,
-                                  (GtkShortcutFunc) close_parent_window, NULL);
 
     gtk_widget_class_set_template_from_resource (widget_class, "/org/gnome/nautilus/ui/nautilus-properties-widget.ui");
 
