@@ -66,7 +66,7 @@
 #include "nautilus-query.h"
 #include "nautilus-previewer.h"
 #include "nautilus-program-choosing.h"
-#include "nautilus-properties-window.h"
+#include "nautilus-properties.h"
 #include "nautilus-recent-servers.h"
 #include "nautilus-rename-file-popover.h"
 #include "nautilus-scheme.h"

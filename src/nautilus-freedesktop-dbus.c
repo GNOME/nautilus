@@ -24,7 +24,7 @@
 #include "nautilus-application.h"
 #include "nautilus-file.h"
 #include "nautilus-freedesktop-generated.h"
-#include "nautilus-properties-window.h"
+#include "nautilus-properties.h"
 
 #include <gio/gio.h>
 

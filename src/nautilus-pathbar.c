@@ -23,7 +23,7 @@
 #include <gio/gio.h>
 
 #include "nautilus-pathbar.h"
-#include "nautilus-properties-window.h"
+#include "nautilus-properties.h"
 
 #include "nautilus-dnd.h"
 #include "nautilus-enums.h"
