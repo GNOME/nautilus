@@ -643,10 +643,10 @@ nautilus_properties_window_drag_drop_cb (GtkDropTarget *target,
                                          gdouble        y,
                                          gpointer       user_data)
 {
-    GtkImage *image;
+    NautilusPropertiesWindow *self = user_data;
+    GtkImage *image = GTK_IMAGE (self->icon_image);
     GtkWindow *window;
 
-    image = GTK_IMAGE (user_data);
     window = GTK_WINDOW (gtk_widget_get_root (GTK_WIDGET (image)));
 
     if (!G_VALUE_HOLDS (value, GDK_TYPE_FILE_LIST))
@@ -675,7 +675,7 @@ nautilus_properties_window_drag_drop_cb (GtkDropTarget *target,
 
         if (uri_is_local_image (uri))
         {
-            set_icon (uri, NAUTILUS_PROPERTIES_WINDOW (window));
+            set_icon (uri, self);
         }
         else
         {
@@ -816,7 +816,7 @@ setup_image_widget (NautilusPropertiesWindow *self)
     GtkDropTarget *target = gtk_drop_target_new (GDK_TYPE_FILE_LIST, GDK_ACTION_COPY);
     gtk_widget_add_controller (self->icon_overlay, GTK_EVENT_CONTROLLER (target));
     g_signal_connect (target, "drop",
-                      G_CALLBACK (nautilus_properties_window_drag_drop_cb), self->icon_image);
+                      G_CALLBACK (nautilus_properties_window_drag_drop_cb), self);
 }
 
 static void
