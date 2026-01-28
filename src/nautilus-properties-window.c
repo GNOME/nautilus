@@ -79,8 +79,6 @@ struct _NautilusPropertiesWindow
 
     GList *files;
 
-    AdwWindowTitle *window_title;
-
     AdwToastOverlay *toast_overlay;
     AdwNavigationView *nav_view;
 
