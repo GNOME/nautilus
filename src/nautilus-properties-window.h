@@ -38,4 +38,4 @@ void nautilus_properties_window_present (GList                            *files
                                          GtkWidget                        *parent_widget,
                                          const gchar                      *startup_id,
                                          NautilusPropertiesWindowCallback  callback,
-                                         gpointer                          callback_data);
+                                         gpointer                          unused);

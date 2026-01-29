@@ -3810,8 +3810,10 @@ nautilus_properties_window_present (GList                            *files,
                                     GtkWidget                        *parent_widget,
                                     const gchar                      *startup_id,
                                     NautilusPropertiesWindowCallback  callback,
-                                    gpointer                          callback_data)
+                                    gpointer                          unused)
 {
+    g_return_if_fail (unused == NULL);
+
     GtkWindow *parent_window;
     StartupData *startup_data;
 
@@ -3832,7 +3834,7 @@ nautilus_properties_window_present (GList                            *files,
                                      parent_window,
                                      startup_id,
                                      callback,
-                                     callback_data,
+                                     NULL,
                                      NULL);
 
     /* Wait until we can tell whether it's a directory before showing, since
