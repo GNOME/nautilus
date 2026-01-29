@@ -84,6 +84,7 @@ struct _NautilusPropertiesWidget
 
     GList *files;
     NautilusFileListHandle *handle;
+    AdwDialog *dialog;
 
     AdwToastOverlay *toast_overlay;
     AdwNavigationView *nav_view;
@@ -3675,9 +3676,16 @@ properties_files_are_ready (GList    *file_list,
         gtk_widget_measure (GTK_WIDGET (self), GTK_ORIENTATION_VERTICAL, current_width,
                             NULL, &natural_height, NULL, NULL);
 
-        gtk_window_set_default_size (get_parent_window (self),
-                                     DEFAULT_PROPERTIES_WIDTH,
-                                     natural_height);
+        if (self->dialog != NULL)
+        {
+            adw_dialog_set_content_height (self->dialog, natural_height);
+        }
+        else
+        {
+            gtk_window_set_default_size (get_parent_window (self),
+                                         DEFAULT_PROPERTIES_WIDTH,
+                                         natural_height);
+        }
     }
 }
 
@@ -3750,6 +3758,26 @@ nautilus_properties_window_present (GList                            *files,
     }
 
     gtk_window_present (window);
+}
+
+void
+nautilus_properties_present_dialog (NautilusFileList *files,
+                                    GtkWidget        *parent_widget)
+{
+    g_return_if_fail (files != NULL);
+    g_return_if_fail (GTK_IS_WIDGET (parent_widget));
+
+    NautilusPropertiesWidget *self = properties_widget_new (files);
+    AdwDialog *dialog = adw_dialog_new ();
+
+    adw_dialog_set_content_width (dialog, DEFAULT_PROPERTIES_WIDTH);
+    adw_dialog_set_child (dialog, GTK_WIDGET (self));
+    g_signal_connect_swapped (self, "hide-properties",
+                              G_CALLBACK (adw_dialog_force_close), dialog);
+
+    self->dialog = dialog;
+
+    adw_dialog_present (dialog, parent_widget);
 }
 
 static void

@@ -23,10 +23,16 @@
 
 #pragma once
 
+#include "nautilus-types.h"
+
 #include <adwaita.h>
 #include <gtk/gtk.h>
 
 typedef void (* NautilusPropertiesWindowCallback) (gpointer    callback_data);
+
+void
+nautilus_properties_present_dialog (NautilusFileList *files,
+                                    GtkWidget        *parent_widget);
 
 void nautilus_properties_window_present (GList                            *files,
                                          GtkWidget                        *parent_widget,
