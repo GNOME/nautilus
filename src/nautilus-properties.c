@@ -97,6 +97,7 @@ struct _NautilusPropertiesWidget
     char *custom_icon_for_undo;
 
     GtkWidget *star_button;
+    GtkWidget *popout_window_button;
 
     GtkLabel *name_value_label;
     GtkWidget *type_value_label;
@@ -3645,6 +3646,15 @@ file_changed_callback (NautilusFile *file,
     }
 }
 
+static void
+close_popout_window (gpointer user_data)
+{
+    GtkWindow *window = user_data;
+
+    gtk_window_close (window);
+    g_application_release (g_application_get_default ());
+}
+
 static AdwWindow *
 create_window_skeleton (void)
 {
@@ -3652,6 +3662,27 @@ create_window_skeleton (void)
         "/org/gnome/nautilus/ui/nautilus-properties-window.ui");
 
     return ADW_WINDOW (gtk_builder_get_object (builder, "properties_window"));
+}
+
+static void
+popout_window_clicked (NautilusPropertiesWidget *self)
+{
+    GtkWindow *old_window = get_parent_window (self);
+    AdwWindow *new_window = create_window_skeleton ();
+
+    gtk_widget_set_visible (self->popout_window_button, FALSE);
+    gtk_window_set_display (GTK_WINDOW (new_window),
+                            gtk_widget_get_display (GTK_WIDGET (old_window)));
+
+    adw_window_set_content (ADW_WINDOW (old_window), NULL);
+    adw_window_set_content (new_window, GTK_WIDGET (self));
+
+    g_signal_connect_swapped (self, "hide-properties",
+                              G_CALLBACK (close_popout_window), new_window);
+
+    g_application_hold (g_application_get_default ());
+    gtk_window_close (old_window);
+    gtk_window_present (GTK_WINDOW (new_window));
 }
 
 static AdwWindow *
@@ -4043,6 +4074,7 @@ nautilus_properties_widget_class_init (NautilusPropertiesWidgetClass *klass)
     gtk_widget_class_bind_template_child (widget_class, NautilusPropertiesWidget, select_icon_button);
     gtk_widget_class_bind_template_child (widget_class, NautilusPropertiesWidget, reset_icon_button);
     gtk_widget_class_bind_template_child (widget_class, NautilusPropertiesWidget, star_button);
+    gtk_widget_class_bind_template_child (widget_class, NautilusPropertiesWidget, popout_window_button);
     gtk_widget_class_bind_template_child (widget_class, NautilusPropertiesWidget, name_value_label);
     gtk_widget_class_bind_template_child (widget_class, NautilusPropertiesWidget, type_value_label);
     gtk_widget_class_bind_template_child (widget_class, NautilusPropertiesWidget, type_file_system_label);
@@ -4093,6 +4125,7 @@ nautilus_properties_widget_class_init (NautilusPropertiesWidgetClass *klass)
     gtk_widget_class_bind_template_child (widget_class, NautilusPropertiesWidget, extension_list_box);
 
     gtk_widget_class_bind_template_callback (widget_class, star_clicked);
+    gtk_widget_class_bind_template_callback (widget_class, popout_window_clicked);
     gtk_widget_class_bind_template_callback (widget_class, open_in_disks);
     gtk_widget_class_bind_template_callback (widget_class, open_parent_folder);
     gtk_widget_class_bind_template_callback (widget_class, open_link_target);

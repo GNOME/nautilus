@@ -25,6 +25,13 @@
                             </style>
                           </object>
                         </child>
+                        <child type="end">
+                          <object class="GtkButton" id="popout_window_button">
+                            <property name="valign">end</property>
+                            <property name="icon-name">external-link-symbolic</property>
+                            <signal name="clicked" handler="popout_window_clicked" swapped="yes"/>
+                          </object>
+                        </child>
                       </object>
                     </child>
                     <property name="content">
