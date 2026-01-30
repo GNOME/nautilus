@@ -406,7 +406,11 @@ nautilus_icon_info_lookup (GIcon *icon,
 
             if (image != NULL)
             {
-                g_autoptr (GlyFrame) frame = gly_image_next_frame (image, NULL);
+                g_autoptr (GlyFrameRequest) frame_request = gly_frame_request_new ();
+                g_autoptr (GlyFrame) frame = NULL;
+
+                gly_frame_request_set_scale (frame_request, size * scale, size * scale);
+                frame = gly_image_get_specific_frame (image, frame_request, NULL);
 
                 if (frame != NULL)
                 {
