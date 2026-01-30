@@ -315,23 +315,21 @@ completer_get_completions_thread (GTask        *task,
     CompleterData *completer_data = (CompleterData *) task_data;
     const gchar *user_location = completer_data->user_location;
 
-    GFileInfo *info = NULL;
-
     const gchar *last_slash = strrchr (user_location, G_DIR_SEPARATOR);
     const gchar *typed = last_slash + 1;
-
     g_autofree gchar *dir_path = g_strndup (user_location, last_slash - user_location + 1);
     g_autofree gchar *searched_prefix = g_utf8_casefold (typed, -1);
     gboolean searched_prefix_has_dot = g_str_has_prefix (typed, ".");
 
     g_autoptr (GFile) file = g_file_new_for_path (dir_path);
-    g_autoptr (GPtrArray) completions = g_ptr_array_new ();
+    g_autoptr (GPtrArray) completions = g_ptr_array_new_with_free_func (g_free);
     g_autoptr (GFileEnumerator) enumerator = g_file_enumerate_children (file,
                                                                         G_FILE_ATTRIBUTE_STANDARD_NAME ","
                                                                         G_FILE_ATTRIBUTE_STANDARD_TYPE,
                                                                         G_FILE_QUERY_INFO_NONE,
                                                                         cancellable,
                                                                         NULL);
+    GFileInfo *info = NULL;
 
     if (!enumerator)
     {
@@ -370,17 +368,10 @@ completer_get_completions_thread (GTask        *task,
     }
     g_ptr_array_add (completions, NULL);
 
-    char **result = (char **) g_ptr_array_free (g_steal_pointer (&completions), FALSE);
-    g_task_return_pointer (task, result, (GDestroyNotify) g_strfreev);
+    g_task_return_pointer (task,
+                           g_steal_pointer (&completions),
+                           (GDestroyNotify) g_ptr_array_unref);
 }
-
-static char **
-completer_get_completions_finish (GAsyncResult  *res,
-                                  GError       **error)
-{
-    return g_task_propagate_pointer (G_TASK (res), error);
-}
-
 
 static void
 completer_get_completions_async (CompleterData       *completer_data,
@@ -399,7 +390,6 @@ populate_completions_model (GObject      *source_object,
                             gpointer      user_data)
 {
     GtkTreeIter iter;
-    char *completion;
     guint current_dir_strlen = 0;
 
     GTask *task = G_TASK (res);
@@ -416,7 +406,7 @@ populate_completions_model (GObject      *source_object,
     gtk_list_store_clear (priv->completions_store);
     g_autoptr (GError) error = NULL;
 
-    g_auto (GStrv) completions = completer_get_completions_finish (res, &error);
+    g_autoptr (GPtrArray) completions = g_task_propagate_pointer (task, &error);
     gboolean is_relative = completer_data->is_relative;
 
     if (priv->current_directory)
@@ -424,9 +414,9 @@ populate_completions_model (GObject      *source_object,
         current_dir_strlen = strlen (priv->current_directory);
     }
 
-    for (int i = 0; completions[i] != NULL; i++)
+    for (guint i = 0; i < completions->len; i++)
     {
-        completion = completions[i];
+        char *completion = g_ptr_array_index (completions, i);
 
         if (is_relative && strlen (completion) >= current_dir_strlen)
         {
