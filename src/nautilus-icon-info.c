@@ -26,8 +26,6 @@ struct _NautilusIconInfo
 {
     GObject parent;
 
-    gboolean only_in_cache;
-    guint64 last_use_time;
     GdkPaintable *paintable;
 
     char *icon_name;
@@ -37,7 +35,6 @@ static GtkIconPaintable *
 lookup_themed_icon (GIcon *icon,
                     int    size,
                     float  scale);
-static void schedule_reap_cache (void);
 
 G_DEFINE_TYPE (NautilusIconInfo,
                nautilus_icon_info,
@@ -46,24 +43,6 @@ G_DEFINE_TYPE (NautilusIconInfo,
 static void
 nautilus_icon_info_init (NautilusIconInfo *icon)
 {
-    icon->last_use_time = g_get_monotonic_time ();
-    icon->only_in_cache = TRUE;
-}
-
-static void
-paintable_toggle_notify (gpointer  info,
-                         GObject  *object,
-                         gboolean  is_last_ref)
-{
-    NautilusIconInfo *icon = info;
-
-    icon->only_in_cache = is_last_ref;
-
-    if (is_last_ref)
-    {
-        icon->last_use_time = g_get_monotonic_time ();
-        schedule_reap_cache ();
-    }
 }
 
 static void
@@ -73,17 +52,7 @@ nautilus_icon_info_finalize (GObject *object)
 
     icon = NAUTILUS_ICON_INFO (object);
 
-    if (icon->only_in_cache)
-    {
-        /* Cleaning up the last reference from the cache */
-        g_object_remove_toggle_ref (G_OBJECT (icon->paintable),
-                                    paintable_toggle_notify,
-                                    icon);
-    }
-    else
-    {
-        g_object_unref (icon->paintable);
-    }
+    g_object_unref (icon->paintable);
     g_free (icon->icon_name);
 
     G_OBJECT_CLASS (nautilus_icon_info_parent_class)->finalize (object);
@@ -106,10 +75,7 @@ nautilus_icon_info_new_for_paintable (GdkPaintable *paintable)
 
     NautilusIconInfo *self = g_object_new (NAUTILUS_TYPE_ICON_INFO, NULL);
 
-    self->paintable = paintable;
-    g_object_add_toggle_ref (G_OBJECT (self->paintable),
-                             paintable_toggle_notify,
-                             self);
+    self->paintable = g_object_ref (paintable);
 
     return self;
 }
@@ -193,77 +159,7 @@ typedef struct
 
 static GHashTable *loadable_icon_cache = NULL;
 static GHashTable *themed_icon_cache = NULL;
-static guint reap_cache_timeout = 0;
 
-static guint64 time_now;
-
-static gboolean
-reap_old_icon (gpointer key,
-               gpointer value,
-               gpointer user_info)
-{
-    NautilusIconInfo *icon = value;
-    gboolean *reapable_icons_left = user_info;
-
-    if (icon->only_in_cache)
-    {
-        if (time_now - icon->last_use_time > 30 * G_USEC_PER_SEC)
-        {
-            /* This went unused 30 secs ago. reap */
-            return TRUE;
-        }
-        else
-        {
-            /* We can reap this soon */
-            *reapable_icons_left = TRUE;
-        }
-    }
-
-    return FALSE;
-}
-
-static gboolean
-reap_cache (gpointer data)
-{
-    gboolean reapable_icons_left = FALSE;
-
-    time_now = g_get_monotonic_time ();
-
-    if (loadable_icon_cache)
-    {
-        g_hash_table_foreach_remove (loadable_icon_cache,
-                                     reap_old_icon,
-                                     &reapable_icons_left);
-    }
-
-    if (themed_icon_cache)
-    {
-        g_hash_table_foreach_remove (themed_icon_cache,
-                                     reap_old_icon,
-                                     &reapable_icons_left);
-    }
-
-    if (reapable_icons_left)
-    {
-        return TRUE;
-    }
-    else
-    {
-        reap_cache_timeout = 0;
-        return FALSE;
-    }
-}
-
-static void
-schedule_reap_cache (void)
-{
-    if (reap_cache_timeout == 0)
-    {
-        reap_cache_timeout = g_timeout_add_seconds_full (0, 5,
-                                                         reap_cache,
-                                                         NULL, NULL);
-    }
-}
 
 void
 nautilus_icon_info_clear_caches (void)
