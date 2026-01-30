@@ -108,12 +108,9 @@ skeleton_handle_show_item_properties_cb (NautilusFreedesktopFileManager1 *object
                                          gpointer                         data)
 {
     GApplication *application = g_application_get_default ();
-    GList *files;
-    int i;
+    g_autolist (NautilusFile) files = NULL;
 
-    files = NULL;
-
-    for (i = 0; uris[i] != NULL; i++)
+    for (uint i = 0; uris[i] != NULL; i++)
     {
         files = g_list_prepend (files, nautilus_file_get_by_uri (uris[i]));
     }
@@ -125,8 +122,6 @@ skeleton_handle_show_item_properties_cb (NautilusFreedesktopFileManager1 *object
     g_application_hold (application);
     g_signal_connect_swapped (window, "destroyed",
                               G_CALLBACK (g_application_release), application);
-
-    nautilus_file_list_free (files);
 
     nautilus_freedesktop_file_manager1_complete_show_item_properties (object, invocation);
     return TRUE;
