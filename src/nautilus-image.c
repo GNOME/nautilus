@@ -475,6 +475,30 @@ file_info_ready_callback (GObject      *source_object,
                                      self);
 }
 
+typedef enum
+{
+    NAUTILUS_IMAGE_STATUS_THUMBNAIL,
+    NAUTILUS_IMAGE_STATUS_LOADING,
+    NAUTILUS_IMAGE_STATUS_FALLBACK,
+} NautilusImageStatus;
+
+static NautilusImageStatus
+nautilus_image_get_status (NautilusImage *self)
+{
+    if (self->texture != NULL)
+    {
+        return NAUTILUS_IMAGE_STATUS_THUMBNAIL;
+    }
+    else if (!self->is_loading_attributes &&
+             self->cancellable != NULL &&
+             self->error == NULL)
+    {
+        return NAUTILUS_IMAGE_STATUS_LOADING;
+    }
+
+    return NAUTILUS_IMAGE_STATUS_FALLBACK;
+}
+
 static void
 nautilus_image_set_texture (NautilusImage *self,
                             GdkTexture    *texture)
@@ -657,8 +681,9 @@ real_snapshot (GtkWidget   *widget,
                GtkSnapshot *snapshot)
 {
     NautilusImage *self = NAUTILUS_IMAGE (widget);
+    NautilusImageStatus status = nautilus_image_get_status (self);
 
-    if (self->texture != NULL)
+    if (status == NAUTILUS_IMAGE_STATUS_THUMBNAIL)
     {
         double width = gdk_texture_get_width (self->texture);
         double height = gdk_texture_get_height (self->texture);
@@ -691,9 +716,7 @@ real_snapshot (GtkWidget   *widget,
         /* End rounded clip */
         gtk_snapshot_pop (snapshot);
     }
-    else if (!self->is_loading_attributes &&
-             self->cancellable != NULL &&
-             self->error == NULL)
+    else if (status == NAUTILUS_IMAGE_STATUS_LOADING)
     {
         gdk_paintable_snapshot (get_loading_paintable (self),
                                 GDK_SNAPSHOT (snapshot),
@@ -726,9 +749,10 @@ real_measure (GtkWidget      *widget,
               int            *natural_baseline)
 {
     NautilusImage *self = NAUTILUS_IMAGE (widget);
+    NautilusImageStatus status = nautilus_image_get_status (self);
     int length = self->size;
 
-    if (self->texture != NULL)
+    if (status == NAUTILUS_IMAGE_STATUS_THUMBNAIL)
     {
         double width = gdk_texture_get_width (self->texture);
         double height = gdk_texture_get_height (self->texture);
