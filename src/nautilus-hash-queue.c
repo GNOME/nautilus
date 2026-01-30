@@ -61,7 +61,7 @@ nautilus_hash_queue_new (GHashFunc      hash_func,
     queue = g_new0 (NautilusHashQueue, 1);
     g_queue_init ((GQueue *) queue);
     queue->item_to_link_map = g_hash_table_new_full (hash_func, equal_func,
-                                                     key_destroy_func, value_destroy_func);
+                                                     key_destroy_func, NULL);
     queue->key_destroy_func = key_destroy_func;
     queue->value_destroy_func = value_destroy_func;
 
@@ -72,7 +72,16 @@ void
 nautilus_hash_queue_destroy (NautilusHashQueue *queue)
 {
     g_hash_table_destroy (queue->item_to_link_map);
-    /* Items in queue already freed by hash table */
+
+    if (queue->value_destroy_func != NULL)
+    {
+        g_queue_clear_full ((GQueue *) queue, queue->value_destroy_func);
+    }
+    else
+    {
+        g_queue_clear ((GQueue *) queue);
+    }
+
     g_free (queue);
 }
 
