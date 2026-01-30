@@ -34,7 +34,7 @@ NautilusHashQueue * nautilus_hash_queue_new     (GHashFunc      hash_func,
                                                  GDestroyNotify value_destroy_func);
 void               nautilus_hash_queue_destroy  (NautilusHashQueue *queue);
 
-void               nautilus_hash_queue_enqueue  (NautilusHashQueue *queue,
+gboolean           nautilus_hash_queue_enqueue  (NautilusHashQueue *queue,
                                                  gpointer           key,
                                                  gpointer           value);
 void               nautilus_hash_queue_remove   (NautilusHashQueue *queue,

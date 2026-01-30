@@ -89,7 +89,7 @@ nautilus_hash_queue_destroy (NautilusHashQueue *queue)
 }
 
 /** Add an item to the tail of the queue, unless it's already in the queue. */
-void
+gboolean
 nautilus_hash_queue_enqueue (NautilusHashQueue *queue,
                              gpointer           key,
                              gpointer           value)
@@ -106,12 +106,14 @@ nautilus_hash_queue_enqueue (NautilusHashQueue *queue,
             queue->value_destroy_func (value);
         }
 
-        return;
+        return FALSE;
     }
 
     g_queue_push_tail ((GQueue *) queue, value);
     g_hash_table_insert (queue->item_to_link_map, key, queue->parent.tail);
     g_hash_table_insert (queue->link_to_item_map, queue->parent.tail, key);
+
+    return TRUE;
 }
 
 /**
