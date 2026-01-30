@@ -3720,38 +3720,16 @@ create_properties_window (GtkWidget *content)
     return GTK_WINDOW (window);
 }
 
-void
-nautilus_properties_window_present (GList                            *files,
-                                    GtkWidget                        *parent_widget,
-                                    const gchar                      *startup_id,
-                                    NautilusPropertiesWindowCallback  callback,
-                                    gpointer                          unused)
+GtkWindow *
+nautilus_properties_present_window (NautilusFileList *files,
+                                    const char       *startup_id)
 {
-    g_return_if_fail (unused == NULL);
-    g_return_if_fail (files != NULL);
-    g_return_if_fail (parent_widget == NULL || GTK_IS_WIDGET (parent_widget));
+    g_return_val_if_fail (files != NULL, NULL);
 
     NautilusPropertiesWidget *self = properties_widget_new (files);
     GtkWindow *window = create_properties_window (GTK_WIDGET (self));
 
     g_signal_connect_swapped (self, "hide-properties", G_CALLBACK (gtk_window_close), window);
-
-    if (parent_widget)
-    {
-        GtkWindow *parent_window = GTK_WINDOW (gtk_widget_get_ancestor (parent_widget, GTK_TYPE_WINDOW));
-
-        gtk_window_set_display (window,
-                                gtk_widget_get_display (parent_widget));
-
-        if (parent_window != NULL)
-        {
-            gtk_window_set_transient_for (window, parent_window);
-        }
-    }
-
-    /* Wait until we can tell whether it's a directory before showing, since
-     * some one-time layout decisions depend on that info.
-     */
 
     if (startup_id != NULL)
     {
@@ -3759,6 +3737,8 @@ nautilus_properties_window_present (GList                            *files,
     }
 
     gtk_window_present (window);
+
+    return window;
 }
 
 void

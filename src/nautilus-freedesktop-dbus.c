@@ -100,12 +100,6 @@ skeleton_handle_show_folders_cb (NautilusFreedesktopFileManager1 *object,
     return TRUE;
 }
 
-static void
-properties_window_on_finished (gpointer user_data)
-{
-    g_application_release (g_application_get_default ());
-}
-
 static gboolean
 skeleton_handle_show_item_properties_cb (NautilusFreedesktopFileManager1 *object,
                                          GDBusMethodInvocation           *invocation,
@@ -113,6 +107,7 @@ skeleton_handle_show_item_properties_cb (NautilusFreedesktopFileManager1 *object
                                          const gchar                     *startup_id,
                                          gpointer                         data)
 {
+    GApplication *application = g_application_get_default ();
     GList *files;
     int i;
 
@@ -125,9 +120,11 @@ skeleton_handle_show_item_properties_cb (NautilusFreedesktopFileManager1 *object
 
     files = g_list_reverse (files);
 
-    g_application_hold (g_application_get_default ());
-    nautilus_properties_window_present (files, NULL, startup_id,
-                                        properties_window_on_finished, NULL);
+    GtkWindow *window = nautilus_properties_present_window (files, startup_id);
+
+    g_application_hold (application);
+    g_signal_connect_swapped (window, "destroyed",
+                              G_CALLBACK (g_application_release), application);
 
     nautilus_file_list_free (files);
 

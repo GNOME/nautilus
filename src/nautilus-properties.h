@@ -28,14 +28,10 @@
 #include <adwaita.h>
 #include <gtk/gtk.h>
 
-typedef void (* NautilusPropertiesWindowCallback) (gpointer    callback_data);
-
 void
 nautilus_properties_present_dialog (NautilusFileList *files,
                                     GtkWidget        *parent_widget);
 
-void nautilus_properties_window_present (GList                            *files,
-                                         GtkWidget                        *parent_widget,
-                                         const gchar                      *startup_id,
-                                         NautilusPropertiesWindowCallback  callback,
-                                         gpointer                          unused);
+GtkWindow *
+nautilus_properties_present_window (NautilusFileList *files,
+                                    const char       *startup_id);
