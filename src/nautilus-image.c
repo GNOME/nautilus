@@ -538,9 +538,27 @@ void
 nautilus_image_set_fallback (NautilusImage *self,
                              GdkPaintable  *paintable)
 {
-    if (g_set_object (&self->fallback_paintable, paintable))
+    gboolean resize = (self->fallback_paintable != paintable);
+
+    if (resize && self->fallback_paintable != NULL && paintable != NULL)
     {
-        gtk_widget_queue_draw (GTK_WIDGET (self));
+        resize = (gdk_paintable_get_intrinsic_width (self->fallback_paintable) !=
+                  gdk_paintable_get_intrinsic_width (paintable)) ||
+                 (gdk_paintable_get_intrinsic_height (self->fallback_paintable) !=
+                  gdk_paintable_get_intrinsic_height (paintable));
+    }
+
+    if (g_set_object (&self->fallback_paintable, paintable) &&
+        nautilus_image_get_status (self) == NAUTILUS_IMAGE_STATUS_FALLBACK)
+    {
+        if (resize)
+        {
+            gtk_widget_queue_resize (GTK_WIDGET (self));
+        }
+        else
+        {
+            gtk_widget_queue_draw (GTK_WIDGET (self));
+        }
     }
 }
 
@@ -733,7 +751,8 @@ real_snapshot (GtkWidget   *widget,
 
         gdk_paintable_snapshot (paintable,
                                 GDK_SNAPSHOT (snapshot),
-                                self->size, self->size);
+                                gdk_paintable_get_intrinsic_width (paintable),
+                                gdk_paintable_get_intrinsic_height (paintable));
     }
 
     GTK_WIDGET_CLASS (nautilus_image_parent_class)->snapshot (widget, snapshot);
@@ -766,6 +785,15 @@ real_measure (GtkWidget      *widget,
         }
 
         length = orientation == GTK_ORIENTATION_HORIZONTAL ? width : height;
+    }
+    else if (status == NAUTILUS_IMAGE_STATUS_FALLBACK &&
+             self->fallback_paintable != NULL)
+    {
+        GdkPaintable *paintable = self->fallback_paintable;
+
+        length = orientation == GTK_ORIENTATION_HORIZONTAL
+                 ? gdk_paintable_get_intrinsic_width (paintable)
+                 : gdk_paintable_get_intrinsic_height (paintable);
     }
 
     *minimum = length;
