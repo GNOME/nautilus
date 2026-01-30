@@ -225,7 +225,15 @@ nautilus_rename_file_popover_show_for_file (NautilusRenameFilePopover *self,
 
     edit_name = nautilus_file_get_edit_name (self->target_file);
 
+    g_signal_handlers_block_by_func (self->name_entry,
+                                     nautilus_filename_validator_validate,
+                                     self->validator);
+
     gtk_editable_set_text (GTK_EDITABLE (self->name_entry), edit_name);
+
+    g_signal_handlers_unblock_by_func (self->name_entry,
+                                       nautilus_filename_validator_validate,
+                                       self->validator);
 
     gtk_popover_set_pointing_to (GTK_POPOVER (self), pointing_to);
     gtk_popover_popup (GTK_POPOVER (self));
