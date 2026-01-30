@@ -31,6 +31,7 @@ struct NautilusHashQueue
 {
     GQueue parent;
     GHashTable *item_to_link_map;
+    GHashTable *link_to_item_map;
     GDestroyNotify key_destroy_func;
     GDestroyNotify value_destroy_func;
 };
@@ -62,6 +63,7 @@ nautilus_hash_queue_new (GHashFunc      hash_func,
     g_queue_init ((GQueue *) queue);
     queue->item_to_link_map = g_hash_table_new_full (hash_func, equal_func,
                                                      key_destroy_func, NULL);
+    queue->link_to_item_map = g_hash_table_new (NULL, NULL);
     queue->key_destroy_func = key_destroy_func;
     queue->value_destroy_func = value_destroy_func;
 
@@ -72,6 +74,7 @@ void
 nautilus_hash_queue_destroy (NautilusHashQueue *queue)
 {
     g_hash_table_destroy (queue->item_to_link_map);
+    g_hash_table_destroy (queue->link_to_item_map);
 
     if (queue->value_destroy_func != NULL)
     {
@@ -108,6 +111,7 @@ nautilus_hash_queue_enqueue (NautilusHashQueue *queue,
 
     g_queue_push_tail ((GQueue *) queue, value);
     g_hash_table_insert (queue->item_to_link_map, key, queue->parent.tail);
+    g_hash_table_insert (queue->link_to_item_map, queue->parent.tail, key);
 }
 
 /**
@@ -127,12 +131,26 @@ nautilus_hash_queue_remove (NautilusHashQueue *queue,
             queue->value_destroy_func (link->data);
         }
 
+        g_hash_table_remove (queue->link_to_item_map, link);
         g_queue_delete_link ((GQueue *) queue, link);
 
         if (queue->key_destroy_func != NULL)
         {
             queue->key_destroy_func (map_key);
         }
+    }
+}
+
+void
+nautilus_hash_queue_remove_head (NautilusHashQueue *queue)
+{
+    GList *link = nautilus_hash_queue_peek_head (queue);
+
+    if (link != NULL)
+    {
+        gpointer map_key = g_hash_table_lookup (queue->link_to_item_map, link);
+
+        nautilus_hash_queue_remove (queue, map_key);
     }
 }
 
