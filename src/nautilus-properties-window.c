@@ -3519,7 +3519,7 @@ setup_permissions_page (NautilusPropertiesWindow *self)
          *  This if block only gets executed if its a single file window,
          *  in which case the label text needs to be different from the
          *  default label text. The default label text for a multifile
-         *  window is set in nautilus-properties-window.ui so no else block.
+         *  window is set in nautilus-properties-widget.blp so no else block.
          */
         if (!is_multi_file_window (self))
         {
@@ -3899,7 +3899,7 @@ nautilus_properties_window_class_init (NautilusPropertiesWindowClass *klass)
                                   GDK_KEY_Escape, 0,
                                   (GtkShortcutFunc) gtk_window_close, NULL);
 
-    gtk_widget_class_set_template_from_resource (widget_class, "/org/gnome/nautilus/ui/nautilus-properties-window.ui");
+    gtk_widget_class_set_template_from_resource (widget_class, "/org/gnome/nautilus/ui/nautilus-properties-widget.ui");
 
     gtk_widget_class_bind_template_child (widget_class, NautilusPropertiesWindow, toast_overlay);
     gtk_widget_class_bind_template_child (widget_class, NautilusPropertiesWindow, nav_view);
