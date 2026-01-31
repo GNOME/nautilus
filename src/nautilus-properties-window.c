@@ -567,6 +567,11 @@ update_properties_window_icon (NautilusPropertiesWindow *self)
     if (name != NULL)
     {
         gtk_window_set_icon_name (GTK_WINDOW (self), name);
+        gtk_widget_remove_css_class (self->icon_image, "thumbnail");
+    }
+    else
+    {
+        gtk_widget_add_css_class (self->icon_image, "thumbnail");
     }
 
     pixel_size = MAX (gdk_paintable_get_intrinsic_width (paintable),

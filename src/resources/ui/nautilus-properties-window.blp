@@ -7,6 +7,10 @@ template $NautilusPropertiesWindow: Adw.Window {
   height-request: 294;
   default-width: 480;
 
+  styles [
+    "nautilus-properties-window",
+  ]
+
   Adw.ToastOverlay toast_overlay {
     child: Adw.NavigationView nav_view {
       Adw.NavigationPage {
