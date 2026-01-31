@@ -4,10 +4,6 @@ using Adw 1;
 template $NautilusSidebarRow: ListBoxRow {
   focus-on-click: false;
 
-  styles [
-    "sidebar-row",
-  ]
-
   child: Revealer revealer {
     reveal-child: true;
     notify::child-revealed => $on_child_revealed();
