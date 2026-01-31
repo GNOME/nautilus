@@ -1,0 +1,76 @@
+using Gtk 4.0;
+using Adw 1;
+
+template $NautilusTemplatesDialog: Adw.Dialog {
+  title: _("Create File");
+  content-width: 550;
+  content-height: 450;
+
+  child: Adw.ToolbarView {
+    [top]
+    Adw.HeaderBar {
+      show-start-title-buttons: false;
+      show-end-title-buttons: false;
+
+      [start]
+      Button {
+        label: _("_Cancel");
+        use-underline: true;
+        can-shrink: true;
+        clicked => $adw_dialog_close(template);
+      }
+
+      [end]
+      Button {
+        label: _("C_reate");
+        use-underline: true;
+        can-shrink: true;
+
+        styles [
+          "suggested-action",
+        ]
+      }
+    }
+
+    content: Box {
+      orientation: vertical;
+
+      Stack {
+        StackPage {
+          child: Adw.StatusPage {
+            icon-name: "folder-templates-symbolic";
+            title: _("No Templates Found");
+            description: _("Add more templates by importing them from files.");
+
+            child: Button {
+              label: _("Import");
+              halign: center;
+              clicked => $nautilus_templates_dialog_import_template_dialog() swapped;
+
+              styles [
+                "pill",
+              ]
+            };
+          };
+        }
+
+        StackPage {
+          child: Box {
+            orientation: vertical;
+
+            Button {
+              label: _("Import");
+              halign: center;
+              clicked => $nautilus_templates_dialog_import_template_dialog() swapped;
+
+              styles [
+                "pill",
+              ]
+            }
+          };
+        }
+      }
+    };
+  };
+}
+
