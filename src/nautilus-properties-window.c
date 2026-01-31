@@ -569,7 +569,7 @@ update_properties_window_icon (NautilusPropertiesWindow *self)
         gtk_window_set_icon_name (GTK_WINDOW (self), name);
     }
 
-    pixel_size = MAX (gdk_paintable_get_intrinsic_width (paintable),
+    pixel_size = MAX (gdk_paintable_get_intrinsic_height (paintable),
                       gdk_paintable_get_intrinsic_width (paintable));
 
     gtk_image_set_from_paintable (GTK_IMAGE (self->icon_image), paintable);
