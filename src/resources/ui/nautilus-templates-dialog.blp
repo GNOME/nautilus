@@ -35,9 +35,10 @@ template $NautilusTemplatesDialog: Adw.Dialog {
     content: Box {
       orientation: vertical;
 
-      Stack {
+      Stack templates_stack {
         StackPage {
           child: Adw.StatusPage {
+            name: "no-templates";
             icon-name: "folder-templates-symbolic";
             title: _("No Templates Found");
             description: _("Add more templates by importing them from files.");
@@ -55,12 +56,39 @@ template $NautilusTemplatesDialog: Adw.Dialog {
         }
 
         StackPage {
+          name: "templates-list";
+
           child: Box {
             orientation: vertical;
+            spacing: 6;
+
+            SearchEntry templates_search_entry {
+              halign: center;
+              margin-top: 24;
+              margin-bottom: 12;
+              margin-start: 12;
+              margin-end: 12;
+              search-changed => $search_changed();
+            }
+
+            ListBox templates_list_box {
+              show-separators: true;
+              margin-top: 12;
+              margin-bottom: 12;
+              margin-start: 48;
+              margin-end: 48;
+              row-activated => $row_activated();
+
+              styles [
+                "boxed-list",
+              ]
+            }
 
             Button {
               label: _("Import");
               halign: center;
+              margin-top: 12;
+              margin-bottom: 24;
               clicked => $nautilus_templates_dialog_import_template_dialog() swapped;
 
               styles [
