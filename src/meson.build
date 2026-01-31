@@ -236,6 +236,8 @@ libnautilus_sources = [
   'nautilus-starred-directory.h',
   'nautilus-tag-manager.c',
   'nautilus-tag-manager.h',
+  'nautilus-templates-dialog.c',
+  'nautilus-templates-dialog.h',
   'nautilus-thumbnails.c',
   'nautilus-thumbnails.h',
   'nautilus-toolbar.c',
