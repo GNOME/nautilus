@@ -61,8 +61,10 @@
 #include "nautilus-mime-actions.h"
 #include "nautilus-network-view.h"
 #include "nautilus-module.h"
+#include "nautilus-new-file-dialog.h"
 #include "nautilus-new-folder-dialog.h"
 #include "nautilus-query.h"
+#include "nautilus-templates-dialog.h"
 #include "nautilus-previewer.h"
 #include "nautilus-program-choosing.h"
 #include "nautilus-properties.h"
@@ -126,7 +128,6 @@ enum
     PROP_SELECTION,
     PROP_LOCATION,
     PROP_EXTENSIONS_BACKGROUND_MENU,
-    PROP_TEMPLATES_MENU,
     NUM_PROPERTIES
 };
 
@@ -148,6 +149,7 @@ struct _NautilusFilesView
 
     NautilusWindowSlot *slot;
     NautilusDirectory *directory;
+    NautilusDirectory *templates_directory;
     NautilusFile *directory_as_file;
     GFile *location;
 
@@ -214,6 +216,8 @@ struct _NautilusFilesView
     gboolean metadata_for_directory_as_file_pending;
     gboolean metadata_for_files_in_directory_pending;
 
+    gboolean has_templates;
+
     NautilusDirectoryList *subdirectory_list;
     NautilusDirectoryList *subdirectories_loading;
 
@@ -237,7 +241,6 @@ struct _NautilusFilesView
 
     /* Exposed menus, for the path bar etc. */
     GMenuModel *extensions_background_menu;
-    GMenuModel *templates_menu;
 
     /* Non exported menu, only for caching */
     GMenuModel *scripts_menu;
@@ -301,8 +304,6 @@ static void     metadata_for_files_in_directory_ready_callback (NautilusDirector
 static void     nautilus_files_view_trash_state_changed_callback (NautilusTrashMonitor *trash,
                                                                   gboolean              state,
                                                                   gpointer              callback_data);
-static void     update_templates_directory (NautilusFilesView *view);
-
 static void     extract_files (NautilusFilesView *view,
                                GList             *files,
                                GFile             *destination_directory);
@@ -324,6 +325,11 @@ static void nautilus_files_view_pop_up_selection_context_menu (NautilusFilesView
                                                                graphene_point_t  *point);
 static void nautilus_files_view_pop_up_background_context_menu (NautilusFilesView *view,
                                                                 graphene_point_t  *point);
+
+static void     nautilus_files_view_new_file (NautilusFilesView *directory_view,
+                                              const char        *parent_uri,
+                                              const char        *target_filename,
+                                              NautilusFile      *source);
 
 G_DEFINE_FINAL_TYPE (NautilusFilesView, nautilus_files_view, ADW_TYPE_BIN);
 
@@ -946,18 +952,6 @@ real_set_extensions_background_menu (NautilusFilesView *self,
     }
 }
 
-static void
-real_set_templates_menu (NautilusFilesView *self,
-                         GMenuModel        *menu)
-{
-    g_return_if_fail (NAUTILUS_IS_FILES_VIEW (self));
-
-    if (g_set_object (&self->templates_menu, menu))
-    {
-        g_object_notify_by_pspec (G_OBJECT (self), properties[PROP_TEMPLATES_MENU]);
-    }
-}
-
 static gboolean
 showing_trash_directory (NautilusFilesView *self)
 {
@@ -1156,27 +1150,6 @@ script_launch_parameters_new (NautilusFile      *file,
 
 static void
 script_launch_parameters_free (ScriptLaunchParameters *parameters)
-{
-    nautilus_file_unref (parameters->file);
-    g_free (parameters);
-}
-
-static CreateTemplateParameters *
-create_template_parameters_new (NautilusFile      *file,
-                                NautilusFilesView *directory_view)
-{
-    CreateTemplateParameters *result;
-
-    result = g_new0 (CreateTemplateParameters, 1);
-    result->directory_view = directory_view;
-    nautilus_file_ref (file);
-    result->file = file;
-
-    return result;
-}
-
-static void
-create_templates_parameters_free (CreateTemplateParameters *parameters)
 {
     nautilus_file_unref (parameters->file);
     g_free (parameters);
@@ -2349,6 +2322,7 @@ nautilus_files_view_new_file_with_initial_contents (NautilusFilesView *view,
 static void
 nautilus_files_view_new_file (NautilusFilesView *directory_view,
                               const char        *parent_uri,
+                              const char        *target_filename,
                               NautilusFile      *source)
 {
     NewFolderData *data;
@@ -2367,7 +2341,7 @@ nautilus_files_view_new_file (NautilusFilesView *directory_view,
     {
         nautilus_files_view_new_file_with_initial_contents (directory_view,
                                                             parent_uri != NULL ? parent_uri : container_uri,
-                                                            NULL,
+                                                            target_filename,
                                                             NULL,
                                                             0);
         g_free (container_uri);
@@ -2380,7 +2354,7 @@ nautilus_files_view_new_file (NautilusFilesView *directory_view,
 
     nautilus_file_operations_new_file_from_template (GTK_WIDGET (directory_view),
                                                      parent_uri != NULL ? parent_uri : container_uri,
-                                                     NULL,
+                                                     target_filename,
                                                      source_uri,
                                                      new_folder_done, data);
 
@@ -2403,6 +2377,48 @@ action_empty_trash (GSimpleAction *action,
 
     view->selection_source = NAUTILUS_SELECTION_SOURCE_OP_START;
     nautilus_file_operations_empty_trash (GTK_WIDGET (window), TRUE, NULL);
+}
+
+static void
+templates_changed_cb (NautilusDirectory *directory,
+                      NautilusFilesView *files_view,
+                      gpointer           callback_data)
+{
+    NautilusFilesView *self = NAUTILUS_FILES_VIEW (callback_data);
+
+    self->has_templates = nautilus_directory_is_not_empty (directory);
+}
+
+static void
+new_file_dialog_cb (gchar        *name,
+                    NautilusFile *file,
+                    gpointer     *data)
+{
+    NautilusFilesView *self = NAUTILUS_FILES_VIEW (data);
+
+    nautilus_files_view_new_file (self, NULL, name, file);
+}
+
+static void
+action_new_file (GSimpleAction *action,
+                 GVariant      *state,
+                 gpointer       user_data)
+{
+    NautilusFilesView *self = NAUTILUS_FILES_VIEW (user_data);
+    g_autofree char *uri = nautilus_files_view_get_backing_uri (self);
+    g_autoptr (NautilusDirectory) containing_directory = nautilus_directory_get_by_uri (uri);
+
+    if (!self->has_templates) /* if the XDG Templates directory is empty */
+    {
+        nautilus_new_file_dialog_new (GTK_WIDGET (self),
+                                      containing_directory,
+                                      new_file_dialog_cb,
+                                      (gpointer) self);
+    }
+    else
+    {
+        nautilus_templates_dialog_new (nautilus_files_view_get_containing_window (self));
+    }
 }
 
 static void
@@ -3030,15 +3046,6 @@ add_directory_to_templates_directory_list (NautilusFilesView *self,
 }
 
 static void
-remove_directory_from_templates_directory_list (NautilusFilesView *self,
-                                                NautilusDirectory *directory)
-{
-    remove_directory_from_directory_list (self, directory,
-                                          &self->templates_directory_list,
-                                          G_CALLBACK (templates_added_or_changed_callback));
-}
-
-static void
 slot_active_changed (NautilusWindowSlot *slot,
                      GParamSpec         *pspec,
                      NautilusFilesView  *view)
@@ -3255,17 +3262,17 @@ nautilus_files_view_dispose (GObject *object)
         remove_directory_from_scripts_directory_list (self, node->data);
     }
 
-    for (node = self->templates_directory_list; node != NULL; node = next)
-    {
-        next = node->next;
-        remove_directory_from_templates_directory_list (self, node->data);
-    }
-
     g_clear_pointer (&self->subdirectories_loading, g_list_free);
     while (self->subdirectory_list != NULL)
     {
         nautilus_files_view_remove_subdirectory (self,
                                                  self->subdirectory_list->data);
+    }
+
+    if (self->templates_directory != NULL)
+    {
+        nautilus_directory_file_monitor_remove (self->templates_directory, self);
+        g_clear_object (&self->templates_directory);
     }
 
     remove_update_context_menus_timeout_callback (self);
@@ -3338,7 +3345,6 @@ nautilus_files_view_finalize (GObject *object)
     g_clear_object (&self->background_menu_model);
     g_clear_object (&self->selection_menu_model);
     g_clear_object (&self->extensions_background_menu);
-    g_clear_object (&self->templates_menu);
     g_clear_object (&self->scripts_menu);
     /* We don't own the slot, so no unref */
     self->slot = NULL;
@@ -5438,255 +5444,6 @@ update_scripts_menu (NautilusFilesView *view)
 }
 
 static void
-create_template (GSimpleAction *action,
-                 GVariant      *state,
-                 gpointer       user_data)
-{
-    CreateTemplateParameters *parameters;
-
-    parameters = user_data;
-
-    nautilus_files_view_new_file (parameters->directory_view, NULL, parameters->file);
-}
-
-static void
-add_template_to_templates_menus (NautilusFilesView *self,
-                                 NautilusFile      *file,
-                                 GMenu             *menu)
-{
-    char *uri;
-    const char *name;
-    g_autofree gchar *escaped_uri = NULL;
-    char *action_name, *detailed_action_name;
-    CreateTemplateParameters *parameters;
-    GAction *action;
-    g_autofree char *label = NULL;
-    GMenuItem *menu_item;
-
-    name = nautilus_file_get_display_name (file);
-    uri = nautilus_file_get_uri (file);
-    escaped_uri = g_uri_escape_string (uri, NULL, TRUE);
-    action_name = g_strconcat ("template_", escaped_uri, NULL);
-    action = G_ACTION (g_simple_action_new (action_name, NULL));
-    parameters = create_template_parameters_new (file, self);
-
-    g_signal_connect_data (action, "activate",
-                           G_CALLBACK (create_template),
-                           parameters,
-                           (GClosureNotify) create_templates_parameters_free, 0);
-
-    g_action_map_add_action (G_ACTION_MAP (self->view_action_group), action);
-
-    detailed_action_name = g_strconcat ("view.", action_name, NULL);
-    label = escape_underscores (name);
-    menu_item = g_menu_item_new (label, detailed_action_name);
-
-    g_menu_append_item (menu, menu_item);
-
-    g_free (uri);
-    g_free (action_name);
-    g_free (detailed_action_name);
-    g_object_unref (action);
-    g_object_unref (menu_item);
-}
-
-static void
-update_templates_directory (NautilusFilesView *view)
-{
-    NautilusDirectory *templates_directory;
-    GList *node, *next;
-    char *templates_uri;
-
-    for (node = view->templates_directory_list; node != NULL; node = next)
-    {
-        next = node->next;
-        remove_directory_from_templates_directory_list (view, node->data);
-    }
-
-    if (nautilus_should_use_templates_directory ())
-    {
-        templates_uri = nautilus_get_templates_directory_uri ();
-        templates_directory = nautilus_directory_get_by_uri (templates_uri);
-        g_free (templates_uri);
-        add_directory_to_templates_directory_list (view, templates_directory);
-        nautilus_directory_unref (templates_directory);
-    }
-}
-
-static gboolean
-directory_belongs_in_templates_menu (const char *templates_directory_uri,
-                                     const char *uri)
-{
-    int num_levels;
-    int i;
-
-    if (templates_directory_uri == NULL)
-    {
-        return FALSE;
-    }
-
-    if (!g_str_has_prefix (uri, templates_directory_uri))
-    {
-        return FALSE;
-    }
-
-    num_levels = 0;
-    for (i = strlen (templates_directory_uri); uri[i] != '\0'; i++)
-    {
-        if (uri[i] == '/')
-        {
-            num_levels++;
-        }
-    }
-
-    if (num_levels > MAX_MENU_LEVELS)
-    {
-        return FALSE;
-    }
-
-    return TRUE;
-}
-
-static gboolean
-filter_templates_callback (NautilusFile *file,
-                           gpointer      callback_data)
-{
-    /*
-     * We want to show hidden files, but not directories. This is a compromise
-     * to allow creating hidden files but to prevent content from .git directory
-     * for example. See https://gitlab.gnome.org/GNOME/nautilus/issues/1413.
-     */
-    NautilusFilesView *view = callback_data;
-
-    if (nautilus_file_is_hidden_file (file))
-    {
-        if (!view->show_hidden_files)
-        {
-            return FALSE;
-        }
-
-        if (nautilus_file_is_directory (file))
-        {
-            return FALSE;
-        }
-    }
-
-    return TRUE;
-}
-
-static GMenuModel *
-update_directory_in_templates_menu (NautilusFilesView *view,
-                                    NautilusDirectory *directory)
-{
-    GMenu *menu;
-    GMenuItem *menu_item;
-    gboolean any_templates;
-    NautilusFile *file;
-    NautilusDirectory *dir;
-    char *uri;
-    char *templates_directory_uri;
-    int num;
-
-    g_return_val_if_fail (NAUTILUS_IS_FILES_VIEW (view), NULL);
-    g_return_val_if_fail (NAUTILUS_IS_DIRECTORY (directory), NULL);
-
-    g_autolist (NautilusFile) file_list = nautilus_directory_get_file_list (directory);
-
-    file_list = nautilus_file_list_filter (file_list, filter_templates_callback, view);
-    file_list = nautilus_file_list_sort_by_display_name (file_list);
-
-    templates_directory_uri = nautilus_get_templates_directory_uri ();
-    menu = g_menu_new ();
-
-    num = 0;
-    any_templates = FALSE;
-    for (GList *node = file_list; num < TEMPLATE_LIMIT && node != NULL; node = node->next, num++)
-    {
-        file = node->data;
-        if (nautilus_file_is_directory (file))
-        {
-            uri = nautilus_file_get_uri (file);
-            if (directory_belongs_in_templates_menu (templates_directory_uri, uri))
-            {
-                g_autoptr (GMenuModel) children_menu = NULL;
-
-                dir = nautilus_directory_get_by_uri (uri);
-                add_directory_to_templates_directory_list (view, dir);
-
-                children_menu = update_directory_in_templates_menu (view, dir);
-
-                if (children_menu != NULL)
-                {
-                    const char *display_name = nautilus_file_get_display_name (file);
-                    g_autofree char *label = NULL;
-
-                    label = escape_underscores (display_name);
-                    menu_item = g_menu_item_new_submenu (label, children_menu);
-                    g_menu_append_item (menu, menu_item);
-                    any_templates = TRUE;
-                    g_object_unref (menu_item);
-                }
-
-                nautilus_directory_unref (dir);
-            }
-            g_free (uri);
-        }
-        else if (nautilus_file_can_read (file))
-        {
-            add_template_to_templates_menus (view, file, menu);
-            any_templates = TRUE;
-        }
-    }
-
-    g_free (templates_directory_uri);
-
-    if (!any_templates)
-    {
-        g_object_unref (menu);
-        menu = NULL;
-    }
-
-    return G_MENU_MODEL (menu);
-}
-
-
-
-static void
-update_templates_menu (NautilusFilesView *view,
-                       GtkBuilder        *builder)
-{
-    g_autolist (NautilusDirectory) sorted_copy = NULL;
-    g_autoptr (NautilusDirectory) directory = NULL;
-    g_autoptr (GMenuModel) submenu = NULL;
-    g_autofree char *templates_directory_uri = NULL;
-
-    if (!nautilus_should_use_templates_directory ())
-    {
-        real_set_templates_menu (view, NULL);
-        return;
-    }
-
-    templates_directory_uri = nautilus_get_templates_directory_uri ();
-    sorted_copy = nautilus_directory_list_sort_by_uri
-                      (nautilus_directory_list_copy (view->templates_directory_list));
-
-    for (GList *dir_l = sorted_copy; dir_l != NULL; dir_l = dir_l->next)
-    {
-        g_autofree char *uri = nautilus_directory_get_uri (dir_l->data);
-        if (!directory_belongs_in_templates_menu (templates_directory_uri, uri))
-        {
-            remove_directory_from_templates_directory_list (view, dir_l->data);
-        }
-    }
-
-    directory = nautilus_directory_get_by_uri (templates_directory_uri);
-    submenu = update_directory_in_templates_menu (view, directory);
-
-    real_set_templates_menu (view, submenu);
-}
-
-
-static void
 action_open_scripts_folder (GSimpleAction *action,
                             GVariant      *state,
                             gpointer       user_data)
@@ -6862,6 +6619,7 @@ const GActionEntry view_entries[] =
     /* Background menu */
     { .name = "empty-trash", .activate = action_empty_trash },
     { .name = "new-folder", .activate = action_new_folder },
+    { .name = "new-file", .activate = action_new_file },
     { .name = "select-all", .activate = action_select_all },
     { .name = "paste", .activate = action_paste_files },
     { .name = "copy-current-location", .activate = action_copy_current_location },
@@ -7642,6 +7400,9 @@ nautilus_files_view_update_actions_state (NautilusFilesView *self)
                                  is_in_trash);
 
     action = g_action_map_lookup_action (G_ACTION_MAP (view_action_group),
+                                         "new-file");
+    g_simple_action_set_enabled (G_SIMPLE_ACTION (action), can_create_files);
+    action = g_action_map_lookup_action (G_ACTION_MAP (view_action_group),
                                          "paste");
     g_simple_action_set_enabled (G_SIMPLE_ACTION (action),
                                  mode == NAUTILUS_MODE_BROWSE &&
@@ -8084,43 +7845,6 @@ update_background_menu (NautilusFilesView *self,
                         GtkBuilder        *builder)
 {
     NautilusMode mode = nautilus_window_slot_get_mode (self->slot);
-    GObject *object;
-    gboolean remove_submenu = TRUE;
-
-    if (nautilus_files_view_supports_creating_files (self) &&
-        !showing_recent_directory (self) &&
-        !showing_starred_directory (self))
-    {
-        if (!self->templates_menu_updated)
-        {
-            update_templates_menu (self, builder);
-            self->templates_menu_updated = TRUE;
-        }
-
-        object = gtk_builder_get_object (builder, "templates-submenu");
-        nautilus_gmenu_set_from_model (G_MENU (object), self->templates_menu);
-
-        if (self->templates_menu != NULL)
-        {
-            remove_submenu = FALSE;
-        }
-    }
-    else
-    {
-        /* This is necessary because the pathbar menu relies on it being NULL
-         * to hide the submenu. */
-        real_set_templates_menu (self, NULL);
-
-        /* And this is necessary to regenerate the templates menu when we go
-         * back to a normal folder. */
-        self->templates_menu_updated = FALSE;
-    }
-
-    nautilus_menu_item_change_attribute (G_MENU_MODEL (self->background_menu_model),
-                                         "templates-submenu",
-                                         "hidden-when",
-                                         remove_submenu ? "action-missing" : NULL);
-
     const char *view_name = NAUTILUS_IS_NETWORK_VIEW (self->list_base) ? "network" : "normal";
 
     /* Filter  the menus at the end to not interfere with other checks */
@@ -8889,12 +8613,6 @@ nautilus_files_view_get_property (GObject    *object,
         }
         break;
 
-        case PROP_TEMPLATES_MENU:
-        {
-            g_value_set_object (value, view->templates_menu);
-        }
-        break;
-
         default:
         {
             g_assert_not_reached ();
@@ -8939,13 +8657,6 @@ nautilus_files_view_set_property (GObject      *object,
         {
             real_set_extensions_background_menu (self,
                                                  g_value_get_object (value));
-        }
-        break;
-
-        case PROP_TEMPLATES_MENU:
-        {
-            real_set_templates_menu (self,
-                                     g_value_get_object (value));
         }
         break;
 
@@ -9231,17 +8942,6 @@ nautilus_files_view_class_init (NautilusFilesViewClass *klass)
                              "Menu for the background click of extensions",
                              G_TYPE_MENU_MODEL,
                              G_PARAM_READWRITE);
-    /**
-     * NautilusFilesView:templates-menu:
-     *
-     * Menu of templates
-     */
-    properties[PROP_TEMPLATES_MENU] =
-        g_param_spec_object ("templates-menu",
-                             "Menu of templates",
-                             "Menu of templates",
-                             G_TYPE_MENU_MODEL,
-                             G_PARAM_READWRITE);
 
     properties[PROP_WINDOW_SLOT] =
         g_param_spec_object ("window-slot",
@@ -9459,7 +9159,6 @@ nautilus_files_view_init (NautilusFilesView *self)
     NautilusDirectory *templates_directory;
     GtkEventController *controller;
     GtkShortcut *shortcut;
-    gchar *templates_uri;
     GdkClipboard *clipboard;
 
     /* Own a reference to keep the status page alive even if reparented while
@@ -9501,13 +9200,22 @@ nautilus_files_view_init (NautilusFilesView *self)
 
     if (nautilus_should_use_templates_directory ())
     {
-        templates_uri = nautilus_get_templates_directory_uri ();
+        g_autofree gchar *templates_uri = nautilus_get_templates_directory_uri ();
+
         templates_directory = nautilus_directory_get_by_uri (templates_uri);
-        g_free (templates_uri);
+        self->templates_directory = templates_directory;
         add_directory_to_templates_directory_list (self, templates_directory);
-        nautilus_directory_unref (templates_directory);
+
+        /* Monitor templates directory */
+        nautilus_directory_file_monitor_add (templates_directory, self,
+                                             FALSE, NAUTILUS_ATTRIBUTE_INFO,
+                                             (NautilusDirectoryCallback) templates_changed_cb, self);
+
+        g_signal_connect_object (templates_directory, "files-added",
+                                 G_CALLBACK (templates_changed_cb), self, 0);
+        g_signal_connect_object (templates_directory, "files-changed",
+                                 G_CALLBACK (templates_changed_cb), self, 0);
     }
-    update_templates_directory (self);
 
     self->show_hidden_files =
         g_settings_get_boolean (gtk_filechooser_preferences, NAUTILUS_PREFERENCES_SHOW_HIDDEN_FILES);

@@ -1,0 +1,142 @@
+using Gtk 4.0;
+using Adw 1;
+
+$NautilusFilenameValidator validator {
+  new-name: bind name_entry.text;
+  // name-accepted => $on_name_accepted() swapped;
+  // notify::has-feedback => $on_feedback_changed(template) swapped;
+}
+
+template $NautilusNewFileDialog: Adw.Dialog {
+  title: _("New File");
+  content-width: 500;
+  content-height: 450;
+
+  child: Adw.ToolbarView toolbar_view {
+    [top]
+    Adw.HeaderBar {
+      show-start-title-buttons: false;
+      show-end-title-buttons: false;
+
+      [start]
+      Button cancel_button {
+        label: _("_Cancel");
+        use-underline: true;
+        can-shrink: true;
+        clicked => $adw_dialog_close(template);
+      }
+
+      [end]
+      Button ok_button {
+        label: _("C_reate");
+        use-underline: true;
+        can-shrink: true;
+        sensitive: bind validator.passed;
+        clicked => $new_file_dialog_on_create();
+
+        styles [
+          "suggested-action",
+        ]
+      }
+    }
+
+    content: Adw.Clamp {
+      margin-top: 18;
+      margin-bottom: 18;
+      margin-start: 18;
+      margin-end: 18;
+
+      child: Box {
+        orientation: vertical;
+        spacing: 12;
+
+        Adw.PreferencesGroup {
+          Adw.EntryRow name_entry {
+            title: _("File Name");
+            changed => $nautilus_filename_validator_validate(validator);
+
+            Label extension_label {
+              label: ".txt";
+
+              styles [
+                "dim-label",
+                "heading",
+              ]
+            }
+          }
+        }
+
+        Revealer {
+          reveal-child: bind validator.has-feedback no-sync-create;
+
+          child: Label {
+            label: bind validator.feedback-text no-sync-create;
+            xalign: 0;
+
+            styles [
+              "warning",
+              "caption",
+            ]
+          };
+        }
+
+        Adw.PreferencesGroup {
+          Adw.ActionRow text_action_row {
+            icon-name: "text-x-generic-symbolic";
+            title: _("_Text File");
+            use-underline: true;
+            activate => $text_action_row_on_activated();
+
+            CheckButton text_check_button {
+              active: true;
+            }
+
+            activatable-widget: text_check_button;
+          }
+
+          Adw.ActionRow document_action_row {
+            icon-name: "x-office-document-symbolic";
+            title: _("_Document");
+            use-underline: true;
+            activate => $document_action_row_on_activated();
+
+            CheckButton document_check_button {
+              group: text_check_button;
+            }
+
+            activatable-widget: document_check_button;
+          }
+
+          Adw.ActionRow spreadsheet_action_row {
+            icon-name: "x-office-spreadsheet-symbolic";
+            title: _("_Spreadsheet");
+            use-underline: true;
+            activate => $spreadsheet_action_row_on_activated();
+
+            CheckButton spreadsheet_check_button {
+              group: text_check_button;
+            }
+
+            activatable-widget: spreadsheet_check_button;
+          }
+
+          Adw.ActionRow presentation_action_row {
+            icon-name: "x-office-presentation-symbolic";
+            title: _("_Presentation");
+            use-underline: true;
+            activate => $presentation_action_row_on_activated();
+
+            CheckButton presentation_check_button {
+              group: text_check_button;
+            }
+
+            activatable-widget: presentation_check_button;
+          }
+        }
+      };
+    };
+  };
+}
+
+
+
