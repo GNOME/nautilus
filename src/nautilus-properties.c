@@ -565,7 +565,7 @@ update_properties_widget_icon (NautilusPropertiesWidget *self)
         gtk_widget_add_css_class (self->icon_image, "thumbnail");
     }
 
-    pixel_size = MAX (gdk_paintable_get_intrinsic_width (paintable),
+    pixel_size = MAX (gdk_paintable_get_intrinsic_height (paintable),
                       gdk_paintable_get_intrinsic_width (paintable));
 
     gtk_image_set_from_paintable (GTK_IMAGE (self->icon_image), paintable);
