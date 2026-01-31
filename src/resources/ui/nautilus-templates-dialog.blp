@@ -1,0 +1,103 @@
+using Gtk 4.0;
+using Adw 1;
+
+template $NautilusTemplatesDialog: Adw.Dialog {
+  title: _("Create File");
+  content-width: 550;
+  content-height: 450;
+
+  child: Adw.ToolbarView {
+    [top]
+    Adw.HeaderBar {
+      show-start-title-buttons: false;
+      show-end-title-buttons: false;
+
+      [start]
+      Button {
+        label: _("_Cancel");
+        use-underline: true;
+        can-shrink: true;
+        clicked => $adw_dialog_close(template);
+      }
+
+      [end]
+      Button {
+        label: _("C_reate");
+        use-underline: true;
+        can-shrink: true;
+
+        styles [
+          "suggested-action",
+        ]
+      }
+    }
+
+    content: Box {
+      orientation: vertical;
+
+      Stack templates_stack {
+        StackPage {
+          child: Adw.StatusPage {
+            name: "no-templates";
+            icon-name: "folder-templates-symbolic";
+            title: _("No Templates Found");
+            description: _("Add more templates by importing them from files.");
+
+            child: Button {
+              label: _("Import");
+              halign: center;
+              clicked => $nautilus_templates_dialog_import() swapped;
+
+              styles [
+                "pill",
+              ]
+            };
+          };
+        }
+
+        StackPage {
+          name: "templates-list";
+
+          child: Box {
+            orientation: vertical;
+            spacing: 6;
+
+            SearchEntry templates_search_entry {
+              halign: center;
+              margin-top: 24;
+              margin-bottom: 12;
+              margin-start: 12;
+              margin-end: 12;
+              search-changed => $search_changed();
+            }
+
+            ListBox templates_list_box {
+              show-separators: true;
+              margin-top: 12;
+              margin-bottom: 12;
+              margin-start: 48;
+              margin-end: 48;
+              row-activated => $template_activated();
+
+              styles [
+                "boxed-list",
+              ]
+            }
+
+            Button {
+              label: _("Import");
+              halign: center;
+              margin-top: 12;
+              margin-bottom: 24;
+              clicked => $nautilus_templates_dialog_import() swapped;
+
+              styles [
+                "pill",
+              ]
+            }
+          };
+        }
+      }
+    };
+  };
+}
