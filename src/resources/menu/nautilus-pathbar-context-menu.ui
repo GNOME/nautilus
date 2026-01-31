@@ -22,9 +22,9 @@
       <attribute name="accel">&lt;shift&gt;&lt;control&gt;n</attribute>
     </item>
     <item>
-      <attribute name="label" translatable="yes">New _Document</attribute>
-      <attribute name="nautilus-menu-item">templates-submenu</attribute>
-      <link name="submenu" id="templates-submenu"/>
+      <attribute name="label" translatable="yes">_New File…</attribute>
+      <attribute name="action">view.new-file</attribute>
+      <attribute name="hidden-when">action-disabled</attribute>
     </item>
     <item>
       <attribute name="label" translatable="yes">Open _With…</attribute>
