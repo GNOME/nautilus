@@ -383,7 +383,7 @@ nautilus_icon_info_lookup (GIcon *icon,
 
         lookup_key.icon = icon;
         lookup_key.scale = scale;
-        lookup_key.size = size * scale;
+        lookup_key.size = size;
 
         icon_info = g_hash_table_lookup (loadable_icon_cache, &lookup_key);
         if (icon_info)
