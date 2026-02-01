@@ -1,3 +1,44 @@
+Major Changes in 50.beta
+========================
+* Build:
+- Add glycin dependency
+- Add blueprint-compiler dependency
+
+* Enhancements:
+- Move grid view captions to a dedicated dialog in the view menu (Khalid Abu Shawarib)
+- Add button to pop-out properties dialog (Peter Eisenmann)
+- Use glycin for thumbnails (Khalid Abu Shawarib, Peter Eisenmann, Shivam)
+- Rework icon caching (Khalid Abu Shawarib, Peter Eisenmann)
+- Make path completion case-insensitive (Abhinandan Thakur, Peter Eisenmann, Khalid Abu Shawarib)
+- Use AdwShortcutsDialog (automerisnaranja, Allan Day)
+- Add checkerboard background to thumbnails in properties (Adithya)
+- Improve multi-file properties dialog (Peter Eisenmann)
+- Add renaming tests (Khalid Abu Shawarib)
+- Use Blueprint for UI files (Peter Eisenmann)
+- Change public folder banner based on sharing setting (Peter Eisenmann)
+- Fix handling of early rename popover closure (Alessandro Astone)
+
+* Bugfixes:
+- Fix crash with gone MTP devices (Adithya)
+- Do not count children for autofs mountpoints (Ondrej Holy)
+- Fix d'n'd placeholder style in sidebar (Khalid Abu Shawarib)
+- Correctly check for invalid thumbnails (Khalid Abu Shawarib)
+- Fix path for script run from Recent (Khalid Abu Shawarib)
+- Fix leak from .alpha in move operation (Khalid Abu Shawarib)
+- Fix crash on trashing in bind mounts (Khalid Abu Shawarib)
+- Make type of time independent for each search (Peter Eisenmann)
+- Fix icon cache (Khalid Abu Shawarib, Peter Eisenmann)
+
+* Cleanups:
+- Integrate renaming into operations set (Khalid Abu Shawarib, Peter Eisenmann)
+- Bundle search provider functionality in parent class (Peter Eisenmann)
+- Use AdwDialog for properties (Peter Eisenmann)
+- Remove unused desktop file launcher (Khalid Abu Shawarib)
+- Show untrimmed error messages in dialogs (Peter Eisenmann)
+- Performance enhancements for search and sorting (Peter Eisenmann)
+
+* Translation updates (GNOME Translation Project contributors)
+
 Major Changes in 50.alpha
 =========================
 * Enhancements:
