@@ -244,16 +244,10 @@ loadable_icon_cache_add (LoadableIconKey  *key,
                                                        (GDestroyNotify) g_object_unref);
     }
 
-    if (nautilus_hash_queue_enqueue (loadable_icon_cache, key, icon_info))
+    if (nautilus_hash_queue_reenqueue (loadable_icon_cache, key, icon_info) &&
+        nautilus_hash_queue_get_length (loadable_icon_cache) > LOADABLE_ICON_CACHE_COUNT_LIMIT)
     {
-        if (nautilus_hash_queue_get_length (loadable_icon_cache) > LOADABLE_ICON_CACHE_COUNT_LIMIT)
-        {
-            nautilus_hash_queue_remove_head (loadable_icon_cache);
-        }
-    }
-    else
-    {
-        nautilus_hash_queue_move_existing_to_tail (loadable_icon_cache, key);
+        nautilus_hash_queue_remove_head (loadable_icon_cache);
     }
 }
 
@@ -324,16 +318,10 @@ themed_icon_cache_add (ThemedIconKey    *key,
                                                      (GDestroyNotify) g_object_unref);
     }
 
-    if (nautilus_hash_queue_enqueue (themed_icon_cache, key, icon_info))
+    if (nautilus_hash_queue_reenqueue (themed_icon_cache, key, icon_info) &&
+        nautilus_hash_queue_get_length (themed_icon_cache) > THEMED_ICON_CACHE_COUNT_LIMIT)
     {
-        if (nautilus_hash_queue_get_length (themed_icon_cache) > THEMED_ICON_CACHE_COUNT_LIMIT)
-        {
-            nautilus_hash_queue_remove_head (themed_icon_cache);
-        }
-    }
-    else
-    {
-        nautilus_hash_queue_move_existing_to_tail (themed_icon_cache, key);
+        nautilus_hash_queue_remove_head (themed_icon_cache);
     }
 }
 
