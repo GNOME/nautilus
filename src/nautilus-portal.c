@@ -48,7 +48,7 @@ typedef struct
     GtkWindow *window;
 
     GActionGroup *choices_action_group;
-    GHashTable *action_to_choice_map;
+    GHashTable *action_to_choice_list_map;
     char **filenames_to_save;
 } FileChooserData;
 
@@ -73,7 +73,7 @@ file_chooser_data_free (gpointer data)
     g_clear_pointer (&fc_data->filenames_to_save, g_strfreev);
 
     g_clear_object (&fc_data->choices_action_group);
-    g_clear_pointer (&fc_data->action_to_choice_map, g_hash_table_destroy);
+    g_clear_pointer (&fc_data->action_to_choice_list_map, g_hash_table_destroy);
 
     g_free (fc_data);
 }
@@ -158,6 +158,31 @@ build_uris_variant (GVariantBuilder *uris,
     }
 }
 
+typedef struct
+{
+    char *choice_id;
+    GPtrArray *choices_strings;
+} FileChooserChoiceList;
+
+static void
+choice_list_free (FileChooserChoiceList *chooser_choice_list)
+{
+    g_clear_pointer (&chooser_choice_list->choice_id, g_free);
+    g_clear_pointer (&chooser_choice_list->choices_strings, g_ptr_array_unref);
+    g_free (chooser_choice_list);
+}
+
+static FileChooserChoiceList *
+choice_list_new (const gchar *choice_id)
+{
+    FileChooserChoiceList *chooser_choice_list = g_new0 (FileChooserChoiceList, 1);
+
+    chooser_choice_list->choice_id = g_strdup (choice_id);
+    chooser_choice_list->choices_strings = g_ptr_array_new_with_free_func (g_free);
+
+    return chooser_choice_list;
+}
+
 static GVariant *
 get_choices (FileChooserData *data,
              gboolean        *writable)
@@ -170,8 +195,9 @@ get_choices (FileChooserData *data,
         GAction *action = g_action_map_lookup_action (G_ACTION_MAP (data->choices_action_group),
                                                       actions[i]);
         const char *action_name = g_action_get_name (action);
-        const gchar *choice_id = g_hash_table_lookup (data->action_to_choice_map, action_name);
         const GVariantType *state_type = g_action_get_state_type (action);
+        FileChooserChoiceList *choice_list = g_hash_table_lookup (data->action_to_choice_list_map,
+                                                                  action_name);
         g_autoptr (GVariant) state = g_action_get_state (action);
 
         if (g_strcmp0 (actions[i], "x-nautilus-is-read-only") == 0)
@@ -180,15 +206,20 @@ get_choices (FileChooserData *data,
         }
         else if (g_strcmp0 (g_variant_type_peek_string (state_type), "b") == 0)
         {
+            g_assert (choice_list != NULL);
+
             char *value = g_variant_get_boolean (state) ? "true" : "false";
 
-            g_assert (choice_id != NULL);
-            g_variant_builder_add (&builder, "(ss)", choice_id, value);
+            g_variant_builder_add (&builder, "(ss)", choice_list->choice_id, value);
         }
-        else if (g_strcmp0 (g_variant_type_peek_string (state_type), "s") == 0)
+        else if (g_strcmp0 (g_variant_type_peek_string (state_type), "u") == 0)
         {
-            g_assert (choice_id != NULL);
-            g_variant_builder_add (&builder, "(ss)", choice_id, g_variant_get_string (state, NULL));
+            g_assert (choice_list != NULL);
+
+            guint32 picked_choice_index = g_variant_get_uint32 (state);
+            const gchar *picked_choice = choice_list->choices_strings->pdata[picked_choice_index];
+
+            g_variant_builder_add (&builder, "(ss)", choice_list->choice_id, picked_choice);
         }
         else
         {
@@ -306,8 +337,9 @@ get_menu_from_choices (GVariant        *arg_options,
     char *option_label;
 
     data->choices_action_group = create_choices_action_group ();
-    data->action_to_choice_map = g_hash_table_new_full (g_str_hash, g_str_equal,
-                                                        g_free, g_free);
+    data->action_to_choice_list_map = g_hash_table_new_full (g_str_hash, g_str_equal,
+                                                             g_free,
+                                                             (GDestroyNotify) choice_list_free);
 
     if (!g_variant_lookup (arg_options, "choices", "a(ssa(ss)s)", &iter))
     {
@@ -317,53 +349,71 @@ get_menu_from_choices (GVariant        *arg_options,
     while (g_variant_iter_next (iter, "(&s&s@a(ss)&s)", &choice_id, &label, &choices_list, &selected))
     {
         g_autoptr (GSimpleAction) action = NULL;
+        /* The action name has a number corresponding to the n-th multi choice
+         * list. */
+        g_autofree char *action_name = g_strdup_printf ("choice_%u", i++);
+        FileChooserChoiceList *chooser_choice_list = choice_list_new (choice_id);
 
         if (g_variant_n_children (choices_list) > 0)
         {
-            g_autofree gchar *action_name = g_strdup_printf ("%u", i++);
             g_autoptr (GMenu) submenu = g_menu_new ();
             g_autoptr (GMenuItem) item = g_menu_item_new_submenu (label, G_MENU_MODEL (submenu));
+            guint32 j = 0;
+
             g_menu_append_item (menu, item);
 
+            /* Action state is used to store an index to a string in the choice
+             * list. */
             action = g_simple_action_new_stateful (action_name,
-                                                   G_VARIANT_TYPE_STRING,
-                                                   g_variant_new_string (""));
+                                                   G_VARIANT_TYPE_UINT32,
+                                                   g_variant_new_uint32 (0));
 
             g_action_map_add_action (G_ACTION_MAP (data->choices_action_group), G_ACTION (action));
             g_simple_action_set_enabled (action, TRUE);
-            g_hash_table_insert (data->action_to_choice_map,
-                                 g_steal_pointer (&action_name), g_strdup (choice_id));
 
             GVariantIter list_iter;
             g_variant_iter_init (&list_iter, choices_list);
 
             while (g_variant_iter_next (&list_iter, "(ss)", &option_id, &option_label))
             {
-                g_autoptr (GMenuItem) option_item = g_menu_item_new (option_label, NULL);
+                /* The "(uint32 %u)" indicates that when this action is
+                 * activated, it will set the state of the action to an index
+                 * corresponding to choice string. */
+                g_autofree char *detailed_action_name = g_strdup_printf ("choices.%s(uint32 %u)",
+                                                                         action_name, j);
 
-                g_menu_append_item (submenu, option_item);
+                g_menu_append (submenu, option_label, detailed_action_name);
+                g_ptr_array_add (chooser_choice_list->choices_strings, g_strdup (option_id));
 
                 if (g_strcmp0 (option_id, selected) == 0)
                 {
-                    g_simple_action_set_state (G_SIMPLE_ACTION (action), g_variant_new_string (option_id));
+                    g_simple_action_set_state (G_SIMPLE_ACTION (action), g_variant_new_uint32 (j));
                 }
 
                 g_free (option_id);
                 g_free (option_label);
+                j++;
             }
+
+            g_hash_table_insert (data->action_to_choice_list_map,
+                                 g_strdup (action_name),
+                                 g_steal_pointer (&chooser_choice_list));
         }
         else
         {
-            g_autofree char *action_name = g_strdup_printf ("choices.%u", i);
+            /* When this action is activated, it will toggle the state of the
+             * action between true and false. */
+            g_autofree char *detailed_action_name = g_strdup_printf ("choices.%s", action_name);
             GVariant *state = g_variant_new_boolean (g_strcmp0 (selected, "true") == 0);
 
+            /* Action state is used to store a boolean for the choice. */
             action = g_simple_action_new_stateful (action_name, NULL, state);
             g_action_map_add_action (G_ACTION_MAP (data->choices_action_group), G_ACTION (action));
             g_simple_action_set_enabled (action, TRUE);
-            g_hash_table_insert (data->action_to_choice_map,
-                                 g_steal_pointer (&action_name), g_strdup (choice_id));
-
-            g_menu_append (menu, label, NULL);
+            g_menu_append (menu, label, detailed_action_name);
+            g_hash_table_insert (data->action_to_choice_list_map,
+                                 g_strdup (action_name),
+                                 g_steal_pointer (&chooser_choice_list));
         }
 
         g_variant_unref (choices_list);
