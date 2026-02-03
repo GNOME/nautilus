@@ -317,31 +317,45 @@ get_menu_from_choices (GVariant        *arg_options,
     while (g_variant_iter_next (iter, "(&s&s@a(ss)&s)", &choice_id, &label, &choices_list, &selected))
     {
         g_autoptr (GSimpleAction) action = NULL;
+        /* The action name has a number corresponding to the n-th multi choice
+         * list. A map from action names to the choice_id strings is stored in
+         * the data->action_to_choice_map. Don't use the choice name itself in
+         * the action name as the strings coming from the portal can be
+         * arbitrary and action names have custom syntax that can't be easily
+         * escaped and descaped. */
+        g_autofree char *action_name = g_strdup_printf ("choise_%u", i++);
+
+        g_hash_table_insert (data->action_to_choice_map,
+                             g_strdup (action_name), g_strdup (choice_id));
 
         if (g_variant_n_children (choices_list) > 0)
         {
-            g_autofree gchar *action_name = g_strdup_printf ("%u", i++);
             g_autoptr (GMenu) submenu = g_menu_new ();
             g_autoptr (GMenuItem) item = g_menu_item_new_submenu (label, G_MENU_MODEL (submenu));
+
             g_menu_append_item (menu, item);
 
+            /* Action state is used to store a string in the choice list. */
             action = g_simple_action_new_stateful (action_name,
                                                    G_VARIANT_TYPE_STRING,
                                                    g_variant_new_string (""));
-
             g_action_map_add_action (G_ACTION_MAP (data->choices_action_group), G_ACTION (action));
             g_simple_action_set_enabled (action, TRUE);
-            g_hash_table_insert (data->action_to_choice_map,
-                                 g_steal_pointer (&action_name), g_strdup (choice_id));
 
             GVariantIter list_iter;
             g_variant_iter_init (&list_iter, choices_list);
 
             while (g_variant_iter_next (&list_iter, "(ss)", &option_id, &option_label))
             {
-                g_autoptr (GMenuItem) option_item = g_menu_item_new (option_label, NULL);
+                /* The "('%s')" indicates that when this action is activated,
+                 * it will set the state of the action to a string
+                 * corresponding to option string. It is OK to use the option
+                 * string from portal here since ('%s') state setter takes
+                 * literal strings, unlike "::%s". */
+                g_autofree char *detailed_action_name = g_strdup_printf ("choices.%s('%s')",
+                                                                         action_name, option_id);
 
-                g_menu_append_item (submenu, option_item);
+                g_menu_append (submenu, option_label, detailed_action_name);
 
                 if (g_strcmp0 (option_id, selected) == 0)
                 {
@@ -354,16 +368,16 @@ get_menu_from_choices (GVariant        *arg_options,
         }
         else
         {
-            g_autofree char *action_name = g_strdup_printf ("choices.%u", i);
+            /* When this action is activated, it will toggle the state of the
+             * action between true and false. */
+            g_autofree char *detailed_action_name = g_strdup_printf ("choices.%s", action_name);
             GVariant *state = g_variant_new_boolean (g_strcmp0 (selected, "true") == 0);
 
+            /* Action state is used to store a boolean for the choice. */
             action = g_simple_action_new_stateful (action_name, NULL, state);
             g_action_map_add_action (G_ACTION_MAP (data->choices_action_group), G_ACTION (action));
             g_simple_action_set_enabled (action, TRUE);
-            g_hash_table_insert (data->action_to_choice_map,
-                                 g_steal_pointer (&action_name), g_strdup (choice_id));
-
-            g_menu_append (menu, label, NULL);
+            g_menu_append (menu, label, detailed_action_name);
         }
 
         g_variant_unref (choices_list);
