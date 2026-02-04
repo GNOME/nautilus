@@ -355,12 +355,7 @@ get_menu_from_choices (GVariant        *arg_options,
         else
         {
             g_autofree char *action_name = g_strdup_printf ("choices.%u", i);
-            GVariant *state = g_variant_new_boolean (FALSE);
-
-            if (g_strcmp0 (selected, "true") == 0)
-            {
-                state = g_variant_new_boolean (TRUE);
-            }
+            GVariant *state = g_variant_new_boolean (g_strcmp0 (selected, "true") == 0);
 
             action = g_simple_action_new_stateful (action_name, NULL, state);
             g_action_map_add_action (G_ACTION_MAP (data->choices_action_group), G_ACTION (action));
