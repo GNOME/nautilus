@@ -587,7 +587,7 @@ handle_file_chooser_methods (XdpImplFileChooser    *object,
                               G_CALLBACK (on_file_chooser_accepted), data);
 
     /* Show window */
-    if (arg_parent_window != NULL)
+    if (arg_parent_window != NULL && *arg_parent_window != '\0')
     {
         data->external_parent = create_external_window_from_handle (arg_parent_window);
         if (data->external_parent == NULL)
