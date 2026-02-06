@@ -74,8 +74,6 @@ nautilus_new_folder_dialog_new (GtkWidget         *parent,
 
     adw_dialog_present (ADW_DIALOG (self), parent);
 
-    gtk_widget_grab_focus (self->name_entry);
-
     return self;
 }
 
