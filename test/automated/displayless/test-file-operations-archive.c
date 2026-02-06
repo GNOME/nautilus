@@ -40,11 +40,26 @@ typedef struct
     GMainLoop *loop;
 } ArchiveCallbackData;
 
-#define ARCHIVE_CALLBACK_DATA_INIT(file) { \
-            &(GList){ .data = file }, \
-            FALSE, \
-            NULL, \
-};
+static ArchiveCallbackData *
+archive_callback_data_new (GList *files)
+{
+    ArchiveCallbackData *data = g_new0 (ArchiveCallbackData, 1);
+
+    data->files = files;
+    data->loop = g_main_loop_new (NULL, FALSE);
+
+    return data;
+}
+
+static void
+archive_callback_data_free (ArchiveCallbackData *data)
+{
+    g_clear_pointer (&data->loop, g_main_loop_unref);
+
+    g_free (data);
+}
+
+G_DEFINE_AUTOPTR_CLEANUP_FUNC (ArchiveCallbackData, archive_callback_data_free)
 
 static void
 compression_callback (GFile    *new_file,
@@ -102,7 +117,7 @@ file_hierarchy_create_compress (const GStrv   hier,
                                 const gchar  *passphrase)
 {
     g_autolist (GFile) compressed_files = file_hierarchy_get_files_list (hier, "", TRUE);
-    ArchiveCallbackData data = ARCHIVE_CALLBACK_DATA_INIT (output_file);
+    g_autoptr (ArchiveCallbackData) data = archive_callback_data_new (&(GList) { .data = output_file });
     g_autoptr (GError) error = NULL;
     const gchar *mimetype = mime_type_for_format (format, filter);
 
@@ -116,11 +131,10 @@ file_hierarchy_create_compress (const GStrv   hier,
                                        NULL,
                                        NULL,
                                        compression_callback,
-                                       &data);
+                                       data);
+    g_main_loop_run (data->loop);
 
-    ITER_CONTEXT_WHILE (!data.success);
-
-    g_assert_true (data.success);
+    g_assert_true (data->success);
     g_assert_true (g_file_query_exists (output_file, NULL));
 
     g_autoptr (GFileInfo) info = g_file_query_info (output_file,
@@ -184,7 +198,7 @@ test_archive_file (void)
     g_autolist (GFile) extracted_files = file_hierarchy_get_files_list (extracted_files_hier,
                                                                         "",
                                                                         TRUE);
-    ArchiveCallbackData data = { extracted_files, FALSE, NULL };
+    g_autoptr (ArchiveCallbackData) extract_data = archive_callback_data_new (extracted_files);
 
     /* Delete original files so that they can be replace with extracted ones. */
     file_hierarchy_delete (compressed_files_hier, "");
@@ -195,10 +209,10 @@ test_archive_file (void)
                                             NULL,
                                             NULL,
                                             extraction_callback,
-                                            &data);
-    ITER_CONTEXT_WHILE (!data.success);
+                                            extract_data);
+    g_main_loop_run (extract_data->loop);
 
-    g_assert_true (data.success);
+    g_assert_true (extract_data->success);
     file_hierarchy_assert_exists (compressed_files_hier, "", FALSE);
     g_assert_true (g_file_query_exists (archive_file, NULL));
     file_hierarchy_assert_exists (extracted_files_hier, "", TRUE);
@@ -228,12 +242,10 @@ test_archive_file_long (void)
     g_autoptr (GFile) archive_file = g_file_get_child (tmp_dir, "my_big_file.tar.xz");
     AutoarFormat format = AUTOAR_FORMAT_TAR;
     AutoarFilter filter = AUTOAR_FILTER_XZ;
-    ArchiveCallbackData data = ARCHIVE_CALLBACK_DATA_INIT (archive_file);
-    g_autoptr (GMainLoop) loop = g_main_loop_new (NULL, FALSE);
+    g_autoptr (ArchiveCallbackData) compress_data = archive_callback_data_new (&(GList) { .data = archive_file });
     g_autoptr (GError) error = NULL;
 
     create_random_file (big_file, file_size);
-    data.loop = loop;
 
     /*
      * Compression
@@ -246,10 +258,10 @@ test_archive_file_long (void)
                                        NULL,
                                        NULL,
                                        compression_callback,
-                                       &data);
-    g_main_loop_run (loop);
+                                       compress_data);
+    g_main_loop_run (compress_data->loop);
 
-    g_assert_true (data.success);
+    g_assert_true (compress_data->success);
     g_assert_true (g_file_query_exists (archive_file, NULL));
 
     g_autoptr (GFileInfo) info = g_file_query_info (archive_file,
@@ -277,11 +289,8 @@ test_archive_file_long (void)
     /*
      * Extraction
      */
-    data.files = &(GList){
-        .data = big_file
-    };
-    data.success = FALSE;
-    data.loop = loop;
+    g_autoptr (ArchiveCallbackData) extract_data = archive_callback_data_new (&(GList) { .data = big_file });
+
     g_file_delete (big_file, NULL, &error);
     g_assert_no_error (error);
     g_assert_false (g_file_query_exists (big_file, NULL));
@@ -291,10 +300,10 @@ test_archive_file_long (void)
                                             NULL,
                                             NULL,
                                             extraction_callback,
-                                            &data);
-    g_main_loop_run (loop);
+                                            extract_data);
+    g_main_loop_run (extract_data->loop);
 
-    g_assert_true (data.success);
+    g_assert_true (extract_data->success);
     g_assert_true (g_file_query_exists (big_file, NULL));
     g_assert_true (g_file_query_exists (archive_file, NULL));
 
@@ -321,7 +330,7 @@ test_compress_file_password (void)
     const gchar *password = "The Quick Brown Fox Jumps Over The Lazy Dog.";
     AutoarFormat format = AUTOAR_FORMAT_ZIP;
     AutoarFilter filter = AUTOAR_FILTER_NONE;
-    ArchiveCallbackData data = ARCHIVE_CALLBACK_DATA_INIT (archive_file);
+    g_autoptr (ArchiveCallbackData) data = archive_callback_data_new (&(GList) { .data = archive_file });
     g_autoptr (GError) error = NULL;
 
     create_random_file (compressed_file, file_size);
@@ -337,10 +346,10 @@ test_compress_file_password (void)
                                        NULL,
                                        NULL,
                                        compression_callback,
-                                       &data);
-    ITER_CONTEXT_WHILE (!data.success);
+                                       data);
+    g_main_loop_run (data->loop);
 
-    g_assert_true (data.success);
+    g_assert_true (data->success);
     g_assert_true (g_file_query_exists (archive_file, NULL));
 
     g_autoptr (GFileInfo) info = g_file_query_info (archive_file,
@@ -423,7 +432,7 @@ test_archive_full_dir (void)
      */
     g_autolist (GFile) extracted_files = file_hierarchy_get_files_list (extracted_files_hier, "",
                                                                         TRUE);
-    ArchiveCallbackData data = { extracted_files, FALSE, NULL };
+    g_autoptr (ArchiveCallbackData) data = archive_callback_data_new (extracted_files);
 
     /* Delete original files so that they can be replace with extracted ones. */
     file_hierarchy_delete (compressed_files_hier, "");
@@ -434,10 +443,10 @@ test_archive_full_dir (void)
                                             NULL,
                                             NULL,
                                             extraction_callback,
-                                            &data);
-    ITER_CONTEXT_WHILE (!data.success);
+                                            data);
+    g_main_loop_run (data->loop);
 
-    g_assert_true (data.success);
+    g_assert_true (data->success);
     file_hierarchy_assert_exists (compressed_files_hier, "", FALSE);
     g_assert_true (g_file_query_exists (archive_file, NULL));
     file_hierarchy_assert_exists (extracted_files_hier, "", TRUE);
@@ -486,7 +495,8 @@ test_archive_full_dir_early_cancel (void)
     g_autoptr (NautilusProgressInfoManager) progress_manager = NULL;
     GList *progress_infos;
     NautilusProgressInfo *info;
-    ArchiveCallbackData data = { NULL, FALSE, NULL };
+    g_autoptr (ArchiveCallbackData) compress_data =
+        archive_callback_data_new (NULL);
 
     /*
      * Compression
@@ -503,7 +513,7 @@ test_archive_full_dir_early_cancel (void)
                                        NULL,
                                        NULL,
                                        compression_callback,
-                                       &data);
+                                       compress_data);
 
     /* TODO: Move progress manager management to test-utilities */
     progress_infos = nautilus_progress_info_manager_get_all_infos (progress_manager);
@@ -512,15 +522,12 @@ test_archive_full_dir_early_cancel (void)
     info = progress_infos->data;
     nautilus_progress_info_cancel (info);
 
-    ITER_CONTEXT_WHILE (data.success);
+    g_main_loop_run (compress_data->loop);
 
-    g_assert_false (data.success);
+    g_assert_false (compress_data->success);
     g_assert_false (g_file_query_exists (archive_file, NULL));
 
-    data.files = &(GList){
-        .data = archive_file
-    };
-    data.success = FALSE;
+    compress_data->files = (&(GList){ .data = archive_file, });
     nautilus_file_operations_compress (compressed_files,
                                        archive_file,
                                        format,
@@ -529,18 +536,16 @@ test_archive_full_dir_early_cancel (void)
                                        NULL,
                                        NULL,
                                        compression_callback,
-                                       &data);
+                                       compress_data);
+    g_main_loop_run (compress_data->loop);
 
-    ITER_CONTEXT_WHILE (!data.success);
-
-    g_assert_true (data.success);
+    g_assert_true (compress_data->success);
     g_assert_true (g_file_query_exists (archive_file, NULL));
 
     /*
      * Extraction
      */
-    data.files = NULL;
-    data.success = TRUE;
+    g_autoptr (ArchiveCallbackData) cancel_extract_data = archive_callback_data_new (NULL);
 
     /* Delete original files so that they can be replace with extracted ones. */
     file_hierarchy_delete (compressed_files_hier, "");
@@ -551,16 +556,16 @@ test_archive_full_dir_early_cancel (void)
                                             NULL,
                                             NULL,
                                             extraction_callback,
-                                            &data);
+                                            cancel_extract_data);
     progress_infos = nautilus_progress_info_manager_get_all_infos (progress_manager);
     g_assert_nonnull (progress_infos);
 
     info = progress_infos->data;
     nautilus_progress_info_cancel (info);
 
-    ITER_CONTEXT_WHILE (data.success);
+    g_main_loop_run (cancel_extract_data->loop);
 
-    g_assert_false (data.success);
+    g_assert_false (cancel_extract_data->success);
     file_hierarchy_assert_exists (compressed_files_hier, "", FALSE);
     g_assert_true (g_file_query_exists (archive_file, NULL));
     file_hierarchy_assert_exists (extracted_files_hier, "", FALSE);
@@ -619,7 +624,7 @@ test_archive_files (void)
      */
     g_autolist (GFile) extracted_files = file_hierarchy_get_files_list (extracted_files_hier, "",
                                                                         TRUE);
-    ArchiveCallbackData data = { extracted_files, FALSE, NULL };
+    g_autoptr (ArchiveCallbackData) data = archive_callback_data_new (extracted_files);
 
     /* Delete original files so that they can be replace with extracted ones. */
     file_hierarchy_delete (compressed_files_hier, "");
@@ -630,10 +635,10 @@ test_archive_files (void)
                                             NULL,
                                             NULL,
                                             extraction_callback,
-                                            &data);
-    ITER_CONTEXT_WHILE (!data.success);
+                                            data);
+    g_main_loop_run (data->loop);
 
-    g_assert_true (data.success);
+    g_assert_true (data->success);
     file_hierarchy_assert_exists (compressed_files_hier, "", FALSE);
     file_hierarchy_assert_exists (extracted_files_hier, "", TRUE);
 
@@ -717,7 +722,7 @@ test_archives_files (void)
      */
     g_autolist (GFile) extracted_files = file_hierarchy_get_files_list (extracted_files_hier, "",
                                                                         TRUE);
-    ArchiveCallbackData data = { extracted_files, FALSE, NULL };
+    g_autoptr (ArchiveCallbackData) data = archive_callback_data_new (extracted_files);
 
     /* Delete original files so that they can be replace with extracted ones. */
     file_hierarchy_delete (first_compressed_hier, "");
@@ -730,10 +735,10 @@ test_archives_files (void)
                                             NULL,
                                             NULL,
                                             extraction_callback,
-                                            &data);
-    ITER_CONTEXT_WHILE (!data.success);
+                                            data);
+    g_main_loop_run (data->loop);
 
-    g_assert_true (data.success);
+    g_assert_true (data->success);
     file_hierarchy_assert_exists (first_compressed_hier, "", FALSE);
     file_hierarchy_assert_exists (second_compressed_hier, "", FALSE);
     file_hierarchy_assert_exists (extracted_files_hier, "", TRUE);
