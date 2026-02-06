@@ -1043,13 +1043,10 @@ nautilus_application_dbus_register (GApplication     *app,
         return FALSE;
     }
 
-    if (!g_test_initialized ())
+    self->portal_implementation = nautilus_portal_new ();
+    if (!nautilus_portal_register (self->portal_implementation, connection, error))
     {
-        self->portal_implementation = nautilus_portal_new ();
-        if (!nautilus_portal_register (self->portal_implementation, connection, error))
-        {
-            return FALSE;
-        }
+        return FALSE;
     }
 
     self->search_provider = nautilus_shell_search_provider_new ();
