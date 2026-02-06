@@ -631,6 +631,11 @@ nautilus_application_activate (GApplication *app)
 
     g_debug ("Calling activate");
 
+    if (g_test_initialized ())
+    {
+        return;
+    }
+
     files = g_malloc0 (2 * sizeof (GFile *));
     files[0] = g_file_new_for_path (g_get_home_dir ());
     nautilus_application_open (app, files, 1, NULL);
