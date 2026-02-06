@@ -41,19 +41,9 @@ desktop_autorun_software = i18n.merge_file(
   type: 'desktop'
 )
 
-# get current date, used as build date for snapshots between releases
-today = 'unknown'
-date = find_program('date', required: false)
-# Only set dates for nightly builds to make release builds reproducible
-if date.found() and profile == 'Devel'
-  r = run_command(date, '-I', check: true)
-  today = r.stdout().strip()
-endif
-
 appdata_conf = configuration_data()
 
 appdata_conf.set('appid', application_id)
-appdata_conf.set('build-date', today)
 
 release_version = meson.project_version()
 python = find_program('python3', required: false)
