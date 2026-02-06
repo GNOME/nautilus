@@ -72,7 +72,6 @@ on_enumerator_ready (GObject      *source_object,
                      GAsyncResult *res,
                      gpointer      data)
 {
-    NautilusFdHolder *self = NAUTILUS_FD_HOLDER (data);
     GFile *location = G_FILE (source_object);
     g_autoptr (GError) error = NULL;
     g_autoptr (GFileEnumerator) enumerator = g_file_enumerate_children_finish (location, res, &error);
@@ -81,6 +80,8 @@ on_enumerator_ready (GObject      *source_object,
     {
         return;
     }
+
+    NautilusFdHolder *self = NAUTILUS_FD_HOLDER (data);
 
     g_return_if_fail (g_file_equal (location, self->location));
     g_warn_if_fail (self->enumerator == NULL);
