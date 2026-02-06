@@ -26,18 +26,13 @@
   <url type="translate">https://l10n.gnome.org/module/nautilus/</url>
   <url type="vcs-browser">https://gitlab.gnome.org/GNOME/nautilus</url>
   <launchable type="desktop-id">@appid@.desktop</launchable>
-  <!-- Copy-pastable release tag templates.
-  # For stable releases:
-    <release version="@release-version@" type="stable" date="YYYY-MM-DD"/>
-
-  # For Unstable (alpha, beta, rc) releases:
-    <release version="@release-version@" type="development" date="YYYY-MM-DD"/>
-
-  # Between releases (at post-release version bump):
-    <release version="@release-version@" date="@build-date@"/>
-  -->
   <releases>
-    <release version="@release-version@" date="@build-date@"/>
+    <release version="@release-version@" type="snapshot"/>
+    <release version="49.4" type="stable" date="2026-02-02"/>
+    <release version="49.3" type="stable" date="2026-01-07"/>
+    <release version="49.2" type="stable" date="2025-11-23"/>
+    <release version="49.1" type="stable" date="2025-10-13"/>
+    <release version="49.0" type="stable" date="2025-09-15"/>
   </releases>
   <project_group>GNOME</project_group>
   <project_license>GPL-3.0-or-later</project_license>
