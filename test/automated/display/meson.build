@@ -9,6 +9,9 @@ tests = {
   'test-sidebar': {
     'is_parallel' : false,
   },
+  'test-portal-file-chooser': {
+    'is_parallel' : false,
+  },
 }
 
 foreach test_name, extra_args : tests
