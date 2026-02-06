@@ -434,8 +434,9 @@ handle_file_chooser_methods (XdpImplFileChooser    *object,
 {
     NautilusPortal *self = NAUTILUS_PORTAL (user_data);
     const char *method_name = g_dbus_method_invocation_get_method_name (invocation);
+    GApplication *app = g_application_get_default ();
 
-    g_application_hold (g_application_get_default ());
+    g_application_hold (app);
 
     /* Decide mode */
     NautilusMode mode = NAUTILUS_MODE_BROWSE;
@@ -608,6 +609,7 @@ handle_file_chooser_methods (XdpImplFileChooser    *object,
         }
     }
 
+    gtk_application_add_window (GTK_APPLICATION (app), GTK_WINDOW (window));
     gtk_window_present (data->window);
 
     /* Setup request. */
