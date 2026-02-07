@@ -15,8 +15,7 @@
 # the test sources are scattered.
 test_env = [
   'GTK_A11Y=none',
-  'GSK_DEBUG=all',
-  'GDK_DEBUG=all',
+  'GSK_DEBUG=fallback',
   'GSETTINGS_BACKEND=memory',
   'GSETTINGS_SCHEMA_DIR=@0@'.format(join_paths(meson.project_build_root(), 'data')),
 ]
