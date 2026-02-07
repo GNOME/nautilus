@@ -87,7 +87,8 @@ real_call_when_ready (NautilusFile           *file,
 {
     NautilusInternalPlaceFile *self = NAUTILUS_INTERNAL_PLACE_FILE (file);
 
-    if (NAUTILUS_IS_NETWORK_DIRECTORY (file->details->directory))
+    if (NAUTILUS_IS_NETWORK_DIRECTORY (file->details->directory) &&
+        !g_test_initialized ())
     {
         /* WORKAROUND:
          * We must ensure network:/// is mounted before calling it "ready",
