@@ -8,8 +8,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: nautilus.master\n"
 "Report-Msgid-Bugs-To: https://gitlab.gnome.org/GNOME/nautilus/issues\n"
-"POT-Creation-Date: 2026-02-01 01:36+0000\n"
-"PO-Revision-Date: 2026-02-01 13:29+0100\n"
+"POT-Creation-Date: 2026-02-07 00:06+0000\n"
+"PO-Revision-Date: 2026-02-07 13:00+0100\n"
 "Last-Translator: Quentin PAGÈS\n"
 "Language-Team: Tot En Òc\n"
 "Language: oc\n"
@@ -1607,14 +1607,30 @@ msgstr "Ligam (copat)"
 msgid "%s Free"
 msgstr "%s liure"
 
+#. Translators: This is the role for a folder icon when a screen reader is
+#. * used. If a folder is selected, it will say "XXXXXX. Folder"
+#: src/nautilus-file.c:8642
+msgctxt "Role"
+msgid "Folder"
+msgstr "Dorsièr"
+
+#. Translators: This is the role for a file icon when a screen reader is
+#. * used. If a file is selected, it will say "XXXXXX. File"
+#: src/nautilus-file.c:8645
+msgctxt "Role"
+msgid "File"
+msgstr "Fichièr"
+
 #
-#. Translators: A "." is added in between file name and starring
-#. * action description as a useful pause in the screen reader
-#. * announcement.
-#: src/nautilus-file.c:8643
-#, c-format
-msgid "%s. Starred"
-msgstr "%s. Apondut als favorits"
+#. Translators: when a file is marked with a star, this text
+#. * is added at the end of the name when prononunced by a
+#. * screen reader, after the role
+#. * (e.g. "My documents. Folder. Starred")
+#.
+#: src/nautilus-file.c:8664
+msgctxt "Role"
+msgid "Starred"
+msgstr "En favorit"
 
 #: src/nautilus-file-chooser.c:229
 msgid "Replace When Saving?"
@@ -5141,11 +5157,11 @@ msgstr "Adreças del servidor"
 msgid "Server Address Information"
 msgstr "Informacions de l’adreça del servidor"
 
-#: src/resources/ui/nautilus-new-folder-dialog.blp:15
+#: src/resources/ui/nautilus-new-folder-dialog.blp:16
 msgid "_Folder Name"
 msgstr "_Nom del dorsièr"
 
-#: src/resources/ui/nautilus-new-folder-dialog.blp:38
+#: src/resources/ui/nautilus-new-folder-dialog.blp:39
 msgid "_Create"
 msgstr "_Creat"
 
@@ -5887,6 +5903,11 @@ msgstr "Afichar l'ajuda"
 msgctxt "shortcuts dialog"
 msgid "Quit"
 msgstr "Quitar"
+
+#
+#, c-format
+#~ msgid "%s. Starred"
+#~ msgstr "%s. Apondut als favorits"
 
 #~ msgid "Creating Properties window."
 #~ msgstr "Creacion de la fenèstra de proprietats."
