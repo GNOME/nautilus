@@ -67,10 +67,11 @@ compression_callback (GFile    *new_file,
                       gpointer  callback_data)
 {
     ArchiveCallbackData *data = callback_data;
+    GFile *data_file = data->files->data;
 
     g_assert_cmpuint (g_list_length (data->files), ==, 1);
 
-    g_assert (g_file_equal (new_file, data->files->data));
+    g_assert (new_file == data_file || g_file_equal (new_file, data_file));
 
     data->success = success;
 
@@ -496,7 +497,7 @@ test_archive_full_dir_early_cancel (void)
     GList *progress_infos;
     NautilusProgressInfo *info;
     g_autoptr (ArchiveCallbackData) compress_data =
-        archive_callback_data_new (NULL);
+        archive_callback_data_new (&(GList) { .data = NULL });
 
     /*
      * Compression

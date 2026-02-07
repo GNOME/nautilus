@@ -245,6 +245,7 @@ typedef struct
     guint64 total_size;
     guint total_files;
 
+    GError *error;
     gboolean success;
 
     NautilusCreateCallback done_callback;
@@ -8015,12 +8016,15 @@ compress_task_done (GObject      *source_object,
 
     if (compress_job->done_callback)
     {
-        compress_job->done_callback (compress_job->output_file,
+        compress_job->done_callback (compress_job->success
+                                     ? compress_job->output_file
+                                     : NULL,
                                      compress_job->success,
                                      compress_job->done_callback_data);
     }
 
     g_object_unref (compress_job->output_file);
+    g_clear_error (&compress_job->error);
     g_list_free_full (compress_job->source_files, g_object_unref);
     g_free (compress_job->passphrase);
 
@@ -8208,6 +8212,8 @@ compress_job_on_error (AutoarCompressor *compressor,
     char *status;
     g_autofree gchar *basename_output_file = NULL;
 
+    compress_job->error = g_error_copy (error);
+
     basename_output_file = get_basename (compress_job->output_file);
     if (compress_job->total_files == 1)
     {
@@ -8354,8 +8360,8 @@ compress_task_thread_func (GTask        *task,
     autoar_compressor_start (compressor,
                              compress_job->common.cancellable);
 
-    compress_job->success = g_file_query_exists (compress_job->output_file,
-                                                 NULL);
+    compress_job->success = compress_job->error == NULL &&
+                            g_file_query_exists (compress_job->output_file, NULL);
 
     /* There is nothing to undo if the output was not created */
     if (compress_job->common.undo_info != NULL && !compress_job->success)
