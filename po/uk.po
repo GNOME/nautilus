@@ -8,8 +8,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: nautilus\n"
 "Report-Msgid-Bugs-To: https://gitlab.gnome.org/GNOME/nautilus/issues\n"
-"POT-Creation-Date: 2026-02-01 23:04+0000\n"
-"PO-Revision-Date: 2026-02-03 05:36+0200\n"
+"POT-Creation-Date: 2026-02-07 00:06+0000\n"
+"PO-Revision-Date: 2026-02-07 22:51+0200\n"
 "Last-Translator: Yuri Chornoivan <yurchor@ukr.net>\n"
 "Language-Team: Ukrainian <trans-uk@lists.fedoraproject.org>\n"
 "Language: uk\n"
@@ -1602,13 +1602,32 @@ msgstr "Посилання (пошкоджено)"
 msgid "%s Free"
 msgstr "Вільно %s"
 
-#. Translators: A "." is added in between file name and starring
-#. * action description as a useful pause in the screen reader
-#. * announcement.
-#: src/nautilus-file.c:8643
-#, c-format
-msgid "%s. Starred"
-msgstr "%s. Із зіркою"
+#. Translators: This is the role for a folder icon when a screen reader is
+#. * used. If a folder is selected, it will say "XXXXXX. Folder"
+#: src/nautilus-file.c:8642
+#| msgid "Folder"
+msgctxt "Role"
+msgid "Folder"
+msgstr "Тека"
+
+#. Translators: This is the role for a file icon when a screen reader is
+#. * used. If a file is selected, it will say "XXXXXX. File"
+#: src/nautilus-file.c:8645
+#| msgid "Files"
+msgctxt "Role"
+msgid "File"
+msgstr "Файл"
+
+#. Translators: when a file is marked with a star, this text
+#. * is added at the end of the name when prononunced by a
+#. * screen reader, after the role
+#. * (e.g. "My documents. Folder. Starred")
+#.
+#: src/nautilus-file.c:8664
+#| msgid "Starred"
+msgctxt "Role"
+msgid "Starred"
+msgstr "Із зірочками"
 
 #: src/nautilus-file-chooser.c:229
 msgid "Replace When Saving?"
@@ -3558,12 +3577,10 @@ msgid "This folder is shared over the network"
 msgstr "Цю теку надано у спільне користування у мережі"
 
 #: src/nautilus-location-banner.c:249
-#| msgid ""
-#| "Turn on File Sharing to share the contents of this folder over the network"
 msgid "Turn on File Sharing to share this folder over the network"
 msgstr ""
-"Увімкніть спільне користування файлами, щоб відкрити доступ до цієї теки з"
-" мережі"
+"Увімкніть спільне користування файлами, щоб відкрити доступ до цієї теки з "
+"мережі"
 
 #: src/nautilus-location-banner.c:251
 msgid "Sharing Settings"
@@ -4165,7 +4182,6 @@ msgstr "Зірка"
 
 #: src/nautilus-properties.c:827
 #, c-format
-#| msgid "Select type"
 msgid "%d Selected Item"
 msgid_plural "%d Selected Items"
 msgstr[0] "%d позначений запис"
@@ -5250,11 +5266,11 @@ msgstr "Адреса сервера"
 msgid "Server Address Information"
 msgstr "Дані адреси сервера"
 
-#: src/resources/ui/nautilus-new-folder-dialog.blp:15
+#: src/resources/ui/nautilus-new-folder-dialog.blp:16
 msgid "_Folder Name"
 msgstr "Назва _теки"
 
-#: src/resources/ui/nautilus-new-folder-dialog.blp:38
+#: src/resources/ui/nautilus-new-folder-dialog.blp:39
 msgid "_Create"
 msgstr "С_творити"
 
@@ -5994,6 +6010,10 @@ msgstr "Показати довідку"
 msgctxt "shortcuts dialog"
 msgid "Quit"
 msgstr "Вийти"
+
+#, c-format
+#~ msgid "%s. Starred"
+#~ msgstr "%s. Із зіркою"
 
 #~ msgid "Creating Properties window."
 #~ msgstr "Створення вікна властивостей."
