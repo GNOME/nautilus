@@ -428,8 +428,12 @@ load_callback (GObject      *source_object,
 
     if (error != NULL)
     {
-        g_warning ("Unable to get contents of the bookmarks file: %s",
-                   error->message);
+        if (!g_error_matches (error, G_IO_ERROR, G_IO_ERROR_NOT_FOUND))
+        {
+            g_warning ("Unable to get contents of the bookmarks file: %s",
+                       error->message);
+        }
+
         op_processed_cb (self);
         return;
     }
