@@ -8633,21 +8633,48 @@ nautilus_file_get_property (GObject    *object,
         {
             NautilusTagManager *tag_manager = nautilus_tag_manager_get ();
             g_autofree gchar *uri = nautilus_file_get_uri (file);
+            gboolean is_starred = nautilus_tag_manager_file_is_starred (tag_manager, uri);
+            gboolean is_directory = nautilus_file_is_directory (file);
 
-            if (nautilus_tag_manager_file_is_starred (tag_manager, uri))
+            const gchar *role = is_directory ?
+                                /* Translators: This is the role for a folder icon when a screen reader is
+                                 * used. If a folder is selected, it will say "XXXXXX. Folder" */
+                                C_("Role", "Folder") :
+                                /* Translators: This is the role for a file icon when a screen reader is
+                                 * used. If a file is selected, it will say "XXXXXX. File" */
+                                C_("Role", "File");
+
+            g_autofree gchar *accessible_name = NULL;
+            if (is_starred)
             {
-                g_autofree gchar *accessible_name = g_strdup_printf (
-                    /* Translators: A "." is added in between file name and starring
+                accessible_name = g_strdup_printf (
+                    /* A "." is added in between file name and the role,
+                     * and another one between the role and the starring
                      * action description as a useful pause in the screen reader
-                     * announcement. */
-                    _("%s. Starred"),
-                    file->details->display_name);
-                g_value_set_string (value, accessible_name);
+                     * announcement.
+                     */
+                    "%s. %s. %s",
+                    file->details->display_name,
+                    role,
+                    /* Translators: when a file is marked with a star, this text
+                     * is added at the end of the name when prononunced by a
+                     * screen reader, after the role
+                     * (e.g. "My documents. Folder. Starred")
+                     */
+                    C_("Role", "Starred"));
             }
             else
             {
-                g_value_set_string (value, file->details->display_name);
+                accessible_name = g_strdup_printf (
+                    /* A "." is added in between file name and the role
+                     * as a useful pause in the screen reader
+                     * announcement.
+                     */
+                    "%s. %s",
+                    file->details->display_name,
+                    role);
             }
+            g_value_set_string (value, accessible_name);
         }
         break;
 
