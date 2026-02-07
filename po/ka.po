@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: nautilus\n"
 "Report-Msgid-Bugs-To: https://gitlab.gnome.org/GNOME/nautilus/issues\n"
-"POT-Creation-Date: 2026-02-01 01:36+0000\n"
-"PO-Revision-Date: 2026-02-01 02:42+0100\n"
+"POT-Creation-Date: 2026-02-07 00:06+0000\n"
+"PO-Revision-Date: 2026-02-07 16:24+0100\n"
 "Last-Translator: Ekaterine Papava <papava.e@gtu.ge>\n"
 "Language-Team: Georgian <(nothng)>\n"
 "Language: ka\n"
@@ -1573,13 +1573,29 @@ msgstr "ბმული (გაწყვეტილი)"
 msgid "%s Free"
 msgstr "%s თავისუფალია"
 
-#. Translators: A "." is added in between file name and starring
-#. * action description as a useful pause in the screen reader
-#. * announcement.
-#: src/nautilus-file.c:8643
-#, c-format
-msgid "%s. Starred"
-msgstr "%s. ვარსკვლავდასმული"
+#. Translators: This is the role for a folder icon when a screen reader is
+#. * used. If a folder is selected, it will say "XXXXXX. Folder"
+#: src/nautilus-file.c:8642
+msgctxt "Role"
+msgid "Folder"
+msgstr "საქაღალდე"
+
+#. Translators: This is the role for a file icon when a screen reader is
+#. * used. If a file is selected, it will say "XXXXXX. File"
+#: src/nautilus-file.c:8645
+msgctxt "Role"
+msgid "File"
+msgstr "ფაილი"
+
+#. Translators: when a file is marked with a star, this text
+#. * is added at the end of the name when prononunced by a
+#. * screen reader, after the role
+#. * (e.g. "My documents. Folder. Starred")
+#.
+#: src/nautilus-file.c:8664
+msgctxt "Role"
+msgid "Starred"
+msgstr "ვარსკვლავდასმული"
 
 #: src/nautilus-file-chooser.c:229
 msgid "Replace When Saving?"
@@ -5068,11 +5084,11 @@ msgstr "სერვერის მისამართი"
 msgid "Server Address Information"
 msgstr "სერვერის მისამართის ინფორმაცია"
 
-#: src/resources/ui/nautilus-new-folder-dialog.blp:15
+#: src/resources/ui/nautilus-new-folder-dialog.blp:16
 msgid "_Folder Name"
 msgstr "_საქაღალდის სახელი"
 
-#: src/resources/ui/nautilus-new-folder-dialog.blp:38
+#: src/resources/ui/nautilus-new-folder-dialog.blp:39
 msgid "_Create"
 msgstr "შექმნა"
 
@@ -5811,6 +5827,10 @@ msgstr "დახმარების ჩვენება"
 msgctxt "shortcuts dialog"
 msgid "Quit"
 msgstr "გასვლა"
+
+#, c-format
+#~ msgid "%s. Starred"
+#~ msgstr "%s. ვარსკვლავდასმული"
 
 #~ msgid "Creating Properties window."
 #~ msgstr "იქმნება პარამეტრების ფანჯარა."
