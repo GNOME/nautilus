@@ -11,8 +11,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: nautilus master\n"
 "Report-Msgid-Bugs-To: https://gitlab.gnome.org/GNOME/nautilus/issues\n"
-"POT-Creation-Date: 2026-02-01 01:36+0000\n"
-"PO-Revision-Date: 2026-02-01 08:29+0100\n"
+"POT-Creation-Date: 2026-02-07 00:06+0000\n"
+"PO-Revision-Date: 2026-02-07 09:57+0100\n"
 "Last-Translator: Martin Srebotnjak <miles@filmsi.net>\n"
 "Language-Team: Slovenian GNOME Translation Team <gnome-si@googlegroups.com>\n"
 "Language: sl_SI\n"
@@ -1601,13 +1601,29 @@ msgstr "Povezava (prekinjena)"
 msgid "%s Free"
 msgstr "Prosto %s"
 
-#. Translators: A "." is added in between file name and starring
-#. * action description as a useful pause in the screen reader
-#. * announcement.
-#: src/nautilus-file.c:8643
-#, c-format
-msgid "%s. Starred"
-msgstr "%s. Označeno z zvezdico"
+#. Translators: This is the role for a folder icon when a screen reader is
+#. * used. If a folder is selected, it will say "XXXXXX. Folder"
+#: src/nautilus-file.c:8642
+msgctxt "Role"
+msgid "Folder"
+msgstr "Mapa"
+
+#. Translators: This is the role for a file icon when a screen reader is
+#. * used. If a file is selected, it will say "XXXXXX. File"
+#: src/nautilus-file.c:8645
+msgctxt "Role"
+msgid "File"
+msgstr "Datoteka"
+
+#. Translators: when a file is marked with a star, this text
+#. * is added at the end of the name when prononunced by a
+#. * screen reader, after the role
+#. * (e.g. "My documents. Folder. Starred")
+#.
+#: src/nautilus-file.c:8664
+msgctxt "Role"
+msgid "Starred"
+msgstr "Označeno z zvezdico"
 
 #: src/nautilus-file-chooser.c:229
 msgid "Replace When Saving?"
@@ -5241,11 +5257,11 @@ msgstr "Naslov strežnika"
 msgid "Server Address Information"
 msgstr "Podatki o naslovu strežnika"
 
-#: src/resources/ui/nautilus-new-folder-dialog.blp:15
+#: src/resources/ui/nautilus-new-folder-dialog.blp:16
 msgid "_Folder Name"
 msgstr "_Ime mape"
 
-#: src/resources/ui/nautilus-new-folder-dialog.blp:38
+#: src/resources/ui/nautilus-new-folder-dialog.blp:39
 msgid "_Create"
 msgstr "_Ustvari"
 
