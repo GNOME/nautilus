@@ -112,11 +112,9 @@ nautilus_global_preferences_init (void)
     gnome_privacy_preferences = g_settings_new ("org.gnome.desktop.privacy");
     localsearch_preferences = g_settings_new ("org.freedesktop.Tracker3.Miner.Files");
 
-    if (check_schema_available (FILE_SHARING_SCHEMA_ID) &&
-        check_schema_available (FILE_SHARING_SERVICE_SCHEMA_ID))
+    if (check_schema_available (FILE_SHARING_SCHEMA_ID))
     {
-        gnome_user_share_preferences = g_settings_new_with_path (FILE_SHARING_SERVICE_SCHEMA_ID,
-                                                                 FILE_SHARING_SERVICE_PATH);
+        gnome_user_share_preferences = g_settings_new (FILE_SHARING_SCHEMA_ID);
     }
 
     g_signal_connect_swapped (nautilus_preferences,

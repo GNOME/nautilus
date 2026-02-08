@@ -33,7 +33,7 @@
 #include "nautilus-scheme.h"
 #include "nautilus-trash-monitor.h"
 
-#define USER_SHARE_CONNECTIONS "enabled-connections"
+#define USER_SHARE_ENABLED "enabled"
 
 typedef enum
 {
@@ -230,15 +230,15 @@ set_mode (AdwBanner                  *banner,
         case NAUTILUS_LOCATION_BANNER_SHARING:
         {
             /* mode is only set when gnome_user_share_preferences exist */
-            g_auto (GStrv) connections = g_settings_get_strv (gnome_user_share_preferences,
-                                                              USER_SHARE_CONNECTIONS);
+            gboolean enabled = g_settings_get_boolean (gnome_user_share_preferences,
+                                                       USER_SHARE_ENABLED);
 
             g_signal_connect_object (gnome_user_share_preferences,
-                                     "changed::" USER_SHARE_CONNECTIONS,
+                                     "changed::" USER_SHARE_ENABLED,
                                      G_CALLBACK (on_user_share_setting_changed),
                                      banner, 0);
 
-            if (connections != NULL && connections[0] != NULL)
+            if (enabled)
             {
                 adw_banner_set_title (
                     banner, _("This folder is shared over the network"));
