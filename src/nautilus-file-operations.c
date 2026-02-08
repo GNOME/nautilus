@@ -79,6 +79,7 @@ typedef struct
     guint inhibit_cookie;
     NautilusProgressInfo *progress;
     GCancellable *cancellable;
+    guint64 last_dialog_timestamp;
     GHashTable *skip_files;
     GHashTable *skip_readdir_error;
     NautilusFileUndoInfo *undo_info;
@@ -277,6 +278,7 @@ G_DEFINE_AUTO_CLEANUP_CLEAR_FUNC (SourceInfo, source_info_clear)
 #define SECONDS_NEEDED_FOR_RELIABLE_TRANSFER_RATE 8
 #define PROGRESS_NOTIFY_INTERVAL_USEC 100 * 1000
 #define LONG_JOB_THRESHOLD_IN_SECONDS 2
+#define INTERACTIVITY_DELAY_GRACE_PERIOD 1000 * 1000
 
 #define MAXIMUM_DISPLAYED_FILE_NAME_LENGTH 50
 #define MAXIMUM_FAT_FILE_SIZE G_MAXUINT32
@@ -815,6 +817,15 @@ run_dialog (CommonJob              *job,
 {
     g_timer_stop (job->time);
 
+    gboolean delay_interactivity = is_long_job (job);
+
+    if (delay_interactivity && job->last_dialog_timestamp != 0)
+    {
+        gint64 last_interactivity = g_get_monotonic_time () - job->last_dialog_timestamp;
+
+        delay_interactivity = last_interactivity >= INTERACTIVITY_DELAY_GRACE_PERIOD * 1000000;
+    }
+
     DialogWithResponsesData *data = &(DialogWithResponsesData)
     {
         .parent_window = job->parent_window,
@@ -823,7 +834,7 @@ run_dialog (CommonJob              *job,
         .body = body,
         .details = details,
         .responses = responses,
-        .delay_interactivity = is_long_job (job),
+        .delay_interactivity = delay_interactivity,
         .completed = FALSE
     };
     g_mutex_init (&data->mutex);
@@ -847,6 +858,8 @@ run_dialog (CommonJob              *job,
     g_mutex_unlock (&data->mutex);
     g_mutex_clear (&data->mutex);
     g_cond_clear (&data->cond);
+
+    job->last_dialog_timestamp = g_get_monotonic_time ();
 
     g_timer_continue (job->time);
 
