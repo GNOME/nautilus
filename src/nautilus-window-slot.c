@@ -860,6 +860,12 @@ nautilus_window_slot_get_selection (NautilusWindowSlot *self)
     return self->selection;
 }
 
+gboolean
+nautilus_window_slot_is_selection_auto (NautilusWindowSlot *self)
+{
+    return nautilus_files_view_is_selection_auto (self->content_view);
+}
+
 static void
 nautilus_window_slot_constructed (GObject *object)
 {

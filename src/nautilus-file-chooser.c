@@ -472,6 +472,15 @@ on_slot_selection_notify (NautilusFileChooser *self)
 {
     g_return_if_fail (self->mode == NAUTILUS_MODE_SAVE_FILE);
 
+    gboolean selection_is_auto = nautilus_window_slot_is_selection_auto (self->slot);
+
+    if (selection_is_auto)
+    {
+        /* If the selection is auto, don't override the suggested name with the
+         *  auto-selected file. */
+        return;
+    }
+
     NautilusFileList *selection = nautilus_window_slot_get_selection (self->slot);
 
     if (mode_can_accept_files (self->mode, selection))
