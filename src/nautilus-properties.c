@@ -3669,8 +3669,9 @@ properties_files_are_ready (GList    *file_list,
     /* Show main page */
     adw_navigation_view_replace_with_tags (self->nav_view, main_tag, 1);
 
-    if (int current_width = gtk_widget_get_width (GTK_WIDGET (self));
-        current_width != 0)
+    int current_width = gtk_widget_get_width (GTK_WIDGET (self));
+
+    if (current_width != 0)
     {
         /* Properties were already drawn while loading, adjust height */
         int natural_height;
