@@ -873,29 +873,26 @@ static void
 update_base_model (NautilusSearchDirectory *self)
 {
     g_autoptr (GFile) query_location = nautilus_search_directory_get_search_location (self);
-    g_autoptr (NautilusDirectory) base_model = NULL;
+    g_autoptr (NautilusDirectory) base_model = nautilus_directory_get (query_location);
 
-    base_model = nautilus_directory_get (query_location);
-
-    if (self->base_model == base_model)
+    if (self->base_model != base_model)
     {
-        return;
+        clear_base_model (self);
+        self->base_model = g_steal_pointer (&base_model);
+
+        if (self->base_model != NULL)
+        {
+            nautilus_directory_file_monitor_add (self->base_model, &self->base_model,
+                                                 TRUE, NAUTILUS_FILE_ATTRIBUTE_INFO,
+                                                 NULL, NULL);
+        }
     }
 
-    clear_base_model (self);
-    self->base_model = nautilus_directory_ref (base_model);
+    NautilusSearchType search_type = (self->base_model != NULL)
+                                     ? NAUTILUS_SEARCH_TYPE_FOLDER
+                                     : NAUTILUS_SEARCH_TYPE_GLOBAL;
 
-    if (self->base_model != NULL)
-    {
-        nautilus_search_engine_set_search_type (self->engine, NAUTILUS_SEARCH_TYPE_FOLDER);
-        nautilus_directory_file_monitor_add (base_model, &self->base_model,
-                                             TRUE, NAUTILUS_FILE_ATTRIBUTE_INFO,
-                                             NULL, NULL);
-    }
-    else
-    {
-        nautilus_search_engine_set_search_type (self->engine, NAUTILUS_SEARCH_TYPE_GLOBAL);
-    }
+    nautilus_search_engine_set_search_type (self->engine, search_type);
 }
 
 char *
