@@ -22,14 +22,14 @@ static gboolean use_24_hour;
 static gboolean use_detailed_date_format;
 
 static void
-clock_format_changed_callback (gpointer)
+update_clock_format (void)
 {
     gint clock_format = g_settings_get_enum (gnome_interface_preferences, "clock-format");
     use_24_hour = (clock_format == G_DESKTOP_CLOCK_FORMAT_24H);
 }
 
 static void
-date_format_changed_callback (gpointer)
+update_date_format (void)
 {
     NautilusDateTimeFormat format = g_settings_get_enum (nautilus_preferences,
                                                          NAUTILUS_PREFERENCES_DATE_TIME_FORMAT);
@@ -39,16 +39,16 @@ date_format_changed_callback (gpointer)
 void
 nautilus_date_setup_preferences (void)
 {
-    clock_format_changed_callback (NULL);
+    update_clock_format ();
     g_signal_connect_swapped (gnome_interface_preferences,
                               "changed::clock-format",
-                              G_CALLBACK (clock_format_changed_callback),
+                              G_CALLBACK (update_clock_format),
                               NULL);
 
-    date_format_changed_callback (NULL);
+    update_date_format ();
     g_signal_connect_swapped (nautilus_preferences,
                               "changed::" NAUTILUS_PREFERENCES_DATE_TIME_FORMAT,
-                              G_CALLBACK (date_format_changed_callback),
+                              G_CALLBACK (update_date_format),
                               NULL);
 }
 
