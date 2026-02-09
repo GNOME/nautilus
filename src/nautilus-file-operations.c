@@ -823,7 +823,7 @@ run_dialog (CommonJob              *job,
     {
         gint64 last_interactivity = g_get_monotonic_time () - job->last_dialog_timestamp;
 
-        delay_interactivity = last_interactivity >= INTERACTIVITY_DELAY_GRACE_PERIOD * 1000000;
+        delay_interactivity = last_interactivity >= INTERACTIVITY_DELAY_GRACE_PERIOD;
     }
 
     DialogWithResponsesData *data = &(DialogWithResponsesData)
