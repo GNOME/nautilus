@@ -18,8 +18,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: nautilus trunk\n"
 "Report-Msgid-Bugs-To: https://gitlab.gnome.org/GNOME/nautilus/issues\n"
-"POT-Creation-Date: 2026-02-01 01:36+0000\n"
-"PO-Revision-Date: 2026-02-01 14:43+0300\n"
+"POT-Creation-Date: 2026-02-07 00:06+0000\n"
+"PO-Revision-Date: 2026-02-07 17:10+0300\n"
 "Last-Translator: Artur So <arturios2005@mail.ru>\n"
 "Language-Team: Русский <gnome-cyr@gnome.org>\n"
 "Language: ru\n"
@@ -1610,13 +1610,29 @@ msgstr "Ссылка (испорченная)"
 msgid "%s Free"
 msgstr "%s свободно"
 
-#. Translators: A "." is added in between file name and starring
-#. * action description as a useful pause in the screen reader
-#. * announcement.
-#: src/nautilus-file.c:8643
-#, c-format
-msgid "%s. Starred"
-msgstr "%s. Избранное"
+#. Translators: This is the role for a folder icon when a screen reader is
+#. * used. If a folder is selected, it will say "XXXXXX. Folder"
+#: src/nautilus-file.c:8642
+msgctxt "Role"
+msgid "Folder"
+msgstr "Папка"
+
+#. Translators: This is the role for a file icon when a screen reader is
+#. * used. If a file is selected, it will say "XXXXXX. File"
+#: src/nautilus-file.c:8645
+msgctxt "Role"
+msgid "File"
+msgstr "Файл"
+
+#. Translators: when a file is marked with a star, this text
+#. * is added at the end of the name when prononunced by a
+#. * screen reader, after the role
+#. * (e.g. "My documents. Folder. Starred")
+#.
+#: src/nautilus-file.c:8664
+msgctxt "Role"
+msgid "Starred"
+msgstr "Избранное"
 
 #: src/nautilus-file-chooser.c:229
 msgid "Replace When Saving?"
@@ -5188,11 +5204,11 @@ msgstr "Адрес сервера"
 msgid "Server Address Information"
 msgstr "Информация об адресе сервера"
 
-#: src/resources/ui/nautilus-new-folder-dialog.blp:15
+#: src/resources/ui/nautilus-new-folder-dialog.blp:16
 msgid "_Folder Name"
 msgstr "Имя _папки"
 
-#: src/resources/ui/nautilus-new-folder-dialog.blp:38
+#: src/resources/ui/nautilus-new-folder-dialog.blp:39
 msgid "_Create"
 msgstr "_Создать"
 
@@ -5931,6 +5947,10 @@ msgstr "Показать справку"
 msgctxt "shortcuts dialog"
 msgid "Quit"
 msgstr "Закрыть"
+
+#, c-format
+#~ msgid "%s. Starred"
+#~ msgstr "%s. Избранное"
 
 #~ msgid "Sorry, but you cannot execute commands from a remote site."
 #~ msgstr "Нельзя выполнять команды с удалённого узла."
