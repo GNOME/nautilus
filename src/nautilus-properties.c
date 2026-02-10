@@ -499,7 +499,8 @@ navigate_permissions_page (NautilusPropertiesWidget *self,
 }
 
 static NautilusIconInfo *
-get_image_for_properties_widget (NautilusPropertiesWidget *self)
+get_image_for_properties_widget (NautilusPropertiesWidget *self,
+                                 gboolean                 *is_stacked)
 {
     /* Show a limited number of icons */
     const uint max_icons = 5;
@@ -543,6 +544,7 @@ get_image_for_properties_widget (NautilusPropertiesWidget *self)
 
         GdkPaintable *stacked_icons = nautilus_ui_draw_stacked_icons (icons, size);
 
+        *is_stacked = TRUE;
         return nautilus_icon_info_new_for_paintable (stacked_icons);
     }
 }
@@ -552,11 +554,12 @@ static void
 update_properties_widget_icon (NautilusPropertiesWidget *self)
 {
     gint pixel_size;
-    g_autoptr (NautilusIconInfo) icon_info = get_image_for_properties_widget (self);
+    gboolean is_stacked = FALSE;
+    g_autoptr (NautilusIconInfo) icon_info = get_image_for_properties_widget (self, &is_stacked);
     g_autoptr (GdkPaintable) paintable = nautilus_icon_info_get_paintable (icon_info);
     const char *name = nautilus_icon_info_get_used_name (icon_info);
 
-    if (name != NULL)
+    if (name != NULL || is_stacked)
     {
         gtk_widget_remove_css_class (self->icon_image, "thumbnail");
     }
