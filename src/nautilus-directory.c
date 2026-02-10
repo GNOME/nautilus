@@ -1622,6 +1622,143 @@ nautilus_directory_list_copy (GList *list)
     return g_list_copy (nautilus_directory_list_ref (list));
 }
 
+static GList *active_list_callback_handles = NULL;
+
+typedef struct
+{
+    NautilusDirectoryList *directories;
+    GHashTable *remaining;
+    gboolean all_checked;
+    NautilusDirectoryListCallback callback;
+    gpointer callback_data;
+} DirectoryListReadyData;
+
+static void
+directory_list_ready_data_free (DirectoryListReadyData *data)
+{
+    GList *node = g_list_find (active_list_callback_handles, data);
+
+    g_return_if_fail (node != NULL);
+
+    active_list_callback_handles = g_list_delete_link (active_list_callback_handles, node);
+
+    nautilus_directory_list_free (data->directories);
+    g_hash_table_unref (data->remaining);
+    g_free (data);
+}
+
+static DirectoryListReadyData *
+directory_list_ready_data_new (NautilusDirectoryList         *dir_list,
+                               NautilusDirectoryListCallback  callback,
+                               gpointer                       callback_data)
+{
+    DirectoryListReadyData *data;
+
+    data = g_new0 (DirectoryListReadyData, 1);
+    data->directories = nautilus_directory_list_copy (dir_list);
+    data->remaining = g_hash_table_new (NULL, NULL);
+    data->callback = callback;
+    data->callback_data = callback_data;
+
+    active_list_callback_handles = g_list_prepend (active_list_callback_handles, data);
+
+    return data;
+}
+
+static void
+directory_list_ready_finish (DirectoryListReadyData *data)
+{
+    if (data->callback)
+    {
+        (*data->callback)(data->directories, data->callback_data);
+    }
+
+    directory_list_ready_data_free (data);
+}
+
+static void
+directory_list_one_ready_callback (NautilusDirectory *directory,
+                                   NautilusFileList  *files,
+                                   gpointer           user_data)
+{
+    DirectoryListReadyData *data = user_data;
+
+    g_hash_table_remove (data->remaining, directory);
+
+    if (data->all_checked && g_hash_table_size (data->remaining) == 0)
+    {
+        directory_list_ready_finish (data);
+    }
+}
+
+void
+nautilus_directory_list_call_when_ready     (NautilusDirectoryList         *directory_list,
+                                             NautilusFileAttributes         attributes,
+                                             NautilusDirectoryListHandle   *handle,
+                                             gboolean                       wait_for_all_files,
+                                             NautilusDirectoryListCallback  callback,
+                                             gpointer                       callback_data)
+{
+    g_return_if_fail (directory_list != NULL);
+
+    DirectoryListReadyData *data = directory_list_ready_data_new (directory_list,
+                                                                  callback,
+                                                                  callback_data);
+
+    if (handle)
+    {
+        *handle = (NautilusDirectoryListHandle) data;
+    }
+
+    for (NautilusDirectoryList *l = directory_list; l != NULL;)
+    {
+        NautilusDirectory *directory = l->data;
+
+        /* Need to do this here, as the callback can modify the list */
+        l = l->next;
+
+        g_hash_table_add (data->remaining, directory);
+        nautilus_directory_call_when_ready (directory,
+                                            attributes,
+                                            wait_for_all_files,
+                                            directory_list_one_ready_callback, data);
+    }
+
+    /* By now all files are checked, if all are ready callback can be called */
+    data->all_checked = TRUE;
+
+    /* In case all files are already ready call callback now */
+    if (g_hash_table_size (data->remaining) == 0)
+    {
+        directory_list_ready_finish (data);
+    }
+}
+
+void
+nautilus_directory_list_cancel_call_when_ready (NautilusDirectoryListHandle handle)
+{
+    g_return_if_fail (handle != NULL);
+
+    DirectoryListReadyData *data = (DirectoryListReadyData *) handle;
+
+    if (g_list_find (active_list_callback_handles, data) == NULL)
+    {
+        g_return_if_reached ();
+    }
+
+    g_autoptr (GPtrArray) remaining = g_hash_table_steal_all_keys (data->remaining);
+
+    for (guint i = 0; i < remaining->len; i++)
+    {
+        NautilusDirectory *dir = remaining->pdata[i];
+        NautilusDirectoryClass *dir_class = NAUTILUS_DIRECTORY_CLASS (G_OBJECT_GET_CLASS (dir));
+
+        dir_class->cancel_callback (dir, directory_list_one_ready_callback, data);
+    }
+
+    directory_list_ready_data_free (data);
+}
+
 static int
 compare_by_uri (NautilusDirectory *a,
                 NautilusDirectory *b)

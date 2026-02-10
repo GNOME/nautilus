@@ -25,6 +25,7 @@
 #include <gio/gio.h>
 
 #include "nautilus-enums.h"
+#include "nautilus-types.h"
 
 /* NautilusDirectory is a class that manages the model for a directory,
    real or virtual, for Nautilus, mainly the file-manager component. The directory is
@@ -70,6 +71,9 @@ struct _NautilusDirectory
 typedef void (*NautilusDirectoryCallback) (NautilusDirectory *directory,
 					   GList             *files,
 					   gpointer           callback_data);
+typedef void (*NautilusDirectoryListCallback) (NautilusDirectoryList *directories,
+                                               gpointer               callback_data);
+typedef void * NautilusDirectoryListHandle;
 
 typedef struct
 {
@@ -232,6 +236,7 @@ gboolean           nautilus_directory_is_in_admin              (NautilusDirector
  */
 gboolean           nautilus_directory_is_not_empty             (NautilusDirectory         *directory);
 
+
 /* Convenience functions for dealing with a list of NautilusDirectory objects that each have a ref.
  * These are just convenient names for functions that work on lists of GtkObject *.
  */
@@ -240,6 +245,15 @@ void               nautilus_directory_list_unref               (GList           
 void               nautilus_directory_list_free                (GList                     *directory_list);
 GList *            nautilus_directory_list_copy                (GList                     *directory_list);
 GList *            nautilus_directory_list_sort_by_uri         (GList                     *directory_list);
+void
+nautilus_directory_list_call_when_ready (NautilusDirectoryList         *directory_list,
+                                         NautilusFileAttributes         attributes,
+                                         NautilusDirectoryListHandle   *handle,
+                                         gboolean                       wait_for_all_files,
+                                         NautilusDirectoryListCallback  callback,
+                                         gpointer                       callback_data);
+void
+nautilus_directory_list_cancel_call_when_ready (NautilusDirectoryListHandle handle);
 
 gboolean           nautilus_directory_is_editable              (NautilusDirectory         *directory);
 
