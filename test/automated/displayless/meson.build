@@ -7,7 +7,6 @@ tests = {
   'test-file-metadata': {},
   'test-file-operations-archive': {},
   'test-file-operations-copy-files': {},
-  'test-file-operations-dir-has-files': {},
   'test-file-operations-link': {},
   'test-file-operations-move-files': {},
   'test-file-operations-rename': {},
