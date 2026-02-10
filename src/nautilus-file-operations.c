@@ -47,6 +47,7 @@
 
 #include <eel/eel-stock-dialogs.h>
 #include "nautilus-dialog-utilities.h"
+#include "nautilus-directory.h"
 #include "nautilus-error-reporting.h"
 #include "nautilus-fd-holder.h"
 #include "nautilus-file-changes-queue.h"
@@ -2274,28 +2275,20 @@ get_trash_dirs_for_mount (GMount *mount)
 static gboolean
 has_trash_files (GMount *mount)
 {
-    GList *dirs, *l;
-    GFile *dir;
-    gboolean res;
+    g_autolist (GFile) trash_dirs = get_trash_dirs_for_mount (mount);
 
-    dirs = get_trash_dirs_for_mount (mount);
-
-    res = FALSE;
-
-    for (l = dirs; l != NULL; l = l->next)
+    for (GFileList *l = trash_dirs; l != NULL; l = l->next)
     {
-        dir = l->data;
+        GFile *location = l->data;
+        g_autoptr (NautilusDirectory) directory = nautilus_directory_get (location);
 
-        if (dir_has_files (dir))
+        if (nautilus_directory_is_not_empty (directory))
         {
-            res = TRUE;
-            break;
+            return TRUE;
         }
     }
 
-    g_list_free_full (dirs, g_object_unref);
-
-    return res;
+    return FALSE;
 }
 
 static AdwDialog *
