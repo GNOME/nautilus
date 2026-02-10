@@ -1,3 +1,5 @@
+#include "test-utilities.h"
+
 #include <glib.h>
 
 #include <nautilus-directory.h>
@@ -6,7 +8,64 @@
 
 
 static int data_dummy;
+static gboolean got_dirs_flag;
 
+static void
+directories_ready (NautilusDirectoryList *directories,
+                    gpointer              callback_data)
+{
+    guint expected = GPOINTER_TO_UINT (callback_data);
+
+    g_assert_cmpuint (g_list_length (directories), ==, expected);
+
+    got_dirs_flag = TRUE;
+}
+
+
+/** Test empty directory check */
+static void
+test_directory_empty_check (void)
+{
+    const GStrv hierarchy = (char *[])
+    {
+        "empty_check/",
+        "empty_check/empty_dir/",
+        "empty_check/non_empty_dir/",
+        "empty_check/non_empty_dir/file1",
+        "empty_check/nested_dir/",
+        "empty_check/nested_dir/dir/",
+        NULL
+    };
+    got_dirs_flag = FALSE;
+    guint dirs_to_check = 3;
+    g_autoptr (GFile) location = g_file_new_build_filename (test_get_tmp_dir (),
+                                                            "empty_check", NULL);
+    g_autofree char *base_uri = g_file_get_uri (location);
+
+    file_hierarchy_create (hierarchy, "");
+
+    g_autofree char *empty_uri = g_strdup_printf ("%s/empty_dir", base_uri);
+    g_autofree char *non_empty_uri = g_strdup_printf ("%s/non_empty_dir", base_uri);
+    g_autofree char *nested_uri = g_strdup_printf ("%s/nested_dir", base_uri);
+    g_autoptr (NautilusDirectory) empty = nautilus_directory_get_by_uri (empty_uri);
+    g_autoptr (NautilusDirectory) non_empty = nautilus_directory_get_by_uri (non_empty_uri);
+    g_autoptr (NautilusDirectory) nested = nautilus_directory_get_by_uri (nested_uri);
+
+    NautilusDirectoryList *directories = &(GList){ .data = empty };
+    directories = g_list_prepend (directories, non_empty);
+    directories = g_list_prepend (directories, nested);
+
+    nautilus_directory_list_call_when_ready (directories, NAUTILUS_FILE_ATTRIBUTE_INFO, NULL, TRUE,
+                                             directories_ready, GUINT_TO_POINTER (dirs_to_check));
+
+    ITER_CONTEXT_WHILE (!got_dirs_flag);
+
+    g_assert_false (nautilus_directory_is_not_empty (empty));
+    g_assert_true (nautilus_directory_is_not_empty (non_empty));
+    g_assert_true (nautilus_directory_is_not_empty (nested));
+
+    test_clear_tmp_dir ();
+}
 
 /** Check for same directory object for duplicates */
 static void
@@ -98,6 +157,8 @@ main (int   argc,
                      test_directory_hash_table_cleanup);
     g_test_add_func ("/directory-call-when-ready/1.0",
                      test_directory_call_when_ready);
+    g_test_add_func ("/directory-empty-check",
+                     test_directory_empty_check);
 
     return g_test_run ();
 }
