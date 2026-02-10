@@ -43,10 +43,8 @@ test_directory_hash_table_cleanup (void)
     nautilus_directory_file_monitor_remove (directory, &data_dummy);
     nautilus_directory_unref (directory);
 
-    for (guint i = 0; nautilus_directory_number_outstanding () != 0 && i < 100000; i++)
-    {
-        g_main_context_iteration (NULL, TRUE);
-    }
+    ITER_CONTEXT_WHILE (nautilus_directory_number_outstanding () != 0);
+
     g_assert_cmpuint (nautilus_directory_number_outstanding (), ==, 0);
 }
 
@@ -77,10 +75,8 @@ test_directory_call_when_ready (void)
                                         NAUTILUS_FILE_ATTRIBUTE_DEEP_COUNTS,
                                         TRUE,
                                         got_files_callback, &data_dummy);
-    for (guint i = 0; !got_files_flag && i < 100000; i++)
-    {
-        g_main_context_iteration (NULL, TRUE);
-    }
+
+    ITER_CONTEXT_WHILE (!got_files_flag);
 
     g_assert_true (got_files_flag);
     /* Every NautilusFile created by call_when_ready must have been
