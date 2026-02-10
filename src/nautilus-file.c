@@ -8327,17 +8327,15 @@ typedef struct
 static void
 file_list_ready_data_free (FileListReadyData *data)
 {
-    GList *l;
+    GList *node = g_list_find (ready_data_list, data);
 
-    l = g_list_find (ready_data_list, data);
-    if (l != NULL)
-    {
-        ready_data_list = g_list_delete_link (ready_data_list, l);
+    g_return_if_fail (node != NULL);
 
-        nautilus_file_list_free (data->file_list);
-        g_hash_table_unref (data->remaining_files);
-        g_free (data);
-    }
+    ready_data_list = g_list_delete_link (ready_data_list, node);
+
+    nautilus_file_list_free (data->file_list);
+    g_hash_table_unref (data->remaining_files);
+    g_free (data);
 }
 
 static FileListReadyData *
@@ -8437,7 +8435,7 @@ nautilus_file_list_cancel_call_when_ready (NautilusFileListHandle *handle)
 
     if (g_list_find (ready_data_list, data) == NULL)
     {
-        return;
+        g_return_if_reached ();
     }
 
     g_autoptr (GPtrArray) remaining_files = g_hash_table_steal_all_keys (data->remaining_files);
