@@ -300,8 +300,12 @@ search_provider_dispose (GObject *object)
     NautilusSearchProvider *self = NAUTILUS_SEARCH_PROVIDER (object);
     NautilusSearchProviderPrivate *priv = nautilus_search_provider_get_instance_private (self);
 
+    g_warn_if_fail (priv->submit_on_idle_id == 0);
+
     g_clear_object (&priv->cancellable);
+    g_clear_object (&priv->query);
     g_clear_pointer (&priv->hits, g_ptr_array_unref);
+    g_clear_handle_id (&priv->delayed_timeout_id, g_source_remove);
 
     G_OBJECT_CLASS (nautilus_search_provider_parent_class)->dispose (object);
 }
