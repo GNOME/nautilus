@@ -94,6 +94,10 @@ actual_start (NautilusSearchProvider *self)
     NautilusSearchProviderPrivate *priv = nautilus_search_provider_get_instance_private (self);
 
     priv->delayed_timeout_id = 0;
+    priv->cancellable = g_cancellable_new ();
+    priv->hits = g_ptr_array_new_with_free_func (g_object_unref);
+    /* Keep reference on self while running */
+    g_object_ref (self);
 
     g_debug ("Search provider '%s' starting", search_provider_name (self));
     klass->start_search (self);
@@ -117,11 +121,7 @@ nautilus_search_provider_start (NautilusSearchProvider *self,
         return FALSE;
     }
 
-    priv->cancellable = g_cancellable_new ();
     g_set_object (&priv->query, query);
-    priv->hits = g_ptr_array_new_with_free_func (g_object_unref);
-    /* Keep reference on self while running */
-    g_object_ref (self);
 
     guint delay_ms = klass->search_delay (self);
     if (delay_ms > 0)
@@ -144,23 +144,23 @@ nautilus_search_provider_stop (NautilusSearchProvider *self)
 {
     g_return_if_fail (NAUTILUS_IS_SEARCH_PROVIDER (self));
 
-    if (nautilus_search_provider_should_stop (self))
-    {
-        return;
-    }
-
-    NautilusSearchProviderClass *klass = NAUTILUS_SEARCH_PROVIDER_CLASS (G_OBJECT_GET_CLASS (self));
     NautilusSearchProviderPrivate *priv = nautilus_search_provider_get_instance_private (self);
 
     if (priv->delayed_timeout_id != 0)
     {
         g_debug ("Search provider '%s' cancelled before starting", search_provider_name (self));
         g_clear_handle_id (&priv->delayed_timeout_id, g_source_remove);
-
-        nautilus_search_provider_finished (self);
+        g_clear_object (&priv->query);
+        g_signal_emit (self, signals[FINISHED], 0);
+    }
+    else if (nautilus_search_provider_should_stop (self))
+    {
+        return;
     }
     else
     {
+        NautilusSearchProviderClass *klass = NAUTILUS_SEARCH_PROVIDER_CLASS (G_OBJECT_GET_CLASS (self));
+
         g_debug ("Search provider '%s' stopping", search_provider_name (self));
         g_cancellable_cancel (priv->cancellable);
 
