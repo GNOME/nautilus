@@ -7,11 +7,9 @@
 #define MAX_CONTEXT_ITERATIONS 100
 
 #define ITER_CONTEXT_WHILE(CONDITION) \
-    for (guint context_iter = 0; \
-         context_iter < MAX_CONTEXT_ITERATIONS && \
-         (CONDITION); \
-         context_iter++) \
+    for (guint context_iter = 0; CONDITION ; context_iter++) \
     { \
+        if (context_iter >= MAX_CONTEXT_ITERATIONS) { g_assert_true (FALSE); break; } \
         g_main_context_iteration (NULL, TRUE); \
     }
 
