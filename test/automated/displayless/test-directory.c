@@ -1,3 +1,5 @@
+#include "test-utilities.h"
+
 #include <glib.h>
 
 #include <nautilus-directory.h>
@@ -43,10 +45,8 @@ test_directory_hash_table_cleanup (void)
     nautilus_directory_file_monitor_remove (directory, &data_dummy);
     nautilus_directory_unref (directory);
 
-    for (guint i = 0; nautilus_directory_number_outstanding () != 0 && i < 100000; i++)
-    {
-        g_main_context_iteration (NULL, TRUE);
-    }
+    ITER_CONTEXT_WHILE (nautilus_directory_number_outstanding () > 0);
+
     g_assert_cmpuint (nautilus_directory_number_outstanding (), ==, 0);
 }
 
