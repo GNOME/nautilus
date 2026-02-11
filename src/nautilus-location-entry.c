@@ -366,7 +366,6 @@ completer_get_completions_thread (GTask        *task,
         }
         g_object_unref (info);
     }
-    g_ptr_array_add (completions, NULL);
 
     g_task_return_pointer (task,
                            g_steal_pointer (&completions),
