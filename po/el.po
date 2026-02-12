@@ -2672,10 +2672,10 @@ msgid "There was an error while compressing files."
 msgstr "Παρουσιάστηκε σφάλμα κατά τη συμπίεση αρχείων."
 
 #: src/nautilus-file-operations.c:8261
-#, fuzzy, c-format
+#, c-format
 #| msgid "Compress “%s”"
 msgid "Compressed “%s”"
-msgstr "Συμπίεση «%s»"
+msgstr "Συμπιέστηκε το «%s»"
 
 #: src/nautilus-file-operations.c:8263
 #, c-format
@@ -2683,13 +2683,13 @@ msgid "Compressed “%s” into “%s”"
 msgstr "Συμπιέστηκε το «%s» στο «%s»"
 
 #: src/nautilus-file-operations.c:8269
-#, fuzzy, c-format
+#, c-format
 #| msgid "Compress %d file"
 #| msgid_plural "Compress %d files"
 msgid "Compressed %'d file"
 msgid_plural "Compressed %'d files"
-msgstr[0] "Συμπίεση %d αρχείου"
-msgstr[1] "Συμπίεση %d αρχείων"
+msgstr[0] "Συμπιέστηκε %d αρχείο"
+msgstr[1] "Συμπιέστηκαν %d αρχεία"
 
 #: src/nautilus-file-operations.c:8273
 #, c-format
@@ -3564,7 +3564,6 @@ msgstr "Χρησιμοποιήθηκε άκυρος τρόπος μεταφορ�
 
 #
 #: src/nautilus-floating-bar.c:391
-#, fuzzy
 #| msgid "Stop"
 msgctxt "Stop an ongoing operation"
 msgid "Stop"
@@ -3623,8 +3622,7 @@ msgstr ""
 #| "Turn on File Sharing to share the contents of this folder over the network"
 msgid "Turn on File Sharing to share this folder over the network"
 msgstr ""
-"Ενεργοποίηση της κοινής χρήσης αρχείων για διαμοιρασμό του περιεχομένου "
-"αυτού του φακέλου στο δίκτυο"
+"Ενεργοποιήστε τον Διαμοιρασμό αρχείων για να μοιραστείτε αυτόν τον φάκελο μέσω του δικτύου."
 
 #: src/nautilus-location-banner.c:251
 msgid "Sharing Settings"
@@ -3661,7 +3659,8 @@ msgstr "Μετάβαση στην τοποθεσία"
 msgid ""
 "Running as root is not supported. Consider running `nautilus admin:///` "
 "instead."
-msgstr ""
+msgstr "Η εκτέλεση ως root δεν υποστηρίζεται. Εξετάστε το ενδεχόμενο να εκτελέσετε `nautilus admin:///`"
+"αντ' αυτού."
 
 #: src/nautilus-mime-actions.c:98
 msgid "Anything"
@@ -4366,22 +4365,19 @@ msgstr "Αναζήτηση για «%s»"
 
 #
 #: src/nautilus-search-popover.c:633
-#, fuzzy
 #| msgid "Other Users"
 msgid "Date Used"
-msgstr "Άλλοι χρήστες"
+msgstr "Ημερομηνία χρήση"
 
 #: src/nautilus-search-popover.c:637
-#, fuzzy
 #| msgid "Last Created"
 msgid "Date Created"
-msgstr "Τελευταία δημιουργημένο"
+msgstr "Ημερομηνία δημιουργίας"
 
 #: src/nautilus-search-popover.c:641
-#, fuzzy
 #| msgid "Last Modified"
 msgid "Date Modified"
-msgstr "Τελευταία τροποποιημένο"
+msgstr "Ημερομηνία τροποποίησης"
 
 #
 #. trash
@@ -4502,13 +4498,12 @@ msgstr "Α_φαίρεση από τους σελιδοδείκτες"
 
 #: src/nautilus-sidebar.c:2996
 msgid "File History _Settings…"
-msgstr ""
+msgstr "_Ρυθμίσεις ιστορικού αρχείου…"
 
 #: src/nautilus-sidebar.c:3006
-#, fuzzy
 #| msgid "_Trash Settings"
 msgid "Trash _Settings…"
-msgstr "Ρυθμίσεις _απορριμάτων"
+msgstr "Ρυθμίσεις _απορριμάτων…"
 
 #: src/nautilus-sidebar.c:3019
 #: src/resources/menu/nautilus-files-view-context-menus.ui:149
@@ -4588,17 +4583,16 @@ msgstr "Λίστα κοινών συντομεύσεων, σημείων προ�
 
 #
 #: src/nautilus-tag-manager.c:218
-#, fuzzy
 #| msgid "Starred"
 msgid "starred"
-msgstr "Επισημάνθηκαν"
+msgstr "επισημάνθηκαν"
 
 #
 #: src/nautilus-tag-manager.c:228
 #, fuzzy
 #| msgid "Starred"
 msgid "unstarred"
-msgstr "Επισημάνθηκαν"
+msgstr "χωρίς επισήμανση"
 
 #: src/nautilus-window.c:152
 msgid "New tab"
@@ -4828,7 +4822,7 @@ msgstr "Ο_ρατές στήλες…"
 
 #: src/resources/menu/nautilus-files-view-context-menus.ui:46
 msgid "_Captions…"
-msgstr ""
+msgstr "_Λεζάντες…"
 
 #: src/resources/menu/nautilus-files-view-context-menus.ui:53
 #: src/resources/menu/nautilus-pathbar-context-menu.ui:99
@@ -4979,7 +4973,6 @@ msgid "_Open in File Manager"
 msgstr "Άνοιγμα στον _διαχειριστή αρχείων"
 
 #: src/resources/menu/nautilus-pathbar-context-menu.ui:87
-#, fuzzy
 #| msgid "Paste as _Link"
 msgid "Paste as Lin_k"
 msgstr "Επικόλληση ως συ_νδέσμος"
@@ -5107,16 +5100,14 @@ msgid "Existing Text"
 msgstr "Υπάρχον κείμενο"
 
 #: src/resources/ui/nautilus-batch-rename-dialog.blp:409
-#, fuzzy
 #| msgid "File Conflict"
 msgid "Next Conflict"
-msgstr "Σύγκρουση αρχείων"
+msgstr "Επόμενη σύγκρουση"
 
 #: src/resources/ui/nautilus-batch-rename-dialog.blp:419
-#, fuzzy
 #| msgid "File Conflict"
 msgid "Previous Conflict"
-msgstr "Σύγκρουση αρχείων"
+msgstr "Προηγούμενη σύγκρουση"
 
 #: src/resources/ui/nautilus-column-chooser.blp:13
 msgid "Visible Columns"
@@ -5181,64 +5172,61 @@ msgstr "_Επιβεβαίωση συνθηματικού"
 
 #: src/resources/ui/nautilus-date-entry-row.blp:10
 msgid "Pick Date"
-msgstr ""
+msgstr "Επιλογή ημερομηνίας"
 
 #: src/resources/ui/nautilus-date-range-dialog.blp:5
-#, fuzzy
-#| msgid "Clear Date Filter"
 msgid "Add Date Filter"
-msgstr "Εκκαθάριση φίλτρου ημερομηνίας"
+msgstr "Προσθήκη φίλτρου ημερομηνίας"
 
 #: src/resources/ui/nautilus-date-range-dialog.blp:14
 msgid "Filter by Date"
-msgstr ""
+msgstr "Φιλτράρισμα κατά ημερομηνία"
 
 #: src/resources/ui/nautilus-date-range-dialog.blp:21
 msgid "_Date Range"
-msgstr ""
+msgstr "Εύρος _ημερομηνιών"
 
 #: src/resources/ui/nautilus-date-range-dialog.blp:27
 msgid "Single Day"
-msgstr ""
+msgstr "Μία ημέρα"
 
 #: src/resources/ui/nautilus-date-range-dialog.blp:28
 msgid "± 1 day"
-msgstr ""
+msgstr "± 1 ημέρα"
 
 #: src/resources/ui/nautilus-date-range-dialog.blp:29
 msgid "± 3 days"
-msgstr ""
+msgstr "± 3 ημέρες"
 
 #: src/resources/ui/nautilus-date-range-dialog.blp:30
 msgid "± 7 days"
-msgstr ""
+msgstr "± 7 ημέρες"
 
 #: src/resources/ui/nautilus-date-range-dialog.blp:31
 msgid "± 14 days"
-msgstr ""
+msgstr "± 14 ημέρες"
 
 #: src/resources/ui/nautilus-date-range-dialog.blp:32
 msgid "Specify Range"
-msgstr ""
+msgstr "Καθορισμός εύρους"
 
 #: src/resources/ui/nautilus-date-range-dialog.blp:42
 msgid "_Date"
-msgstr ""
+msgstr "_Ημερομηνία"
 
 #: src/resources/ui/nautilus-date-range-dialog.blp:49
 msgid "Fro_m"
-msgstr ""
+msgstr "Α_πό"
 
 #: src/resources/ui/nautilus-date-range-dialog.blp:57
 msgid "_To"
-msgstr ""
+msgstr "Έ_ως"
 
 #
 #: src/resources/ui/nautilus-date-range-dialog.blp:67
-#, fuzzy
 #| msgid "_Files"
 msgid "_Filter"
-msgstr "_Αρχεία"
+msgstr "Φίλτρο"
 
 #: src/resources/ui/nautilus-file-chooser.blp:126
 #: src/resources/ui/nautilus-toolbar.blp:72
@@ -5526,10 +5514,9 @@ msgstr "Προορισμός συν_δέσμου"
 
 #
 #: src/resources/ui/nautilus-properties-widget.blp:361
-#, fuzzy
 #| msgid "_Open Item Location"
 msgid "Open the Target's Location"
-msgstr "Άνοιγμα θέσης _αντικειμένου"
+msgstr "Άνοιγμα θέσης του στόχου"
 
 # # NOTE: Translation of "Create" as "New" to
 # #       keep msg length relatively short...
@@ -5611,133 +5598,99 @@ msgid "New Filename"
 msgstr "Νέο όνομα αρχείου"
 
 #: src/resources/ui/nautilus-search-popover.blp:23
-#, fuzzy
 #| msgid "Search File Types"
 msgid "File Types"
-msgstr "Αναζήτηση τύπων αρχείων"
+msgstr "Τύποι αρχείων"
 
 #: src/resources/ui/nautilus-search-popover.blp:45
-#, fuzzy
-#| msgid "Audio"
 msgid "_Audio"
-msgstr "Ήχος"
+msgstr "_Ήχος"
 
 #: src/resources/ui/nautilus-search-popover.blp:57
-#, fuzzy
-#| msgid "Documents"
 msgid "_Documents"
-msgstr "Έγγραφα"
+msgstr "Έ_γγραφα"
 
 #: src/resources/ui/nautilus-search-popover.blp:69
-#, fuzzy
-#| msgid "Folders"
 msgid "_Folders"
-msgstr "Φάκελοι"
+msgstr "_Φάκελοι"
 
 #
 #: src/resources/ui/nautilus-search-popover.blp:81
-#, fuzzy
-#| msgid "Image"
 msgid "_Images"
-msgstr "Εικόνα"
+msgstr "_Εικόνες"
 
 #: src/resources/ui/nautilus-search-popover.blp:93
 msgid "_PDF"
-msgstr ""
+msgstr "_PDF"
 
 #: src/resources/ui/nautilus-search-popover.blp:105
-#, fuzzy
-#| msgid "Spreadsheet"
 msgid "_Spreadsheets"
-msgstr "Λογιστικό φύλλο"
+msgstr "_Λογιστικά φύλλα"
 
 #: src/resources/ui/nautilus-search-popover.blp:117
 msgid "Te_xt"
-msgstr ""
+msgstr "_Κείμενο"
 
 #: src/resources/ui/nautilus-search-popover.blp:129
-#, fuzzy
-#| msgid "Video"
 msgid "_Videos"
-msgstr "Βίντεο"
+msgstr "_Βίντεο"
 
 #: src/resources/ui/nautilus-search-popover.blp:144
-#, fuzzy
-#| msgid "Search File Types"
 msgid "Specific Type"
-msgstr "Αναζήτηση τύπων αρχείων"
+msgstr "Συγκεκριμένος τύπος"
 
 #. Translators: This refers to a date time
 #: src/resources/ui/nautilus-search-popover.blp:182
 msgid "Used"
-msgstr ""
+msgstr "Χρησιμοποιήθηκε"
 
 #: src/resources/ui/nautilus-search-popover.blp:198
 msgid "_Today"
-msgstr ""
+msgstr "_Σήμερα"
 
 #: src/resources/ui/nautilus-search-popover.blp:204
-#, fuzzy
-#| msgid "Yesterday"
 msgid "_Yesterday"
-msgstr "Χθες"
+msgstr "_Χθες"
 
 #: src/resources/ui/nautilus-search-popover.blp:210
-#, fuzzy
-#| msgid "Last week"
-#| msgid_plural "%d weeks ago"
 msgid "Past _Week"
-msgstr "Προηγούμενη βδομάδα"
+msgstr "Περασμένη _εβδομάδα"
 
 #: src/resources/ui/nautilus-search-popover.blp:216
-#, fuzzy
-#| msgid "Last month"
-#| msgid_plural "%d months ago"
 msgid "Past _Month"
-msgstr "Προηγούμενος μήνας"
+msgstr "Περασμένος _μήνας"
 
 #: src/resources/ui/nautilus-search-popover.blp:222
-#, fuzzy
-#| msgid "Last year"
-#| msgid_plural "%d years ago"
 msgid "Past Y_ear"
-msgstr "Προηγούμενος χρόνος"
+msgstr "Περασμένο έ_τος"
 
 #: src/resources/ui/nautilus-search-popover.blp:234
 msgid "Custom Date Range"
-msgstr ""
+msgstr "Προσαρμοσμένο εύρος ημερομηνιών"
 
 #: src/resources/ui/nautilus-search-popover.blp:251
-#, fuzzy
-#| msgid "Full Text Match"
 msgid "Text Matching"
-msgstr "Ταίριασμα πλήρους κειμένου"
+msgstr "Αντιστοίχιση κειμένου"
 
 #: src/resources/ui/nautilus-search-popover.blp:266
-#, fuzzy
-#| msgid "New Filename"
 msgid "_Content & Filename"
-msgstr "Νέο όνομα αρχείου"
+msgstr "_Περιεχόμενο & όνομα αρχείου"
 
 #: src/resources/ui/nautilus-search-popover.blp:267
 msgid "Search Inside Files"
-msgstr "Να γίνει αναζήτηση μέσα σε αρχεία"
+msgstr "Αναζήτηση μέσα σε αρχεία"
 
 #: src/resources/ui/nautilus-search-popover.blp:274
-#, fuzzy
-#| msgid "New Filename"
 msgid "_Only Filename"
-msgstr "Νέο όνομα αρχείου"
+msgstr "_Μόνο όνομα αρχείου"
 
 #: src/resources/ui/nautilus-search-popover.blp:275
 msgid "Don't Search Inside Files"
-msgstr "Να μην γίνει αναζήτηση μέσα σε αρχεία"
+msgstr "Να μην γίνεται αναζήτηση μέσα σε αρχεία"
 
 #: src/resources/ui/nautilus-search-popover.blp:284
-#, fuzzy
-#| msgid "Contents"
 msgid "Only Co_ntents"
-msgstr "Περιεχόμενα"
+msgstr "Μόνο _περιεχόμενα"
 
 #: src/resources/ui/nautilus-search-types-dialog.blp:5
 msgid "Add File Type Filter"
@@ -5788,7 +5741,7 @@ msgstr "Εμφάνιση _κρυφών αρχείων"
 
 #: src/resources/ui/nautilus-view-controls.blp:44
 msgid "Captions…"
-msgstr ""
+msgstr "Λεζάντες…"
 
 #. Translators: This is a noun, meaning the options pertaining to the view.
 #: src/resources/ui/nautilus-view-controls.blp:57
@@ -5864,471 +5817,313 @@ msgstr "Κυρίως μενού"
 
 #
 #: src/resources/ui/shortcuts-dialog.blp:6
-#, fuzzy
-#| msgid "All Locations"
 msgctxt "shortcuts dialog"
 msgid "Actions"
-msgstr "Όλες οι τοποθεσίες"
+msgstr "Ενέργειες"
 
 #
 #: src/resources/ui/shortcuts-dialog.blp:9
-#, fuzzy
-#| msgid "Open"
 msgctxt "shortcuts dialog"
 msgid "Open"
 msgstr "Άνοιγμα"
 
 #: src/resources/ui/shortcuts-dialog.blp:14
-#, fuzzy
-#| msgctxt "shortcut window"
-#| msgid "Open in New Tab"
 msgctxt "shortcuts dialog"
 msgid "Open in New Tab"
 msgstr "Άνοιγμα σε νέα καρτέλα"
 
 #: src/resources/ui/shortcuts-dialog.blp:19
-#, fuzzy
-#| msgctxt "shortcut window"
-#| msgid "Open in New Window"
 msgctxt "shortcuts dialog"
 msgid "Open in New Window"
 msgstr "Άνοιγμα σε νέο παράθυρο"
 
 #: src/resources/ui/shortcuts-dialog.blp:24
-#, fuzzy
-#| msgctxt "shortcut window"
-#| msgid "Open Item Location (Search and Recent Only)"
 msgctxt "shortcuts dialog"
 msgid "Open Item Location (Search and Recent Only)"
 msgstr "Άνοιγμα θέσης αντικειμένου (αναζήτηση και πρόσφατα μόνο)"
 
 #: src/resources/ui/shortcuts-dialog.blp:29
-#, fuzzy
-#| msgctxt "shortcut window"
-#| msgid "Open With Default App"
 msgctxt "shortcuts dialog"
 msgid "Open With Default App"
 msgstr "Άνοιγμα με την προεπιλεγμένη εφαρμογή"
 
 #: src/resources/ui/shortcuts-dialog.blp:34
-#, fuzzy
-#| msgid "Open in Consol_e"
 msgctxt "shortcuts dialog"
 msgid "Open Current Directory in Console"
-msgstr "Άνοιγμα σε _Κονσόλα"
+msgstr "Άνοιγμα τρέχοντος καταλόγου στην κονσόλα"
 
 # # NOTE: Translation of "Create" as "New" to
-# #       keep msg length relatively short...
+# #       keep msg length relatively short...
 #: src/resources/ui/shortcuts-dialog.blp:39
-#, fuzzy
-#| msgctxt "shortcut window"
-#| msgid "Open Current Folder Menu"
 msgctxt "shortcuts dialog"
 msgid "Open Current Folder Menu"
 msgstr "Άνοιγμα μενού τρέχοντος φακέλου"
 
 #: src/resources/ui/shortcuts-dialog.blp:44
-#, fuzzy
-#| msgid "Optional Context Menu Actions"
 msgctxt "shortcuts dialog"
 msgid "Open Context Menu"
-msgstr "Προαιρετικές ενέργειες μενού"
+msgstr "Άνοιγμα μενού περιβάλλοντος"
 
 #: src/resources/ui/shortcuts-dialog.blp:51
-#, fuzzy
-#| msgctxt "shortcut window"
-#| msgid "Create Folder"
 msgctxt "shortcuts dialog"
 msgid "Create Folder"
 msgstr "Δημιουργία φακέλου"
 
 #: src/resources/ui/shortcuts-dialog.blp:58
-#, fuzzy
-#| msgid "Cut"
 msgctxt "shortcuts dialog"
 msgid "Cut"
 msgstr "Αποκοπή"
 
 # # NOTE: Translation of "Create" as "New" to
-# #       keep msg length relatively short...
+# #       keep msg length relatively short...
 #: src/resources/ui/shortcuts-dialog.blp:63
-#, fuzzy
-#| msgctxt "Noun"
-#| msgid "Copy"
 msgctxt "shortcuts dialog"
 msgid "Copy"
 msgstr "Αντιγραφή"
 
 #: src/resources/ui/shortcuts-dialog.blp:68
-#, fuzzy
-#| msgid "Paste"
 msgctxt "shortcuts dialog"
 msgid "Paste"
 msgstr "Επικόλληση"
 
 #
 #: src/resources/ui/shortcuts-dialog.blp:75
-#, fuzzy
-#| msgctxt "shortcut window"
-#| msgid "Rename"
 msgctxt "shortcuts dialog"
 msgid "Rename"
 msgstr "Μετονομασία"
 
 #: src/resources/ui/shortcuts-dialog.blp:82
-#, fuzzy
-#| msgid "Undo"
 msgctxt "shortcuts dialog"
 msgid "Undo"
 msgstr "Αναίρεση"
 
 #: src/resources/ui/shortcuts-dialog.blp:87
-#, fuzzy
-#| msgid "Redo"
 msgctxt "shortcuts dialog"
 msgid "Redo"
 msgstr "Επανάληψη"
 
 #: src/resources/ui/shortcuts-dialog.blp:94
-#, fuzzy
-#| msgctxt "shortcut window"
-#| msgid "Move to Trash"
 msgctxt "shortcuts dialog"
 msgid "Move to Trash"
 msgstr "Μετακίνηση στα απορρίμματα"
 
 #: src/resources/ui/shortcuts-dialog.blp:99
-#, fuzzy
-#| msgctxt "shortcut window"
-#| msgid "Delete Permanently"
 msgctxt "shortcuts dialog"
 msgid "Delete Permanently"
 msgstr "Οριστική διαγραφή"
 
 #: src/resources/ui/shortcuts-dialog.blp:106
-#, fuzzy
-#| msgctxt "shortcut window"
-#| msgid "Create Link to Copied Item"
 msgctxt "shortcuts dialog"
 msgid "Create Link to Copied Item"
-msgstr "Δημιουργία συνδέσμων προς το αντιγραμμένο αντικείμενο"
+msgstr "Δημιουργία συνδέσμου προς το αντιγραμμένο αντικείμενο"
 
 #: src/resources/ui/shortcuts-dialog.blp:111
-#, fuzzy
-#| msgctxt "shortcut window"
-#| msgid "Create Link to Selected Item"
 msgctxt "shortcuts dialog"
 msgid "Create Link to Selected Item"
-msgstr "Δημιουργία συνδέσμων προς επιλεγμένο αντικείμενο"
+msgstr "Δημιουργία συνδέσμου προς το επιλεγμένο αντικείμενο"
 
 #: src/resources/ui/shortcuts-dialog.blp:118
-#, fuzzy
-#| msgctxt "shortcut window"
-#| msgid "Show Item Properties"
 msgctxt "shortcuts dialog"
 msgid "Show Item Properties"
 msgstr "Προβολή ιδιοτήτων αντικειμένου"
 
 #: src/resources/ui/shortcuts-dialog.blp:125
-#, fuzzy
-#| msgctxt "shortcut window"
-#| msgid "Bookmark Current Location"
 msgctxt "shortcuts dialog"
 msgid "Bookmark Current Location"
 msgstr "Προσθήκη σελιδοδείκτη για την τρέχουσα τοποθεσία"
 
 #: src/resources/ui/shortcuts-dialog.blp:131
-#, fuzzy
-#| msgctxt "shortcut window"
-#| msgid "View"
 msgctxt "shortcuts dialog"
 msgid "View"
 msgstr "Προβολή"
 
 #: src/resources/ui/shortcuts-dialog.blp:134
-#, fuzzy
-#| msgid "Zoom In"
 msgctxt "shortcuts dialog"
 msgid "Zoom In"
 msgstr "Μεγέθυνση"
 
 #: src/resources/ui/shortcuts-dialog.blp:139
-#, fuzzy
-#| msgid "Zoom Out"
 msgctxt "shortcuts dialog"
 msgid "Zoom Out"
 msgstr "Σμίκρυνση"
 
 #: src/resources/ui/shortcuts-dialog.blp:144
-#, fuzzy
-#| msgctxt "shortcut window"
-#| msgid "Reset Zoom"
 msgctxt "shortcuts dialog"
 msgid "Reset Zoom"
 msgstr "Επαναφορά εστίασης"
 
 #: src/resources/ui/shortcuts-dialog.blp:151
-#, fuzzy
-#| msgid "List View"
 msgctxt "shortcuts dialog"
 msgid "List View"
 msgstr "Προβολή λίστας"
 
 #: src/resources/ui/shortcuts-dialog.blp:156
-#, fuzzy
-#| msgid "Grid View"
 msgctxt "shortcuts dialog"
 msgid "Grid View"
 msgstr "Προβολή πλέγματος"
 
 #: src/resources/ui/shortcuts-dialog.blp:161
-#, fuzzy
-#| msgctxt "shortcut window"
-#| msgid "Refresh View"
 msgctxt "shortcuts dialog"
 msgid "Refresh View"
-msgstr "Ανανέωση της προβολής"
+msgstr "Ανανέωση προβολής"
 
 # # NOTE: Translation of "Create" as "New" to
-# #       keep msg length relatively short...
+# #       keep msg length relatively short...
 #: src/resources/ui/shortcuts-dialog.blp:168
 #: src/resources/ui/shortcuts-dialog.blp:174
-#, fuzzy
-#| msgctxt "shortcut window"
-#| msgid "Expand Folder"
 msgctxt "shortcuts dialog"
 msgid "Expand Folder"
 msgstr "Ανάπτυξη φακέλου"
 
 #: src/resources/ui/shortcuts-dialog.blp:180
 #: src/resources/ui/shortcuts-dialog.blp:186
-#, fuzzy
-#| msgctxt "shortcut window"
-#| msgid "Collapse Folder"
 msgctxt "shortcuts dialog"
 msgid "Collapse Folder"
 msgstr "Σύμπτυξη φακέλου"
 
 #: src/resources/ui/shortcuts-dialog.blp:194
-#, fuzzy
-#| msgctxt "shortcut window"
-#| msgid "Show/Hide Hidden Files"
 msgctxt "shortcuts dialog"
 msgid "Show/Hide Hidden Files"
 msgstr "Εμφάνιση/απόκρυψη κρυφών αρχείων"
 
 #: src/resources/ui/shortcuts-dialog.blp:199
-#, fuzzy
-#| msgctxt "shortcut window"
-#| msgid "Show/Hide Sidebar"
 msgctxt "shortcuts dialog"
 msgid "Show/Hide Sidebar"
 msgstr "Εμφάνιση/απόκρυψη πλευρικής στήλης"
 
 #: src/resources/ui/shortcuts-dialog.blp:205
-#, fuzzy
-#| msgid "Select"
 msgctxt "shortcuts dialog"
 msgid "Select"
 msgstr "Επιλογή"
 
 #: src/resources/ui/shortcuts-dialog.blp:208
-#, fuzzy
-#| msgctxt "shortcut window"
-#| msgid "Select All"
 msgctxt "shortcuts dialog"
 msgid "Select All"
 msgstr "Επιλογή όλων"
 
 #: src/resources/ui/shortcuts-dialog.blp:213
-#, fuzzy
-#| msgctxt "shortcut window"
-#| msgid "Invert Selection"
 msgctxt "shortcuts dialog"
 msgid "Invert Selection"
 msgstr "Αντιστροφή επιλογής"
 
 #: src/resources/ui/shortcuts-dialog.blp:218
-#, fuzzy
-#| msgid "Select Items Matching"
 msgctxt "shortcuts dialog"
 msgid "Select Items Matching"
 msgstr "Επιλογή αντικειμένων που ταιριάζουν"
 
 #: src/resources/ui/shortcuts-dialog.blp:224
-#, fuzzy
-#| msgctxt "shortcut window"
-#| msgid "Navigation"
 msgctxt "shortcuts dialog"
 msgid "Navigation"
 msgstr "Περιήγηση"
 
 #: src/resources/ui/shortcuts-dialog.blp:227
 #: src/resources/ui/shortcuts-dialog.blp:233
-#, fuzzy
-#| msgctxt "shortcut window"
-#| msgid "Go Back"
 msgctxt "shortcuts dialog"
 msgid "Go Back"
 msgstr "Μετάβαση πίσω"
 
 #: src/resources/ui/shortcuts-dialog.blp:239
 #: src/resources/ui/shortcuts-dialog.blp:245
-#, fuzzy
-#| msgctxt "shortcut window"
-#| msgid "Go Forward"
 msgctxt "shortcuts dialog"
 msgid "Go Forward"
 msgstr "Μετάβαση εμπρός"
 
 #: src/resources/ui/shortcuts-dialog.blp:251
-#, fuzzy
-#| msgctxt "shortcut window"
-#| msgid "Go Up"
 msgctxt "shortcuts dialog"
 msgid "Go Up"
-msgstr "Μετακίνηση προς τα πάνω"
+msgstr "Μετάβαση πάνω"
 
 #: src/resources/ui/shortcuts-dialog.blp:256
-#, fuzzy
-#| msgctxt "shortcut window"
-#| msgid "Go Down"
 msgctxt "shortcuts dialog"
 msgid "Go Down"
-msgstr "Μετακίνηση προς τα κάτω"
+msgstr "Μετάβαση κάτω"
 
 #: src/resources/ui/shortcuts-dialog.blp:261
-#, fuzzy
-#| msgctxt "shortcut window"
-#| msgid "Go to Home Folder"
 msgctxt "shortcuts dialog"
 msgid "Go to Home Folder"
 msgstr "Μετάβαση στον προσωπικό φάκελο"
 
 #
 #: src/resources/ui/shortcuts-dialog.blp:268
-#, fuzzy
-#| msgid "Enter Location"
 msgctxt "shortcuts dialog"
 msgid "Enter Location"
 msgstr "Εισαγωγή τοποθεσίας"
 
 #
 #: src/resources/ui/shortcuts-dialog.blp:273
-#, fuzzy
-#| msgctxt "shortcut window"
-#| msgid "Location Bar With Root Location"
 msgctxt "shortcuts dialog"
 msgid "Location Bar With Root Location"
 msgstr "Γραμμή τοποθεσίας με τον ριζικό κατάλογο"
 
 #
 #: src/resources/ui/shortcuts-dialog.blp:278
-#, fuzzy
-#| msgctxt "shortcut window"
-#| msgid "Location Bar With Home Location"
 msgctxt "shortcuts dialog"
 msgid "Location Bar With Home Location"
 msgstr "Γραμμή τοποθεσίας με τον προσωπικό φάκελο"
 
 #: src/resources/ui/shortcuts-dialog.blp:284
-#, fuzzy
-#| msgid "Search"
 msgctxt "shortcuts dialog"
 msgid "Search"
 msgstr "Αναζήτηση"
 
 #: src/resources/ui/shortcuts-dialog.blp:287
-#, fuzzy
-#| msgid "Search Everywhere"
 msgctxt "shortcuts dialog"
 msgid "Search Everywhere"
 msgstr "Αναζήτηση παντού"
 
 # # NOTE: Translation of "Create" as "New" to
-# #       keep msg length relatively short...
+# #       keep msg length relatively short...
 #: src/resources/ui/shortcuts-dialog.blp:292
-#, fuzzy
-#| msgid "Search Current Folder"
 msgctxt "shortcuts dialog"
 msgid "Search Current Folder"
 msgstr "Αναζήτηση στον τρέχοντα φάκελο"
 
 #: src/resources/ui/shortcuts-dialog.blp:298
-#, fuzzy
-#| msgctxt "shortcut window"
-#| msgid "Close Window or Tab"
 msgctxt "shortcuts dialog"
 msgid "Windows & Tabs"
-msgstr "Κλείσιμο παραθύρου ή καρτέλας"
+msgstr "Παράθυρα & καρτέλες"
 
 #: src/resources/ui/shortcuts-dialog.blp:301
-#, fuzzy
-#| msgid "New Window"
 msgctxt "shortcuts dialog"
 msgid "New Window"
 msgstr "Νέο παράθυρο"
 
 #: src/resources/ui/shortcuts-dialog.blp:306
-#, fuzzy
-#| msgctxt "shortcut window"
-#| msgid "New Tab"
 msgctxt "shortcuts dialog"
 msgid "New Tab"
 msgstr "Νέα καρτέλα"
 
 #: src/resources/ui/shortcuts-dialog.blp:311
-#, fuzzy
-#| msgctxt "shortcut window"
-#| msgid "Close Window or Tab"
 msgctxt "shortcuts dialog"
 msgid "Close Window or Tab"
 msgstr "Κλείσιμο παραθύρου ή καρτέλας"
 
 #: src/resources/ui/shortcuts-dialog.blp:316
-#, fuzzy
-#| msgctxt "shortcut window"
-#| msgid "Restore Closed Tab"
 msgctxt "shortcuts dialog"
 msgid "Restore Closed Tab"
-msgstr "Επαναφορά των κλειστών καρτελών"
+msgstr "Επαναφορά κλειστής καρτέλας"
 
 #: src/resources/ui/shortcuts-dialog.blp:323
-#, fuzzy
-#| msgctxt "shortcut window"
-#| msgid "Go to Previous Tab"
 msgctxt "shortcuts dialog"
 msgid "Go to Previous Tab"
 msgstr "Μετάβαση στην προηγούμενη καρτέλα"
 
 #: src/resources/ui/shortcuts-dialog.blp:328
-#, fuzzy
-#| msgctxt "shortcut window"
-#| msgid "Go to Next Tab"
 msgctxt "shortcuts dialog"
 msgid "Go to Next Tab"
 msgstr "Μετάβαση στην επόμενη καρτέλα"
 
 #: src/resources/ui/shortcuts-dialog.blp:333
-#, fuzzy
-#| msgctxt "shortcut window"
-#| msgid "Open Tab"
 msgctxt "shortcuts dialog"
 msgid "Open Tab"
 msgstr "Άνοιγμα καρτέλας"
 
 #: src/resources/ui/shortcuts-dialog.blp:340
-#, fuzzy
-#| msgctxt "shortcut window"
-#| msgid "Move Tab Left"
 msgctxt "shortcuts dialog"
 msgid "Move Tab Left"
 msgstr "Μετακίνηση καρτέλας αριστερά"
 
 #: src/resources/ui/shortcuts-dialog.blp:345
-#, fuzzy
-#| msgctxt "shortcut window"
-#| msgid "Move Tab Right"
 msgctxt "shortcuts dialog"
 msgid "Move Tab Right"
 msgstr "Μετακίνηση καρτέλας δεξιά"
@@ -6336,37 +6131,25 @@ msgstr "Μετακίνηση καρτέλας δεξιά"
 #: src/resources/ui/shortcuts-dialog.blp:351
 msgctxt "shortcuts dialog"
 msgid "App"
-msgstr ""
+msgstr "Εφαρμογή"
 
 #
 #: src/resources/ui/shortcuts-dialog.blp:354
-#, fuzzy
-#| msgctxt "shortcut window"
-#| msgid "Show Preferences"
 msgctxt "shortcuts dialog"
 msgid "Show Preferences"
 msgstr "Εμφάνιση προτιμήσεων"
 
 #: src/resources/ui/shortcuts-dialog.blp:359
-#, fuzzy
-#| msgctxt "shortcut window"
-#| msgid "Shortcuts"
 msgctxt "shortcuts dialog"
 msgid "Shortcuts"
 msgstr "Συντομεύσεις"
 
 #: src/resources/ui/shortcuts-dialog.blp:364
-#, fuzzy
-#| msgctxt "shortcut window"
-#| msgid "Show Help"
 msgctxt "shortcuts dialog"
 msgid "Show Help"
 msgstr "Εμφάνιση βοήθειας"
 
 #: src/resources/ui/shortcuts-dialog.blp:369
-#, fuzzy
-#| msgctxt "shortcut window"
-#| msgid "Quit"
 msgctxt "shortcuts dialog"
 msgid "Quit"
 msgstr "Έξοδος"
