@@ -389,8 +389,6 @@ nautilus_compress_dialog_new (GtkWindow         *parent_window,
 
     adw_dialog_present (ADW_DIALOG (self), GTK_WIDGET (parent_window));
 
-    gtk_widget_grab_focus (self->name_entry);
-
     return self;
 }
 
