@@ -475,19 +475,15 @@ msgid "Whether the navigation window should be maximized by default."
 msgstr "Αν το παράθυρο περιήγησης θα είναι μεγιστοποιημένο ως προεπιλογή."
 
 #: data/org.gnome.nautilus.gschema.xml:255
-#, fuzzy
-#| msgid "Initial size of the window"
 msgid "Initial size of the file chooser window"
-msgstr "Αρχικό μέγεθος του παραθύρου"
+msgstr "Αρχικό μέγεθος του παραθύρου επιλογής αρχείων"
 
 #: data/org.gnome.nautilus.gschema.xml:256
-#, fuzzy
-#| msgid "A tuple containing the initial width and height of the app window."
 msgid ""
 "A tuple containing the initial width and height of the file chooser window."
 msgstr ""
-"Μια πλειάδα η οποία περιέχει το αρχικό πλάτος και ύψος του παραθύρου της "
-"εφαρμογής."
+"Μια πλειάδα που περιέχει το αρχικό πλάτος και ύψος του παραθύρου επιλογής "
+"αρχείων."
 
 #: data/org.gnome.Nautilus.metainfo.xml.in.in:8
 msgid ""
@@ -1271,10 +1267,10 @@ msgstr ""
 "Μικρότερα συμπιεσμένα αρχεία αλλά πρέπει να εγκατασταθούν σε Windows και Mac."
 
 #: src/nautilus-date-utilities.c:474
-#, fuzzy, c-format
+#, c-format
 #| msgid "Since…"
 msgid "Since %s"
-msgstr "Από…"
+msgstr "Από το %s"
 
 #: src/nautilus-dbus-launcher.c:50
 #, c-format
@@ -1321,7 +1317,6 @@ msgid "_Skip"
 msgstr "_Παράλειψη"
 
 #: src/nautilus-dialog-utilities.c:132
-#, fuzzy
 #| msgid "_Skip files"
 msgid "_Skip Files"
 msgstr "_Παράλειψη αρχείων"
@@ -2579,10 +2574,9 @@ msgid "Not enough free space to extract “%s”"
 msgstr "Δεν υπάρχει επαρκής ελεύθερος χώρος για αποσυμπίεση του «%s"
 
 #: src/nautilus-file-operations.c:7821
-#, fuzzy, c-format
-#| msgid "Extract “%s”"
+#, c-format
 msgid "Extracted “%s”"
-msgstr "Αποσυμπίεση «%s»"
+msgstr "Αποσυμπιέστηκε το «%s»"
 
 #: src/nautilus-file-operations.c:7823
 #, c-format
@@ -2590,13 +2584,11 @@ msgid "Extracted “%s” to “%s”"
 msgstr "Αποσυμπιέστηκε το «%s» στο «%s»"
 
 #: src/nautilus-file-operations.c:7829
-#, fuzzy, c-format
-#| msgid "Extract %d file"
-#| msgid_plural "Extract %d files"
+#, c-format
 msgid "Extracted %'d file"
 msgid_plural "Extracted %'d files"
-msgstr[0] "Αποσυμπίεση %d αρχείου"
-msgstr[1] "Αποσυμπίεση %d αρχείων"
+msgstr[0] "Αποσυμπιέστηκε %'d αρχείο"
+msgstr[1] "Αποσυμπιέστηκαν %'d αρχεία"
 
 #: src/nautilus-file-operations.c:7833
 #, c-format
@@ -2614,10 +2606,9 @@ msgid "Extracting Files"
 msgstr "Γίνεται αποσυμπίεση αρχείων"
 
 #: src/nautilus-file-operations.c:8056
-#, fuzzy, c-format
-#| msgid "Compress “%s”"
+#, c-format
 msgid "Compressing “%s”"
-msgstr "Συμπίεση «%s»"
+msgstr "Συμπίεση του «%s»"
 
 #: src/nautilus-file-operations.c:8058
 #, c-format
@@ -2625,13 +2616,11 @@ msgid "Compressing “%s” into “%s”"
 msgstr "Συμπίεση του «%s» στο «%s»"
 
 #: src/nautilus-file-operations.c:8064
-#, fuzzy, c-format
-#| msgid "Compress %d file"
-#| msgid_plural "Compress %d files"
+#, c-format
 msgid "Compressing %'d file"
 msgid_plural "Compressing %'d files"
-msgstr[0] "Συμπίεση %d αρχείου"
-msgstr[1] "Συμπίεση %d αρχείων"
+msgstr[0] "Συμπίεση %'d αρχείου"
+msgstr[1] "Συμπίεση %'d αρχείων"
 
 #: src/nautilus-file-operations.c:8068
 #, c-format
@@ -2641,10 +2630,9 @@ msgstr[0] "Συμπίεση %'d αρχείου στο «%s»"
 msgstr[1] "Συμπίεση %'d αρχείων στο «%s»"
 
 #: src/nautilus-file-operations.c:8217
-#, fuzzy, c-format
-#| msgid "Error compressing “%s” into “%s”"
+#, c-format
 msgid "Error compressing “%s”"
-msgstr "Σφλάμα κατά τη συμπίεση του «%s» στο «%s»"
+msgstr "Σφάλμα κατά τη συμπίεση του «%s»"
 
 #: src/nautilus-file-operations.c:8219
 #, c-format
@@ -2652,20 +2640,18 @@ msgid "Error compressing “%s” into “%s”"
 msgstr "Σφλάμα κατά τη συμπίεση του «%s» στο «%s»"
 
 #: src/nautilus-file-operations.c:8225
-#, fuzzy, c-format
-#| msgid "Error compressing %'d file into “%s”"
-#| msgid_plural "Error compressing %'d files into “%s”"
+#, c-format
 msgid "Error compressing %'d file"
 msgid_plural "Error compressing %'d files"
-msgstr[0] "Σφλάμα κατά τη συμπίεση %'d αρχείου στο «%s»"
-msgstr[1] "Σφλάμα κατά τη συμπίεση %'d αρχείων στο «%s»"
+msgstr[0] "Σφάλμα κατά τη συμπίεση %'d αρχείου"
+msgstr[1] "Σφάλμα κατά τη συμπίεση %'d αρχείων"
 
 #: src/nautilus-file-operations.c:8229
 #, c-format
 msgid "Error compressing %'d file into “%s”"
 msgid_plural "Error compressing %'d files into “%s”"
-msgstr[0] "Σφλάμα κατά τη συμπίεση %'d αρχείου στο «%s»"
-msgstr[1] "Σφλάμα κατά τη συμπίεση %'d αρχείων στο «%s»"
+msgstr[0] "Σφάλμα κατά τη συμπίεση %'d αρχείου στο «%s»"
+msgstr[1] "Σφάλμα κατά τη συμπίεση %'d αρχείων στο «%s»"
 
 #: src/nautilus-file-operations.c:8238
 msgid "There was an error while compressing files."
@@ -3614,15 +3600,13 @@ msgstr ""
 
 #: src/nautilus-location-banner.c:244
 msgid "This folder is shared over the network"
-msgstr ""
+msgstr "Αυτός ο φάκελος διαμοιράζεται μέσω του δικτύου"
 
 #: src/nautilus-location-banner.c:249
-#, fuzzy
-#| msgid ""
-#| "Turn on File Sharing to share the contents of this folder over the network"
 msgid "Turn on File Sharing to share this folder over the network"
 msgstr ""
-"Ενεργοποιήστε τον Διαμοιρασμό αρχείων για να μοιραστείτε αυτόν τον φάκελο μέσω του δικτύου."
+"Ενεργοποιήστε την Κοινή χρήση αρχείων για να διαμοιράσετε αυτόν τον φάκελο "
+"μέσω του δικτύου"
 
 #: src/nautilus-location-banner.c:251
 msgid "Sharing Settings"
@@ -4229,19 +4213,16 @@ msgstr "Άρση επισήμανσης"
 
 #
 #: src/nautilus-properties.c:735 src/nautilus-star-cell.c:72
-#, fuzzy
-#| msgid "Star"
 msgctxt "Verb"
 msgid "Star"
 msgstr "Επισήμανση"
 
 #: src/nautilus-properties.c:827
-#, fuzzy, c-format
-#| msgid "Select type"
+#, c-format
 msgid "%d Selected Item"
 msgid_plural "%d Selected Items"
-msgstr[0] "Επιλογή τύπου"
-msgstr[1] "Επιλογή τύπου"
+msgstr[0] "%d επιλεγμένο αντικείμενο"
+msgstr[1] "%d επιλεγμένα αντικείμενα"
 
 #: src/nautilus-properties.c:1598
 msgid "Cancel Group Change?"
@@ -4589,8 +4570,6 @@ msgstr "επισημάνθηκαν"
 
 #
 #: src/nautilus-tag-manager.c:228
-#, fuzzy
-#| msgid "Starred"
 msgid "unstarred"
 msgstr "χωρίς επισήμανση"
 
@@ -5012,10 +4991,9 @@ msgid "Last _Trashed"
 msgstr "Τελευταία διε_γραμένα"
 
 #: src/resources/ui/nautilus-app-chooser.blp:51
-#, fuzzy
 #| msgid "Choose an app to open the selected files."
 msgid "Choose an app to open the selected files"
-msgstr "Επιλογή εφαρμογής για το άνοιγμα των επιλεγμένων αρχείων."
+msgstr "Επιλέξτε μια εφαρμογή για να ανοίξετε τα επιλεγμένα αρχεία"
 
 #: src/resources/ui/nautilus-app-chooser.blp:61
 msgid "Always use for this file type"
