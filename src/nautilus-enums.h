@@ -92,9 +92,10 @@ typedef enum
     NAUTILUS_OPEN_FLAG_REUSE_EXISTING   = 1 << 4,
 } NautilusOpenFlags;
 
+/* See org.gnome.nautilus.SearchFilterTimeType schema */
 typedef enum {
-    NAUTILUS_SEARCH_TIME_TYPE_LAST_ACCESS = 0,
-    NAUTILUS_SEARCH_TIME_TYPE_LAST_MODIFIED,
+    NAUTILUS_SEARCH_TIME_TYPE_LAST_MODIFIED = 0,
+    NAUTILUS_SEARCH_TIME_TYPE_LAST_ACCESS,
     NAUTILUS_SEARCH_TIME_TYPE_CREATED,
 } NautilusSearchTimeType;
 
