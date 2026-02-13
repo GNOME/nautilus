@@ -178,12 +178,26 @@ template $NautilusSearchPopover: Popover {
             /* See org.gnome.nautilus.SearchFilterTimeType schema enum */
             menu-model: menu {
               section {
-                /* Translators: This refers to a date time */
-                item (_("Used"), "search-popover.time-type-changed", "last_used")
-                /* Translators: This refers to a date time */
-                item (_("Modified"), "search-popover.time-type-changed", "last_modified")
-                /* Translators: This refers to a date time */
-                item (_("Created"), "search-popover.time-type-changed", "created")
+                item {
+                  /* Translators: This refers to a date time */
+                  label: _("Used");
+                  action: "search-popover.time-type-changed";
+                  target: "last_used";
+                }
+
+                item {
+                  /* Translators: This refers to a date time */
+                  label: _("Modified");
+                  action: "search-popover.time-type-changed";
+                  target: "last_modified";
+                }
+
+                item {
+                  /* Translators: This refers to a date time */
+                  label: _("Created");
+                  action: "search-popover.time-type-changed";
+                  target: "created";
+                }
               }
             };
           }
