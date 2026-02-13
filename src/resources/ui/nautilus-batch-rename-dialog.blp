@@ -376,6 +376,13 @@ template $NautilusBatchRenameDialog: Adw.Dialog {
                       tooltip-markup: bind template.item as <$NautilusBatchRenameItem>.name-after;
                     }
                   }
+
+                  SizeGroup {
+                    widgets [
+                      original_name_label,
+                      result_label,
+                    ]
+                  }
                 };
               }
             };
