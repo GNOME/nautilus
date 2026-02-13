@@ -242,6 +242,17 @@ nautilus_image_properties_model_load_from_file_info (NautilusImagesPropertiesMod
     g_autoptr (GFile) file = g_file_new_for_uri (uri);
     const char *path = g_file_peek_path (file);
 
+    if (path == NULL)
+    {
+        /* Handle locations like recent:// */
+        g_clear_pointer (&uri, g_free);
+        g_clear_object (&file);
+
+        uri = nautilus_file_info_get_activation_uri (file_info);
+        file = g_file_new_for_uri (uri);
+        path = g_file_peek_path (file);
+    }
+
     g_return_if_fail (path != NULL);
 
     /* Image properties relies on gexiv2 metadata */
