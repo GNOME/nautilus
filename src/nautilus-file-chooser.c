@@ -427,19 +427,7 @@ on_filename_entry_focus_leave (NautilusFileChooser *self)
 static void
 on_filename_entry_changed (NautilusFileChooser *self)
 {
-    GtkEditable *editable = GTK_EDITABLE (self->filename_entry);
-    const char *current_text = gtk_editable_get_text (editable);
-    const char *newline_check = strchr (current_text, '\n');
-
-    if (newline_check != NULL)
-    {
-        g_autoptr (GString) clean_text = g_string_new (current_text);
-
-        g_string_replace (clean_text, "\n", " ", 0);
-
-        gtk_editable_set_text (editable, clean_text->str);
-    }
-
+    const char *current_text = gtk_editable_get_text (GTK_EDITABLE (self->filename_entry));
     gboolean is_not_suggested_text = (g_strcmp0 (self->suggested_name, current_text) != 0 &&
                                       self->suggested_name != NULL);
 
