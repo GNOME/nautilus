@@ -199,6 +199,7 @@ template $NautilusFileChooser: Adw.Window {
                     /* Center the label and don't overlap the overlay */
                     [center]
                     Label filename_label {
+                      single-line-mode: true;
                       label: bind filename_entry.text;
                       ellipsize: middle;
                     }
