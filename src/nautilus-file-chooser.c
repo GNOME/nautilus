@@ -394,7 +394,8 @@ static void
 on_slot_activate_files (NautilusFileChooser *self,
                         GList               *files)
 {
-    if (mode_can_accept_files (self->mode, files))
+    if (gtk_widget_get_sensitive (self->accept_button) &&
+        mode_can_accept_files (self->mode, files))
     {
         gtk_widget_activate (self->accept_button);
     }
