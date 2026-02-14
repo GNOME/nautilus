@@ -448,9 +448,7 @@ static gboolean
 update_completions_store (gpointer callback_data)
 {
     g_autofree char *absolute_location = NULL;
-    g_autofree char *user_location = NULL;
     gboolean is_relative = FALSE;
-    int start_sel;
     g_auto (GStrv) completions = NULL;
 
     NautilusLocationEntry *entry = NAUTILUS_LOCATION_ENTRY (callback_data);
@@ -466,28 +464,22 @@ update_completions_store (gpointer callback_data)
         return FALSE;
     }
 
-    if (gtk_editable_get_selection_bounds (editable, &start_sel, NULL))
-    {
-        user_location = gtk_editable_get_chars (editable, 0, start_sel);
-    }
-    else
-    {
-        user_location = gtk_editable_get_chars (editable, 0, -1);
-    }
+    int start_sel;
+    g_autofree char *typed = gtk_editable_get_selection_bounds (editable, &start_sel, NULL)
+                             ? gtk_editable_get_chars (editable, 0, start_sel)
+                             : gtk_editable_get_chars (editable, 0, -1);
 
-    g_strstrip (user_location);
-    set_prefix_dimming (priv->completion_cell, user_location);
+    g_strstrip (typed);
+    set_prefix_dimming (priv->completion_cell, typed);
 
-    g_autofree char *uri_scheme = g_uri_parse_scheme (user_location);
-
-    if (!g_path_is_absolute (user_location) && uri_scheme == NULL && user_location[0] != '~')
+    if (!g_path_is_absolute (typed) && g_uri_peek_scheme (typed) == NULL && typed[0] != '~')
     {
         is_relative = TRUE;
-        absolute_location = g_build_filename (priv->current_directory, user_location, NULL);
+        absolute_location = g_build_filename (priv->current_directory, typed, NULL);
     }
     else
     {
-        absolute_location = g_steal_pointer (&user_location);
+        absolute_location = g_steal_pointer (&typed);
     }
 
     if (priv->completions_cancellable != NULL)
