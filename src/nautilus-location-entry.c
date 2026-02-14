@@ -449,7 +449,6 @@ update_completions_store (gpointer callback_data)
 {
     g_autofree char *absolute_location = NULL;
     gboolean is_relative = FALSE;
-    g_auto (GStrv) completions = NULL;
 
     NautilusLocationEntry *entry = NAUTILUS_LOCATION_ENTRY (callback_data);
     NautilusLocationEntryPrivate *priv = nautilus_location_entry_get_instance_private (entry);
