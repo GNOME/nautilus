@@ -52,7 +52,6 @@ typedef struct _NautilusLocationEntryPrivate
 {
     char *current_directory;
 
-    guint idle_id;
     gboolean idle_insert_completion;
 
     GFile *last_location;
@@ -62,6 +61,7 @@ typedef struct _NautilusLocationEntryPrivate
 
     GtkEventController *controller;
 
+    guint completion_id;
     GtkEntryCompletion *completion;
     GtkListStore *completions_store;
     GtkCellRenderer *completion_cell;
@@ -457,7 +457,7 @@ update_completions_store (gpointer callback_data)
     NautilusLocationEntryPrivate *priv = nautilus_location_entry_get_instance_private (entry);
     GtkEditable *editable = GTK_EDITABLE (entry);
 
-    priv->idle_id = 0;
+    priv->completion_id = 0;
 
     /* Only do completions when we are typing at the end of the
      * text. */
@@ -542,12 +542,7 @@ nautilus_location_entry_dispose (GObject *object)
     priv = nautilus_location_entry_get_instance_private (entry);
 
     /* cancel the pending idle call, if any */
-    if (priv->idle_id != 0)
-    {
-        g_source_remove (priv->idle_id);
-        priv->idle_id = 0;
-    }
-
+    g_clear_handle_id (&priv->completion_id, g_source_remove);
 
     G_OBJECT_CLASS (nautilus_location_entry_parent_class)->dispose (object);
 }
@@ -684,9 +679,9 @@ after_text_change (NautilusLocationEntry *self,
 
     /* Do the expand at idle time to avoid slowing down typing when the
      * directory is large. */
-    if (priv->idle_id == 0)
+    if (priv->completion_id == 0)
     {
-        priv->idle_id = g_idle_add (update_completions_store, self);
+        priv->completion_id = g_idle_add (update_completions_store, self);
     }
 }
 
