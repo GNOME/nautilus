@@ -449,9 +449,6 @@ populate_completions_model (GObject      *source_object,
 static gboolean
 update_completions_store (gpointer callback_data)
 {
-    g_autofree char *absolute_location = NULL;
-    gboolean is_relative = FALSE;
-
     NautilusLocationEntry *entry = NAUTILUS_LOCATION_ENTRY (callback_data);
     NautilusLocationEntryPrivate *priv = nautilus_location_entry_get_instance_private (entry);
     GtkEditable *editable = GTK_EDITABLE (entry);
@@ -473,14 +470,17 @@ update_completions_store (gpointer callback_data)
     g_strstrip (typed);
     set_prefix_dimming (priv->completion_cell, typed);
 
+    CompleterData *completer_data = g_new0 (CompleterData, 1);
+    completer_data->entry = entry;
+
     if (!g_path_is_absolute (typed) && g_uri_peek_scheme (typed) == NULL && typed[0] != '~')
     {
-        is_relative = TRUE;
-        absolute_location = g_build_filename (priv->current_directory, typed, NULL);
+        completer_data->is_relative = TRUE;
+        completer_data->user_location = g_build_filename (priv->current_directory, typed, NULL);
     }
     else
     {
-        absolute_location = g_steal_pointer (&typed);
+        completer_data->user_location = g_steal_pointer (&typed);
     }
 
     if (priv->completions_cancellable != NULL)
@@ -488,11 +488,6 @@ update_completions_store (gpointer callback_data)
         g_cancellable_cancel (priv->completions_cancellable);
         g_clear_object (&priv->completions_cancellable);
     }
-
-    CompleterData *completer_data = g_new0 (CompleterData, 1);
-    completer_data->user_location = g_strdup (absolute_location);
-    completer_data->is_relative = is_relative;
-    completer_data->entry = entry;
 
     priv->completions_cancellable = g_cancellable_new ();
     completer_get_completions_async (completer_data,
