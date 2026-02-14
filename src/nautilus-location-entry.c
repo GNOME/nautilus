@@ -314,10 +314,12 @@ completer_get_completions_thread (GTask        *task,
 {
     CompleterData *completer_data = (CompleterData *) task_data;
     const gchar *user_location = completer_data->user_location;
+    const gchar *last_separator = strrchr (user_location, G_DIR_SEPARATOR);
+    const gchar *typed = (last_separator != NULL)
+                         ? last_separator + 1
+                         : user_location;
 
-    const gchar *last_slash = strrchr (user_location, G_DIR_SEPARATOR);
-    const gchar *typed = last_slash + 1;
-    g_autofree gchar *dir_path = g_strndup (user_location, last_slash - user_location + 1);
+    g_autofree gchar *dir_path = g_strndup (user_location, typed - user_location);
     g_autofree gchar *searched_prefix = g_utf8_casefold (typed, -1);
     gboolean searched_prefix_has_dot = g_str_has_prefix (typed, ".");
 
