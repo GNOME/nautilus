@@ -468,6 +468,11 @@ update_completions_store (gpointer callback_data)
                              ? gtk_editable_get_chars (editable, 0, start_sel)
                              : gtk_editable_get_chars (editable, 0, -1);
 
+    if (typed == NULL || typed[0] == '\0')
+    {
+        return FALSE;
+    }
+
     g_strstrip (typed);
     set_prefix_dimming (priv->completion_cell, typed);
 
