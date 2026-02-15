@@ -43,7 +43,9 @@
 
 typedef struct
 {
-    char *user_location;
+    char *prefix;
+    char *typed_path;
+    char *absolute_path;
     gboolean is_relative;
     NautilusLocationEntry *entry;
 } CompleterData;
@@ -299,10 +301,63 @@ position_and_selection_are_at_end (GtkEditable *editable)
     return gtk_editable_get_position (editable) == end;
 }
 
+static CompleterData *
+completer_data_new (const char *typed,
+                    const char *path)
+{
+    CompleterData *data = g_new0 (CompleterData, 1);
+
+    const char *last_separator = strrchr (typed, G_DIR_SEPARATOR);
+    const char *post_separator = (last_separator != NULL)
+                                 ? last_separator + 1
+                                 : typed;
+
+    data->prefix = g_utf8_casefold (post_separator, -1);
+
+    if (last_separator == NULL)
+    {
+        data->is_relative = TRUE;
+        data->absolute_path = g_strdup (path);
+        data->typed_path = g_strdup ("");
+    }
+    else if (g_path_is_absolute (typed))
+    {
+        data->absolute_path = g_strndup (typed, post_separator - typed);
+        data->typed_path = g_strdup (data->absolute_path);
+    }
+    else if (typed[0] == '~' && typed[1] == '/')
+    {
+        data->typed_path = g_strndup (typed, post_separator - typed);
+
+        if (typed + 1 == last_separator)
+        {
+            /* relative to home */
+            data->absolute_path = g_strdup (g_get_home_dir ());
+        }
+        else
+        {
+            const char *subdir_path = typed + 2;
+            g_autofree char *concat_path = g_strndup (subdir_path, post_separator - subdir_path);
+
+            data->absolute_path = g_build_filename (g_get_home_dir (), concat_path, NULL);
+        }
+    }
+    else
+    {
+        data->is_relative = TRUE;
+        data->typed_path = g_strndup (typed, post_separator - typed);
+        data->absolute_path = g_build_filename (path, data->typed_path, NULL);
+    }
+
+    return data;
+}
+
 static void
 completer_data_free (CompleterData *completer_data)
 {
-    g_free (completer_data->user_location);
+    g_free (completer_data->prefix);
+    g_free (completer_data->typed_path);
+    g_free (completer_data->absolute_path);
     g_free (completer_data);
 }
 
@@ -312,18 +367,9 @@ completer_get_completions_thread (GTask        *task,
                                   gpointer      task_data,
                                   GCancellable *cancellable)
 {
-    CompleterData *completer_data = (CompleterData *) task_data;
-    const gchar *user_location = completer_data->user_location;
-    const gchar *last_separator = strrchr (user_location, G_DIR_SEPARATOR);
-    const gchar *typed = (last_separator != NULL)
-                         ? last_separator + 1
-                         : user_location;
-
-    g_autofree gchar *dir_path = g_strndup (user_location, typed - user_location);
-    g_autofree gchar *searched_prefix = g_utf8_casefold (typed, -1);
-    gboolean searched_prefix_has_dot = g_str_has_prefix (typed, ".");
-
-    g_autoptr (GFile) file = g_file_new_for_path (dir_path);
+    CompleterData *data = task_data;
+    gboolean searched_prefix_has_dot = g_str_has_prefix (data->prefix, ".");
+    g_autoptr (GFile) file = g_file_new_for_path (data->absolute_path);
     g_autoptr (GPtrArray) completions = g_ptr_array_new_with_free_func (g_free);
     g_autoptr (GFileEnumerator) enumerator = g_file_enumerate_children (file,
                                                                         G_FILE_ATTRIBUTE_STANDARD_NAME ","
@@ -361,9 +407,9 @@ completer_get_completions_thread (GTask        *task,
 
         g_autofree gchar *case_insenstive_name = g_utf8_casefold (name, -1);
 
-        if (g_str_has_prefix (case_insenstive_name, searched_prefix))
+        if (g_str_has_prefix (case_insenstive_name, data->prefix))
         {
-            gchar *full = g_build_filename (dir_path, name, NULL);
+            gchar *full = g_build_filename (data->absolute_path, name, NULL);
             g_ptr_array_add (completions, full);
         }
         g_object_unref (info);
@@ -475,18 +521,9 @@ update_completions_store (gpointer callback_data)
     g_strstrip (typed);
     set_prefix_dimming (priv->completion_cell, typed);
 
-    CompleterData *completer_data = g_new0 (CompleterData, 1);
-    completer_data->entry = entry;
+    CompleterData *completer_data = completer_data_new (typed, priv->current_directory);
 
-    if (!g_path_is_absolute (typed) && g_uri_peek_scheme (typed) == NULL && typed[0] != '~')
-    {
-        completer_data->is_relative = TRUE;
-        completer_data->user_location = g_build_filename (priv->current_directory, typed, NULL);
-    }
-    else
-    {
-        completer_data->user_location = g_steal_pointer (&typed);
-    }
+    completer_data->entry = entry;
 
     if (priv->completions_cancellable != NULL)
     {
