@@ -243,9 +243,14 @@ nautilus_location_entry_set_location (NautilusLocationEntry *entry,
 
 static void
 set_prefix_dimming (GtkCellRenderer *completion_cell,
-                    char            *user_location)
+                    char            *typed_path)
 {
-    g_autofree char *location_basename = NULL;
+    if (typed_path == NULL)
+    {
+        /* Nothing to do*/
+        return;
+    }
+
     PangoAttrList *attrs;
     PangoAttribute *attr;
 
@@ -256,13 +261,11 @@ set_prefix_dimming (GtkCellRenderer *completion_cell,
      * it would take a reimplementation of GtkEntryCompletion to align the
      * popover. */
 
-    location_basename = g_path_get_basename (user_location);
-
     attrs = pango_attr_list_new ();
 
     /* 55% opacity. This is the same as the dim-label style class in Adwaita. */
     attr = pango_attr_foreground_alpha_new (36045);
-    attr->end_index = strlen (user_location) - strlen (location_basename);
+    attr->end_index = strlen (typed_path);
     pango_attr_list_insert (attrs, attr);
 
     g_object_set (completion_cell, "attributes", attrs, NULL);
@@ -483,11 +486,11 @@ update_completions_store (gpointer callback_data)
     }
 
     g_strstrip (typed);
-    set_prefix_dimming (priv->completion_cell, typed);
 
     CompleterData *completer_data = completer_data_new (typed, priv->current_location);
 
     completer_data->entry = entry;
+    set_prefix_dimming (priv->completion_cell, completer_data->typed_path);
 
     if (priv->completions_cancellable != NULL)
     {
