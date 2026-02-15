@@ -46,7 +46,6 @@ typedef struct
     char *prefix;
     char *typed_path;
     char *absolute_path;
-    gboolean is_relative;
     NautilusLocationEntry *entry;
 } CompleterData;
 
@@ -316,7 +315,6 @@ completer_data_new (const char *typed,
 
     if (last_separator == NULL)
     {
-        data->is_relative = TRUE;
         data->absolute_path = g_strdup (path);
         data->typed_path = g_strdup ("");
     }
@@ -344,7 +342,6 @@ completer_data_new (const char *typed,
     }
     else
     {
-        data->is_relative = TRUE;
         data->typed_path = g_strndup (typed, post_separator - typed);
         data->absolute_path = g_build_filename (path, data->typed_path, NULL);
     }
@@ -409,8 +406,7 @@ completer_get_completions_thread (GTask        *task,
 
         if (g_str_has_prefix (case_insenstive_name, data->prefix))
         {
-            gchar *full = g_build_filename (data->absolute_path, name, NULL);
-            g_ptr_array_add (completions, full);
+            g_ptr_array_add (completions, g_strconcat (data->typed_path, name, NULL));
         }
         g_object_unref (info);
     }
@@ -437,8 +433,6 @@ populate_completions_model (GObject      *source_object,
                             gpointer      user_data)
 {
     GtkTreeIter iter;
-    guint current_dir_strlen = 0;
-
     GTask *task = G_TASK (res);
 
     if (g_task_had_error (task))
@@ -454,28 +448,10 @@ populate_completions_model (GObject      *source_object,
     g_autoptr (GError) error = NULL;
 
     g_autoptr (GPtrArray) completions = g_task_propagate_pointer (task, &error);
-    gboolean is_relative = completer_data->is_relative;
-
-    if (priv->current_directory)
-    {
-        current_dir_strlen = strlen (priv->current_directory);
-    }
 
     for (guint i = 0; i < completions->len; i++)
     {
         char *completion = g_ptr_array_index (completions, i);
-
-        if (is_relative && strlen (completion) >= current_dir_strlen)
-        {
-            /* For relative paths, we need to strip the current directory
-             * (and the trailing slash) so the completions will match what's
-             * in the text entry */
-            completion += current_dir_strlen;
-            if (G_IS_DIR_SEPARATOR (completion[0]))
-            {
-                completion++;
-            }
-        }
 
         gtk_list_store_append (priv->completions_store, &iter);
         gtk_list_store_set (priv->completions_store, &iter, 0, completion, -1);
