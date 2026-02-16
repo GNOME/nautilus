@@ -2585,48 +2585,19 @@ directory_count_start (NautilusDirectory *directory,
     g_object_unref (location);
 }
 
-static inline gboolean
-seen_inode (DeepCountState *state,
-            GFileInfo      *info)
-{
-    guint64 inode;
-
-    inode = g_file_info_get_attribute_uint64 (info, G_FILE_ATTRIBUTE_UNIX_INODE);
-
-    if (inode != 0)
-    {
-        return g_hash_table_lookup (state->seen_deep_count_inodes, &inode) != NULL;
-    }
-
-    return FALSE;
-}
-
-static inline void
-mark_inode_as_seen (DeepCountState *state,
-                    GFileInfo      *info)
-{
-    guint64 inode;
-
-    inode = g_file_info_get_attribute_uint64 (info, G_FILE_ATTRIBUTE_UNIX_INODE);
-    if (inode != 0)
-    {
-        g_hash_table_add (state->seen_deep_count_inodes, &inode);
-    }
-}
-
 static void
 deep_count_one (DeepCountState *state,
                 GFileInfo      *info)
 {
+    guint64 inode = g_file_info_get_attribute_uint64 (info, G_FILE_ATTRIBUTE_UNIX_INODE);
+    gboolean is_seen_inode = FALSE;
     NautilusFile *file;
     GFile *subdir;
-    gboolean is_seen_inode;
     const char *fs_id;
 
-    is_seen_inode = seen_inode (state, info);
-    if (!is_seen_inode)
+    if (inode != 0)
     {
-        mark_inode_as_seen (state, info);
+        is_seen_inode = !g_hash_table_add (state->seen_deep_count_inodes, &inode);
     }
 
     file = state->directory->details->deep_count_file;
