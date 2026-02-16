@@ -277,6 +277,74 @@ test_thumbnail_image (void)
     test_clear_tmp_dir ();
 }
 
+static void
+test_thumbnail_image_overwrite (void)
+{
+    g_autoptr (GFile) image_location = g_file_new_build_filename (test_get_tmp_dir (),
+                                                                  "Image.png",
+                                                                  NULL);
+    g_autofree gchar *uri = g_file_get_uri (image_location);
+
+    make_image_file (image_location, NULL);
+
+    g_autofree gchar *mime_type = NULL;
+    guint64 mtime = get_file_mime_type_and_mtime (image_location, &mime_type);
+
+    g_assert_true (nautilus_thumbnail_is_mimetype_limited_by_size (mime_type));
+
+    if (!nautilus_can_thumbnail (uri, mime_type, mtime))
+    {
+        g_test_skip ("System has no thumbnailer for images, but this test is meant to test "
+                     "thumbnailing an image.");
+        test_clear_tmp_dir ();
+
+        return;
+    }
+
+    g_autofree gchar *thumbnail_path = nautilus_thumbnail_get_path_for_uri (uri);
+    g_autoptr (GFile) thumbnail_location = g_file_new_for_path (thumbnail_path);
+    g_auto (ThumbnailCallbackData) thumbnailing_data1 = { NULL, FALSE, NULL };
+    g_auto (ThumbnailCallbackData) thumbnailing_data2 = { NULL, FALSE, NULL };
+
+    nautilus_create_thumbnail_async (uri,
+                                     mime_type,
+                                     mtime,
+                                     NULL,
+                                     thumbnailing_done_cb,
+                                     &thumbnailing_data1);
+
+    /* Overwrite the image file while thumbnailing is in progress */
+    g_usleep (50 * 1000);
+    make_image_file (image_location, NULL);
+    mtime = get_file_mime_type_and_mtime (image_location, &mime_type);
+
+    nautilus_create_thumbnail_async (uri,
+                                     mime_type,
+                                     mtime,
+                                     NULL,
+                                     thumbnailing_done_cb,
+                                     &thumbnailing_data2);
+
+    ITER_CONTEXT_WHILE (!thumbnailing_data1.done);
+    ITER_CONTEXT_WHILE (!thumbnailing_data2.done);
+
+    g_assert_true (g_file_query_exists (thumbnail_location, NULL));
+    g_assert_true (file_has_valid_thumbnail_path (image_location, thumbnail_path));
+    g_assert_nonnull (thumbnailing_data1.pixbuf);
+    g_assert_no_error (thumbnailing_data1.error);
+    g_assert_nonnull (thumbnailing_data2.pixbuf);
+    g_assert_no_error (thumbnailing_data2.error);
+
+    g_assert_cmpint (gdk_pixbuf_get_height (thumbnailing_data1.pixbuf), ==, ICON_SIZE);
+    g_assert_cmpint (gdk_pixbuf_get_width (thumbnailing_data1.pixbuf), ==, ICON_SIZE);
+    g_assert_cmpint (gdk_pixbuf_get_height (thumbnailing_data2.pixbuf), ==, ICON_SIZE);
+    g_assert_cmpint (gdk_pixbuf_get_width (thumbnailing_data2.pixbuf), ==, ICON_SIZE);
+
+    g_assert_true (g_file_delete (thumbnail_location, NULL, NULL));
+
+    test_clear_tmp_dir ();
+}
+
 static GFile *
 make_text_file (void)
 {
@@ -357,6 +425,8 @@ main (int   argc,
                      test_thumbnail_text);
     g_test_add_func ("/thumbnail/single/image",
                      test_thumbnail_image);
+    g_test_add_func ("/thumbnail/single/image/overwrite",
+                     test_thumbnail_image_overwrite);
     g_test_add_func ("/thumbnail/queue/deprioritize",
                      test_thumbnail_test_queue);
 
