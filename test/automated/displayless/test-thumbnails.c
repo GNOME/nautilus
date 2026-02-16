@@ -273,6 +273,54 @@ test_thumbnail_image (void)
 }
 
 static void
+test_thumbnail_cancel (void)
+{
+    g_autoptr (GFile) image_location = g_file_new_build_filename (test_get_tmp_dir (),
+                                                                  "Image.png",
+                                                                  NULL);
+    g_autofree gchar *uri = g_file_get_uri (image_location);
+
+    make_image_file (image_location);
+
+    g_autofree gchar *mime_type = NULL;
+    guint64 mtime = get_file_mime_type_and_mtime (image_location, &mime_type);
+
+    g_assert_true (nautilus_thumbnail_is_mimetype_limited_by_size (mime_type));
+
+    if (!nautilus_can_thumbnail (uri, mime_type, mtime))
+    {
+        g_test_skip ("System has no thumbnailer for images, but this test is meant to test "
+                     "thumbnailing an image.");
+        test_clear_tmp_dir ();
+
+        return;
+    }
+
+    g_autofree gchar *thumbnail_path = nautilus_thumbnail_get_path_for_uri (uri);
+    g_autoptr (GFile) thumbnail_location = g_file_new_for_path (thumbnail_path);
+    g_autoptr (GCancellable) cancellable = g_cancellable_new ();
+    g_auto (ThumbnailCallbackData) thumbnailing_data = { NULL, FALSE, NULL };
+
+    nautilus_create_thumbnail_async (uri,
+                                     mime_type,
+                                     mtime,
+                                     cancellable,
+                                     thumbnailing_done_cb,
+                                     &thumbnailing_data);
+
+    g_usleep (50 * 1000);
+    g_cancellable_cancel (cancellable);
+
+    ITER_CONTEXT_WHILE (!thumbnailing_data.done);
+
+    g_assert_nonnull (thumbnailing_data.error);
+    g_assert_error (thumbnailing_data.error, G_IO_ERROR, G_IO_ERROR_CANCELLED);
+    g_assert_null (thumbnailing_data.pixbuf);
+
+    test_clear_tmp_dir ();
+}
+
+static void
 test_thumbnail_overwrite (void)
 {
     g_autoptr (GFile) image_location = g_file_new_build_filename (test_get_tmp_dir (),
@@ -420,6 +468,8 @@ main (int   argc,
                      test_thumbnail_text);
     g_test_add_func ("/thumbnail/single/image",
                      test_thumbnail_image);
+    g_test_add_func ("/thumbnail/single/cancel",
+                     test_thumbnail_cancel);
     g_test_add_func ("/thumbnail/single/overwrite",
                      test_thumbnail_overwrite);
     g_test_add_func ("/thumbnail/queue/deprioritize",
