@@ -257,13 +257,25 @@ gnome.post_install(
 
 #### Summary ####
 
-summary('Extensions', get_option('extensions').to_string(), section: 'Features')
-summary('Cloud providers support', cloudproviders.found(), section: 'Features')
-summary('SELinux support', selinux.found(), section: 'Features')
+summary(
+  {
+    'Extensions': get_option('extensions'),
+    'Cloud providers support': cloudproviders.found(),
+    'SELinux support': selinux.found(),
+  },
+  section: 'Features',
+  bool_yn: true,
+)
 
-summary('Profile', get_option('profile'), section: 'Build')
-summary('Debugging', get_option('debug'), section: 'Build')
-summary('Optimization', get_option('optimization'), section: 'Build')
-summary('Documentation', get_option('docs'), section: 'Build')
-summary('Introspection', get_option('introspection'), section: 'Build')
-summary('Tests', get_option('tests'), section: 'Build')
+summary(
+  {
+    'Profile': get_option('profile'),
+    'Debugging': get_option('debug'),
+    'Optimization': get_option('optimization'),
+    'Documentation': get_option('docs'),
+    'Introspection': get_option('introspection'),
+    'Tests': get_option('tests'),
+  },
+  section: 'Build',
+  bool_yn: true,
+)
