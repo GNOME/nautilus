@@ -88,6 +88,24 @@ tile_memory (void  *data,
     return buffer;
 }
 
+static guint64
+get_file_mime_type_and_mtime (GFile  *file,
+                              gchar **mime_type)
+{
+    g_autoptr (GFileInfo) info = g_file_query_info (file,
+                                                    "standard::*,time::*",
+                                                    G_FILE_QUERY_INFO_NONE,
+                                                    NULL, NULL);
+
+    if (mime_type != NULL)
+    {
+        g_clear_pointer (mime_type, g_free);
+        *mime_type = g_strdup (g_file_info_get_content_type (info));
+    }
+
+    return g_file_info_get_attribute_uint64 (info, G_FILE_ATTRIBUTE_TIME_MODIFIED);
+}
+
 static void
 make_image_file (GFile  *file,
                  GList **image_files)
@@ -154,13 +172,8 @@ test_thumbnail_test_queue (void)
     {
         GFile *image_location = l->data;
         g_autofree gchar *uri = g_file_get_uri (image_location);
-        g_autoptr (GFileInfo) info = g_file_query_info (image_location,
-                                                        "standard::*,"
-                                                        "time::*",
-                                                        G_FILE_QUERY_INFO_NONE,
-                                                        NULL, NULL);
-        const gchar *mime_type = g_file_info_get_content_type (info);
-        guint64 mtime = g_file_info_get_attribute_uint64 (info, G_FILE_ATTRIBUTE_TIME_MODIFIED);
+        g_autofree gchar *mime_type = NULL;
+        guint64 mtime = get_file_mime_type_and_mtime (image_location, &mime_type);
 
         if (!nautilus_can_thumbnail (uri, mime_type, mtime))
         {
@@ -186,13 +199,8 @@ test_thumbnail_test_queue (void)
     {
         GFile *image_location = l->data;
         g_autofree gchar *uri = g_file_get_uri (image_location);
-        g_autoptr (GFileInfo) info = g_file_query_info (image_location,
-                                                        "standard::*,"
-                                                        "time::*",
-                                                        G_FILE_QUERY_INFO_NONE,
-                                                        NULL, NULL);
-        const gchar *mime_type = g_file_info_get_content_type (info);
-        guint64 mtime = g_file_info_get_attribute_uint64 (info, G_FILE_ATTRIBUTE_TIME_MODIFIED);
+        g_autofree gchar *mime_type = NULL;
+        guint64 mtime = get_file_mime_type_and_mtime (image_location, &mime_type);
 
         nautilus_create_thumbnail_async (uri,
                                          mime_type,
@@ -228,12 +236,8 @@ test_thumbnail_image (void)
 
     make_image_file (image_location, NULL);
 
-    g_autoptr (GFileInfo) info = g_file_query_info (image_location,
-                                                    "standard::*,time::*",
-                                                    G_FILE_QUERY_INFO_NONE,
-                                                    NULL, NULL);
-    const gchar *mime_type = g_file_info_get_content_type (info);
-    guint64 mtime = g_file_info_get_attribute_uint64 (info, G_FILE_ATTRIBUTE_TIME_MODIFIED);
+    g_autofree gchar *mime_type = NULL;
+    guint64 mtime = get_file_mime_type_and_mtime (image_location, &mime_type);
 
     g_assert_true (nautilus_thumbnail_is_mimetype_limited_by_size (mime_type));
 
@@ -299,12 +303,8 @@ test_thumbnail_text (void)
 {
     g_autoptr (GFile) text_location = make_text_file ();
     g_autofree gchar *uri = g_file_get_uri (text_location);
-    g_autoptr (GFileInfo) info = g_file_query_info (text_location,
-                                                    "standard::*,time::*",
-                                                    G_FILE_QUERY_INFO_NONE,
-                                                    NULL, NULL);
-    const gchar *mime_type = g_file_info_get_content_type (info);
-    guint64 mtime = g_file_info_get_attribute_uint64 (info, G_FILE_ATTRIBUTE_TIME_MODIFIED);
+    g_autofree gchar *mime_type = NULL;
+    guint64 mtime = get_file_mime_type_and_mtime (text_location, &mime_type);
 
     g_assert_false (nautilus_thumbnail_is_mimetype_limited_by_size (mime_type));
 
