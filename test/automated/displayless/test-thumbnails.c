@@ -107,8 +107,7 @@ get_file_mime_type_and_mtime (GFile  *file,
 }
 
 static void
-make_image_file (GFile  *file,
-                 GList **image_files)
+make_image_file (GFile *file)
 {
     guint8 data[4] = {255, 255, 0, 0};
     gsize length = sizeof (data) * ICON_SIZE * ICON_SIZE;
@@ -144,11 +143,6 @@ make_image_file (GFile  *file,
                              &error);
 
     g_assert_no_error (error);
-
-    if (image_files != NULL)
-    {
-        *image_files = g_list_append (*image_files, g_object_ref (file));
-    }
 }
 
 static void
@@ -165,7 +159,8 @@ test_thumbnail_test_queue (void)
         g_strv_builder_take (strv_builder, g_strdup_printf ("image_%u.png", i + 1));
     }
     files_hier = g_strv_builder_unref_to_strv (strv_builder);
-    file_hierarchy_foreach (files_hier, "", (HierarchyCallback) make_image_file, &image_locations);
+    file_hierarchy_foreach (files_hier, "", (HierarchyCallback) make_image_file, NULL);
+    image_locations = file_hierarchy_get_files_list (files_hier, "", FALSE);
 
     /* Add to thumbnailing queue */
     for (GList *l = image_locations; l != NULL; l = l->next)
@@ -234,7 +229,7 @@ test_thumbnail_image (void)
                                                                   NULL);
     g_autofree gchar *uri = g_file_get_uri (image_location);
 
-    make_image_file (image_location, NULL);
+    make_image_file (image_location);
 
     g_autofree gchar *mime_type = NULL;
     guint64 mtime = get_file_mime_type_and_mtime (image_location, &mime_type);
@@ -278,14 +273,14 @@ test_thumbnail_image (void)
 }
 
 static void
-test_thumbnail_image_overwrite (void)
+test_thumbnail_overwrite (void)
 {
     g_autoptr (GFile) image_location = g_file_new_build_filename (test_get_tmp_dir (),
                                                                   "Image.png",
                                                                   NULL);
     g_autofree gchar *uri = g_file_get_uri (image_location);
 
-    make_image_file (image_location, NULL);
+    make_image_file (image_location);
 
     g_autofree gchar *mime_type = NULL;
     guint64 mtime = get_file_mime_type_and_mtime (image_location, &mime_type);
@@ -315,7 +310,7 @@ test_thumbnail_image_overwrite (void)
 
     /* Overwrite the image file while thumbnailing is in progress */
     g_usleep (50 * 1000);
-    make_image_file (image_location, NULL);
+    make_image_file (image_location);
     mtime = get_file_mime_type_and_mtime (image_location, &mime_type);
 
     nautilus_create_thumbnail_async (uri,
@@ -425,8 +420,8 @@ main (int   argc,
                      test_thumbnail_text);
     g_test_add_func ("/thumbnail/single/image",
                      test_thumbnail_image);
-    g_test_add_func ("/thumbnail/single/image/overwrite",
-                     test_thumbnail_image_overwrite);
+    g_test_add_func ("/thumbnail/single/overwrite",
+                     test_thumbnail_overwrite);
     g_test_add_func ("/thumbnail/queue/deprioritize",
                      test_thumbnail_test_queue);
 
