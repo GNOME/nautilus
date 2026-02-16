@@ -422,7 +422,7 @@ test_thumbnail_text (void)
     if (nautilus_can_thumbnail (uri, mime_type, mtime))
     {
         g_test_skip ("System has a thumbnailer for text files, but this test is meant to test"
-                     "a file that don't have one.");
+                     "a file that doesn't have one.");
         test_clear_tmp_dir ();
 
         return;
