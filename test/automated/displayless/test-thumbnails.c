@@ -14,6 +14,7 @@
 
 #include <glib.h>
 #include <gio/gio.h>
+#include <glycin.h>
 #include <gdk-pixbuf/gdk-pixbuf.h>
 
 #define ICON_SIZE 256
@@ -71,17 +72,59 @@ file_has_valid_thumbnail_path (GFile       *file,
     return FALSE;
 }
 
+static void *
+tile_memory (void  *data,
+             gsize  size,
+             uint   n)
+{
+    char *buffer = g_malloc (size * n);
+    char *ptr = buffer;
+
+    for (uint i = 0; i < n; i++, ptr += size)
+    {
+        memcpy (ptr, data, size);
+    }
+
+    return buffer;
+}
+
 static void
 make_image_file (GFile  *file,
                  GList **image_files)
 {
-    g_autoptr (GdkPixbuf) pixbuf = gdk_pixbuf_new (GDK_COLORSPACE_RGB, FALSE, 8,
-                                                   ICON_SIZE, ICON_SIZE);
-    const gchar *image_path = g_file_peek_path (file);
+    guint8 data[4] = {255, 255, 0, 0};
+    gsize length = sizeof (data) * ICON_SIZE * ICON_SIZE;
+    g_autoptr (GBytes) image_bytes = g_bytes_new_take (tile_memory (data,
+                                                                    sizeof (data),
+                                                                    ICON_SIZE * ICON_SIZE),
+                                                       length);
+    g_autoptr (GlyCreator) creator = gly_creator_new ("image/png", NULL);
+
+    g_assert_nonnull (creator);
+    gly_creator_set_sandbox_selector (creator, GLY_SANDBOX_SELECTOR_NOT_SANDBOXED);
+
+    g_autoptr (GlyNewFrame) frame = gly_creator_add_frame (creator,
+                                                           ICON_SIZE, ICON_SIZE,
+                                                           GLY_MEMORY_A8R8G8B8,
+                                                           image_bytes,
+                                                           NULL);
+    g_autoptr (GlyEncodedImage) encoded_image = gly_creator_create (creator, NULL);
+
+    g_assert_nonnull (encoded_image);
+
+    g_autoptr (GBytes) binary_data = gly_encoded_image_get_data (encoded_image);
     g_autoptr (GError) error = NULL;
 
-    gdk_pixbuf_fill (pixbuf, 0xff0000);
-    g_assert_true (gdk_pixbuf_save (pixbuf, image_path, "png", &error, NULL));
+    g_file_replace_contents (file,
+                             g_bytes_get_data (binary_data, NULL),
+                             g_bytes_get_size (binary_data),
+                             NULL,
+                             FALSE,
+                             G_FILE_CREATE_NONE,
+                             NULL,
+                             NULL,
+                             &error);
+
     g_assert_no_error (error);
 
     if (image_files != NULL)
