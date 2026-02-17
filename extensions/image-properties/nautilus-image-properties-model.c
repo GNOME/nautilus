@@ -23,6 +23,7 @@
 
 #include <gexiv2/gexiv2.h>
 #include <glib/gi18n.h>
+#include <glycin.h>
 
 #include <math.h>
 #include <stdio.h>
@@ -124,6 +125,26 @@ append_gexiv_basic_info (NautilusImagesPropertiesModel *self)
     {
         append_basic_info (self, mime_type, width, height);
     }
+}
+
+static gboolean
+append_glycin_basic_info (NautilusImagesPropertiesModel *self,
+                          GFile                         *file)
+{
+    g_autoptr (GlyLoader) loader = gly_loader_new (file);
+    g_autoptr (GlyImage) image = gly_loader_load (loader, NULL);
+
+    if (image == NULL)
+    {
+        return FALSE;
+    }
+
+    append_basic_info (self,
+                       gly_image_get_mime_type (image),
+                       gly_image_get_width (image),
+                       gly_image_get_height (image));
+
+    return TRUE;
 }
 
 static void
@@ -273,9 +294,8 @@ nautilus_image_properties_model_load_from_file_info (NautilusImagesPropertiesMod
         append_gexiv_basic_info (self);
         append_gexiv2_info (self);
     }
-    else
+    else if (!append_glycin_basic_info (self, file))
     {
-        g_warning ("gexiv2 metadata not supported for '%s': %s", path, error->message);
         append_item (self, _("Oops! Something went wrong."), _("Failed to load image information"));
     }
 }
