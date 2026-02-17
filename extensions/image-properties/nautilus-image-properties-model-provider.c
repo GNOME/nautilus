@@ -25,7 +25,6 @@
 #include "nautilus-image-properties-model.h"
 
 #include <nautilus-extension.h>
-#include <gdk-pixbuf/gdk-pixbuf.h>
 
 struct _NautilusImagesPropertiesModelProvider
 {
@@ -41,59 +40,25 @@ G_DEFINE_DYNAMIC_TYPE_EXTENDED (NautilusImagesPropertiesModelProvider,
                                 G_IMPLEMENT_INTERFACE_DYNAMIC (NAUTILUS_TYPE_PROPERTIES_MODEL_PROVIDER,
                                                                properties_group_provider_iface_init))
 
-static gboolean
-is_mime_type_supported (const char *mime_type)
-{
-    g_autoptr (GSList) formats = NULL;
-
-    if (mime_type == NULL)
-    {
-        return FALSE;
-    }
-
-    formats = gdk_pixbuf_get_formats ();
-
-    for (GSList *l = formats; l != NULL; l = l->next)
-    {
-        g_auto (GStrv) mime_types = NULL;
-
-        mime_types = gdk_pixbuf_format_get_mime_types (l->data);
-        if (mime_types == NULL)
-        {
-            continue;
-        }
-
-        if (g_strv_contains ((const char * const *) mime_types, mime_type))
-        {
-            return TRUE;
-        }
-    }
-
-    return FALSE;
-}
-
 static GList *
 get_models (NautilusPropertiesModelProvider *provider,
             GList                           *files)
 {
-    NautilusFileInfo *file_info;
-    g_autofree char *mime_type = NULL;
-    NautilusPropertiesModel *properties_group;
-
     if (files == NULL || files->next != NULL)
     {
         return NULL;
     }
 
-    file_info = NAUTILUS_FILE_INFO (files->data);
-    mime_type = nautilus_file_info_get_mime_type (file_info);
-    if (!is_mime_type_supported (mime_type))
-    {
-        return NULL;
-    }
-    properties_group = nautilus_image_properties_model_new (file_info);
+    NautilusFileInfo *file_info = NAUTILUS_FILE_INFO (files->data);
+    g_autofree char *mime_type = nautilus_file_info_get_mime_type (file_info);
+    g_autofree char *generic_icon = g_content_type_get_generic_icon_name (mime_type);
 
-    return g_list_prepend (NULL, properties_group);
+    if (g_str_equal (generic_icon, "image-x-generic"))
+    {
+        return g_list_prepend (NULL, nautilus_image_properties_model_new (file_info));
+    }
+
+    return NULL;
 }
 
 static void
