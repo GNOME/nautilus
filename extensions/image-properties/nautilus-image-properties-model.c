@@ -79,17 +79,35 @@ nautilus_image_properties_model_init (NautilusImagesPropertiesModel *self)
     self->group_model = g_list_store_new (NAUTILUS_TYPE_PROPERTIES_ITEM);
 }
 
+static char *
+format_pixels (int size)
+{
+    return g_strdup_printf (ngettext ("%d pixel", "%d pixels", size),
+                            size);
+}
+
 static void
-append_basic_info (NautilusImagesPropertiesModel *self)
+append_basic_info (NautilusImagesPropertiesModel *self,
+                   const char                    *mime_type,
+                   int                            width,
+                   int                            height)
+{
+    g_autofree char *mime_description = g_content_type_get_description (mime_type);
+    g_autofree char *type_text = (mime_description != NULL)
+                                 ? g_strdup_printf ("%s (%s)", mime_description, mime_type)
+                                 : g_strdup (mime_type);
+    g_autofree char *width_text = format_pixels (width);
+    g_autofree char *height_text = format_pixels (height);
+
+    append_item (self, _("Image Type"), type_text);
+    append_item (self, _("Width"), width_text);
+    append_item (self, _("Height"), height_text);
+}
+
+static void
+append_gexiv_basic_info (NautilusImagesPropertiesModel *self)
 {
     const char *mime_type = gexiv2_metadata_get_mime_type (self->md);
-    g_autofree char *desc = g_content_type_get_description (mime_type);
-    g_autofree char *value = (desc != NULL)
-                             ? g_strdup_printf ("%s (%s)", desc, mime_type)
-                             : g_strdup (mime_type);
-
-    append_item (self, _("Image Type"), value);
-
     GExiv2Orientation orientation = gexiv2_metadata_get_orientation (self->md, NULL);
     int width = gexiv2_metadata_get_pixel_width (self->md);
     int height = gexiv2_metadata_get_pixel_height (self->md);
@@ -100,27 +118,12 @@ append_basic_info (NautilusImagesPropertiesModel *self)
         || orientation == GEXIV2_ORIENTATION_ROT_90_VFLIP)
     {
         /* Swap height and width due to orientation */
-        int swap = width;
-
-        width = height;
-        height = swap;
+        append_basic_info (self, mime_type, height, width);
     }
-
-    g_free (value);
-    value = g_strdup_printf (ngettext ("%d pixel",
-                                       "%d pixels",
-                                       width),
-                             width);
-
-    append_item (self, _("Width"), value);
-
-    g_free (value);
-    value = g_strdup_printf (ngettext ("%d pixel",
-                                       "%d pixels",
-                                       height),
-                             height);
-
-    append_item (self, _("Height"), value);
+    else
+    {
+        append_basic_info (self, mime_type, width, height);
+    }
 }
 
 static void
@@ -267,7 +270,7 @@ nautilus_image_properties_model_load_from_file_info (NautilusImagesPropertiesMod
 
     if (gexiv2_metadata_open_path (self->md, path, &error))
     {
-        append_basic_info (self);
+        append_gexiv_basic_info (self);
         append_gexiv2_info (self);
     }
     else
