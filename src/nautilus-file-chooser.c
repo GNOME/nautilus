@@ -33,6 +33,8 @@ struct _NautilusFileChooser
 {
     AdwWindow parent_instance;
 
+    GActionGroup *chooser_action_group;
+
     NautilusMode mode;
     char *accept_label;
     char *suggested_name;
@@ -266,8 +268,12 @@ get_file_chooser_activation_location (NautilusFile *file)
 }
 
 static void
-on_accept_button_clicked (NautilusFileChooser *self)
+action_accept (GSimpleAction *action,
+               GVariant      *parameter,
+               gpointer       user_data)
 {
+    NautilusFileChooser *self = NAUTILUS_FILE_CHOOSER (user_data);
+
     if (self->mode == NAUTILUS_MODE_SAVE_FILE)
     {
         if (nautilus_filename_validator_get_will_overwrite (self->validator))
@@ -786,6 +792,11 @@ nautilus_file_chooser_constructed (GObject *object)
     gtk_window_set_default_size (GTK_WINDOW (self), width, height);
 }
 
+const GActionEntry chooser_action_entries[] =
+{
+    { .name = "accept", .activate = action_accept },
+};
+
 static void
 nautilus_file_chooser_init (NautilusFileChooser *self)
 {
@@ -825,6 +836,40 @@ nautilus_file_chooser_init (NautilusFileChooser *self)
     g_signal_connect (factory, "bind", G_CALLBACK (filters_dropdown_bind), self);
     g_signal_connect (factory, "unbind", G_CALLBACK (filters_dropdown_unbind), self);
     gtk_drop_down_set_list_factory (self->filters_dropdown, factory);
+
+    /* Setup Actions */
+    self->chooser_action_group = G_ACTION_GROUP (g_simple_action_group_new ());
+    g_action_map_add_action_entries (G_ACTION_MAP (self->chooser_action_group),
+                                     chooser_action_entries,
+                                     G_N_ELEMENTS (chooser_action_entries),
+                                     self);
+    gtk_widget_insert_action_group (GTK_WIDGET (self),
+                                    "chooser",
+                                    G_ACTION_GROUP (self->chooser_action_group));
+
+    /* Bind "accept" action enabled to nautilus_file_chooser_can_accept(). */
+    GAction *action = g_action_map_lookup_action (G_ACTION_MAP (self->chooser_action_group),
+                                                  "accept");
+    GtkExpression *container_expr, *validator_expr, *slot_expr, **expressions, *closure_expr;
+
+    container_expr = gtk_constant_expression_new (ADW_TYPE_BIN, self->slot_container);
+    validator_expr = gtk_constant_expression_new (NAUTILUS_TYPE_FILENAME_VALIDATOR, self->validator);
+
+    slot_expr = gtk_property_expression_new (ADW_TYPE_BIN, container_expr, "child"),
+    expressions = (GtkExpression *[])
+    {
+        gtk_property_expression_new (NAUTILUS_TYPE_WINDOW_SLOT,
+                                     gtk_expression_ref (slot_expr),
+                                     "selection"),
+        gtk_property_expression_new (NAUTILUS_TYPE_WINDOW_SLOT, slot_expr, "location"),
+        gtk_property_expression_new (NAUTILUS_TYPE_FILENAME_VALIDATOR, validator_expr, "passed"),
+    };
+
+    closure_expr = gtk_cclosure_expression_new (G_TYPE_BOOLEAN, NULL,
+                                                3, expressions,
+                                                G_CALLBACK (nautilus_file_chooser_can_accept),
+                                                NULL, NULL);
+    gtk_expression_bind (closure_expr, action, "enabled", self);
 }
 
 static void
@@ -859,8 +904,6 @@ nautilus_file_chooser_class_init (NautilusFileChooserClass *klass)
     gtk_widget_class_bind_template_child (widget_class, NautilusFileChooser, title_widget);
     gtk_widget_class_bind_template_child (widget_class, NautilusFileChooser, breakpoint);
 
-    gtk_widget_class_bind_template_callback (widget_class, nautilus_file_chooser_can_accept);
-    gtk_widget_class_bind_template_callback (widget_class, on_accept_button_clicked);
     gtk_widget_class_bind_template_callback (widget_class, open_filename_entry);
     gtk_widget_class_bind_template_callback (widget_class, on_filename_undo_button_clicked);
     gtk_widget_class_bind_template_callback (widget_class, on_filename_entry_changed);

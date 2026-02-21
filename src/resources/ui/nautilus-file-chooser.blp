@@ -247,12 +247,7 @@ template $NautilusFileChooser: Adw.Window {
               margin-bottom: 6;
               margin-start: 6;
               margin-end: 6;
-              sensitive: bind $nautilus_file_chooser_can_accept(
-                slot_container.child as <$NautilusWindowSlot>.selection,
-                slot_container.child as <$NautilusWindowSlot>.location,
-                validator.passed
-                ) as <bool>;
-              clicked => $on_accept_button_clicked() swapped;
+              action-name: "chooser.accept";
 
               styles [
                 "pill",
