@@ -37,6 +37,9 @@ void               nautilus_hash_queue_destroy  (NautilusHashQueue *queue);
 gboolean           nautilus_hash_queue_enqueue  (NautilusHashQueue *queue,
                                                  gpointer           key,
                                                  gpointer           value);
+gboolean           nautilus_hash_queue_reenqueue             (NautilusHashQueue *queue,
+                                                              gpointer           key,
+                                                              gpointer           value);
 void               nautilus_hash_queue_remove   (NautilusHashQueue *queue,
                                                  gconstpointer      key);
 gpointer           nautilus_hash_queue_find_item             (NautilusHashQueue *queue,

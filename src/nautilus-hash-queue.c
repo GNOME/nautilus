@@ -88,13 +88,15 @@ nautilus_hash_queue_destroy (NautilusHashQueue *queue)
     g_free (queue);
 }
 
-/** Add an item to the tail of the queue, unless it's already in the queue. */
-gboolean
-nautilus_hash_queue_enqueue (NautilusHashQueue *queue,
-                             gpointer           key,
-                             gpointer           value)
+static gboolean
+nautilus_hash_queue_enqueue_internal (NautilusHashQueue *queue,
+                                      gpointer           key,
+                                      gpointer           value,
+                                      gboolean           reenqueue)
 {
-    if (g_hash_table_lookup (queue->item_to_link_map, key) != NULL)
+    GList *link = g_hash_table_lookup (queue->item_to_link_map, key);
+
+    if (link != NULL)
     {
         /* It's already on the queue. */
         if (queue->key_destroy_func != NULL)
@@ -106,6 +108,12 @@ nautilus_hash_queue_enqueue (NautilusHashQueue *queue,
             queue->value_destroy_func (value);
         }
 
+        if (reenqueue)
+        {
+            g_queue_unlink ((GQueue *) queue, link);
+            g_queue_push_tail_link ((GQueue *) queue, link);
+        }
+
         return FALSE;
     }
 
@@ -114,6 +122,23 @@ nautilus_hash_queue_enqueue (NautilusHashQueue *queue,
     g_hash_table_insert (queue->link_to_item_map, queue->parent.tail, key);
 
     return TRUE;
+}
+
+/** Add an item to the tail of the queue, unless it's already in the queue. */
+gboolean
+nautilus_hash_queue_enqueue (NautilusHashQueue *queue,
+                             gpointer           key,
+                             gpointer           value)
+{
+    return nautilus_hash_queue_enqueue_internal (queue, key, value, FALSE);
+}
+
+gboolean
+nautilus_hash_queue_reenqueue (NautilusHashQueue *queue,
+                               gpointer           key,
+                               gpointer           value)
+{
+    return nautilus_hash_queue_enqueue_internal (queue, key, value, TRUE);
 }
 
 /**
