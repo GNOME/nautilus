@@ -84,7 +84,6 @@ struct _NautilusBatchRenameDialog
      * and position */
     GHashTable *tag_info_table;
 
-    gint row_height;
     gboolean rename_clicked;
 
     GCancellable *metadata_cancellable;
@@ -1673,8 +1672,6 @@ nautilus_batch_rename_dialog_init (NautilusBatchRenameDialog *self)
         tag_data->tag_constants = metadata_tags_constants[i];
         g_hash_table_insert (self->tag_info_table, g_strdup (tag_text_representation), tag_data);
     }
-
-    self->row_height = -1;
 
     g_signal_connect_object (gtk_editable_get_delegate (GTK_EDITABLE (self->name_entry)),
                              "delete-text", G_CALLBACK (on_delete_text), self, 0);
