@@ -45,7 +45,8 @@ struct _NautilusBookmarkList
 
     GList *list;
     GFileMonitor *monitor;
-    GQueue *pending_ops;
+    GCancellable *load_cancellable;
+    GCancellable *save_cancellable;
 };
 
 enum
@@ -144,7 +145,16 @@ do_finalize (GObject *object)
         g_clear_object (&self->monitor);
     }
 
-    g_queue_free (self->pending_ops);
+    if (self->load_cancellable != NULL)
+    {
+        g_cancellable_cancel (self->load_cancellable);
+        g_clear_object (&self->load_cancellable);
+    }
+    if (self->save_cancellable != NULL)
+    {
+        g_cancellable_cancel (self->save_cancellable);
+        g_clear_object (&self->save_cancellable);
+    }
 
     clear (self);
 
@@ -184,20 +194,24 @@ bookmark_monitor_changed_cb (GFileMonitor      *monitor,
 }
 
 static void
+nautilus_bookmarks_monitor_file (NautilusBookmarkList *bookmarks)
+{
+    g_autoptr (GFile) file = nautilus_bookmark_list_get_file ();
+
+    bookmarks->monitor = g_file_monitor_file (file, 0, NULL, NULL);
+    g_file_monitor_set_rate_limit (bookmarks->monitor, 1000);
+    g_signal_connect_object (bookmarks->monitor, "changed",
+                             G_CALLBACK (bookmark_monitor_changed_cb), bookmarks,
+                             G_CONNECT_DEFAULT);
+}
+
+static void
 nautilus_bookmark_list_init (NautilusBookmarkList *bookmarks)
 {
     g_autoptr (GFile) file = NULL;
 
-    bookmarks->pending_ops = g_queue_new ();
-
     nautilus_bookmark_list_load_file (bookmarks);
-
-    file = nautilus_bookmark_list_get_file ();
-    bookmarks->monitor = g_file_monitor_file (file, G_FILE_MONITOR_NONE, NULL, NULL);
-    g_file_monitor_set_rate_limit (bookmarks->monitor, 1000);
-
-    g_signal_connect (bookmarks->monitor, "changed",
-                      G_CALLBACK (bookmark_monitor_changed_cb), bookmarks);
+    nautilus_bookmarks_monitor_file (bookmarks);
 }
 
 static GList *
@@ -404,27 +418,21 @@ nautilus_bookmark_list_remove (NautilusBookmarkList *bookmarks,
 }
 
 static void
-process_next_op (NautilusBookmarkList *bookmarks);
-
-static void
-op_processed_cb (NautilusBookmarkList *self)
-{
-    g_queue_pop_tail (self->pending_ops);
-
-    if (!g_queue_is_empty (self->pending_ops))
-    {
-        process_next_op (self);
-    }
-}
-
-static void
 load_callback (GObject      *source_object,
                GAsyncResult *res,
                gpointer      user_data)
 {
-    NautilusBookmarkList *self = NAUTILUS_BOOKMARK_LIST (source_object);
     g_autoptr (GError) error = NULL;
     g_autofree gchar *contents = g_task_propagate_pointer (G_TASK (res), &error);
+
+    if (g_cancellable_is_cancelled (g_task_get_cancellable (G_TASK (res))))
+    {
+        return;
+    }
+
+    NautilusBookmarkList *self = NAUTILUS_BOOKMARK_LIST (source_object);
+
+    g_clear_object (&self->load_cancellable);
 
     if (error != NULL)
     {
@@ -434,9 +442,11 @@ load_callback (GObject      *source_object,
                        error->message);
         }
 
-        op_processed_cb (self);
         return;
     }
+
+    /* Wipe out old list. */
+    clear (self);
 
     char **lines = g_strsplit (contents, "\n", -1);
     for (guint i = 0; lines[i]; i++)
@@ -467,7 +477,6 @@ load_callback (GObject      *source_object,
     }
 
     g_signal_emit (self, signals[CHANGED], 0);
-    op_processed_cb (self);
 
     g_strfreev (lines);
 }
@@ -484,7 +493,7 @@ load_io_thread (GTask        *task,
 
     file = nautilus_bookmark_list_get_file ();
 
-    g_file_load_contents (file, NULL, &contents, NULL, NULL, &error);
+    g_file_load_contents (file, cancellable, &contents, NULL, NULL, &error);
     g_object_unref (file);
 
     if (error != NULL)
@@ -500,13 +509,22 @@ load_io_thread (GTask        *task,
 static void
 load_file_async (NautilusBookmarkList *self)
 {
+    /* This didn't come from a monitor since it would be temperorarly disabled.
+     * The only other source of load is the initialization, which would never
+     * occur after another operation */
+    g_return_if_fail (self->save_cancellable == NULL);
+
     g_autoptr (GTask) task = NULL;
 
-    /* Wipe out old list. */
-    clear (self);
+    if (self->load_cancellable != NULL)
+    {
+        g_cancellable_cancel (self->load_cancellable);
+        g_clear_object (&self->load_cancellable);
+    }
+    self->load_cancellable = g_cancellable_new ();
 
     task = g_task_new (G_OBJECT (self),
-                       NULL,
+                       self->load_cancellable,
                        load_callback, NULL);
     g_task_run_in_thread (task, load_io_thread);
 }
@@ -516,12 +534,18 @@ save_callback (GObject      *source_object,
                GAsyncResult *res,
                gpointer      user_data)
 {
+    if (g_cancellable_is_cancelled (g_task_get_cancellable (G_TASK (res))))
+    {
+        return;
+    }
+
     NautilusBookmarkList *self = NAUTILUS_BOOKMARK_LIST (source_object);
     g_autoptr (GError) error = NULL;
     gboolean success;
     g_autoptr (GFile) file = NULL;
 
     success = g_task_propagate_boolean (G_TASK (res), &error);
+    g_clear_object (&self->save_cancellable);
 
     if (error != NULL)
     {
@@ -536,14 +560,7 @@ save_callback (GObject      *source_object,
     }
 
     /* re-enable bookmark file monitoring */
-    file = nautilus_bookmark_list_get_file ();
-    self->monitor = g_file_monitor_file (file, 0, NULL, NULL);
-
-    g_file_monitor_set_rate_limit (self->monitor, 1000);
-    g_signal_connect (self->monitor, "changed",
-                      G_CALLBACK (bookmark_monitor_changed_cb), self);
-
-    op_processed_cb (self);
+    nautilus_bookmarks_monitor_file (self);
 }
 
 static void
@@ -552,6 +569,11 @@ save_io_thread (GTask        *task,
                 gpointer      task_data,
                 GCancellable *cancellable)
 {
+    if (g_task_return_error_if_cancelled (task))
+    {
+        return;
+    }
+
     g_autoptr (GFile) file = nautilus_bookmark_list_get_file ();
     g_autoptr (GFile) parent = g_file_get_parent (file);
     const gchar *path = g_file_peek_path (parent);
@@ -575,7 +597,7 @@ save_io_thread (GTask        *task,
     success = g_file_replace_contents (file,
                                        contents, strlen (contents),
                                        NULL, FALSE, 0, NULL,
-                                       NULL, &error);
+                                       cancellable, &error);
 
     if (error != NULL)
     {
@@ -600,6 +622,18 @@ save_file_async (NautilusBookmarkList *self)
         g_clear_object (&self->monitor);
     }
 
+    if (self->save_cancellable != NULL)
+    {
+        g_cancellable_cancel (self->save_cancellable);
+        g_clear_object (&self->save_cancellable);
+    }
+    if (self->load_cancellable != NULL)
+    {
+        g_cancellable_cancel (self->load_cancellable);
+        g_clear_object (&self->load_cancellable);
+    }
+    self->save_cancellable = g_cancellable_new ();
+
     for (GList *l = self->list; l != NULL; l = l->next)
     {
         NautilusBookmark *bookmark = NAUTILUS_BOOKMARK (l->data);
@@ -612,29 +646,12 @@ save_file_async (NautilusBookmarkList *self)
     }
 
     task = g_task_new (G_OBJECT (self),
-                       NULL,
+                       self->save_cancellable,
                        save_callback, NULL);
     gchar *contents = g_string_free_and_steal (bookmark_string);
     g_task_set_task_data (task, contents, g_free);
 
     g_task_run_in_thread (task, save_io_thread);
-}
-
-static void
-process_next_op (NautilusBookmarkList *bookmarks)
-{
-    gint op;
-
-    op = GPOINTER_TO_INT (g_queue_peek_tail (bookmarks->pending_ops));
-
-    if (op == LOAD_JOB)
-    {
-        load_file_async (bookmarks);
-    }
-    else
-    {
-        save_file_async (bookmarks);
-    }
 }
 
 /**
@@ -646,12 +663,7 @@ process_next_op (NautilusBookmarkList *bookmarks)
 static void
 nautilus_bookmark_list_load_file (NautilusBookmarkList *bookmarks)
 {
-    g_queue_push_head (bookmarks->pending_ops, GINT_TO_POINTER (LOAD_JOB));
-
-    if (g_queue_get_length (bookmarks->pending_ops) == 1)
-    {
-        process_next_op (bookmarks);
-    }
+    load_file_async (bookmarks);
 }
 
 /**
@@ -665,12 +677,7 @@ nautilus_bookmark_list_save_file (NautilusBookmarkList *bookmarks)
 {
     g_signal_emit (bookmarks, signals[CHANGED], 0);
 
-    g_queue_push_head (bookmarks->pending_ops, GINT_TO_POINTER (SAVE_JOB));
-
-    if (g_queue_get_length (bookmarks->pending_ops) == 1)
-    {
-        process_next_op (bookmarks);
-    }
+    save_file_async (bookmarks);
 }
 
 gboolean
