@@ -667,10 +667,10 @@ show_uri_callback (GObject      *source_object,
                    GAsyncResult *result,
                    gpointer      user_data)
 {
-    GtkUriLauncher *launcher = (GtkUriLauncher *) source_object;
+    GtkFileLauncher *launcher = GTK_FILE_LAUNCHER (source_object);
     ShowURIData *data = user_data;
 
-    if (!gtk_uri_launcher_launch_finish (launcher, result, NULL))
+    if (!gtk_file_launcher_launch_finish (launcher, result, NULL))
     {
         g_application_open (g_application_get_default (), &data->file, 1, "");
     }
@@ -689,15 +689,16 @@ handle_activate_result (NautilusShellSearchProvider2  *skeleton,
                         guint32                        timestamp,
                         gpointer                       user_data)
 {
-    g_autoptr (GtkUriLauncher) launcher = gtk_uri_launcher_new (result);
+    g_autoptr (GFile) file = g_file_new_for_uri (result);
+    g_autoptr (GtkFileLauncher) launcher = gtk_file_launcher_new (file);
     ShowURIData *data;
 
     data = g_new (ShowURIData, 1);
-    data->file = g_file_new_for_uri (result);
+    data->file = g_steal_pointer (&file);
     data->skeleton = skeleton;
     data->invocation = invocation;
 
-    gtk_uri_launcher_launch (launcher, NULL, NULL, show_uri_callback, data);
+    gtk_file_launcher_launch (launcher, NULL, NULL, show_uri_callback, data);
 
     return TRUE;
 }
