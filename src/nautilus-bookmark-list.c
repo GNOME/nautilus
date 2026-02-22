@@ -108,7 +108,6 @@ static void
 bookmark_in_list_name_changed (NautilusBookmarkList *bookmarks)
 {
     nautilus_bookmark_list_save_file (bookmarks);
-    g_signal_emit (bookmarks, signals[CHANGED], 0);
 }
 
 static void
