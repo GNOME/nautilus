@@ -316,13 +316,16 @@ batch_rename_format (NautilusFile *file,
 }
 
 GList *
-batch_rename_dialog_get_new_names_list (NautilusBatchRenameDialogMode  mode,
-                                        GList                         *selection,
-                                        GList                         *text_chunks,
-                                        GHashTable                    *selection_metadata,
-                                        gchar                         *entry_text,
-                                        gchar                         *replace_text)
+batch_rename_dialog_get_new_names_list (NautilusBatchRenameDialogMode   mode,
+                                        GList                          *selection,
+                                        GList                          *text_chunks,
+                                        GHashTable                     *selection_metadata,
+                                        gchar                          *entry_text,
+                                        gchar                          *replace_text,
+                                        char                          **longest_name)
 {
+    gsize current_max_length = 0;
+    const char *current_max_name = NULL;
     GList *l;
     GList *result;
     GString *new_name;
@@ -353,7 +356,20 @@ batch_rename_dialog_get_new_names_list (NautilusBatchRenameDialogMode  mode,
 
             result = g_list_prepend (result, new_name);
         }
+
+        if (new_name->len > current_max_length)
+        {
+            gsize utf8_length = g_utf8_strlen (new_name->str, -1);
+
+            if (utf8_length > current_max_length)
+            {
+                current_max_length = utf8_length;
+                current_max_name = new_name->str;
+            }
+        }
     }
+
+    *longest_name = g_strdup (current_max_name);
 
     return result;
 }

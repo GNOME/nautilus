@@ -70,6 +70,9 @@ struct _NautilusBatchRenameDialog
     GHashTable *create_date;
     GHashTable *selection_metadata;
 
+    GtkLabel *placeholder_label;
+    gsize placeholder_len;
+
     /* the index of the currently selected conflict */
     gint selected_conflict;
     /* total conflicts number */
@@ -365,7 +368,8 @@ split_entry_text (NautilusBatchRenameDialog *self,
 }
 
 static GList *
-batch_rename_dialog_get_new_names (NautilusBatchRenameDialog *dialog)
+batch_rename_dialog_get_new_names (NautilusBatchRenameDialog  *dialog,
+                                   char                      **longest_name)
 {
     GList *result = NULL;
     GList *selection;
@@ -394,7 +398,8 @@ batch_rename_dialog_get_new_names (NautilusBatchRenameDialog *dialog)
                                                          NULL,
                                                          NULL,
                                                          entry_text,
-                                                         replace_text);
+                                                         replace_text,
+                                                         longest_name);
     }
     else
     {
@@ -405,7 +410,8 @@ batch_rename_dialog_get_new_names (NautilusBatchRenameDialog *dialog)
                                                          text_chunks,
                                                          dialog->selection_metadata,
                                                          entry_text,
-                                                         replace_text);
+                                                         replace_text,
+                                                         longest_name);
         g_list_free_full (text_chunks, string_free);
     }
 
@@ -1026,6 +1032,24 @@ numbering_tag_is_some_added (NautilusBatchRenameDialog *self)
 }
 
 static void
+update_placeholder_label (NautilusBatchRenameDialog *self,
+                          char                      *longest_name)
+{
+    static const int wiggle_room = 5;
+
+    gsize length = g_utf8_strlen (longest_name, -1);
+
+    /* Assure a minimum size and don't resize dialog for every character */
+    if (ABS ((int) (length - self->placeholder_len)) < wiggle_room)
+    {
+        return;
+    }
+
+    self->placeholder_len = length;
+    gtk_label_set_label (self->placeholder_label, longest_name);
+}
+
+static void
 update_display_text (NautilusBatchRenameDialog *dialog)
 {
     if (dialog->selection == NULL)
@@ -1053,7 +1077,9 @@ update_display_text (NautilusBatchRenameDialog *dialog)
         gtk_revealer_set_reveal_child (GTK_REVEALER (dialog->numbering_revealer), TRUE);
     }
 
-    dialog->new_names = batch_rename_dialog_get_new_names (dialog);
+    g_autofree char *longest_name = NULL;
+
+    dialog->new_names = batch_rename_dialog_get_new_names (dialog, &longest_name);
 
     if (have_unallowed_character (dialog))
     {
@@ -1061,6 +1087,7 @@ update_display_text (NautilusBatchRenameDialog *dialog)
     }
 
     file_names_list_has_duplicates_async (dialog);
+    update_placeholder_label (dialog, longest_name);
 }
 
 static void
@@ -1529,6 +1556,7 @@ nautilus_batch_rename_dialog_class_init (NautilusBatchRenameDialogClass *klass)
     gtk_widget_class_bind_template_child (widget_class, NautilusBatchRenameDialog, numbering_order_button);
     gtk_widget_class_bind_template_child (widget_class, NautilusBatchRenameDialog, numbering_order_menu);
     gtk_widget_class_bind_template_child (widget_class, NautilusBatchRenameDialog, numbering_revealer);
+    gtk_widget_class_bind_template_child (widget_class, NautilusBatchRenameDialog, placeholder_label);
     gtk_widget_class_bind_template_child (widget_class, NautilusBatchRenameDialog, conflict_label);
     gtk_widget_class_bind_template_child (widget_class, NautilusBatchRenameDialog, conflict_up);
     gtk_widget_class_bind_template_child (widget_class, NautilusBatchRenameDialog, conflict_down);
