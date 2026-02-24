@@ -113,8 +113,7 @@ menu numbering_order_menu {
 template $NautilusBatchRenameDialog: Adw.Dialog {
   width-request: 360;
   height-request: 300;
-  content-height: 600;
-  content-width: 600;
+  follows-content-size: true;
 
   Adw.Breakpoint narrow_breakpoint {
     condition ("max-width: 480sp")
@@ -320,15 +319,43 @@ template $NautilusBatchRenameDialog: Adw.Dialog {
               };
             };
           }
+
+          StackPage {
+            /* This stack page is never shown and only exists for correct spacing */
+            name: "longest-string";
+
+            child: Box {
+              margin-start: 70;
+              margin-end: 70;
+              orientation: vertical;
+
+              Label {
+                /* Placeholder to soft-request a minimum dialog width without enforcing it */
+                label: "________________________________________________________________";
+                ellipsize: end;
+              }
+
+              Box {
+                /* Holds longest string to prevent list view recycling from changing dialog width */
+                Label placeholder_label {
+                  ellipsize: end;
+                }
+
+                Label {
+                  ellipsize: end;
+                  label: bind placeholder_label.label;
+                }
+              }
+            };
+          }
         }
 
         ScrolledWindow scrolled_window {
           hexpand: false;
           vexpand: true;
-          max-content-height: 300;
-          min-content-height: 240;
-          max-content-width: 600;
-          min-content-width: 360;
+          hscrollbar-policy: never;
+          propagate-natural-height: true;
+          propagate-natural-width: true;
 
           styles [
             "batch-rename-preview",

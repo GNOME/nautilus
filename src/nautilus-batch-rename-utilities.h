@@ -8,12 +8,13 @@
 
 #include <gio/gio.h>
 
-GList* batch_rename_dialog_get_new_names_list          (NautilusBatchRenameDialogMode  mode,
-                                                        GList                         *selection,
-                                                        GList                         *tags_list,
-                                                        GHashTable                    *selection_metadata,
-                                                        gchar                         *entry_text,
-                                                        gchar                         *replace_text);
+GList* batch_rename_dialog_get_new_names_list          (NautilusBatchRenameDialogMode   mode,
+                                                        GList                          *selection,
+                                                        GList                          *tags_list,
+                                                        GHashTable                     *selection_metadata,
+                                                        gchar                          *entry_text,
+                                                        gchar                          *replace_text,
+                                                        char                          **longest_name);
 
 GList* nautilus_batch_rename_dialog_sort        (GList                       *selection,
                                                  SortMode                     mode,
