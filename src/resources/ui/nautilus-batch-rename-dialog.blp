@@ -337,33 +337,48 @@ template $NautilusBatchRenameDialog: Adw.Dialog {
           child: ListView batch_listview {
             factory: BuilderListItemFactory {
               template ListItem {
-                child: Box batch_row {
+                child: CenterBox batch_row {
                   orientation: bind $batch_row_orientation(
                     template.item as <$NautilusBatchRenameItem>
                       .dialog as <$NautilusBatchRenameDialog>
                       .current-breakpoint,
                     template.item as <$NautilusBatchRenameItem>.dialog
                     ) as <Orientation>;
-                  spacing: 6;
                   css-classes: bind $batch_row_conflict_css_name(
                     template.item as <$NautilusBatchRenameItem>.has-conflict
                     ) as <$GStrv>;
 
+                  [start]
                   Label original_name_label {
                     hexpand: true;
                     xalign: 0;
                     use-markup: true;
                     ellipsize: end;
+                    max-width-chars: 0;
                     label: bind template.item as <$NautilusBatchRenameItem>.name-before;
                     tooltip-markup: bind template.item as <$NautilusBatchRenameItem>.name-before;
                   }
 
-                  Box {
-                    orientation: horizontal;
-                    spacing: 6;
+                  [center]
+                  Image centered_arrow {
+                    icon-name: "arrow-next-symbolic";
+                    margin-start: 6;
+                    margin-end: 6;
+                    visible: bind $show_centered_arrow(
+                      template
+                        .item as <$NautilusBatchRenameItem>
+                        .dialog as <$NautilusBatchRenameDialog>
+                        .current-breakpoint,
+                      template.item as <$NautilusBatchRenameItem>.dialog
+                      ) as <bool>;
+                  }
 
+                  [end]
+                  Box {
                     Image {
                       icon-name: "arrow-next-symbolic";
+                      margin-end: 6;
+                      visible: bind centered_arrow.visible inverted;
                     }
 
                     Label result_label {
@@ -371,16 +386,10 @@ template $NautilusBatchRenameDialog: Adw.Dialog {
                       xalign: 0;
                       use-markup: true;
                       ellipsize: end;
+                      max-width-chars: 0;
                       label: bind template.item as <$NautilusBatchRenameItem>.name-after;
                       tooltip-markup: bind template.item as <$NautilusBatchRenameItem>.name-after;
                     }
-                  }
-
-                  SizeGroup {
-                    widgets [
-                      original_name_label,
-                      result_label,
-                    ]
                   }
                 };
               }

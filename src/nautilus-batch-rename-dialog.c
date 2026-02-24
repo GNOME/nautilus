@@ -1410,6 +1410,14 @@ file_names_widget_entry_on_changed (NautilusBatchRenameDialog *self)
     update_display_text (self);
 }
 
+static gboolean
+show_centered_arrow (GtkListItem               *item,
+                     AdwBreakpoint             *current_breakpoint,
+                     NautilusBatchRenameDialog *dialog)
+{
+    return current_breakpoint != dialog->narrow_breakpoint;
+}
+
 static GStrv
 batch_row_conflict_css_name (GtkListItem *item,
                              gboolean     has_conflict)
@@ -1534,6 +1542,7 @@ nautilus_batch_rename_dialog_class_init (NautilusBatchRenameDialogClass *klass)
     gtk_widget_class_bind_template_callback (widget_class, select_next_conflict_down);
     gtk_widget_class_bind_template_callback (widget_class, batch_rename_dialog_on_cancel);
     gtk_widget_class_bind_template_callback (widget_class, prepare_batch_rename);
+    gtk_widget_class_bind_template_callback (widget_class, show_centered_arrow);
     gtk_widget_class_bind_template_callback (widget_class, batch_row_conflict_css_name);
     gtk_widget_class_bind_template_callback (widget_class, batch_row_orientation);
 }
