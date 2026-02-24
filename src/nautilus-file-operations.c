@@ -2412,16 +2412,6 @@ nautilus_file_operations_unmount_mount_full (GtkWindow               *parent_win
     do_unmount (data);
 }
 
-void
-nautilus_file_operations_unmount_mount (GtkWindow *parent_window,
-                                        GMount    *mount,
-                                        gboolean   eject,
-                                        gboolean   check_trash)
-{
-    nautilus_file_operations_unmount_mount_full (parent_window, mount, NULL, eject,
-                                                 check_trash, NULL, NULL);
-}
-
 static void
 mount_callback_data_notify (gpointer  data,
                             GObject  *object)
@@ -2486,15 +2476,6 @@ volume_mount_cb (GObject      *source_object,
     }
 
     g_object_unref (mount_op);
-}
-
-
-void
-nautilus_file_operations_mount_volume (GtkWindow *parent_window,
-                                       GVolume   *volume)
-{
-    nautilus_file_operations_mount_volume_full (parent_window, volume,
-                                                NULL, NULL);
 }
 
 void
