@@ -1278,7 +1278,7 @@ nautilus_file_unmount (NautilusFile                  *file,
         data->file = nautilus_file_ref (file);
         data->callback = callback;
         data->callback_data = callback_data;
-        nautilus_file_operations_unmount_mount_full (parent, file->details->mount, mount_op, FALSE, TRUE, unmount_done, data);
+        nautilus_file_operations_unmount_mount_full (parent, file->details->mount, mount_op, FALSE, unmount_done, data);
     }
     else if (callback)
     {
@@ -1325,7 +1325,7 @@ nautilus_file_eject (NautilusFile                  *file,
         data->file = nautilus_file_ref (file);
         data->callback = callback;
         data->callback_data = callback_data;
-        nautilus_file_operations_unmount_mount_full (parent, file->details->mount, mount_op, TRUE, TRUE, unmount_done, data);
+        nautilus_file_operations_unmount_mount_full (parent, file->details->mount, mount_op, TRUE, unmount_done, data);
     }
     else if (callback)
     {

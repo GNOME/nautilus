@@ -2289,7 +2289,7 @@ do_unmount (GMount          *mount,
         mount_op = get_unmount_operation (sidebar);
         parent = gtk_mount_operation_get_parent (GTK_MOUNT_OPERATION (mount_op));
         nautilus_file_operations_unmount_mount_full (parent, mount, mount_op,
-                                                     FALSE, TRUE, NULL, NULL);
+                                                     FALSE, NULL, NULL);
         g_object_unref (mount_op);
     }
 }
@@ -2416,7 +2416,7 @@ do_eject (GMount          *mount,
     {
         parent = gtk_mount_operation_get_parent (GTK_MOUNT_OPERATION (mount_op));
         nautilus_file_operations_unmount_mount_full (parent, mount, mount_op,
-                                                     TRUE, TRUE, NULL, NULL);
+                                                     TRUE, NULL, NULL);
     }
     /* This code path is probably never reached since mount always exists,
      * and if it doesn't exists we don't offer a way to eject a volume or

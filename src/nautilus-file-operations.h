@@ -107,7 +107,6 @@ void nautilus_file_operations_unmount_mount_full (GtkWindow                 *par
 						  GMount                    *mount,
 						  GMountOperation           *mount_operation,
 						  gboolean                   eject,
-						  gboolean                   check_trash,
 						  NautilusUnmountCallback    callback,
 						  gpointer                   callback_data);
 void nautilus_file_operations_mount_volume_full (GtkWindow                      *parent_window,

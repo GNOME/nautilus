@@ -2377,7 +2377,6 @@ nautilus_file_operations_unmount_mount_full (GtkWindow               *parent_win
                                              GMount                  *mount,
                                              GMountOperation         *mount_operation,
                                              gboolean                 eject,
-                                             gboolean                 check_trash,
                                              NautilusUnmountCallback  callback,
                                              gpointer                 callback_data)
 {
@@ -2399,7 +2398,7 @@ nautilus_file_operations_unmount_mount_full (GtkWindow               *parent_win
     data->eject = eject;
     data->mount = g_object_ref (mount);
 
-    if (check_trash && has_trash_files (mount))
+    if (has_trash_files (mount))
     {
         AdwDialog *dialog;
         dialog = create_empty_trash_prompt (data);
