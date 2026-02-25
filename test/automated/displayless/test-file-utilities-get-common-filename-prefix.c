@@ -120,76 +120,28 @@ get_files_for_names (const GStrv files_names)
 }
 
 static void
-test_empty_file_list (void)
+test_common_prefix_filename (void)
 {
-    g_autofree char *actual = nautilus_get_common_filename_prefix (NULL, 1);
-
-    g_assert_null (actual);
-}
-
-static void
-test_files (void)
-{
-    const GStrv names = (char *[])
+    const TwoStringPrefixTest tests[] =
     {
-        "AB",
-        "AC",
-        NULL
+        { "AC", "AB", "A", 1 },
+        { "AC", "AB/", "A", 1 },
+        { "AC/", "AB/", "A", 1 },
+        { NULL, NULL, NULL, 0 }
     };
-    g_autolist (NautilusFile) files = get_files_for_names (names);
-    g_autofree gchar *prefix = nautilus_get_common_filename_prefix (files, 1);
 
-    g_assert_nonnull (prefix);
-    g_assert_cmpstr (prefix, ==, "A");
-}
+    /* Test empty list */
+    g_assert_null (nautilus_get_common_filename_prefix (NULL, 1));
 
-static void
-test_directories (void)
-{
-    const GStrv names = (char *[])
+    for (guint i = 0; tests[i].a != NULL; i += 1)
     {
-        "AB/",
-        "AC/",
-        NULL
-    };
-    g_autolist (NautilusFile) files = get_files_for_names (names);
-    g_autofree gchar *prefix = nautilus_get_common_filename_prefix (files, 1);
+        const TwoStringPrefixTest *test = &tests[i];
+        const char * const filenames[3] = { test->a, test->b, NULL };
+        g_autolist (NautilusFile) files = get_files_for_names ((GStrv) filenames);
+        g_autofree gchar *actual = nautilus_get_common_filename_prefix (files, 1);
 
-    g_assert_nonnull (prefix);
-    g_assert_cmpstr (prefix, ==, "A");
-}
-
-static void
-test_files_and_directories (void)
-{
-    const GStrv names = (char *[])
-    {
-        "AB",
-        "AC/",
-        NULL
-    };
-    g_autolist (NautilusFile) files = get_files_for_names (names);
-    g_autofree gchar *prefix = nautilus_get_common_filename_prefix (files, 1);
-
-    g_assert_nonnull (prefix);
-    g_assert_cmpstr (prefix, ==, "A");
-}
-
-static void
-setup_test_suite (void)
-{
-    /* nautilus_get_common_filename_prefix () */
-    g_test_add_func ("/get-common-filename-prefix/file-list/1.0",
-                     test_empty_file_list);
-
-    g_test_add_func ("/get-common-filename-prefix/file-list/2.0",
-                     test_files);
-
-    g_test_add_func ("/get-common-filename-prefix/file-list/3.0",
-                     test_directories);
-
-    g_test_add_func ("/get-common-filename-prefix/file-list/4.0",
-                     test_files_and_directories);
+        g_assert_cmpstr (actual, ==, test->prefix);
+    }
 }
 
 int
@@ -205,7 +157,8 @@ main (int   argc,
                      test_common_prefix_two_strings);
     g_test_add_func ("/common-prefix/multiple-strings",
                      test_common_prefix_multiple_strings);
-    setup_test_suite ();
+    g_test_add_func ("/common-prefix/filename",
+                     test_common_prefix_filename);
 
     return g_test_run ();
 }
