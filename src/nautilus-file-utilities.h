@@ -29,6 +29,10 @@
 
 #define NAUTILUS_DESKTOP_ID APPLICATION_ID ".desktop"
 
+
+typedef void (* EmptyCheckCallback) (gpointer callback_data,
+                                     gboolean is_empty);
+
 /* These functions all return something something that needs to be
  * freed with g_free, is not NULL, and is guaranteed to exist.
  */
@@ -40,6 +44,12 @@ gboolean nautilus_is_root_for_scheme                 (GFile      *dir,
 gboolean nautilus_is_home_directory                  (GFile *dir);
 gboolean nautilus_is_home_directory_file             (GFile *dir,
 						      const char *filename);
+
+void
+nautilus_is_directory_empty (GFile              *directory,
+                             EmptyCheckCallback  callback,
+                             gpointer            callback_data);
+
 GMount * nautilus_get_mounted_mount_for_root         (GFile *location);
 
 gboolean nautilus_should_use_templates_directory     (void);

@@ -2086,6 +2086,8 @@ typedef struct
     gboolean eject;
     GMount *mount;
     GMountOperation *mount_operation;
+    gboolean trash_empty;
+    gboolean pending_checks;
     GtkWindow *parent_window;
     NautilusUnmountCallback callback;
     gpointer callback_data;
@@ -2272,33 +2274,6 @@ get_trash_dirs_for_mount (GMount *mount)
     return list;
 }
 
-static gboolean
-has_trash_files (GMount *mount)
-{
-    GList *dirs, *l;
-    GFile *dir;
-    gboolean res;
-
-    dirs = get_trash_dirs_for_mount (mount);
-
-    res = FALSE;
-
-    for (l = dirs; l != NULL; l = l->next)
-    {
-        dir = l->data;
-
-        if (dir_has_files (dir))
-        {
-            res = TRUE;
-            break;
-        }
-    }
-
-    g_list_free_full (dirs, g_object_unref);
-
-    return res;
-}
-
 static AdwDialog *
 create_empty_trash_prompt (UnmountData *data)
 {
@@ -2372,6 +2347,33 @@ empty_trash_prompt_cb (AdwDialog *dialog,
     }
 }
 
+static void
+file_operations_trash_dir_checked (gpointer callback_data,
+                                   gboolean is_empty)
+{
+    UnmountData *data = callback_data;
+
+    data->trash_empty &= is_empty;
+    data->pending_checks -= 1;
+
+    if (data->pending_checks != 0)
+    {
+        return;
+    }
+
+    if (data->trash_empty)
+    {
+        do_unmount (data);
+    }
+    else
+    {
+        AdwDialog *dialog = create_empty_trash_prompt (data);
+
+        g_signal_connect (dialog, "response", G_CALLBACK (empty_trash_prompt_cb), data);
+        adw_dialog_present (dialog, GTK_WIDGET (data->parent_window));
+    }
+}
+
 void
 nautilus_file_operations_unmount_mount_full (GtkWindow               *parent_window,
                                              GMount                  *mount,
@@ -2380,6 +2382,8 @@ nautilus_file_operations_unmount_mount_full (GtkWindow               *parent_win
                                              NautilusUnmountCallback  callback,
                                              gpointer                 callback_data)
 {
+    g_autolist (GFile) trash_dirs = get_trash_dirs_for_mount (mount);
+    guint number_dirs = g_list_length (trash_dirs);
     UnmountData *data;
 
     data = g_new0 (UnmountData, 1);
@@ -2397,18 +2401,21 @@ nautilus_file_operations_unmount_mount_full (GtkWindow               *parent_win
     }
     data->eject = eject;
     data->mount = g_object_ref (mount);
+    data->trash_empty = TRUE;
+    data->pending_checks = number_dirs;
 
-    if (has_trash_files (mount))
+    if (number_dirs == 0)
     {
-        AdwDialog *dialog;
-        dialog = create_empty_trash_prompt (data);
-
-        g_signal_connect (dialog, "response", G_CALLBACK (empty_trash_prompt_cb), data);
-        adw_dialog_present (dialog, GTK_WIDGET (parent_window));
+        do_unmount (data);
         return;
     }
 
-    do_unmount (data);
+    for (GFileList *l = trash_dirs; l != NULL; l = l->next)
+    {
+        GFile *directory = l->data;
+
+        nautilus_is_directory_empty (directory, file_operations_trash_dir_checked, data);
+    }
 }
 
 static void

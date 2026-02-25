@@ -238,6 +238,69 @@ nautilus_is_root_for_scheme (GFile      *dir,
             !g_file_has_parent (dir, NULL));
 }
 
+typedef struct
+{
+    EmptyCheckCallback callback;
+    gpointer callback_data;
+} EmptyCheck;
+
+static void
+directory_file_info_callback (GObject      *source_object,
+                              GAsyncResult *res,
+                              gpointer      user_data)
+{
+    g_autofree EmptyCheck *data = user_data;
+    GFileEnumerator *enumerator = G_FILE_ENUMERATOR (source_object);
+    g_autoptr (GError) error = NULL;
+    g_autolist (GFile) files = g_file_enumerator_next_files_finish (enumerator,
+                                                                    res, &error);
+    /* Consider directory empty when no files can be listed */
+    gboolean is_empty = (error != NULL || files == NULL);
+
+    data->callback (data->callback_data, is_empty);
+}
+
+static void
+directory_empty_check_callback (GFile        *directory,
+                                GAsyncResult *res,
+                                gpointer      user_data)
+{
+    g_autoptr (GError) error = NULL;
+    g_autoptr (GFileEnumerator) enumerator = g_file_enumerate_children_finish (directory,
+                                                                               res, &error);
+
+    if (error != NULL)
+    {
+        g_autofree EmptyCheck *data = user_data;
+
+        /* Consider non-existing directories empty */
+        data->callback (data->callback_data, TRUE);
+    }
+    else
+    {
+        g_file_enumerator_next_files_async (enumerator,
+                                            1, /* one item is enough for empty test */
+                                            G_PRIORITY_DEFAULT,
+                                            NULL,
+                                            directory_file_info_callback,
+                                            user_data);
+    }
+}
+
+void
+nautilus_is_directory_empty (GFile              *directory,
+                             EmptyCheckCallback  callback,
+                             gpointer            callback_data)
+{
+    EmptyCheck *data = g_new0 (EmptyCheck, 1);
+    data->callback = callback;
+    data->callback_data = callback_data;
+
+    g_file_enumerate_children_async (directory, G_FILE_ATTRIBUTE_STANDARD_NAME, 0,
+                                     G_PRIORITY_DEFAULT, NULL,
+                                     (GAsyncReadyCallback) directory_empty_check_callback, data);
+}
+
 GMount *
 nautilus_get_mounted_mount_for_root (GFile *location)
 {
