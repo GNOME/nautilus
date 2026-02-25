@@ -59,7 +59,21 @@ test_common_prefix_two_strings (void)
 }
 
 static void
-test_many_strings (void)
+test_swapped_char (GStrv list,
+                   guint position)
+{
+    char swapped_char = list[position][2];
+
+    list[position][2] = 'X';
+
+    g_autofree char *actual = nautilus_get_common_filename_prefix_from_filenames ((const char * const *) list, 4);
+    g_assert_null (actual);
+
+    list[position][2] = swapped_char;
+}
+
+static void
+test_common_prefix_multiple_strings (void)
 {
     const int n_strings = 500;
     g_auto (GStrv) list = g_new (char *, n_strings + 1);
@@ -73,56 +87,12 @@ test_many_strings (void)
 
     actual = nautilus_get_common_filename_prefix_from_filenames ((const char * const *) list, 4);
     g_assert_cmpstr ("we are no longer the knights who say nii", ==, actual);
-}
 
-static void
-test_many_strings_last_differs (void)
-{
-    const int n_strings = 500;
-    g_auto (GStrv) list = g_new (char *, n_strings + 1);
-    g_autofree char *actual = NULL;
-    char *filename;
+    /* make first string differ */
+    test_swapped_char (list, 0);
 
-    for (int i = 0; i < n_strings; ++i)
-    {
-        filename = g_strdup_printf ("we are no longer the knights who say nii%d", i);
-
-        if (i == n_strings - 1)
-        {
-            filename[2] = 'X';
-        }
-
-        list[i] = filename;
-    }
-    list[n_strings] = NULL;
-
-    actual = nautilus_get_common_filename_prefix_from_filenames ((const char * const *) list, 4);
-    g_assert_null (actual);
-}
-
-static void
-test_many_strings_first_differs (void)
-{
-    const int n_strings = 500;
-    g_auto (GStrv) list = g_new (char *, n_strings + 1);
-    g_autofree char *actual = NULL;
-    char *filename;
-
-    for (int i = 0; i < n_strings; ++i)
-    {
-        filename = g_strdup_printf ("we are no longer the knights who say nii%d", i);
-
-        if (i == 0)
-        {
-            filename[2] = 'X';
-        }
-
-        list[i] = filename;
-    }
-    list[n_strings] = NULL;
-
-    actual = nautilus_get_common_filename_prefix_from_filenames ((const char * const *) list, 4);
-    g_assert_null (actual);
+    /* make last string differ */
+    test_swapped_char (list, n_strings - 1);
 }
 
 static GList *
@@ -208,14 +178,6 @@ test_files_and_directories (void)
 static void
 setup_test_suite (void)
 {
-    /* nautilus_get_common_filename_prefix_from_filenames () */
-    g_test_add_func ("/get-common-filename-prefix/string-list/6.0",
-                     test_many_strings);
-    g_test_add_func ("/get-common-filename-prefix/string-list/6.1",
-                     test_many_strings_last_differs);
-    g_test_add_func ("/get-common-filename-prefix/string-list/6.2",
-                     test_many_strings_first_differs);
-
     /* nautilus_get_common_filename_prefix () */
     g_test_add_func ("/get-common-filename-prefix/file-list/1.0",
                      test_empty_file_list);
@@ -241,6 +203,8 @@ main (int   argc,
 
     g_test_add_func ("/common-prefix/two-strings",
                      test_common_prefix_two_strings);
+    g_test_add_func ("/common-prefix/multiple-strings",
+                     test_common_prefix_multiple_strings);
     setup_test_suite ();
 
     return g_test_run ();
