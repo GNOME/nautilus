@@ -12,7 +12,7 @@ tests = {
   'test-file-operations-move-files': {},
   'test-file-operations-rename': {},
   'test-file-operations-trash-or-delete': {},
-  'test-file-utilities-get-common-filename-prefix': {},
+  'test-file-utilities': {},
   'test-filename-common-prefix': {},
   'test-filename-utilities': {},
   'test-nautilus-search-engine': {},
