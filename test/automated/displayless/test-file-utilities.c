@@ -144,6 +144,49 @@ test_common_prefix_filename (void)
     }
 }
 
+static int empty_tests = 0;
+
+static void
+empty_check_callback (gpointer callback_data,
+                      gboolean is_empty)
+{
+    gboolean expected = GPOINTER_TO_INT (callback_data);
+
+    g_assert_cmpint (expected, ==, is_empty);
+    empty_tests -= 1;
+}
+
+static void
+test_directory_empty_check (void)
+{
+    const GStrv hierarchy = (char *[])
+    {
+        "empty_check/",
+        "empty_check/empty_dir/",
+        "empty_check/non_empty_dir/",
+        "empty_check/non_empty_dir/file1",
+        "empty_check/nested_dir/",
+        "empty_check/nested_dir/dir/",
+        NULL
+    };
+    g_autoptr (GFile) location = g_file_new_build_filename (test_get_tmp_dir (),
+                                                            "empty_check", NULL);
+    g_autoptr (GFile) empty = g_file_get_child (location, "empty_dir");
+    g_autoptr (GFile) non_empty = g_file_get_child (location, "non_empty_dir");
+    g_autoptr (GFile) nested = g_file_get_child (location, "nested_dir");
+
+    file_hierarchy_create (hierarchy, "");
+
+    empty_tests = 3;
+    nautilus_is_directory_empty (empty, empty_check_callback, GINT_TO_POINTER (TRUE));
+    nautilus_is_directory_empty (non_empty, empty_check_callback, GINT_TO_POINTER (FALSE));
+    nautilus_is_directory_empty (nested, empty_check_callback, GINT_TO_POINTER (FALSE));
+
+    ITER_CONTEXT_WHILE (empty_tests > 0);
+
+    test_clear_tmp_dir ();
+}
+
 int
 main (int   argc,
       char *argv[])
@@ -159,6 +202,9 @@ main (int   argc,
                      test_common_prefix_multiple_strings);
     g_test_add_func ("/common-prefix/filename",
                      test_common_prefix_filename);
+
+    g_test_add_func ("/directory-empty-check",
+                     test_directory_empty_check);
 
     return g_test_run ();
 }
