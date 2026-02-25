@@ -796,8 +796,7 @@ nautilus_application_init (NautilusApplication *self)
             "no-desktop", '\0', G_OPTION_FLAG_HIDDEN, G_OPTION_ARG_NONE, NULL,
             NULL, NULL
         },
-
-        { NULL }
+        {}
     };
 
     self->notifications = g_hash_table_new_full (g_str_hash,
