@@ -128,70 +128,66 @@ real_update_search_information (SearchInfoData *search_info_data)
     }
 
     NautilusQueryEditor *editor = search_info->self;
-    g_autofree gchar *uri_scheme = g_file_get_uri_scheme (editor->location);
     gboolean is_remote = search_info->is_remote;
     gboolean is_external = search_info->is_external;
 
-    if (!nautilus_scheme_is_internal (uri_scheme))
+    /* Subfolders are disabled */
+    if (!nautilus_query_recursive (editor->query))
     {
+        adw_status_page_set_description (ADW_STATUS_PAGE (editor->status_page),
+                                         _("Search may be slow and will not include "
+                                           "subfolders or file contents")
+                                         );
+    }
+    else
+    {
+        adw_status_page_set_description (ADW_STATUS_PAGE (editor->status_page),
+                                         _("Search may be slow and will not include "
+                                           "file contents")
+                                         );
+    }
+
+    if (is_remote)
+    {
+        adw_status_page_set_title (ADW_STATUS_PAGE (editor->status_page),
+                                   _("Remote Location"));
+        gtk_widget_set_visible (editor->search_info_button, TRUE);
+    }
+    else if (is_external)
+    {
+        adw_status_page_set_title (ADW_STATUS_PAGE (editor->status_page),
+                                   _("External Drive"));
+        gtk_widget_set_visible (editor->search_info_button, TRUE);
+    }
+    else if (!nautilus_localsearch_directory_is_tracked (editor->location))
+    {
+        adw_status_page_set_title (ADW_STATUS_PAGE (editor->status_page),
+                                   _("Folder Not in Search Locations"));
+        gtk_widget_set_visible (editor->search_info_button, TRUE);
+        gtk_widget_set_visible (editor->search_settings_button, TRUE);
+    }
+    else if (nautilus_localsearch_directory_is_single (editor->location))
+    {
+        adw_status_page_set_title (ADW_STATUS_PAGE (editor->status_page),
+                                   _("Subfolders Not in Search Locations"));
+        gtk_widget_set_visible (editor->search_info_button, TRUE);
+        gtk_widget_set_visible (editor->search_settings_button, TRUE);
+
+
         /* Subfolders are disabled */
         if (!nautilus_query_recursive (editor->query))
         {
             adw_status_page_set_description (ADW_STATUS_PAGE (editor->status_page),
-                                             _("Search may be slow and will not include "
-                                               "subfolders or file contents")
+                                             _("Some subfolders will not be included "
+                                               "in search results")
                                              );
         }
         else
         {
             adw_status_page_set_description (ADW_STATUS_PAGE (editor->status_page),
-                                             _("Search may be slow and will not include "
-                                               "file contents")
+                                             _("Search will be slower and will not include "
+                                               "file contents for some folders")
                                              );
-        }
-
-        if (is_remote)
-        {
-            adw_status_page_set_title (ADW_STATUS_PAGE (editor->status_page),
-                                       _("Remote Location"));
-            gtk_widget_set_visible (editor->search_info_button, TRUE);
-        }
-        else if (is_external)
-        {
-            adw_status_page_set_title (ADW_STATUS_PAGE (editor->status_page),
-                                       _("External Drive"));
-            gtk_widget_set_visible (editor->search_info_button, TRUE);
-        }
-        else if (!nautilus_localsearch_directory_is_tracked (editor->location))
-        {
-            adw_status_page_set_title (ADW_STATUS_PAGE (editor->status_page),
-                                       _("Folder Not in Search Locations"));
-            gtk_widget_set_visible (editor->search_info_button, TRUE);
-            gtk_widget_set_visible (editor->search_settings_button, TRUE);
-        }
-        else if (nautilus_localsearch_directory_is_single (editor->location))
-        {
-            adw_status_page_set_title (ADW_STATUS_PAGE (editor->status_page),
-                                       _("Subfolders Not in Search Locations"));
-            gtk_widget_set_visible (editor->search_info_button, TRUE);
-            gtk_widget_set_visible (editor->search_settings_button, TRUE);
-
-
-            /* Subfolders are disabled */
-            if (!nautilus_query_recursive (editor->query))
-            {
-                adw_status_page_set_description (ADW_STATUS_PAGE (editor->status_page),
-                                                 _("Some subfolders will not be included "
-                                                   "in search results")
-                                                 );
-            }
-            else
-            {
-                adw_status_page_set_description (ADW_STATUS_PAGE (editor->status_page),
-                                                 _("Search will be slower and will not include "
-                                                   "file contents for some folders")
-                                                 );
-            }
         }
     }
 }
@@ -258,6 +254,13 @@ update_search_information (NautilusQueryEditor *editor)
     gtk_widget_set_visible (editor->search_info_button, FALSE);
 
     if (editor->location == NULL)
+    {
+        return;
+    }
+
+    g_autofree gchar *uri_scheme = g_file_get_uri_scheme (editor->location);
+
+    if (nautilus_scheme_is_internal (uri_scheme))
     {
         return;
     }
