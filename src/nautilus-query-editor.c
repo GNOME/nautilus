@@ -105,38 +105,35 @@ update_fts_sensitivity (NautilusQueryEditor *editor)
                                                nautilus_query_can_search_content (editor->query));
 }
 
-static void
-find_enclosing_mount_cb (GObject      *source_object,
-                         GAsyncResult *res,
-                         gpointer      user_data)
+typedef struct
 {
-    NautilusQueryEditor *editor;
-    g_autoptr (GMount) mount = NULL;
-    g_autoptr (GError) error = NULL;
-    g_autoptr (GVolume) volume = NULL;
+    gboolean is_remote_ready;
+    gboolean is_remote;
+    gboolean is_external_ready;
+    gboolean is_external;
+    NautilusQueryEditor *self;
+} SearchInfoData;
 
-    editor = user_data;
+G_DEFINE_AUTOPTR_CLEANUP_FUNC (SearchInfoData, g_rc_box_release)
 
-    mount = g_file_find_enclosing_mount_finish (G_FILE (source_object),
-                                                res, &error);
+static void
+real_update_search_information (SearchInfoData *search_info_data)
+{
+    g_autoptr (SearchInfoData) search_info = search_info_data;
 
-    if (g_error_matches (error, G_IO_ERROR, G_IO_ERROR_CANCELLED))
+    if (!search_info_data->is_external_ready ||
+        !search_info_data->is_remote_ready)
     {
-        /* The operation was cancelled and the editor was already freed, bailout. */
         return;
     }
 
+    NautilusQueryEditor *editor = search_info->self;
     g_autofree gchar *uri_scheme = g_file_get_uri_scheme (editor->location);
-
-    if (mount != NULL)
-    {
-        volume = g_mount_get_volume (mount);
-    }
+    gboolean is_remote = search_info->is_remote;
+    gboolean is_external = search_info->is_external;
 
     if (!nautilus_scheme_is_internal (uri_scheme))
     {
-        g_autoptr (NautilusFile) file = nautilus_file_get (editor->location);
-
         /* Subfolders are disabled */
         if (!nautilus_query_recursive (editor->query))
         {
@@ -153,13 +150,13 @@ find_enclosing_mount_cb (GObject      *source_object,
                                              );
         }
 
-        if (nautilus_file_is_remote (file))
+        if (is_remote)
         {
             adw_status_page_set_title (ADW_STATUS_PAGE (editor->status_page),
                                        _("Remote Location"));
             gtk_widget_set_visible (editor->search_info_button, TRUE);
         }
-        else if (volume != NULL && is_external_volume (volume))
+        else if (is_external)
         {
             adw_status_page_set_title (ADW_STATUS_PAGE (editor->status_page),
                                        _("External Drive"));
@@ -200,19 +197,86 @@ find_enclosing_mount_cb (GObject      *source_object,
 }
 
 static void
+query_filesystem_info_cb (GObject      *source_object,
+                          GAsyncResult *res,
+                          gpointer      user_data)
+{
+    g_autoptr (SearchInfoData) search_info_data = user_data;
+    g_autoptr (GError) error = NULL;
+    g_autoptr (GFileInfo) info = g_file_query_filesystem_info_finish (G_FILE (source_object),
+                                                                      res, &error);
+
+    if (g_error_matches (error, G_IO_ERROR, G_IO_ERROR_CANCELLED))
+    {
+        /* The operation was cancelled and the editor was already freed, bailout. */
+        return;
+    }
+
+    if (info != NULL &&
+        g_file_info_has_attribute (info, G_FILE_ATTRIBUTE_FILESYSTEM_REMOTE))
+    {
+        search_info_data->is_remote =
+            g_file_info_get_attribute_boolean (info, G_FILE_ATTRIBUTE_FILESYSTEM_REMOTE);
+    }
+
+    search_info_data->is_remote_ready = TRUE;
+    real_update_search_information (g_steal_pointer (&search_info_data));
+}
+
+static void
+find_enclosing_mount_cb (GObject      *source_object,
+                         GAsyncResult *res,
+                         gpointer      user_data)
+{
+    g_autoptr (SearchInfoData) search_info_data = user_data;
+    g_autoptr (GMount) mount = NULL;
+    g_autoptr (GError) error = NULL;
+
+    mount = g_file_find_enclosing_mount_finish (G_FILE (source_object), res, &error);
+
+    if (g_error_matches (error, G_IO_ERROR, G_IO_ERROR_CANCELLED))
+    {
+        /* The operation was cancelled and the editor was already freed, bailout. */
+        return;
+    }
+
+    if (mount != NULL)
+    {
+        g_autoptr (GVolume) volume = g_mount_get_volume (mount);
+
+        search_info_data->is_external = volume != NULL && is_external_volume (volume);
+    }
+
+    search_info_data->is_external_ready = TRUE;
+    real_update_search_information (g_steal_pointer (&search_info_data));
+}
+
+static void
 update_search_information (NautilusQueryEditor *editor)
 {
     gtk_widget_set_visible (editor->search_settings_button, FALSE);
     gtk_widget_set_visible (editor->search_info_button, FALSE);
 
-    if (editor->location != NULL)
+    if (editor->location == NULL)
     {
-        g_file_find_enclosing_mount_async (editor->location,
-                                           G_PRIORITY_DEFAULT,
-                                           editor->cancellable,
-                                           find_enclosing_mount_cb,
-                                           editor);
+        return;
     }
+
+    g_autoptr (SearchInfoData) search_info = g_rc_box_new0 (SearchInfoData);
+
+    search_info->self = editor;
+
+    g_file_query_filesystem_info_async (editor->location,
+                                        G_FILE_ATTRIBUTE_FILESYSTEM_REMOTE,
+                                        G_PRIORITY_DEFAULT,
+                                        editor->cancellable,
+                                        query_filesystem_info_cb,
+                                        g_rc_box_acquire (search_info));
+    g_file_find_enclosing_mount_async (editor->location,
+                                       G_PRIORITY_DEFAULT,
+                                       editor->cancellable,
+                                       find_enclosing_mount_cb,
+                                       g_steal_pointer (&search_info));
 }
 
 static void
