@@ -94,9 +94,12 @@ search_engine_start_provider (NautilusSearchProvider *provider,
     {
         return;
     }
-    else if (nautilus_search_provider_start (provider, self->query))
+
+    self->providers_running++;
+
+    if (!nautilus_search_provider_start (provider, self->query))
     {
-        self->providers_running++;
+        self->providers_running--;
     }
 }
 
