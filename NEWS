@@ -1,3 +1,39 @@
+Major Changes in 50.rc
+======================
+* Enhancements:
+- Add a test for file chooser (Khalid Abu Shawarib)
+- Distinguish automatic and manual file selections (Khalid Abu Shawarib)
+- Avoid unnecessary delay in operation dialogs (parzival, Peter Eisenmann)
+- Add accessible roles to icons (Sergio Costas)
+- Constrain file chooser label to single line (Khalid Abu Shawarib)
+- Add release script (Peter Eisenmann)
+
+* Bugfixes:
+- Query filesystem info async (Khalid Abu Shawarib)
+- Correctly launch files from shell search provider (Khalid Abu Shawarib)
+- Make archive test run reliably (Khalid Abu Shawarib)
+- Fix crash when cancelling file enumeration (Khalid Abu Shawarib)
+- Fix file chooser portal choice states (Khalid Abu Shawarib)
+- Fix potential icon cache crash (Khalid Abu Shawarib)
+- Rework and fix location entry autocompletion functionality broken since beta (Peter Eisenmann)
+- Add glycin fallback for image properties e.g. for svg (Peter Eisenmann)
+- Fix search popover time type setting (Peter Eisenmann)
+- Revert direct calling of callbacks which caused various issues (Peter Eisenmann)
+- Fix timing issue with search result submission (Peter Eisenmann)
+- Make free-floating property windows not block main window (Peter Eisenmann)
+- No checkerboard icon background for multi-file properties (Peter Eisenmann)
+- Fix image properties with recent files (Khalid Abu Shawarib)
+- Don't set file chooser name entry on auto selections (Khalid Abu Shawarib)
+- Make batch rename dialog entries uniform again (Khalid Abu Shawarib)
+
+* Cleanups:
+- Various test adjustments (Khalid Abu Shawarib, Peter Eisenmann)
+- Use AdwDialog:focus-widget (Lukáš Tyrychtr, Peter Eisenmann)
+- Add .editorconfig rules and Thread Sanitizer suppression file (Khalid Abu Shawarib)
+- Rework trash directory empty check (Peter Eisenmann)
+
+* Translation updates (GNOME Translation Project contributors)
+
 Major Changes in 50.beta
 ========================
 * Build:
