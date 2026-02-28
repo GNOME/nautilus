@@ -104,10 +104,11 @@ release_notes=$(git diff --unified=0 --color=never NEWS | grep -E '^\+[^+]' | se
 date=$(date --iso-8601)
 next_minor="${next_version##*.}"
 type=$([[ "$next_minor" =~ ^[1-9][0-9]*$ ]] && echo "stable" || echo "development")
+metainfo_release_version=$(echo ${release_version} | sed -E "s/\.([a-z]+)/~\1/")
 
 snapshot="<release version=\"@release-version@\" type=\"snapshot\"\/>"
 placeholder="<!--NEXT_RELEASE_PLACEHOLDER-->"
-new_entry="<release version=\"${release_version}\" type=\"${type}\" date=\"${date}\"\/>"
+new_entry="<release version=\"${metainfo_release_version}\" type=\"${type}\" date=\"${date}\"\/>"
 replace="s/${snapshot}/${placeholder}\n    ${new_entry}/"
 sed -i "${replace}" "${metainfo_file}"
 
