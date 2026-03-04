@@ -10,34 +10,6 @@ include:
           tarball-artifact-path: "${TARBALL_ARTIFACT_PATH}"
 
 variables:
-    DEPENDENCIES:
-        git
-        gcc
-        gdb
-        meson
-        libasan
-        uncrustify
-        gcovr
-        xwayland-run
-        mutter
-        dbus-x11
-        glibc-devel
-        glib2-devel
-        glycin-devel
-        glycin-gtk4-devel
-        gtk4-devel
-        libadwaita-devel
-        libselinux-devel
-        gettext
-        libgexiv2-devel
-        localsearch
-        blueprint-compiler
-        dbus-daemon
-        gnome-desktop4-devel
-        gnome-autoar-devel
-        libportal-devel
-        libportal-gtk4-devel
-        libcloudproviders-devel
     GIT_SUBMODULE_STRATEGY: normal
     MESON_BUILD_DIR: _build
     CI_REGISTRY_IMAGE: registry.gitlab.gnome.org/gnome/nautilus
@@ -77,25 +49,86 @@ workflow:
                $CI_PIPELINE_SOURCE == "web") &&
               $CI_COMMIT_TITLE !~ /^Update.*translation$/
 
-.nautilus.fedora:
+.fedora:
     variables:
         FDO_DISTRIBUTION_VERSION: rawhide
-        FDO_DISTRIBUTION_TAG: '2026-02-07.0'
+        BASE_TAG: '2026-02-07.0'
         FDO_DISTRIBUTION_COMPRESSION_FORMAT: zstd:chunked
+        FDO_DISTRIBUTION_PACKAGES:
+            git
+            gcc
+            gdb
+            meson
+            libasan
+            uncrustify
+            gcovr
+            xwayland-run
+            mutter
+            dbus-x11
+            glibc-devel
+            glib2-devel
+            glycin-devel
+            glycin-gtk4-devel
+            gtk4-devel
+            libadwaita-devel
+            libselinux-devel
+            gettext
+            libgexiv2-devel
+            localsearch
+            blueprint-compiler
+            dbus-daemon
+            gnome-desktop4-devel
+            gnome-autoar-devel
+            libportal-devel
+            libportal-gtk4-devel
+            libcloudproviders-devel
+
+.fedora-x86_64:
+    extends:
+        - .fedora
+    variables:
+        FDO_DISTRIBUTION_TAG: "x86_64-$BASE_TAG"
     needs:
-        - job: "update image"
+        - job: "update-fedora-image@x86_64"
+          optional: true
+
+.fedora-arm64:
+    extends:
+        - .fedora
+    tags:
+        - aarch64
+    variables:
+        FDO_DISTRIBUTION_TAG: "aarch64-$BASE_TAG"
+    needs:
+        - job: "update-fedora-image@arm64"
           optional: true
 
 
-update image:
+update-fedora-image@x86_64:
     extends:
         - .fdo.container-build@fedora
-        - .nautilus.fedora
+        - .fedora-x86_64
     stage: image
     needs: []
     variables:
         GIT_STRATEGY: none
-        FDO_DISTRIBUTION_PACKAGES: $DEPENDENCIES
+        FDO_DISTRIBUTION_EXEC: ".gitlab/image-script.sh"
+        CFLAGS: "-fno-omit-frame-pointer"
+    rules:
+        - changes:
+            - .gitlab-ci.yml
+            - .gitlab/**/*
+        - if: $CI_PROJECT_NAMESPACE != "GNOME"
+          when: never
+
+update-fedora-image@arm64:
+    extends:
+        - .fdo.container-build@fedora
+        - .fedora-arm64
+    stage: image
+    needs: []
+    variables:
+        GIT_STRATEGY: none
         FDO_DISTRIBUTION_EXEC: ".gitlab/image-script.sh"
         CFLAGS: "-fno-omit-frame-pointer"
     rules:
@@ -109,7 +142,7 @@ update image:
 potfile:
     extends:
         - .fdo.distribution-image@fedora
-        - .nautilus.fedora
+        - .fedora-x86_64
     stage: review
     script:
         - build-aux/check-potfiles.sh
@@ -117,7 +150,7 @@ potfile:
 style check:
     extends:
         - .fdo.distribution-image@fedora
-        - .nautilus.fedora
+        - .fedora-x86_64
     stage: review
     artifacts:
         name: 'Style check artifacts'
@@ -136,9 +169,29 @@ style check:
 fedora_rawhide@x86_64:
     extends:
         - .fdo.distribution-image@fedora
-        - .nautilus.fedora
+        - .fedora-x86_64
         - .vars-devel
     stage: test
+    script:
+        - meson setup -Dextensions=false -Db_coverage=true -Dtests=all $MESON_BUILD_DIR
+        - meson compile -C $MESON_BUILD_DIR
+        # Run the tests inside an XWayland server inside a headless Wayland compositor.
+        # FIXME: Use wlheadless-run again, which broke during an image update
+        - xwfb-run -c mutter -- meson test --suite display --suite displayless --print-errorlogs -C $MESON_BUILD_DIR
+    artifacts:
+        paths:
+            - $MESON_BUILD_DIR
+
+fedora_rawhide@arm64:
+    extends:
+        - .fdo.distribution-image@fedora
+        - .fedora-arm64
+        - .vars-devel
+    stage: test
+    rules:
+        - if: $CI_PROJECT_NAMESPACE == "GNOME" && $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
+          when: always
+        - allow_failure: true
     script:
         - meson setup -Dextensions=false -Db_coverage=true -Dtests=all $MESON_BUILD_DIR
         - meson compile -C $MESON_BUILD_DIR
@@ -164,7 +217,7 @@ flatpak@aarch64:
 asan:
     extends:
         - .fdo.distribution-image@fedora
-        - .nautilus.fedora
+        - .fedora-x86_64
     variables:
         CFLAGS: "-fno-omit-frame-pointer"
         LSAN_OPTIONS: suppressions=$CI_PROJECT_DIR/build-aux/leak-suppress.txt
@@ -190,7 +243,7 @@ asan:
 coverage:
     extends:
         - .fdo.distribution-image@fedora
-        - .nautilus.fedora
+        - .fedora-x86_64
     stage: analyze
     needs:
         - job: fedora_rawhide@x86_64
@@ -223,7 +276,7 @@ nightly@aarch64:
 pages:
     extends:
         - .fdo.distribution-image@fedora
-        - .nautilus.fedora
+        - .fedora-x86_64
     stage: deploy
     rules:
         - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH && $CI_PROJECT_NAMESPACE == "GNOME"
