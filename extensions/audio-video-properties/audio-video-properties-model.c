@@ -26,7 +26,7 @@
 #include <gst/tag/tag.h>
 #include <gst/pbutils/pbutils.h>
 
-#include "totem-properties-view.h"
+#include "audio-video-properties-model.h"
 #include <math.h>
 
 typedef struct AVProperties
