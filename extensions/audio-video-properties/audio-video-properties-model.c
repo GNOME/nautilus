@@ -37,21 +37,21 @@ struct TotemPropertiesViewPriv
 };
 
 static GObjectClass *parent_class = NULL;
-static void totem_properties_view_finalize (GObject *object);
+static void audio_video_properties_model_finalize (GObject *object);
 
-G_DEFINE_TYPE (TotemPropertiesView, totem_properties_view, G_TYPE_OBJECT)
+G_DEFINE_TYPE (TotemPropertiesView, audio_video_properties_model, G_TYPE_OBJECT)
 
 void
-totem_properties_view_register_type (GTypeModule *module)
+audio_video_properties_model_register_type (GTypeModule *module)
 {
-    totem_properties_view_get_type ();
+    audio_video_properties_model_get_type ();
 }
 
 static void
-totem_properties_view_class_init (TotemPropertiesViewClass *class)
+audio_video_properties_model_class_init (TotemPropertiesViewClass *class)
 {
     parent_class = g_type_class_peek_parent (class);
-    G_OBJECT_CLASS (class)->finalize = totem_properties_view_finalize;
+    G_OBJECT_CLASS (class)->finalize = audio_video_properties_model_finalize;
 }
 
 static void
@@ -391,7 +391,7 @@ discovered_cb (GstDiscoverer       *discoverer,
 }
 
 static void
-totem_properties_view_init (TotemPropertiesView *props)
+audio_video_properties_model_init (TotemPropertiesView *props)
 {
     GError *err = NULL;
 
@@ -414,11 +414,11 @@ totem_properties_view_init (TotemPropertiesView *props)
 }
 
 static void
-totem_properties_view_finalize (GObject *object)
+audio_video_properties_model_finalize (GObject *object)
 {
     TotemPropertiesView *props;
 
-    props = TOTEM_PROPERTIES_VIEW (object);
+    props = AUDIO_VIDEO_PROPERTIES_VIEW (object);
 
     if (props->priv != NULL)
     {
@@ -439,10 +439,10 @@ totem_properties_view_finalize (GObject *object)
 }
 
 static void
-totem_properties_view_set_location (TotemPropertiesView *props,
-                                    const char          *location)
+audio_video_properties_model_set_location (TotemPropertiesView *props,
+                                           const char          *location)
 {
-    g_assert (TOTEM_IS_PROPERTIES_VIEW (props));
+    g_assert (AUDIO_VIDEO_IS_PROPERTIES_VIEW (props));
 
     if (props->priv->disco == NULL)
     {
@@ -464,13 +464,13 @@ totem_properties_view_set_location (TotemPropertiesView *props,
 }
 
 NautilusPropertiesModel *
-totem_properties_view_new (const char *location)
+audio_video_properties_model_new (const char *location)
 {
     TotemPropertiesView *props;
 
-    props = g_object_new (TOTEM_TYPE_PROPERTIES_VIEW, NULL);
+    props = g_object_new (AUDIO_VIDEO_TYPE_PROPERTIES_VIEW, NULL);
 
-    totem_properties_view_set_location (props, location);
+    audio_video_properties_model_set_location (props, location);
 
     g_object_weak_ref (G_OBJECT (props->priv->model), (GWeakNotify) g_object_unref, props);
 
