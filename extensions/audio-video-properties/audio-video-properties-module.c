@@ -26,7 +26,7 @@
 #include <gst/gst.h>
 #include <gst/gstprotection.h>
 
-#include "totem-properties-view.h"
+#include "audio-video-properties-model.h"
 #include <nautilus-extension.h>
 
 static GType tpp_type = 0;
