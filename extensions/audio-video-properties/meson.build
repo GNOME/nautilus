@@ -3,7 +3,6 @@ libm = cc.find_library('m')
 libtotem_properties_page_sources = files(
   'totem-properties-main.c',
   'totem-properties-view.c',
-  'totem-gst-helpers.c',
 )
 
 libtotem_properties_page_deps = [

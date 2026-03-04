@@ -24,9 +24,9 @@
 #include <glib/gi18n-lib.h>
 #define GST_USE_UNSTABLE_API 1
 #include <gst/gst.h>
+#include <gst/gstprotection.h>
 
 #include "totem-properties-view.h"
-#include "totem-gst-helpers.h"
 #include <nautilus-extension.h>
 
 static GType tpp_type = 0;
@@ -66,6 +66,36 @@ totem_properties_plugin_register_type (GTypeModule *module)
                                  &properties_model_provider_iface_info);
 }
 
+/* Disable decoders that require a display environment to work,
+ * and that might cause crashes */
+static void
+disable_gst_display_decoders (void)
+{
+    const char *disabled_plugins[] =
+    {
+        "bmcdec",
+        "vaapi",
+        "video4linux2"
+    };
+
+    /* Disable the vaapi plugin as it will not work with the
+     * fakesink we use:
+     * See: https://bugzilla.gnome.org/show_bug.cgi?id=700186 and
+     * https://bugzilla.gnome.org/show_bug.cgi?id=749605 */
+    GstRegistry *registry = gst_registry_get ();
+
+    for (guint i = 0; i < G_N_ELEMENTS (disabled_plugins); i++)
+    {
+        GstPlugin *plugin = gst_registry_find_plugin (registry,
+                                                      disabled_plugins[i]);
+
+        if (plugin != NULL)
+        {
+            gst_registry_remove_plugin (registry, plugin);
+        }
+    }
+}
+
 static void
 properties_model_provider_iface_init (NautilusPropertiesModelProviderInterface *iface)
 {
@@ -76,7 +106,7 @@ static gpointer
 init_backend (gpointer data)
 {
     gst_init (NULL, NULL);
-    totem_gst_disable_display_decoders ();
+    disable_gst_display_decoders ();
     return NULL;
 }
 
