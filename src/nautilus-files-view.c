@@ -4215,6 +4215,7 @@ process_pending_files (NautilusFilesView *self)
     g_autoptr (GList) pending_additions = NULL;
     g_autoptr (GHashTable) files_removed = g_hash_table_new (NULL, NULL);
 
+    remove_fad_duplicates (&files_added);
     remove_fad_duplicates (&files_changed);
 
     for (GList *node = files_added; node != NULL; node = node->next)
