@@ -333,7 +333,9 @@ discovered_cb (GstDiscoverer     *discoverer,
         g_warning ("Couldn't get information about '%s': %s",
                    gst_discoverer_info_get_uri (info),
                    error->message);
-        append_item (props, _("Oops! Something went wrong."), error->message);
+        append_item (props,
+                     _("Oops! Something went wrong."),
+                     _("Failed to load media information"));
         return;
     }
 
