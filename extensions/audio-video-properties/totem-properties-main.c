@@ -84,19 +84,14 @@ static GList *
 totem_properties_get_models (NautilusPropertiesModelProvider *provider,
                              GList                           *files)
 {
-    static GOnce backend_inited = G_ONCE_INIT;
-    NautilusFileInfo *file;
-    char *uri;
-    NautilusPropertiesModel *model;
-
     /* only add properties model if a single file is selected */
     if (files == NULL || files->next != NULL)
     {
         return NULL;
     }
-    file = files->data;
 
-    g_autofree char *content_type = nautilus_file_info_get_mime_type (file);
+    NautilusFileInfo *file_info = files->data;
+    g_autofree char *content_type = nautilus_file_info_get_mime_type (file_info);
     g_autofree char *generic_icon_name = g_content_type_get_generic_icon_name (content_type);
 
     /* This model is for Audio/Video files */
@@ -107,13 +102,13 @@ totem_properties_get_models (NautilusPropertiesModelProvider *provider,
     }
 
     /* okay, make the model, init'ing the backend first if necessary */
+    static GOnce backend_inited = G_ONCE_INIT;
+
     g_once (&backend_inited, init_backend, NULL);
 
-    uri = nautilus_file_info_get_uri (file);
-    model = totem_properties_view_new (uri);
-    g_free (uri);
+    g_autofree char *uri = nautilus_file_info_get_uri (file_info);
 
-    return g_list_prepend (NULL, model);
+    return g_list_prepend (NULL, totem_properties_view_new (uri));
 }
 
 /* --- extension interface --- */
