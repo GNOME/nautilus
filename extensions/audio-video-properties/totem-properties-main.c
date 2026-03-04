@@ -29,9 +29,6 @@
 #include "totem-gst-helpers.h"
 #include <nautilus-extension.h>
 
-#define WANT_MIME_TYPES 1
-#include "totem-mime-types.h"
-
 static GType tpp_type = 0;
 static void properties_model_provider_iface_init (NautilusPropertiesModelProviderInterface *iface);
 static GList *totem_properties_get_models (NautilusPropertiesModelProvider *provider,
@@ -91,8 +88,6 @@ totem_properties_get_models (NautilusPropertiesModelProvider *provider,
     NautilusFileInfo *file;
     char *uri;
     NautilusPropertiesModel *model;
-    guint i;
-    gboolean found;
 
     /* only add properties model if a single file is selected */
     if (files == NULL || files->next != NULL)
@@ -101,17 +96,12 @@ totem_properties_get_models (NautilusPropertiesModelProvider *provider,
     }
     file = files->data;
 
-    /* only add the properties model to these mime types */
-    found = FALSE;
-    for (i = 0; mime_types[i] != NULL; i++)
-    {
-        if (nautilus_file_info_is_mime_type (file, mime_types[i]))
-        {
-            found = TRUE;
-            break;
-        }
-    }
-    if (found == FALSE)
+    g_autofree char *content_type = nautilus_file_info_get_mime_type (file);
+    g_autofree char *generic_icon_name = g_content_type_get_generic_icon_name (content_type);
+
+    /* This model is for Audio/Video files */
+    if (!g_str_equal (generic_icon_name, "audio-x-generic") &&
+        !g_str_equal (generic_icon_name, "video-x-generic"))
     {
         return NULL;
     }
