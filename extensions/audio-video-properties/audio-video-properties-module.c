@@ -31,11 +31,9 @@
 
 static GType tpp_type = 0;
 static void properties_model_provider_iface_init (NautilusPropertiesModelProviderInterface *iface);
-static GList *totem_properties_get_models (NautilusPropertiesModelProvider *provider,
-                                           GList                           *files);
 
 static void
-totem_properties_plugin_register_type (GTypeModule *module)
+audio_video_properties_plugin_register_type (GTypeModule *module)
 {
     const GTypeInfo info =
     {
@@ -58,7 +56,7 @@ totem_properties_plugin_register_type (GTypeModule *module)
     };
 
     tpp_type = g_type_module_register_type (module, G_TYPE_OBJECT,
-                                            "TotemPropertiesPlugin",
+                                            "AVPropertiesPlugin",
                                             &info, 0);
     g_type_module_add_interface (module,
                                  tpp_type,
@@ -96,12 +94,6 @@ disable_gst_display_decoders (void)
     }
 }
 
-static void
-properties_model_provider_iface_init (NautilusPropertiesModelProviderInterface *iface)
-{
-    iface->get_models = totem_properties_get_models;
-}
-
 static gpointer
 init_backend (gpointer data)
 {
@@ -111,8 +103,8 @@ init_backend (gpointer data)
 }
 
 static GList *
-totem_properties_get_models (NautilusPropertiesModelProvider *provider,
-                             GList                           *files)
+audio_video_properties_get_models (NautilusPropertiesModelProvider *provider,
+                                   GList                           *files)
 {
     /* only add properties model if a single file is selected */
     if (files == NULL || files->next != NULL)
@@ -138,7 +130,13 @@ totem_properties_get_models (NautilusPropertiesModelProvider *provider,
 
     g_autofree char *uri = nautilus_file_info_get_uri (file_info);
 
-    return g_list_prepend (NULL, totem_properties_view_new (uri));
+    return g_list_prepend (NULL, audio_video_properties_model_new (uri));
+}
+
+static void
+properties_model_provider_iface_init (NautilusPropertiesModelProviderInterface *iface)
+{
+    iface->get_models = audio_video_properties_get_models;
 }
 
 /* --- extension interface --- */
@@ -149,7 +147,7 @@ nautilus_module_initialize (GTypeModule *module)
     bindtextdomain (GETTEXT_PACKAGE, LOCALEDIR);
     bind_textdomain_codeset (GETTEXT_PACKAGE, "UTF-8");
 
-    totem_properties_plugin_register_type (module);
+    audio_video_properties_plugin_register_type (module);
 }
 
 void

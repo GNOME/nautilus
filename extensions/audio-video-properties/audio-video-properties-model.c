@@ -387,7 +387,7 @@ discovered_cb (GstDiscoverer     *discoverer,
 }
 
 NautilusPropertiesModel *
-totem_properties_view_new (const char *location)
+audio_video_properties_model_new (const char *location)
 {
     g_return_val_if_fail (location != NULL, NULL);
 

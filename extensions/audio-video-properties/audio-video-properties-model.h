@@ -22,5 +22,6 @@
 
 #include <nautilus-extension.h>
 
-NautilusPropertiesModel *totem_properties_view_new           (const char *location);
+NautilusPropertiesModel *
+audio_video_properties_model_new (const char *location);
 
