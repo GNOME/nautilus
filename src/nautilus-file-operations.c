@@ -246,7 +246,7 @@ typedef struct
     guint total_files;
 
     GError *error;
-    gboolean success;
+    gboolean output_archive_exists;
 
     NautilusCreateCallback done_callback;
     gpointer done_callback_data;
@@ -7970,13 +7970,15 @@ compress_task_done (GObject      *source_object,
                     gpointer      user_data)
 {
     CompressJob *compress_job = user_data;
+    gboolean success = compress_job->source_files != NULL &&
+                       compress_job->error == NULL &&
+                       !job_aborted (&compress_job->common) &&
+                       compress_job->output_archive_exists;
 
     if (compress_job->done_callback)
     {
-        compress_job->done_callback (compress_job->success
-                                     ? compress_job->output_file
-                                     : NULL,
-                                     compress_job->success,
+        compress_job->done_callback (success ? compress_job->output_file : NULL,
+                                     success,
                                      compress_job->done_callback_data);
     }
 
@@ -8260,7 +8262,6 @@ compress_task_thread_func (GTask        *task,
     g_auto (SourceInfo) source_info = SOURCE_INFO_INIT;
     g_autoptr (AutoarCompressor) compressor = NULL;
     GList *l;
-    gboolean output_archive_exists;
 
     g_timer_start (compress_job->common.time);
 
@@ -8289,7 +8290,6 @@ compress_task_thread_func (GTask        *task,
 
     if (compress_job->source_files == NULL)
     {
-        compress_job->success = FALSE;
         g_clear_object (&compress_job->common.undo_info);
         return;
     }
@@ -8318,12 +8318,10 @@ compress_task_thread_func (GTask        *task,
     autoar_compressor_start (compressor,
                              compress_job->common.cancellable);
 
-    output_archive_exists = g_file_query_exists (compress_job->output_file, NULL);
-    compress_job->success = compress_job->error == NULL &&
-                            output_archive_exists;
+    compress_job->output_archive_exists = g_file_query_exists (compress_job->output_file, NULL);
 
     /* There is nothing to undo if the output was not created */
-    if (compress_job->common.undo_info != NULL && !output_archive_exists)
+    if (!compress_job->output_archive_exists)
     {
         g_clear_object (&compress_job->common.undo_info);
     }
