@@ -7444,13 +7444,13 @@ extract_task_done (GObject      *source_object,
                    GAsyncResult *res,
                    gpointer      user_data)
 {
-    ExtractJob *extract_job;
-
-    extract_job = user_data;
+    ExtractJob *extract_job = user_data;
+    gboolean success = !extract_job->extraction_failed &&
+                       !job_aborted ((CommonJob *) extract_job);
 
     if (extract_job->done_callback)
     {
-        extract_job->done_callback (extract_job->output_files,
+        extract_job->done_callback (success ? extract_job->output_files : NULL,
                                     extract_job->done_callback_data);
     }
 
