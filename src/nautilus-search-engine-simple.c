@@ -74,7 +74,12 @@ finalize (GObject *object)
 #define STD_ATTRIBUTES_WITH_CONTENT_TYPE \
         STD_ATTRIBUTES "," \
         G_FILE_ATTRIBUTE_STANDARD_CONTENT_TYPE "," \
-        G_FILE_ATTRIBUTE_STANDARD_FAST_CONTENT_TYPE
+        G_FILE_ATTRIBUTE_STANDARD_FAST_CONTENT_TYPE "," \
+        G_FILE_ATTRIBUTE_STANDARD_SIZE
+
+/* Maximum file size to search content in (10 MB) */
+#define MAX_CONTENT_SEARCH_BYTES (10 * 1024 * 1024)
+#define CONTENT_MATCH_RANK 1.0
 
 static gboolean
 file_is_remote (GFile *file)
@@ -91,7 +96,8 @@ visit_directory (NautilusSearchEngineSimple *self,
                  GFile                      *dir)
 {
     NautilusQuery *query = nautilus_search_provider_get_query (self);
-    const char *attributes = nautilus_query_has_mime_types (query)
+    gboolean search_content = nautilus_query_get_search_content (query);
+    const char *attributes = (nautilus_query_has_mime_types (query) || search_content)
                              ? STD_ATTRIBUTES_WITH_CONTENT_TYPE : STD_ATTRIBUTES;
     GCancellable *cancellable = nautilus_search_provider_get_cancellable (self);
 
@@ -133,6 +139,49 @@ visit_directory (NautilusSearchEngineSimple *self,
         g_autoptr (GFile) child = g_file_get_child (dir, g_file_info_get_name (info));
         gdouble match = nautilus_query_matches_string (query, display_name);
         gboolean found = (match > -1);
+
+        if (!found &&
+            search_content &&
+            g_file_info_get_file_type (info) == G_FILE_TYPE_REGULAR)
+        {
+            const char *ct = g_file_info_get_attribute_string (
+                info, G_FILE_ATTRIBUTE_STANDARD_CONTENT_TYPE);
+            if (ct == NULL)
+            {
+                ct = g_file_info_get_attribute_string (
+                    info, G_FILE_ATTRIBUTE_STANDARD_FAST_CONTENT_TYPE);
+            }
+
+            if (ct != NULL && g_content_type_is_a (ct, "text/plain"))
+            {
+                goffset file_size = g_file_info_get_size (info);
+
+                if (file_size > 0 && file_size <= MAX_CONTENT_SEARCH_BYTES)
+                {
+                    g_autofree gchar *contents = NULL;
+                    gsize length = 0;
+
+                    if (g_file_load_contents (child, cancellable, &contents, &length, NULL, NULL))
+                    {
+                        g_autofree gchar *query_text = nautilus_query_get_text (query);
+
+                        if (query_text != NULL && length > 0)
+                        {
+                            g_autofree gchar *lower_contents =
+                                g_ascii_strdown (contents, (gssize) length);
+                            g_autofree gchar *lower_query =
+                                g_ascii_strdown (query_text, -1);
+
+                            if (strstr (lower_contents, lower_query) != NULL)
+                            {
+                                found = TRUE;
+                                match = CONTENT_MATCH_RANK;
+                            }
+                        }
+                    }
+                }
+            }
+        }
 
         if (found && nautilus_query_has_mime_types (query))
         {
