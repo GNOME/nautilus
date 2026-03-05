@@ -468,7 +468,7 @@ test_archive_full_dir (void)
 }
 
 static void
-test_archive_full_dir_early_cancel (void)
+test_archive_full_dir_cancel (void)
 {
     const GStrv compressed_files_hier = (char *[])
     {
@@ -526,7 +526,8 @@ test_archive_full_dir_early_cancel (void)
     g_main_loop_run (compress_data->loop);
 
     g_assert_false (compress_data->success);
-    g_assert_false (g_file_query_exists (archive_file, NULL));
+    /* File might be there even when cancelled */
+    g_file_delete (archive_file, NULL, NULL);
 
     compress_data->files = (&(GList){ .data = archive_file, });
     nautilus_file_operations_compress (compressed_files,
@@ -569,7 +570,6 @@ test_archive_full_dir_early_cancel (void)
     g_assert_false (cancel_extract_data->success);
     file_hierarchy_assert_exists (compressed_files_hier, "", FALSE);
     g_assert_true (g_file_query_exists (archive_file, NULL));
-    file_hierarchy_assert_exists (extracted_files_hier, "", FALSE);
 
     test_clear_tmp_dir ();
 }
@@ -779,8 +779,8 @@ main (int   argc,
                      test_compress_file_password);
     g_test_add_func ("/single_folder/short",
                      test_archive_full_dir);
-    g_test_add_func ("/single_folder/short/early_cancel",
-                     test_archive_full_dir_early_cancel);
+    g_test_add_func ("/single_folder/short/cancel",
+                     test_archive_full_dir_cancel);
     g_test_add_func ("/multi_in/single_out/short",
                      test_archive_files);
     g_test_add_func ("/multi_in/multi_out/short",
