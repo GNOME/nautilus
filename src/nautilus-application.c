@@ -28,7 +28,6 @@
 #include "nautilus-application.h"
 
 #include <adwaita.h>
-#include <eel/eel-stock-dialogs.h>
 #include <fcntl.h>
 #include <gdk/gdk.h>
 #include <gio/gio.h>

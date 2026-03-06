@@ -78,6 +78,21 @@ nautilus_show_ok_dialog (const char *heading,
                          const char *body,
                          GtkWidget  *parent);
 
+typedef void (* TimedWaitCancelCallback) (gpointer callback_data);
+
+/* Dialog for cancelling something that normally is fast enough not to need a dialog. */
+void        timed_wait_start                        (TimedWaitCancelCallback  cancel_callback,
+					             gpointer                 callback_data,
+					             const char              *wait_message,
+					             GtkWindow               *parent_window);
+void        timed_wait_start_with_duration          (int                      duration,
+					             TimedWaitCancelCallback  cancel_callback,
+					             gpointer                 callback_data,
+					             const char              *wait_message,
+					             GtkWindow               *parent_window);
+void        timed_wait_stop                         (TimedWaitCancelCallback  cancel_callback,
+					             gpointer                 callback_data);
+
 void        show_unmount_progress_cb                (GMountOperation   *op,
                                                      const gchar       *message,
                                                      gint64             time_left,

@@ -25,7 +25,6 @@
 
 #include "nautilus-file-utilities.h"
 #include "nautilus-file.h"
-#include <eel/eel-stock-dialogs.h>
 #include <glib/gi18n.h>
 
 GSettings *nautilus_preferences;

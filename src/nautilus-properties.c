@@ -22,7 +22,6 @@
 #include "nautilus-properties.h"
 
 #include <adwaita.h>
-#include <eel/eel-stock-dialogs.h>
 #include <gtk/gtk.h>
 #include <gdk/gdkkeysyms.h>
 #include <glib/gi18n.h>
@@ -1564,7 +1563,7 @@ group_change_callback (NautilusFile *file,
     if (!change->cancelled)
     {
         /* Report the error if it's an error. */
-        eel_timed_wait_stop ((EelCancelCallback) cancel_group_change_callback, change);
+        timed_wait_stop ((TimedWaitCancelCallback) cancel_group_change_callback, change);
         nautilus_report_error_setting_group (change->file, error, GTK_WIDGET (self));
     }
 
@@ -1595,11 +1594,10 @@ schedule_group_change_timeout (GroupChange *change)
 
     change->timeout = 0;
 
-    eel_timed_wait_start
-        ((EelCancelCallback) cancel_group_change_callback,
-        change,
-        _("Cancel Group Change?"),
-        get_parent_window (change->widget));
+    timed_wait_start ((TimedWaitCancelCallback) cancel_group_change_callback,
+                      change,
+                      _("Cancel Group Change?"),
+                      get_parent_window (change->widget));
 
     nautilus_file_set_group
         (change->file, change->group,
@@ -1647,7 +1645,7 @@ unschedule_or_cancel_group_change (NautilusPropertiesWidget *self)
         {
             /* The operation was started, cancel it and let the operation callback free the change */
             cancel_group_change_callback (change);
-            eel_timed_wait_stop ((EelCancelCallback) cancel_group_change_callback, change);
+            timed_wait_stop ((TimedWaitCancelCallback) cancel_group_change_callback, change);
         }
         else
         {
@@ -1712,7 +1710,7 @@ owner_change_callback (NautilusFile *file,
     if (!change->cancelled)
     {
         /* Report the error if it's an error. */
-        eel_timed_wait_stop ((EelCancelCallback) cancel_owner_change_callback, change);
+        timed_wait_stop ((TimedWaitCancelCallback) cancel_owner_change_callback, change);
         nautilus_report_error_setting_owner (file, error, GTK_WIDGET (self));
     }
 
@@ -1743,11 +1741,10 @@ schedule_owner_change_timeout (OwnerChange *change)
 
     change->timeout = 0;
 
-    eel_timed_wait_start
-        ((EelCancelCallback) cancel_owner_change_callback,
-        change,
-        _("Cancel Owner Change?"),
-        get_parent_window (change->widget));
+    timed_wait_start ((TimedWaitCancelCallback) cancel_owner_change_callback,
+                      change,
+                      _("Cancel Owner Change?"),
+                      get_parent_window (change->widget));
 
     nautilus_file_set_owner
         (change->file, change->owner,
@@ -1797,7 +1794,7 @@ unschedule_or_cancel_owner_change (NautilusPropertiesWidget *self)
         {
             /* The operation was started, cancel it and let the operation callback free the change */
             cancel_owner_change_callback (change);
-            eel_timed_wait_stop ((EelCancelCallback) cancel_owner_change_callback, change);
+            timed_wait_stop ((TimedWaitCancelCallback) cancel_owner_change_callback, change);
         }
         else
         {

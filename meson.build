@@ -220,7 +220,6 @@ nautilus_include_dirs = include_directories(
 
 subdirs = [
   'data',
-  'eel',
   'xdp-gnome',
   'libnautilus-extension',
   'po',
