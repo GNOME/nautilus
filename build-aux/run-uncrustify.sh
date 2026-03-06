@@ -14,7 +14,7 @@ then
     exit 1
 fi
 
-for DIR in "$BUILD_AUX/../"{src,test,libnautilus-extension,eel,extensions}
+for DIR in "$BUILD_AUX/../"{src,test,libnautilus-extension,extensions}
 do
     for FILE in $(find "$DIR" -name "*.c")
     do

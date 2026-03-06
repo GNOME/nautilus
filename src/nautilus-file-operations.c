@@ -45,7 +45,6 @@
 #include <gio/gio.h>
 #include <glib.h>
 
-#include <eel/eel-stock-dialogs.h>
 #include "nautilus-dialog-utilities.h"
 #include "nautilus-error-reporting.h"
 #include "nautilus-fd-holder.h"
@@ -7111,7 +7110,7 @@ finish_rename (RenameJob *job,
     nautilus_file_cancel (job->file, rename_callback, NULL);
     if (stop_timer)
     {
-        eel_timed_wait_stop (cancel_rename_callback, job);
+        nautilus_ui_timed_wait_stop (cancel_rename_callback, job);
     }
 }
 
@@ -7146,8 +7145,8 @@ nautilus_file_operations_rename (GFile                          *location,
     wait_message = g_strdup_printf (_("Renaming “%s” to “%s”."),
                                     nautilus_file_get_display_name (file),
                                     new_name);
-    eel_timed_wait_start (cancel_rename_callback, job, wait_message,
-                          NULL);     /* FIXME bugzilla.gnome.org 42395: Parent this? */
+    nautilus_ui_timed_wait_start (cancel_rename_callback, job, wait_message,
+                                  NULL); /* FIXME bugzilla.gnome.org 42395: Parent this? */
 
     uri = nautilus_file_get_uri (file);
     g_debug ("Renaming file %s to %s", uri, new_name);

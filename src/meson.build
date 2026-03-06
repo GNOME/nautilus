@@ -272,7 +272,6 @@ libnautilus_sources = [
 nautilus_deps = [
   cloudproviders,
   config_h,
-  eel_2,
   gio_unix,
   glycin,
   glycin_gtk4,

@@ -26,7 +26,6 @@
 
 #include "nautilus-files-view.h"
 
-#include <eel/eel-stock-dialogs.h>
 #include <gdk/gdk.h>
 #include <gio/gio.h>
 #include <glib/gi18n.h>
