@@ -56,7 +56,8 @@ file_has_valid_thumbnail_path (GFile       *file,
     g_autoptr (GError) error = NULL;
     g_autoptr (GFileInfo) info = g_file_query_info (file,
                                                     G_FILE_ATTRIBUTE_THUMBNAIL_PATH ","
-                                                    G_FILE_ATTRIBUTE_THUMBNAIL_IS_VALID,
+                                                    G_FILE_ATTRIBUTE_THUMBNAIL_IS_VALID ","
+                                                    G_FILE_ATTRIBUTE_THUMBNAILING_FAILED,
                                                     G_FILE_QUERY_INFO_NONE,
                                                     NULL,
                                                     &error);
@@ -64,7 +65,9 @@ file_has_valid_thumbnail_path (GFile       *file,
     g_assert_no_error (error);
 
     if (g_file_info_get_attribute_boolean (info, G_FILE_ATTRIBUTE_THUMBNAIL_IS_VALID) &&
-        g_strcmp0 (thumbnail_path, g_file_info_get_attribute_byte_string (info, G_FILE_ATTRIBUTE_THUMBNAIL_PATH)) == 0)
+        g_strcmp0 (g_file_info_get_attribute_byte_string (info, G_FILE_ATTRIBUTE_THUMBNAIL_PATH),
+                   thumbnail_path) == 0 &&
+        !g_file_info_get_attribute_boolean (info, G_FILE_ATTRIBUTE_THUMBNAILING_FAILED))
     {
         return TRUE;
     }
