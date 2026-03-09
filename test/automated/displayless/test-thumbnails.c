@@ -490,13 +490,6 @@ main (int   argc,
         return 77;
     }
 
-    if (!can_run_bwrap ())
-    {
-        g_message ("Cannot run thumbnails teset without a working bubblewrap.");
-
-        return 77;
-    }
-
     if (!nautilus_can_thumbnail ("file:///tmp/nautilus_tests/image.png", "image/png", 1))
     {
         g_message ("System has no thumbnailer for PNGs, but most tests are meant to test "
@@ -504,6 +497,9 @@ main (int   argc,
 
         return 77;
     }
+
+    /* HACK: Pretend to be a snap to disable sandboxing in libgnome-desktop */
+    g_setenv ("SNAP_NAME", "1", TRUE);
 
     g_test_add_func ("/thumbnail/invalid/text",
                      test_thumbnail_text);

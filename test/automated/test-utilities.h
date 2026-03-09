@@ -63,5 +63,3 @@ void create_random_file (GFile *file,
                          gsize size);
 void file_load_attributes (NautilusFile           *file,
                            NautilusFileAttributes  attributes);
-
-gboolean can_run_bwrap (void);
