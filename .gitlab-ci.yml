@@ -52,19 +52,15 @@ workflow:
 .fedora:
     variables:
         FDO_DISTRIBUTION_VERSION: rawhide
-        BASE_TAG: '2026-02-07.0'
+        BASE_TAG: '2026-03-09.0'
         FDO_DISTRIBUTION_COMPRESSION_FORMAT: zstd:chunked
         FDO_DISTRIBUTION_PACKAGES:
             git
             gcc
             gdb
             meson
-            libasan
             uncrustify
             gcovr
-            xwayland-run
-            mutter
-            dbus-x11
             glibc-devel
             glib2-devel
             glycin-devel
@@ -76,12 +72,17 @@ workflow:
             libgexiv2-devel
             localsearch
             blueprint-compiler
-            dbus-daemon
             gnome-desktop4-devel
             gnome-autoar-devel
             libportal-devel
             libportal-gtk4-devel
             libcloudproviders-devel
+            xwayland-run
+            mutter
+            dbus-daemon
+            dbus-x11
+            glycin-thumbnailer
+            libasan
 
 .fedora-x86_64:
     extends:
