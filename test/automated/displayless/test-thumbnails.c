@@ -170,15 +170,6 @@ test_thumbnail_test_queue (void)
         g_autofree gchar *mime_type = NULL;
         guint64 mtime = get_file_mime_type_and_mtime (image_location, &mime_type);
 
-        if (!nautilus_can_thumbnail (uri, mime_type, mtime))
-        {
-            g_test_skip ("System has no thumbnailer for images, but this test is meant to test "
-                         "thumbnailing an image.");
-            test_clear_tmp_dir ();
-
-            return;
-        }
-
         GCancellable *cancellable = g_cancellable_new ();
 
         nautilus_create_thumbnail_async (uri, mime_type, mtime,
@@ -236,15 +227,6 @@ test_thumbnail_image (void)
 
     g_assert_true (nautilus_thumbnail_is_mimetype_limited_by_size (mime_type));
 
-    if (!nautilus_can_thumbnail (uri, mime_type, mtime))
-    {
-        g_test_skip ("System has no thumbnailer for images, but this test is meant to test "
-                     "thumbnailing an image.");
-        test_clear_tmp_dir ();
-
-        return;
-    }
-
     g_autofree gchar *thumbnail_path = nautilus_thumbnail_get_path_for_uri (uri);
     g_autoptr (GFile) thumbnail_location = g_file_new_for_path (thumbnail_path);
     g_autoptr (GdkPaintable) icon_paintable = NULL;
@@ -287,15 +269,6 @@ test_thumbnail_cancel (void)
 
     g_assert_true (nautilus_thumbnail_is_mimetype_limited_by_size (mime_type));
 
-    if (!nautilus_can_thumbnail (uri, mime_type, mtime))
-    {
-        g_test_skip ("System has no thumbnailer for images, but this test is meant to test "
-                     "thumbnailing an image.");
-        test_clear_tmp_dir ();
-
-        return;
-    }
-
     g_autofree gchar *thumbnail_path = nautilus_thumbnail_get_path_for_uri (uri);
     g_autoptr (GFile) thumbnail_location = g_file_new_for_path (thumbnail_path);
     g_autoptr (GCancellable) cancellable = g_cancellable_new ();
@@ -334,15 +307,6 @@ test_thumbnail_overwrite (void)
     guint64 mtime = get_file_mime_type_and_mtime (image_location, &mime_type);
 
     g_assert_true (nautilus_thumbnail_is_mimetype_limited_by_size (mime_type));
-
-    if (!nautilus_can_thumbnail (uri, mime_type, mtime))
-    {
-        g_test_skip ("System has no thumbnailer for images, but this test is meant to test "
-                     "thumbnailing an image.");
-        test_clear_tmp_dir ();
-
-        return;
-    }
 
     g_autofree gchar *thumbnail_path = nautilus_thumbnail_get_path_for_uri (uri);
     g_autoptr (GFile) thumbnail_location = g_file_new_for_path (thumbnail_path);
@@ -423,15 +387,6 @@ test_thumbnail_rethumbnail_failed_on_mtime_change (void)
 
     g_autofree gchar *mime_type = NULL;
     guint64 new_mtime = get_file_mime_type_and_mtime (image_location, &mime_type);
-
-    if (!nautilus_can_thumbnail (uri, mime_type, new_mtime))
-    {
-        g_test_skip ("System has no thumbnailer for images, but this test is meant to test "
-                     "rethumbnailing an image after mtime change.");
-        test_clear_tmp_dir ();
-
-        return;
-    }
 
     /* Attempt thumbnailing again */
     thumbnailing_data = (ThumbnailCallbackData)
@@ -525,9 +480,25 @@ main (int   argc,
     gtk_test_init (&argc, &argv, G_TEST_OPTION_ISOLATE_DIRS, NULL);
     g_test_set_nonfatal_assertions ();
 
-    if (nautilus_application_is_sandboxed () || !can_run_bwrap ())
+    if (nautilus_application_is_sandboxed ())
     {
-        /* Can't thumbnail in flatpak-builder sandbox. */
+        g_message ("Cannot run thumbnails tests inside a sandbox.");
+
+        return 77;
+    }
+
+    if (!can_run_bwrap ())
+    {
+        g_message ("Cannot run thumbnails teset without a working bubblewrap.");
+
+        return 77;
+    }
+
+    if (!nautilus_can_thumbnail ("file:///tmp/nautilus_tests/image.png", "image/png", 1))
+    {
+        g_message ("System has no thumbnailer for PNGs, but most tests are meant to test "
+                   "thumbnailing images.");
+
         return 77;
     }
 
