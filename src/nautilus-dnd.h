@@ -24,6 +24,7 @@ GdkDragAction      nautilus_drag_drop_action_ask                 (GtkWidget     
 GdkDragAction      nautilus_dnd_get_preferred_action             (NautilusFile     *target_file,
                                                                   GFile            *dropped);
 GdkPaintable *     get_paintable_for_drag_selection              (GList            *selection,
+                                                                  GtkWidget        *widget,
                                                                   int               scale);
 
 gboolean           nautilus_dnd_perform_drop                     (NautilusFilesView *view,

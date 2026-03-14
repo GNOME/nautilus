@@ -943,9 +943,88 @@ nautilus_ui_draw_symbolic_icon (GtkSnapshot           *snapshot,
 
 #define STACK_SHADOW_RADIUS 10
 
+static GdkPaintable *
+draw_drag_count_badge (GdkPaintable *stacked_icons,
+                       GtkWidget    *widget,
+                       guint         n_items)
+{
+    if (n_items <= 1)
+    {
+        return stacked_icons;
+    }
+
+    int width = gdk_paintable_get_intrinsic_width (stacked_icons);
+    int height = gdk_paintable_get_intrinsic_height (stacked_icons);
+
+    g_autoptr (GtkSnapshot) snapshot = gtk_snapshot_new ();
+
+    gdk_paintable_snapshot (stacked_icons, GDK_SNAPSHOT (snapshot), width, height);
+    g_object_unref (stacked_icons);
+
+    /* Determine badge colors. The matching foreground for the accent is white. */
+    GdkRGBA badge_fg = { 1.f, 1.f, 1.f, 1.f };
+    AdwStyleManager *style_manager = adw_style_manager_get_default ();
+    GdkRGBA badge_bg = *adw_style_manager_get_accent_color_rgba (style_manager);
+
+    /* Set up badge geometry constants and limits. */
+    const float badge_height = 22.f;
+    const float offset_x = 7.f;
+    const float offset_y = 11.f;
+    const guint count_limit = 9999;
+
+    /* Create the label for the item count, capping it at the limit. */
+    g_autofree gchar *count_label = (n_items > count_limit)
+                                    /* Translators: This refers to a capped amount of items */
+                                    ? g_strdup_printf (C_("badge_count", "%u+"), count_limit)
+                                    : g_strdup_printf ("%u", n_items);
+
+    g_autoptr (PangoLayout) layout = gtk_widget_create_pango_layout (widget, count_label);
+
+    g_autoptr (PangoAttrList) attrs = pango_attr_list_new ();
+    const float font_scale = 0.55f;
+
+    pango_attr_list_insert (attrs, pango_attr_weight_new (PANGO_WEIGHT_SEMIBOLD));
+    pango_attr_list_insert (attrs,
+                            pango_attr_size_new_absolute ((int) roundf (badge_height * font_scale * PANGO_SCALE)));
+    pango_layout_set_attributes (layout, attrs);
+
+    /* Measure text dimensions for centering and to determine if the badge needs to expand into a pill shape. */
+    PangoRectangle ink_rect;
+    pango_layout_get_pixel_extents (layout, &ink_rect, NULL);
+
+    const float horizontal_padding = 4.f;
+    float badge_width = MAX (badge_height, ink_rect.width + 2.0f * horizontal_padding);
+    float badge_x = width - badge_width - offset_x;
+    float badge_y = height - badge_height - offset_y;
+
+    /* Create rounded rectangle for the badge shape (circle or pill). */
+    graphene_rect_t badge_rect = GRAPHENE_RECT_INIT (badge_x, badge_y, badge_width, badge_height);
+    GskRoundedRect rounded_rect;
+
+    gsk_rounded_rect_init_from_rect (&rounded_rect, &badge_rect, badge_height / 2.0f);
+
+    /* Draw the badge background with a rounded clip. */
+    gtk_snapshot_push_rounded_clip (snapshot, &rounded_rect);
+    gtk_snapshot_append_color (snapshot, &badge_bg, &badge_rect);
+    gtk_snapshot_pop (snapshot);
+
+    /* Draw the count text centered within the badge. */
+    gtk_snapshot_save (snapshot);
+    gtk_snapshot_translate (snapshot,
+                            &GRAPHENE_POINT_INIT (
+                                badge_x + (badge_width - ink_rect.width) / 2.0f - ink_rect.x,
+                                badge_y + (badge_height - ink_rect.height) / 2.0f - ink_rect.y));
+    gtk_snapshot_append_layout (snapshot, layout, &badge_fg);
+    gtk_snapshot_restore (snapshot);
+
+    return gtk_snapshot_to_paintable (snapshot, NULL);
+}
+
 GdkPaintable *
-nautilus_ui_draw_stacked_icons (GQueue *icons,
-                                uint    size)
+nautilus_ui_draw_stacked_icons (GQueue    *icons,
+                                uint       size,
+                                GtkWidget *widget,
+                                guint      n_items)
 {
     g_autoptr (GtkSnapshot) snapshot = gtk_snapshot_new ();
     /* A wide shadow for the pile of icons gives a sense of floating. */
@@ -1011,5 +1090,5 @@ nautilus_ui_draw_stacked_icons (GQueue *icons,
     }
     gtk_snapshot_pop (snapshot); /* End of stack shadow */
 
-    return gtk_snapshot_to_paintable (snapshot, NULL);
+    return draw_drag_count_badge (gtk_snapshot_to_paintable (snapshot, NULL), widget, n_items);
 }

@@ -538,7 +538,10 @@ get_image_for_properties_widget (NautilusPropertiesWidget *self,
     {
         *is_stacked = TRUE;
 
-        return nautilus_ui_draw_stacked_icons (shown_icons, size);
+        return nautilus_ui_draw_stacked_icons (shown_icons,
+                                               size,
+                                               GTK_WIDGET (self),
+                                               g_list_length (self->files));
     }
 }
 
