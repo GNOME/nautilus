@@ -119,7 +119,7 @@ git commit -m "${release_message}"
 release_commit=$(git rev-parse HEAD)
 
 ### Post-Release bump commit ###
-sed -ri "s/  version: [^,],/  version: '${next_version}',/" "${meson_file}"
+sed -ri "s/  version: [^,]*,/  version: '${next_version}',/" "${meson_file}"
 
 replace="s/${placeholder}/${snapshot}/"
 sed -i "${replace}" "${metainfo_file}"
