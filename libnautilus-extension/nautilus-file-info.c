@@ -19,8 +19,7 @@
  */
 
 #include "nautilus-file-info.h"
-
-#include "nautilus-extension-private.h"
+#include "nautilus-file-info-interface.h"
 
 /**
  * NautilusFileInfo:
