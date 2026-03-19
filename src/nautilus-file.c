@@ -4126,14 +4126,13 @@ nautilus_file_get_metadata (NautilusFile *file,
  *
  * Get the value of a metadata attribute which holds a list of strings.
  *
- * Returns: (transfer full): A zero-terminated array of newly allocated strings.
+ * Returns: (transfer none): A zero-terminated array of strings.
  */
-gchar **
+GStrv
 nautilus_file_get_metadata_list (NautilusFile *file,
                                  const char   *key)
 {
     guint id;
-    char **value;
 
     g_return_val_if_fail (key != NULL, NULL);
     g_return_val_if_fail (key[0] != '\0', NULL);
@@ -4149,9 +4148,7 @@ nautilus_file_get_metadata_list (NautilusFile *file,
     id = nautilus_metadata_get_id (key);
     id |= METADATA_ID_IS_LIST_MASK;
 
-    value = g_hash_table_lookup (file->details->metadata, GUINT_TO_POINTER (id));
-
-    return g_strdupv (value);
+    return g_hash_table_lookup (file->details->metadata, GUINT_TO_POINTER (id));
 }
 
 void
@@ -4630,7 +4627,7 @@ static GList *
 nautilus_file_get_keywords (NautilusFile *file)
 {
     GList *keywords;
-    gchar **metadata_strv;
+    GStrv metadata_strv;
     GList *metadata_keywords = NULL;
 
     if (file == NULL)
@@ -4647,10 +4644,8 @@ nautilus_file_get_keywords (NautilusFile *file)
     /* Convert array to list */
     for (gint i = 0; metadata_strv != NULL && metadata_strv[i] != NULL; i++)
     {
-        metadata_keywords = g_list_prepend (metadata_keywords, metadata_strv[i]);
+        metadata_keywords = g_list_prepend (metadata_keywords, g_strdup (metadata_strv[i]));
     }
-    /* Free only the container array. The strings are owned by the list now. */
-    g_free (metadata_strv);
 
     keywords = g_list_concat (keywords, metadata_keywords);
 

@@ -441,16 +441,15 @@ nautilus_column_get_default_visible_columns (NautilusFile *file)
 GStrv
 nautilus_column_get_visible_columns (NautilusFile *file)
 {
-    g_autofree gchar **visible_columns = NULL;
+    const GStrv visible_columns =
+        nautilus_file_get_metadata_list (file, NAUTILUS_METADATA_KEY_LIST_VIEW_VISIBLE_COLUMNS);
 
-    visible_columns = nautilus_file_get_metadata_list (file,
-                                                       NAUTILUS_METADATA_KEY_LIST_VIEW_VISIBLE_COLUMNS);
     if (visible_columns == NULL || visible_columns[0] == NULL)
     {
         return nautilus_column_get_default_visible_columns (file);
     }
 
-    return g_steal_pointer (&visible_columns);
+    return g_strdupv (visible_columns);
 }
 
 GStrv
@@ -473,14 +472,12 @@ nautilus_column_get_default_column_order (NautilusFile *file)
 GStrv
 nautilus_column_get_column_order (NautilusFile *file)
 {
-    g_autofree gchar **column_order = NULL;
-
-    column_order = nautilus_file_get_metadata_list (file,
-                                                    NAUTILUS_METADATA_KEY_LIST_VIEW_COLUMN_ORDER);
+    const GStrv column_order =
+        nautilus_file_get_metadata_list (file, NAUTILUS_METADATA_KEY_LIST_VIEW_COLUMN_ORDER);
 
     if (column_order != NULL && column_order[0] != NULL)
     {
-        return g_steal_pointer (&column_order);
+        return g_strdupv (column_order);
     }
 
     return nautilus_column_get_default_column_order (file);

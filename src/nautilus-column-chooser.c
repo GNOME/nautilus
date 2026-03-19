@@ -534,8 +534,6 @@ nautilus_column_chooser_constructed (GObject *object)
 {
     NautilusColumnChooser *chooser;
     const char *name = NULL;
-    g_auto (GStrv) file_visible_columns = NULL;
-    g_auto (GStrv) file_column_order = NULL;
     gboolean has_custom_columns;
 
     G_OBJECT_CLASS (nautilus_column_chooser_parent_class)->constructed (object);
@@ -547,10 +545,12 @@ nautilus_column_chooser_constructed (GObject *object)
 
     populate_list (chooser);
 
-    file_visible_columns = nautilus_file_get_metadata_list (chooser->file,
-                                                            NAUTILUS_METADATA_KEY_LIST_VIEW_VISIBLE_COLUMNS);
-    file_column_order = nautilus_file_get_metadata_list (chooser->file,
-                                                         NAUTILUS_METADATA_KEY_LIST_VIEW_COLUMN_ORDER);
+    const GStrv file_visible_columns =
+        nautilus_file_get_metadata_list (chooser->file,
+                                         NAUTILUS_METADATA_KEY_LIST_VIEW_VISIBLE_COLUMNS);
+    const GStrv file_column_order =
+        nautilus_file_get_metadata_list (chooser->file,
+                                         NAUTILUS_METADATA_KEY_LIST_VIEW_COLUMN_ORDER);
 
     has_custom_columns = ((file_visible_columns != NULL && file_visible_columns[0] != NULL) ||
                           (file_column_order != NULL && file_column_order[0] != NULL) ||
