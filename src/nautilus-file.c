@@ -4583,32 +4583,6 @@ nautilus_file_should_show_thumbnail (NautilusFile *file)
 }
 
 static GList *
-sort_keyword_list_and_remove_duplicates (GList *keywords)
-{
-    GList *p;
-
-    if (keywords != NULL)
-    {
-        keywords = g_list_sort (keywords, (GCompareFunc) g_utf8_collate);
-
-        p = keywords;
-        while (p->next != NULL)
-        {
-            if (strcmp ((const char *) p->data, (const char *) p->next->data) == 0)
-            {
-                keywords = g_list_delete_link (keywords, p->next);
-            }
-            else
-            {
-                p = p->next;
-            }
-        }
-    }
-
-    return keywords;
-}
-
-static GList *
 strv_to_glist (GStrv strv)
 {
     GList *list = NULL;
@@ -4629,7 +4603,24 @@ get_extension_emblem_keywords (NautilusFile *file)
                                      g_list_copy (file->details->pending_extension_emblems));
 
     keywords = g_list_concat (keywords, strv_to_glist (key_emblems));
-    keywords = sort_keyword_list_and_remove_duplicates (keywords);
+
+    if (keywords != NULL)
+    {
+        /* Sort and deduplicate keywords */
+        keywords = g_list_sort (keywords, (GCompareFunc) g_utf8_collate);
+
+        for (GList *l = keywords; l->next != NULL;)
+        {
+            if (strcmp ((const char *) l->data, (const char *) l->next->data) == 0)
+            {
+                keywords = g_list_delete_link (keywords, l->next);
+            }
+            else
+            {
+                l = l->next;
+            }
+        }
+    }
 
     return keywords;
 }
