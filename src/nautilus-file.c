@@ -4392,24 +4392,13 @@ static GIcon *
 get_mount_icon (NautilusFile *file,
                 gboolean      symbolic)
 {
-    GMount *mount;
-    GIcon *mount_icon;
-
-    mount = nautilus_file_get_mount (file);
-    mount_icon = NULL;
+    g_autoptr (GMount) mount = nautilus_file_get_mount (file);
 
     if (mount != NULL)
     {
-        if (!symbolic)
-        {
-            mount_icon = g_mount_get_icon (mount);
-        }
-        else
-        {
-            mount_icon = g_mount_get_symbolic_icon (mount);
-        }
-
-        g_object_unref (mount);
+        return symbolic
+               ? g_mount_get_symbolic_icon (mount)
+               : g_mount_get_icon (mount);
     }
     else
     {
@@ -4419,18 +4408,13 @@ get_mount_icon (NautilusFile *file,
          * it to be treated the same way. */
         if (nautilus_is_root_directory (location))
         {
-            if (symbolic)
-            {
-                mount_icon = g_themed_icon_new_with_default_fallbacks ("drive-harddisk-symbolic");
-            }
-            else
-            {
-                mount_icon = g_themed_icon_new_with_default_fallbacks ("drive-harddisk");
-            }
+            return symbolic
+                   ? g_themed_icon_new_with_default_fallbacks ("drive-harddisk-symbolic")
+                   : g_themed_icon_new_with_default_fallbacks ("drive-harddisk");
         }
     }
 
-    return mount_icon;
+    return NULL;
 }
 
 static gboolean
