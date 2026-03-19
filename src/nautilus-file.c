@@ -4655,32 +4655,24 @@ nautilus_file_get_emblem_icons (NautilusFile *file)
 {
     g_return_val_if_fail (NAUTILUS_IS_FILE (file), NULL);
 
-    GList *keywords, *l;
-    GList *icons;
-    char *icon_names[2];
-    char *keyword;
-    GIcon *icon;
+    GList *icons = NULL;
+    GIcon *mount_icon = get_mount_icon (file, TRUE);
+    GList *keywords = nautilus_file_get_keywords (file);
 
-    keywords = nautilus_file_get_keywords (file);
     keywords = prepend_automatic_keywords (file, keywords);
 
-    icons = NULL;
-    for (l = keywords; l != NULL; l = l->next)
+    for (GList *l = keywords; l != NULL; l = l->next)
     {
-        keyword = l->data;
+        char *keyword = l->data;
+        g_autofree char *prefixed = g_strconcat ("emblem-", keyword, NULL);
+        char *icon_names[2] = { prefixed, keyword };
 
-        icon_names[0] = g_strconcat ("emblem-", keyword, NULL);
-        icon_names[1] = keyword;
-        icon = g_themed_icon_new_from_names (icon_names, 2);
-        g_free (icon_names[0]);
-
-        icons = g_list_prepend (icons, icon);
+        icons = g_list_prepend (icons, g_themed_icon_new_from_names (icon_names, 2));
     }
 
-    icon = get_mount_icon (file, TRUE);
-    if (icon != NULL)
+    if (mount_icon != NULL)
     {
-        icons = g_list_prepend (icons, icon);
+        icons = g_list_prepend (icons, mount_icon);
     }
 
     return icons;
