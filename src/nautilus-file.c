@@ -4608,6 +4608,19 @@ sort_keyword_list_and_remove_duplicates (GList *keywords)
     return keywords;
 }
 
+static GList *
+strv_to_glist (GStrv strv)
+{
+    GList *list = NULL;
+
+    for (guint i = 0; strv != NULL && strv[i] != NULL; i++)
+    {
+        list = g_list_prepend (list, strv[i]);
+    }
+
+    return list;
+}
+
 /**
  * nautilus_file_get_keywords
  *
@@ -4631,11 +4644,7 @@ nautilus_file_get_keywords (NautilusFile *file)
     GList *keywords = g_list_concat (g_list_copy (file->details->extension_emblems),
                                      g_list_copy (file->details->pending_extension_emblems));
 
-    /* Convert array to list */
-    for (guint i = 0; metadata_strv != NULL && metadata_strv[i] != NULL; i++)
-    {
-        keywords = g_list_prepend (keywords, metadata_strv[i]);
-    }
+    keywords = g_list_concat (keywords, strv_to_glist (metadata_strv));
 
     return sort_keyword_list_and_remove_duplicates (keywords);
 }
