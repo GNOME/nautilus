@@ -3391,36 +3391,6 @@ compare_by_directory_name (NautilusFile *file_1,
     return strcmp (directory_key1, directory_key2);
 }
 
-static GList *
-prepend_automatic_keywords (NautilusFile *file,
-                            GList        *names)
-{
-    /* Prepend in reverse order. */
-
-    /* Trash files are assumed to be read-only,
-     * so we want to ignore them here. */
-    if (!nautilus_file_can_write (file) &&
-        !nautilus_file_is_in_trash (file))
-    {
-        g_autoptr (NautilusFile) parent = nautilus_file_get_parent (file);
-
-        if (parent == NULL || nautilus_file_can_write (parent))
-        {
-            names = g_list_prepend (names, NAUTILUS_FILE_EMBLEM_NAME_CANT_WRITE);
-        }
-    }
-    if (!nautilus_file_can_read (file))
-    {
-        names = g_list_prepend (names, NAUTILUS_FILE_EMBLEM_NAME_CANT_READ);
-    }
-    if (nautilus_file_is_symbolic_link (file))
-    {
-        names = g_list_prepend (names, NAUTILUS_FILE_EMBLEM_NAME_SYMBOLIC_LINK);
-    }
-
-    return names;
-}
-
 static int
 compare_by_type (NautilusFile *file_1,
                  NautilusFile *file_2)
@@ -4596,6 +4566,34 @@ strv_to_glist (GStrv strv)
 }
 
 static GList *
+get_automatic_emblem_keywords (NautilusFile *file)
+{
+    /* Prepend in reverse order. */
+    GList *keywords = NULL;
+
+    /* Trash files are assumed to be read-only, so we want to ignore them here. */
+    if (!nautilus_file_can_write (file) && !nautilus_file_is_in_trash (file))
+    {
+        g_autoptr (NautilusFile) parent = nautilus_file_get_parent (file);
+
+        if (parent == NULL || nautilus_file_can_write (parent))
+        {
+            keywords = g_list_prepend (keywords, NAUTILUS_FILE_EMBLEM_NAME_CANT_WRITE);
+        }
+    }
+    if (!nautilus_file_can_read (file))
+    {
+        keywords = g_list_prepend (keywords, NAUTILUS_FILE_EMBLEM_NAME_CANT_READ);
+    }
+    if (nautilus_file_is_symbolic_link (file))
+    {
+        keywords = g_list_prepend (keywords, NAUTILUS_FILE_EMBLEM_NAME_SYMBOLIC_LINK);
+    }
+
+    return keywords;
+}
+
+static GList *
 get_extension_emblem_keywords (NautilusFile *file)
 {
     const GStrv key_emblems = nautilus_file_get_metadata_list (file, NAUTILUS_METADATA_KEY_EMBLEMS);
@@ -4642,9 +4640,8 @@ nautilus_file_get_emblem_icons (NautilusFile *file)
 
     GList *icons = NULL;
     GIcon *mount_icon = get_mount_icon (file, TRUE);
-    GList *keywords = get_extension_emblem_keywords (file);
-
-    keywords = prepend_automatic_keywords (file, keywords);
+    GList *keywords = g_list_concat (get_automatic_emblem_keywords (file),
+                                     get_extension_emblem_keywords (file));
 
     for (GList *l = keywords; l != NULL; l = l->next)
     {
