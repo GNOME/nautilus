@@ -112,11 +112,9 @@ struct NautilusFilePrivate
 
 	/* Emblems provided by extensions */
 	GList *extension_emblems;
-	GList *pending_extension_emblems;
 
 	/* Attributes provided by extensions */
 	GHashTable *extension_attributes;
-	GHashTable *pending_extension_attributes;
 
 	GHashTable *metadata;
 

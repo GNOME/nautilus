@@ -929,14 +929,8 @@ finalize (GObject *object)
     g_clear_pointer (&file->details->filesystem_id, g_ref_string_release);
     g_free (file->details->trash_orig_path);
 
-    g_list_free_full (file->details->pending_extension_emblems, g_free);
     g_list_free_full (file->details->extension_emblems, g_free);
     g_list_free_full (file->details->pending_info_providers, g_object_unref);
-
-    if (file->details->pending_extension_attributes)
-    {
-        g_hash_table_destroy (file->details->pending_extension_attributes);
-    }
 
     if (file->details->extension_attributes)
     {
@@ -4598,9 +4592,7 @@ get_extension_emblem_keywords (NautilusFile *file)
 {
     const GStrv key_emblems = nautilus_file_get_metadata_list (file, NAUTILUS_METADATA_KEY_EMBLEMS);
     GList *keywords = g_list_concat (g_list_copy (file->details->extension_emblems),
-                                     g_list_copy (file->details->pending_extension_emblems));
-
-    keywords = g_list_concat (keywords, strv_to_glist (key_emblems));
+                                     strv_to_glist (key_emblems));
 
     if (keywords != NULL)
     {
@@ -6521,8 +6513,6 @@ char *
 nautilus_file_get_string_attribute_q (NautilusFile *file,
                                       GQuark        attribute_q)
 {
-    char *extension_attribute;
-
     if (attribute_q == attribute_name_q)
     {
         return g_strdup (nautilus_file_get_display_name (file));
@@ -6661,22 +6651,13 @@ nautilus_file_get_string_attribute_q (NautilusFile *file,
     {
         return nautilus_file_get_volume_free_space (file);
     }
-
-    extension_attribute = NULL;
-
-    if (file->details->pending_extension_attributes)
+    if (file->details->extension_attributes != NULL)
     {
-        extension_attribute = g_hash_table_lookup (file->details->pending_extension_attributes,
-                                                   GINT_TO_POINTER (attribute_q));
+        return g_strdup (g_hash_table_lookup (file->details->extension_attributes,
+                                              GINT_TO_POINTER (attribute_q)));
     }
 
-    if (extension_attribute == NULL && file->details->extension_attributes)
-    {
-        extension_attribute = g_hash_table_lookup (file->details->extension_attributes,
-                                                   GINT_TO_POINTER (attribute_q));
-    }
-
-    return g_strdup (extension_attribute);
+    return NULL;
 }
 
 char *
@@ -7834,10 +7815,10 @@ invalidate_mount (NautilusFile *file)
 void
 nautilus_file_invalidate_extension_info_internal (NautilusFile *file)
 {
-    if (file->details->pending_info_providers)
-    {
-        g_list_free_full (file->details->pending_info_providers, g_object_unref);
-    }
+    g_list_free_full (file->details->extension_emblems, g_free);
+    file->details->extension_emblems = NULL;
+    g_clear_pointer (&file->details->extension_attributes, g_hash_table_destroy);
+    g_list_free_full (file->details->pending_info_providers, g_object_unref);
 
     file->details->pending_info_providers =
         nautilus_module_get_extensions_for_type (NAUTILUS_TYPE_INFO_PROVIDER);
@@ -8759,18 +8740,6 @@ nautilus_file_class_init (NautilusFileClass *class)
 void
 nautilus_file_info_providers_done (NautilusFile *file)
 {
-    g_list_free_full (file->details->extension_emblems, g_free);
-    file->details->extension_emblems = file->details->pending_extension_emblems;
-    file->details->pending_extension_emblems = NULL;
-
-    if (file->details->extension_attributes)
-    {
-        g_hash_table_destroy (file->details->extension_attributes);
-    }
-
-    file->details->extension_attributes = file->details->pending_extension_attributes;
-    file->details->pending_extension_attributes = NULL;
-
     nautilus_file_changed (file);
 }
 
@@ -8973,16 +8942,8 @@ add_emblem (NautilusFileInfo *file_info,
 {
     NautilusFile *file = NAUTILUS_FILE (file_info);
 
-    if (file->details->pending_info_providers)
-    {
-        file->details->pending_extension_emblems = g_list_prepend (file->details->pending_extension_emblems,
-                                                                   g_strdup (emblem_name));
-    }
-    else
-    {
-        file->details->extension_emblems = g_list_prepend (file->details->extension_emblems,
-                                                           g_strdup (emblem_name));
-    }
+    file->details->extension_emblems = g_list_prepend (file->details->extension_emblems,
+                                                       g_strdup (emblem_name));
 
     nautilus_file_changed (file);
 }
@@ -9001,33 +8962,16 @@ add_string_attribute (NautilusFileInfo *file_info,
 {
     NautilusFile *file = NAUTILUS_FILE (file_info);
 
-    if (file->details->pending_info_providers != NULL)
+    /* Lazily create hashtable */
+    if (file->details->extension_attributes == NULL)
     {
-        /* Lazily create hashtable */
-        if (file->details->pending_extension_attributes == NULL)
-        {
-            file->details->pending_extension_attributes =
-                g_hash_table_new_full (g_direct_hash, g_direct_equal,
-                                       NULL,
-                                       (GDestroyNotify) g_free);
-        }
-        g_hash_table_insert (file->details->pending_extension_attributes,
-                             GINT_TO_POINTER (g_quark_from_string (attribute_name)),
-                             g_strdup (value));
+        file->details->extension_attributes = g_hash_table_new_full (g_direct_hash, g_direct_equal,
+                                                                     NULL,
+                                                                     (GDestroyNotify) g_free);
     }
-    else
-    {
-        if (file->details->extension_attributes == NULL)
-        {
-            file->details->extension_attributes =
-                g_hash_table_new_full (g_direct_hash, g_direct_equal,
-                                       NULL,
-                                       (GDestroyNotify) g_free);
-        }
-        g_hash_table_insert (file->details->extension_attributes,
-                             GINT_TO_POINTER (g_quark_from_string (attribute_name)),
-                             g_strdup (value));
-    }
+    g_hash_table_insert (file->details->extension_attributes,
+                         GINT_TO_POINTER (g_quark_from_string (attribute_name)),
+                         g_strdup (value));
 
     nautilus_file_changed (file);
 }
