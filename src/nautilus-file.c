@@ -3406,19 +3406,16 @@ prepend_automatic_keywords (NautilusFile *file,
 
         if (parent == NULL || nautilus_file_can_write (parent))
         {
-            names = g_list_prepend
-                        (names, g_strdup (NAUTILUS_FILE_EMBLEM_NAME_CANT_WRITE));
+            names = g_list_prepend (names, NAUTILUS_FILE_EMBLEM_NAME_CANT_WRITE);
         }
     }
     if (!nautilus_file_can_read (file))
     {
-        names = g_list_prepend
-                    (names, g_strdup (NAUTILUS_FILE_EMBLEM_NAME_CANT_READ));
+        names = g_list_prepend (names, NAUTILUS_FILE_EMBLEM_NAME_CANT_READ);
     }
     if (nautilus_file_is_symbolic_link (file))
     {
-        names = g_list_prepend
-                    (names, g_strdup (NAUTILUS_FILE_EMBLEM_NAME_SYMBOLIC_LINK));
+        names = g_list_prepend (names, NAUTILUS_FILE_EMBLEM_NAME_SYMBOLIC_LINK);
     }
 
     return names;
@@ -4589,7 +4586,6 @@ static GList *
 sort_keyword_list_and_remove_duplicates (GList *keywords)
 {
     GList *p;
-    GList *duplicate_link;
 
     if (keywords != NULL)
     {
@@ -4600,9 +4596,7 @@ sort_keyword_list_and_remove_duplicates (GList *keywords)
         {
             if (strcmp ((const char *) p->data, (const char *) p->next->data) == 0)
             {
-                duplicate_link = p->next;
-                keywords = g_list_remove_link (keywords, duplicate_link);
-                g_list_free_full (duplicate_link, g_free);
+                keywords = g_list_delete_link (keywords, p->next);
             }
             else
             {
@@ -4620,16 +4614,11 @@ sort_keyword_list_and_remove_duplicates (GList *keywords)
  * Return this file's keywords.
  * @file: NautilusFile representing the file in question.
  *
- * Returns: A list of keywords.
- *
+ * Returns: (transfer none): A list of keywords.
  **/
 static GList *
 nautilus_file_get_keywords (NautilusFile *file)
 {
-    GList *keywords;
-    GStrv metadata_strv;
-    GList *metadata_keywords = NULL;
-
     if (file == NULL)
     {
         return NULL;
@@ -4637,17 +4626,16 @@ nautilus_file_get_keywords (NautilusFile *file)
 
     g_return_val_if_fail (NAUTILUS_IS_FILE (file), NULL);
 
-    keywords = g_list_copy_deep (file->details->extension_emblems, (GCopyFunc) g_strdup, NULL);
-    keywords = g_list_concat (keywords, g_list_copy_deep (file->details->pending_extension_emblems, (GCopyFunc) g_strdup, NULL));
+    const GStrv metadata_strv = nautilus_file_get_metadata_list (file,
+                                                                 NAUTILUS_METADATA_KEY_EMBLEMS);
+    GList *keywords = g_list_concat (g_list_copy (file->details->extension_emblems),
+                                     g_list_copy (file->details->pending_extension_emblems));
 
-    metadata_strv = nautilus_file_get_metadata_list (file, NAUTILUS_METADATA_KEY_EMBLEMS);
     /* Convert array to list */
-    for (gint i = 0; metadata_strv != NULL && metadata_strv[i] != NULL; i++)
+    for (guint i = 0; metadata_strv != NULL && metadata_strv[i] != NULL; i++)
     {
-        metadata_keywords = g_list_prepend (metadata_keywords, g_strdup (metadata_strv[i]));
+        keywords = g_list_prepend (keywords, metadata_strv[i]);
     }
-
-    keywords = g_list_concat (keywords, metadata_keywords);
 
     return sort_keyword_list_and_remove_duplicates (keywords);
 }
@@ -4699,8 +4687,6 @@ nautilus_file_get_emblem_icons (NautilusFile *file)
     {
         icons = g_list_prepend (icons, icon);
     }
-
-    g_list_free_full (keywords, g_free);
 
     return icons;
 }
