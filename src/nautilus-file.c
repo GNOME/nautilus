@@ -4645,7 +4645,7 @@ nautilus_file_get_keywords (NautilusFile *file)
  *
  * Return the list of names of emblems that this file should display,
  * in canonical order.
- * @file: NautilusFile representing the file in question.
+ * @file: (not nullable): NautilusFile representing the file in question.
  *
  * Returns: (transfer full) (element-type GIcon): A list of emblem names.
  *
@@ -4653,18 +4653,13 @@ nautilus_file_get_keywords (NautilusFile *file)
 GList *
 nautilus_file_get_emblem_icons (NautilusFile *file)
 {
+    g_return_val_if_fail (NAUTILUS_IS_FILE (file), NULL);
+
     GList *keywords, *l;
     GList *icons;
     char *icon_names[2];
     char *keyword;
     GIcon *icon;
-
-    if (file == NULL)
-    {
-        return NULL;
-    }
-
-    g_return_val_if_fail (NAUTILUS_IS_FILE (file), NULL);
 
     keywords = nautilus_file_get_keywords (file);
     keywords = prepend_automatic_keywords (file, keywords);
