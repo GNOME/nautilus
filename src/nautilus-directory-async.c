@@ -3912,7 +3912,7 @@ finish_info_provider (NautilusDirectory    *directory,
 
     if (file->details->pending_info_providers == NULL)
     {
-        nautilus_file_info_providers_done (file);
+        nautilus_file_changed (file);
     }
 }
 

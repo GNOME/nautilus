@@ -8737,12 +8737,6 @@ nautilus_file_class_init (NautilusFileClass *class)
     g_object_class_install_properties (G_OBJECT_CLASS (class), N_PROPS, properties);
 }
 
-void
-nautilus_file_info_providers_done (NautilusFile *file)
-{
-    nautilus_file_changed (file);
-}
-
 static gboolean
 is_gone (NautilusFileInfo *file_info)
 {

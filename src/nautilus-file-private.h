@@ -255,8 +255,6 @@ gboolean               nautilus_file_is_self_owned                      (Nautilu
 void                   nautilus_file_invalidate_count                   (NautilusFile           *file);
 gboolean               nautilus_file_rename_in_progress                 (NautilusFile           *file);
 void                   nautilus_file_invalidate_extension_info_internal (NautilusFile           *file);
-void                   nautilus_file_info_providers_done                (NautilusFile           *file);
-
 
 /* Thumbnailing: */
 gboolean          nautilus_file_set_thumbnail              (NautilusFile           *file,
