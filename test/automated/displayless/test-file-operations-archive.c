@@ -477,13 +477,6 @@ test_archive_full_dir_cancel (void)
         "my_directory/my_inner_file",
         NULL
     };
-    const GStrv extracted_files_hier = (char *[])
-    {
-        "archive/my_file",
-        "archive/my_directory/",
-        "archive/my_directory/my_inner_file",
-        NULL
-    };
     g_autoptr (GFile) tmp_dir = g_file_new_for_path (test_get_tmp_dir ());
     g_autoptr (GFile) archive_file = g_file_new_build_filename (test_get_tmp_dir (),
                                                                 "archive.zip",
