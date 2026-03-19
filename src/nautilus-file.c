@@ -4621,32 +4621,17 @@ strv_to_glist (GStrv strv)
     return list;
 }
 
-/**
- * nautilus_file_get_keywords
- *
- * Return this file's keywords.
- * @file: NautilusFile representing the file in question.
- *
- * Returns: (transfer none): A list of keywords.
- **/
 static GList *
-nautilus_file_get_keywords (NautilusFile *file)
+get_extension_emblem_keywords (NautilusFile *file)
 {
-    if (file == NULL)
-    {
-        return NULL;
-    }
-
-    g_return_val_if_fail (NAUTILUS_IS_FILE (file), NULL);
-
-    const GStrv metadata_strv = nautilus_file_get_metadata_list (file,
-                                                                 NAUTILUS_METADATA_KEY_EMBLEMS);
+    const GStrv key_emblems = nautilus_file_get_metadata_list (file, NAUTILUS_METADATA_KEY_EMBLEMS);
     GList *keywords = g_list_concat (g_list_copy (file->details->extension_emblems),
                                      g_list_copy (file->details->pending_extension_emblems));
 
-    keywords = g_list_concat (keywords, strv_to_glist (metadata_strv));
+    keywords = g_list_concat (keywords, strv_to_glist (key_emblems));
+    keywords = sort_keyword_list_and_remove_duplicates (keywords);
 
-    return sort_keyword_list_and_remove_duplicates (keywords);
+    return keywords;
 }
 
 /**
@@ -4666,7 +4651,7 @@ nautilus_file_get_emblem_icons (NautilusFile *file)
 
     GList *icons = NULL;
     GIcon *mount_icon = get_mount_icon (file, TRUE);
-    GList *keywords = nautilus_file_get_keywords (file);
+    GList *keywords = get_extension_emblem_keywords (file);
 
     keywords = prepend_automatic_keywords (file, keywords);
 
