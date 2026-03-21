@@ -25,15 +25,6 @@
 
 #include <gmodule.h>
 
-#define NAUTILUS_TYPE_MODULE            (nautilus_module_get_type ())
-#define NAUTILUS_MODULE(obj)            (G_TYPE_CHECK_INSTANCE_CAST ((obj), NAUTILUS_TYPE_MODULE, NautilusModule))
-#define NAUTILUS_MODULE_CLASS(klass)    (G_TYPE_CHECK_CLASS_CAST ((klass), NAUTILUS_TYPE_MODULE, NautilusModule))
-#define NAUTILUS_IS_MODULE(obj)         (G_TYPE_CHECK_INSTANCE_TYPE ((obj), NAUTILUS_TYPE_MODULE))
-#define NAUTILUS_IS_MODULE_CLASS(klass) (G_TYPE_CLASS_CHECK_CLASS_TYPE ((klass), NAUTILUS_TYPE_MODULE))
-
-typedef struct _NautilusModule NautilusModule;
-typedef struct _NautilusModuleClass NautilusModuleClass;
-
 struct _NautilusModule
 {
     GTypeModule parent;
@@ -49,17 +40,12 @@ struct _NautilusModule
                         int          *num_types);
 };
 
-struct _NautilusModuleClass
-{
-    GTypeModuleClass parent;
-};
+#define NAUTILUS_TYPE_MODULE (nautilus_module_get_type())
+G_DECLARE_FINAL_TYPE (NautilusModule, nautilus_module, NAUTILUS, MODULE, GTypeModule)
+G_DEFINE_FINAL_TYPE (NautilusModule, nautilus_module, G_TYPE_TYPE_MODULE)
 
 static GList *module_objects = NULL;
 static GList *installed_modules = NULL;
-
-static GType nautilus_module_get_type (void);
-
-G_DEFINE_TYPE (NautilusModule, nautilus_module, G_TYPE_TYPE_MODULE);
 
 static gboolean
 nautilus_module_load (GTypeModule *gmodule)
