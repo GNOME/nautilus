@@ -8927,16 +8927,25 @@ nautilus_file_is_directory (NautilusFile *file)
     return nautilus_file_get_file_type (file) == G_FILE_TYPE_DIRECTORY;
 }
 
+void
+nautilus_file_add_extension_emblem (NautilusFile *self,
+                                    const char   *emblem_name)
+{
+    g_return_if_fail (NAUTILUS_IS_FILE (self));
+
+    self->details->extension_emblems = g_list_prepend (self->details->extension_emblems,
+                                                       g_strdup (emblem_name));
+
+    nautilus_file_changed (self);
+}
+
 static void
 add_emblem (NautilusFileInfo *file_info,
             const char       *emblem_name)
 {
     NautilusFile *file = NAUTILUS_FILE (file_info);
 
-    file->details->extension_emblems = g_list_prepend (file->details->extension_emblems,
-                                                       g_strdup (emblem_name));
-
-    nautilus_file_changed (file);
+    nautilus_file_add_extension_emblem (file, emblem_name);
 }
 
 static char *
@@ -8946,6 +8955,28 @@ get_string_attribute (NautilusFileInfo *file_info,
     return nautilus_file_get_string_attribute (NAUTILUS_FILE (file_info), attribute_name);
 }
 
+void
+nautilus_file_add_extension_attribute (NautilusFile *self,
+                                       const char   *attribute_name,
+                                       const char   *value)
+{
+    g_return_if_fail (NAUTILUS_IS_FILE (self));
+
+    /* Lazily create hashtable */
+    if (self->details->extension_attributes == NULL)
+    {
+        self->details->extension_attributes = g_hash_table_new_full (g_direct_hash, g_direct_equal,
+                                                                     NULL,
+                                                                     (GDestroyNotify) g_free);
+    }
+
+    g_hash_table_insert (self->details->extension_attributes,
+                         GINT_TO_POINTER (g_quark_from_string (attribute_name)),
+                         g_strdup (value));
+
+    nautilus_file_changed (self);
+}
+
 static void
 add_string_attribute (NautilusFileInfo *file_info,
                       const char       *attribute_name,
@@ -8953,18 +8984,7 @@ add_string_attribute (NautilusFileInfo *file_info,
 {
     NautilusFile *file = NAUTILUS_FILE (file_info);
 
-    /* Lazily create hashtable */
-    if (file->details->extension_attributes == NULL)
-    {
-        file->details->extension_attributes = g_hash_table_new_full (g_direct_hash, g_direct_equal,
-                                                                     NULL,
-                                                                     (GDestroyNotify) g_free);
-    }
-    g_hash_table_insert (file->details->extension_attributes,
-                         GINT_TO_POINTER (g_quark_from_string (attribute_name)),
-                         g_strdup (value));
-
-    nautilus_file_changed (file);
+    nautilus_file_add_extension_attribute (file, attribute_name, value);
 }
 
 static void
