@@ -12,7 +12,7 @@ msgstr ""
 "Project-Id-Version: nautilus.master.is\n"
 "Report-Msgid-Bugs-To: https://gitlab.gnome.org/GNOME/nautilus/issues\n"
 "POT-Creation-Date: 2026-03-17 09:00+0000\n"
-"PO-Revision-Date: 2026-03-20 18:55+0000\n"
+"PO-Revision-Date: 2026-03-21 11:10+0000\n"
 "Last-Translator: Sveinn í Felli <sv1@fellsnet.is>\n"
 "Language-Team: Icelandic\n"
 "Language: is\n"
@@ -51,7 +51,6 @@ msgid "Always use the location entry, instead of the pathbar"
 msgstr "Nota alltaf staðsetningarinnslátt í staðinn fyrir slóðalista"
 
 #: data/org.gnome.nautilus.gschema.xml:83
-#, fuzzy
 #| msgid ""
 #| "If set to true, then Nautilus browser windows will always use a textual "
 #| "input entry for the location toolbar, instead of the pathbar."
@@ -59,7 +58,7 @@ msgid ""
 "If set to true, Files will always use a textual input entry for the location "
 "toolbar, instead of the pathbar."
 msgstr ""
-"Ef virkt, munu Nautilus vafurgluggar alltaf nota textainnslátt í "
+"Ef virkt, munu skráagluggar alltaf nota textainnslátt í "
 "staðsetningastikuna í stað slóðarstikunnar."
 
 #: data/org.gnome.nautilus.gschema.xml:87
@@ -67,7 +66,6 @@ msgid "Where to perform recursive search"
 msgstr "Hvar eigi framkvæma endurkvæma leit"
 
 #: data/org.gnome.nautilus.gschema.xml:88
-#, fuzzy
 #| msgid ""
 #| "In which locations Nautilus should search on subfolders. Available values "
 #| "are “local-only”, “always”, “never”."
@@ -75,7 +73,7 @@ msgid ""
 "Locations in which Files should search subfolders. Available values are "
 "“local-only”, “always”, “never”."
 msgstr ""
-"Í hvaða staðsetningum Nautilus ætti að leita í undirmöppum. Tiltæk gildi eru "
+"Í hvaða staðsetningum ætti að leita í undirmöppum. Tiltæk gildi eru "
 "\"einungis-staðvært\", \"alltaf\", \"aldrei\"."
 
 #: data/org.gnome.nautilus.gschema.xml:92
@@ -91,7 +89,6 @@ msgid "Whether to show a context menu item to delete permanently"
 msgstr "Hvort birta eigi atriði í samhengisvalmynd til að geta eytt endanlega"
 
 #: data/org.gnome.nautilus.gschema.xml:98
-#, fuzzy
 #| msgid ""
 #| "If set to true, then Nautilus will show a delete permanently context menu "
 #| "item to bypass the Trash."
@@ -99,7 +96,7 @@ msgid ""
 "If set to true, Files will show a delete permanently context menu item to "
 "bypass the Trash."
 msgstr ""
-"Ef þetta er stillt sem satt, mun Nautilus mun biðja þig um staðfestingu "
+"Ef þetta er stillt sem satt, mun skráastjórinn biðja þig um staðfestingu "
 "þegar þú reynir að eyða skrám eða við að tæma ruslið."
 
 #: data/org.gnome.nautilus.gschema.xml:102
@@ -111,7 +108,6 @@ msgstr ""
 "tengla úr afrituðum eða völdum skrám"
 
 #: data/org.gnome.nautilus.gschema.xml:103
-#, fuzzy
 #| msgid ""
 #| "If set to true, then Nautilus will show context menu items to create "
 #| "links from the copied or selected files."
@@ -119,7 +115,7 @@ msgid ""
 "If set to true, Files will show context menu items to create links from the "
 "copied or selected files."
 msgstr ""
-"Ef þetta er stillt sem satt, mun Nautilus mun birta atriði í "
+"Ef þetta er stillt sem satt, mun skráastjórinn birta atriði í "
 "samhengisvalmynd þar sem hægt verður að búa til tengla úr afrituðum eða "
 "völdum skrám."
 
@@ -153,13 +149,11 @@ msgstr ""
 "\"tvöfalt\" til að ræsa með tvísmelli."
 
 #: data/org.gnome.nautilus.gschema.xml:118
-#, fuzzy
 #| msgid "Use extra mouse button events in Nautilus’ browser window"
 msgid "Use extra mouse button events in Files"
-msgstr "Nota auka músarhnappaatburði í vafragluggum Nautilus"
+msgstr "Nota auka músarhnappaatburði í vafragluggum skráastjórans"
 
 #: data/org.gnome.nautilus.gschema.xml:119
-#, fuzzy
 #| msgid ""
 #| "For users with mice that have “Forward” and “Back” buttons, this key will "
 #| "determine if any action is taken inside of Nautilus when either is "
@@ -169,7 +163,8 @@ msgid ""
 "determine if any action is taken inside of Files when either is pressed."
 msgstr ""
 "Fyrir þá notendur sem hafa mýs með \"Áfram\" og \"Afturábak\" hnöppum, þá "
-"virkjar þessi lykill hvort einhver aðgerð er framkvæmd í Nautilus þegar ýtt "
+"virkjar þessi lykill hvort einhver aðgerð er framkvæmd í skráastjóranum þegar"
+" ýtt "
 "er á hnappana."
 
 #: data/org.gnome.nautilus.gschema.xml:123
@@ -291,7 +286,6 @@ msgid "Whether GTK 4 settings migration happened"
 msgstr "Hvort yfirfærsla GTK 4 stillinga átti sér stað"
 
 #: data/org.gnome.nautilus.gschema.xml:174
-#, fuzzy
 #| msgid ""
 #| "Whether settings shared with GtkFileChooser have been migrated from their "
 #| "GTK 3 key to the GTK 4 ones."
@@ -327,7 +321,6 @@ msgstr ""
 "nýr gluggi/flipi"
 
 #: data/org.gnome.nautilus.gschema.xml:184
-#, fuzzy
 #| msgid ""
 #| "If set to true, then Nautilus will also match the file contents besides "
 #| "the name. This toggles the default active state, which can still be "
@@ -337,7 +330,7 @@ msgid ""
 "This toggles the default active state, which can still be overridden in the "
 "search popover"
 msgstr ""
-"Ef þetta er stillt sem satt, mun Nautilus einnig samsvara efni skráa "
+"Ef þetta er stillt sem satt, mun skráastjórinn einnig samsvara efni skráa "
 "samhliða nafninu. Þetta víxlar á sjálfgefinni virkri stöðu, sem hægt er að "
 "breyta í leitarglugganum"
 
@@ -417,10 +410,9 @@ msgid "Whether the navigation window should be maximized by default."
 msgstr "Hvort yfirlitsglugginn eigi sjálfgefið að vera hámarkaður."
 
 #: data/org.gnome.nautilus.gschema.xml:255
-#, fuzzy
 #| msgid "Initial size of the window"
 msgid "Initial size of the file chooser window"
-msgstr "Upprunaleg stærð gluggans"
+msgstr "Upprunaleg stærð skráavalsgluggans"
 
 #: data/org.gnome.nautilus.gschema.xml:256
 #, fuzzy
@@ -435,7 +427,7 @@ msgid ""
 "desktop. It provides a simple and integrated way of managing your files and "
 "browsing your file system."
 msgstr ""
-"Skráastjóri, einnig þekktur sem Nautilusi, er sjálfgefinn skráastjóri GNOME "
+"Skráastjórinn, einnig þekktur sem Nautilus, er sjálfgefinn skráastjóri GNOME "
 "skjáborðsumhverfisins. Þetta er einföld og samtvinnuð leið til að sýsla með "
 "skrár og til að vafra um á skráakerfinu."
 
@@ -2587,10 +2579,10 @@ msgid "There was an error while compressing files."
 msgstr "Villa átti sér stað við að þjappa skrám."
 
 #: src/nautilus-file-operations.c:8225
-#, fuzzy, c-format
+#, c-format
 #| msgid "Compress “%s”"
 msgid "Compressed “%s”"
-msgstr "Þjappa „%s“"
+msgstr "Þjappaði „%s“"
 
 #: src/nautilus-file-operations.c:8227
 #, c-format
@@ -3306,16 +3298,14 @@ msgid "%s, %s"
 msgstr "%s, %s"
 
 #: src/nautilus-files-view.c:3649
-#, fuzzy
 #| msgid "Sharing Settings"
 msgid "Search _Settings"
-msgstr "Stillingar deilingar"
+msgstr "Leita í _stillingum"
 
 #: src/nautilus-files-view.c:3661
-#, fuzzy
 #| msgid "Search _Relevance"
 msgid "Search _Everywhere"
-msgstr "Samsvö_run við leit"
+msgstr "L_eita allsstaðar"
 
 #: src/nautilus-files-view.c:3691
 msgid "More locations can be added to search in the settings"
@@ -3579,6 +3569,8 @@ msgid ""
 "Running as root is not supported. Consider running `nautilus admin:///` "
 "instead."
 msgstr ""
+"Að keyra sem kerfisstjóri/root er ekki stutt. Íhugaðu að keyra frekar"
+" `nautilus admin:///`."
 
 #: src/nautilus-mime-actions.c:97
 msgid "Anything"
@@ -5003,10 +4995,9 @@ msgid "Next Conflict"
 msgstr "Næsti árekstur"
 
 #: src/resources/ui/nautilus-batch-rename-dialog.blp:426
-#, fuzzy
 #| msgid "_Previous Tab"
 msgid "Previous Conflict"
-msgstr "_Fyrri flipi"
+msgstr "Fyrri árekstur"
 
 #: src/resources/ui/nautilus-column-chooser.blp:13
 msgid "Visible Columns"
@@ -5031,28 +5022,24 @@ msgid "Move _Up"
 msgstr "Færa _upp"
 
 #: src/resources/ui/nautilus-column-chooser.blp:65
-#, fuzzy
 #| msgid "Move Down"
 msgid "Move _Down"
-msgstr "Færa niður"
+msgstr "_Færa niður"
 
 #: src/resources/ui/nautilus-compress-dialog.blp:5
-#, fuzzy
 #| msgid "Compressed Files"
 msgid "Compress Files and Folders"
-msgstr "Afþjappaðar skrár"
+msgstr "Þjappa skrám og möppum"
 
 #: src/resources/ui/nautilus-compress-dialog.blp:26
-#, fuzzy
 #| msgid "C_ompress…"
 msgid "C_ompress"
-msgstr "Þja_ppa…"
+msgstr "Þja_ppa"
 
 #: src/resources/ui/nautilus-compress-dialog.blp:45
-#, fuzzy
 #| msgid "Archive name"
 msgid "Archive _Name"
-msgstr "Heiti safnskrár"
+msgstr "Heiti saf_nskrár"
 
 #: src/resources/ui/nautilus-compress-dialog.blp:69
 #, fuzzy
@@ -5061,10 +5048,9 @@ msgid "Co_mpression Method"
 msgstr "Þjappa skrár"
 
 #: src/resources/ui/nautilus-compress-dialog.blp:76
-#, fuzzy
 #| msgid "Description"
 msgid "Encryption"
-msgstr "Lýsing"
+msgstr "Dulritun"
 
 #: src/resources/ui/nautilus-compress-dialog.blp:78
 msgid ""
@@ -5073,16 +5059,14 @@ msgid ""
 msgstr ""
 
 #: src/resources/ui/nautilus-compress-dialog.blp:82
-#, fuzzy
 #| msgid "Password"
 msgid "_Password"
-msgstr "Lykilorð"
+msgstr "_Lykilorð"
 
 #: src/resources/ui/nautilus-compress-dialog.blp:88
-#, fuzzy
 #| msgid "Password"
 msgid "_Confirm Password"
-msgstr "Lykilorð"
+msgstr "Stað_festu lykilorð"
 
 #: src/resources/ui/nautilus-date-entry-row.blp:10
 msgid "Pick Date"
@@ -5097,16 +5081,14 @@ msgid "Filter by Date"
 msgstr "Sía eftir dagsetningu"
 
 #: src/resources/ui/nautilus-date-range-dialog.blp:21
-#, fuzzy
 #| msgid "Date Taken"
 msgid "_Date Range"
-msgstr "Tökudagur"
+msgstr "Tíma_bil"
 
 #: src/resources/ui/nautilus-date-range-dialog.blp:27
-#, fuzzy
 #| msgid "Single click"
 msgid "Single Day"
-msgstr "Einsmella"
+msgstr "Stakur dagur"
 
 #: src/resources/ui/nautilus-date-range-dialog.blp:28
 msgid "± 1 day"
@@ -5141,14 +5123,12 @@ msgid "_To"
 msgstr "_Til"
 
 #: src/resources/ui/nautilus-date-range-dialog.blp:67
-#, fuzzy
 #| msgid "_Files"
 msgid "_Filter"
-msgstr "_Skrár"
+msgstr "Sí_a"
 
 #: src/resources/ui/nautilus-file-chooser.blp:126
 #: src/resources/ui/nautilus-toolbar.blp:72
-#, fuzzy
 #| msgid "Show sidebar"
 msgid "Show Sidebar"
 msgstr "Birta hliðarspjald"
@@ -5160,16 +5140,14 @@ msgid "New Folder"
 msgstr "Ný mappa"
 
 #: src/resources/ui/nautilus-file-chooser.blp:185
-#, fuzzy
 #| msgid "File Name"
 msgid "Edit File Name"
-msgstr "Skráarheiti"
+msgstr "Breyta skráarheiti"
 
 #: src/resources/ui/nautilus-file-chooser.blp:217
-#, fuzzy
 #| msgid "File Name"
 msgid "Reset File Name"
-msgstr "Skráarheiti"
+msgstr "Endurstilla skráarheiti"
 
 #: src/resources/ui/nautilus-file-chooser.blp:230
 msgid "File Name"
@@ -5177,11 +5155,10 @@ msgstr "Skráarheiti"
 
 #. Translators: 'Show' is a verb
 #: src/resources/ui/nautilus-file-chooser.blp:263
-#, fuzzy
 #| msgid "Show operations"
 msgctxt "File Chooser tooltips"
 msgid "Show Options"
-msgstr "Sýna aðgerðir"
+msgstr "Sýna valkosti"
 
 #: src/resources/ui/nautilus-file-chooser.blp:269
 msgid "Visible Files Filter"
@@ -5194,10 +5171,9 @@ msgid "Select a _new name for the destination"
 msgstr "_Veldu nýtt heiti fyrir áfangastaðinn"
 
 #: src/resources/ui/nautilus-file-conflict-dialog.blp:120
-#, fuzzy
 #| msgid "Reset"
 msgid "R_eset"
-msgstr "Frumstilla"
+msgstr "_Endurstilla"
 
 #: src/resources/ui/nautilus-file-conflict-dialog.blp:129
 #, fuzzy
@@ -5218,20 +5194,18 @@ msgid "_Files"
 msgstr "_Skrár"
 
 #: src/resources/ui/nautilus-file-properties-change-permissions.blp:42
-#, fuzzy
 #| msgid "Folders"
 msgid "F_olders"
-msgstr "Möppur"
+msgstr "Mö_ppur"
 
 #: src/resources/ui/nautilus-file-properties-change-permissions.blp:51
 msgid "Fi_les"
 msgstr "S_krár"
 
 #: src/resources/ui/nautilus-file-properties-change-permissions.blp:56
-#, fuzzy
 #| msgid "Folders"
 msgid "Fol_ders"
-msgstr "Möppur"
+msgstr "_Möppur"
 
 #: src/resources/ui/nautilus-file-properties-change-permissions.blp:62
 msgid "Others"
@@ -5242,10 +5216,9 @@ msgid "Fil_es"
 msgstr "Sk_rár"
 
 #: src/resources/ui/nautilus-file-properties-change-permissions.blp:70
-#, fuzzy
 #| msgid "Folders"
 msgid "Folde_rs"
-msgstr "Möppur"
+msgstr "Möppu_r"
 
 #: src/resources/ui/nautilus-files-view-select-items.blp:5
 msgid "Select Items Matching"
@@ -5275,27 +5248,24 @@ msgstr "Fy_rsta"
 
 #. Translators: This is an ordinal number
 #: src/resources/ui/nautilus-grid-view-captions-dialog.blp:32
-#, fuzzy
 #| msgctxt "the n-th position of an icon caption"
 #| msgid "Second"
 msgctxt "the n-th position of an icon caption"
 msgid "Seco_nd"
-msgstr "Annað"
+msgstr "A_nnað"
 
 #. Translators: This is an ordinal number
 #: src/resources/ui/nautilus-grid-view-captions-dialog.blp:39
-#, fuzzy
 #| msgctxt "the n-th position of an icon caption"
 #| msgid "Third"
 msgctxt "the n-th position of an icon caption"
 msgid "T_hird"
-msgstr "Þriðja"
+msgstr "Þrið_ja"
 
 #: src/resources/ui/nautilus-name-cell.blp:95
-#, fuzzy
 #| msgid "Full text match"
 msgid "Full Text Match"
-msgstr "Leit í öllum textanum"
+msgstr "Samsvörun í öllum textanum"
 
 #: src/resources/ui/nautilus-network-address-bar.blp:16
 msgid "Server Addresses"
@@ -5316,28 +5286,24 @@ msgid "Prefix"
 msgstr "Forskeyti"
 
 #: src/resources/ui/nautilus-network-address-bar.blp:91
-#, fuzzy
 #| msgid "Server Addresses"
 msgid "Server address"
-msgstr "Vistföng þjóna"
+msgstr "Vistfang netþjóns"
 
 #: src/resources/ui/nautilus-network-address-bar.blp:106
-#, fuzzy
 #| msgid "Server Addresses"
 msgid "Server Address Information"
-msgstr "Vistföng þjóna"
+msgstr "Upplýsingar Vistfang netþjóns"
 
 #: src/resources/ui/nautilus-new-folder-dialog.blp:16
-#, fuzzy
 #| msgid "Folder name"
 msgid "_Folder Name"
-msgstr "Möppuheiti"
+msgstr "Möppu_heiti"
 
 #: src/resources/ui/nautilus-new-folder-dialog.blp:39
-#, fuzzy
 #| msgid "Create"
 msgid "_Create"
-msgstr "Búa til"
+msgstr "_Búa til"
 
 #: src/resources/ui/nautilus-operations-ui-manager-request-passphrase.blp:5
 msgid "Password Required"
@@ -5361,10 +5327,9 @@ msgid "_Expandable Folders in List View"
 msgstr "Útliðaðar möppur í listasýn"
 
 #: src/resources/ui/nautilus-preferences-dialog.blp:24
-#, fuzzy
 #| msgid "Action to Open Items"
 msgid "_Action to Open Items"
-msgstr "Aðgerð til að opna atriði"
+msgstr "_Aðgerð til að opna atriði"
 
 #: src/resources/ui/nautilus-preferences-dialog.blp:30
 msgid "Optional Context Menu Actions"
@@ -5399,22 +5364,19 @@ msgstr ""
 "þegar flakkað er um skrár utan þessarar tölvu, eins og á fjartengdum þjónum."
 
 #: src/resources/ui/nautilus-preferences-dialog.blp:53
-#, fuzzy
 #| msgid "Search in Subfolders"
 msgid "Search in Su_bfolders"
-msgstr "Leita í undirmöppum"
+msgstr "Leita í un_dirmöppum"
 
 #: src/resources/ui/nautilus-preferences-dialog.blp:58
-#, fuzzy
 #| msgid "Show Thumbnails"
 msgid "Show _Thumbnails"
-msgstr "Sýna smámyndir"
+msgstr "Sýna smám_yndir"
 
 #: src/resources/ui/nautilus-preferences-dialog.blp:63
-#, fuzzy
 #| msgid "Count Number of Files in Folders"
 msgid "_Count Number of Files in Folders"
-msgstr "Telja fjölda skráa í möppum"
+msgstr "Tel_ja fjölda skráa í möppum"
 
 #: src/resources/ui/nautilus-preferences-dialog.blp:69
 msgid "Date and Time Format"
@@ -5429,28 +5391,24 @@ msgid "_Simple"
 msgstr "Einfal_t"
 
 #: src/resources/ui/nautilus-preferences-dialog.blp:87
-#, fuzzy
 #| msgid "Detailed Type"
 msgid "Deta_iled"
-msgstr "Ítarlegt um tegund"
+msgstr "Ítar_legt"
 
 #: src/resources/ui/nautilus-progress-indicator.blp:8
-#, fuzzy
 #| msgid "File Operations"
 msgid "Show File Operations"
-msgstr "Skráaraðgerðir"
+msgstr "Sýna skráaaðgerðir"
 
 #: src/resources/ui/nautilus-properties-widget.blp:121
-#, fuzzy
 #| msgid "Select Custom Icon"
 msgid "Set Custom Icon"
-msgstr "Veldu sérsniðna táknmynd"
+msgstr "Stilla sérsniðna táknmynd"
 
 #: src/resources/ui/nautilus-properties-widget.blp:143
-#, fuzzy
 #| msgid "Select Custom Icon"
 msgid "Remove Custom Icon"
-msgstr "Veldu sérsniðna táknmynd"
+msgstr "Fjarlægja sérsniðna táknmynd"
 
 #: src/resources/ui/nautilus-properties-widget.blp:184
 msgid "Unknown Filesystem"
@@ -5472,34 +5430,29 @@ msgstr "laust"
 
 #. Translators: Disks refers to GNOME Disks.
 #: src/resources/ui/nautilus-properties-widget.blp:335
-#, fuzzy
 #| msgid "Open in Disks"
 msgid "_Open in Disks"
-msgstr "Opna með diskaforriti"
+msgstr "_Opna með diskaforriti"
 
 #: src/resources/ui/nautilus-properties-widget.blp:346
-#, fuzzy
 #| msgid "Link Target"
 msgid "_Link Target"
-msgstr "Áfangastaður tengils"
+msgstr "Áfangastaður tengi_ls"
 
 #: src/resources/ui/nautilus-properties-widget.blp:361
-#, fuzzy
 #| msgid "_Open Item Location"
 msgid "Open the Target's Location"
-msgstr "_Opna staðsetningu atriðis"
+msgstr "Opna staðsetningu atriðis"
 
 #: src/resources/ui/nautilus-properties-widget.blp:373
-#, fuzzy
 #| msgid "Parent Folder"
 msgid "Parent _Folder"
-msgstr "Yfirmappa"
+msgstr "Y_firmappa"
 
 #: src/resources/ui/nautilus-properties-widget.blp:388
-#, fuzzy
 #| msgid "Parent Folder"
 msgid "Open Parent Folder"
-msgstr "Yfirmappa"
+msgstr "Opna yfirmöppu"
 
 #: src/resources/ui/nautilus-properties-widget.blp:478
 msgid "_Permissions"
@@ -5556,74 +5509,65 @@ msgid "_Group"
 msgstr "Hó_pur"
 
 #: src/resources/ui/nautilus-properties-widget.blp:612
-#, fuzzy
 #| msgid "Others"
 msgid "Other Users"
-msgstr "Aðrir"
+msgstr "Aðrir notendur"
 
 #: src/resources/ui/nautilus-properties-widget.blp:640
 msgid "Security Context"
 msgstr "Öryggissamhengi"
 
 #: src/resources/ui/nautilus-properties-widget.blp:656
-#, fuzzy
 #| msgid "Change Permissions for Enclosed Files…"
 msgid "Change Permissions for _Enclosed Files…"
-msgstr "Breyta heimildum fyrir umluktar skrár…"
+msgstr "Br_eyta heimildum fyrir umluktar skrár…"
 
 #: src/resources/ui/nautilus-rename-file-popover.blp:23
 msgid "New Filename"
 msgstr "Nýtt skráarheiti"
 
 #: src/resources/ui/nautilus-search-popover.blp:23
-#, fuzzy
 #| msgid "Detailed Type"
 msgid "File Types"
-msgstr "Ítarlegt um tegund"
+msgstr "Skráategundir"
 
 #: src/resources/ui/nautilus-search-popover.blp:45
-#, fuzzy
 #| msgid "Audio"
 msgid "_Audio"
-msgstr "Hljóð"
+msgstr "_Hljóð"
 
 #: src/resources/ui/nautilus-search-popover.blp:57
-#, fuzzy
 #| msgid "Documents"
 msgid "_Documents"
-msgstr "Skjöl"
+msgstr "S_kjöl"
 
 #: src/resources/ui/nautilus-search-popover.blp:69
-#, fuzzy
 #| msgid "Folders"
 msgid "_Folders"
-msgstr "Möppur"
+msgstr "_Möppur"
 
 #: src/resources/ui/nautilus-search-popover.blp:81
-#, fuzzy
 #| msgid "Image"
 msgid "_Images"
-msgstr "Mynd"
+msgstr "Mynd_ir"
 
 #: src/resources/ui/nautilus-search-popover.blp:93
 msgid "_PDF"
 msgstr "_PDF"
 
 #: src/resources/ui/nautilus-search-popover.blp:105
-#, fuzzy
 #| msgid "Spreadsheet"
 msgid "_Spreadsheets"
-msgstr "Töflureiknisskjal"
+msgstr "_Töflureikniskjöl"
 
 #: src/resources/ui/nautilus-search-popover.blp:117
 msgid "Te_xt"
 msgstr "Te_xti"
 
 #: src/resources/ui/nautilus-search-popover.blp:129
-#, fuzzy
 #| msgid "Video"
 msgid "_Videos"
-msgstr "Myndskeið"
+msgstr "M_yndskeið"
 
 #: src/resources/ui/nautilus-search-popover.blp:144
 msgid "Specific Type"
@@ -5639,69 +5583,60 @@ msgid "_Today"
 msgstr "Í _dag"
 
 #: src/resources/ui/nautilus-search-popover.blp:218
-#, fuzzy
 #| msgid "Yesterday"
 msgid "_Yesterday"
-msgstr "Í gær"
+msgstr "Í _gær"
 
 #: src/resources/ui/nautilus-search-popover.blp:224
-#, fuzzy
 #| msgid "Last week"
 #| msgid_plural "%d weeks ago"
 msgid "Past _Week"
-msgstr "Í síðustu viku"
+msgstr "Í síðustu _viku"
 
 #: src/resources/ui/nautilus-search-popover.blp:230
-#, fuzzy
 #| msgid "Last month"
 #| msgid_plural "%d months ago"
 msgid "Past _Month"
-msgstr "Í síðasta mánuði"
+msgstr "Í síðasta _mánuði"
 
 #: src/resources/ui/nautilus-search-popover.blp:236
-#, fuzzy
 #| msgid "Last year"
 #| msgid_plural "%d years ago"
 msgid "Past Y_ear"
-msgstr "Á síðasta ári"
+msgstr "Á síð_asta ári"
 
 #: src/resources/ui/nautilus-search-popover.blp:248
 msgid "Custom Date Range"
 msgstr "Sérsniðið svið dagsetninga"
 
 #: src/resources/ui/nautilus-search-popover.blp:265
-#, fuzzy
 #| msgid "Select Items Matching"
 msgid "Text Matching"
-msgstr "Velja samsvarandi hluti"
+msgstr "Samsvörun texta"
 
 #: src/resources/ui/nautilus-search-popover.blp:280
-#, fuzzy
 #| msgid "New Filename"
 msgid "_Content & Filename"
-msgstr "Nýtt skráarheiti"
+msgstr "Efni og s_kráarheiti"
 
 #: src/resources/ui/nautilus-search-popover.blp:281
-#, fuzzy
 #| msgid "Search files"
 msgid "Search Inside Files"
-msgstr "Leita að skrám"
+msgstr "Leita inni í skrám"
 
 #: src/resources/ui/nautilus-search-popover.blp:288
-#, fuzzy
 #| msgid "New Filename"
 msgid "_Only Filename"
-msgstr "Nýtt skráarheiti"
+msgstr "Einungis skráar_heiti"
 
 #: src/resources/ui/nautilus-search-popover.blp:289
 msgid "Don't Search Inside Files"
 msgstr "Ekki leita inni í skrám"
 
 #: src/resources/ui/nautilus-search-popover.blp:298
-#, fuzzy
 #| msgid "Contents"
 msgid "Only Co_ntents"
-msgstr "Efni"
+msgstr "Ei_nungis efni"
 
 #: src/resources/ui/nautilus-search-types-dialog.blp:5
 msgid "Add File Type Filter"
@@ -5712,16 +5647,14 @@ msgid "_Add"
 msgstr "Bæt_a við"
 
 #: src/resources/ui/nautilus-search-types-dialog.blp:45
-#, fuzzy
 #| msgid "Search files"
 msgid "Search for file types"
-msgstr "Leita að skrám"
+msgstr "Leita eftir tegundum skráa"
 
 #: src/resources/ui/nautilus-search-types-dialog.blp:56
-#, fuzzy
 #| msgid "Search files"
 msgid "Search File Types"
-msgstr "Leita að skrám"
+msgstr "Leita að skráategundum"
 
 #: src/resources/ui/nautilus-search-types-dialog.blp:57
 #, fuzzy
@@ -5764,13 +5697,11 @@ msgid "View Options"
 msgstr "Valkostir skoðunar"
 
 #: src/resources/ui/nautilus-view-controls.blp:67
-#, fuzzy
 #| msgid "Zoom out"
 msgid "Zoom Out"
 msgstr "Renna frá"
 
 #: src/resources/ui/nautilus-view-controls.blp:78
-#, fuzzy
 #| msgid "Zoom in"
 msgid "Zoom In"
 msgstr "Renna að"
@@ -5834,11 +5765,10 @@ msgid "Main Menu"
 msgstr "Aðalvalmynd"
 
 #: src/resources/ui/shortcuts-dialog.blp:6
-#, fuzzy
 #| msgid "All locations"
 msgctxt "shortcuts dialog"
 msgid "Actions"
-msgstr "Allar staðsetningar"
+msgstr "Aðgerðir"
 
 #: src/resources/ui/shortcuts-dialog.blp:9
 #| msgid "Open"
@@ -5847,18 +5777,16 @@ msgid "Open"
 msgstr "Opna"
 
 #: src/resources/ui/shortcuts-dialog.blp:14
-#, fuzzy
 #| msgid "Open in New _Tab"
 msgctxt "shortcuts dialog"
 msgid "Open in New Tab"
-msgstr "Opna í nýjum _flipa"
+msgstr "Opna í nýjum flipa"
 
 #: src/resources/ui/shortcuts-dialog.blp:19
-#, fuzzy
 #| msgid "Open in New _Window"
 msgctxt "shortcuts dialog"
 msgid "Open in New Window"
-msgstr "Opna í nýjum _glugga"
+msgstr "Opna í nýjum glugga"
 
 #: src/resources/ui/shortcuts-dialog.blp:24
 #, fuzzy
@@ -5870,7 +5798,6 @@ msgstr ""
 "Opna staðsetningu atriðis (einungis leitarniðurstöður og nýlegar færslur)"
 
 #: src/resources/ui/shortcuts-dialog.blp:29
-#, fuzzy
 #| msgctxt "shortcut window"
 #| msgid "Open with default app"
 msgctxt "shortcuts dialog"
@@ -5878,28 +5805,24 @@ msgid "Open With Default App"
 msgstr "Opna með sjálfgefnu forriti"
 
 #: src/resources/ui/shortcuts-dialog.blp:34
-#, fuzzy
 #| msgid "Open in Consol_e"
 msgctxt "shortcuts dialog"
 msgid "Open Current Directory in Console"
-msgstr "O_pna á skipanalínu"
+msgstr "Opna fyrirliggjandi möppu á skipanalínu"
 
 #: src/resources/ui/shortcuts-dialog.blp:39
-#, fuzzy
 #| msgid "Current Folder Menu"
 msgctxt "shortcuts dialog"
 msgid "Open Current Folder Menu"
-msgstr "Valmynd núverandi möppu"
+msgstr "Opna valmynd núverandi möppu"
 
 #: src/resources/ui/shortcuts-dialog.blp:44
-#, fuzzy
 #| msgid "Optional Context Menu Actions"
 msgctxt "shortcuts dialog"
 msgid "Open Context Menu"
-msgstr "Valkvæðar aðgerðir í samhengisvalmynd"
+msgstr "Opna samhengisvalmynd"
 
 #: src/resources/ui/shortcuts-dialog.blp:51
-#, fuzzy
 #| msgctxt "shortcut window"
 #| msgid "Create folder"
 msgctxt "shortcuts dialog"
@@ -5945,11 +5868,10 @@ msgid "Redo"
 msgstr "Endurtaka"
 
 #: src/resources/ui/shortcuts-dialog.blp:94
-#, fuzzy
 #| msgid "Mo_ve to Trash"
 msgctxt "shortcuts dialog"
 msgid "Move to Trash"
-msgstr "Fl_ytja í ruslið"
+msgstr "Flytja í ruslið"
 
 #: src/resources/ui/shortcuts-dialog.blp:99
 #, fuzzy
@@ -6076,7 +5998,6 @@ msgid "Show/Hide Sidebar"
 msgstr "Birta eða fela hliðarspjald"
 
 #: src/resources/ui/shortcuts-dialog.blp:205
-#, fuzzy
 #| msgid "Select"
 msgctxt "shortcuts dialog"
 msgid "Select"
@@ -6151,7 +6072,6 @@ msgid "Go to Home Folder"
 msgstr "Fara í heimamöppu"
 
 #: src/resources/ui/shortcuts-dialog.blp:268
-#, fuzzy
 #| msgid "Enter Location"
 msgctxt "shortcuts dialog"
 msgid "Enter Location"
@@ -6174,7 +6094,6 @@ msgid "Location Bar With Home Location"
 msgstr "Staðsetningaslá með uppruna í heimamöppu"
 
 #: src/resources/ui/shortcuts-dialog.blp:284
-#, fuzzy
 #| msgid "Search"
 msgctxt "shortcuts dialog"
 msgid "Search"
@@ -8793,4 +8712,5 @@ msgstr "Hætta"
 
 #~ msgid "_Up"
 #~ msgstr "_Upp"
+
 
