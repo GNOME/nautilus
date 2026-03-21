@@ -12,7 +12,7 @@ msgstr ""
 "Project-Id-Version: nautilus.master.is\n"
 "Report-Msgid-Bugs-To: https://gitlab.gnome.org/GNOME/nautilus/issues\n"
 "POT-Creation-Date: 2026-03-17 09:00+0000\n"
-"PO-Revision-Date: 2026-03-21 11:10+0000\n"
+"PO-Revision-Date: 2026-03-21 11:41+0000\n"
 "Last-Translator: Sveinn í Felli <sv1@fellsnet.is>\n"
 "Language-Team: Icelandic\n"
 "Language: is\n"
@@ -415,11 +415,10 @@ msgid "Initial size of the file chooser window"
 msgstr "Upprunaleg stærð skráavalsgluggans"
 
 #: data/org.gnome.nautilus.gschema.xml:256
-#, fuzzy
 #| msgid "A tuple containing the initial width and height of the app window."
 msgid ""
 "A tuple containing the initial width and height of the file chooser window."
-msgstr "Strengur sem inniheldur upprunalega breidd og hæð forritsglugga."
+msgstr "Strengur sem inniheldur upprunalega breidd og hæð skráavalsgluggans."
 
 #: data/org.gnome.Nautilus.metainfo.xml.in.in:8
 msgid ""
@@ -1672,30 +1671,28 @@ msgid "Permanently Delete “%s”?"
 msgstr "Eyða “%s” endanlega?"
 
 #: src/nautilus-file-operations.c:971 src/nautilus-file-operations.c:1024
-#, fuzzy, c-format
+#, c-format
 #| msgid "Are you sure you want to permanently delete the %'d selected item?"
 #| msgid_plural ""
 #| "Are you sure you want to permanently delete the %'d selected items?"
 msgid "Permanently Delete %'d Selected Item?"
 msgid_plural "Permanently Delete %'d Selected Items?"
-msgstr[0] "Ertu viss um að þú viljir algjörlega eyða þessari %'d völdu skrá?"
-msgstr[1] "Ertu viss um að þú viljir algjörlega eyða þessum %'d völdu skrám?"
+msgstr[0] "Viltu eyða þessu %'d atriði varanlega?"
+msgstr[1] "Viltu eyða þessum %'d atriðum varanlega?"
 
 #: src/nautilus-file-operations.c:979 src/nautilus-file-operations.c:1032
-#, fuzzy
 #| msgid "The item cannot be restored from trash"
 msgid "Permanently deleted items can not be restored"
-msgstr "Ekki var hægt að endurheimta hlutinn úr ruslinu"
+msgstr "Varanlega eydd atriði er ekki hægt að endurheimta"
 
 #: src/nautilus-file-operations.c:990
 msgid "Empty Trash?"
 msgstr "Tæma ruslið?"
 
 #: src/nautilus-file-operations.c:991
-#, fuzzy
 #| msgid "All items in the Trash will be permanently deleted."
 msgid "All items in the Trash will be permanently deleted"
-msgstr "Öllum atriðum í ruslinu verður endanlega eytt."
+msgstr "Öllum atriðum í ruslinu verður endanlega eytt"
 
 #. Translators: This action removes a file from Recent
 #: src/nautilus-file-operations.c:1090
@@ -3340,7 +3337,7 @@ msgstr "Engar þekktar tengingar"
 
 #: src/nautilus-files-view.c:3731
 msgid "Enter an address to connect to a network location."
-msgstr ""
+msgstr "Settu inn slóð til að tengjast stað á netkerfinu."
 
 #: src/nautilus-files-view.c:3736
 msgid "Folder is Empty"
@@ -3794,7 +3791,7 @@ msgstr "Fyrra"
 
 #: src/nautilus-network-view.c:277
 msgid "Available on Current Network"
-msgstr ""
+msgstr "Tiltækt á núverandi netkerfi"
 
 #: src/nautilus-operations-ui-manager.c:154
 #, c-format
@@ -4227,12 +4224,12 @@ msgstr ""
 
 #: src/nautilus-query-editor.c:181
 msgid "Some subfolders will not be included in search results"
-msgstr ""
+msgstr "Sumar undirmöppur verða ekki með í leitarniðurstöðum"
 
 #: src/nautilus-query-editor.c:188
 msgid ""
 "Search will be slower and will not include file contents for some folders"
-msgstr ""
+msgstr "Leit verður hægvirkari og mun ekki innifela efni skráa úr sumum möppum"
 
 #. translators: This opens the search panel in the Settings app.
 #: src/nautilus-query-editor.c:700
@@ -4390,7 +4387,7 @@ msgstr "Get ekki stöðvað \"%s\""
 #: src/nautilus-sidebar.c:2560
 #, c-format
 msgid "Unable to poll “%s” for media changes"
-msgstr "Ekki náðist að kanna \"%s\" til að sjá breytingar á miðlum"
+msgstr "Ekki náðist að kanna \"%s\" til að sjá breytingar á gagnamiðlum"
 
 #: src/nautilus-sidebar.c:2844 src/nautilus-sidebar.c:2957
 #: src/resources/menu/nautilus-files-view-context-menus.ui:103
@@ -4486,7 +4483,7 @@ msgstr "Tæki"
 
 #: src/nautilus-sidebar.c:3688
 msgid "Sidebar"
-msgstr "Hliðarslá"
+msgstr "Hliðarspjald"
 
 #: src/nautilus-sidebar.c:3690
 msgid "List of common shortcuts, mountpoints, and bookmarks."
@@ -4598,7 +4595,7 @@ msgstr "Leita allsstaðar"
 
 #: src/nautilus-window-slot.c:899
 msgid "Find files and folders in all search locations"
-msgstr ""
+msgstr "Leita að skrám og möppum á öllum leitarstaðsetningum"
 
 #: src/nautilus-window-slot.c:902
 #| msgid "Sharing Settings"
@@ -5057,6 +5054,8 @@ msgid ""
 "Encrypt contents of the archive with a password when the compression method "
 "supports password-protection."
 msgstr ""
+"Dulrita efni safnskrár með lykilorði þegar þjöppunaraðferðin styðyr vernd með"
+" lykilorði."
 
 #: src/resources/ui/nautilus-compress-dialog.blp:82
 #| msgid "Password"
@@ -5384,7 +5383,7 @@ msgstr "Snið dagsetningar og tíma"
 
 #: src/resources/ui/nautilus-preferences-dialog.blp:70
 msgid "Choose how dates and times are displayed in list and grid views."
-msgstr ""
+msgstr "Veldu hvernig dagsetningar og tími birtist í listum og reitasýnum."
 
 #: src/resources/ui/nautilus-preferences-dialog.blp:73
 msgid "_Simple"
@@ -5920,43 +5919,37 @@ msgid "View"
 msgstr "Sýn"
 
 #: src/resources/ui/shortcuts-dialog.blp:134
-#, fuzzy
 #| msgid "Zoom in"
 msgctxt "shortcuts dialog"
 msgid "Zoom In"
 msgstr "Renna að"
 
 #: src/resources/ui/shortcuts-dialog.blp:139
-#, fuzzy
 #| msgid "Zoom out"
 msgctxt "shortcuts dialog"
 msgid "Zoom Out"
 msgstr "Renna frá"
 
 #: src/resources/ui/shortcuts-dialog.blp:144
-#, fuzzy
 #| msgctxt "shortcut window"
 #| msgid "Reset zoom"
 msgctxt "shortcuts dialog"
 msgid "Reset Zoom"
-msgstr "Frumstilla aðdrátt"
+msgstr "Núllstilla aðdrátt"
 
 #: src/resources/ui/shortcuts-dialog.blp:151
-#, fuzzy
 #| msgid "List View"
 msgctxt "shortcuts dialog"
 msgid "List View"
 msgstr "Listasýn"
 
 #: src/resources/ui/shortcuts-dialog.blp:156
-#, fuzzy
 #| msgid "Grid View"
 msgctxt "shortcuts dialog"
 msgid "Grid View"
 msgstr "Reitasýn"
 
 #: src/resources/ui/shortcuts-dialog.blp:161
-#, fuzzy
 #| msgctxt "shortcut window"
 #| msgid "Refresh view"
 msgctxt "shortcuts dialog"
@@ -5965,7 +5958,6 @@ msgstr "Uppfæra sýn"
 
 #: src/resources/ui/shortcuts-dialog.blp:168
 #: src/resources/ui/shortcuts-dialog.blp:174
-#, fuzzy
 #| msgctxt "shortcut window"
 #| msgid "Expand folder"
 msgctxt "shortcuts dialog"
@@ -5974,7 +5966,6 @@ msgstr "Fletta út möppu"
 
 #: src/resources/ui/shortcuts-dialog.blp:180
 #: src/resources/ui/shortcuts-dialog.blp:186
-#, fuzzy
 #| msgctxt "shortcut window"
 #| msgid "Collapse folder"
 msgctxt "shortcuts dialog"
@@ -5982,7 +5973,6 @@ msgid "Collapse Folder"
 msgstr "Fella saman möppu"
 
 #: src/resources/ui/shortcuts-dialog.blp:194
-#, fuzzy
 #| msgctxt "shortcut window"
 #| msgid "Show/hide hidden files"
 msgctxt "shortcuts dialog"
@@ -5990,7 +5980,6 @@ msgid "Show/Hide Hidden Files"
 msgstr "Birta eða fela faldar skrár"
 
 #: src/resources/ui/shortcuts-dialog.blp:199
-#, fuzzy
 #| msgctxt "shortcut window"
 #| msgid "Show/hide sidebar"
 msgctxt "shortcuts dialog"
@@ -6004,14 +5993,12 @@ msgid "Select"
 msgstr "Velja"
 
 #: src/resources/ui/shortcuts-dialog.blp:208
-#, fuzzy
 #| msgid "Select All"
 msgctxt "shortcuts dialog"
 msgid "Select All"
 msgstr "Velja allt"
 
 #: src/resources/ui/shortcuts-dialog.blp:213
-#, fuzzy
 #| msgctxt "shortcut window"
 #| msgid "Invert selection"
 msgctxt "shortcuts dialog"
@@ -6019,11 +6006,10 @@ msgid "Invert Selection"
 msgstr "Umhverfa vali"
 
 #: src/resources/ui/shortcuts-dialog.blp:218
-#, fuzzy
 #| msgid "Select Items Matching"
 msgctxt "shortcuts dialog"
 msgid "Select Items Matching"
-msgstr "Velja samsvarandi hluti"
+msgstr "Velja atriði sem samsvara"
 
 #: src/resources/ui/shortcuts-dialog.blp:224
 #| msgctxt "shortcut window"
@@ -6034,7 +6020,6 @@ msgstr "Flakk"
 
 #: src/resources/ui/shortcuts-dialog.blp:227
 #: src/resources/ui/shortcuts-dialog.blp:233
-#, fuzzy
 #| msgid "Back"
 msgctxt "shortcuts dialog"
 msgid "Go Back"
@@ -6042,7 +6027,6 @@ msgstr "Til baka"
 
 #: src/resources/ui/shortcuts-dialog.blp:239
 #: src/resources/ui/shortcuts-dialog.blp:245
-#, fuzzy
 #| msgctxt "shortcut window"
 #| msgid "Go forward"
 msgctxt "shortcuts dialog"
@@ -6057,14 +6041,12 @@ msgid "Go Up"
 msgstr "Fara upp"
 
 #: src/resources/ui/shortcuts-dialog.blp:256
-#, fuzzy
 #| msgid "Move Down"
 msgctxt "shortcuts dialog"
 msgid "Go Down"
 msgstr "Færa niður"
 
 #: src/resources/ui/shortcuts-dialog.blp:261
-#, fuzzy
 #| msgctxt "shortcut window"
 #| msgid "Go to home folder"
 msgctxt "shortcuts dialog"
@@ -6078,20 +6060,18 @@ msgid "Enter Location"
 msgstr "Settu inn staðsetningu"
 
 #: src/resources/ui/shortcuts-dialog.blp:273
-#, fuzzy
 #| msgctxt "shortcut window"
 #| msgid "Location bar with root location"
 msgctxt "shortcuts dialog"
 msgid "Location Bar With Root Location"
-msgstr "Staðsetningaslá með uppruna í rót"
+msgstr "Staðsetningastika með rótarstaðsetningu"
 
 #: src/resources/ui/shortcuts-dialog.blp:278
-#, fuzzy
 #| msgctxt "shortcut window"
 #| msgid "Location bar with home location"
 msgctxt "shortcuts dialog"
 msgid "Location Bar With Home Location"
-msgstr "Staðsetningaslá með uppruna í heimamöppu"
+msgstr "Staðsetningastika með uppruna í heimamöppu"
 
 #: src/resources/ui/shortcuts-dialog.blp:284
 #| msgid "Search"
