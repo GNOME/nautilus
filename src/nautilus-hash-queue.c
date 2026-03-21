@@ -171,7 +171,7 @@ nautilus_hash_queue_remove (NautilusHashQueue *queue,
 void
 nautilus_hash_queue_remove_head (NautilusHashQueue *queue)
 {
-    GList *link = nautilus_hash_queue_peek_head (queue);
+    GList *link = g_queue_peek_head_link ((GQueue *) (queue));
 
     if (link != NULL)
     {
