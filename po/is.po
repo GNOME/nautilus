@@ -12,7 +12,7 @@ msgstr ""
 "Project-Id-Version: nautilus.master.is\n"
 "Report-Msgid-Bugs-To: https://gitlab.gnome.org/GNOME/nautilus/issues\n"
 "POT-Creation-Date: 2026-03-17 09:00+0000\n"
-"PO-Revision-Date: 2026-03-21 11:41+0000\n"
+"PO-Revision-Date: 2026-03-21 13:31+0000\n"
 "Last-Translator: Sveinn í Felli <sv1@fellsnet.is>\n"
 "Language-Team: Icelandic\n"
 "Language: is\n"
@@ -336,7 +336,7 @@ msgstr ""
 
 #: data/org.gnome.nautilus.gschema.xml:188
 msgid "How to display file timestamps in the views"
-msgstr ""
+msgstr "Hvernig á að birta tímamerki skráa í yfirlitum"
 
 #: data/org.gnome.nautilus.gschema.xml:189
 msgid ""
@@ -344,6 +344,9 @@ msgid ""
 "the exact date without time. If set to 'detailed', it will always show the "
 "exact date and time."
 msgstr ""
+"Ef þetta er stillt á 'einfalt', mun skráastjórinn birta 'Í dag' og 'Í gær'"
+" ásamt tíma, annars birtist nákvæm dagsetning án tímasetningar. Ef þetta er"
+" stillt á 'ítarlegt', verður alltaf birt nákvæm dagsetning með tíma."
 
 #: data/org.gnome.nautilus.gschema.xml:196
 msgid "Default format for compressing files"
@@ -783,6 +786,7 @@ msgstr "Engin heimamappa"
 #: src/nautilus-application.c:150
 msgid "Make sure the directory exists and has correct access permissions set."
 msgstr ""
+"Gakktu úr skugga um að mappan sé til og sé með réttar aðgangsheimildir."
 
 #: src/nautilus-application.c:426
 msgid "--quit cannot be used with URIs."
@@ -1636,7 +1640,7 @@ msgstr "Skipta út við vistun?"
 #, c-format
 msgid ""
 "“%s” already exists in “%s”. Saving will replace or overwrite its contents."
-msgstr ""
+msgstr "“%s” er þegar til í “%s”. Vistun mun skrifa yfir efni hennar."
 
 #: src/nautilus-file-operations.c:390
 #, c-format
@@ -1778,11 +1782,11 @@ msgstr[0] "(%d skrá/s)"
 msgstr[1] "(%d skrár/s)"
 
 #: src/nautilus-file-operations.c:1318
-#, fuzzy, c-format
+#, c-format
 #| msgid "Preparing to delete %'d file (%s)"
 #| msgid_plural "Preparing to delete %'d files (%s)"
 msgid "Failed to delete all child files"
-msgstr "Undirbý það að eyða %'d skrá (%s)"
+msgstr "Tókst ekki að eyða öllum afleiddum skrám"
 
 #: src/nautilus-file-operations.c:1370 src/nautilus-file-operations.c:2597
 msgid "Error while deleting."
@@ -1873,6 +1877,8 @@ msgid ""
 "Empty the trash to free up space on “%s”. All trashed items will be "
 "permanently deleted."
 msgstr ""
+"Tæmdu ruslið til að losa um pláss á “%s”. Öllum atriðum í ruslinu verður"
+" endanlega eytt."
 
 #: src/nautilus-file-operations.c:2260
 #| msgid "Do _not Empty Trash"
@@ -2021,14 +2027,13 @@ msgid "%s more space is required to copy to the destination."
 msgstr "%s meira pláss vantar til að hægt sé að afrita á áfangastaðinn."
 
 #: src/nautilus-file-operations.c:3127
-#, fuzzy
 #| msgid "Failed to load image information"
 msgid "File too Large for Destination"
-msgstr "Náði ekki að hlaða upplýsingunum um myndina"
+msgstr "Skráin er of stór fyrir áfangastaðinn"
 
 #: src/nautilus-file-operations.c:3128
 msgid "Files bigger than 4.3 GB cannot be copied onto a FAT filesystem."
-msgstr ""
+msgstr "Skrár stærri en 4.3GB er ekki hægt að afrita yfir í FAT-skráakerfi."
 
 #: src/nautilus-file-operations.c:3144
 msgid "The destination is read-only."
@@ -2090,13 +2095,13 @@ msgid "Duplicated “%s”"
 msgstr "Tvöfaldaði „%s“"
 
 #: src/nautilus-file-operations.c:3294
-#, fuzzy, c-format
+#, c-format
 #| msgid "Clearing %'d file"
 #| msgid_plural "Clearing %'d files"
 msgid "Moving %'d file"
 msgid_plural "Moving %'d files"
-msgstr[0] "Hreinsa %'d skrá"
-msgstr[1] "Hreinsa %'d skrár"
+msgstr[0] "Færi %'d skrá"
+msgstr[1] "Færi %'d skrár"
 
 #: src/nautilus-file-operations.c:3297
 #, c-format
@@ -2106,13 +2111,13 @@ msgstr[0] "Færi %'d skrá yfir í „%s“"
 msgstr[1] "Færi “%'d skrár yfir í „%s“"
 
 #: src/nautilus-file-operations.c:3303
-#, fuzzy, c-format
+#, c-format
 #| msgid "Clearing %'d file"
 #| msgid_plural "Clearing %'d files"
 msgid "Copying %'d file"
 msgid_plural "Copying %'d files"
-msgstr[0] "Hreinsa %'d skrá"
-msgstr[1] "Hreinsa %'d skrár"
+msgstr[0] "Afrita %'d skrá"
+msgstr[1] "Afrita %'d skrár"
 
 #: src/nautilus-file-operations.c:3306
 #, c-format
@@ -2122,13 +2127,13 @@ msgstr[0] "Afrita “%'d skrá yfir í „%s“"
 msgstr[1] "Afrita “%'d skrár yfir í „%s“"
 
 #: src/nautilus-file-operations.c:3327
-#, fuzzy, c-format
+#, c-format
 #| msgid "Cleared %'d file"
 #| msgid_plural "Cleared %'d files"
 msgid "Moved %'d file"
 msgid_plural "Moved %'d files"
-msgstr[0] "Hreinsaði %'d skrá"
-msgstr[1] "Hreinsaði %'d skrár"
+msgstr[0] "Færði %'d skrá"
+msgstr[1] "Færði %'d skrár"
 
 #: src/nautilus-file-operations.c:3330
 #, c-format
@@ -2138,13 +2143,13 @@ msgstr[0] "Færði %'d skrá í „%s“"
 msgstr[1] "Færði %'d skrár í „%s“"
 
 #: src/nautilus-file-operations.c:3336
-#, fuzzy, c-format
+#, c-format
 #| msgid "Cleared %'d file"
 #| msgid_plural "Cleared %'d files"
 msgid "Copied %'d file"
 msgid_plural "Copied %'d files"
-msgstr[0] "Hreinsaði %'d skrá"
-msgstr[1] "Hreinsaði %'d skrár"
+msgstr[0] "Afritaði %'d skrá"
+msgstr[1] "Afritaði %'d skrár"
 
 #: src/nautilus-file-operations.c:3339
 #, c-format
@@ -2154,13 +2159,13 @@ msgstr[0] "Afritaði %'d skrá í „%s“"
 msgstr[1] "Afritaði %'d skrár í „%s“"
 
 #: src/nautilus-file-operations.c:3364
-#, fuzzy, c-format
+#, c-format
 #| msgid "Deleting %'d file"
 #| msgid_plural "Deleting %'d files"
 msgid "Duplicating %'d file"
 msgid_plural "Duplicating %'d files"
-msgstr[0] "Eyði %'d skrá"
-msgstr[1] "Eyði %'d skrám"
+msgstr[0] "Tvítek %'d skrá"
+msgstr[1] "Tvítek %'d skrár"
 
 #: src/nautilus-file-operations.c:3367
 #, c-format
@@ -2170,13 +2175,13 @@ msgstr[0] "Tvöfalda “%'d skrá í „%s“"
 msgstr[1] "Tvöfalda “%'d skrár í „%s“"
 
 #: src/nautilus-file-operations.c:3379
-#, fuzzy, c-format
+#, c-format
 #| msgid "Deleted %'d file"
 #| msgid_plural "Deleted %'d files"
 msgid "Duplicated %'d file"
 msgid_plural "Duplicated %'d files"
-msgstr[0] "Eyddi %'d skrá"
-msgstr[1] "Eyddi %'d skrám"
+msgstr[0] "Tvítók %'d skrá"
+msgstr[1] "Tvítók %'d skrár"
 
 #: src/nautilus-file-operations.c:3382
 #, c-format
@@ -2328,11 +2333,10 @@ msgid "Preparing to move to “%s”"
 msgstr "Undirbý að flytja yfir í „%s“"
 
 #: src/nautilus-file-operations.c:5251
-#, fuzzy
 #| msgid "Preparing to move %'d file"
 #| msgid_plural "Preparing to move %'d files"
 msgid "Preparing to move"
-msgstr "Býr sig undir að flytja %'d skrá"
+msgstr "Undirbý að flytja"
 
 #: src/nautilus-file-operations.c:5254
 #, c-format
@@ -2477,10 +2481,10 @@ msgid "There was an error while extracting “%s”."
 msgstr "Villa kom upp við afþjöppun á „%s“."
 
 #: src/nautilus-file-operations.c:7741
-#, fuzzy, c-format
+#, c-format
 #| msgid "Not enough free space to extract %s"
 msgid "Not enough free space to extract “%s”"
-msgstr "Ekki nægilegt diskapláss til að afþjappa %s"
+msgstr "Ekki nægilegt diskapláss til að afþjappa \"%s\""
 
 #: src/nautilus-file-operations.c:7778
 #, c-format
@@ -2494,13 +2498,13 @@ msgid "Extracted “%s” to “%s”"
 msgstr "Afþjappaði „%s“ yfir í „%s“"
 
 #: src/nautilus-file-operations.c:7786
-#, fuzzy, c-format
+#, c-format
 #| msgid "Extract %d file"
 #| msgid_plural "Extract %d files"
 msgid "Extracted %'d file"
 msgid_plural "Extracted %'d files"
-msgstr[0] "Afþjappa %d skrá"
-msgstr[1] "Afþjappa %d skrár"
+msgstr[0] "Afþjappa %'d skrá"
+msgstr[1] "Afþjappa %'d skrár"
 
 #: src/nautilus-file-operations.c:7790
 #, c-format
@@ -2545,10 +2549,10 @@ msgstr[0] "Þjappa “%'d skrá yfir í „%s“"
 msgstr[1] "Þjappa “%'d skrár yfir í „%s“"
 
 #: src/nautilus-file-operations.c:8181
-#, fuzzy, c-format
+#, c-format
 #| msgid "Error compressing “%s” into “%s”"
 msgid "Error compressing “%s”"
-msgstr "Villa kom upp við að þjappa „%s“ yfir í „%s“"
+msgstr "Villa við að þjappa „%s“"
 
 #: src/nautilus-file-operations.c:8183
 #, c-format
@@ -2556,13 +2560,13 @@ msgid "Error compressing “%s” into “%s”"
 msgstr "Villa kom upp við að þjappa „%s“ yfir í „%s“"
 
 #: src/nautilus-file-operations.c:8189
-#, fuzzy, c-format
+#, c-format
 #| msgid "Error compressing %'d file into “%s”"
 #| msgid_plural "Error compressing %'d files into “%s”"
 msgid "Error compressing %'d file"
 msgid_plural "Error compressing %'d files"
-msgstr[0] "Villa kom upp við að þjappa %'d skrá yfir í „%s“"
-msgstr[1] "Villa kom upp við að þjappa %'d skrám yfir í „%s“"
+msgstr[0] "Villa kom upp við að þjappa %'d skrá"
+msgstr[1] "Villa kom upp við að þjappa %'d skrám"
 
 #: src/nautilus-file-operations.c:8193
 #, c-format
@@ -2587,13 +2591,13 @@ msgid "Compressed “%s” into “%s”"
 msgstr "Þjappaði „%s“ yfir í „%s“"
 
 #: src/nautilus-file-operations.c:8233
-#, fuzzy, c-format
+#, c-format
 #| msgid "Compress %d file"
 #| msgid_plural "Compress %d files"
 msgid "Compressed %'d file"
 msgid_plural "Compressed %'d files"
-msgstr[0] "Þjappa %d skrá"
-msgstr[1] "Þjappa %d skrám"
+msgstr[0] "Þjappaði %'d skrá"
+msgstr[1] "Þjappaði %'d skrám"
 
 #: src/nautilus-file-operations.c:8237
 #, c-format
@@ -2669,13 +2673,11 @@ msgid "_Redo Move"
 msgstr "_Endurtaka flutning"
 
 #: src/nautilus-file-undo-operations.c:476
-#, fuzzy
 #| msgid "_Undo Restore from Trash"
 msgid "_Undo Restore From Trash"
 msgstr "_Afturkalla endurheimt úr rusli"
 
 #: src/nautilus-file-undo-operations.c:477
-#, fuzzy
 #| msgid "_Redo Restore from Trash"
 msgid "_Redo Restore From Trash"
 msgstr "Endu_rtaka endurheimt úr rusli"
@@ -2860,16 +2862,14 @@ msgid "Create new file “%s” from template "
 msgstr "Búa til nýja skrá „%s“ út frá sniðmáti "
 
 #: src/nautilus-file-undo-operations.c:845
-#, fuzzy
 #| msgid "_Undo Create from Template"
 msgid "_Undo Create From Template"
 msgstr "_Afturkalla að búa til út frá sniðmáti"
 
 #: src/nautilus-file-undo-operations.c:846
-#, fuzzy
 #| msgid "_Redo Create from Template"
 msgid "_Redo Create From Template"
-msgstr "_Endurtaka að búa til út frá sniðmáti"
+msgstr "Endu_rtaka að búa til út frá sniðmáti"
 
 #: src/nautilus-file-undo-operations.c:1057
 #: src/nautilus-file-undo-operations.c:1058
@@ -3203,22 +3203,19 @@ msgid "Could not paste files"
 msgstr "Gat ekki límt skrár"
 
 #: src/nautilus-files-view.c:2836
-#, fuzzy
 #| msgid "Could not paste files"
 msgid "Cannot paste files into Starred"
-msgstr "Gat ekki límt skrár"
+msgstr "Gat ekki límt skrár inn í stjörnumerkt"
 
 #: src/nautilus-files-view.c:2842
-#, fuzzy
 #| msgid "Could not paste files"
 msgid "Cannot paste files into Recent"
-msgstr "Gat ekki límt skrár"
+msgstr "Gat ekki límt skrár inn í nýlegt"
 
 #: src/nautilus-files-view.c:2848
-#, fuzzy
 #| msgid "Could not paste files"
 msgid "Cannot paste files into Trash"
-msgstr "Gat ekki límt skrár"
+msgstr "Gat ekki límt skrár inn í ruslið"
 
 #: src/nautilus-files-view.c:2854
 msgid "Permissions do not allow pasting files in this directory"
@@ -3306,7 +3303,7 @@ msgstr "L_eita allsstaðar"
 
 #: src/nautilus-files-view.c:3691
 msgid "More locations can be added to search in the settings"
-msgstr ""
+msgstr "Hægt er að bæta fleiri staðsetningum fyrir leitina í stillingunum"
 
 #. Translators: %s is the name of the search location formatted for display
 #: src/nautilus-files-view.c:3699
@@ -3474,10 +3471,9 @@ msgstr "Innihaldssýn"
 
 #: src/nautilus-grid-view.c:523 src/nautilus-list-view.c:387
 #: src/nautilus-network-view.c:352
-#, fuzzy
 #| msgid "View of the current folder"
 msgid "View of the current location"
-msgstr "Skoða þessa möppu"
+msgstr "Yfirlit núverandi staðsetningar"
 
 #. Translators: this refers to captions under icons.
 #. Translators: this is referred to the permissions the user has in a directory.
@@ -3494,51 +3490,45 @@ msgid "Starred"
 msgstr "Stjörnumerkt"
 
 #: src/nautilus-location-banner.c:102
-#, fuzzy
 #| msgid "All items in the Trash will be permanently deleted."
 msgid "Files in the trash are permanently deleted after 1 hour"
-msgstr "Öllum atriðum í ruslinu verður endanlega eytt."
+msgstr "Öllum atriðum í ruslinu verður endanlega eytt eftir 1 klukkustund"
 
 #: src/nautilus-location-banner.c:107
-#, fuzzy, c-format
+#, c-format
 #| msgid "All items in the Trash will be permanently deleted."
 msgid "Files in the trash are permanently deleted after %d day"
 msgid_plural "Files in the trash are permanently deleted after %d days"
-msgstr[0] "Öllum atriðum í ruslinu verður endanlega eytt."
-msgstr[1] "Öllum atriðum í ruslinu verður endanlega eytt."
+msgstr[0] "Öllum atriðum í ruslinu verður endanlega eytt eftir %d dag"
+msgstr[1] "Öllum atriðum í ruslinu verður endanlega eytt eftir %d daga"
 
 #: src/nautilus-location-banner.c:226
-#, fuzzy
 #| msgid "Executable files in this folder will appear in the Scripts menu."
 msgid "Executable files in this folder will appear in the Scripts menu"
 msgstr ""
-"Allar keyranlegar skrár úr þessari möppu munu birtast í 'Skriftur'—"
-"valmyndinni."
+"Keyranlegar skrár í þessari möppu munu birtast í 'Skriftur'-valmyndinni."
 
 #: src/nautilus-location-banner.c:244
 msgid "This folder is shared over the network"
 msgstr "Þessari möppu er deilt á netkerfinu"
 
 #: src/nautilus-location-banner.c:249
-#, fuzzy
 #| msgid ""
 #| "Turn on File Sharing to share the contents of this folder over the "
 #| "network."
 msgid "Turn on File Sharing to share this folder over the network"
 msgstr ""
-"Kveiktu á skráadeilingu til að deila innihaldi þessarar möppu um netkerfið."
+"Kveiktu á skráadeilingu til að deila innihaldi þessarar möppu um netkerfið"
 
 #: src/nautilus-location-banner.c:251
 msgid "Sharing Settings"
 msgstr "Stillingar deilingar"
 
 #: src/nautilus-location-banner.c:258
-#, fuzzy
 #| msgid "Put files in this folder to use them as templates for new documents."
 msgid "Put files in this folder to use them as templates for new documents"
 msgstr ""
-"Settu skrár í þessa möppu til að nota þau sem sniðmát til að búa til ný "
-"skjöl."
+"Settu skrár í þessa möppu til að nota þau sem sniðmát til að búa til ný skjöl"
 
 #: src/nautilus-location-banner.c:259
 msgid "_Learn More"
@@ -4198,10 +4188,11 @@ msgstr "Veldu sérsniðna táknmynd"
 #: src/nautilus-query-editor.c:138
 msgid "Search may be slow and will not include subfolders or file contents"
 msgstr ""
+"Leit gæti verið hægvirkari og mun ekki innifela undirmöppur eða efni skráa"
 
 #: src/nautilus-query-editor.c:145
 msgid "Search may be slow and will not include file contents"
-msgstr ""
+msgstr "Leit gæti verið hægvirkari og mun ekki innifela efni skráa"
 
 #: src/nautilus-query-editor.c:153
 #| msgid "Enter Location"
@@ -4213,14 +4204,13 @@ msgid "External Drive"
 msgstr "Utanáliggjandi drif"
 
 #: src/nautilus-query-editor.c:165
-#, fuzzy
 #| msgid "Show other locations"
 msgid "Folder Not in Search Locations"
-msgstr "Sýna aðrar staðsetningar"
+msgstr "Mappa er ekki í leitarstaðsetningum"
 
 #: src/nautilus-query-editor.c:172
 msgid "Subfolders Not in Search Locations"
-msgstr ""
+msgstr "Undirmöppur ekki í leitarstaðsetningum"
 
 #: src/nautilus-query-editor.c:181
 msgid "Some subfolders will not be included in search results"
@@ -4242,10 +4232,9 @@ msgid "Filter Search Results"
 msgstr "Sía leitarniðurstöður"
 
 #: src/nautilus-query-editor.c:720
-#, fuzzy
 #| msgid "Searching locations only"
 msgid "Search Information"
-msgstr "Leita einungis að staðsetningum"
+msgstr "Upplýsingar um leit"
 
 #: src/nautilus-query-editor.c:800
 #| msgid "Only searching the current folder"
@@ -5009,10 +4998,9 @@ msgid "_Revert"
 msgstr "Aftu_rkalla"
 
 #: src/resources/ui/nautilus-column-chooser.blp:46
-#, fuzzy
 #| msgid "Only searching the current folder"
 msgid "_Only Apply to Current Folder"
-msgstr "Leita einungis í þessari möppu"
+msgstr "_Beita einungis á þessa möppu"
 
 #: src/resources/ui/nautilus-column-chooser.blp:60
 msgid "Move _Up"
@@ -5039,10 +5027,9 @@ msgid "Archive _Name"
 msgstr "Heiti saf_nskrár"
 
 #: src/resources/ui/nautilus-compress-dialog.blp:69
-#, fuzzy
 #| msgid "Compressing Files"
 msgid "Co_mpression Method"
-msgstr "Þjappa skrár"
+msgstr "Þjö_ppunaraðferð"
 
 #: src/resources/ui/nautilus-compress-dialog.blp:76
 #| msgid "Description"
@@ -5164,10 +5151,9 @@ msgid "Visible Files Filter"
 msgstr "Sía sýnilegra skráa"
 
 #: src/resources/ui/nautilus-file-conflict-dialog.blp:102
-#, fuzzy
 #| msgid "_Select a new name for the destination"
 msgid "Select a _new name for the destination"
-msgstr "_Veldu nýtt heiti fyrir áfangastaðinn"
+msgstr "Veldu _nýtt heiti fyrir áfangastaðinn"
 
 #: src/resources/ui/nautilus-file-conflict-dialog.blp:120
 #| msgid "Reset"
@@ -5175,10 +5161,9 @@ msgid "R_eset"
 msgstr "_Endurstilla"
 
 #: src/resources/ui/nautilus-file-conflict-dialog.blp:129
-#, fuzzy
 #| msgid "Apply this action to all files and folders"
 msgid "_Apply this action to all files and folders"
-msgstr "Beita þessu á allar skrár og möppur"
+msgstr "Beit_a þessari aðgerð á allar skrár og möppur"
 
 #: src/resources/ui/nautilus-file-properties-change-permissions.blp:5
 msgid "Change Permissions for Enclosed Files"
@@ -5351,7 +5336,6 @@ msgid "Performance"
 msgstr "Afköst"
 
 #: src/resources/ui/nautilus-preferences-dialog.blp:49
-#, fuzzy
 #| msgid ""
 #| "These features may cause slowdowns and excess network usage, especially "
 #| "when browsing files outside this computer, such as on a remote server."
@@ -5359,8 +5343,8 @@ msgid ""
 "These features may cause slowdowns and excess network usage, especially when "
 "browsing files outside this device, such as on a remote server."
 msgstr ""
-"Þessir eiginleikar geta valdið töfum og umframnotkun á neti, sérstaklega "
-"þegar flakkað er um skrár utan þessarar tölvu, eins og á fjartengdum þjónum."
+"Þessir eiginleikar geta valdið töfum og umframnotkun á neti, sérstaklega"
+" þegar flakkað er um skrár utan þessa tækis, eins og á fjartengdum þjónum."
 
 #: src/resources/ui/nautilus-preferences-dialog.blp:53
 #| msgid "Search in Subfolders"
@@ -5470,16 +5454,14 @@ msgid "Unknown Permissions"
 msgstr "Óþekktar heimildir"
 
 #: src/resources/ui/nautilus-properties-widget.blp:533
-#, fuzzy
 #| msgid "The permissions of the selected files could not be determined."
 msgid "The permissions of the selected files could not be determined"
-msgstr "Ekki var hægt að ákvarða skráaheimildir fyrir valdar skrár."
+msgstr "Ekki var hægt að ákvarða skráaheimildir fyrir valdar skrár"
 
 #: src/resources/ui/nautilus-properties-widget.blp:544
-#, fuzzy
 #| msgid "You are not the owner, so you cannot change these permissions."
 msgid "Only the owner can edit these permissions"
-msgstr "Þú ert ekki eigandinn þannig að þú getur ekki breytt heimildunum."
+msgstr "Einungis eigandinn má breyta aðgangsheimildum"
 
 #: src/resources/ui/nautilus-properties-widget.blp:551
 msgid "_Owner"
@@ -5656,10 +5638,9 @@ msgid "Search File Types"
 msgstr "Leita að skráategundum"
 
 #: src/resources/ui/nautilus-search-types-dialog.blp:57
-#, fuzzy
 #| msgid "_Select a new name for the destination"
 msgid "Search by type, name, or description"
-msgstr "_Veldu nýtt heiti fyrir áfangastaðinn"
+msgstr "Leita eftir tegund, heiti eða lýsingu"
 
 #: src/resources/ui/nautilus-search-types-dialog.blp:67
 msgid "Try a different search"
@@ -5788,7 +5769,6 @@ msgid "Open in New Window"
 msgstr "Opna í nýjum glugga"
 
 #: src/resources/ui/shortcuts-dialog.blp:24
-#, fuzzy
 #| msgctxt "shortcut window"
 #| msgid "Open item location (search and recent only)"
 msgctxt "shortcuts dialog"
@@ -5873,14 +5853,12 @@ msgid "Move to Trash"
 msgstr "Flytja í ruslið"
 
 #: src/resources/ui/shortcuts-dialog.blp:99
-#, fuzzy
 #| msgid "_Delete Permanently"
 msgctxt "shortcuts dialog"
 msgid "Delete Permanently"
-msgstr "_Eyða endanlega"
+msgstr "Eyða endanlega"
 
 #: src/resources/ui/shortcuts-dialog.blp:106
-#, fuzzy
 #| msgctxt "shortcut window"
 #| msgid "Create link to copied item"
 msgctxt "shortcuts dialog"
@@ -5888,7 +5866,6 @@ msgid "Create Link to Copied Item"
 msgstr "Búa til tengil í afritað atriði"
 
 #: src/resources/ui/shortcuts-dialog.blp:111
-#, fuzzy
 #| msgctxt "shortcut window"
 #| msgid "Create link to selected item"
 msgctxt "shortcuts dialog"
@@ -5896,7 +5873,6 @@ msgid "Create Link to Selected Item"
 msgstr "Búa til tengil í valið atriði"
 
 #: src/resources/ui/shortcuts-dialog.blp:118
-#, fuzzy
 #| msgctxt "shortcut window"
 #| msgid "Show item properties"
 msgctxt "shortcuts dialog"
@@ -5904,7 +5880,6 @@ msgid "Show Item Properties"
 msgstr "Birta eiginleika atriðis"
 
 #: src/resources/ui/shortcuts-dialog.blp:125
-#, fuzzy
 #| msgctxt "shortcut window"
 #| msgid "Bookmark current location"
 msgctxt "shortcuts dialog"
@@ -6080,43 +6055,37 @@ msgid "Search"
 msgstr "Leita"
 
 #: src/resources/ui/shortcuts-dialog.blp:287
-#, fuzzy
 #| msgid "Search & Preview"
 msgctxt "shortcuts dialog"
 msgid "Search Everywhere"
-msgstr "Leita og forskoða"
+msgstr "Leita allsstaðar"
 
 #: src/resources/ui/shortcuts-dialog.blp:292
-#, fuzzy
 #| msgid "Search Current Folder"
 msgctxt "shortcuts dialog"
 msgid "Search Current Folder"
 msgstr "Leita í núverandi möppu"
 
 #: src/resources/ui/shortcuts-dialog.blp:298
-#, fuzzy
 #| msgctxt "shortcut window"
 #| msgid "Close window or tab"
 msgctxt "shortcuts dialog"
 msgid "Windows & Tabs"
-msgstr "Loka glugga eða flipa"
+msgstr "Gluggar og flipar"
 
 #: src/resources/ui/shortcuts-dialog.blp:301
-#, fuzzy
 #| msgid "New Window"
 msgctxt "shortcuts dialog"
 msgid "New Window"
 msgstr "Nýr gluggi"
 
 #: src/resources/ui/shortcuts-dialog.blp:306
-#, fuzzy
 #| msgid "New Tab"
 msgctxt "shortcuts dialog"
 msgid "New Tab"
 msgstr "Nýr flipi"
 
 #: src/resources/ui/shortcuts-dialog.blp:311
-#, fuzzy
 #| msgctxt "shortcut window"
 #| msgid "Close window or tab"
 msgctxt "shortcuts dialog"
@@ -6124,14 +6093,12 @@ msgid "Close Window or Tab"
 msgstr "Loka glugga eða flipa"
 
 #: src/resources/ui/shortcuts-dialog.blp:316
-#, fuzzy
 #| msgid "Re_store Closed Tab"
 msgctxt "shortcuts dialog"
 msgid "Restore Closed Tab"
-msgstr "Endur_heimta lokaðan flipa"
+msgstr "Endurheimta lokaðan flipa"
 
 #: src/resources/ui/shortcuts-dialog.blp:323
-#, fuzzy
 #| msgctxt "shortcut window"
 #| msgid "Go to previous tab"
 msgctxt "shortcuts dialog"
@@ -6139,7 +6106,6 @@ msgid "Go to Previous Tab"
 msgstr "Fara á fyrri flipa"
 
 #: src/resources/ui/shortcuts-dialog.blp:328
-#, fuzzy
 #| msgctxt "shortcut window"
 #| msgid "Go to next tab"
 msgctxt "shortcuts dialog"
@@ -6147,7 +6113,6 @@ msgid "Go to Next Tab"
 msgstr "Fara á næsta flipa"
 
 #: src/resources/ui/shortcuts-dialog.blp:333
-#, fuzzy
 #| msgctxt "shortcut window"
 #| msgid "Open tab"
 msgctxt "shortcuts dialog"
@@ -6155,18 +6120,16 @@ msgid "Open Tab"
 msgstr "Opna flipa"
 
 #: src/resources/ui/shortcuts-dialog.blp:340
-#, fuzzy
 #| msgid "Move Tab _Left"
 msgctxt "shortcuts dialog"
 msgid "Move Tab Left"
-msgstr "Færa f_lipa til hægri"
+msgstr "Færa flipa til vinstri"
 
 #: src/resources/ui/shortcuts-dialog.blp:345
-#, fuzzy
 #| msgid "Move Tab _Right"
 msgctxt "shortcuts dialog"
 msgid "Move Tab Right"
-msgstr "Fæ_ra flipa til hægri"
+msgstr "Færa flipa til hægri"
 
 #: src/resources/ui/shortcuts-dialog.blp:351
 msgctxt "shortcuts dialog"
@@ -6174,7 +6137,6 @@ msgid "App"
 msgstr "Forrit"
 
 #: src/resources/ui/shortcuts-dialog.blp:354
-#, fuzzy
 #| msgctxt "shortcut window"
 #| msgid "Show preferences"
 msgctxt "shortcuts dialog"
@@ -6189,7 +6151,6 @@ msgid "Shortcuts"
 msgstr "Flýtilyklar"
 
 #: src/resources/ui/shortcuts-dialog.blp:364
-#, fuzzy
 #| msgctxt "shortcut window"
 #| msgid "Show help"
 msgctxt "shortcuts dialog"
