@@ -4791,27 +4791,18 @@ home_dir_in_selection (NautilusFileList *selection)
 static GList *
 get_extension_selection_menu_items (NautilusFilesView *view)
 {
-    GList *items;
-    GList *providers;
-    GList *l;
-    g_autolist (NautilusFile) selection = NULL;
+    g_autolist (NautilusFile) selection = nautilus_files_view_get_selection (view);
+    g_autolist (NautilusMenuProvider) providers =
+        nautilus_module_get_providers (NAUTILUS_TYPE_MENU_PROVIDER);
+    GList *items = NULL;
 
-    selection = nautilus_files_view_get_selection (view);
-    providers = nautilus_module_get_extensions_for_type (NAUTILUS_TYPE_MENU_PROVIDER);
-    items = NULL;
-
-    for (l = providers; l != NULL; l = l->next)
+    for (GList *l = providers; l != NULL; l = l->next)
     {
-        NautilusMenuProvider *provider;
-        GList *file_items;
+        NautilusMenuProvider *provider = l->data;
+        GList *file_items = nautilus_menu_provider_get_file_items (provider, selection);
 
-        provider = NAUTILUS_MENU_PROVIDER (l->data);
-        file_items = nautilus_menu_provider_get_file_items (provider,
-                                                            selection);
         items = g_list_concat (items, file_items);
     }
-
-    nautilus_module_extension_list_free (providers);
 
     return items;
 }
@@ -4819,27 +4810,18 @@ get_extension_selection_menu_items (NautilusFilesView *view)
 static GList *
 get_extension_background_menu_items (NautilusFilesView *self)
 {
-    GList *items;
-    GList *providers;
-    GList *l;
+    NautilusFileInfo *file_info = NAUTILUS_FILE_INFO (self->directory_as_file);
+    g_autolist (NautilusMenuProvider) providers =
+        nautilus_module_get_providers (NAUTILUS_TYPE_MENU_PROVIDER);
+    GList *items = NULL;
 
-    providers = nautilus_module_get_extensions_for_type (NAUTILUS_TYPE_MENU_PROVIDER);
-    items = NULL;
-
-    for (l = providers; l != NULL; l = l->next)
+    for (GList *l = providers; l != NULL; l = l->next)
     {
-        NautilusMenuProvider *provider;
-        NautilusFileInfo *file_info;
-        GList *file_items;
+        NautilusMenuProvider *provider = l->data;
+        GList *file_items = nautilus_menu_provider_get_background_items (provider, file_info);
 
-        provider = NAUTILUS_MENU_PROVIDER (l->data);
-        file_info = NAUTILUS_FILE_INFO (self->directory_as_file);
-        file_items = nautilus_menu_provider_get_background_items (provider,
-                                                                  file_info);
         items = g_list_concat (items, file_items);
     }
-
-    nautilus_module_extension_list_free (providers);
 
     return items;
 }

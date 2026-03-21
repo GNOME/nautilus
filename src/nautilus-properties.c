@@ -3552,8 +3552,8 @@ refresh_extension_model_pages (NautilusPropertiesWidget *self)
 {
     g_autoptr (GListStore) extensions_list = g_list_store_new (NAUTILUS_TYPE_PROPERTIES_MODEL);
     g_autolist (NautilusPropertiesModel) all_models = NULL;
-    g_autolist (GObject) providers =
-        nautilus_module_get_extensions_for_type (NAUTILUS_TYPE_PROPERTIES_MODEL_PROVIDER);
+    g_autolist (NautilusPropertiesModelProvider) providers =
+        nautilus_module_get_providers (NAUTILUS_TYPE_PROPERTIES_MODEL_PROVIDER);
 
     for (GList *l = providers; l != NULL; l = l->next)
     {

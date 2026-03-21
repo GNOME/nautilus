@@ -7818,7 +7818,7 @@ nautilus_file_invalidate_extension_info_internal (NautilusFile *file)
     g_list_free_full (file->details->pending_info_providers, g_object_unref);
 
     file->details->pending_info_providers =
-        nautilus_module_get_extensions_for_type (NAUTILUS_TYPE_INFO_PROVIDER);
+        nautilus_module_get_providers (NAUTILUS_TYPE_INFO_PROVIDER);
 }
 
 void

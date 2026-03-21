@@ -167,26 +167,16 @@ get_builtin_columns (void)
 
 static GList *
 get_extension_columns (void)
-{
-    GList *columns;
-    GList *providers;
-    GList *l;
+{    
+    g_autolist (NautilusColumnProvider) providers =
+        nautilus_module_get_providers (NAUTILUS_TYPE_COLUMN_PROVIDER);
+    GList *columns = NULL;
 
-    providers = nautilus_module_get_extensions_for_type (NAUTILUS_TYPE_COLUMN_PROVIDER);
-
-    columns = NULL;
-
-    for (l = providers; l != NULL; l = l->next)
+    for (GList *l = providers; l != NULL; l = l->next)
     {
-        NautilusColumnProvider *provider;
-        GList *provider_columns;
-
-        provider = NAUTILUS_COLUMN_PROVIDER (l->data);
-        provider_columns = nautilus_column_provider_get_columns (provider);
-        columns = g_list_concat (columns, provider_columns);
+        columns = g_list_concat (columns,
+                                 nautilus_column_provider_get_columns (l->data));
     }
-
-    nautilus_module_extension_list_free (providers);
 
     return columns;
 }
@@ -444,7 +434,7 @@ nautilus_column_get_visible_columns (NautilusFile *file)
     const GStrv visible_columns =
         nautilus_file_get_metadata_list (file, NAUTILUS_METADATA_KEY_LIST_VIEW_VISIBLE_COLUMNS);
 
-    if (visible_columns == NULL || visible_columns[0] == NULL)
+    if (G_LIKELY (visible_columns == NULL || visible_columns[0] == NULL))
     {
         return nautilus_column_get_default_visible_columns (file);
     }
@@ -475,7 +465,7 @@ nautilus_column_get_column_order (NautilusFile *file)
     const GStrv column_order =
         nautilus_file_get_metadata_list (file, NAUTILUS_METADATA_KEY_LIST_VIEW_COLUMN_ORDER);
 
-    if (column_order != NULL && column_order[0] != NULL)
+    if (G_UNLIKELY (column_order != NULL && column_order[0] != NULL))
     {
         return g_strdupv (column_order);
     }

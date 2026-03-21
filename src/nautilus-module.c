@@ -245,7 +245,7 @@ nautilus_module_setup (void)
 }
 
 GList *
-nautilus_module_get_extensions_for_type (GType type)
+nautilus_module_get_providers (GType type)
 {
     GList *l;
     GList *ret = NULL;
@@ -261,19 +261,6 @@ nautilus_module_get_extensions_for_type (GType type)
     }
 
     return ret;
-}
-
-void
-nautilus_module_extension_list_free (GList *extensions)
-{
-    GList *l, *next;
-
-    for (l = extensions; l != NULL; l = next)
-    {
-        next = l->next;
-        g_object_unref (l->data);
-    }
-    g_list_free (extensions);
 }
 
 void

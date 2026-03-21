@@ -164,21 +164,15 @@ menu_provider_items_updated_handler (NautilusMenuProvider *provider,
 static void
 menu_provider_init_callback (void)
 {
-    GList *providers;
-    GList *l;
+    g_autolist (NautilusMenuProvider) providers =
+        nautilus_module_get_providers (NAUTILUS_TYPE_MENU_PROVIDER);
 
-    providers = nautilus_module_get_extensions_for_type (NAUTILUS_TYPE_MENU_PROVIDER);
-
-    for (l = providers; l != NULL; l = l->next)
+    for (GList *l = providers; l != NULL; l = l->next)
     {
-        NautilusMenuProvider *provider = NAUTILUS_MENU_PROVIDER (l->data);
-
-        g_signal_connect_after (G_OBJECT (provider), "items-updated",
+        g_signal_connect_after (l->data, "items-updated",
                                 (GCallback) menu_provider_items_updated_handler,
                                 NULL);
     }
-
-    nautilus_module_extension_list_free (providers);
 }
 
 NautilusWindow *
