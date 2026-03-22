@@ -1016,29 +1016,6 @@ action_tab_move_new_window (GSimpleAction *action,
     adw_tab_view_transfer_page (window->tab_view, page, new_view, 0);
 }
 
-static void
-setup_tab_view (NautilusWindow *window)
-{
-    g_signal_connect (window->tab_view, "close-page",
-                      G_CALLBACK (tab_view_close_page_cb),
-                      window);
-    g_signal_connect (window->tab_view, "setup-menu",
-                      G_CALLBACK (tab_view_setup_menu_cb),
-                      window);
-    g_signal_connect (window->tab_view, "notify::selected-page",
-                      G_CALLBACK (tab_view_notify_selected_page_cb),
-                      window);
-    g_signal_connect (window->tab_view, "create-window",
-                      G_CALLBACK (tab_view_create_window_cb),
-                      window);
-    g_signal_connect (window->tab_view, "page-attached",
-                      G_CALLBACK (tab_view_page_attached_cb),
-                      window);
-    g_signal_connect (window->tab_view, "page-detached",
-                      G_CALLBACK (tab_view_page_detached_cb),
-                      window);
-}
-
 static GdkDragAction
 extra_drag_value_cb (AdwTabBar    *self,
                      AdwTabPage   *page,
@@ -1196,8 +1173,6 @@ nautilus_window_constructed (GObject *self)
 
     application = NAUTILUS_APPLICATION (g_application_get_default ());
     gtk_window_set_application (GTK_WINDOW (window), GTK_APPLICATION (application));
-
-    setup_tab_view (window);
 
     /* Only allow tab DnD in Wayland.  We are using a hack in list-base to
      * get the preferred action which we can not replicate here because we
@@ -1698,6 +1673,13 @@ nautilus_window_class_init (NautilusWindowClass *class)
     gtk_widget_class_bind_template_child (wclass, NautilusWindow, tab_view);
     gtk_widget_class_bind_template_child (wclass, NautilusWindow, tab_bar);
     gtk_widget_class_bind_template_child (wclass, NautilusWindow, network_address_bar);
+
+    gtk_widget_class_bind_template_callback (wclass, tab_view_close_page_cb);
+    gtk_widget_class_bind_template_callback (wclass, tab_view_setup_menu_cb);
+    gtk_widget_class_bind_template_callback (wclass, tab_view_notify_selected_page_cb);
+    gtk_widget_class_bind_template_callback (wclass, tab_view_create_window_cb);
+    gtk_widget_class_bind_template_callback (wclass, tab_view_page_attached_cb);
+    gtk_widget_class_bind_template_callback (wclass, tab_view_page_detached_cb);
 
     signals[LOCATIONS_CHANGED] =
         g_signal_new ("locations-changed",

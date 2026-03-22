@@ -176,6 +176,12 @@ template $NautilusWindow: Adw.ApplicationWindow {
 
           content: Adw.TabView tab_view {
             menu-model: tab_menu_model;
+            close-page => $tab_view_close_page_cb();
+            setup-menu => $tab_view_setup_menu_cb();
+            notify::selected-page => $tab_view_notify_selected_page_cb();
+            create-window => $tab_view_create_window_cb();
+            page-attached => $tab_view_page_attached_cb();
+            page-detached => $tab_view_page_detached_cb();
           };
 
           [bottom]
