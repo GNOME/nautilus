@@ -1197,10 +1197,6 @@ nautilus_window_constructed (GObject *self)
     application = NAUTILUS_APPLICATION (g_application_get_default ());
     gtk_window_set_application (GTK_WINDOW (window), GTK_APPLICATION (application));
 
-    gtk_window_set_default_size (GTK_WINDOW (window),
-                                 NAUTILUS_WINDOW_DEFAULT_WIDTH,
-                                 NAUTILUS_WINDOW_DEFAULT_HEIGHT);
-
     setup_tab_view (window);
 
     /* Only allow tab DnD in Wayland.  We are using a hack in list-base to
