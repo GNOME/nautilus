@@ -394,9 +394,11 @@ completer_get_completions_thread (GTask        *task,
 
         if (g_str_has_prefix (case_insenstive_name, data->prefix))
         {
+            gboolean separator_suffix = (g_file_info_get_file_type (info) == G_FILE_TYPE_DIRECTORY);
             char *completion = (data->typed_path != NULL)
-                               ? g_strconcat (data->typed_path, name, NULL)
-                               : g_strdup (name);
+                               ? g_strconcat (data->typed_path, name,
+                                              separator_suffix ? "/" : NULL, NULL)
+                               : separator_suffix ? g_strdup_printf ("%s/", name) : g_strdup (name);
 
             g_ptr_array_add (completions, completion);
         }
