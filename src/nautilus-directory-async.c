@@ -26,6 +26,7 @@
 #include "nautilus-directory-notify.h"
 #include "nautilus-directory-private.h"
 #include "nautilus-enums.h"
+#include "nautilus-file-info-impl.h"
 #include "nautilus-file-private.h"
 #include "nautilus-file-utilities.h"
 #include "nautilus-global-preferences.h"
@@ -4006,11 +4007,10 @@ extension_info_start (NautilusDirectory *directory,
     g_closure_set_marshal (update_complete,
                            g_cclosure_marshal_generic);
 
-    result = nautilus_info_provider_update_file_info
-                 (provider,
-                 NAUTILUS_FILE_INFO (file),
-                 update_complete,
-                 &handle);
+    result = nautilus_info_provider_update_file_info (provider,
+                                                      nautilus_file_info_from_file (file),
+                                                      update_complete,
+                                                      &handle);
 
     g_closure_unref (update_complete);
 

@@ -39,6 +39,7 @@ typedef struct _NautilusClipboard           NautilusClipboard;
 typedef struct _NautilusColumn              NautilusColumn;
 typedef struct _NautilusDirectory           NautilusDirectory;
 typedef struct  NautilusFile                NautilusFile;
+typedef struct _NautilusFileInfo            NautilusFileInfo;
 typedef struct _NautilusFileOperationsDBusData NautilusFileOperationsDBusData;
 typedef struct _NautilusFileUndoInfo        NautilusFileUndoInfo;
 typedef struct _NautilusFilesView           NautilusFilesView;

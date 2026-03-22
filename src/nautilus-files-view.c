@@ -47,6 +47,7 @@
 #include "nautilus-dnd.h"
 #include "nautilus-enums.h"
 #include "nautilus-error-reporting.h"
+#include "nautilus-file-info-impl.h"
 #include "nautilus-file-operations.h"
 #include "nautilus-file-utilities.h"
 #include "nautilus-file.h"
@@ -4810,7 +4811,7 @@ get_extension_selection_menu_items (NautilusFilesView *view)
 static GList *
 get_extension_background_menu_items (NautilusFilesView *self)
 {
-    NautilusFileInfo *file_info = NAUTILUS_FILE_INFO (self->directory_as_file);
+    g_autoptr (NautilusFileInfo) file_info = nautilus_file_info_from_file (self->directory_as_file);
     g_autolist (NautilusMenuProvider) providers =
         nautilus_module_get_providers (NAUTILUS_TYPE_MENU_PROVIDER);
     GList *items = NULL;

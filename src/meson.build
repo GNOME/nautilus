@@ -89,6 +89,8 @@ libnautilus_sources = [
   'nautilus-file-chooser.h',
   'nautilus-file-conflict-dialog.c',
   'nautilus-file-conflict-dialog.h',
+  'nautilus-file-info-impl.c',
+  'nautilus-file-info-impl.h',
   'nautilus-file-operations-dbus-data.c',
   'nautilus-file-operations-dbus-data.h',
   'nautilus-file-operations.c',
