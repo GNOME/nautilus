@@ -148,7 +148,7 @@ nautilus_launch_application_by_uri (GAppInfo  *application,
     gboolean result;
     GError *error;
     g_autoptr (GdkAppLaunchContext) launch_context = NULL;
-    NautilusIconInfo *icon;
+    GIcon *icon;
     gboolean all_uris_local = TRUE;
 
     g_assert (uris != NULL);
@@ -170,14 +170,11 @@ nautilus_launch_application_by_uri (GAppInfo  *application,
     launch_context = get_launch_context (parent_window);
 
     file = nautilus_file_get_by_uri (uris->data);
-    icon = nautilus_file_get_icon (file,
-                                   48, gtk_widget_get_scale_factor (GTK_WIDGET (parent_window)),
-                                   0);
+    icon = nautilus_file_get_gicon (file, NAUTILUS_FILE_ICON_FLAGS_NONE);
     nautilus_file_unref (file);
     if (icon)
     {
-        gdk_app_launch_context_set_icon_name (launch_context,
-                                              nautilus_icon_info_get_used_name (icon));
+        gdk_app_launch_context_set_icon (launch_context, icon);
         g_object_unref (icon);
     }
 
