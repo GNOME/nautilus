@@ -7,6 +7,7 @@
 #include "nautilus-history-controls.h"
 
 #include "nautilus-bookmark.h"
+#include "nautilus-file-utilities.h"
 #include "nautilus-window.h"
 #include "nautilus-window-slot.h"
 
@@ -41,7 +42,6 @@ fill_menu (NautilusHistoryControls *self,
 {
     guint index;
     GList *list;
-    const gchar *name;
 
     list = back ? nautilus_window_slot_get_back_history (self->window_slot) :
                   nautilus_window_slot_get_forward_history (self->window_slot);
@@ -49,10 +49,11 @@ fill_menu (NautilusHistoryControls *self,
     index = 0;
     while (list != NULL)
     {
-        g_autoptr (GMenuItem) item = NULL;
+        NautilusBookmark *bookmark = NAUTILUS_BOOKMARK (list->data);
+        GFile *location = nautilus_bookmark_get_location (bookmark);
+        g_autoptr (GMenuItem) item =
+            g_menu_item_new (nautilus_compute_title_for_location (location), NULL);
 
-        name = nautilus_bookmark_get_name (NAUTILUS_BOOKMARK (list->data));
-        item = g_menu_item_new (name, NULL);
         g_menu_item_set_action_and_target (item,
                                            back ? "slot.back-n" : "slot.forward-n",
                                            "u", index);
