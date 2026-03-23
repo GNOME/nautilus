@@ -30,7 +30,6 @@
 
 #include "nautilus-file.h"
 #include "nautilus-filename-utilities.h"
-#include "nautilus-icon-info.h"
 #include "nautilus-operations-ui-manager.h"
 
 struct _NautilusFileConflictDialog

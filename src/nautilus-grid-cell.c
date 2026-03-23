@@ -8,7 +8,6 @@
 
 #include "nautilus-file.h"
 #include "nautilus-global-preferences.h"
-#include "nautilus-icon-info.h"
 #include "nautilus-image.h"
 #include "nautilus-tag-manager.h"
 #include "nautilus-thumbnails.h"

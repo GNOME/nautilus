@@ -55,7 +55,6 @@
 #include "nautilus-global-preferences.h"
 #include "nautilus-grid-view.h"
 #include "nautilus-grid-view-captions-dialog.h"
-#include "nautilus-icon-info.h"
 #include "nautilus-list-view.h"
 #include "nautilus-metadata.h"
 #include "nautilus-mime-actions.h"

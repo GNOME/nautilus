@@ -25,7 +25,6 @@
 
 #include "nautilus-file.h"
 #include "nautilus-global-preferences.h"
-#include "nautilus-icon-info.h"
 #include "nautilus-scheme.h"
 #include "nautilus-ui-utilities.h"
 #include <gtk/gtk.h>
