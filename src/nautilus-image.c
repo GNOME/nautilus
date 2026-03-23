@@ -743,16 +743,17 @@ real_snapshot (GtkWidget   *widget,
     else
     {
         GdkPaintable *paintable = get_error_paintable (self);
+        int width = self->size;
+        int height = self->size;
 
         if (self->fallback_paintable != NULL)
         {
             paintable = self->fallback_paintable;
+            width = gdk_paintable_get_intrinsic_width (paintable);
+            height = gdk_paintable_get_intrinsic_height (paintable);
         }
 
-        gdk_paintable_snapshot (paintable,
-                                GDK_SNAPSHOT (snapshot),
-                                gdk_paintable_get_intrinsic_width (paintable),
-                                gdk_paintable_get_intrinsic_height (paintable));
+        gdk_paintable_snapshot (paintable, GDK_SNAPSHOT (snapshot), width, height);
     }
 
     GTK_WIDGET_CLASS (nautilus_image_parent_class)->snapshot (widget, snapshot);
