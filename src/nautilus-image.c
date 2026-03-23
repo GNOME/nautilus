@@ -43,6 +43,7 @@ enum
     PROP_0,
     PROP_SOURCE,
     PROP_SIZE,
+    PROP_FALLBACK,
     N_PROPS,
 };
 
@@ -559,6 +560,8 @@ nautilus_image_set_fallback (NautilusImage *self,
         {
             gtk_widget_queue_draw (GTK_WIDGET (self));
         }
+
+        g_object_notify_by_pspec (G_OBJECT (self), properties[PROP_FALLBACK]);
     }
 }
 
@@ -658,6 +661,18 @@ nautilus_image_get_property (GObject    *object,
         }
         break;
 
+        case PROP_SIZE:
+        {
+            g_value_set_int (value, self->size);
+        }
+        break;
+
+        case PROP_FALLBACK:
+        {
+            g_value_set_object (value, self->fallback_paintable);
+        }
+        break;
+
         default:
         {
             G_OBJECT_WARN_INVALID_PROPERTY_ID (object, property_id, pspec);
@@ -678,6 +693,18 @@ nautilus_image_set_property (GObject      *object,
         case PROP_SOURCE:
         {
             nautilus_image_set_source (self, g_value_get_object (value));
+        }
+        break;
+
+        case PROP_SIZE:
+        {
+            nautilus_image_set_size (self, g_value_get_int (value));
+        }
+        break;
+
+        case PROP_FALLBACK:
+        {
+            nautilus_image_set_fallback (self, g_value_get_object (value));
         }
         break;
 
@@ -850,6 +877,12 @@ nautilus_image_class_init (NautilusImageClass *klass)
                                               G_PARAM_READWRITE |
                                               G_PARAM_EXPLICIT_NOTIFY |
                                               G_PARAM_STATIC_STRINGS);
+
+    properties[PROP_FALLBACK] = g_param_spec_object ("fallback", NULL, NULL,
+                                                     GDK_TYPE_PAINTABLE,
+                                                     G_PARAM_READWRITE |
+                                                     G_PARAM_EXPLICIT_NOTIFY |
+                                                     G_PARAM_STATIC_STRINGS);
 
     g_object_class_install_properties (object_class, N_PROPS, properties);
 }
