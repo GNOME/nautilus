@@ -8,9 +8,6 @@
 
 G_BEGIN_DECLS
 
-/* Maximum size of an icon that the icon factory will ever produce */
-#define NAUTILUS_ICON_MAXIMUM_SIZE     320
-
 #define NAUTILUS_TYPE_ICON_INFO (nautilus_icon_info_get_type ())
 G_DECLARE_FINAL_TYPE (NautilusIconInfo, nautilus_icon_info, NAUTILUS, ICON_INFO, GObject)
 
