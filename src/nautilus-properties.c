@@ -783,7 +783,11 @@ update_image_widget (NautilusPropertiesWidget *self)
     if (!is_multi_file_window (self) && !is_volume_properties (self))
     {
         NautilusFile *file = get_file (self);
-        if (file != NULL && !nautilus_file_is_gone (file) && !is_root_directory (file))
+
+        if (file != NULL &&
+            !nautilus_file_is_gone (file) &&
+            !is_root_directory (file) &&
+            !nautilus_file_is_in_trash (file))
         {
             const gchar *image_path = nautilus_file_get_metadata (file,
                                                                   NAUTILUS_METADATA_KEY_CUSTOM_ICON,
