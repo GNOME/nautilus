@@ -1489,8 +1489,8 @@ nautilus_window_back_or_forward (NautilusWindow *window,
 }
 
 void
-nautilus_window_back_or_forward_in_new_tab (NautilusWindow              *window,
-                                            NautilusNavigationDirection  direction)
+nautilus_window_back_or_forward_in_new_tab (NautilusWindow *window,
+                                            int             distance)
 {
     NautilusNavigationState *state;
 
@@ -1499,28 +1499,21 @@ nautilus_window_back_or_forward_in_new_tab (NautilusWindow              *window,
     /* Manually fix up the back / forward lists and location.
      * This way we don't have to unnecessary load the current location
      * and then load back / forward */
-    switch (direction)
+    if (distance == NAUTILUS_NAVIGATION_DIRECTION_FORWARD)
     {
-        case NAUTILUS_NAVIGATION_DIRECTION_BACK:
-        {
-            state->forward_list = g_list_prepend (state->forward_list, state->current_location_bookmark);
-            state->current_location_bookmark = state->back_list->data;
-            state->back_list = state->back_list->next;
-        }
-        break;
-
-        case NAUTILUS_NAVIGATION_DIRECTION_FORWARD:
-        {
-            state->back_list = g_list_prepend (state->back_list, state->current_location_bookmark);
-            state->current_location_bookmark = state->forward_list->data;
-            state->forward_list = state->forward_list->next;
-        }
-        break;
-
-        default:
-        {
-            g_assert_not_reached ();
-        }
+        state->back_list = g_list_prepend (state->back_list, state->current_location_bookmark);
+        state->current_location_bookmark = state->forward_list->data;
+        state->forward_list = state->forward_list->next;
+    }
+    else if (distance == NAUTILUS_NAVIGATION_DIRECTION_BACK)
+    {
+        state->forward_list = g_list_prepend (state->forward_list, state->current_location_bookmark);
+        state->current_location_bookmark = state->back_list->data;
+        state->back_list = state->back_list->next;
+    }
+    else
+    {
+        g_warn_if_reached ();
     }
 
     NautilusWindowSlot *new_slot = nautilus_window_create_and_init_slot (window);

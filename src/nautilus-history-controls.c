@@ -68,35 +68,26 @@ show_menu (NautilusHistoryControls *self,
            GtkWidget               *widget)
 {
     g_autoptr (GMenu) menu = NULL;
-    NautilusNavigationDirection direction;
     GtkPopoverMenu *popover;
 
     menu = g_menu_new ();
 
-    direction = GPOINTER_TO_UINT (g_object_get_data (G_OBJECT (widget),
-                                                     "nav-direction"));
+    int direction = GPOINTER_TO_INT (g_object_get_data (G_OBJECT (widget),
+                                                        "nav-direction"));
 
-    switch (direction)
+    if (direction == NAUTILUS_NAVIGATION_DIRECTION_FORWARD)
     {
-        case NAUTILUS_NAVIGATION_DIRECTION_FORWARD:
-        {
-            fill_menu (self, menu, FALSE);
-            popover = GTK_POPOVER_MENU (self->forward_menu);
-        }
-        break;
-
-        case NAUTILUS_NAVIGATION_DIRECTION_BACK:
-        {
-            fill_menu (self, menu, TRUE);
-            popover = GTK_POPOVER_MENU (self->back_menu);
-        }
-        break;
-
-        default:
-        {
-            g_assert_not_reached ();
-        }
-        break;
+        fill_menu (self, menu, FALSE);
+        popover = GTK_POPOVER_MENU (self->forward_menu);
+    }
+    else if (direction == NAUTILUS_NAVIGATION_DIRECTION_BACK)
+    {
+        fill_menu (self, menu, TRUE);
+        popover = GTK_POPOVER_MENU (self->back_menu);
+    }
+    else
+    {
+        g_return_if_reached ();
     }
 
     gtk_popover_menu_set_menu_model (popover, G_MENU_MODEL (menu));
@@ -123,7 +114,6 @@ navigation_button_press_cb (GtkGestureClick *gesture,
     }
     else if (button == GDK_BUTTON_MIDDLE)
     {
-        NautilusNavigationDirection direction;
         GtkRoot *window = gtk_widget_get_root (GTK_WIDGET (self));
 
         if (!NAUTILUS_IS_WINDOW (window))
@@ -133,8 +123,8 @@ navigation_button_press_cb (GtkGestureClick *gesture,
             return;
         }
 
-        direction = GPOINTER_TO_UINT (g_object_get_data (G_OBJECT (widget),
-                                                         "nav-direction"));
+        int direction = GPOINTER_TO_INT (g_object_get_data (G_OBJECT (widget),
+                                                            "nav-direction"));
 
         nautilus_window_back_or_forward_in_new_tab (NAUTILUS_WINDOW (window), direction);
     }
