@@ -3055,12 +3055,6 @@ nautilus_window_slot_get_current_view (NautilusWindowSlot *self)
     return self->content_view;
 }
 
-NautilusBookmark *
-nautilus_window_slot_get_bookmark (NautilusWindowSlot *self)
-{
-    return self->current_location_bookmark;
-}
-
 GList *
 nautilus_window_slot_get_back_history (NautilusWindowSlot *self)
 {
