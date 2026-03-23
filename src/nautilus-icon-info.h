@@ -23,7 +23,6 @@ NautilusIconInfo *    nautilus_icon_info_lookup                       (GIcon    
 								       int                size,
 								       int                scale);
 GdkPaintable *        nautilus_icon_info_get_paintable                (NautilusIconInfo  *icon);
-const char *          nautilus_icon_info_get_used_name                (NautilusIconInfo  *icon);
 
 void                  nautilus_icon_info_clear_caches                 (void);
 

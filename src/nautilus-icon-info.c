@@ -28,8 +28,6 @@ struct _NautilusIconInfo
     GObject parent;
 
     GdkPaintable *paintable;
-
-    char *icon_name;
 };
 
 static GtkIconPaintable *
@@ -54,7 +52,6 @@ nautilus_icon_info_finalize (GObject *object)
     icon = NAUTILUS_ICON_INFO (object);
 
     g_object_unref (icon->paintable);
-    g_free (icon->icon_name);
 
     G_OBJECT_CLASS (nautilus_icon_info_parent_class)->finalize (object);
 }
@@ -114,35 +111,6 @@ nautilus_icon_info_get_fallback (int size,
 
     return g_object_ref (fallback_info);
 }
-
-static NautilusIconInfo *
-nautilus_icon_info_new_for_icon_paintable (GtkIconPaintable *icon_paintable)
-{
-    NautilusIconInfo *icon;
-    g_autoptr (GFile) file = NULL;
-    char *basename, *p;
-
-    icon = nautilus_icon_info_new_for_paintable (GDK_PAINTABLE (icon_paintable));
-
-    file = gtk_icon_paintable_get_file (icon_paintable);
-    if (file != NULL)
-    {
-        basename = g_file_get_basename (file);
-        p = strrchr (basename, '.');
-        if (p)
-        {
-            *p = 0;
-        }
-        icon->icon_name = basename;
-    }
-    else
-    {
-        icon->icon_name = g_strdup (gtk_icon_paintable_get_icon_name (icon_paintable));
-    }
-
-    return icon;
-}
-
 
 typedef struct
 {
@@ -460,7 +428,7 @@ nautilus_icon_info_lookup (GIcon *icon,
         }
 
         key = themed_icon_key_new (icon_name, scale, size);
-        icon_info = nautilus_icon_info_new_for_icon_paintable (icon_paintable);
+        icon_info = nautilus_icon_info_new_for_paintable (GDK_PAINTABLE (icon_paintable));
         themed_icon_cache_add (key, g_object_ref (icon_info));
 
         return icon_info;
@@ -476,10 +444,4 @@ GdkPaintable *
 nautilus_icon_info_get_paintable (NautilusIconInfo *icon)
 {
     return g_object_ref (icon->paintable);
-}
-
-const char *
-nautilus_icon_info_get_used_name (NautilusIconInfo *icon)
-{
-    return icon->icon_name;
 }
