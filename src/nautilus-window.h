@@ -41,12 +41,8 @@ typedef gboolean (* NautilusWindowGoToCallback) (NautilusWindow *window,
                                                  GError *error,
                                                  gpointer user_data);
 
-typedef enum
-{
-    NAUTILUS_NAVIGATION_DIRECTION_NONE,
-    NAUTILUS_NAVIGATION_DIRECTION_BACK,
-    NAUTILUS_NAVIGATION_DIRECTION_FORWARD
-} NautilusNavigationDirection;
+#define NAUTILUS_NAVIGATION_DIRECTION_BACK -1
+#define NAUTILUS_NAVIGATION_DIRECTION_FORWARD 1
 
 NautilusWindow * nautilus_window_new                  (void);
 void             nautilus_window_close                (NautilusWindow    *window);
@@ -76,7 +72,7 @@ void nautilus_window_show_operation_notification (NautilusWindow *window,
 void nautilus_window_search (NautilusWindow *window,
                              NautilusQuery  *query);
 
-void nautilus_window_back_or_forward_in_new_tab (NautilusWindow              *window,
-                                                 NautilusNavigationDirection  back);
+void nautilus_window_back_or_forward_in_new_tab (NautilusWindow *window,
+                                                 int             distance);
 
 G_END_DECLS
