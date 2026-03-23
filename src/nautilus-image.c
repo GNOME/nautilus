@@ -842,11 +842,13 @@ nautilus_image_class_init (NautilusImageClass *klass)
     properties[PROP_SOURCE] = g_param_spec_object ("source", NULL, NULL,
                                                    G_TYPE_FILE,
                                                    G_PARAM_READWRITE |
+                                                   G_PARAM_EXPLICIT_NOTIFY |
                                                    G_PARAM_STATIC_STRINGS);
 
     properties[PROP_SIZE] = g_param_spec_int ("size", NULL, NULL,
                                               0, 1024, 0,
                                               G_PARAM_READWRITE |
+                                              G_PARAM_EXPLICIT_NOTIFY |
                                               G_PARAM_STATIC_STRINGS);
 
     g_object_class_install_properties (object_class, N_PROPS, properties);
