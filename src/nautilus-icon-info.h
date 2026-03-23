@@ -14,12 +14,9 @@ G_DECLARE_FINAL_TYPE (NautilusIconInfo, nautilus_icon_info, NAUTILUS, ICON_INFO,
 GIcon *
 nautilus_icon_info_get_default_file_icon (void);
 
-NautilusIconInfo *
-nautilus_icon_info_new_for_paintable (GdkPaintable      *paintable);
-NautilusIconInfo *    nautilus_icon_info_lookup                       (GIcon             *icon,
+GdkPaintable *        nautilus_icon_info_lookup                       (GIcon             *icon,
 								       int                size,
 								       int                scale);
-GdkPaintable *        nautilus_icon_info_get_paintable                (NautilusIconInfo  *icon);
 
 void                  nautilus_icon_info_clear_caches                 (void);
 

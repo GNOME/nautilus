@@ -926,10 +926,9 @@ nautilus_ui_draw_symbolic_icon (GtkSnapshot           *snapshot,
                                 int                    scale)
 {
     g_autoptr (GIcon) gicon = g_themed_icon_new (icon_name);
-    g_autoptr (NautilusIconInfo) icon = nautilus_icon_info_lookup (gicon,
-                                                                   2.0 * rect->size.width,
-                                                                   scale);
-    g_autoptr (GdkPaintable) paintable = nautilus_icon_info_get_paintable (icon);
+    g_autoptr (GdkPaintable) paintable = nautilus_icon_info_lookup (gicon,
+                                                                    2.0 * rect->size.width,
+                                                                    scale);
     const GdkRGBA colors[] = {color};
 
     g_assert (GTK_IS_SYMBOLIC_PAINTABLE (paintable));
