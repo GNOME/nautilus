@@ -41,15 +41,6 @@ typedef gboolean (* NautilusWindowGoToCallback) (NautilusWindow *window,
                                                  GError *error,
                                                  gpointer user_data);
 
-/* window geometry */
-/* Min values are very small, and a Nautilus window at this tiny size is *almost*
- * completely unusable. However, if all the extra bits (sidebar, location bar, etc)
- * are turned off, you can see an icon or two at this size. See bug 5946.
- */
-
-#define NAUTILUS_WINDOW_MIN_WIDTH		200
-#define NAUTILUS_WINDOW_MIN_HEIGHT		200
-
 typedef enum
 {
     NAUTILUS_NAVIGATION_DIRECTION_NONE,

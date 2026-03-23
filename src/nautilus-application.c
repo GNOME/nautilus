@@ -215,8 +215,8 @@ nautilus_application_create_window (NautilusApplication *self,
     g_variant_get (default_size, "(ii)", &default_width, &default_height);
 
     gtk_window_set_default_size (GTK_WINDOW (window),
-                                 MAX (NAUTILUS_WINDOW_MIN_WIDTH, default_width),
-                                 MAX (NAUTILUS_WINDOW_MIN_HEIGHT, default_height));
+                                 default_width,
+                                 default_height);
 
     if (g_strcmp0 (PROFILE, "") != 0)
     {
