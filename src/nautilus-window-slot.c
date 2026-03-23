@@ -204,13 +204,14 @@ void
 nautilus_window_slot_restore_navigation_state (NautilusWindowSlot      *self,
                                                NautilusNavigationState *data)
 {
-    self->back_list = g_steal_pointer (&data->back_list);
+    GFile *location = nautilus_bookmark_get_location (data->current_location_bookmark);
 
-    self->forward_list = g_steal_pointer (&data->forward_list);
-
-    update_back_forward_actions (self);
-
+    nautilus_window_slot_open_location_full (self, location, NULL);
     g_set_object (&self->current_location_bookmark, data->current_location_bookmark);
+
+    self->back_list = g_steal_pointer (&data->back_list);
+    self->forward_list = g_steal_pointer (&data->forward_list);
+    update_back_forward_actions (self);
 
     self->location_change_type = NAUTILUS_LOCATION_CHANGE_RELOAD;
 }
