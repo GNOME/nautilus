@@ -2322,11 +2322,9 @@ nautilus_window_slot_clear_back_list (NautilusWindowSlot *self)
 
 static void
 nautilus_window_slot_update_bookmark (NautilusWindowSlot *self,
-                                      NautilusFile       *file)
+                                      GFile              *new_location)
 {
     gboolean recreate;
-    GFile *new_location;
-    new_location = nautilus_file_get_location (file);
 
     if (self->current_location_bookmark == NULL)
     {
@@ -2347,8 +2345,6 @@ nautilus_window_slot_update_bookmark (NautilusWindowSlot *self,
 
         self->current_location_bookmark = nautilus_bookmark_new (new_location, NULL);
     }
-
-    g_object_unref (new_location);
 }
 
 static void
@@ -2596,7 +2592,7 @@ nautilus_window_slot_update_for_new_location (NautilusWindowSlot *self)
     NautilusFile *file;
 
     file = nautilus_file_get (new_location);
-    nautilus_window_slot_update_bookmark (self, file);
+    nautilus_window_slot_update_bookmark (self, new_location);
 
     update_history (self, self->location_change_type, new_location);
 
