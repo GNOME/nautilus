@@ -4829,22 +4829,23 @@ nautilus_file_get_thumbnail_icon (NautilusFile          *file,
     return icon;
 }
 
-NautilusIconInfo *
-nautilus_file_get_icon (NautilusFile          *file,
-                        int                    size,
-                        int                    scale,
-                        NautilusFileIconFlags  flags)
+GdkPaintable *
+nautilus_file_get_icon_paintable (NautilusFile          *file,
+                                  int                    size,
+                                  int                    scale,
+                                  NautilusFileIconFlags  flags)
 {
     g_return_val_if_fail (NAUTILUS_IS_FILE (file), NULL);
 
     g_autoptr (GIcon) custom_gicon = get_custom_icon (file);
+    g_autoptr (NautilusIconInfo) icon = NULL;
 
     if (custom_gicon != NULL)
     {
-        return nautilus_icon_info_lookup (custom_gicon, size, scale);
-    }
+        icon = nautilus_icon_info_lookup (custom_gicon, size, scale);
 
-    NautilusIconInfo *icon = NULL;
+        return nautilus_icon_info_get_paintable (icon);
+    }
 
     if (g_getenv ("G_MESSAGES_DEBUG") != NULL)
     {
@@ -4864,20 +4865,7 @@ nautilus_file_get_icon (NautilusFile          *file,
         icon = nautilus_icon_info_lookup (gicon, size, scale);
     }
 
-    return icon;
-}
-
-GdkPaintable *
-nautilus_file_get_icon_paintable (NautilusFile          *file,
-                                  int                    size,
-                                  int                    scale,
-                                  NautilusFileIconFlags  flags)
-{
-    g_autoptr (NautilusIconInfo) info = NULL;
-
-    info = nautilus_file_get_icon (file, size, scale, flags);
-
-    return nautilus_icon_info_get_paintable (info);
+    return nautilus_icon_info_get_paintable (icon);
 }
 
 GDateTime *

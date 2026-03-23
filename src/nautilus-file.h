@@ -416,10 +416,6 @@ char *                  nautilus_file_get_activation_uri                (Nautilu
 GFile *                 nautilus_file_get_activation_location           (NautilusFile                   *file);
 GIcon *                 nautilus_file_get_gicon                         (NautilusFile                   *file,
 									 NautilusFileIconFlags           flags);
-NautilusIconInfo *      nautilus_file_get_icon                          (NautilusFile                   *file,
-									 int                             size,
-									 int                             scale,
-									 NautilusFileIconFlags           flags);
 GdkPaintable *          nautilus_file_get_icon_paintable                (NautilusFile                   *file,
 									 int                             size,
 									 int                             scale,
