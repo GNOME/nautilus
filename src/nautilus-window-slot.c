@@ -1536,14 +1536,12 @@ save_selection_for_history (NautilusWindowSlot *self)
  * begin_location_change
  *
  * Change a window slot's location.
- * @window: The NautilusWindow whose location should be changed.
  * @location: A url specifying the location to load
  * @previous_location: The url that was previously shown in the window that initialized the change, if any
  * @new_selection: The initial selection to present after loading the location
  * @type: Which type of location change is this? Standard, back, forward, or reload?
  * @distance: If type is back or forward, the index into the back or forward chain. If
  * type is standard or reload, this is ignored, and must be 0.
- * @scroll_pos: The file to scroll to when the location is loaded.
  *
  * This is the core function for changing the location of a window. Every change to the
  * location begins here.
