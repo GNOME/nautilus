@@ -1552,7 +1552,6 @@ save_selection_for_history (NautilusWindowSlot *self)
  * @type: Which type of location change is this? Standard, back, forward, or reload?
  * @distance: If type is back or forward, the index into the back or forward chain. If
  * type is standard or reload, this is ignored, and must be 0.
- * @scroll_pos: The file to scroll to when the location is loaded.
  *
  * This is the core function for changing the location of a window. Every change to the
  * location begins here.
