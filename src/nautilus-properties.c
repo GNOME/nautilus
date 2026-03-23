@@ -38,6 +38,7 @@
 #include "nautilus-file-utilities.h"
 #include "nautilus-global-preferences.h"
 #include "nautilus-icon-info.h"
+#include "nautilus-image.h"
 #include "nautilus-metadata.h"
 #include "nautilus-mime-actions.h"
 #include "nautilus-module.h"
@@ -497,54 +498,48 @@ navigate_permissions_page (NautilusPropertiesWidget *self,
     adw_navigation_view_push_by_tag (self->nav_view, "permissions");
 }
 
-static NautilusIconInfo *
+static GdkPaintable *
 get_image_for_properties_widget (NautilusPropertiesWidget *self,
                                  gboolean                 *is_stacked)
 {
     /* Show a limited number of icons */
     const uint max_icons = 5;
-
     gint scale = gtk_widget_get_scale_factor (GTK_WIDGET (self));
     NautilusFileIconFlags flags = NAUTILUS_FILE_ICON_FLAGS_USE_THUMBNAILS |
                                   NAUTILUS_FILE_ICON_FLAGS_USE_MOUNT_ICON;
     guint size = NAUTILUS_GRID_ICON_SIZE_MEDIUM;
-    g_autolist (NautilusIconInfo) shown_icons = NULL;
+    g_autoqueue (GdkPaintable) shown_icons = g_queue_new ();
 
     for (NautilusFileList *l = self->files; l != NULL; l = l->next)
     {
         NautilusFile *file = l->data;
-        g_autoptr (NautilusIconInfo) info = nautilus_file_get_icon (file, size, scale, flags);
+        g_autoptr (GdkPaintable) paintable = nautilus_file_get_icon_paintable (file, size, scale, flags);
 
-        if (g_list_find (shown_icons, info) == NULL)
+        if (g_queue_find (shown_icons, paintable) == NULL)
         {
-            shown_icons = g_list_append (shown_icons, g_steal_pointer (&info));
+            g_queue_push_tail (shown_icons, g_steal_pointer (&paintable));
 
-            if (g_list_length (shown_icons) >= max_icons)
+            if (g_queue_get_length (shown_icons) >= max_icons)
             {
                 break;
             }
         }
     }
 
-    if (g_list_length (shown_icons) == 1)
+    if (g_queue_get_length (shown_icons) == 1)
     {
-        return g_steal_pointer (&shown_icons->data);
+        /* The paintable can be obtained automatically by NautilusImage. Just
+         * obtain a fallback. */
+        return nautilus_file_get_icon_paintable (self->files->data,
+                                                 size,
+                                                 scale,
+                                                 NAUTILUS_FILE_ICON_FLAGS_USE_MOUNT_ICON);
     }
     else
     {
-        g_autoqueue (GdkPaintable) icons = g_queue_new ();
-
-        for (GList *l = shown_icons; l != NULL; l = l->next)
-        {
-            NautilusIconInfo *info = l->data;
-
-            g_queue_push_tail (icons, nautilus_icon_info_get_paintable (info));
-        }
-
-        GdkPaintable *stacked_icons = nautilus_ui_draw_stacked_icons (icons, size);
-
         *is_stacked = TRUE;
-        return nautilus_icon_info_new_for_paintable (stacked_icons);
+
+        return nautilus_ui_draw_stacked_icons (shown_icons, size);
     }
 }
 
@@ -552,26 +547,21 @@ get_image_for_properties_widget (NautilusPropertiesWidget *self,
 static void
 update_properties_widget_icon (NautilusPropertiesWidget *self)
 {
-    gint pixel_size;
     gboolean is_stacked = FALSE;
-    g_autoptr (NautilusIconInfo) icon_info = get_image_for_properties_widget (self, &is_stacked);
-    g_autoptr (GdkPaintable) paintable = nautilus_icon_info_get_paintable (icon_info);
-    const char *name = nautilus_icon_info_get_used_name (icon_info);
+    g_autoptr (GdkPaintable) paintable = get_image_for_properties_widget (self, &is_stacked);
 
-    if (name != NULL || is_stacked)
+    nautilus_image_set_fallback (NAUTILUS_IMAGE (self->icon_image), paintable);
+
+    if (is_stacked)
     {
-        gtk_widget_remove_css_class (self->icon_image, "thumbnail");
+        nautilus_image_set_source (NAUTILUS_IMAGE (self->icon_image), NULL);
     }
     else
     {
-        gtk_widget_add_css_class (self->icon_image, "thumbnail");
+        g_autoptr (GFile) location = nautilus_file_get_location (self->files->data);
+
+        nautilus_image_set_source (NAUTILUS_IMAGE (self->icon_image), location);
     }
-
-    pixel_size = MAX (gdk_paintable_get_intrinsic_height (paintable),
-                      gdk_paintable_get_intrinsic_width (paintable));
-
-    gtk_image_set_from_paintable (GTK_IMAGE (self->icon_image), paintable);
-    gtk_image_set_pixel_size (GTK_IMAGE (self->icon_image), pixel_size);
 }
 
 /* utility to test if a uri refers to a local image */
@@ -642,10 +632,7 @@ nautilus_properties_widget_drag_drop_cb (GtkDropTarget *target,
                                          gpointer       user_data)
 {
     NautilusPropertiesWidget *self = user_data;
-    GtkImage *image = GTK_IMAGE (self->icon_image);
-    GtkWindow *window;
-
-    window = GTK_WINDOW (gtk_widget_get_root (GTK_WIDGET (image)));
+    GtkWindow *window = GTK_WINDOW (gtk_widget_get_root (self->icon_image));
 
     if (!G_VALUE_HOLDS (value, GDK_TYPE_FILE_LIST))
     {

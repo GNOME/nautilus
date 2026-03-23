@@ -75,8 +75,8 @@ template $NautilusPropertiesWidget: Adw.Bin {
                     vhomogeneous: false;
 
                     StackPage {
-                      child: Image icon_image {
-                        icon-name: "image-missing";
+                      child: $NautilusImage icon_image {
+                        size: 96;
 
                         styles [
                           "icon-dropshadow",
@@ -97,9 +97,10 @@ template $NautilusPropertiesWidget: Adw.Bin {
                             "image-frame",
                           ]
 
-                          Image {
-                            paintable: bind icon_image.paintable;
-                            pixel-size: bind icon_image.pixel-size;
+                          $NautilusImage {
+                            size: 96;
+                            fallback: bind icon_image.fallback;
+                            source: bind icon_image.source;
 
                             styles [
                               "icon-dropshadow",
