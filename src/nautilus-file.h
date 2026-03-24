@@ -328,12 +328,6 @@ gboolean                nautilus_file_rename_handle_file_gone           (Nautilu
                                                                          NautilusFileOperationCallback   callback,
                                                                          gpointer                        callback_data);
 
-/* Return true if this file is not confirmed to have ever really
- * existed. This is true when the NautilusFile object has been created, but no I/O
- * has yet confirmed the existence of a file by that name.
- */
-gboolean                nautilus_file_is_not_yet_confirmed              (NautilusFile                   *file);
-
 /* Simple getting and setting top-level metadata. */
 const char *            nautilus_file_get_metadata                      (NautilusFile                   *file,
 									 const char                     *key,

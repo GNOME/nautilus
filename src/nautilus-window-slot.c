@@ -110,7 +110,6 @@ struct _NautilusWindowSlot
     /* Viewed file */
     NautilusFilesView *content_view;
     NautilusFile *viewed_file;
-    gboolean viewed_file_seen;
     gboolean viewed_file_in_trash;
 
     /* Information about bookmarks and history list */
@@ -1650,11 +1649,6 @@ viewed_file_changed_callback (NautilusFile       *file,
 
     g_assert (file == self->viewed_file);
 
-    if (!nautilus_file_is_not_yet_confirmed (file))
-    {
-        self->viewed_file_seen = TRUE;
-    }
-
     was_in_trash = self->viewed_file_in_trash;
 
     self->viewed_file_in_trash = is_in_trash = nautilus_file_is_in_trash (file);
@@ -1666,42 +1660,39 @@ viewed_file_changed_callback (NautilusFile       *file,
             nautilus_window_slot_set_viewed_file (self, NULL);
         }
 
-        if (self->viewed_file_seen)
+        g_autoptr (GFile) location = nautilus_file_get_location (file);
+        g_autoptr (GFile) go_to_file = NULL;
+
+        /* If the current location disappears, the following code jumps to
+         * the first existing parent except in the case when the file
+         * resides on some of the user interesting mounts and the mount was
+         * unmounted. In that case, it jumps to the home directory to avoid
+         * jumping into the runtime dir.
+         */
+
+        if (!nautilus_file_has_been_unmounted (file))
         {
-            g_autoptr (GFile) location = nautilus_file_get_location (file);
-            g_autoptr (GFile) go_to_file = NULL;
-
-            /* If the current location disappears, the following code jumps to
-             * the first existing parent except in the case when the file
-             * resides on some of the user interesting mounts and the mount was
-             * unmounted. In that case, it jumps to the home directory to avoid
-             * jumping into the runtime dir.
+            /* Verify also the current location to prevent jumps to parent
+             * in case of autofs.
              */
+            go_to_file = nautilus_find_existing_uri_in_hierarchy (location);
+        }
 
-            if (!nautilus_file_has_been_unmounted (file))
-            {
-                /* Verify also the current location to prevent jumps to parent
-                 * in case of autofs.
-                 */
-                go_to_file = nautilus_find_existing_uri_in_hierarchy (location);
-            }
+        if (go_to_file == NULL)
+        {
+            go_to_file = g_file_new_for_path (g_get_home_dir ());
+        }
 
-            if (go_to_file == NULL)
-            {
-                go_to_file = g_file_new_for_path (g_get_home_dir ());
-            }
-
-            if (g_file_equal (location, go_to_file))
-            {
-                /* Path gone by time out may have been remounted by
-                 * `nautilus_find_existing_uri_in_hierarchy()`.
-                 */
-                nautilus_window_slot_force_reload (self);
-            }
-            else
-            {
-                nautilus_window_slot_open_location_full (self, go_to_file, NULL);
-            }
+        if (g_file_equal (location, go_to_file))
+        {
+            /* Path gone by time out may have been remounted by
+             * `nautilus_find_existing_uri_in_hierarchy()`.
+             */
+            nautilus_window_slot_force_reload (self);
+        }
+        else
+        {
+            nautilus_window_slot_open_location_full (self, go_to_file, NULL);
         }
     }
     else
@@ -2600,7 +2591,6 @@ nautilus_window_slot_update_for_new_location (NautilusWindowSlot *self)
      * if it goes away.
      */
     nautilus_window_slot_set_viewed_file (self, file);
-    self->viewed_file_seen = !nautilus_file_is_not_yet_confirmed (file);
     self->viewed_file_in_trash = nautilus_file_is_in_trash (file);
     nautilus_file_unref (file);
 
