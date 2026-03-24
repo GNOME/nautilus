@@ -1717,12 +1717,13 @@ static void
 nautilus_window_slot_set_viewed_file (NautilusWindowSlot *self,
                                       NautilusFile       *file)
 {
+    self->viewed_file_in_trash = (file != NULL) &&
+                                 nautilus_file_is_in_trash (file);
+
     if (self->viewed_file == file)
     {
         return;
     }
-
-    nautilus_file_ref (file);
 
     if (self->viewed_file != NULL)
     {
@@ -1731,18 +1732,16 @@ nautilus_window_slot_set_viewed_file (NautilusWindowSlot *self,
                                               self);
         nautilus_file_monitor_remove (self->viewed_file,
                                       self);
+        g_clear_object (&self->viewed_file);
     }
 
     if (file != NULL)
     {
-        nautilus_file_monitor_add (file, self, NAUTILUS_ATTRIBUTE_INFO);
-
-        g_signal_connect_object (file, "changed",
+        self->viewed_file = nautilus_file_ref (file);
+        nautilus_file_monitor_add (self->viewed_file, self, NAUTILUS_ATTRIBUTE_INFO);
+        g_signal_connect_object (self->viewed_file, "changed",
                                  G_CALLBACK (viewed_file_changed_callback), self, 0);
     }
-
-    nautilus_file_unref (self->viewed_file);
-    self->viewed_file = file;
 }
 
 static void
@@ -2508,19 +2507,13 @@ static void
 nautilus_window_slot_update_for_new_location (NautilusWindowSlot *self)
 {
     g_autoptr (GFile) new_location = g_steal_pointer (&self->pending_location);
-    NautilusFile *file;
+    g_autoptr (NautilusFile) file = nautilus_file_get (new_location);
 
-    file = nautilus_file_get (new_location);
     nautilus_window_slot_update_bookmark (self, new_location);
 
     update_history (self, self->location_change_type, new_location);
 
-    /* Create a NautilusFile for this location, so we can catch it
-     * if it goes away.
-     */
     nautilus_window_slot_set_viewed_file (self, file);
-    self->viewed_file_in_trash = nautilus_file_is_in_trash (file);
-    nautilus_file_unref (file);
 
     nautilus_window_slot_set_location (self, new_location);
 
