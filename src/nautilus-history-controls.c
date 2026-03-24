@@ -39,14 +39,14 @@ fill_menu (NautilusHistoryControls *self,
            GMenu                   *menu,
            gboolean                 back)
 {
-    guint index;
+    int step = back ? -1 : 1;
+    int index = step;
     GList *list;
     const gchar *name;
 
     list = back ? nautilus_window_slot_get_back_history (self->window_slot) :
                   nautilus_window_slot_get_forward_history (self->window_slot);
 
-    index = 0;
     while (list != NULL)
     {
         g_autoptr (GMenuItem) item = NULL;
@@ -55,11 +55,11 @@ fill_menu (NautilusHistoryControls *self,
         item = g_menu_item_new (name, NULL);
         g_menu_item_set_action_and_target (item,
                                            back ? "slot.back-n" : "slot.forward-n",
-                                           "u", index);
+                                           "i", index);
         g_menu_append_item (menu, item);
 
         list = g_list_next (list);
-        ++index;
+        index += step;
     }
 }
 
