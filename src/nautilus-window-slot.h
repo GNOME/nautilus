@@ -31,13 +31,6 @@
 #define NAUTILUS_TYPE_WINDOW_SLOT (nautilus_window_slot_get_type ())
 G_DECLARE_FINAL_TYPE (NautilusWindowSlot, nautilus_window_slot, NAUTILUS, WINDOW_SLOT, AdwBin)
 
-typedef struct
-{
-    GList *back_list;
-    GList *forward_list;
-    NautilusBookmark *current_location_bookmark;
-} NautilusNavigationState;
-
 NautilusWindowSlot * nautilus_window_slot_new              (NautilusMode        mode);
 
 void nautilus_window_slot_open_location_full               (NautilusWindowSlot *slot,
@@ -98,8 +91,9 @@ NautilusQueryEditor *nautilus_window_slot_get_query_editor (NautilusWindowSlot *
 /* Only used by slot-dnd */
 NautilusFilesView*  nautilus_window_slot_get_current_view  (NautilusWindowSlot *slot);
 
+GStrv
+nautilus_window_slot_get_history (NautilusWindowSlot *self,
+                                  gboolean            backwards);
 void
 nautilus_window_slot_navigate (NautilusWindowSlot *self,
                                int                 distance);
-
-void free_navigation_state                                 (gpointer data);
