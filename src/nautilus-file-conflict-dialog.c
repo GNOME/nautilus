@@ -29,6 +29,7 @@
 #include <pango/pango.h>
 
 #include "nautilus-file.h"
+#include <nautilus-image.h>
 #include "nautilus-filename-utilities.h"
 #include "nautilus-operations-ui-manager.h"
 
@@ -53,8 +54,8 @@ struct _NautilusFileConflictDialog
     GtkWidget *skip_button;
     GtkWidget *rename_button;
     GtkWidget *replace_button;
-    GtkWidget *dest_icon;
-    GtkWidget *src_icon;
+    NautilusImage *dest_icon;
+    NautilusImage *src_icon;
 };
 
 G_DEFINE_TYPE (NautilusFileConflictDialog, nautilus_file_conflict_dialog, ADW_TYPE_WINDOW);
@@ -70,11 +71,32 @@ nautilus_file_conflict_dialog_set_text (NautilusFileConflictDialog *fcd,
 
 void
 nautilus_file_conflict_dialog_set_images (NautilusFileConflictDialog *fcd,
-                                          GdkPaintable               *destination_paintable,
-                                          GdkPaintable               *source_paintable)
+                                          NautilusFile               *destination_file,
+                                          NautilusFile               *source_file)
 {
-    gtk_picture_set_paintable (GTK_PICTURE (fcd->dest_icon), destination_paintable);
-    gtk_picture_set_paintable (GTK_PICTURE (fcd->src_icon), source_paintable);
+    int scale = gtk_widget_get_scale_factor (GTK_WIDGET (fcd));
+    g_autoptr (GFile) dest_location = nautilus_file_get_location (destination_file);
+    g_autoptr (GFile) src_location = nautilus_file_get_location (source_file);
+    g_autoptr (GdkPaintable) destination_paintable
+        = nautilus_file_get_icon_paintable (destination_file,
+                                            NAUTILUS_GRID_ICON_SIZE_SMALL,
+                                            scale,
+                                            NAUTILUS_FILE_ICON_FLAGS_NONE);
+    g_autoptr (GdkPaintable) source_paintable
+        = nautilus_file_get_icon_paintable (source_file,
+                                            NAUTILUS_GRID_ICON_SIZE_SMALL,
+                                            scale,
+                                            NAUTILUS_FILE_ICON_FLAGS_NONE);
+    gboolean show_dest_thumbnail = nautilus_file_should_show_thumbnail (destination_file);
+    gboolean show_src_thumbnail = nautilus_file_should_show_thumbnail (source_file);
+
+    nautilus_image_set_fallback (fcd->dest_icon, destination_paintable);
+    nautilus_image_set_source (fcd->dest_icon, NULL);
+    nautilus_image_set_source (fcd->dest_icon, show_dest_thumbnail ? dest_location : NULL);
+
+    nautilus_image_set_fallback (fcd->src_icon, source_paintable);
+    nautilus_image_set_source (fcd->src_icon, NULL);
+    nautilus_image_set_source (fcd->src_icon, show_src_thumbnail ? src_location : NULL);
 }
 
 void

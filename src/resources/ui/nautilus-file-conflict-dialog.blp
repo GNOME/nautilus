@@ -85,7 +85,16 @@ template $NautilusFileConflictDialog: Adw.Window {
         Box {
           spacing: 12;
 
-          Picture dest_icon {}
+          CenterBox {
+            valign: center;
+            width-request: 48;
+            height-request: 48;
+
+            center-widget: $NautilusImage dest_icon {
+              valign: center;
+              size: 48;
+            };
+          }
 
           Label dest_label {}
         }
@@ -93,7 +102,16 @@ template $NautilusFileConflictDialog: Adw.Window {
         Box {
           spacing: 12;
 
-          Picture src_icon {}
+          CenterBox {
+            valign: center;
+            width-request: 48;
+            height-request: 48;
+
+            center-widget: $NautilusImage src_icon {
+              valign: center;
+              size: 48;
+            };
+          }
 
           Label src_label {}
         }

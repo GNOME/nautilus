@@ -223,25 +223,7 @@ set_copy_move_dialog_text (FileConflictDialogData *data)
 static void
 set_images (FileConflictDialogData *data)
 {
-    GdkPaintable *source_paintable;
-    GdkPaintable *destination_paintable;
-
-    destination_paintable = nautilus_file_get_icon_paintable (data->destination,
-                                                              NAUTILUS_GRID_ICON_SIZE_SMALL,
-                                                              1,
-                                                              NAUTILUS_FILE_ICON_FLAGS_USE_THUMBNAILS);
-
-    source_paintable = nautilus_file_get_icon_paintable (data->source,
-                                                         NAUTILUS_GRID_ICON_SIZE_SMALL,
-                                                         1,
-                                                         NAUTILUS_FILE_ICON_FLAGS_USE_THUMBNAILS);
-
-    nautilus_file_conflict_dialog_set_images (data->dialog,
-                                              destination_paintable,
-                                              source_paintable);
-
-    g_object_unref (destination_paintable);
-    g_object_unref (source_paintable);
+    nautilus_file_conflict_dialog_set_images (data->dialog, data->source, data->destination);
 }
 
 static void
