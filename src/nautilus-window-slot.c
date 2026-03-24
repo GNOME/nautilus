@@ -181,8 +181,8 @@ static void nautilus_window_slot_set_search_visible (NautilusWindowSlot *self,
                                                      gboolean            visible);
 static void nautilus_window_slot_set_location (NautilusWindowSlot *self,
                                                GFile              *location);
-static void nautilus_window_slot_set_viewed_file (NautilusWindowSlot *self,
-                                                  NautilusFile       *file);
+static void window_slot_set_monitored_location (NautilusWindowSlot *self,
+                                                GFile              *location);
 static void nautilus_window_slot_go_up (NautilusWindowSlot *self);
 static void nautilus_window_slot_go_down (NautilusWindowSlot *self);
 static void update_back_forward_actions (NautilusWindowSlot *self);
@@ -1657,7 +1657,7 @@ viewed_file_changed_callback (NautilusFile       *file,
     {
         if (nautilus_file_is_gone (file))
         {
-            nautilus_window_slot_set_viewed_file (self, NULL);
+            g_clear_object (&self->viewed_file);
         }
 
         g_autoptr (GFile) location = nautilus_file_get_location (file);
@@ -1715,18 +1715,8 @@ nautilus_window_slot_go_home (NautilusWindowSlot *self)
 }
 
 static void
-nautilus_window_slot_set_viewed_file (NautilusWindowSlot *self,
-                                      NautilusFile       *file)
+window_slot_clear_monitored_location (NautilusWindowSlot *self)
 {
-    NautilusFileAttributes attributes;
-
-    if (self->viewed_file == file)
-    {
-        return;
-    }
-
-    nautilus_file_ref (file);
-
     if (self->viewed_file != NULL)
     {
         g_signal_handlers_disconnect_by_func (self->viewed_file,
@@ -1736,17 +1726,33 @@ nautilus_window_slot_set_viewed_file (NautilusWindowSlot *self,
                                       self);
     }
 
+    g_clear_object (&self->viewed_file);
+}
+
+static void
+window_slot_set_monitored_location (NautilusWindowSlot *self,
+                                    GFile              *location)
+{
+    /* Monitor given location by creating a NautilusFile for it */
+    g_autoptr (NautilusFile) file = nautilus_file_get (location);
+
+    if (self->viewed_file == file)
+    {
+        return;
+    }
+
+    window_slot_clear_monitored_location (self);
+
     if (file != NULL)
     {
-        attributes = NAUTILUS_FILE_ATTRIBUTE_INFO;
-        nautilus_file_monitor_add (file, self, attributes);
+        nautilus_file_monitor_add (file, self, NAUTILUS_FILE_ATTRIBUTE_INFO);
 
         g_signal_connect_object (file, "changed",
                                  G_CALLBACK (viewed_file_changed_callback), self, 0);
     }
 
-    nautilus_file_unref (self->viewed_file);
-    self->viewed_file = file;
+    self->viewed_file = g_steal_pointer (&file);
+    self->viewed_file_in_trash = nautilus_file_is_in_trash (self->viewed_file);
 }
 
 typedef struct
@@ -2580,19 +2586,10 @@ static void
 nautilus_window_slot_update_for_new_location (NautilusWindowSlot *self)
 {
     g_autoptr (GFile) new_location = g_steal_pointer (&self->pending_location);
-    NautilusFile *file;
 
-    file = nautilus_file_get (new_location);
     nautilus_window_slot_update_bookmark (self, new_location);
-
     update_history (self, self->location_change_type, new_location);
-
-    /* Create a NautilusFile for this location, so we can catch it
-     * if it goes away.
-     */
-    nautilus_window_slot_set_viewed_file (self, file);
-    self->viewed_file_in_trash = nautilus_file_is_in_trash (file);
-    nautilus_file_unref (file);
+    window_slot_set_monitored_location (self, new_location);
 
     nautilus_window_slot_set_location (self, new_location);
 
@@ -2749,7 +2746,7 @@ nautilus_window_slot_dispose (GObject *object)
         g_clear_object (&self->content_view);
     }
 
-    nautilus_window_slot_set_viewed_file (self, NULL);
+    window_slot_clear_monitored_location (self);
 
     g_clear_object (&self->fd_holder);
 
