@@ -156,6 +156,8 @@ libnautilus_sources = [
   'nautilus-monitor.h',
   'nautilus-name-cell.c',
   'nautilus-name-cell.h',
+  'nautilus-navigation-state.c',
+  'nautilus-navigation-state.h',
   'nautilus-network-address-bar.c',
   'nautilus-network-address-bar.h',
   'nautilus-network-cell.c',

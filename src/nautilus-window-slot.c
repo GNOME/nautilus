@@ -33,6 +33,7 @@
 #include "nautilus-files-view.h"
 #include "nautilus-location-banner.h"
 #include "nautilus-mime-actions.h"
+#include "nautilus-navigation-state.h"
 #include "nautilus-query.h"
 #include "nautilus-query-editor.h"
 #include "nautilus-scheme.h"
@@ -112,11 +113,8 @@ struct _NautilusWindowSlot
     NautilusFile *viewed_file;
     gboolean viewed_file_in_trash;
 
-    /* Information about bookmarks and history list */
-    NautilusBookmark *current_location_bookmark;
-    NautilusBookmark *last_location_bookmark;
-    GList *back_list;
-    GList *forward_list;
+    /* Information about location and history list */
+    NautilusNavigationState *navigation_state;
 
     /* Alt+Up reverse stack for Alt+Down. */
     GList /*<owned GFile*>*/ *down_list;
@@ -138,7 +136,7 @@ struct _NautilusWindowSlot
     /* New location. */
     GFile *pending_location;
     NautilusLocationChangeType location_change_type;
-    guint location_change_distance;
+    int location_change_distance;
     NautilusFileList *pending_selection;
     NautilusFile *pending_file_to_activate;
     NautilusFile *determine_view_file;
@@ -186,66 +184,6 @@ static void window_slot_set_monitored_location (NautilusWindowSlot *self,
 static void nautilus_window_slot_go_up (NautilusWindowSlot *self);
 static void nautilus_window_slot_go_down (NautilusWindowSlot *self);
 static void update_back_forward_actions (NautilusWindowSlot *self);
-
-void
-free_navigation_state (gpointer data)
-{
-    NautilusNavigationState *navigation_state = data;
-
-    g_list_free_full (navigation_state->back_list, g_object_unref);
-    g_list_free_full (navigation_state->forward_list, g_object_unref);
-    g_clear_object (&navigation_state->current_location_bookmark);
-
-    g_free (navigation_state);
-}
-
-void
-nautilus_window_slot_restore_navigation_state (NautilusWindowSlot      *self,
-                                               NautilusNavigationState *data)
-{
-    GFile *location = nautilus_bookmark_get_location (data->current_location_bookmark);
-
-    nautilus_window_slot_open_location_full (self, location, NULL);
-    g_set_object (&self->current_location_bookmark, data->current_location_bookmark);
-
-    self->back_list = g_steal_pointer (&data->back_list);
-    self->forward_list = g_steal_pointer (&data->forward_list);
-    update_back_forward_actions (self);
-
-    self->location_change_type = NAUTILUS_LOCATION_CHANGE_RELOAD;
-}
-
-NautilusNavigationState *
-nautilus_window_slot_get_navigation_state (NautilusWindowSlot *self)
-{
-    NautilusNavigationState *data;
-    GList *back_list;
-    GList *forward_list;
-
-    if (self->location == NULL)
-    {
-        return NULL;
-    }
-
-    back_list = g_list_copy_deep (self->back_list,
-                                  (GCopyFunc) g_object_ref,
-                                  NULL);
-    forward_list = g_list_copy_deep (self->forward_list,
-                                     (GCopyFunc) g_object_ref,
-                                     NULL);
-
-    /* This data is used to restore a tab after it was closed.
-     * In order to do that we need to keep the history, what was
-     * the view mode before search and a reference to the file.
-     * A GFile isn't enough, as the NautilusFile also keeps a
-     * reference to the search directory */
-    data = g_new0 (NautilusNavigationState, 1);
-    data->back_list = back_list;
-    data->forward_list = forward_list;
-    g_set_object (&data->current_location_bookmark, self->current_location_bookmark);
-
-    return data;
-}
 
 static void
 nautilus_window_slot_set_view_id (NautilusWindowSlot *self,
@@ -915,14 +853,14 @@ update_back_forward_actions (NautilusWindowSlot *self)
     GAction *action;
     gboolean enabled;
 
-    enabled = (self->back_list (self) != NULL &&
+    enabled = (self->navigation_state->back_list != NULL &&
                !nautilus_window_slot_get_search_global (self));
     action = g_action_map_lookup_action (G_ACTION_MAP (self->slot_action_group), "back");
     g_simple_action_set_enabled (G_SIMPLE_ACTION (action), enabled);
     action = g_action_map_lookup_action (G_ACTION_MAP (self->slot_action_group), "back-n");
     g_simple_action_set_enabled (G_SIMPLE_ACTION (action), enabled);
 
-    enabled = (self->forward_list != NULL &&
+    enabled = (self->navigation_state->forward_list != NULL &&
                !nautilus_window_slot_get_search_global (self));
     action = g_action_map_lookup_action (G_ACTION_MAP (self->slot_action_group), "forward");
     g_simple_action_set_enabled (G_SIMPLE_ACTION (action), enabled);
@@ -1368,6 +1306,7 @@ nautilus_window_slot_init (NautilusWindowSlot *self)
 #undef ADD_SHORTCUT_FOR_ACTION
 #undef ADD_SHORTCUT_FOR_ACTION_WITH_ARGS
 
+    self->navigation_state = nautilus_navigation_state_new ();
     set_back_forward_accelerators (self);
     g_signal_connect_swapped (self, "direction-changed",
                               G_CALLBACK (set_back_forward_accelerators), self);
@@ -1405,7 +1344,7 @@ static void begin_location_change (NautilusWindowSlot        *slot,
                                    GFile                     *previous_location,
                                    NautilusFileList          *new_selection,
                                    NautilusLocationChangeType type,
-                                   guint                      distance);
+                                   int                        distance);
 static void free_location_change (NautilusWindowSlot *self);
 static void end_location_change (NautilusWindowSlot *self);
 static void got_file_info_for_view_selection_callback (NautilusFile *file,
@@ -1511,23 +1450,23 @@ check_force_reload (GFile                      *location,
 static void
 save_selection_for_history (NautilusWindowSlot *self)
 {
-    /* Set current_bookmark scroll pos */
-    if (self->current_location_bookmark != NULL &&
-        self->content_view != NULL)
+    if (self->navigation_state->current == NULL ||
+        self->content_view == NULL)
     {
-        g_autolist (NautilusFile) selection = nautilus_files_view_get_selection (self->content_view);
-        g_autoptr (GStrvBuilder) selected_uris = g_strv_builder_new ();
-
-        for (NautilusFileList *l = selection; l != NULL; l = l->next)
-        {
-            NautilusFile *file = l->data;
-            g_strv_builder_take (selected_uris, nautilus_file_get_uri (file));
-        }
-
-        /* TODO: Add selection source info to stored selection */
-        nautilus_bookmark_take_selected_uris (self->current_location_bookmark,
-                                              g_strv_builder_end (selected_uris));
+        return;
     }
+
+    g_autolist (NautilusFile) selection = nautilus_files_view_get_selection (self->content_view);
+    g_autoptr (GStrvBuilder) selected_uris = g_strv_builder_new ();
+
+    for (NautilusFileList *l = selection; l != NULL; l = l->next)
+    {
+        NautilusFile *file = l->data;
+        g_strv_builder_take (selected_uris, nautilus_file_get_uri (file));
+    }
+
+    nautilus_navigation_state_set_selection (self->navigation_state,
+                                             g_strv_builder_end (selected_uris));
 }
 
 /*
@@ -1551,7 +1490,7 @@ begin_location_change (NautilusWindowSlot         *self,
                        GFile                      *previous_location,
                        NautilusFileList           *new_selection,
                        NautilusLocationChangeType  type,
-                       guint                       distance)
+                       int                         distance)
 {
     g_assert (self != NULL);
     g_assert (location != NULL);
@@ -2184,8 +2123,6 @@ void
 nautilus_window_slot_navigate (NautilusWindowSlot *self,
                                int                 distance)
 {
-    NautilusBookmark *bookmark;
-    GFile *old_location;
     g_autolist (NautilusFile) selection = NULL;
 
     /* While searching, maybe the user means to go "back" to no search. */
@@ -2198,7 +2135,7 @@ nautilus_window_slot_navigate (NautilusWindowSlot *self,
     /* Reduce by 1 as indexing starts with 0 */
     guint list_distance = ABS (distance) - 1;
     gboolean back = (distance < 0);
-    GList *list = back ? self->back_list : self->forward_list;
+    GList *list = back ? self->navigation_state->back_list : self->navigation_state->forward_list;
     guint len = g_list_length (list);
 
     /* If we can't move in the direction at all, just return. */
@@ -2214,11 +2151,10 @@ nautilus_window_slot_navigate (NautilusWindowSlot *self,
         list_distance = len - 1;
     }
 
-    bookmark = g_list_nth_data (list, list_distance);
-    GFile *location = nautilus_bookmark_get_location (bookmark);
-    old_location = nautilus_window_slot_get_location (self);
+    NautilusNavigationPosition *position = g_list_nth_data (list, list_distance);
+    GFile *old_location = nautilus_window_slot_get_location (self);
+    GStrv selected_uris = position->selection;
 
-    GStrv selected_uris = nautilus_bookmark_get_selected_uris (bookmark);
     if (selected_uris != NULL)
     {
         for (int i = 0; selected_uris[i] != NULL; i++)
@@ -2229,10 +2165,10 @@ nautilus_window_slot_navigate (NautilusWindowSlot *self,
     }
 
     begin_location_change (self,
-                           location, old_location,
+                           position->location, old_location,
                            selection,
                            back ? NAUTILUS_LOCATION_CHANGE_BACK : NAUTILUS_LOCATION_CHANGE_FORWARD,
-                           list_distance);
+                           distance);
 }
 
 /* reload the contents of the window */
@@ -2287,168 +2223,6 @@ nautilus_window_slot_queue_reload (NautilusWindowSlot *self)
 }
 
 static void
-nautilus_window_slot_clear_forward_list (NautilusWindowSlot *self)
-{
-    g_assert (NAUTILUS_IS_WINDOW_SLOT (self));
-
-    g_list_free_full (self->forward_list, g_object_unref);
-    self->forward_list = NULL;
-}
-
-static void
-nautilus_window_slot_clear_back_list (NautilusWindowSlot *self)
-{
-    g_assert (NAUTILUS_IS_WINDOW_SLOT (self));
-
-    g_list_free_full (self->back_list, g_object_unref);
-    self->back_list = NULL;
-}
-
-static void
-nautilus_window_slot_update_bookmark (NautilusWindowSlot *self,
-                                      GFile              *new_location)
-{
-    gboolean recreate;
-
-    if (self->current_location_bookmark == NULL)
-    {
-        recreate = TRUE;
-    }
-    else
-    {
-        GFile *bookmark_location;
-        bookmark_location = nautilus_bookmark_get_location (self->current_location_bookmark);
-        recreate = !g_file_equal (bookmark_location, new_location);
-    }
-
-    if (recreate)
-    {
-        /* We've changed locations, must recreate bookmark for current location. */
-        g_clear_object (&self->last_location_bookmark);
-        self->last_location_bookmark = self->current_location_bookmark;
-
-        self->current_location_bookmark = nautilus_bookmark_new (new_location, NULL);
-    }
-}
-
-static void
-check_bookmark_location_matches (NautilusBookmark *bookmark,
-                                 GFile            *location)
-{
-    GFile *bookmark_location;
-    char *bookmark_uri, *uri;
-
-    bookmark_location = nautilus_bookmark_get_location (bookmark);
-    if (!g_file_equal (location, bookmark_location))
-    {
-        bookmark_uri = g_file_get_uri (bookmark_location);
-        uri = g_file_get_uri (location);
-        g_warning ("bookmark uri is %s, but expected %s", bookmark_uri, uri);
-        g_free (uri);
-        g_free (bookmark_uri);
-    }
-}
-
-/* Debugging function used to verify that the last_location_bookmark
- * is in the state we expect when we're about to use it to update the
- * Back or Forward list.
- */
-static void
-check_last_bookmark_location_matches_slot (NautilusWindowSlot *self)
-{
-    GFile *slot_location = nautilus_window_slot_get_location (self);
-
-    if (g_file_has_uri_scheme (slot_location, SCHEME_SEARCH))
-    {
-        /* In this case, it's expected not to match, because search is not
-         * saved into the history stack. */
-        return;
-    }
-
-    check_bookmark_location_matches (self->last_location_bookmark,
-                                     slot_location);
-}
-
-static void
-handle_go_direction (NautilusWindowSlot *self,
-                     GFile              *location,
-                     gboolean            forward)
-{
-    GList **list_ptr, **other_list_ptr;
-    GList *list, *other_list, *link;
-    NautilusBookmark *bookmark;
-    list_ptr = (forward) ? (&self->forward_list) : (&self->back_list);
-    other_list_ptr = (forward) ? (&self->back_list) : (&self->forward_list);
-    list = *list_ptr;
-    other_list = *other_list_ptr;
-
-    /* Move items from the list to the other list. */
-    g_assert (g_list_length (list) > self->location_change_distance);
-    check_bookmark_location_matches (g_list_nth_data (list, self->location_change_distance),
-                                     location);
-    g_assert (nautilus_window_slot_get_location (self) != NULL);
-
-    /* Move current location to list */
-    check_last_bookmark_location_matches_slot (self);
-
-    /* Use the first bookmark in the history list rather than creating a new one. */
-    other_list = g_list_prepend (other_list, self->last_location_bookmark);
-    g_object_ref (other_list->data);
-
-    /* Move extra links from the list to the other list */
-    for (guint i = 0; i < self->location_change_distance; ++i)
-    {
-        bookmark = NAUTILUS_BOOKMARK (list->data);
-        list = g_list_remove (list, bookmark);
-        other_list = g_list_prepend (other_list, bookmark);
-    }
-
-    /* One bookmark falls out of back/forward lists and becomes viewed location */
-    link = list;
-    list = g_list_remove_link (list, link);
-    g_object_unref (link->data);
-    g_list_free_1 (link);
-
-    *list_ptr = list;
-    *other_list_ptr = other_list;
-}
-
-static void
-handle_go_elsewhere (NautilusWindowSlot *self,
-                     GFile              *location)
-{
-    GFile *slot_location;
-    /* Clobber the entire forward list, and move displayed location to back list */
-    nautilus_window_slot_clear_forward_list (self);
-
-    /* If we haven't updated the current bookmark, don't update history*/
-    if (self->back_list != NULL &&
-        self->back_list->data == self->last_location_bookmark)
-    {
-        return;
-    }
-
-    slot_location = nautilus_window_slot_get_location (self);
-
-    if (slot_location != NULL)
-    {
-        /* If we're returning to the same uri somehow, don't put this uri on back list.
-         * This also avoids a problem where set_displayed_location
-         * didn't update last_location_bookmark since the uri didn't change.
-         */
-        if (!g_file_equal (slot_location, location) && self->last_location_bookmark != NULL)
-        {
-            /* Store bookmark for current location in back list, unless there is no current location */
-            check_last_bookmark_location_matches_slot (self);
-            /* Use the first bookmark in the history list rather than creating a new one. */
-            self->back_list = g_list_prepend (self->back_list,
-                                              self->last_location_bookmark);
-            g_object_ref (self->back_list->data);
-        }
-    }
-}
-
-static void
 update_history (NautilusWindowSlot         *self,
                 NautilusLocationChangeType  type,
                 GFile                      *new_location)
@@ -2457,7 +2231,7 @@ update_history (NautilusWindowSlot         *self,
     {
         case NAUTILUS_LOCATION_CHANGE_STANDARD:
         {
-            handle_go_elsewhere (self, new_location);
+            nautilus_navigation_state_navigate_location (self->navigation_state, new_location);
             return;
         }
 
@@ -2468,14 +2242,10 @@ update_history (NautilusWindowSlot         *self,
         }
 
         case NAUTILUS_LOCATION_CHANGE_BACK:
-        {
-            handle_go_direction (self, new_location, FALSE);
-            return;
-        }
-
         case NAUTILUS_LOCATION_CHANGE_FORWARD:
         {
-            handle_go_direction (self, new_location, TRUE);
+            nautilus_navigation_state_navigate_history (self->navigation_state,
+                                                        self->location_change_distance);
             return;
         }
     }
@@ -2574,7 +2344,6 @@ nautilus_window_slot_update_for_new_location (NautilusWindowSlot *self)
 {
     g_autoptr (GFile) new_location = g_steal_pointer (&self->pending_location);
 
-    nautilus_window_slot_update_bookmark (self, new_location);
     update_history (self, self->location_change_type, new_location);
     window_slot_set_monitored_location (self, new_location);
 
@@ -2713,8 +2482,7 @@ nautilus_window_slot_dispose (GObject *object)
 
     g_signal_handlers_disconnect_by_data (nautilus_preferences, self);
 
-    nautilus_window_slot_clear_forward_list (self);
-    nautilus_window_slot_clear_back_list (self);
+    g_clear_pointer (&self->navigation_state, nautilus_navigation_state_free);
     g_clear_list (&self->down_list, g_object_unref);
 
     nautilus_window_slot_remove_extra_location_widgets (self);
@@ -2742,8 +2510,6 @@ nautilus_window_slot_dispose (GObject *object)
     g_clear_pointer (&self->pending_selection, nautilus_file_list_free);
     g_clear_pointer (&self->selection, nautilus_file_list_free);
 
-    g_clear_object (&self->current_location_bookmark);
-    g_clear_object (&self->last_location_bookmark);
     g_clear_object (&self->slot_action_group);
     g_clear_object (&self->pending_search_query);
 
@@ -3029,7 +2795,7 @@ GList *
 nautilus_window_slot_peek_history (NautilusWindowSlot *self,
                                    gboolean            backwards)
 {
-    return backwards ? self->back_list : self->forward_list;
+    return backwards ? self->navigation_state->back_list : self->navigation_state->forward_list;
 }
 
 NautilusWindowSlot *
@@ -3211,4 +2977,28 @@ nautilus_window_slot_go_down (NautilusWindowSlot *self)
     g_object_unref (child);
     down_list = g_list_delete_link (down_list, down_list);
     self->down_list = g_steal_pointer (&down_list);
+}
+
+/**
+ * @state: (transfer full): Navigation state to restore
+ */
+void
+nautilus_window_slot_restore_navigation_state (NautilusWindowSlot      *self,
+                                               NautilusNavigationState *state)
+{
+    nautilus_window_slot_open_location_full (self, state->current->location, NULL);
+
+    g_clear_pointer (&self->navigation_state, nautilus_navigation_state_free);
+    self->navigation_state = state;
+    update_back_forward_actions (self);
+
+    self->location_change_type = NAUTILUS_LOCATION_CHANGE_RELOAD;
+}
+
+NautilusNavigationState *
+nautilus_window_slot_get_navigation_state (NautilusWindowSlot *self)
+{
+    save_selection_for_history (self);
+
+    return nautilus_navigation_state_copy (self->navigation_state);
 }

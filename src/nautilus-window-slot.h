@@ -38,13 +38,6 @@ typedef enum {
 #define NAUTILUS_TYPE_WINDOW_SLOT (nautilus_window_slot_get_type ())
 G_DECLARE_FINAL_TYPE (NautilusWindowSlot, nautilus_window_slot, NAUTILUS, WINDOW_SLOT, AdwBin)
 
-typedef struct
-{
-    GList *back_list;
-    GList *forward_list;
-    NautilusBookmark *current_location_bookmark;
-} NautilusNavigationState;
-
 NautilusWindowSlot * nautilus_window_slot_new              (NautilusMode        mode);
 
 void nautilus_window_slot_open_location_full               (NautilusWindowSlot *slot,
@@ -118,5 +111,3 @@ nautilus_window_slot_peek_history (NautilusWindowSlot *self,
 void
 nautilus_window_slot_navigate (NautilusWindowSlot *self,
                                int                 distance);
-
-void free_navigation_state                                 (gpointer data);

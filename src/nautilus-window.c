@@ -56,6 +56,7 @@
 #include "nautilus-file-utilities.h"
 #include "nautilus-global-preferences.h"
 #include "nautilus-metadata.h"
+#include "nautilus-navigation-state.h"
 #include "nautilus-network-address-bar.h"
 #include "nautilus-mime-actions.h"
 #include "nautilus-module.h"
@@ -612,21 +613,16 @@ action_restore_tab (GSimpleAction *action,
                     gpointer       user_data)
 {
     NautilusWindow *window = NAUTILUS_WINDOW (user_data);
-    NautilusWindowSlot *slot;
-    NautilusNavigationState *data;
 
     if (g_queue_get_length (window->tab_data_queue) == 0)
     {
         return;
     }
 
-    data = g_queue_pop_head (window->tab_data_queue);
+    NautilusWindowSlot *slot = nautilus_window_create_and_init_slot (window);
+    NautilusNavigationState *nav_state = g_queue_pop_head (window->tab_data_queue);
 
-    slot = nautilus_window_create_and_init_slot (window);
-
-    nautilus_window_slot_restore_navigation_state (slot, data);
-
-    free_navigation_state (data);
+    nautilus_window_slot_restore_navigation_state (slot, nav_state);
 }
 
 static void
@@ -1277,7 +1273,7 @@ nautilus_window_finalize (GObject *object)
                                           G_CALLBACK (nautilus_window_on_undo_changed),
                                           window);
 
-    g_queue_free_full (window->tab_data_queue, free_navigation_state);
+    g_queue_free_full (window->tab_data_queue, (GDestroyNotify) nautilus_navigation_state_free);
 
     /* nautilus_window_close() should have run */
     g_warn_if_fail (window->slots == NULL);
@@ -1478,35 +1474,12 @@ void
 nautilus_window_back_or_forward_in_new_tab (NautilusWindow *window,
                                             int             distance)
 {
-    NautilusNavigationState *state;
-
-    state = nautilus_window_slot_get_navigation_state (window->active_slot);
-
-    /* Manually fix up the back / forward lists and location.
-     * This way we don't have to unnecessary load the current location
-     * and then load back / forward */
-    if (distance == NAUTILUS_NAVIGATION_DIRECTION_FORWARD)
-    {
-        state->back_list = g_list_prepend (state->back_list, state->current_location_bookmark);
-        state->current_location_bookmark = state->forward_list->data;
-        state->forward_list = state->forward_list->next;
-    }
-    else if (distance == NAUTILUS_NAVIGATION_DIRECTION_BACK)
-    {
-        state->forward_list = g_list_prepend (state->forward_list, state->current_location_bookmark);
-        state->current_location_bookmark = state->back_list->data;
-        state->back_list = state->back_list->next;
-    }
-    else
-    {
-        g_warn_if_reached ();
-    }
-
+    NautilusNavigationState *state =
+        nautilus_window_slot_get_navigation_state (window->active_slot);
     NautilusWindowSlot *new_slot = nautilus_window_create_and_init_slot (window);
 
+    nautilus_navigation_state_navigate_history (state, distance);
     nautilus_window_slot_restore_navigation_state (new_slot, state);
-
-    free_navigation_state (state);
 }
 
 static void
