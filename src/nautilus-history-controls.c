@@ -6,7 +6,6 @@
 
 #include "nautilus-history-controls.h"
 
-#include "nautilus-bookmark.h"
 #include "nautilus-window.h"
 #include "nautilus-window-slot.h"
 
@@ -39,28 +38,27 @@ fill_menu (NautilusHistoryControls *self,
            GMenu                   *menu,
            gboolean                 back)
 {
-    int step = back ? -1 : 1;
-    int index = step;
-    GList *list;
+    g_auto (GStrv) history = nautilus_window_slot_get_history (self->window_slot, back);
 
-    list = back ? nautilus_window_slot_get_back_history (self->window_slot) :
-                  nautilus_window_slot_get_forward_history (self->window_slot);
-
-    while (list != NULL)
+    if (history == NULL)
     {
-        g_autoptr (GMenuItem) item = NULL;
-        g_autoptr (GString) label = g_string_new (nautilus_bookmark_get_name (NAUTILUS_BOOKMARK (list->data)));
+        return;
+    }
+
+    for (guint i = 0; history[i] != NULL; i += 1)
+    {
+        g_autoptr (GString) label = g_string_new (history[i]);
 
         /* Preserve underscores, which would be used for mnemonics */
         g_string_replace (label, "_", "__", 0);
-        item = g_menu_item_new (label->str, NULL);
+
+        g_autoptr (GMenuItem) item = g_menu_item_new (label->str, NULL);
+        int distance = back ? -i - 1 : i + 1;
+
         g_menu_item_set_action_and_target (item,
                                            back ? "slot.back-n" : "slot.forward-n",
-                                           "i", index);
+                                           "i", distance);
         g_menu_append_item (menu, item);
-
-        list = g_list_next (list);
-        index += step;
     }
 }
 
