@@ -948,7 +948,7 @@ action_back (GSimpleAction *action,
 {
     NautilusWindowSlot *self = NAUTILUS_WINDOW_SLOT (user_data);
 
-    nautilus_window_slot_back_or_forward (self, TRUE, 0);
+    nautilus_window_slot_navigate (self, -1);
 }
 
 static void
@@ -958,27 +958,17 @@ action_forward (GSimpleAction *action,
 {
     NautilusWindowSlot *self = NAUTILUS_WINDOW_SLOT (user_data);
 
-    nautilus_window_slot_back_or_forward (self, FALSE, 0);
+    nautilus_window_slot_navigate (self, 1);
 }
 
 static void
-action_back_n (GSimpleAction *action,
-               GVariant      *parameter,
-               gpointer       user_data)
+action_navigate_n (GSimpleAction *action,
+                   GVariant      *parameter,
+                   gpointer       user_data)
 {
     NautilusWindowSlot *self = NAUTILUS_WINDOW_SLOT (user_data);
 
-    nautilus_window_slot_back_or_forward (self, TRUE, g_variant_get_uint32 (parameter));
-}
-
-static void
-action_forward_n (GSimpleAction *action,
-                  GVariant      *parameter,
-                  gpointer       user_data)
-{
-    NautilusWindowSlot *self = NAUTILUS_WINDOW_SLOT (user_data);
-
-    nautilus_window_slot_back_or_forward (self, FALSE, g_variant_get_uint32 (parameter));
+    nautilus_window_slot_navigate (self, g_variant_get_int32 (parameter));
 }
 
 static void
@@ -1236,8 +1226,8 @@ const GActionEntry slot_entries[] =
     { .name = "open-location", .activate = action_open_location, .parameter_type = "s" },
     { .name = "back", .activate = action_back },
     { .name = "forward", .activate = action_forward },
-    { .name = "back-n", .activate = action_back_n, .parameter_type = "u" },
-    { .name = "forward-n", .activate = action_forward_n, .parameter_type = "u" },
+    { .name = "back-n", .activate = action_navigate_n, .parameter_type = "i" },
+    { .name = "forward-n", .activate = action_navigate_n, .parameter_type = "i" },
     { .name = "up", .activate = action_up },
     { .name = "down", .activate = action_down },
     {
@@ -2191,28 +2181,25 @@ free_location_change (NautilusWindowSlot *self)
 }
 
 void
-nautilus_window_slot_back_or_forward (NautilusWindowSlot *self,
-                                      gboolean            back,
-                                      guint               distance)
+nautilus_window_slot_navigate (NautilusWindowSlot *self,
+                               int                 distance)
 {
-    GList *list;
-    guint len;
     NautilusBookmark *bookmark;
     GFile *old_location;
     g_autolist (NautilusFile) selection = NULL;
 
-    if (back)
+    /* While searching, maybe the user means to go "back" to no search. */
+    if (distance == -1 && nautilus_files_view_is_searching (self->content_view))
     {
-        /* While searching, maybe the user means to go "back" to no search. */
-        if (nautilus_files_view_is_searching (self->content_view))
-        {
-            nautilus_window_slot_set_search_visible (self, FALSE);
-            return;
-        }
+        nautilus_window_slot_set_search_visible (self, FALSE);
+        return;
     }
 
-    list = back ? self->back_list : self->forward_list;
-    len = g_list_length (list);
+    /* Reduce by 1 as indexing starts with 0 */
+    guint list_distance = ABS (distance) - 1;
+    gboolean back = (distance < 0);
+    GList *list = back ? self->back_list : self->forward_list;
+    guint len = g_list_length (list);
 
     /* If we can't move in the direction at all, just return. */
     if (list == NULL)
@@ -2222,12 +2209,12 @@ nautilus_window_slot_back_or_forward (NautilusWindowSlot *self,
 
     /* If the distance to move is off the end of the list, go to the end
      *  of the list. */
-    if (distance >= len)
+    if (list_distance >= len)
     {
-        distance = len - 1;
+        list_distance = len - 1;
     }
 
-    bookmark = g_list_nth_data (list, distance);
+    bookmark = g_list_nth_data (list, list_distance);
     GFile *location = nautilus_bookmark_get_location (bookmark);
     old_location = nautilus_window_slot_get_location (self);
 
@@ -2245,7 +2232,7 @@ nautilus_window_slot_back_or_forward (NautilusWindowSlot *self,
                            location, old_location,
                            selection,
                            back ? NAUTILUS_LOCATION_CHANGE_BACK : NAUTILUS_LOCATION_CHANGE_FORWARD,
-                           distance);
+                           list_distance);
 }
 
 /* reload the contents of the window */

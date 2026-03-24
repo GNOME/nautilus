@@ -115,8 +115,8 @@ NautilusQueryEditor *nautilus_window_slot_get_query_editor (NautilusWindowSlot *
 /* Only used by slot-dnd */
 NautilusFilesView*  nautilus_window_slot_get_current_view  (NautilusWindowSlot *slot);
 
-void nautilus_window_slot_back_or_forward                  (NautilusWindowSlot *slot,
-                                                            gboolean            back,
-                                                            guint               distance);
+void
+nautilus_window_slot_navigate (NautilusWindowSlot *self,
+                               int                 distance);
 
 void free_navigation_state                                 (gpointer data);

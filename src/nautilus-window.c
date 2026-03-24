@@ -70,9 +70,6 @@
 #include "nautilus-window-slot.h"
 
 static void nautilus_window_initialize_actions (NautilusWindow *window);
-static void nautilus_window_back_or_forward (NautilusWindow *window,
-                                             gboolean        back,
-                                             guint           distance);
 static void nautilus_window_sync_location_widgets (NautilusWindow *window);
 static void update_cursor (NautilusWindow *window);
 static void
@@ -1477,17 +1474,6 @@ nautilus_window_close_request (GtkWindow *window)
     return FALSE;
 }
 
-static void
-nautilus_window_back_or_forward (NautilusWindow *window,
-                                 gboolean        back,
-                                 guint           distance)
-{
-    if (window->active_slot != NULL)
-    {
-        nautilus_window_slot_back_or_forward (window->active_slot, back, distance);
-    }
-}
-
 void
 nautilus_window_back_or_forward_in_new_tab (NautilusWindow *window,
                                             int             distance)
@@ -1538,15 +1524,20 @@ on_click_gesture_pressed (GtkGestureClick *gesture,
     window = NAUTILUS_WINDOW (widget);
     button = gtk_gesture_single_get_current_button (GTK_GESTURE_SINGLE (gesture));
 
+    if (window->active_slot == NULL)
+    {
+        return;
+    }
+
     if (nautilus_global_preferences_get_use_extra_buttons () &&
         (button == nautilus_global_preferences_get_back_button ()))
     {
-        nautilus_window_back_or_forward (window, TRUE, 0);
+        nautilus_window_slot_navigate (window->active_slot, -1);
     }
     else if (nautilus_global_preferences_get_use_extra_buttons () &&
              (button == nautilus_global_preferences_get_forward_button ()))
     {
-        nautilus_window_back_or_forward (window, FALSE, 0);
+        nautilus_window_slot_navigate (window->active_slot, 1);
     }
 }
 

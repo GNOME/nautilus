@@ -540,12 +540,12 @@ on_click_gesture_pressed (GtkGestureClick *gesture,
     if (nautilus_global_preferences_get_use_extra_buttons () &&
         (button == nautilus_global_preferences_get_back_button ()))
     {
-        nautilus_window_slot_back_or_forward (self->slot, TRUE, 0);
+        nautilus_window_slot_navigate (self->slot, -1);
     }
     else if (nautilus_global_preferences_get_use_extra_buttons () &&
              (button == nautilus_global_preferences_get_forward_button ()))
     {
-        nautilus_window_slot_back_or_forward (self->slot, FALSE, 0);
+        nautilus_window_slot_navigate (self->slot, 1);
     }
 }
 

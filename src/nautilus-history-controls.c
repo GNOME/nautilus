@@ -40,13 +40,11 @@ fill_menu (NautilusHistoryControls *self,
            GMenu                   *menu,
            gboolean                 back)
 {
-    guint index;
-    GList *list;
+    GList *list = back ? nautilus_window_slot_get_back_history (self->window_slot) :
+                         nautilus_window_slot_get_forward_history (self->window_slot);
+    int offset = back ? -1 : 1;
+    int index = offset;
 
-    list = back ? nautilus_window_slot_get_back_history (self->window_slot) :
-                  nautilus_window_slot_get_forward_history (self->window_slot);
-
-    index = 0;
     while (list != NULL)
     {
         NautilusBookmark *bookmark = NAUTILUS_BOOKMARK (list->data);
@@ -56,11 +54,11 @@ fill_menu (NautilusHistoryControls *self,
 
         g_menu_item_set_action_and_target (item,
                                            back ? "slot.back-n" : "slot.forward-n",
-                                           "u", index);
+                                           "i", index);
         g_menu_append_item (menu, item);
 
         list = g_list_next (list);
-        ++index;
+        index += offset;
     }
 }
 
