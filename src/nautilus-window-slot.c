@@ -2776,13 +2776,14 @@ nautilus_window_slot_restore_navigation_state (NautilusWindowSlot      *self,
     g_return_if_fail (self->location == NULL);
     g_return_if_fail (self->pending_location == NULL);
 
-    NautilusFile *file = nautilus_navigation_state_get_nth (state, 0, NULL);
+    g_autolist (NautilusFile) selection = NULL;
+    NautilusFile *file = nautilus_navigation_state_get_nth (state, 0, &selection);
     g_autoptr (GFile) location = nautilus_file_get_location (file);
 
     g_set_object (&self->navigation_state, state);
     nautilus_window_slot_set_viewed_file (self, file);
 
-    begin_location_change (self, location, NULL, 0);
+    begin_location_change (self, location, selection, 0);
 }
 
 NautilusNavigationState *
@@ -2792,6 +2793,8 @@ nautilus_window_slot_get_navigation_state (NautilusWindowSlot *self)
     {
         return NULL;
     }
+
+    save_selection_for_history (self);
 
     return nautilus_navigation_state_copy (self->navigation_state);
 }
