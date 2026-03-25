@@ -564,29 +564,6 @@ update_properties_widget_icon (NautilusPropertiesWidget *self)
     }
 }
 
-/* utility to test if a uri refers to a local image */
-static gboolean
-uri_is_local_image (const char *uri)
-{
-    g_autoptr (GdkPixbuf) pixbuf = NULL;
-    g_autofree char *image_path = NULL;
-
-    image_path = g_filename_from_uri (uri, NULL, NULL);
-    if (image_path == NULL)
-    {
-        return FALSE;
-    }
-
-    pixbuf = gdk_pixbuf_new_from_file (image_path, NULL);
-
-    if (pixbuf == NULL)
-    {
-        return FALSE;
-    }
-
-    return TRUE;
-}
-
 static void
 on_undo_icon_reset (NautilusPropertiesWidget *self)
 {
@@ -657,8 +634,9 @@ nautilus_properties_widget_drag_drop_cb (GtkDropTarget *target,
     else
     {
         g_autofree gchar *uri = g_file_get_uri (file_list->data);
+        GFile *dropped_file = file_list->data;
 
-        if (uri_is_local_image (uri))
+        if (g_file_has_uri_scheme (dropped_file, SCHEME_LOCAL))
         {
             set_icon (self, uri);
         }

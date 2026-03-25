@@ -11,6 +11,7 @@
 #define SCHEME_ADMIN "admin"
 #define SCHEME_BURN "burn"
 #define SCHEME_COMPUTER "computer"
+#define SCHEME_LOCAL "file"
 #define SCHEME_SEARCH "x-nautilus-search"
 #define SCHEME_NETWORK "network"
 #define SCHEME_NETWORK_VIEW "x-network-view"
