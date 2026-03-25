@@ -62,8 +62,6 @@ struct _NautilusBookmark
     GIcon *symbolic_icon;
     NautilusFile *file;
 
-    GStrv selected_uris;
-
     gboolean exists;
     guint exists_id;
     GCancellable *cancellable;
@@ -511,7 +509,6 @@ nautilus_bookmark_finalize (GObject *object)
     g_clear_object (&bookmark->symbolic_icon);
 
     g_free (bookmark->name);
-    g_strfreev (bookmark->selected_uris);
 
     G_OBJECT_CLASS (nautilus_bookmark_parent_class)->finalize (object);
 }
@@ -654,18 +651,4 @@ nautilus_bookmark_new (GFile       *location,
                                                     NULL));
 
     return new_bookmark;
-}
-
-void
-nautilus_bookmark_take_selected_uris (NautilusBookmark *bookmark,
-                                      GStrv             selected_uris)
-{
-    g_strfreev (bookmark->selected_uris);
-    bookmark->selected_uris = g_steal_pointer (&selected_uris);
-}
-
-GStrv
-nautilus_bookmark_get_selected_uris (NautilusBookmark *bookmark)
-{
-    return bookmark->selected_uris;
 }
