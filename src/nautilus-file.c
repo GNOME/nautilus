@@ -4052,6 +4052,24 @@ nautilus_file_list_are_all_folders (const GList *files)
     return TRUE;
 }
 
+NautilusFileList *
+nautilus_file_list_from_uris (const GStrv uris)
+{
+    if (uris == NULL)
+    {
+        return NULL;
+    }
+
+    NautilusFileList *list = NULL;
+
+    for (guint i = 0; uris[i] != NULL; i++)
+    {
+        list = g_list_prepend (list, nautilus_file_get_by_uri (uris[i]));
+    }
+
+    return g_list_reverse (list);
+}
+
 static const char *
 nautilus_file_get_metadata_impl (NautilusFile *file,
                                  const char   *key,

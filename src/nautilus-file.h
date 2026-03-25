@@ -441,6 +441,9 @@ NautilusFileList *      nautilus_file_list_filter                       (Nautilu
 
 gboolean                nautilus_file_list_are_all_folders              (const GList                    *files);
 
+NautilusFileList *
+nautilus_file_list_from_uris (const GStrv uris);
+
 /* Debugging */
 
 void                    nautilus_file_dump                              (NautilusFile                   *file);

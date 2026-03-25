@@ -2120,8 +2120,6 @@ void
 nautilus_window_slot_navigate (NautilusWindowSlot *self,
                                int                 distance)
 {
-    g_autolist (NautilusFile) selection = NULL;
-
     /* While searching, maybe the user means to go "back" to no search. */
     if (distance == -1 && nautilus_files_view_is_searching (self->content_view))
     {
@@ -2150,16 +2148,7 @@ nautilus_window_slot_navigate (NautilusWindowSlot *self,
 
     NautilusNavigationPosition *position = g_list_nth_data (list, list_distance);
     GFile *old_location = nautilus_window_slot_get_location (self);
-    GStrv selected_uris = position->selection;
-
-    if (selected_uris != NULL)
-    {
-        for (int i = 0; selected_uris[i] != NULL; i++)
-        {
-            selection = g_list_prepend (selection, nautilus_file_get_by_uri (selected_uris[i]));
-        }
-        selection = g_list_reverse (selection);
-    }
+    g_autolist (NautilusFile) selection = nautilus_file_list_from_uris (position->selection);
 
     begin_location_change (self,
                            position->location, old_location,
