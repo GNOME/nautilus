@@ -47,6 +47,8 @@ cc = meson.get_compiler('c')
 
 add_project_arguments(
   cc.get_supported_arguments([
+    # Uncomment when building with sanitizer
+    #'-fsanitize=address',
     '-Wduplicated-branches',
     '-Wduplicated-cond',
     '-Wlogical-op',
