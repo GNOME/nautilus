@@ -22,6 +22,7 @@
 #include "nautilus-properties.h"
 
 #include <adwaita.h>
+#include <glycin.h>
 #include <gtk/gtk.h>
 #include <gdk/gdkkeysyms.h>
 #include <glib/gi18n.h>
@@ -3894,12 +3895,13 @@ select_image_button_callback (GtkWidget                *widget,
 {
     g_autoptr (GtkFileDialog) dialog = gtk_file_dialog_new ();
     g_autoptr (GtkFileFilter) filter = gtk_file_filter_new ();
+    g_auto (GStrv) mime_types = gly_loader_get_mime_types ();
     NautilusFile *file = get_file (self);
 
     gtk_file_dialog_set_title (dialog, _("Select Custom Icon"));
     gtk_file_dialog_set_accept_label (dialog, _("_Select"));
 
-    gtk_file_filter_add_pixbuf_formats (filter);
+    gtk_file_filter_add_mime_types (filter, (const char **) mime_types);
     gtk_file_dialog_set_default_filter (dialog, filter);
 
     /* it's likely that the user wants to pick an icon that is inside a local directory */
