@@ -2960,7 +2960,9 @@ void
 nautilus_window_slot_restore_navigation_state (NautilusWindowSlot      *self,
                                                NautilusNavigationState *state)
 {
-    nautilus_window_slot_open_location_full (self, state->current->location, NULL);
+    g_autolist (NautilusFile) selection = nautilus_file_list_from_uris (state->current->selection);
+
+    nautilus_window_slot_open_location_full (self, state->current->location, selection);
 
     g_clear_pointer (&self->navigation_state, nautilus_navigation_state_free);
     self->navigation_state = state;
