@@ -21,6 +21,7 @@ tests = {
   },
   'test-nautilus-search-engine-model': {},
   'test-nautilus-search-engine-simple': {},
+  'test-navigation-state': {},
   'test-ui-utilities': {},
 }
 
