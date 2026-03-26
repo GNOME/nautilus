@@ -720,6 +720,8 @@ static void
 nautilus_image_init (NautilusImage *self)
 {
     gtk_widget_add_css_class (GTK_WIDGET (self), "nautilus-image");
+
+    self->size = NAUTILUS_GRID_ICON_SIZE_SMALL;
 }
 
 static void
@@ -874,7 +876,7 @@ nautilus_image_class_init (NautilusImageClass *klass)
                                                    G_PARAM_STATIC_STRINGS);
 
     properties[PROP_SIZE] = g_param_spec_int ("size", NULL, NULL,
-                                              0, 1024, 0,
+                                              0, 1024, NAUTILUS_GRID_ICON_SIZE_SMALL,
                                               G_PARAM_READWRITE |
                                               G_PARAM_EXPLICIT_NOTIFY |
                                               G_PARAM_STATIC_STRINGS);
