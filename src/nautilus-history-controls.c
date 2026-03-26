@@ -40,8 +40,7 @@ fill_menu (NautilusHistoryControls *self,
            GMenu                   *menu,
            gboolean                 back)
 {
-    GList *list = back ? nautilus_window_slot_get_back_history (self->window_slot) :
-                         nautilus_window_slot_get_forward_history (self->window_slot);
+    GList *list = nautilus_window_slot_peek_history (self->window_slot, back);
     int offset = back ? -1 : 1;
     int index = offset;
 

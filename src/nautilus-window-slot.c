@@ -915,14 +915,14 @@ update_back_forward_actions (NautilusWindowSlot *self)
     GAction *action;
     gboolean enabled;
 
-    enabled = (nautilus_window_slot_get_back_history (self) != NULL &&
+    enabled = (self->back_list (self) != NULL &&
                !nautilus_window_slot_get_search_global (self));
     action = g_action_map_lookup_action (G_ACTION_MAP (self->slot_action_group), "back");
     g_simple_action_set_enabled (G_SIMPLE_ACTION (action), enabled);
     action = g_action_map_lookup_action (G_ACTION_MAP (self->slot_action_group), "back-n");
     g_simple_action_set_enabled (G_SIMPLE_ACTION (action), enabled);
 
-    enabled = (nautilus_window_slot_get_forward_history (self) != NULL &&
+    enabled = (self->forward_list != NULL &&
                !nautilus_window_slot_get_search_global (self));
     action = g_action_map_lookup_action (G_ACTION_MAP (self->slot_action_group), "forward");
     g_simple_action_set_enabled (G_SIMPLE_ACTION (action), enabled);
@@ -3026,15 +3026,10 @@ nautilus_window_slot_get_current_view (NautilusWindowSlot *self)
 }
 
 GList *
-nautilus_window_slot_get_back_history (NautilusWindowSlot *self)
+nautilus_window_slot_peek_history (NautilusWindowSlot *self,
+                                   gboolean            backwards)
 {
-    return self->back_list;
-}
-
-GList *
-nautilus_window_slot_get_forward_history (NautilusWindowSlot *self)
-{
-    return self->forward_list;
+    return backwards ? self->back_list : self->forward_list;
 }
 
 NautilusWindowSlot *

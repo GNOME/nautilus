@@ -58,9 +58,6 @@ NautilusMode nautilus_window_slot_get_mode                 (NautilusWindowSlot *
 GFile * nautilus_window_slot_get_location		   (NautilusWindowSlot *slot);
 GFile * nautilus_window_slot_get_pending_location          (NautilusWindowSlot *slot);
 
-GList * nautilus_window_slot_get_back_history              (NautilusWindowSlot *slot);
-GList * nautilus_window_slot_get_forward_history           (NautilusWindowSlot *slot);
-
 gboolean nautilus_window_slot_get_allow_stop               (NautilusWindowSlot *slot);
 void     nautilus_window_slot_set_allow_stop		   (NautilusWindowSlot *slot,
 							    gboolean	        allow_stop);
@@ -115,6 +112,9 @@ NautilusQueryEditor *nautilus_window_slot_get_query_editor (NautilusWindowSlot *
 /* Only used by slot-dnd */
 NautilusFilesView*  nautilus_window_slot_get_current_view  (NautilusWindowSlot *slot);
 
+GList *
+nautilus_window_slot_peek_history (NautilusWindowSlot *self,
+                                   gboolean            backwards);
 void
 nautilus_window_slot_navigate (NautilusWindowSlot *self,
                                int                 distance);
