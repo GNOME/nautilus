@@ -14,10 +14,7 @@
 
 #include <glib.h>
 #include <gio/gio.h>
-#include <glycin.h>
 #include <gdk-pixbuf/gdk-pixbuf.h>
-
-#define ICON_SIZE 256
 
 typedef struct
 {
@@ -75,22 +72,6 @@ file_has_valid_thumbnail_path (GFile       *file,
     return FALSE;
 }
 
-static void *
-tile_memory (void  *data,
-             gsize  size,
-             uint   n)
-{
-    char *buffer = g_malloc (size * n);
-    char *ptr = buffer;
-
-    for (uint i = 0; i < n; i++, ptr += size)
-    {
-        memcpy (ptr, data, size);
-    }
-
-    return buffer;
-}
-
 static guint64
 get_file_mime_type_and_mtime (GFile  *file,
                               gchar **mime_type)
@@ -107,45 +88,6 @@ get_file_mime_type_and_mtime (GFile  *file,
     }
 
     return g_file_info_get_attribute_uint64 (info, G_FILE_ATTRIBUTE_TIME_MODIFIED);
-}
-
-static void
-make_image_file (GFile *file)
-{
-    guint8 data[4] = {255, 255, 0, 0};
-    gsize length = sizeof (data) * ICON_SIZE * ICON_SIZE;
-    g_autoptr (GBytes) image_bytes = g_bytes_new_take (tile_memory (data,
-                                                                    sizeof (data),
-                                                                    ICON_SIZE * ICON_SIZE),
-                                                       length);
-    g_autoptr (GlyCreator) creator = gly_creator_new ("image/png", NULL);
-
-    g_assert_nonnull (creator);
-    gly_creator_set_sandbox_selector (creator, GLY_SANDBOX_SELECTOR_NOT_SANDBOXED);
-
-    g_autoptr (GlyNewFrame) frame = gly_creator_add_frame (creator,
-                                                           ICON_SIZE, ICON_SIZE,
-                                                           GLY_MEMORY_A8R8G8B8,
-                                                           image_bytes,
-                                                           NULL);
-    g_autoptr (GlyEncodedImage) encoded_image = gly_creator_create (creator, NULL);
-
-    g_assert_nonnull (encoded_image);
-
-    g_autoptr (GBytes) binary_data = gly_encoded_image_get_data (encoded_image);
-    g_autoptr (GError) error = NULL;
-
-    g_file_replace_contents (file,
-                             g_bytes_get_data (binary_data, NULL),
-                             g_bytes_get_size (binary_data),
-                             NULL,
-                             FALSE,
-                             G_FILE_CREATE_NONE,
-                             NULL,
-                             NULL,
-                             &error);
-
-    g_assert_no_error (error);
 }
 
 static void
@@ -249,8 +191,8 @@ test_thumbnail_image (void)
     g_assert_no_error (thumbnailing_data.error);
     g_assert_true (file_has_valid_thumbnail_path (image_location, thumbnail_path));
 
-    g_assert_cmpint (gdk_pixbuf_get_height (thumbnailing_data.pixbuf), ==, ICON_SIZE);
-    g_assert_cmpint (gdk_pixbuf_get_width (thumbnailing_data.pixbuf), ==, ICON_SIZE);
+    g_assert_cmpint (gdk_pixbuf_get_height (thumbnailing_data.pixbuf), ==, DEFAULT_IMAGE_SIZE);
+    g_assert_cmpint (gdk_pixbuf_get_width (thumbnailing_data.pixbuf), ==, DEFAULT_IMAGE_SIZE);
 
     g_assert_true (g_file_delete (thumbnail_location, NULL, NULL));
 
@@ -345,10 +287,10 @@ test_thumbnail_overwrite (void)
     g_assert_nonnull (thumbnailing_data2.pixbuf);
     g_assert_no_error (thumbnailing_data2.error);
 
-    g_assert_cmpint (gdk_pixbuf_get_height (thumbnailing_data1.pixbuf), ==, ICON_SIZE);
-    g_assert_cmpint (gdk_pixbuf_get_width (thumbnailing_data1.pixbuf), ==, ICON_SIZE);
-    g_assert_cmpint (gdk_pixbuf_get_height (thumbnailing_data2.pixbuf), ==, ICON_SIZE);
-    g_assert_cmpint (gdk_pixbuf_get_width (thumbnailing_data2.pixbuf), ==, ICON_SIZE);
+    g_assert_cmpint (gdk_pixbuf_get_height (thumbnailing_data1.pixbuf), ==, DEFAULT_IMAGE_SIZE);
+    g_assert_cmpint (gdk_pixbuf_get_width (thumbnailing_data1.pixbuf), ==, DEFAULT_IMAGE_SIZE);
+    g_assert_cmpint (gdk_pixbuf_get_height (thumbnailing_data2.pixbuf), ==, DEFAULT_IMAGE_SIZE);
+    g_assert_cmpint (gdk_pixbuf_get_width (thumbnailing_data2.pixbuf), ==, DEFAULT_IMAGE_SIZE);
 
     g_assert_true (g_file_delete (thumbnail_location, NULL, NULL));
 
