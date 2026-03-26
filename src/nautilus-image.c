@@ -477,15 +477,7 @@ file_info_ready_callback (GObject      *source_object,
                                      self);
 }
 
-typedef enum
-{
-    NAUTILUS_IMAGE_STATUS_THUMBNAIL,
-    NAUTILUS_IMAGE_STATUS_LOADING_ATTRIBUTES,
-    NAUTILUS_IMAGE_STATUS_LOADING_THUMBNAIL,
-    NAUTILUS_IMAGE_STATUS_FALLBACK,
-} NautilusImageStatus;
-
-static NautilusImageStatus
+NautilusImageStatus
 nautilus_image_get_status (NautilusImage *self)
 {
     if (self->texture != NULL)
@@ -543,6 +535,18 @@ nautilus_image_set_texture (NautilusImage *self,
     }
 }
 
+/**
+ * nautilus_image_get_fallback:
+ * @self: A #NautilusImage
+ *
+ * Returns: (transfer none): The fallback paintable for the image.
+ */
+GdkPaintable *
+nautilus_image_get_fallback (NautilusImage *self)
+{
+    return self->fallback_paintable;
+}
+
 void
 nautilus_image_set_fallback (NautilusImage *self,
                              GdkPaintable  *paintable)
@@ -573,6 +577,18 @@ nautilus_image_set_fallback (NautilusImage *self,
 
         g_object_notify_by_pspec (G_OBJECT (self), properties[PROP_FALLBACK]);
     }
+}
+
+/**
+ * nautilus_image_get_source:
+ * @self: A #NautilusImage
+ *
+ * Returns: (transfer none): The source file for the image.
+ */
+GFile *
+nautilus_image_get_source (NautilusImage *self)
+{
+    return self->source;
 }
 
 /**
@@ -641,6 +657,12 @@ nautilus_image_set_source (NautilusImage *self,
     g_object_notify_by_pspec (G_OBJECT (self), properties[PROP_SOURCE]);
 }
 
+int
+nautilus_image_get_size (NautilusImage *self)
+{
+    return self->size;
+}
+
 void
 nautilus_image_set_size (NautilusImage *self,
                          gint           size)
@@ -667,19 +689,19 @@ nautilus_image_get_property (GObject    *object,
     {
         case PROP_SOURCE:
         {
-            g_value_set_object (value, self->source);
+            g_value_set_object (value, nautilus_image_get_source (self));
         }
         break;
 
         case PROP_SIZE:
         {
-            g_value_set_int (value, self->size);
+            g_value_set_int (value, nautilus_image_get_size (self));
         }
         break;
 
         case PROP_FALLBACK:
         {
-            g_value_set_object (value, self->fallback_paintable);
+            g_value_set_object (value, nautilus_image_get_fallback (self));
         }
         break;
 
