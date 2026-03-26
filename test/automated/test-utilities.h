@@ -41,8 +41,6 @@ void file_hierarchy_delete (const GStrv  hier,
 void create_search_file_hierarchy (gchar *search_engine);
 void delete_search_file_hierarchy (gchar *search_engine);
 
-void quit_loop_callback (NautilusFileUndoManager *undo_manager,
-                         GMainLoop               *loop);
 void test_operation_undo_redo (void);
 void test_operation_undo (void);
 void test_operation_redo (void);
