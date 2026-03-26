@@ -16,6 +16,8 @@
 #include <src/nautilus-file-undo-manager.h>
 #include <src/nautilus-file-utilities.h>
 
+#include <glycin.h>
+
 static gchar *nautilus_tmp_dir = NULL;
 
 const gchar *
@@ -611,4 +613,78 @@ file_load_attributes (NautilusFile           *file,
                                    &done);
 
     ITER_CONTEXT_WHILE (!done);
+}
+
+static void *
+tile_memory (void  *data,
+             gsize  size,
+             uint   n)
+{
+    char *buffer = g_malloc (size * n);
+    char *ptr = buffer;
+
+    for (uint i = 0; i < n; i++, ptr += size)
+    {
+        memcpy (ptr, data, size);
+    }
+
+    return buffer;
+}
+
+void
+make_image_file_full (GFile  *file,
+                      guint8  color[4],
+                      guint   width,
+                      guint   height,
+                      guint64 mtime)
+{
+    gsize length = 4 * width * height;
+    void *tile_data = tile_memory (color, 4, width * height);
+    g_autoptr (GBytes) image_bytes = g_bytes_new_take (tile_data, length);
+    g_autoptr (GlyCreator) creator = gly_creator_new ("image/png", NULL);
+
+    g_assert_nonnull (creator);
+    gly_creator_set_sandbox_selector (creator, GLY_SANDBOX_SELECTOR_NOT_SANDBOXED);
+
+    g_autoptr (GlyNewFrame) frame = gly_creator_add_frame (creator,
+                                                           width, height,
+                                                           GLY_MEMORY_A8R8G8B8,
+                                                           image_bytes,
+                                                           NULL);
+    g_autoptr (GlyEncodedImage) encoded_image = gly_creator_create (creator, NULL);
+
+    g_assert_nonnull (encoded_image);
+
+    g_autoptr (GBytes) binary_data = gly_encoded_image_get_data (encoded_image);
+    g_autoptr (GError) error = NULL;
+
+    g_file_replace_contents (file,
+                             g_bytes_get_data (binary_data, NULL),
+                             g_bytes_get_size (binary_data),
+                             NULL,
+                             FALSE,
+                             G_FILE_CREATE_NONE,
+                             NULL,
+                             NULL,
+                             &error);
+
+    if (mtime != 0)
+    {
+        g_file_set_attribute_uint64 (file,
+                                     G_FILE_ATTRIBUTE_TIME_MODIFIED,
+                                     mtime,
+                                     G_FILE_QUERY_INFO_NONE,
+                                     NULL,
+                                     NULL);
+    }
+
+    g_assert_no_error (error);
+}
+
+void
+make_image_file (GFile *file)
+{
+    guint8 yellow[4] = {255, 255, 0, 0};
+
+    make_image_file_full (file, yellow, DEFAULT_IMAGE_SIZE, DEFAULT_IMAGE_SIZE, 0);
 }

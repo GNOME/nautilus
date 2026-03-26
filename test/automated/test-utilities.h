@@ -4,6 +4,7 @@
 
 #pragma once
 
+#define DEFAULT_IMAGE_SIZE 256
 #define MAX_CONTEXT_ITERATIONS 100
 
 #define ITER_CONTEXT_WHILE(CONDITION) \
@@ -61,3 +62,9 @@ void create_random_file (GFile *file,
                          gsize size);
 void file_load_attributes (NautilusFile           *file,
                            NautilusFileAttributes  attributes);
+void make_image_file_full (GFile  *file,
+                           guint8  color[4],
+                           guint   width,
+                           guint   height,
+                           guint64 mtime);
+void make_image_file (GFile *file);
