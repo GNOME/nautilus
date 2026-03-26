@@ -480,7 +480,8 @@ file_info_ready_callback (GObject      *source_object,
 typedef enum
 {
     NAUTILUS_IMAGE_STATUS_THUMBNAIL,
-    NAUTILUS_IMAGE_STATUS_LOADING,
+    NAUTILUS_IMAGE_STATUS_LOADING_ATTRIBUTES,
+    NAUTILUS_IMAGE_STATUS_LOADING_THUMBNAIL,
     NAUTILUS_IMAGE_STATUS_FALLBACK,
 } NautilusImageStatus;
 
@@ -491,11 +492,17 @@ nautilus_image_get_status (NautilusImage *self)
     {
         return NAUTILUS_IMAGE_STATUS_THUMBNAIL;
     }
+    else if (self->is_loading_attributes &&
+             self->cancellable != NULL &&
+             self->error == NULL)
+    {
+        return NAUTILUS_IMAGE_STATUS_LOADING_ATTRIBUTES;
+    }
     else if (!self->is_loading_attributes &&
              self->cancellable != NULL &&
              self->error == NULL)
     {
-        return NAUTILUS_IMAGE_STATUS_LOADING;
+        return NAUTILUS_IMAGE_STATUS_LOADING_THUMBNAIL;
     }
 
     return NAUTILUS_IMAGE_STATUS_FALLBACK;
@@ -541,6 +548,7 @@ nautilus_image_set_fallback (NautilusImage *self,
                              GdkPaintable  *paintable)
 {
     gboolean resize = (self->fallback_paintable != paintable);
+    NautilusImageStatus status = nautilus_image_get_status (self);
 
     if (resize && self->fallback_paintable != NULL && paintable != NULL)
     {
@@ -551,7 +559,8 @@ nautilus_image_set_fallback (NautilusImage *self,
     }
 
     if (g_set_object (&self->fallback_paintable, paintable) &&
-        nautilus_image_get_status (self) == NAUTILUS_IMAGE_STATUS_FALLBACK)
+        (status == NAUTILUS_IMAGE_STATUS_LOADING_ATTRIBUTES ||
+         status == NAUTILUS_IMAGE_STATUS_FALLBACK))
     {
         if (resize)
         {
@@ -764,7 +773,7 @@ real_snapshot (GtkWidget   *widget,
         /* End rounded clip */
         gtk_snapshot_pop (snapshot);
     }
-    else if (status == NAUTILUS_IMAGE_STATUS_LOADING)
+    else if (status == NAUTILUS_IMAGE_STATUS_LOADING_THUMBNAIL)
     {
         gdk_paintable_snapshot (get_loading_paintable (self),
                                 GDK_SNAPSHOT (snapshot),
@@ -817,8 +826,9 @@ real_measure (GtkWidget      *widget,
 
         length = orientation == GTK_ORIENTATION_HORIZONTAL ? width : height;
     }
-    else if (status == NAUTILUS_IMAGE_STATUS_FALLBACK &&
-             self->fallback_paintable != NULL)
+    else if (self->fallback_paintable != NULL &&
+             (status == NAUTILUS_IMAGE_STATUS_LOADING_ATTRIBUTES ||
+              status == NAUTILUS_IMAGE_STATUS_FALLBACK))
     {
         GdkPaintable *paintable = self->fallback_paintable;
 
