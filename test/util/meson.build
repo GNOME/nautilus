@@ -13,8 +13,3 @@ libtestutils_dep = declare_dependency(
   dependencies: libnautilus_dep,
   sources: resources
 )
-
-subdir('displayless')
-if get_option('tests') == 'all'
-  subdir('display')
-endif
