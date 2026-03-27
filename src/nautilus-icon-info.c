@@ -379,7 +379,6 @@ nautilus_icon_info_lookup (GIcon *icon,
     }
     else
     {
-        /* Only GLoadableIcon and GThemedIcon are known and supported */
-        g_assert_not_reached ();
+        return nautilus_icon_info_get_fallback (size, scale);
     }
 }
