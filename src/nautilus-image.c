@@ -846,7 +846,7 @@ real_measure (GtkWidget      *widget,
             height = height / scale_factor;
         }
 
-        length = orientation == GTK_ORIENTATION_HORIZONTAL ? width : height;
+        length = round (orientation == GTK_ORIENTATION_HORIZONTAL ? width : height);
     }
     else if (self->fallback_paintable != NULL &&
              (status == NAUTILUS_IMAGE_STATUS_LOADING_ATTRIBUTES ||
