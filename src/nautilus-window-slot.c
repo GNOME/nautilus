@@ -3110,8 +3110,22 @@ nautilus_window_slot_get_tooltip (NautilusWindowSlot *self)
         return NULL;
     }
 
-    return nautilus_files_view_get_toggle_tooltip (self->content_view);
+    return nautilus_files_view_get_toggle_tooltip (self->content_view, NULL);
 }
+
+const gchar *
+nautilus_window_slot_get_tooltip_with_description (NautilusWindowSlot  *self,
+                                                   const gchar        **description)
+{
+    g_return_val_if_fail (NAUTILUS_IS_WINDOW_SLOT (self), NULL);
+
+    if (self->content_view == NULL)
+    {
+        return NULL;
+    }
+    return nautilus_files_view_get_toggle_tooltip (self->content_view, description);
+}
+
 
 NautilusToolbarMenuSections *
 nautilus_window_slot_get_toolbar_menu_sections (NautilusWindowSlot *self)

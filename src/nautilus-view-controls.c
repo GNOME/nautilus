@@ -8,6 +8,7 @@
 
 #include "nautilus-toolbar-menu-sections.h"
 #include "nautilus-window-slot.h"
+#include <glib/gi18n.h>
 
 struct _NautilusViewControls
 {
@@ -58,6 +59,27 @@ on_slot_toolbar_menu_sections_changed (NautilusViewControls *self,
 }
 
 static void
+on_tooltip_changed (NautilusViewControls *self,
+                    GParamSpec           *param,
+                    NautilusWindowSlot   *slot)
+{
+    const gchar *description;
+    const gchar *tooltip = nautilus_window_slot_get_tooltip_with_description (slot, &description);
+
+    if (tooltip == NULL)
+    {
+        return;
+    }
+    gtk_accessible_update_property (GTK_ACCESSIBLE (self->view_split_button),
+                                    GTK_ACCESSIBLE_PROPERTY_LABEL,
+                                    tooltip,
+                                    GTK_ACCESSIBLE_PROPERTY_DESCRIPTION,
+                                    description,
+                                    -1);
+}
+
+
+static void
 disconnect_toolbar_menu_sections_change_handler (NautilusViewControls *self)
 {
     if (self->window_slot == NULL)
@@ -67,6 +89,9 @@ disconnect_toolbar_menu_sections_change_handler (NautilusViewControls *self)
 
     g_signal_handlers_disconnect_by_func (self->window_slot,
                                           G_CALLBACK (on_slot_toolbar_menu_sections_changed),
+                                          self);
+    g_signal_handlers_disconnect_by_func (self->window_slot,
+                                          G_CALLBACK (on_tooltip_changed),
                                           self);
 }
 
@@ -92,6 +117,8 @@ nautilus_view_controls_set_window_slot (NautilusViewControls *self,
         on_slot_toolbar_menu_sections_changed (self, NULL, self->window_slot);
         g_signal_connect_swapped (self->window_slot, "notify::toolbar-menu-sections",
                                   G_CALLBACK (on_slot_toolbar_menu_sections_changed), self);
+        g_signal_connect_swapped (self->window_slot, "notify::tooltip",
+                                  G_CALLBACK (on_tooltip_changed), self);
     }
 
     g_object_notify_by_pspec (G_OBJECT (self), properties[PROP_WINDOW_SLOT]);

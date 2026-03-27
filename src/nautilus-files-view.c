@@ -9681,11 +9681,15 @@ nautilus_files_view_get_toggle_icon_name (NautilusFilesView *self)
 /**
  * nautilus_files_view_get_toggle_tooltip:
  * @self: a #NautilusFilesView
+ * @description: a pointer to a string pointer, or NULL.
  *
- * Returns: (transfer none): a translated tooltip explanation to toggle @self
+ * Returns: (transfer none): a translated tooltip explanation to toggle @self.
+ *          If @description is not NULL, it's content will point to a valid A11Y
+ *          description.
  */
 const char *
-nautilus_files_view_get_toggle_tooltip (NautilusFilesView *self)
+nautilus_files_view_get_toggle_tooltip (NautilusFilesView  *self,
+                                        const char        **description)
 {
     guint view_id = nautilus_list_base_get_view_info (self->list_base).view_id;
 
@@ -9693,6 +9697,10 @@ nautilus_files_view_get_toggle_tooltip (NautilusFilesView *self)
     {
         case NAUTILUS_VIEW_LIST_ID:
         {
+            if (description != NULL)
+            {
+                *description = _("View items as a grid of icons");
+            }
             return _("Grid View");
         }
         break;
@@ -9700,6 +9708,10 @@ nautilus_files_view_get_toggle_tooltip (NautilusFilesView *self)
         case NAUTILUS_VIEW_NETWORK_ID:
         case NAUTILUS_VIEW_GRID_ID:
         {
+            if (description != NULL)
+            {
+                *description = _("View items as a list");
+            }
             return _("List View");
         }
         break;

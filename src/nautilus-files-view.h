@@ -46,7 +46,8 @@ void                nautilus_files_view_change                           (Nautil
 const char *
 nautilus_files_view_get_toggle_icon_name (NautilusFilesView *self);
 const char *
-nautilus_files_view_get_toggle_tooltip (NautilusFilesView *self);
+nautilus_files_view_get_toggle_tooltip (NautilusFilesView  *self,
+                                        const char        **description);
 
 GFile *
 nautilus_files_view_get_location (NautilusFilesView *self);
