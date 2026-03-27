@@ -283,6 +283,15 @@ nautilus_icon_info_lookup (GIcon *icon,
 {
     GdkPaintable *paintable;
 
+    if (G_IS_EMBLEMED_ICON (icon))
+    {
+        icon = g_emblemed_icon_get_icon (G_EMBLEMED_ICON (icon));
+    }
+    else if (G_IS_EMBLEM (icon))
+    {
+        icon = g_emblem_get_icon (G_EMBLEM (icon));
+    }
+
     if (G_IS_LOADABLE_ICON (icon))
     {
         LoadableIconKey lookup_key;
