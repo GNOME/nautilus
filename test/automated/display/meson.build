@@ -6,6 +6,7 @@ tests = {
     'tracker': true,
     'is_parallel' : false,
   },
+  'test-image': {},
   'test-sidebar': {
     'is_parallel' : false,
   },
