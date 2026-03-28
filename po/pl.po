@@ -10,23 +10,23 @@
 # Wojciech Szczęsny <wszczesny@aviary.pl>, 2013.
 # Paweł Żołnowski <pawel@zolnowski.name>, 2015.
 # Aviary.pl <community-poland@mozilla.org>, 2006-2025.
-# Victoria <royal.victoria@proton.me>, 2026.
+# Victoria Niedzielska <victorian@gnome.org>, 2026.
 #
 msgid ""
 msgstr ""
 "Project-Id-Version: nautilus\n"
 "Report-Msgid-Bugs-To: https://gitlab.gnome.org/GNOME/nautilus/issues\n"
 "POT-Creation-Date: 2026-02-22 12:00+0000\n"
-"PO-Revision-Date: 2026-02-25 15:12+0100\n"
-"Last-Translator: Victoria <royal.victoria@proton.me>\n"
-"Language-Team: Polish\n"
+"PO-Revision-Date: 2026-03-28 16:02+0100\n"
+"Last-Translator: Victoria Niedzielska <victorian@gnome.org>\n"
+"Language-Team: Polish <https://l10n.gnome.org/teams/pl/>\n"
 "Language: pl\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=3; plural=(n==1 ? 0 : n%10>=2 && n%10<=4 && (n%100<10 "
 "|| n%100>=20) ? 1 : 2);\n"
-"X-Generator: Gtranslator 49.0\n"
+"X-Generator: Gtranslator 50.0\n"
 
 #: data/nautilus-autorun-software.desktop.in:2
 msgid "Run Software"
@@ -158,7 +158,7 @@ msgid ""
 "For users with mice that have “Forward” and “Back” buttons, this key will "
 "determine if any action is taken inside of Files when either is pressed."
 msgstr ""
-"Dla użytkowników myszy, które mają przyciski „Dalej” i „Wstecz”, ten klucz "
+"Dla osób z myszami, które mają przyciski „Dalej” i „Wstecz”, ten klucz "
 "określa, czy jakieś działanie jest podejmowane przez program, jeśli zostanie "
 "naciśnięty przycisk."
 
@@ -172,7 +172,7 @@ msgid ""
 "will set which button activates the “Forward” command in a browser window. "
 "Possible values range between 6 and 14."
 msgstr ""
-"Dla użytkowników myszy, które mają przyciski „Dalej” i „Wstecz”, ten klucz "
+"Dla osób z myszami, które mają przyciski „Dalej” i „Wstecz”, ten klucz "
 "ustawia, który przycisk włącza polecenie „Dalej” w oknie przeglądarki. "
 "Możliwe wartości mieszczą się w zakresie między 6 a 14."
 
@@ -186,7 +186,7 @@ msgid ""
 "will set which button activates the “Back” command in a browser window. "
 "Possible values range between 6 and 14."
 msgstr ""
-"Dla użytkowników myszy, które mają przyciski „Dalej” i „Wstecz”, ten klucz "
+"Dla osób z myszami, które mają przyciski „Dalej” i „Wstecz”, ten klucz "
 "ustawia, który przycisk włącza polecenie „Wstecz” w oknie przeglądarki. "
 "Możliwe wartości mieszczą się w zakresie między 6 a 14."
 
@@ -1119,11 +1119,11 @@ msgstr "Uprawnienia do pliku."
 #: src/nautilus-column-utilities.c:149
 #: src/resources/menu/nautilus-toolbar-view-menu.ui:51
 msgid "Recency"
-msgstr "Dostęp użytkownika"
+msgstr "Świeżość"
 
 #: src/nautilus-column-utilities.c:150
 msgid "The date the file was accessed by the user."
-msgstr "Data dostępu użytkownika do pliku."
+msgstr "Data ostatniego użycia pliku przez osobę."
 
 #: src/nautilus-column-utilities.c:160
 msgid "Shows if file is starred."
@@ -1207,7 +1207,7 @@ msgstr "Wystąpił błąd podczas uruchamiania programu."
 
 #: src/nautilus-dbus-launcher.c:80
 msgid "Details: The proxy has not been created."
-msgstr "Szczegóły: pośrednik nie został utworzony."
+msgstr "Szczegóły: proxy nie zostało utworzone."
 
 #: src/nautilus-dialog-utilities.c:103
 msgid "Copy _Anyway"
@@ -3548,8 +3548,8 @@ msgid ""
 "Running as root is not supported. Consider running `nautilus admin:///` "
 "instead."
 msgstr ""
-"Działanie jako użytkownik root nie jest obsługiwane. Proszę wykonać "
-"„nautilus admin:///” zamiast tego."
+"Działanie jako osoba root nie jest obsługiwane. Proszę wykonać „nautilus "
+"admin:///” zamiast tego."
 
 #: src/nautilus-mime-actions.c:98
 msgid "Anything"
@@ -3943,7 +3943,7 @@ msgstr "System operacyjny"
 #. * as /) when seen as administrator
 #: src/nautilus-pathbar.c:413
 msgid "Administrator Root"
-msgstr "Główny katalog jako administrator"
+msgstr "Główny katalog jako osoba administrująca"
 
 #: src/nautilus-portal.c:477 src/nautilus-sidebar.c:2836
 #: src/nautilus-sidebar.c:2949
@@ -4526,7 +4526,8 @@ msgstr ""
 "Piotr Drąg <piotrdrag@gmail.com>, 2009-2025\n"
 "Wojciech Szczęsny <wszczesny@aviary.pl>, 2013\n"
 "Paweł Żołnowski <pawel@zolnowski.name>, 2015\n"
-"Aviary.pl <community-poland@mozilla.org>, 2006-2025"
+"Aviary.pl <community-poland@mozilla.org>, 2006-2025\n"
+"Victoria Niedzielska <victorian@gnome.org>, 2026"
 
 #: src/nautilus-window-slot.c:167
 msgid "Parent folder"
@@ -5949,153 +5950,3 @@ msgstr "Wyświetlenie pomocy"
 msgctxt "shortcuts dialog"
 msgid "Quit"
 msgstr "Zakończenie działania"
-
-#~ msgid "Show the package installer for unknown MIME types"
-#~ msgstr "Wyświetlanie instalatora pakietów dla nieznanych typów MIME"
-
-#~ msgid ""
-#~ "Whether to show the user a package installer dialog in case an unknown "
-#~ "MIME type is opened, in order to search for an app to handle it."
-#~ msgstr ""
-#~ "Określa, czy wyświetlać użytkownikowi okno dialogowe instalatora pakietów "
-#~ "w przypadku otwarcia nieznanego typu MIME, aby wyszukać program do jego "
-#~ "obsługi."
-
-#, c-format
-#~ msgid ""
-#~ "Unable to create a required folder. Please create the following folder, "
-#~ "or set permissions such that it can be created:\n"
-#~ "%s"
-#~ msgstr ""
-#~ "Nie można utworzyć wymaganego katalogu. Proszę utworzyć następujący "
-#~ "katalog lub tak ustalić uprawnienia, aby możliwe było jego utworzenie:\n"
-#~ "%s"
-
-#, c-format
-#~ msgid ""
-#~ "Unable to create required folders. Please create the following folders, "
-#~ "or set permissions such that they can be created:\n"
-#~ "%s"
-#~ msgstr ""
-#~ "Nie można utworzyć wymaganych katalogów. Proszę utworzyć następujące "
-#~ "katalogi lub tak ustalić uprawnienia, aby możliwe było ich utworzenie:\n"
-#~ "%s"
-
-#, c-format
-#~ msgid "%s. Starred"
-#~ msgstr "%s. Ulubione"
-
-#~ msgid "Replace _All"
-#~ msgstr "Zastąp wszys_tko"
-
-#~ msgid "Merge _All"
-#~ msgstr "Połą_cz wszystko"
-
-#~ msgid "There was an error getting information about the source."
-#~ msgstr "Wystąpił błąd podczas pobierania informacji o miejscu źródłowym."
-
-#~ msgid "Successfully saved image to file"
-#~ msgstr "Pomyślnie zapisano obraz do pliku"
-
-#~ msgid "Sorry, but you cannot execute commands from a remote site."
-#~ msgstr "Nie można wykonywać poleceń ze zdalnych adresów."
-
-#~ msgid "This is disabled due to security considerations."
-#~ msgstr "Jest to wyłączone ze względów bezpieczeństwa."
-
-#~ msgid "This drop target only supports local files."
-#~ msgstr "Przeciąganie jest obsługiwane tylko dla plików lokalnych."
-
-#~ msgid ""
-#~ "To open non-local files copy them to a local folder and then drop them "
-#~ "again."
-#~ msgstr ""
-#~ "Aby otworzyć plik dostępny zdalnie, należy skopiować go do katalogu "
-#~ "lokalnego i ponownie przeciągnąć."
-
-#~ msgid ""
-#~ "To open non-local files copy them to a local folder and then drop them "
-#~ "again. The local files you dropped have already been opened."
-#~ msgstr ""
-#~ "Aby otworzyć plik dostępny zdalnie, należy skopiować go do katalogu "
-#~ "lokalnego i ponownie przeciągnąć. Przeciągnięte pliki lokalne zostały już "
-#~ "otwarte."
-
-#~ msgid "Details: "
-#~ msgstr "Szczegóły: "
-
-#~ msgid "Creating Properties window."
-#~ msgstr "Tworzenie okna właściwości."
-
-#~ msgid "Unable to complete the requested search"
-#~ msgstr "Nie można ukończyć żądanego wyszukiwania"
-
-#~ msgctxt "shortcut window"
-#~ msgid "General"
-#~ msgstr "Ogólne"
-
-#~ msgctxt "shortcut window"
-#~ msgid "New Window"
-#~ msgstr "Nowe okno"
-
-#~ msgctxt "shortcut window"
-#~ msgid "Search Everywhere"
-#~ msgstr "Wyszukiwanie wszędzie"
-
-#~ msgctxt "shortcut window"
-#~ msgid "Search Current Folder"
-#~ msgstr "Wyszukiwanie w bieżącym katalogu"
-
-#~ msgctxt "shortcut window"
-#~ msgid "Undo"
-#~ msgstr "Cofnięcie"
-
-#~ msgctxt "shortcut window"
-#~ msgid "Redo"
-#~ msgstr "Ponowienie"
-
-#~ msgctxt "shortcut window"
-#~ msgid "Opening"
-#~ msgstr "Otwieranie"
-
-#~ msgctxt "shortcut window"
-#~ msgid "Open"
-#~ msgstr "Otwarcie"
-
-#~ msgctxt "shortcut window"
-#~ msgid "Tabs"
-#~ msgstr "Karty"
-
-#~ msgctxt "shortcut window"
-#~ msgid "Zoom In"
-#~ msgstr "Powiększenie"
-
-#~ msgctxt "shortcut window"
-#~ msgid "Zoom Out"
-#~ msgstr "Pomniejszenie"
-
-#~ msgctxt "shortcut window"
-#~ msgid "List View"
-#~ msgstr "Widok listy"
-
-#~ msgctxt "shortcut window"
-#~ msgid "Grid View"
-#~ msgstr "Widok siatki"
-
-#~ msgctxt "shortcut window"
-#~ msgid "Editing"
-#~ msgstr "Edycja"
-
-#~ msgctxt "shortcut window"
-#~ msgid "Copy"
-#~ msgstr "Skopiowanie"
-
-#~ msgctxt "shortcut window"
-#~ msgid "Select Items Matching"
-#~ msgstr "Zaznaczenie pasujących elementów"
-
-#~ msgid "_Visible Columns"
-#~ msgstr "Wido_czne kolumny"
-
-#~ msgid "Open Link Target"
-#~ msgstr "Otwiera cel dowiązania"
