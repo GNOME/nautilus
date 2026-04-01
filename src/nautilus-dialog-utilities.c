@@ -110,6 +110,7 @@ add_dialog_responses (AdwAlertDialog         *dialog,
     {
         adw_alert_dialog_add_response (dialog, EMPTY_TRASH, _("Empty _Trash"));
         adw_alert_dialog_set_response_appearance (dialog, EMPTY_TRASH, ADW_RESPONSE_DESTRUCTIVE);
+        adw_alert_dialog_set_default_response (dialog, EMPTY_TRASH);
     }
     if (response & RESPONSE_MERGE)
     {
@@ -122,14 +123,17 @@ add_dialog_responses (AdwAlertDialog         *dialog,
     if (response & RESPONSE_SKIP_ALL)
     {
         adw_alert_dialog_add_response (dialog, SKIP_ALL, _("S_kip All"));
+        adw_alert_dialog_set_default_response (dialog, SKIP_ALL);
     }
     if (response & RESPONSE_SKIP)
     {
         adw_alert_dialog_add_response (dialog, SKIP, _("_Skip"));
+        adw_alert_dialog_set_default_response (dialog, SKIP);
     }
     if (response & RESPONSE_SKIP_FILES)
     {
         adw_alert_dialog_add_response (dialog, SKIP_FILES, _("_Skip Files"));
+        adw_alert_dialog_set_default_response (dialog, SKIP_FILES);
     }
     if (response & RESPONSE_DELETE_ALL)
     {
@@ -144,6 +148,7 @@ add_dialog_responses (AdwAlertDialog         *dialog,
     if (response & RESPONSE_RETRY)
     {
         adw_alert_dialog_add_response (dialog, RETRY, _("_Retry"));
+        adw_alert_dialog_set_default_response (dialog, RETRY);
     }
 }
 
