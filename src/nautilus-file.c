@@ -76,8 +76,8 @@
 
 /* Emblems sometimes displayed for NautilusFiles. */
 #define NAUTILUS_FILE_EMBLEM_NAME_SYMBOLIC_LINK "symbolic-link-symbolic"
-#define NAUTILUS_FILE_EMBLEM_NAME_CANT_READ "readonly-symbolic"
-#define NAUTILUS_FILE_EMBLEM_NAME_CANT_WRITE "unwriteable-symbolic"
+#define NAUTILUS_FILE_EMBLEM_NAME_CANT_READ "unwritable-symbolic"
+#define NAUTILUS_FILE_EMBLEM_NAME_CANT_WRITE "readonly-symbolic"
 
 #undef NAUTILUS_FILE_DEBUG_REF
 #undef NAUTILUS_FILE_DEBUG_REF_VALGRIND
