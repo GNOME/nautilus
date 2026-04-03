@@ -392,7 +392,7 @@ file_info_ready_callback (GObject      *source_object,
     self->source_mtime = g_file_info_get_attribute_uint64 (info, G_FILE_ATTRIBUTE_TIME_MODIFIED);
     self->source_content_type = g_file_info_has_attribute (info, G_FILE_ATTRIBUTE_STANDARD_CONTENT_TYPE)
                                 ? g_strdup (g_file_info_get_content_type (info))
-                                : "application/octet-stream";
+                                : g_strdup ("application/octet-stream");
 
     /* Look in nautilus's thumbnail cache */
     if (cache_item != NULL &&
