@@ -33,6 +33,7 @@ typedef enum
     RESPONSE_SKIP        = 1 << 9,
     RESPONSE_SKIP_ALL    = 1 << 10,
     RESPONSE_SKIP_FILES  = 1 << 11,
+    RESPONSE_TRASHLESS_DELETE = 1 << 12,
 } NautilusDialogResponse;
 
 NautilusDialogResponse

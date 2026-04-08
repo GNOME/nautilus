@@ -140,10 +140,15 @@ add_dialog_responses (AdwAlertDialog         *dialog,
         adw_alert_dialog_add_response (dialog, DELETE_ALL, _("Delete _All"));
         adw_alert_dialog_set_response_appearance (dialog, DELETE_ALL, ADW_RESPONSE_DESTRUCTIVE);
     }
-    if (response & RESPONSE_DELETE)
+    if (response & RESPONSE_DELETE || response & RESPONSE_TRASHLESS_DELETE)
     {
         adw_alert_dialog_add_response (dialog, DELETE, _("_Delete"));
         adw_alert_dialog_set_response_appearance (dialog, DELETE, ADW_RESPONSE_DESTRUCTIVE);
+
+        if (response & RESPONSE_DELETE)
+        {
+            adw_alert_dialog_set_default_response (dialog, DELETE);
+        }
     }
     if (response & RESPONSE_RETRY)
     {
