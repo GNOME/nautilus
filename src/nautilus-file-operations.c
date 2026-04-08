@@ -1686,7 +1686,7 @@ trash_file (CommonJob     *job,
         secondary = _("This remote location does not support sending items to the trash.");
     }
 
-    NautilusDialogResponse responses = RESPONSE_SKIP | RESPONSE_DELETE;
+    NautilusDialogResponse responses = RESPONSE_SKIP | RESPONSE_TRASHLESS_DELETE;
 
     if ((source_info->num_files - transfer_info->num_files) > 1)
     {
