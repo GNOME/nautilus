@@ -132,6 +132,8 @@ nautilus_progress_info_dispose (GObject *object)
         info->idle_source = NULL;
     }
     G_UNLOCK (progress_info);
+
+    G_OBJECT_CLASS (nautilus_progress_info_parent_class)->dispose (object);
 }
 
 static void
