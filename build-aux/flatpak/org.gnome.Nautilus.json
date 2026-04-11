@@ -58,7 +58,6 @@
       "buildsystem": "meson",
       "builddir": true,
       "config-opts": [
-        "--libdir=/app/lib",
         "-Dintrospection=false",
         "-Dvapi=false",
         "-Dtools=false",
@@ -152,7 +151,6 @@
         "-Dintrospection=false",
         "-Dtests=false",
         "-Dvapi=false",
-        "--libdir=/app/lib",
         "--buildtype=debugoptimized"
       ],
       "sources" : [
@@ -196,7 +194,6 @@
         ]
       },
       "config-opts": [
-        "--libdir=/app/lib",
         "-Dprofile=Devel",
         "-Dtests=all"
       ],
