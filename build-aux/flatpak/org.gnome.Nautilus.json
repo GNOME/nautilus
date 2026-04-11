@@ -57,11 +57,13 @@
     },
     {
       "name": "exiv2",
+      "builddir": true,
       "config-opts": [
-        "-DCMAKE_INSTALL_PREFIX=/app",
-        "-DCMAKE_INSTALL_LIBDIR=/app/lib"
+        "-Dapp=false",
+        "-DunitTests=false",
+        "-Dtests=disabled"
       ],
-      "buildsystem": "cmake-ninja",
+      "buildsystem": "meson",
       "sources": [
         {
           "type": "git",
