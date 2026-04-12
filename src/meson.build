@@ -150,8 +150,6 @@ libnautilus_sources = [
   'nautilus-image.h',
   'nautilus-internal-place-file.c',
   'nautilus-internal-place-file.h',
-  'nautilus-keyfile-metadata.c',
-  'nautilus-keyfile-metadata.h',
   'nautilus-label-cell.c',
   'nautilus-label-cell.h',
   'nautilus-list-base.c',
