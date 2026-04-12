@@ -31,19 +31,25 @@
 #include "nautilus-enums.h"
 #include "nautilus-file-private.h"
 #include "nautilus-file-utilities.h"
-#include "nautilus-keyfile-metadata.h"
 #include "nautilus-query.h"
 #include "nautilus-search-directory.h"
 
 struct _NautilusSearchDirectoryFile
 {
     NautilusFile parent_instance;
-
-    gchar *metadata_filename;
 };
 
 G_DEFINE_TYPE (NautilusSearchDirectoryFile, nautilus_search_directory_file, NAUTILUS_TYPE_FILE);
 
+static NautilusFile *
+search_directory_item_get_searched_file (NautilusFile *self)
+{
+    NautilusSearchDirectory *search_dir =
+        NAUTILUS_SEARCH_DIRECTORY (nautilus_file_get_directory (self));
+    g_autoptr (GFile) query_location = nautilus_search_directory_get_search_location (search_dir);
+
+    return nautilus_file_get_existing (query_location);
+}
 
 static void
 search_directory_file_monitor_add (NautilusFile       *file,
@@ -177,26 +183,15 @@ search_directory_file_set_metadata (NautilusFile       *file,
                                     GFileAttributeType  type,
                                     gpointer            value)
 {
-    NautilusSearchDirectoryFile *search_file;
+    g_autoptr (NautilusFile) dir_file = search_directory_item_get_searched_file (file);
 
-    search_file = NAUTILUS_SEARCH_DIRECTORY_FILE (file);
+    if (dir_file == NULL)
+    {
+        /* No parent directory, ignore */
+        return;
+    }
 
-    if (type == G_FILE_ATTRIBUTE_TYPE_STRING)
-    {
-        nautilus_keyfile_metadata_set_string (file,
-                                              search_file->metadata_filename,
-                                              "directory", key, value);
-    }
-    else if (type == G_FILE_ATTRIBUTE_TYPE_STRINGV)
-    {
-        nautilus_keyfile_metadata_set_stringv (file,
-                                               search_file->metadata_filename,
-                                               "directory", key, value);
-    }
-    else
-    {
-        g_warn_if_reached ();
-    }
+    nautilus_file_set_metadata (dir_file, key, type, value);
 }
 
 void
@@ -244,16 +239,7 @@ nautilus_search_directory_file_update_display_name (NautilusSearchDirectoryFile 
 static void
 nautilus_search_directory_file_init (NautilusSearchDirectoryFile *search_file)
 {
-    NautilusFile *file;
-    gchar *xdg_dir;
-
-    file = NAUTILUS_FILE (search_file);
-
-    xdg_dir = nautilus_get_user_directory ();
-    search_file->metadata_filename = g_build_filename (xdg_dir,
-                                                       "search-metadata",
-                                                       NULL);
-    g_free (xdg_dir);
+    NautilusFile *file = NAUTILUS_FILE (search_file);
 
     file->details->got_file_info = TRUE;
     file->details->mime_type = g_ref_string_new_intern ("x-directory/normal");
@@ -272,27 +258,9 @@ nautilus_search_directory_file_init (NautilusSearchDirectoryFile *search_file)
 }
 
 static void
-nautilus_search_directory_file_finalize (GObject *object)
-{
-    NautilusSearchDirectoryFile *search_file;
-
-    search_file = NAUTILUS_SEARCH_DIRECTORY_FILE (object);
-
-    g_free (search_file->metadata_filename);
-
-    G_OBJECT_CLASS (nautilus_search_directory_file_parent_class)->finalize (object);
-}
-
-static void
 nautilus_search_directory_file_class_init (NautilusSearchDirectoryFileClass *klass)
 {
-    GObjectClass *object_class;
-    NautilusFileClass *file_class;
-
-    object_class = G_OBJECT_CLASS (klass);
-    file_class = NAUTILUS_FILE_CLASS (klass);
-
-    object_class->finalize = nautilus_search_directory_file_finalize;
+    NautilusFileClass *file_class = NAUTILUS_FILE_CLASS (klass);
 
     file_class->default_file_type = G_FILE_TYPE_DIRECTORY;
 
