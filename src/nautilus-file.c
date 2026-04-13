@@ -8656,17 +8656,14 @@ nautilus_file_class_init (NautilusFileClass *class)
     class->get_item_count = real_get_item_count;
     class->get_deep_counts = real_get_deep_counts;
 
-#pragma GCC diagnostic push
-#pragma GCC diagnostic ignored "-Wincompatible-pointer-types"
-    class->set_metadata = default_no_op;
-    class->set_metadata_as_list = default_no_op;
-    class->mount = default_no_op;
-    class->unmount = default_no_op;
-    class->eject = default_no_op;
-    class->start = default_no_op;
-    class->stop = default_no_op;
-    class->poll_for_media = default_no_op;
-#pragma GCC diagnostic pop
+    class->set_metadata = (void *) default_no_op;
+    class->set_metadata_as_list = (void *) default_no_op;
+    class->mount = (void *) default_no_op;
+    class->unmount = (void *) default_no_op;
+    class->eject = (void *) default_no_op;
+    class->start = (void *) default_no_op;
+    class->stop = (void *) default_no_op;
+    class->poll_for_media = (void *) default_no_op;
 
     signals[CHANGED] =
         g_signal_new ("changed",
