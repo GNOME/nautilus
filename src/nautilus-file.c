@@ -399,24 +399,22 @@ clear_metadata (NautilusFile *file)
 static GHashTable *
 get_metadata_from_info (GFileInfo *info)
 {
-    GHashTable *metadata;
-    char **attrs;
-    guint id;
-    int i;
-    GFileAttributeType type;
-    gpointer value;
+    const guint metadat_key_len = strlen ("metadata::");
 
-    attrs = g_file_info_list_attributes (info, "metadata");
+    g_auto (GStrv) attrs = g_file_info_list_attributes (info, "metadata");
+    GHashTable *metadata = g_hash_table_new (NULL, NULL);
 
-    metadata = g_hash_table_new (NULL, NULL);
-
-    for (i = 0; attrs[i] != NULL; i++)
+    for (guint i = 0; attrs[i] != NULL; i++)
     {
-        id = nautilus_metadata_get_id (attrs[i] + strlen ("metadata::"));
+        guint id = nautilus_metadata_get_id (attrs[i] + metadat_key_len);
+
         if (id == 0)
         {
             continue;
         }
+
+        GFileAttributeType type;
+        gpointer value;
 
         if (!g_file_info_get_attribute_data (info, attrs[i],
                                              &type, &value, NULL))
@@ -436,8 +434,6 @@ get_metadata_from_info (GFileInfo *info)
                                  g_strdupv ((char **) value));
         }
     }
-
-    g_strfreev (attrs);
 
     return metadata;
 }
