@@ -333,13 +333,11 @@ gboolean                nautilus_file_is_not_yet_confirmed              (Nautilu
 
 /* Simple getting and setting top-level metadata. */
 const char *            nautilus_file_get_metadata                      (NautilusFile                   *file,
-									 const char                     *key,
-									 const char                     *default_metadata);
+									 const char                     *key);
 GStrv		            nautilus_file_get_metadata_list                 (NautilusFile                   *file,
 									 const char                     *key);
 void                    nautilus_file_set_metadata                      (NautilusFile                   *file,
 									 const char                     *key,
-									 const char                     *default_metadata,
 									 const char                     *metadata);
 void                    nautilus_file_set_metadata_list                 (NautilusFile                   *file,
 									 const char                     *key,
