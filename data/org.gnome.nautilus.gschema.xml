@@ -140,9 +140,6 @@
       <description>Images over this size (in megabytes) won’t be thumbnailed. The purpose of this setting is to avoid thumbnailing large images that may take a long time to load or use lots of memory.</description>
     </key>
     <key name="default-sort-order" enum="org.gnome.nautilus.SortOrder">
-      <aliases>
-        <alias value='modification_date' target='mtime'/>
-      </aliases>
       <default>'name'</default>
       <summary>Default sort order</summary>
       <description>The default sort-order for items in the icon view. Possible values are “name”, “size”, “type”, “mtime”, “atime” and “starred”.</description>
@@ -154,10 +151,7 @@
     </key>
     <key name="default-folder-viewer" enum="org.gnome.nautilus.FolderView">
       <aliases>
-        <alias value='icon_view' target='icon-view'/>
-        <alias value='compact_view' target='icon-view'/>
         <alias value='compact-view' target='icon-view'/>
-        <alias value='list_view' target='list-view'/>
       </aliases>
       <default>'icon-view'</default>
       <summary>Default folder viewer</summary>
