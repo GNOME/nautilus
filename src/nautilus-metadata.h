@@ -30,11 +30,9 @@
 
 /* Per-file */
 
-#define NAUTILUS_METADATA_KEY_ICON_VIEW_SORT_BY          	"nautilus-icon-view-sort-by"
-#define NAUTILUS_METADATA_KEY_ICON_VIEW_SORT_REVERSED    	"nautilus-icon-view-sort-reversed"
+#define NAUTILUS_METADATA_KEY_VIEW_SORT_BY       "nautilus-icon-view-sort-by"
+#define NAUTILUS_METADATA_KEY_VIEW_SORT_REVERSED "nautilus-icon-view-sort-reversed"
 
-#define NAUTILUS_METADATA_KEY_LIST_VIEW_SORT_COLUMN      	"nautilus-list-view-sort-column"
-#define NAUTILUS_METADATA_KEY_LIST_VIEW_SORT_REVERSED    	"nautilus-list-view-sort-reversed"
 #define NAUTILUS_METADATA_KEY_LIST_VIEW_VISIBLE_COLUMNS    	"nautilus-list-view-visible-columns"
 #define NAUTILUS_METADATA_KEY_LIST_VIEW_COLUMN_ORDER    	"nautilus-list-view-column-order"
 

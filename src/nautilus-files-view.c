@@ -561,10 +561,10 @@ on_sort_action_state_changed (GActionGroup *action_group,
     g_variant_get (value, "(&sb)", &target_name, &reversed);
 
     nautilus_file_set_metadata (self->directory_as_file,
-                                NAUTILUS_METADATA_KEY_ICON_VIEW_SORT_BY,
+                                NAUTILUS_METADATA_KEY_VIEW_SORT_BY,
                                 target_name);
     nautilus_file_set_boolean_metadata (self->directory_as_file,
-                                        NAUTILUS_METADATA_KEY_ICON_VIEW_SORT_REVERSED,
+                                        NAUTILUS_METADATA_KEY_VIEW_SORT_REVERSED,
                                         reversed);
 }
 
@@ -583,11 +583,11 @@ get_directory_sort_by (NautilusFile *file,
     }
 
     *reversed = nautilus_file_get_boolean_metadata (file,
-                                                    NAUTILUS_METADATA_KEY_ICON_VIEW_SORT_REVERSED,
+                                                    NAUTILUS_METADATA_KEY_VIEW_SORT_REVERSED,
                                                     *reversed);
 
     const char *folder_sort_key =
-        nautilus_file_get_metadata (file, NAUTILUS_METADATA_KEY_ICON_VIEW_SORT_BY);
+        nautilus_file_get_metadata (file, NAUTILUS_METADATA_KEY_VIEW_SORT_BY);
 
     return folder_sort_key != NULL
            ? folder_sort_key
