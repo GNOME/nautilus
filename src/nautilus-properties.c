@@ -571,7 +571,7 @@ on_undo_icon_reset (NautilusPropertiesWidget *self)
     if (file != NULL && !nautilus_file_is_gone (file))
     {
         nautilus_file_set_metadata (file, NAUTILUS_METADATA_KEY_CUSTOM_ICON,
-                                    NULL, self->custom_icon_for_undo);
+                                    self->custom_icon_for_undo);
     }
 
     g_clear_pointer (&self->custom_icon_for_undo, g_free);
@@ -585,11 +585,9 @@ reset_icon (NautilusPropertiesWidget *self)
     if (file != NULL && !nautilus_file_is_gone (file))
     {
         g_set_str (&self->custom_icon_for_undo,
-                   nautilus_file_get_metadata (file, NAUTILUS_METADATA_KEY_CUSTOM_ICON, NULL));
+                   nautilus_file_get_metadata (file, NAUTILUS_METADATA_KEY_CUSTOM_ICON));
 
-        nautilus_file_set_metadata (file,
-                                    NAUTILUS_METADATA_KEY_CUSTOM_ICON,
-                                    NULL, NULL);
+        nautilus_file_set_metadata (file, NAUTILUS_METADATA_KEY_CUSTOM_ICON, NULL);
     }
 
     gtk_widget_set_visible (self->reset_icon_button, FALSE);
@@ -634,7 +632,7 @@ icon_loaded (GlyLoader                *loader,
         path = g_file_get_uri (icon_location);
     }
 
-    nautilus_file_set_metadata (file, NAUTILUS_METADATA_KEY_CUSTOM_ICON, NULL, path);
+    nautilus_file_set_metadata (file, NAUTILUS_METADATA_KEY_CUSTOM_ICON, path);
 }
 
 static void
@@ -804,9 +802,8 @@ update_image_widget (NautilusPropertiesWidget *self)
             !is_root_directory (file) &&
             !nautilus_file_is_in_trash (file))
         {
-            const gchar *image_path = nautilus_file_get_metadata (file,
-                                                                  NAUTILUS_METADATA_KEY_CUSTOM_ICON,
-                                                                  NULL);
+            const gchar *image_path =
+                nautilus_file_get_metadata (file, NAUTILUS_METADATA_KEY_CUSTOM_ICON);
 
             show_select = nautilus_file_is_directory (file);
             show_reset = (image_path != NULL);
