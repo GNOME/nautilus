@@ -8112,80 +8112,62 @@ nautilus_file_get_default_sort_type (NautilusFile *file,
 const char *
 nautilus_file_sort_type_get_attribute (NautilusFileSortType sort_type)
 {
-    GQuark sort_q = 0;
-
     switch (sort_type)
     {
         case NAUTILUS_FILE_SORT_BY_DISPLAY_NAME:
         {
-            sort_q = attribute_name_q;
+            return g_quark_to_string (attribute_name_q);
         }
-        break;
 
         case NAUTILUS_FILE_SORT_BY_SIZE:
         {
-            sort_q = attribute_size_q;
+            return g_quark_to_string (attribute_size_q);
         }
-        break;
 
         case NAUTILUS_FILE_SORT_BY_TYPE:
         {
-            sort_q = attribute_type_q;
+            return g_quark_to_string (attribute_type_q);
         }
-        break;
 
         case NAUTILUS_FILE_SORT_BY_MTIME:
         {
-            sort_q = attribute_date_modified_q;
+            return g_quark_to_string (attribute_date_modified_q);
         }
-        break;
 
         case NAUTILUS_FILE_SORT_BY_ATIME:
         {
-            sort_q = attribute_date_accessed_q;
+            return g_quark_to_string (attribute_date_accessed_q);
         }
-        break;
 
         case NAUTILUS_FILE_SORT_BY_BTIME:
         {
-            sort_q = attribute_date_created_q;
+            return g_quark_to_string (attribute_date_created_q);
         }
-        break;
 
         case NAUTILUS_FILE_SORT_BY_TRASHED_TIME:
         {
-            sort_q = attribute_trashed_on_q;
+            return g_quark_to_string (attribute_trashed_on_q);
         }
-        break;
 
         case NAUTILUS_FILE_SORT_BY_SEARCH_RELEVANCE:
         {
-            sort_q = attribute_search_relevance_q;
+            return g_quark_to_string (attribute_search_relevance_q);
         }
-        break;
 
         case NAUTILUS_FILE_SORT_BY_RECENCY:
         {
-            sort_q = attribute_recency_q;
+            return g_quark_to_string (attribute_recency_q);
         }
-        break;
 
         case NAUTILUS_FILE_SORT_BY_STARRED:
         {
-            sort_q = attribute_starred_q;
+            return g_quark_to_string (attribute_starred_q);
         }
-        break;
-
-        default:
-        {
-            g_assert_not_reached ();
-        }
-        break;
     }
 
-    g_assert (sort_q != 0);
+    g_warn_if_reached ();
 
-    return g_quark_to_string (sort_q);
+    return g_quark_to_string (attribute_name_q);
 }
 
 static int
