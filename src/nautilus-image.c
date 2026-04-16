@@ -714,8 +714,8 @@ real_snapshot (GtkWidget   *widget,
         {
             float scale_factor = MAX (width, height) / self->size;
 
-            width = width / scale_factor;
-            height = height / scale_factor;
+            width = round (width / scale_factor);
+            height = round (height / scale_factor);
         }
 
         gsk_rounded_rect_init_from_rect (&rounded_rect,
