@@ -28,8 +28,11 @@ static void
 test_file_metadata_str_set (void)
 {
     g_autoptr (NautilusFile) file = nautilus_file_get_by_uri (TEST_FILE);
-    nautilus_file_set_metadata (file, KEY_STR, "value");
+
+    nautilus_file_set_metadata (file, KEY_STR, G_FILE_ATTRIBUTE_TYPE_STRING, "value");
+
     const char *metadata = nautilus_file_get_metadata (file, KEY_STR);
+
     g_assert_cmpstr (metadata, ==, "value");
 }
 
