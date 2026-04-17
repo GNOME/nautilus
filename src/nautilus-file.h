@@ -70,6 +70,11 @@ typedef enum {
 	NAUTILUS_FILE_ICON_FLAGS_USE_MOUNT_ICON = (1<<1),
 } G_GNUC_FLAG_ENUM NautilusFileIconFlags;
 
+typedef enum {
+	NAUTILUS_METADATA_STRING = G_FILE_ATTRIBUTE_TYPE_STRING,
+	NAUTILUS_METADATA_STRINGV = G_FILE_ATTRIBUTE_TYPE_STRINGV,
+} NautilusMetadataType;
+
 #define NAUTILUS_THUMBNAIL_MINIMUM_ICON_SIZE 32
 
 typedef void (*NautilusFileCallback)          (NautilusFile  *file,
@@ -318,11 +323,9 @@ const char *            nautilus_file_get_metadata                      (Nautilu
 GStrv		            nautilus_file_get_metadata_list                 (NautilusFile                   *file,
 									 const char                     *key);
 void                    nautilus_file_set_metadata                      (NautilusFile                   *file,
-									 const char                     *key,
-									 const char                     *metadata);
-void                    nautilus_file_set_metadata_list                 (NautilusFile                   *file,
-									 const char                     *key,
-									 gchar                         **list);
+                            const char         *key,
+									 NautilusMetadataType type,
+                            		 gpointer             value);
 
 /* Covers for common data types. */
 gboolean                nautilus_file_get_boolean_metadata              (NautilusFile                   *file,
@@ -491,10 +494,8 @@ typedef struct {
         /* Virtual functions which MAY be implemented by subclasses (default implementation does nothing) */
 	void                  (* set_metadata)           (NautilusFile           *file,
 							  const char             *key,
-							  const char             *value);
-	void                  (* set_metadata_as_list)   (NautilusFile           *file,
-							  const char             *key,
-							  char                  **value);
+							  NautilusMetadataType    type,
+							  gpointer             	  value);
 
 	void                  (* mount)                  (NautilusFile                   *file,
 							  GMountOperation                *mount_op,
