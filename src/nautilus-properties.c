@@ -571,7 +571,7 @@ on_undo_icon_reset (NautilusPropertiesWidget *self)
     if (file != NULL && !nautilus_file_is_gone (file))
     {
         nautilus_file_set_metadata (file, NAUTILUS_METADATA_KEY_CUSTOM_ICON,
-                                    self->custom_icon_for_undo);
+                                    G_FILE_ATTRIBUTE_TYPE_STRING, self->custom_icon_for_undo);
     }
 
     g_clear_pointer (&self->custom_icon_for_undo, g_free);
@@ -587,7 +587,8 @@ reset_icon (NautilusPropertiesWidget *self)
         g_set_str (&self->custom_icon_for_undo,
                    nautilus_file_get_metadata (file, NAUTILUS_METADATA_KEY_CUSTOM_ICON));
 
-        nautilus_file_set_metadata (file, NAUTILUS_METADATA_KEY_CUSTOM_ICON, NULL);
+        nautilus_file_set_metadata (file, NAUTILUS_METADATA_KEY_CUSTOM_ICON,
+                                    G_FILE_ATTRIBUTE_TYPE_INVALID, NULL);
     }
 
     gtk_widget_set_visible (self->reset_icon_button, FALSE);
@@ -632,7 +633,8 @@ icon_loaded (GlyLoader                *loader,
         path = g_file_get_uri (icon_location);
     }
 
-    nautilus_file_set_metadata (file, NAUTILUS_METADATA_KEY_CUSTOM_ICON, path);
+    nautilus_file_set_metadata (file, NAUTILUS_METADATA_KEY_CUSTOM_ICON,
+                                G_FILE_ATTRIBUTE_TYPE_STRING, path);
 }
 
 static void

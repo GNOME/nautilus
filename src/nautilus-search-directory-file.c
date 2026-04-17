@@ -172,29 +172,31 @@ search_directory_file_get_deep_counts (NautilusFile *file,
 }
 
 static void
-search_directory_file_set_metadata (NautilusFile *file,
-                                    const char   *key,
-                                    const char   *value)
+search_directory_file_set_metadata (NautilusFile       *file,
+                                    const char         *key,
+                                    GFileAttributeType  type,
+                                    gpointer            value)
 {
     NautilusSearchDirectoryFile *search_file;
 
     search_file = NAUTILUS_SEARCH_DIRECTORY_FILE (file);
-    nautilus_keyfile_metadata_set_string (file,
-                                          search_file->metadata_filename,
-                                          "directory", key, value);
-}
 
-static void
-search_directory_file_set_metadata_as_list (NautilusFile  *file,
-                                            const char    *key,
-                                            char         **value)
-{
-    NautilusSearchDirectoryFile *search_file;
-
-    search_file = NAUTILUS_SEARCH_DIRECTORY_FILE (file);
-    nautilus_keyfile_metadata_set_stringv (file,
-                                           search_file->metadata_filename,
-                                           "directory", key, (const gchar **) value);
+    if (type == G_FILE_ATTRIBUTE_TYPE_STRING)
+    {
+        nautilus_keyfile_metadata_set_string (file,
+                                              search_file->metadata_filename,
+                                              "directory", key, value);
+    }
+    else if (type == G_FILE_ATTRIBUTE_TYPE_STRINGV)
+    {
+        nautilus_keyfile_metadata_set_stringv (file,
+                                               search_file->metadata_filename,
+                                               "directory", key, value);
+    }
+    else
+    {
+        g_warn_if_reached ();
+    }
 }
 
 void
@@ -302,5 +304,4 @@ nautilus_search_directory_file_class_init (NautilusSearchDirectoryFileClass *kla
     file_class->get_item_count = search_directory_file_get_item_count;
     file_class->get_deep_counts = search_directory_file_get_deep_counts;
     file_class->set_metadata = search_directory_file_set_metadata;
-    file_class->set_metadata_as_list = search_directory_file_set_metadata_as_list;
 }

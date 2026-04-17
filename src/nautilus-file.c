@@ -4084,36 +4084,26 @@ nautilus_file_get_metadata_list (NautilusFile *file,
     return g_hash_table_lookup (file->details->metadata, GUINT_TO_POINTER (id));
 }
 
-void
-nautilus_file_set_metadata (NautilusFile *file,
-                            const char   *key,
-                            const char   *metadata)
-{
-    g_return_if_fail (NAUTILUS_IS_FILE (file));
-    g_return_if_fail (key != NULL);
-    g_return_if_fail (key[0] != '\0');
-
-    NAUTILUS_FILE_CLASS (G_OBJECT_GET_CLASS (file))->set_metadata (file, key, metadata);
-}
-
 /**
- * nautilus_file_set_metadata_list:
+ * nautilus_file_set_metadata:
  * @file: A #NautilusFile to set metadata into.
  * @key: A string representation of the metadata key (use macros when possible).
- * @list: (transfer none): A zero-terminated array of newly allocated strings.
+ * @type: Attribute type of the following @value
+ * @value: (transfer none): Value of type @type to set as metadata
  *
- * Set the value of a metadata attribute which takes a list of strings.
+ * If supported by the file, set the value of a metadata attribute.
  */
 void
-nautilus_file_set_metadata_list (NautilusFile  *file,
-                                 const char    *key,
-                                 gchar        **list)
+nautilus_file_set_metadata (NautilusFile       *file,
+                            const char         *key,
+                            GFileAttributeType  type,
+                            gpointer            value)
 {
     g_return_if_fail (NAUTILUS_IS_FILE (file));
     g_return_if_fail (key != NULL);
     g_return_if_fail (key[0] != '\0');
 
-    NAUTILUS_FILE_CLASS (G_OBJECT_GET_CLASS (file))->set_metadata_as_list (file, key, list);
+    NAUTILUS_FILE_CLASS (G_OBJECT_GET_CLASS (file))->set_metadata (file, key, type, value);
 }
 
 gboolean
@@ -4156,7 +4146,8 @@ nautilus_file_set_boolean_metadata (NautilusFile *file,
                                     const char   *key,
                                     gboolean      metadata)
 {
-    nautilus_file_set_metadata (file, key, metadata ? "true" : "false");
+    nautilus_file_set_metadata (file, key,
+                                G_FILE_ATTRIBUTE_TYPE_STRING, metadata ? "true" : "false");
 }
 
 static const char *
@@ -8598,7 +8589,6 @@ nautilus_file_class_init (NautilusFileClass *class)
     class->get_deep_counts = real_get_deep_counts;
 
     class->set_metadata = (void *) default_no_op;
-    class->set_metadata_as_list = (void *) default_no_op;
     class->mount = (void *) default_no_op;
     class->unmount = (void *) default_no_op;
     class->eject = (void *) default_no_op;

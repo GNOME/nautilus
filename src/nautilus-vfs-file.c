@@ -155,16 +155,17 @@ set_metadata_callback (GObject      *source_object,
 }
 
 static void
-vfs_file_set_metadata (NautilusFile *file,
-                       const char   *key,
-                       const char   *value)
+vfs_file_set_metadata (NautilusFile       *file,
+                       const char         *key,
+                       GFileAttributeType  type,
+                       gpointer            value)
 {
     g_autoptr (GFileInfo) info = g_file_info_new ();
     g_autofree char *gio_key = g_strconcat ("metadata::", key, NULL);
 
     if (value != NULL)
     {
-        g_file_info_set_attribute_string (info, gio_key, value);
+        g_file_info_set_attribute (info, gio_key, type, value);
     }
     else
     {
@@ -172,39 +173,6 @@ vfs_file_set_metadata (NautilusFile *file,
         g_file_info_set_attribute (info, gio_key,
                                    G_FILE_ATTRIBUTE_TYPE_INVALID,
                                    NULL);
-    }
-
-    if (g_test_initialized ())
-    {
-        nautilus_file_update_metadata_from_info (file, info);
-        return;
-    }
-
-    g_autoptr (GFile) location = nautilus_file_get_location (file);
-    g_file_set_attributes_async (location,
-                                 info,
-                                 0,
-                                 G_PRIORITY_DEFAULT,
-                                 NULL,
-                                 set_metadata_callback,
-                                 nautilus_file_ref (file));
-}
-
-static void
-vfs_file_set_metadata_as_list (NautilusFile  *file,
-                               const char    *key,
-                               char         **value)
-{
-    g_autoptr (GFileInfo) info = g_file_info_new ();
-    g_autofree char *gio_key = g_strconcat ("metadata::", key, NULL);
-
-    if (value == NULL)
-    {
-        g_file_info_set_attribute (info, gio_key, G_FILE_ATTRIBUTE_TYPE_INVALID, NULL);
-    }
-    else
-    {
-        g_file_info_set_attribute_stringv (info, gio_key, value);
     }
 
     if (g_test_initialized ())
@@ -604,7 +572,6 @@ nautilus_vfs_file_class_init (NautilusVFSFileClass *klass)
     file_class->cancel_call_when_ready = vfs_file_cancel_call_when_ready;
     file_class->check_if_ready = vfs_file_check_if_ready;
     file_class->set_metadata = vfs_file_set_metadata;
-    file_class->set_metadata_as_list = vfs_file_set_metadata_as_list;
     file_class->mount = vfs_file_mount;
     file_class->unmount = vfs_file_unmount;
     file_class->eject = vfs_file_eject;

@@ -336,12 +336,11 @@ const char *            nautilus_file_get_metadata                      (Nautilu
 									 const char                     *key);
 GStrv		            nautilus_file_get_metadata_list                 (NautilusFile                   *file,
 									 const char                     *key);
-void                    nautilus_file_set_metadata                      (NautilusFile                   *file,
-									 const char                     *key,
-									 const char                     *metadata);
-void                    nautilus_file_set_metadata_list                 (NautilusFile                   *file,
-									 const char                     *key,
-									 gchar                         **list);
+void
+nautilus_file_set_metadata (NautilusFile       *file,
+                            const char         *key,
+                            GFileAttributeType  type,
+                            gpointer            value);
 
 /* Covers for common data types. */
 gboolean                nautilus_file_get_boolean_metadata              (NautilusFile                   *file,
@@ -509,10 +508,8 @@ typedef struct {
         /* Virtual functions which MAY be implemented by subclasses (default implementation does nothing) */
 	void                  (* set_metadata)           (NautilusFile           *file,
 							  const char             *key,
-							  const char             *value);
-	void                  (* set_metadata_as_list)   (NautilusFile           *file,
-							  const char             *key,
-							  char                  **value);
+							  GFileAttributeType      type,
+							  gpointer             	  value);
 
 	void                  (* mount)                  (NautilusFile                   *file,
 							  GMountOperation                *mount_op,

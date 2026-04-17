@@ -413,12 +413,12 @@ nautilus_column_save_metadata (NautilusFile *file,
                                GStrv         column_order,
                                GStrv         visible_columns)
 {
-    nautilus_file_set_metadata_list (file,
-                                     NAUTILUS_METADATA_KEY_LIST_VIEW_VISIBLE_COLUMNS,
-                                     visible_columns);
-    nautilus_file_set_metadata_list (file,
-                                     NAUTILUS_METADATA_KEY_LIST_VIEW_COLUMN_ORDER,
-                                     column_order);
+    nautilus_file_set_metadata (file,
+                                NAUTILUS_METADATA_KEY_LIST_VIEW_VISIBLE_COLUMNS,
+                                G_FILE_ATTRIBUTE_TYPE_STRINGV, visible_columns);
+    nautilus_file_set_metadata (file,
+                                NAUTILUS_METADATA_KEY_LIST_VIEW_COLUMN_ORDER,
+                                G_FILE_ATTRIBUTE_TYPE_STRINGV, column_order);
 }
 
 GStrv

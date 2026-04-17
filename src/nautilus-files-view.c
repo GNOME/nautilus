@@ -555,14 +555,14 @@ on_sort_action_state_changed (GActionGroup *action_group,
                               gpointer      user_data)
 {
     NautilusFilesView *self = NAUTILUS_FILES_VIEW (user_data);
-    const gchar *target_name;
+    gchar *target_name;
     gboolean reversed;
 
     g_variant_get (value, "(&sb)", &target_name, &reversed);
 
     nautilus_file_set_metadata (self->directory_as_file,
                                 NAUTILUS_METADATA_KEY_VIEW_SORT_BY,
-                                target_name);
+                                G_FILE_ATTRIBUTE_TYPE_STRING, target_name);
     nautilus_file_set_boolean_metadata (self->directory_as_file,
                                         NAUTILUS_METADATA_KEY_VIEW_SORT_REVERSED,
                                         reversed);
