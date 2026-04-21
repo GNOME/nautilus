@@ -1747,20 +1747,14 @@ mount_not_mounted_callback (GObject      *source_object,
                             GAsyncResult *res,
                             gpointer      user_data)
 {
-    MountNotMountedData *data;
-    NautilusWindowSlot *self;
-    GError *error;
-    GCancellable *cancellable;
-
-    data = user_data;
-    self = data->slot;
-    cancellable = data->cancellable;
-    g_free (data);
+    g_autofree MountNotMountedData *data = user_data;
+    NautilusWindowSlot *self = data->slot;
+    g_autoptr (GError) error = NULL;
+    g_autoptr (GCancellable) cancellable = data->cancellable;
 
     if (g_cancellable_is_cancelled (cancellable))
     {
         /* Cancelled, don't call back */
-        g_object_unref (cancellable);
         return;
     }
 
@@ -1768,13 +1762,11 @@ mount_not_mounted_callback (GObject      *source_object,
 
     self->determine_view_file = nautilus_file_get (self->pending_location);
 
-    error = NULL;
     if (!g_file_mount_enclosing_volume_finish (G_FILE (source_object), res, &error))
     {
         self->mount_error = error;
         got_file_info_for_view_selection_callback (self->determine_view_file, self);
         self->mount_error = NULL;
-        g_error_free (error);
     }
     else
     {
@@ -1785,8 +1777,6 @@ mount_not_mounted_callback (GObject      *source_object,
                                        got_file_info_for_view_selection_callback,
                                        self);
     }
-
-    g_object_unref (cancellable);
 }
 
 static void
