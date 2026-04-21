@@ -1606,9 +1606,7 @@ static void
 nautilus_window_slot_set_location (NautilusWindowSlot *self,
                                    GFile              *location)
 {
-    GFile *old_location;
-
-    if (self->location &&
+    if (self->location != NULL &&
         g_file_equal (location, self->location))
     {
         /* The location name could be updated even if the location
@@ -1618,15 +1616,9 @@ nautilus_window_slot_set_location (NautilusWindowSlot *self,
         return;
     }
 
-    old_location = self->location;
-    self->location = g_object_ref (location);
+    g_set_object (&self->location, location);
 
     nautilus_window_slot_update_title (self);
-
-    if (old_location)
-    {
-        g_object_unref (old_location);
-    }
 
     nautilus_fd_holder_set_location (self->fd_holder, self->location);
     update_back_forward_actions (self);
