@@ -97,9 +97,24 @@ struct _NautilusApplication
     GCancellable *check_dirs_cancellable;
 
     guint dbus_location_update_timeout_id;
+
+    NautilusWindow *last_active_window;
 };
 
 G_DEFINE_FINAL_TYPE (NautilusApplication, nautilus_application, ADW_TYPE_APPLICATION)
+
+static void
+on_window_is_active_changed (NautilusWindow      *window,
+                             GParamSpec          *pspec,
+                             NautilusApplication *self)
+{
+    if (!gtk_window_is_active (GTK_WINDOW (window)))
+    {
+        return;
+    }
+
+    g_set_weak_pointer (&self->last_active_window, window);
+}
 
 void
 nautilus_application_set_accelerator (GApplication *app,
@@ -339,10 +354,21 @@ nautilus_application_open_location_full (NautilusApplication *self,
         /* Look for window that alredy shows location */
         target_window = get_window_with_location (self, location);
     }
-    else if ((flags & NAUTILUS_OPEN_FLAG_NEW_WINDOW) == 0)
+
+    if (target_window == NULL && (flags & NAUTILUS_OPEN_FLAG_NEW_WINDOW) == 0)
     {
         /* Reuse active window */
         target_window = active_window;
+
+        if (target_window == NULL)
+        {
+            target_window = self->last_active_window;
+        }
+
+        if (target_window == NULL && self->windows != NULL)
+        {
+            target_window = self->windows->data;
+        }
     }
 
     if (target_window == NULL)
@@ -432,6 +458,8 @@ nautilus_application_finalize (GObject *object)
 
     g_clear_object (&self->progress_handler);
     g_clear_object (&self->bookmark_list);
+
+    g_clear_weak_pointer (&self->last_active_window);
 
     g_list_free (self->windows);
 
@@ -1222,6 +1250,8 @@ nautilus_application_window_added (GtkApplication *app,
         self->windows = g_list_prepend (self->windows, window);
         g_signal_connect_swapped (window, "locations-changed",
                                   G_CALLBACK (schedule_dbus_location_update), app);
+        g_signal_connect (window, "notify::is-active",
+                          G_CALLBACK (on_window_is_active_changed), self);
     }
 }
 
@@ -1239,6 +1269,8 @@ nautilus_application_window_removed (GtkApplication *app,
     {
         self->windows = g_list_remove_all (self->windows, window);
         g_signal_handlers_disconnect_by_func (window, schedule_dbus_location_update, app);
+        g_signal_handlers_disconnect_by_func (window, on_window_is_active_changed, self);
+        g_clear_weak_pointer (&self->last_active_window);
     }
 
     /* if this was the last window, close the previewer */
