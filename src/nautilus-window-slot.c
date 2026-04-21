@@ -176,7 +176,6 @@ static void apply_pending_location_and_selection_on_view (NautilusWindowSlot *se
 static void nautilus_window_slot_queue_reload (NautilusWindowSlot *self);
 static void nautilus_window_slot_set_loading (NautilusWindowSlot *self,
                                               gboolean            loading);
-char *nautilus_window_slot_get_location_uri (NautilusWindowSlot *self);
 static void nautilus_window_slot_update_title (NautilusWindowSlot *self);
 static void nautilus_window_slot_set_search_visible (NautilusWindowSlot *self,
                                                      gboolean            visible);
@@ -2144,12 +2143,13 @@ apply_pending_location_and_selection_on_view (NautilusWindowSlot *self)
 static void
 end_location_change (NautilusWindowSlot *self)
 {
-    char *uri;
-    uri = nautilus_window_slot_get_location_uri (self);
-    if (uri)
+    if (g_getenv ("G_MESSAGES_DEBUG") != NULL)
     {
-        g_debug ("Finished loading window for uri %s", uri);
-        g_free (uri);
+        g_autofree char *uri = (self->location != NULL)
+                               ? g_file_get_uri (self->location)
+                               : NULL;
+
+        g_debug ("Finished loading %s", uri);
     }
 
     nautilus_window_slot_set_allow_stop (self, FALSE);
@@ -2884,18 +2884,6 @@ const gchar *
 nautilus_window_slot_get_title (NautilusWindowSlot *self)
 {
     return self->title;
-}
-
-char *
-nautilus_window_slot_get_location_uri (NautilusWindowSlot *self)
-{
-    g_assert (NAUTILUS_IS_WINDOW_SLOT (self));
-
-    if (self->location)
-    {
-        return g_file_get_uri (self->location);
-    }
-    return NULL;
 }
 
 /* nautilus_window_slot_update_title:
