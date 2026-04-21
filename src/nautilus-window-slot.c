@@ -1744,29 +1744,20 @@ nautilus_window_slot_set_viewed_file (NautilusWindowSlot *self,
     self->viewed_file = file;
 }
 
-typedef struct
-{
-    GCancellable *cancellable;
-    NautilusWindowSlot *slot;
-} MountNotMountedData;
-
 static void
 mount_not_mounted_callback (GObject      *source_object,
                             GAsyncResult *res,
                             gpointer      user_data)
 {
-    g_autofree MountNotMountedData *data = user_data;
-    NautilusWindowSlot *self = data->slot;
+    NautilusWindowSlot *self = user_data;
+    g_autoptr (GCancellable) cancellable = g_steal_pointer (&self->mount_cancellable);
     g_autoptr (GError) error = NULL;
-    g_autoptr (GCancellable) cancellable = data->cancellable;
 
     if (g_cancellable_is_cancelled (cancellable))
     {
         /* Cancelled, don't call back */
         return;
     }
-
-    self->mount_cancellable = NULL;
 
     self->determine_view_file = nautilus_file_get (self->pending_location);
 
@@ -1921,7 +1912,6 @@ handle_mount_if_needed (NautilusWindowSlot *self,
                         NautilusFile       *file)
 {
     GMountOperation *mount_op;
-    MountNotMountedData *data;
     GFile *location;
     GError *error = NULL;
     gboolean needs_mount_handling = FALSE;
@@ -1943,12 +1933,10 @@ handle_mount_if_needed (NautilusWindowSlot *self,
         mount_op = gtk_mount_operation_new (GTK_WINDOW (gtk_widget_get_root (GTK_WIDGET (self))));
         g_mount_operation_set_password_save (mount_op, G_PASSWORD_SAVE_FOR_SESSION);
         location = nautilus_file_get_location (file);
-        data = g_new0 (MountNotMountedData, 1);
-        data->cancellable = g_cancellable_new ();
-        data->slot = self;
-        self->mount_cancellable = data->cancellable;
+        g_clear_object (&self->mount_cancellable);
+        self->mount_cancellable = g_cancellable_new ();
         g_file_mount_enclosing_volume (location, 0, mount_op, self->mount_cancellable,
-                                       mount_not_mounted_callback, data);
+                                       mount_not_mounted_callback, self);
         g_object_unref (location);
         g_object_unref (mount_op);
 
