@@ -2985,16 +2985,12 @@ void
 nautilus_window_slot_stop_loading (NautilusWindowSlot *self)
 {
     GFile *location;
-    NautilusDirectory *directory;
     location = nautilus_window_slot_get_location (self);
-    directory = nautilus_directory_get (self->location);
 
     if (self->content_view != NULL)
     {
         nautilus_files_view_stop_loading (self->content_view);
     }
-
-    nautilus_directory_unref (directory);
 
     if (self->pending_location != NULL &&
         location != NULL &&
