@@ -136,11 +136,11 @@ struct _NautilusWindowSlot
 
     /* New location. */
     GFile *pending_location;
+    NautilusFile *pending_file;
     NautilusLocationChangeType location_change_type;
     guint location_change_distance;
     NautilusFileList *pending_selection;
     NautilusFile *pending_file_to_activate;
-    NautilusFile *determine_view_file;
     GCancellable *mount_cancellable;
     GError *mount_error;
     gboolean tried_mount;
@@ -1575,8 +1575,10 @@ begin_location_change (NautilusWindowSlot         *self,
     nautilus_window_slot_set_allow_stop (self, TRUE);
 
     g_assert (self->pending_location == NULL);
+    g_assert (self->pending_file == NULL);
 
     self->pending_location = g_object_ref (location);
+    self->pending_file = nautilus_file_get (location);
     self->location_change_type = type;
     self->location_change_distance = distance;
     self->tried_mount = FALSE;
@@ -1593,10 +1595,7 @@ begin_location_change (NautilusWindowSlot         *self,
     save_selection_for_history (self);
 
     /* Get the info needed to make decisions about how to open the new location */
-    self->determine_view_file = nautilus_file_get (location);
-    g_assert (self->determine_view_file != NULL);
-
-    nautilus_file_call_when_ready (self->determine_view_file,
+    nautilus_file_call_when_ready (self->pending_file,
                                    NAUTILUS_ATTRIBUTE_INFO |
                                    NAUTILUS_ATTRIBUTE_MOUNT,
                                    got_file_info_for_view_selection_callback,
@@ -1759,18 +1758,16 @@ mount_not_mounted_callback (GObject      *source_object,
         return;
     }
 
-    self->determine_view_file = nautilus_file_get (self->pending_location);
-
     if (!g_file_mount_enclosing_volume_finish (G_FILE (source_object), res, &error))
     {
         self->mount_error = error;
-        got_file_info_for_view_selection_callback (self->determine_view_file, self);
+        got_file_info_for_view_selection_callback (self->pending_file, self);
         self->mount_error = NULL;
     }
     else
     {
-        nautilus_file_invalidate_all_attributes (self->determine_view_file);
-        nautilus_file_call_when_ready (self->determine_view_file,
+        nautilus_file_invalidate_all_attributes (self->pending_file);
+        nautilus_file_call_when_ready (self->pending_file,
                                        NAUTILUS_ATTRIBUTE_INFO |
                                        NAUTILUS_ATTRIBUTE_MOUNT,
                                        got_file_info_for_view_selection_callback,
@@ -1960,19 +1957,19 @@ handle_regular_file_if_needed (NautilusWindowSlot *self,
     {
         g_clear_pointer (&self->pending_selection, nautilus_file_list_free);
         g_clear_object (&self->pending_location);
-        g_clear_object (&self->pending_file_to_activate);
-
         self->pending_location = nautilus_file_get_parent_location (file);
+        g_clear_object (&self->pending_file);
+        self->pending_file = g_steal_pointer (&parent_file);
+        g_clear_object (&self->pending_file_to_activate);
         if (self->mode == NAUTILUS_MODE_BROWSE && nautilus_mime_file_extracts (file))
         {
             self->pending_file_to_activate = nautilus_file_ref (file);
         }
 
         self->pending_selection = g_list_prepend (NULL, nautilus_file_ref (file));
-        self->determine_view_file = nautilus_file_ref (parent_file);
 
-        nautilus_file_invalidate_all_attributes (self->determine_view_file);
-        nautilus_file_call_when_ready (self->determine_view_file,
+        nautilus_file_invalidate_all_attributes (self->pending_file);
+        nautilus_file_call_when_ready (self->pending_file,
                                        NAUTILUS_ATTRIBUTE_INFO |
                                        NAUTILUS_ATTRIBUTE_MOUNT,
                                        got_file_info_for_view_selection_callback,
@@ -1987,15 +1984,13 @@ handle_regular_file_if_needed (NautilusWindowSlot *self,
 }
 
 static void
-got_file_info_for_view_selection_callback (NautilusFile *file,
+got_file_info_for_view_selection_callback (NautilusFile *ready_file,
                                            gpointer      callback_data)
 {
-    g_autoptr (NautilusFile) ready_file = file;
     g_autoptr (GError) error = NULL;
     NautilusWindowSlot *self = callback_data;
 
-    g_assert (self->determine_view_file == file);
-    self->determine_view_file = NULL;
+    g_assert (self->pending_file == ready_file);
 
     if (handle_mount_if_needed (self, ready_file) ||
         handle_regular_file_if_needed (self, ready_file))
@@ -2149,12 +2144,12 @@ free_location_change (NautilusWindowSlot *self)
         g_clear_object (&self->mount_cancellable);
     }
 
-    if (self->determine_view_file != NULL)
+    if (self->pending_file != NULL)
     {
         nautilus_file_cancel_call_when_ready
-            (self->determine_view_file,
+            (self->pending_file,
             got_file_info_for_view_selection_callback, self);
-        g_clear_object (&self->determine_view_file);
+        g_clear_object (&self->pending_file);
     }
 }
 
@@ -2507,14 +2502,13 @@ static void
 nautilus_window_slot_update_for_new_location (NautilusWindowSlot *self)
 {
     g_autoptr (GFile) new_location = g_steal_pointer (&self->pending_location);
-    g_autoptr (NautilusFile) file = nautilus_file_get (new_location);
+    g_autoptr (NautilusFile) new_file = g_steal_pointer (&self->pending_file);
 
     nautilus_window_slot_update_bookmark (self, new_location);
 
     update_history (self, self->location_change_type, new_location);
 
-    nautilus_window_slot_set_viewed_file (self, file);
-
+    nautilus_window_slot_set_viewed_file (self, new_file);
     nautilus_window_slot_set_location (self, new_location);
 
     /* Sync the actions for this new location. */
