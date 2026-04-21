@@ -2205,29 +2205,26 @@ nautilus_window_slot_back_or_forward (NautilusWindowSlot *self,
 static void
 nautilus_window_slot_force_reload (NautilusWindowSlot *self)
 {
-    GFile *location;
-    g_autolist (NautilusFile) selection = NULL;
-
-    g_assert (NAUTILUS_IS_WINDOW_SLOT (self));
-
-    location = nautilus_window_slot_get_location (self);
-    if (location == NULL)
+    if (self->location == NULL)
     {
         return;
     }
 
+
+    g_assert (NAUTILUS_IS_WINDOW_SLOT (self));
+
     /* peek_slot_field (window, location) can be free'd during the processing
      * of begin_location_change, so make a copy
      */
-    g_object_ref (location);
+    g_autoptr (GFile) new_location = g_object_ref (self->location);
+    g_autolist (NautilusFile) selection = NULL;
 
     if (self->content_view)
     {
         selection = nautilus_files_view_get_selection (self->content_view);
     }
     /* TODO: Add selection source info to stored selection */
-    begin_location_change (self, location, selection, NAUTILUS_LOCATION_CHANGE_RELOAD, 0);
-    g_object_unref (location);
+    begin_location_change (self, new_location, selection, NAUTILUS_LOCATION_CHANGE_RELOAD, 0);
 }
 
 static void
