@@ -2138,7 +2138,7 @@ free_location_change (NautilusWindowSlot *self)
     if (self->mount_cancellable != NULL)
     {
         g_cancellable_cancel (self->mount_cancellable);
-        self->mount_cancellable = NULL;
+        g_clear_object (&self->mount_cancellable);
     }
 
     if (self->determine_view_file != NULL)
@@ -2146,7 +2146,7 @@ free_location_change (NautilusWindowSlot *self)
         nautilus_file_cancel_call_when_ready
             (self->determine_view_file,
             got_file_info_for_view_selection_callback, self);
-        self->determine_view_file = NULL;
+        g_clear_object (&self->determine_view_file);
     }
 }
 
