@@ -1403,7 +1403,6 @@ nautilus_window_slot_init (NautilusWindowSlot *self)
 
 static void begin_location_change (NautilusWindowSlot        *slot,
                                    GFile                     *location,
-                                   GFile                     *previous_location,
                                    NautilusFileList          *new_selection,
                                    NautilusLocationChangeType type,
                                    guint                      distance);
@@ -1431,7 +1430,7 @@ nautilus_window_slot_open_location_full (NautilusWindowSlot *self,
         return;
     }
 
-    begin_location_change (self, location, old_location, new_selection,
+    begin_location_change (self, location, new_selection,
                            NAUTILUS_LOCATION_CHANGE_STANDARD, 0);
 }
 
@@ -1536,7 +1535,6 @@ save_selection_for_history (NautilusWindowSlot *self)
  *
  * Change a window slot's location.
  * @location: A url specifying the location to load
- * @previous_location: The url that was previously shown in the window that initialized the change, if any
  * @new_selection: The initial selection to present after loading the location
  * @type: Which type of location change is this? Standard, back, forward, or reload?
  * @distance: If type is back or forward, the index into the back or forward chain. If
@@ -1548,7 +1546,6 @@ save_selection_for_history (NautilusWindowSlot *self)
 static void
 begin_location_change (NautilusWindowSlot         *self,
                        GFile                      *location,
-                       GFile                      *previous_location,
                        NautilusFileList           *new_selection,
                        NautilusLocationChangeType  type,
                        guint                       distance)
@@ -1575,7 +1572,7 @@ begin_location_change (NautilusWindowSlot         *self,
         check_select_old_location_containing_folder (nautilus_file_list_copy (new_selection),
                                                      type,
                                                      location,
-                                                     previous_location);
+                                                     self->location);
     /* Flush down list. Up/down actions should fetch the list beforehand. */
     g_clear_list (&self->down_list, g_object_unref);
 
@@ -2179,7 +2176,6 @@ nautilus_window_slot_back_or_forward (NautilusWindowSlot *self,
     GList *list;
     guint len;
     NautilusBookmark *bookmark;
-    GFile *old_location;
     g_autolist (NautilusFile) selection = NULL;
 
     if (back)
@@ -2210,7 +2206,6 @@ nautilus_window_slot_back_or_forward (NautilusWindowSlot *self,
 
     bookmark = g_list_nth_data (list, distance);
     GFile *location = nautilus_bookmark_get_location (bookmark);
-    old_location = nautilus_window_slot_get_location (self);
 
     GStrv selected_uris = nautilus_bookmark_get_selected_uris (bookmark);
     if (selected_uris != NULL)
@@ -2223,7 +2218,7 @@ nautilus_window_slot_back_or_forward (NautilusWindowSlot *self,
     }
 
     begin_location_change (self,
-                           location, old_location,
+                           location,
                            selection,
                            back ? NAUTILUS_LOCATION_CHANGE_BACK : NAUTILUS_LOCATION_CHANGE_FORWARD,
                            distance);
@@ -2254,7 +2249,7 @@ nautilus_window_slot_force_reload (NautilusWindowSlot *self)
         selection = nautilus_files_view_get_selection (self->content_view);
     }
     /* TODO: Add selection source info to stored selection */
-    begin_location_change (self, location, location, selection, NAUTILUS_LOCATION_CHANGE_RELOAD, 0);
+    begin_location_change (self, location, selection, NAUTILUS_LOCATION_CHANGE_RELOAD, 0);
     g_object_unref (location);
 }
 
