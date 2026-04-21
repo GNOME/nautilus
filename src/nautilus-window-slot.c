@@ -2321,44 +2321,6 @@ nautilus_window_slot_update_bookmark (NautilusWindowSlot *self,
 }
 
 static void
-check_bookmark_location_matches (NautilusBookmark *bookmark,
-                                 GFile            *location)
-{
-    GFile *bookmark_location;
-    char *bookmark_uri, *uri;
-
-    bookmark_location = nautilus_bookmark_get_location (bookmark);
-    if (!g_file_equal (location, bookmark_location))
-    {
-        bookmark_uri = g_file_get_uri (bookmark_location);
-        uri = g_file_get_uri (location);
-        g_warning ("bookmark uri is %s, but expected %s", bookmark_uri, uri);
-        g_free (uri);
-        g_free (bookmark_uri);
-    }
-}
-
-/* Debugging function used to verify that the last_location_bookmark
- * is in the state we expect when we're about to use it to update the
- * Back or Forward list.
- */
-static void
-check_last_bookmark_location_matches_slot (NautilusWindowSlot *self)
-{
-    GFile *slot_location = nautilus_window_slot_get_location (self);
-
-    if (g_file_has_uri_scheme (slot_location, SCHEME_SEARCH))
-    {
-        /* In this case, it's expected not to match, because search is not
-         * saved into the history stack. */
-        return;
-    }
-
-    check_bookmark_location_matches (self->last_location_bookmark,
-                                     slot_location);
-}
-
-static void
 handle_go_direction (NautilusWindowSlot *self,
                      GFile              *location,
                      gboolean            forward)
@@ -2373,12 +2335,7 @@ handle_go_direction (NautilusWindowSlot *self,
 
     /* Move items from the list to the other list. */
     g_assert (g_list_length (list) > self->location_change_distance);
-    check_bookmark_location_matches (g_list_nth_data (list, self->location_change_distance),
-                                     location);
     g_assert (nautilus_window_slot_get_location (self) != NULL);
-
-    /* Move current location to list */
-    check_last_bookmark_location_matches_slot (self);
 
     /* Use the first bookmark in the history list rather than creating a new one. */
     other_list = g_list_prepend (other_list, self->last_location_bookmark);
@@ -2427,9 +2384,9 @@ handle_go_elsewhere (NautilusWindowSlot *self,
          */
         if (!g_file_equal (slot_location, location) && self->last_location_bookmark != NULL)
         {
-            /* Store bookmark for current location in back list, unless there is no current location */
-            check_last_bookmark_location_matches_slot (self);
-            /* Use the first bookmark in the history list rather than creating a new one. */
+            /* Store bookmark for current location in back list, unless there is no current location
+             * Use the first bookmark in the history list rather than creating a new one.
+             */
             self->back_list = g_list_prepend (self->back_list,
                                               self->last_location_bookmark);
             g_object_ref (self->back_list->data);
