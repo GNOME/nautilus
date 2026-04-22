@@ -173,15 +173,19 @@ static void create_and_bind_new_content_view (NautilusWindowSlot *self,
                                               guint               view_id);
 static void nautilus_window_slot_update_for_new_location (NautilusWindowSlot *self);
 static void apply_pending_location_and_selection_on_view (NautilusWindowSlot *self);
+static void nautilus_window_slot_queue_reload (NautilusWindowSlot *self);
 static void nautilus_window_slot_set_loading (NautilusWindowSlot *self,
                                               gboolean            loading);
 char *nautilus_window_slot_get_location_uri (NautilusWindowSlot *self);
+static void nautilus_window_slot_update_title (NautilusWindowSlot *self);
 static void nautilus_window_slot_set_search_visible (NautilusWindowSlot *self,
                                                      gboolean            visible);
 static void nautilus_window_slot_set_location (NautilusWindowSlot *self,
                                                GFile              *location);
 static void nautilus_window_slot_set_viewed_file (NautilusWindowSlot *self,
                                                   NautilusFile       *file);
+static void nautilus_window_slot_set_allow_stop (NautilusWindowSlot *self,
+                                                 gboolean            allow);
 static void nautilus_window_slot_go_up (NautilusWindowSlot *self);
 static void nautilus_window_slot_go_down (NautilusWindowSlot *self);
 static void update_back_forward_actions (NautilusWindowSlot *self);
@@ -2253,11 +2257,9 @@ nautilus_window_slot_force_reload (NautilusWindowSlot *self)
     g_object_unref (location);
 }
 
-void
+static void
 nautilus_window_slot_queue_reload (NautilusWindowSlot *self)
 {
-    g_assert (NAUTILUS_IS_WINDOW_SLOT (self));
-
     if (nautilus_window_slot_get_location (self) == NULL)
     {
         return;
@@ -2895,7 +2897,7 @@ nautilus_window_slot_get_location_uri (NautilusWindowSlot *self)
  * @slot: The NautilusWindowSlot in question.
  *
  */
-void
+static void
 nautilus_window_slot_update_title (NautilusWindowSlot *self)
 {
     g_autofree char *title = nautilus_compute_title_for_location (self->location);
@@ -2915,12 +2917,10 @@ nautilus_window_slot_get_allow_stop (NautilusWindowSlot *self)
     return self->allow_stop;
 }
 
-void
+static void
 nautilus_window_slot_set_allow_stop (NautilusWindowSlot *self,
                                      gboolean            allow)
 {
-    g_assert (NAUTILUS_IS_WINDOW_SLOT (self));
-
     self->allow_stop = allow;
 
     GActionMap *action_map = G_ACTION_MAP (self->slot_action_group);
