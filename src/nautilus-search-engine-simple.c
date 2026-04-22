@@ -32,7 +32,7 @@
 #include <glib.h>
 #include <gio/gio.h>
 
-#define BATCH_SIZE 500
+#define FLUSH_TIME_SPAN (250 * G_TIME_SPAN_MILLISECOND)
 
 struct _NautilusSearchEngineSimple
 {
@@ -42,7 +42,7 @@ struct _NautilusSearchEngineSimple
 
     GHashTable *visited;
 
-    gint n_processed_files;
+    gint64 last_saved_time;
 };
 
 G_DEFINE_FINAL_TYPE (NautilusSearchEngineSimple,
@@ -133,6 +133,7 @@ visit_directory (NautilusSearchEngineSimple *self,
         g_autoptr (GFile) child = g_file_get_child (dir, g_file_info_get_name (info));
         gdouble match = nautilus_query_matches_string (query, display_name);
         gboolean found = (match > -1);
+        gint64 current_time;
 
         if (found && nautilus_query_has_mime_types (query))
         {
@@ -201,10 +202,10 @@ visit_directory (NautilusSearchEngineSimple *self,
             nautilus_search_provider_add_hit (self, hit);
         }
 
-        self->n_processed_files++;
-        if (self->n_processed_files > BATCH_SIZE)
+        current_time = g_get_monotonic_time ();
+        if (current_time - self->last_saved_time >= FLUSH_TIME_SPAN)
         {
-            self->n_processed_files = 0;
+            self->last_saved_time = current_time;
             nautilus_search_provider_flush_hits (self);
         }
 
@@ -337,6 +338,7 @@ nautilus_search_engine_simple_init (NautilusSearchEngineSimple *self)
 {
     self->directories = g_queue_new ();
     self->visited = g_hash_table_new_full (g_str_hash, g_str_equal, g_free, NULL);
+    self->last_saved_time = g_get_monotonic_time ();
 }
 
 NautilusSearchEngineSimple *
