@@ -1396,14 +1396,7 @@ nautilus_window_get_active_location (NautilusWindow *self)
     g_return_val_if_fail (NAUTILUS_IS_WINDOW (self), NULL);
     g_return_val_if_fail (self->active_slot != NULL, NULL);
 
-    GFile *location = nautilus_window_slot_get_location (self->active_slot);
-
-    if (location == NULL)
-    {
-        location = nautilus_window_slot_get_pending_location (self->active_slot);
-    }
-
-    return location;
+    return nautilus_window_slot_get_location (self->active_slot);
 }
 
 GList *

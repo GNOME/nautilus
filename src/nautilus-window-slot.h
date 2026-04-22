@@ -56,7 +56,6 @@ void nautilus_window_slot_set_filter                       (NautilusWindowSlot *
                                                             GtkFilter          *filter);
 NautilusMode nautilus_window_slot_get_mode                 (NautilusWindowSlot *slot);
 GFile * nautilus_window_slot_get_location		   (NautilusWindowSlot *slot);
-GFile * nautilus_window_slot_get_pending_location          (NautilusWindowSlot *slot);
 
 GList * nautilus_window_slot_get_back_history              (NautilusWindowSlot *slot);
 GList * nautilus_window_slot_get_forward_history           (NautilusWindowSlot *slot);

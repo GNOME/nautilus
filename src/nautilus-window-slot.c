@@ -2827,14 +2827,6 @@ nautilus_window_slot_get_location (NautilusWindowSlot *self)
     return self->location;
 }
 
-GFile *
-nautilus_window_slot_get_pending_location (NautilusWindowSlot *self)
-{
-    g_return_val_if_fail (NAUTILUS_IS_WINDOW_SLOT (self), NULL);
-
-    return self->pending_location;
-}
-
 const gchar *
 nautilus_window_slot_get_title (NautilusWindowSlot *self)
 {
