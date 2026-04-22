@@ -214,8 +214,11 @@ visit_directory (NautilusSearchEngineSimple *self,
         {
             const char *id = g_file_info_get_attribute_string (info, G_FILE_ATTRIBUTE_ID_FILE);
 
-            if (id != NULL &&
-                !g_hash_table_contains (self->visited, id))
+            if (id == NULL)
+            {
+                g_queue_push_tail (self->directories, g_steal_pointer (&child));
+            }
+            else if (!g_hash_table_contains (self->visited, id))
             {
                 g_hash_table_add (self->visited, g_strdup (id));
                 g_queue_push_tail (self->directories, g_steal_pointer (&child));
