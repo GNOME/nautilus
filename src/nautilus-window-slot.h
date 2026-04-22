@@ -62,12 +62,9 @@ GList * nautilus_window_slot_get_back_history              (NautilusWindowSlot *
 GList * nautilus_window_slot_get_forward_history           (NautilusWindowSlot *slot);
 
 gboolean nautilus_window_slot_get_allow_stop               (NautilusWindowSlot *slot);
-void     nautilus_window_slot_set_allow_stop		   (NautilusWindowSlot *slot,
-							    gboolean	        allow_stop);
 void     nautilus_window_slot_stop_loading                 (NautilusWindowSlot *slot);
 
 const gchar *nautilus_window_slot_get_title                (NautilusWindowSlot *slot);
-void         nautilus_window_slot_update_title		   (NautilusWindowSlot *slot);
 
 gboolean nautilus_window_slot_handle_activate_files        (NautilusWindowSlot *slot,
                                                             GList              *files);
@@ -76,11 +73,6 @@ gboolean nautilus_window_slot_handle_event       	   (NautilusWindowSlot    *slo
 							    guint                  keyval,
 							    GdkModifierType        state);
 
-void    nautilus_window_slot_queue_reload		   (NautilusWindowSlot *slot);
-
-const gchar*   nautilus_window_slot_get_icon_name                (NautilusWindowSlot *slot);
-
-const gchar*   nautilus_window_slot_get_tooltip                  (NautilusWindowSlot *slot);
 const gchar*   nautilus_window_slot_get_tooltip_with_description (NautilusWindowSlot  *slot,
                                                                   const gchar        **description);
 
@@ -92,7 +84,6 @@ gboolean nautilus_window_slot_get_active                   (NautilusWindowSlot *
 
 void     nautilus_window_slot_set_active                   (NautilusWindowSlot *slot,
                                                             gboolean            active);
-gboolean nautilus_window_slot_get_loading                  (NautilusWindowSlot *slot);
 
 gboolean nautilus_window_slot_get_search_visible           (NautilusWindowSlot *slot);
 

@@ -173,15 +173,19 @@ static void create_and_bind_new_content_view (NautilusWindowSlot *self,
                                               guint               view_id);
 static void nautilus_window_slot_update_for_new_location (NautilusWindowSlot *self);
 static void apply_pending_location_and_selection_on_view (NautilusWindowSlot *self);
+static void nautilus_window_slot_queue_reload (NautilusWindowSlot *self);
 static void nautilus_window_slot_set_loading (NautilusWindowSlot *self,
                                               gboolean            loading);
 char *nautilus_window_slot_get_location_uri (NautilusWindowSlot *self);
+static void nautilus_window_slot_update_title (NautilusWindowSlot *self);
 static void nautilus_window_slot_set_search_visible (NautilusWindowSlot *self,
                                                      gboolean            visible);
 static void nautilus_window_slot_set_location (NautilusWindowSlot *self,
                                                GFile              *location);
 static void nautilus_window_slot_set_viewed_file (NautilusWindowSlot *self,
                                                   NautilusFile       *file);
+static void nautilus_window_slot_set_allow_stop (NautilusWindowSlot *self,
+                                                 gboolean            allow);
 static void nautilus_window_slot_go_up (NautilusWindowSlot *self);
 static void nautilus_window_slot_go_down (NautilusWindowSlot *self);
 static void update_back_forward_actions (NautilusWindowSlot *self);
@@ -769,7 +773,11 @@ nautilus_window_slot_get_property (GObject    *object,
 
         case PROP_ICON_NAME:
         {
-            g_value_set_static_string (value, nautilus_window_slot_get_icon_name (self));
+            const char *icon_name = (self->content_view != NULL)
+                                    ? nautilus_files_view_get_toggle_icon_name (self->content_view)
+                                    : "";
+
+            g_value_set_static_string (value, icon_name);
         }
         break;
 
@@ -787,7 +795,7 @@ nautilus_window_slot_get_property (GObject    *object,
 
         case PROP_LOADING:
         {
-            g_value_set_boolean (value, nautilus_window_slot_get_loading (self));
+            g_value_set_boolean (value, self->loading);
         }
         break;
 
@@ -811,7 +819,11 @@ nautilus_window_slot_get_property (GObject    *object,
 
         case PROP_TOOLTIP:
         {
-            g_value_set_static_string (value, nautilus_window_slot_get_tooltip (self));
+            const char *tooltip = (self->content_view != NULL)
+                                  ? nautilus_files_view_get_toggle_tooltip (self->content_view, NULL)
+                                  : NULL;
+
+            g_value_set_static_string (value, tooltip);
         }
         break;
 
@@ -2253,11 +2265,9 @@ nautilus_window_slot_force_reload (NautilusWindowSlot *self)
     g_object_unref (location);
 }
 
-void
+static void
 nautilus_window_slot_queue_reload (NautilusWindowSlot *self)
 {
-    g_assert (NAUTILUS_IS_WINDOW_SLOT (self));
-
     if (nautilus_window_slot_get_location (self) == NULL)
     {
         return;
@@ -2895,7 +2905,7 @@ nautilus_window_slot_get_location_uri (NautilusWindowSlot *self)
  * @slot: The NautilusWindowSlot in question.
  *
  */
-void
+static void
 nautilus_window_slot_update_title (NautilusWindowSlot *self)
 {
     g_autofree char *title = nautilus_compute_title_for_location (self->location);
@@ -2915,12 +2925,10 @@ nautilus_window_slot_get_allow_stop (NautilusWindowSlot *self)
     return self->allow_stop;
 }
 
-void
+static void
 nautilus_window_slot_set_allow_stop (NautilusWindowSlot *self,
                                      gboolean            allow)
 {
-    g_assert (NAUTILUS_IS_WINDOW_SLOT (self));
-
     self->allow_stop = allow;
 
     GActionMap *action_map = G_ACTION_MAP (self->slot_action_group);
@@ -2989,32 +2997,6 @@ nautilus_window_slot_new (NautilusMode mode)
                                              NULL);
 
     return g_object_ref_sink (self);
-}
-
-const gchar *
-nautilus_window_slot_get_icon_name (NautilusWindowSlot *self)
-{
-    g_return_val_if_fail (NAUTILUS_IS_WINDOW_SLOT (self), NULL);
-
-    if (self->content_view == NULL)
-    {
-        return "";
-    }
-
-    return nautilus_files_view_get_toggle_icon_name (self->content_view);
-}
-
-const gchar *
-nautilus_window_slot_get_tooltip (NautilusWindowSlot *self)
-{
-    g_return_val_if_fail (NAUTILUS_IS_WINDOW_SLOT (self), NULL);
-
-    if (self->content_view == NULL)
-    {
-        return NULL;
-    }
-
-    return nautilus_files_view_get_toggle_tooltip (self->content_view, NULL);
 }
 
 const gchar *
@@ -3105,14 +3087,6 @@ nautilus_window_slot_set_filter (NautilusWindowSlot *self,
     }
 
     g_object_notify_by_pspec (G_OBJECT (self), properties[PROP_FILTER]);
-}
-
-gboolean
-nautilus_window_slot_get_loading (NautilusWindowSlot *self)
-{
-    g_return_val_if_fail (NAUTILUS_IS_WINDOW_SLOT (self), FALSE);
-
-    return self->loading;
 }
 
 NautilusQueryEditor *
