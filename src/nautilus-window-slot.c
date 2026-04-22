@@ -1281,15 +1281,14 @@ update_bookmark_actions (NautilusWindowSlot *self)
 {
     gboolean can_bookmark = FALSE;
     gboolean can_unbookmark = FALSE;
-    GFile *location = nautilus_window_slot_get_location (self);
 
-    if (location != NULL)
+    if (self->location != NULL)
     {
         NautilusApplication *app = NAUTILUS_APPLICATION (g_application_get_default ());
         NautilusBookmarkList *bookmarks = nautilus_application_get_bookmarks (app);
 
-        can_bookmark = nautilus_bookmark_list_can_bookmark (bookmarks, location);
-        can_unbookmark = nautilus_bookmark_list_contains (bookmarks, location);
+        can_bookmark = nautilus_bookmark_list_can_bookmark (bookmarks, self->location);
+        can_unbookmark = nautilus_bookmark_list_contains (bookmarks, self->location);
     }
 
     GAction *action_add = g_action_map_lookup_action (G_ACTION_MAP (self->slot_action_group),
@@ -1305,14 +1304,13 @@ update_star_unstar_actions (NautilusWindowSlot *self)
 {
     gboolean can_star_location = FALSE;
     gboolean is_starred = FALSE;
-    GFile *location = nautilus_window_slot_get_location (self);
 
-    if (location != NULL)
+    if (self->location != NULL)
     {
         NautilusTagManager *tag_manager = nautilus_tag_manager_get ();
-        g_autofree gchar *uri = g_file_get_uri (location);
+        g_autofree gchar *uri = g_file_get_uri (self->location);
 
-        can_star_location = nautilus_tag_manager_can_star_location (tag_manager, location);
+        can_star_location = nautilus_tag_manager_can_star_location (tag_manager, self->location);
         if (uri != NULL)
         {
             is_starred = nautilus_tag_manager_file_is_starred (tag_manager, uri);
@@ -1428,11 +1426,9 @@ nautilus_window_slot_open_location_full (NautilusWindowSlot *self,
                                          GFile              *location,
                                          NautilusFileList   *new_selection)
 {
-    GFile *old_location = nautilus_window_slot_get_location (self);
-
     nautilus_window_slot_set_search_global (self, FALSE);
 
-    if (old_location != NULL && g_file_equal (old_location, location))
+    if (self->location != NULL && g_file_equal (self->location, location))
     {
         if (self->content_view != NULL && new_selection != NULL)
         {
@@ -1999,11 +1995,10 @@ got_file_info_for_view_selection_callback (NautilusFile *ready_file,
         error = g_error_copy (nautilus_file_get_file_info_error (ready_file));
     }
 
-    GFile *location = self->pending_location;
-
     if (error == NULL)
     {
-        guint view_id = nautilus_window_slot_get_view_id_for_location (self, location);
+        guint view_id = nautilus_window_slot_get_view_id_for_location (self,
+                                                                       self->pending_location);
 
         if (self->content_view != NULL)
         {
@@ -2032,12 +2027,10 @@ got_file_info_for_view_selection_callback (NautilusFile *ready_file,
 
         nautilus_window_slot_display_view_selection_failure (window,
                                                              ready_file,
-                                                             location,
+                                                             self->pending_location,
                                                              error);
 
-        GFile *slot_location = nautilus_window_slot_get_location (self);
-
-        if (slot_location == NULL)
+        if (self->location == NULL)
         {
             /* This happens when a new slot cannot display its initial URI.
              * As usual, fallback to $HOME.
@@ -2045,7 +2038,7 @@ got_file_info_for_view_selection_callback (NautilusFile *ready_file,
              * But guard against the case that $HOME cannot be displayed either,
              * otherwise we would enter an infinite loop. */
 
-            if (!nautilus_is_home_directory (location))
+            if (!nautilus_is_home_directory (self->pending_location))
             {
                 nautilus_window_slot_go_home (self);
             }
@@ -2058,7 +2051,7 @@ got_file_info_for_view_selection_callback (NautilusFile *ready_file,
         }
         else
         {
-            gboolean reloading = slot_location == location;
+            gboolean reloading = g_file_equal (self->location, self->pending_location);
 
             /* Clean up state of slot already showing a previous location */
             end_location_change (self);
@@ -2230,7 +2223,7 @@ nautilus_window_slot_force_reload (NautilusWindowSlot *self)
 static void
 nautilus_window_slot_queue_reload (NautilusWindowSlot *self)
 {
-    if (nautilus_window_slot_get_location (self) == NULL)
+    if (self->location == NULL)
     {
         return;
     }
@@ -2307,7 +2300,7 @@ handle_go_direction (NautilusWindowSlot *self,
 
     /* Move items from the list to the other list. */
     g_assert (g_list_length (list) > self->location_change_distance);
-    g_assert (nautilus_window_slot_get_location (self) != NULL);
+    g_assert (self->location != NULL);
 
     /* Use the first bookmark in the history list rather than creating a new one. */
     other_list = g_list_prepend (other_list, self->last_location_bookmark);
@@ -2335,7 +2328,6 @@ static void
 handle_go_elsewhere (NautilusWindowSlot *self,
                      GFile              *location)
 {
-    GFile *slot_location;
     /* Clobber the entire forward list, and move displayed location to back list */
     nautilus_window_slot_clear_forward_list (self);
 
@@ -2346,15 +2338,13 @@ handle_go_elsewhere (NautilusWindowSlot *self,
         return;
     }
 
-    slot_location = nautilus_window_slot_get_location (self);
-
-    if (slot_location != NULL)
+    if (self->location != NULL)
     {
         /* If we're returning to the same uri somehow, don't put this uri on back list.
          * This also avoids a problem where set_displayed_location
          * didn't update last_location_bookmark since the uri didn't change.
          */
-        if (!g_file_equal (slot_location, location) && self->last_location_bookmark != NULL)
+        if (!g_file_equal (self->location, location) && self->last_location_bookmark != NULL)
         {
             /* Store bookmark for current location in back list, unless there is no current location
              * Use the first bookmark in the history list rather than creating a new one.
@@ -2879,16 +2869,13 @@ nautilus_window_slot_set_allow_stop (NautilusWindowSlot *self,
 void
 nautilus_window_slot_stop_loading (NautilusWindowSlot *self)
 {
-    GFile *location;
-    location = nautilus_window_slot_get_location (self);
-
     if (self->content_view != NULL)
     {
         nautilus_files_view_stop_loading (self->content_view);
     }
 
     if (self->pending_location != NULL &&
-        location != NULL &&
+        self->location != NULL &&
         self->content_view != NULL)
     {
         /* No need to tell the new view - either it is the
@@ -2899,7 +2886,7 @@ nautilus_window_slot_stop_loading (NautilusWindowSlot *self)
         g_autolist (NautilusFile) selection = nautilus_files_view_get_selection (self->content_view);
         gboolean selection_is_auto = nautilus_files_view_is_selection_auto (self->content_view);
 
-        nautilus_files_view_set_location (self->content_view, location);
+        nautilus_files_view_set_location (self->content_view, self->location);
         nautilus_files_view_set_selection (self->content_view, selection, selection_is_auto);
     }
 
@@ -3035,19 +3022,19 @@ nautilus_window_slot_get_query_editor (NautilusWindowSlot *self)
 static void
 nautilus_window_slot_go_up (NautilusWindowSlot *self)
 {
-    GFile *location = nautilus_window_slot_get_location (self);
-    if (location == NULL)
+    if (self->location == NULL)
     {
         return;
     }
 
-    g_autoptr (GFile) parent = g_file_get_parent (location);
+    g_autoptr (GFile) parent = g_file_get_parent (self->location);
+
     if (parent != NULL)
     {
         /* Save the down list from getting flushed by begin_location_change ()*/
         g_autolist (GFile) down_list = g_steal_pointer (&self->down_list);
 
-        down_list = g_list_prepend (down_list, g_object_ref (location));
+        down_list = g_list_prepend (down_list, g_object_ref (self->location));
 
         nautilus_window_slot_open_location_full (self, parent, NULL);
 
