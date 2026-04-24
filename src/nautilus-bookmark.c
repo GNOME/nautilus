@@ -637,10 +637,11 @@ nautilus_bookmark_new (GFile       *location,
                        const gchar *custom_name)
 {
     NautilusBookmark *new_bookmark;
+    const char *name = (custom_name != NULL && *custom_name != '\0') ? custom_name : NULL;
 
     new_bookmark = NAUTILUS_BOOKMARK (g_object_new (NAUTILUS_TYPE_BOOKMARK,
                                                     "location", location,
-                                                    "name", custom_name,
+                                                    "name", name,
                                                     NULL));
 
     return new_bookmark;
