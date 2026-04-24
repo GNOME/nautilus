@@ -387,6 +387,28 @@ nautilus_bookmark_update_exists (NautilusBookmark *bookmark)
                              exists_query_info_ready_cb, bookmark);
 }
 
+static void
+nautilus_bookmark_set_icon (NautilusBookmark *self,
+                            GIcon            *new_icon)
+{
+    if (new_icon != NULL && !g_icon_equal (self->icon, new_icon))
+    {
+        g_set_object (&self->icon, new_icon);
+        g_object_notify_by_pspec (G_OBJECT (self), properties[PROP_ICON]);
+    }
+}
+
+static void
+nautilus_bookmark_set_symbolic_icon (NautilusBookmark *self,
+                                     GIcon            *new_icon)
+{
+    if (new_icon != NULL && !g_icon_equal (self->symbolic_icon, new_icon))
+    {
+        g_set_object (&self->symbolic_icon, new_icon);
+        g_object_notify_by_pspec (G_OBJECT (self), properties[PROP_SYMBOLIC_ICON]);
+    }
+}
+
 /* GObject methods */
 
 static void
@@ -396,31 +418,18 @@ nautilus_bookmark_set_property (GObject      *object,
                                 GParamSpec   *pspec)
 {
     NautilusBookmark *self = NAUTILUS_BOOKMARK (object);
-    GIcon *new_icon;
 
     switch (property_id)
     {
         case PROP_ICON:
         {
-            new_icon = g_value_get_object (value);
-
-            if (new_icon != NULL && !g_icon_equal (self->icon, new_icon))
-            {
-                g_clear_object (&self->icon);
-                self->icon = g_object_ref (new_icon);
-            }
+            nautilus_bookmark_set_icon (self, g_value_get_object (value));
         }
         break;
 
         case PROP_SYMBOLIC_ICON:
         {
-            new_icon = g_value_get_object (value);
-
-            if (new_icon != NULL && !g_icon_equal (self->symbolic_icon, new_icon))
-            {
-                g_clear_object (&self->symbolic_icon);
-                self->symbolic_icon = g_object_ref (new_icon);
-            }
+            nautilus_bookmark_set_symbolic_icon (self, g_value_get_object (value));
         }
         break;
 
@@ -554,14 +563,14 @@ nautilus_bookmark_class_init (NautilusBookmarkClass *class)
                              "Bookmark's icon",
                              "The icon of this bookmark",
                              G_TYPE_ICON,
-                             G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS);
+                             G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS | G_PARAM_EXPLICIT_NOTIFY);
 
     properties[PROP_SYMBOLIC_ICON] =
         g_param_spec_object ("symbolic-icon",
                              "Bookmark's symbolic icon",
                              "The symbolic icon of this bookmark",
                              G_TYPE_ICON,
-                             G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS);
+                             G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS | G_PARAM_EXPLICIT_NOTIFY);
 
     g_object_class_install_properties (oclass, NUM_PROPERTIES, properties);
 }
