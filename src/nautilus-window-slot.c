@@ -138,7 +138,7 @@ struct _NautilusWindowSlot
     GFile *pending_location;
     NautilusFile *pending_file;
     NautilusLocationChangeType location_change_type;
-    guint location_change_distance;
+    int location_change_distance;
     NautilusFileList *pending_selection;
     NautilusFile *pending_file_to_activate;
     GCancellable *mount_cancellable;
@@ -1405,7 +1405,7 @@ static void begin_location_change (NautilusWindowSlot        *slot,
                                    GFile                     *location,
                                    NautilusFileList          *new_selection,
                                    NautilusLocationChangeType type,
-                                   guint                      distance);
+                                   int                        distance);
 static void free_location_change (NautilusWindowSlot *self);
 static void end_location_change (NautilusWindowSlot *self);
 static void got_file_info_for_view_selection_callback (NautilusFile *file,
@@ -1535,8 +1535,8 @@ save_selection_for_history (NautilusWindowSlot *self)
  * @location: A url specifying the location to load
  * @new_selection: The initial selection to present after loading the location
  * @type: Which type of location change is this? Standard, back, forward, or reload?
- * @distance: If type is back or forward, the index into the back or forward chain. If
- * type is standard or reload, this is ignored, and must be 0.
+ * @distance: The distance to change, negative for backwards navigation. 0 for
+ *            standard navigation or reload.
  *
  * This is the core function for changing the location of a window. Every change to the
  * location begins here.
@@ -1546,7 +1546,7 @@ begin_location_change (NautilusWindowSlot         *self,
                        GFile                      *location,
                        NautilusFileList           *new_selection,
                        NautilusLocationChangeType  type,
-                       guint                       distance)
+                       int                         distance)
 {
     g_assert (self != NULL);
     g_assert (location != NULL);
@@ -2179,7 +2179,7 @@ nautilus_window_slot_navigate (NautilusWindowSlot *self,
                            location,
                            selection,
                            back ? NAUTILUS_LOCATION_CHANGE_BACK : NAUTILUS_LOCATION_CHANGE_FORWARD,
-                           list_distance);
+                           distance);
 }
 
 /* reload the contents of the window */
@@ -2285,9 +2285,10 @@ handle_go_direction (NautilusWindowSlot *self,
     other_list_ptr = (forward) ? (&self->back_list) : (&self->forward_list);
     list = *list_ptr;
     other_list = *other_list_ptr;
+    guint list_distance = ABS (self->location_change_distance) - 1;
 
     /* Move items from the list to the other list. */
-    g_assert (g_list_length (list) > self->location_change_distance);
+    g_assert (g_list_length (list) > list_distance);
     g_assert (self->location != NULL);
 
     /* Use the first bookmark in the history list rather than creating a new one. */
@@ -2295,7 +2296,7 @@ handle_go_direction (NautilusWindowSlot *self,
     g_object_ref (other_list->data);
 
     /* Move extra links from the list to the other list */
-    for (guint i = 0; i < self->location_change_distance; ++i)
+    for (guint i = 0; i < list_distance; ++i)
     {
         bookmark = NAUTILUS_BOOKMARK (list->data);
         list = g_list_remove (list, bookmark);
