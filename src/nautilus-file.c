@@ -4624,8 +4624,8 @@ nautilus_file_get_emblem_icons (NautilusFile *file)
 
     GList *icons = NULL;
     GIcon *mount_icon = get_mount_icon (file, TRUE);
-    GList *keywords = g_list_concat (get_automatic_emblem_keywords (file),
-                                     get_extension_emblem_keywords (file));
+    g_autoptr (GList) keywords = g_list_concat (get_automatic_emblem_keywords (file),
+                                                get_extension_emblem_keywords (file));
 
     for (GList *l = keywords; l != NULL; l = l->next)
     {
