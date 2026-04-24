@@ -1470,40 +1470,23 @@ check_select_old_location_containing_folder (NautilusFileList           *new_sel
 }
 
 static void
-check_force_reload (GFile                      *location,
-                    NautilusLocationChangeType  type)
+check_force_reload (NautilusWindowSlot *self)
 {
-    NautilusDirectory *directory;
-    NautilusFile *file;
-    gboolean force_reload;
-
-    /* The code to force a reload is here because if we do it
-     * after determining an initial view (in the components), then
-     * we end up fetching things twice.
-     */
-    directory = nautilus_directory_get (location);
-    file = nautilus_file_get (location);
-
-    if (type == NAUTILUS_LOCATION_CHANGE_RELOAD)
+    /* Invalidate attributes in case of a reload or remote locations. */
+    if ((self->location != NULL &&
+         self->location_change_distance == 0 &&
+         g_file_equal (self->location, self->pending_location)) ||
+        (!g_file_is_native (self->pending_location) &&
+         !nautilus_file_is_starred_location (self->pending_file)))
     {
-        force_reload = TRUE;
-    }
-    else
-    {
-        force_reload = !g_file_is_native (location) && !nautilus_file_is_starred_location (file);
-    }
+        /* We need to invalidate file attributes as well due to how mounting works
+         * in the window slot and to avoid other caching issues.
+         * Read handle_mount_if_needed for one example */
+        g_autoptr (NautilusDirectory) directory = nautilus_directory_get (self->pending_location);
 
-    /* We need to invalidate file attributes as well due to how mounting works
-     * in the window slot and to avoid other caching issues.
-     * Read handle_mount_if_needed for one example */
-    if (force_reload)
-    {
-        nautilus_file_invalidate_all_attributes (file);
+        nautilus_file_invalidate_all_attributes (self->pending_file);
         nautilus_directory_force_reload (directory);
     }
-
-    nautilus_directory_unref (directory);
-    nautilus_file_unref (file);
 }
 
 static void
@@ -1576,7 +1559,7 @@ begin_location_change (NautilusWindowSlot         *self,
     /* Flush down list. Up/down actions should fetch the list beforehand. */
     g_clear_list (&self->down_list, g_object_unref);
 
-    check_force_reload (location, type);
+    check_force_reload (self);
 
     save_selection_for_history (self);
 
