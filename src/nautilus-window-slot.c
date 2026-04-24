@@ -1433,23 +1433,20 @@ nautilus_window_slot_open_location_full (NautilusWindowSlot *self,
 }
 
 static NautilusFileList *
-check_select_old_location_containing_folder (NautilusFileList           *new_selection,
-                                             NautilusLocationChangeType  type,
-                                             GFile                      *location,
-                                             GFile                      *previous_location)
+determine_new_selection (NautilusWindowSlot *self,
+                         NautilusFileList   *new_selection)
 {
-    GFile *from_folder, *parent;
-
     /* If there is no new selection or if we are going back and the new location
      * is a (grand)parent of the old location then we automatically
      * select the folder the previous location was in */
-    if ((new_selection == NULL || type == NAUTILUS_LOCATION_CHANGE_BACK) &&
-        previous_location != NULL &&
-        g_file_has_prefix (previous_location, location))
+    if ((new_selection == NULL || self->location_change_distance < 0) &&
+        self->location != NULL &&
+        g_file_has_prefix (self->location, self->pending_location))
     {
-        from_folder = g_object_ref (previous_location);
-        parent = g_file_get_parent (from_folder);
-        while (parent != NULL && !g_file_equal (parent, location))
+        g_autoptr (GFile) from_folder = g_object_ref (self->location);
+        g_autoptr (GFile) parent = g_file_get_parent (from_folder);
+
+        while (parent != NULL && !g_file_equal (parent, self->pending_location))
         {
             g_object_unref (from_folder);
             from_folder = parent;
@@ -1458,15 +1455,11 @@ check_select_old_location_containing_folder (NautilusFileList           *new_sel
 
         if (parent != NULL)
         {
-            g_clear_list (&new_selection, g_object_unref);
-            new_selection = g_list_prepend (NULL, nautilus_file_get (from_folder));
-            g_object_unref (parent);
+            return g_list_prepend (NULL, nautilus_file_get (from_folder));
         }
-
-        g_object_unref (from_folder);
     }
 
-    return new_selection;
+    return nautilus_file_list_copy (new_selection);
 }
 
 static void
@@ -1551,11 +1544,7 @@ begin_location_change (NautilusWindowSlot         *self,
     self->location_change_type = type;
     self->location_change_distance = distance;
     self->tried_mount = FALSE;
-    self->pending_selection =
-        check_select_old_location_containing_folder (nautilus_file_list_copy (new_selection),
-                                                     type,
-                                                     location,
-                                                     self->location);
+    self->pending_selection = determine_new_selection (self, new_selection);
     /* Flush down list. Up/down actions should fetch the list beforehand. */
     g_clear_list (&self->down_list, g_object_unref);
 
