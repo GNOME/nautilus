@@ -28,13 +28,6 @@
 
 #include "nautilus-types.h"
 
-typedef enum {
-	NAUTILUS_LOCATION_CHANGE_STANDARD,
-	NAUTILUS_LOCATION_CHANGE_BACK,
-	NAUTILUS_LOCATION_CHANGE_FORWARD,
-	NAUTILUS_LOCATION_CHANGE_RELOAD
-} NautilusLocationChangeType;
-
 #define NAUTILUS_TYPE_WINDOW_SLOT (nautilus_window_slot_get_type ())
 G_DECLARE_FINAL_TYPE (NautilusWindowSlot, nautilus_window_slot, NAUTILUS, WINDOW_SLOT, AdwBin)
 
