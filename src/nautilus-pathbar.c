@@ -1304,7 +1304,7 @@ make_button_data (NautilusPathBar *self,
     {
         button_data->file = nautilus_file_ref (file);
         nautilus_file_monitor_add (button_data->file, button_data,
-                                   NAUTILUS_ATTRIBUTE_THUMBNAIL_BUFFER);
+                                   NAUTILUS_ATTRIBUTE_INFO);
         button_data->file_changed_signal_id =
             g_signal_connect (button_data->file, "changed",
                               G_CALLBACK (button_data_file_changed),
