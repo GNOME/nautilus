@@ -6796,8 +6796,11 @@ create_task_thread_func (GTask        *task,
                 }
                 else
                 {
-                    gboolean use_extension = job->src != NULL && !is_dir (job->src, common->cancellable);
-                    new_filename = nautilus_filename_for_conflict (filename, count, max_length, use_extension);
+                    gboolean ignore_extension = job->src == NULL || is_dir (job->src, common->cancellable);
+
+                    new_filename = nautilus_filename_for_conflict (filename,
+                                                                   count, max_length,
+                                                                   ignore_extension);
                 }
 
                 if (make_file_name_valid_for_dest_fs (new_filename, dest_fs_type))
@@ -6819,8 +6822,10 @@ create_task_thread_func (GTask        *task,
 
             if (IS_IO_ERROR (error, EXISTS))
             {
-                gboolean use_extension = job->src != NULL && !is_dir (job->src, common->cancellable);
-                g_autofree gchar *filename2 = nautilus_filename_for_conflict (filename, ++count, max_length, use_extension);
+                gboolean ignore_extension = job->src == NULL || is_dir (job->src, common->cancellable);
+                g_autofree gchar *filename2 = nautilus_filename_for_conflict (filename,
+                                                                              ++count, max_length,
+                                                                              ignore_extension);
 
                 make_file_name_valid_for_dest_fs (filename2, dest_fs_type);
                 g_clear_object (&dest);
