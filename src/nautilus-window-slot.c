@@ -1416,7 +1416,8 @@ static void
 save_selection_for_history (NautilusWindowSlot *self)
 {
     if (nautilus_navigation_state_has_current (self->navigation_state) &&
-        self->content_view != NULL)
+        self->content_view != NULL &&
+        selection_source_is_intentional (nautilus_window_slot_get_selection_source (self)))
     {
         g_autolist (NautilusFile) selection = nautilus_files_view_get_selection (self->content_view);
         g_autoptr (GStrvBuilder) selected_uris = g_strv_builder_new ();
@@ -1427,7 +1428,6 @@ save_selection_for_history (NautilusWindowSlot *self)
             g_strv_builder_take (selected_uris, nautilus_file_get_uri (file));
         }
 
-        /* TODO: Add selection source info to stored selection */
         nautilus_navigation_state_set_selection (self->navigation_state,
                                                  g_strv_builder_end (selected_uris));
     }
