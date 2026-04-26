@@ -856,14 +856,6 @@ nautilus_file_is_self_owned (NautilusFile *file)
 static void
 nautilus_file_dispose (GObject *object)
 {
-    NautilusFile *file = NAUTILUS_FILE (object);
-
-    if (file->details->thumbnail_cancellable != NULL)
-    {
-        g_cancellable_cancel (file->details->thumbnail_cancellable);
-        g_clear_object (&file->details->thumbnail_cancellable);
-    }
-
     G_OBJECT_CLASS (nautilus_file_parent_class)->dispose (object);
 }
 
@@ -4690,50 +4682,6 @@ nautilus_file_has_thumbnail (NautilusFile *file)
            file->details->thumbnail != NULL;
 }
 
-static gboolean
-nautilus_file_should_create_thumbnail (NautilusFile *file)
-{
-    if (file->details->thumbnail_info_is_up_to_date &&
-        file->details->thumbnail_path == NULL &&
-        file->details->can_read &&
-        file->details->thumbnail_cancellable == NULL &&
-        !file->details->thumbnailing_failed)
-    {
-        g_autofree gchar *uri = nautilus_file_get_uri (file);
-
-        return nautilus_can_thumbnail (uri,
-                                       nautilus_file_get_mime_type (file),
-                                       nautilus_file_get_mtime (file));
-    }
-
-    return FALSE;
-}
-
-static void
-file_thumbnailing_done_cb (GObject      *source_object,
-                           GAsyncResult *res,
-                           gpointer      data)
-{
-    g_autoptr (GError) error = NULL;
-    g_autoptr (GdkPixbuf) pixbuf = nautilus_create_thumbnail_finish (res, &error);
-
-    if (g_error_matches (error, G_IO_ERROR, G_IO_ERROR_CANCELLED))
-    {
-        /* The operation was cancelled and the file was disposed, bailout. */
-        return;
-    }
-
-    NautilusFile *file = data;
-
-    if (pixbuf != NULL)
-    {
-        nautilus_file_set_thumbnail (file, pixbuf);
-    }
-
-    g_clear_object (&file->details->thumbnail_cancellable);
-    nautilus_file_changed (file);
-}
-
 static GdkPaintable *
 nautilus_file_get_thumbnail_icon (NautilusFile          *file,
                                   int                    size,
@@ -4783,42 +4731,14 @@ nautilus_file_get_thumbnail_icon (NautilusFile          *file,
 
         paintable = gtk_snapshot_to_paintable (snapshot, NULL);
     }
-    else if (nautilus_file_should_create_thumbnail (file))
-    {
-        g_autofree gchar *uri = nautilus_file_get_uri (file);
-        time_t modified_time = 0;
-
-        if (file->details->thumbnail_cancellable != NULL)
-        {
-            g_cancellable_cancel (file->details->thumbnail_cancellable);
-            g_clear_object (&file->details->thumbnail_cancellable);
-        }
-
-        file->details->thumbnail_cancellable = g_cancellable_new ();
-
-        if (file->details->got_file_info &&
-            file->details->file_info_is_up_to_date &&
-            file->details->mtime != 0)
-        {
-            modified_time = file->details->mtime;
-        }
-
-        nautilus_create_thumbnail_async (uri,
-                                         nautilus_file_get_mime_type (file),
-                                         modified_time,
-                                         file->details->thumbnail_cancellable,
-                                         file_thumbnailing_done_cb,
-                                         file);
-    }
 
     if (paintable != NULL)
     {
         return paintable;
     }
 
-    if (file->details->thumbnail_cancellable != NULL ||
-        (nautilus_file_check_if_ready (file, NAUTILUS_ATTRIBUTE_THUMBNAIL_INFO) &&
-         !nautilus_file_check_if_ready (file, NAUTILUS_ATTRIBUTE_THUMBNAIL_BUFFER)))
+    if (nautilus_file_check_if_ready (file, NAUTILUS_ATTRIBUTE_THUMBNAIL_INFO) &&
+        !nautilus_file_check_if_ready (file, NAUTILUS_ATTRIBUTE_THUMBNAIL_BUFFER))
     {
         g_autoptr (GIcon) gicon = g_themed_icon_new (ICON_NAME_THUMBNAIL_LOADING);
 
@@ -7850,14 +7770,6 @@ nautilus_file_invalidate_attributes_internal (NautilusFile       *file,
     }
 
     /* FIXME bugzilla.gnome.org 45075: implement invalidating metadata */
-}
-
-gboolean
-nautilus_file_is_thumbnailing (NautilusFile *file)
-{
-    g_return_val_if_fail (NAUTILUS_IS_FILE (file), FALSE);
-
-    return file->details->thumbnail_cancellable != NULL;
 }
 
 gboolean
