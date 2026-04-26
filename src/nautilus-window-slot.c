@@ -1437,7 +1437,8 @@ save_selection_for_history (NautilusWindowSlot *self)
 {
     /* Set current_bookmark scroll pos */
     if (self->current_location_bookmark != NULL &&
-        self->content_view != NULL)
+        self->content_view != NULL &&
+        selection_source_is_intentional (nautilus_window_slot_get_selection_source (self)))
     {
         g_autolist (NautilusFile) selection = nautilus_files_view_get_selection (self->content_view);
         g_autoptr (GStrvBuilder) selected_uris = g_strv_builder_new ();
