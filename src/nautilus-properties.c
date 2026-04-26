@@ -556,7 +556,8 @@ update_properties_widget_icon (NautilusPropertiesWidget *self)
 
     nautilus_image_set_fallback (NAUTILUS_IMAGE (self->icon_image), paintable);
 
-    if (is_stacked)
+    if (is_stacked ||
+        (self->files != NULL && !nautilus_file_should_show_thumbnail (self->files->data)))
     {
         nautilus_image_set_source (NAUTILUS_IMAGE (self->icon_image), NULL);
     }
