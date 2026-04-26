@@ -2110,6 +2110,7 @@ free_location_change (NautilusWindowSlot *self)
 {
     g_clear_object (&self->pending_location);
     g_clear_object (&self->pending_file_to_activate);
+    self->location_change_distance = 0;
     nautilus_file_list_free (self->pending_selection);
     self->pending_selection = NULL;
 
