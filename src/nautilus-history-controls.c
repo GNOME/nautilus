@@ -61,17 +61,15 @@ static void
 show_menu (NautilusHistoryControls *self,
            GtkWidget               *widget)
 {
-    int direction = GPOINTER_TO_INT (g_object_get_data (G_OBJECT (widget),
-                                                        "nav-direction"));
     g_autoptr (GMenu) menu = g_menu_new ();
     GtkPopoverMenu *popover;
 
-    if (direction == NAUTILUS_NAVIGATION_DIRECTION_FORWARD)
+    if (widget == self->forward_button)
     {
         fill_menu (self, menu, FALSE);
         popover = GTK_POPOVER_MENU (self->forward_menu);
     }
-    else if (direction == NAUTILUS_NAVIGATION_DIRECTION_BACK)
+    else if (widget == self->back_button)
     {
         fill_menu (self, menu, TRUE);
         popover = GTK_POPOVER_MENU (self->back_menu);
@@ -114,10 +112,8 @@ navigation_button_press_cb (GtkGestureClick *gesture,
             return;
         }
 
-        int direction = GPOINTER_TO_INT (g_object_get_data (G_OBJECT (widget),
-                                                            "nav-direction"));
-
-        nautilus_window_back_or_forward_in_new_tab (NAUTILUS_WINDOW (window), direction);
+        nautilus_window_back_or_forward_in_new_tab (NAUTILUS_WINDOW (window),
+                                                    widget == self->back_button ? -1 : 1);
     }
     else if (button == GDK_BUTTON_SECONDARY)
     {
@@ -165,11 +161,6 @@ nautilus_history_controls_contructed (GObject *object)
     gtk_widget_add_controller (self->forward_button, controller);
     g_signal_connect (controller, "pressed",
                       G_CALLBACK (forward_button_longpress_cb), self);
-
-    g_object_set_data (G_OBJECT (self->back_button), "nav-direction",
-                       GUINT_TO_POINTER (NAUTILUS_NAVIGATION_DIRECTION_BACK));
-    g_object_set_data (G_OBJECT (self->forward_button), "nav-direction",
-                       GUINT_TO_POINTER (NAUTILUS_NAVIGATION_DIRECTION_FORWARD));
 
     controller = GTK_EVENT_CONTROLLER (gtk_gesture_click_new ());
     gtk_widget_add_controller (self->back_button, controller);

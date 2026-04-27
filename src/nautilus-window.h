@@ -41,9 +41,6 @@ typedef gboolean (* NautilusWindowGoToCallback) (NautilusWindow *window,
                                                  GError *error,
                                                  gpointer user_data);
 
-#define NAUTILUS_NAVIGATION_DIRECTION_BACK -1
-#define NAUTILUS_NAVIGATION_DIRECTION_FORWARD 1
-
 NautilusWindow * nautilus_window_new                  (void);
 void             nautilus_window_close                (NautilusWindow    *window);
 
