@@ -1,0 +1,5406 @@
+# Lao translation for nautilus.
+# Copyright (C) 2025 nautilus's COPYRIGHT HOLDER
+# This file is distributed under the same license as the nautilus package.
+# bone NI <bounkirdni@gmail.com>,  2025.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: nautilus gnome-49\n"
+"Report-Msgid-Bugs-To: https://gitlab.gnome.org/GNOME/nautilus/issues\n"
+"POT-Creation-Date: 2025-09-20 20:28+0000\n"
+"PO-Revision-Date: 2025-09-20 20:28+0000\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: Lao <lo@li.org>\n"
+"Language: lo\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=1; plural=0;\n"
+
+#: data/nautilus-autorun-software.desktop.in:2
+msgid "Run Software"
+msgstr "ເປີດໃຊ້ງານຊັອບແວ"
+
+#: data/org.gnome.Nautilus.metainfo.xml.in.in:5
+#: data/org.gnome.Nautilus.desktop.in.in:2 src/nautilus-mime-actions.c:102
+#: src/nautilus-portal.c:535 src/resources/ui/nautilus-window.ui:123
+msgid "Files"
+msgstr "ໄຟລ໌"
+
+#: data/org.gnome.Nautilus.metainfo.xml.in.in:6
+#: data/org.gnome.Nautilus.desktop.in.in:3
+msgid "Access and organize files"
+msgstr "ເຂົ້າເຖິງ ແລະ ຈັດລະບຽບໄຟລ໌"
+
+#: data/org.gnome.Nautilus.metainfo.xml.in.in:8
+msgid ""
+"Files, also known as Nautilus, is the default file manager of the GNOME "
+"desktop. It provides a simple and integrated way of managing your files and "
+"browsing your file system."
+msgstr "ໄຟລ໌, ຫຼືທີ່ຮູ້ຈັກກັນໃນຊື່ Nautilus, ແມ່ນໂປຣແກຣມຈັດການໄຟລ໌ເລີ່ມຕົ້ນຂອງເດັສທັອບ GNOME. ມັນສະໜອງວິທີທີ່ງ່າຍດາຍ ແລະ ປະສົມປະສານໃນການຈັດການໄຟລ໌ ແລະ ທ່ອງເບິ່ງລະບົບໄຟລ໌ຂອງທ່ານ."
+
+#: data/org.gnome.Nautilus.metainfo.xml.in.in:12
+msgid ""
+"Nautilus supports all the basic functions of a file manager and more. It can "
+"search and manage your files and folders, both locally and on a network, "
+"read and write data to and from removable media, run scripts, and launch "
+"apps. It has three views: Icon Grid, Icon List, and Tree List. Its functions "
+"can be extended with plugins and scripts."
+msgstr "Nautilus ຮອງຮັບທຸກໜ້າທີ່ພື້ນຖານຂອງໂປຣແກຣມຈັດການໄຟລ໌ ແລະ ຍັງມີຫຼາຍກວ່ານັ້ນ. ມັນສາມາດຄົ້ນຫາ ແລະ ຈັດການໄຟລ໌ ແລະ ໂຟລເດີຂອງທ່ານ, ທັງໃນເຄື່ອງ ແລະ ເທິງເຄືອຂ່າຍ, ອ່ານ ແລະ ຂຽນຂໍ້ມູນໃສ່ ແລະ ຈາກສື່ອຸປະກອນພົກພາ, ເປີດໃຊ້ງານສະຄຣິບ, ແລະ ເປີດແອັບຕ່າງໆ. ມັນມີສາມມຸມມອງ: ມຸມມອງຕາຂ່າຍໄອຄອນ, ມຸມມອງລາຍການໄອຄອນ, ແລະ ມຸມມອງລາຍການແບບຕົ້ນໄມ້. ໜ້າທີ່ຂອງມັນສາມາດຂະຫຍາຍໄດ້ດ້ວຍປລັກອິນ ແລະ ສະຄຣິບຕ່າງໆ."
+
+#: data/org.gnome.Nautilus.metainfo.xml.in.in:60 src/nautilus-files-view.c:9660
+msgid "Grid View"
+msgstr "ມຸມມອງແບບຕາຂ່າຍ"
+
+#: data/org.gnome.Nautilus.metainfo.xml.in.in:64 src/nautilus-files-view.c:9667
+msgid "List View"
+msgstr "ມຸມມອງແບບລາຍການ"
+
+#: data/org.gnome.Nautilus.metainfo.xml.in.in:68
+#: src/nautilus-search-directory-file.c:230
+#: src/nautilus-search-directory-file.c:269
+msgid "Search"
+msgstr "ຄົ້ນຫາ"
+
+#: data/org.gnome.Nautilus.metainfo.xml.in.in:72
+msgid "Selection of Multiple Files"
+msgstr "ການເລືອກຫຼາຍໄຟລ໌"
+
+#. Translators: Search terms to find this application. Do NOT translate or localize the semicolons! The list MUST also end with a semicolon!
+#: data/org.gnome.Nautilus.desktop.in.in:5
+msgid "folder;manager;explore;disk;filesystem;nautilus;"
+msgstr "ໂຟລເດີ;ຈັດການ;ສຳຫຼວດ;ດິສ;ລະບົບໄຟລ໌;nautilus;"
+
+#: data/org.gnome.Nautilus.desktop.in.in:20
+msgid "New Window"
+msgstr "ໜ້າຕ່າງໃໝ່"
+
+#: data/org.gnome.nautilus.gschema.xml:82
+msgid "Always use the location entry, instead of the pathbar"
+msgstr "ໃຊ້ຊ່ອງປ້ອນທີ່ຢູ່ສະເໝີ, ແທນທີ່ຈະໃຊ້ແຖບເສັ້ນທາງ"
+
+#: data/org.gnome.nautilus.gschema.xml:83
+msgid ""
+"If set to true, Files will always use a textual input entry for the location "
+"toolbar, instead of the pathbar."
+msgstr "ຖ້າຕັ້ງເປັນ true, ໄຟລ໌ຈະໃຊ້ຊ່ອງປ້ອນຂໍ້ມູນແບບໂຕໜັງສືສຳລັບແຖບເຄື່ອງມືທີ່ຢູ່ສະເໝີ, ແທນທີ່ຈະໃຊ້ແຖບເສັ້ນທາງ."
+
+#: data/org.gnome.nautilus.gschema.xml:87
+msgid "Where to perform recursive search"
+msgstr "ບ່ອນທີ່ຈະດຳເນີນການຄົ້ນຫາໃນໂຟລເດີຍ່ອຍ"
+
+#: data/org.gnome.nautilus.gschema.xml:88
+msgid ""
+"Locations in which Files should search subfolders. Available values are "
+"“local-only”, “always”, “never”."
+msgstr "ທີ່ຢູ່ທີ່ໄຟລ໌ຄວນຄົ້ນຫາໃນໂຟລເດີຍ່ອຍ. ຄ່າທີ່ມີໃຫ້ແມ່ນ “ສະເພາະໃນເຄື່ອງ”, “ສະເໝີ”, “ບໍ່ເລີຍ”."
+
+#: data/org.gnome.nautilus.gschema.xml:92
+msgid "Filter the search dates using either last used or last modified"
+msgstr "ກັ່ນຕອງວັນທີຄົ້ນຫາໂດຍໃຊ້ວັນທີໃຊ້ງານຫຼ້າສຸດ ຫຼື ວັນທີແກ້ໄຂຫຼ້າສຸດ"
+
+#: data/org.gnome.nautilus.gschema.xml:93
+msgid "Filter the search dates using either last used or last modified."
+msgstr "ກັ່ນຕອງວັນທີຄົ້ນຫາໂດຍໃຊ້ວັນທີໃຊ້ງານຫຼ້າສຸດ ຫຼື ວັນທີແກ້ໄຂຫຼ້າສຸດ."
+
+#: data/org.gnome.nautilus.gschema.xml:97
+msgid "Whether to show a context menu item to delete permanently"
+msgstr "ຈະໃຫ້ສະແດງລາຍການເມນູຄອນເທັກເພື່ອລຶບຖາວອນ ຫຼື ບໍ່"
+
+#: data/org.gnome.nautilus.gschema.xml:98
+msgid ""
+"If set to true, Files will show a delete permanently context menu item to "
+"bypass the Trash."
+msgstr "ຖ້າຕັ້ງເປັນ true, ໄຟລ໌ຈະສະແດງລາຍການເມນູຄອນເທັກສຳລັບລຶບຖາວອນເພື່ອຂ້າມຂັ້ນຕອນການຍ້າຍໄປຖັງຂີ້ເຫຍື້ອ."
+
+#: data/org.gnome.nautilus.gschema.xml:102
+msgid ""
+"Whether to show context menu items to create links from copied or selected "
+"files"
+msgstr "ຈະໃຫ້ສະແດງລາຍການເມນູຄອນເທັກເພື່ອສ້າງລິງກ໌ຈາກໄຟລ໌ທີ່ສຳເນົາ ຫຼື ເລືອກໄວ້ ຫຼື ບໍ່"
+
+#: data/org.gnome.nautilus.gschema.xml:103
+msgid ""
+"If set to true, Files will show context menu items to create links from the "
+"copied or selected files."
+msgstr "ຖ້າຕັ້ງເປັນ true, ໄຟລ໌ຈະສະແດງລາຍການເມນູຄອນເທັກເພື່ອສ້າງລິງກ໌ຈາກໄຟລ໌ທີ່ສຳເນົາ ຫຼື ເລືອກໄວ້."
+
+#: data/org.gnome.nautilus.gschema.xml:108
+msgid "When to show number of items in a folder"
+msgstr "ເວລາທີ່ຈະສະແດງຈຳນວນລາຍການໃນໂຟລເດີ"
+
+#: data/org.gnome.nautilus.gschema.xml:109
+msgid ""
+"Speed tradeoff for when to show the number of items in a folder. If set to "
+"“always” then always show item counts, even if the folder is on a remote "
+"server. If set to “local-only” then only show counts for local file systems. "
+"If set to “never” then never bother to compute item counts."
+msgstr "ການແລກປ່ຽນຄວາມໄວສຳລັບເວລາທີ່ຈະສະແດງຈຳນວນລາຍການໃນໂຟລເດີ. ຖ້າຕັ້ງເປັນ “ສະເໝີ” ແມ່ນໃຫ້ສະແດງຈຳນວນລາຍການຕະຫຼອດ, ເຖິງແມ່ນວ່າໂຟລເດີຈະຢູ່ເທິງເຊີບເວີທາງໄກ. ຖ້າຕັ້ງເປັນ “ສະເພາະໃນເຄື່ອງ” ແມ່ນໃຫ້ສະແດງຈຳນວນສະເພາະລະບົບໄຟລ໌ໃນເຄື່ອງ. ຖ້າຕັ້ງເປັນ “ບໍ່ເລີຍ” ແມ່ນຈະບໍ່ຄຳນວນຈຳນວນລາຍການ."
+
+#: data/org.gnome.nautilus.gschema.xml:113
+msgid "Type of click used to launch/open files"
+msgstr "ປະເພດການຄລິກທີ່ໃຊ້ເພື່ອເປີດໄຟລ໌"
+
+#: data/org.gnome.nautilus.gschema.xml:114
+msgid ""
+"Possible values are “single” to launch files on a single click, or “double” "
+"to launch them on a double click."
+msgstr "ຄ່າທີ່ເປັນໄປໄດ້ແມ່ນ “ຄັ້ງດຽວ” ເພື່ອເປີດໄຟລ໌ດ້ວຍການຄລິກຄັ້ງດຽວ, ຫຼື “ສອງຄັ້ງ” ເພື່ອເປີດດ້ວຍການຄລິກສອງຄັ້ງ."
+
+#: data/org.gnome.nautilus.gschema.xml:118
+msgid "Show the package installer for unknown MIME types"
+msgstr "ສະແດງໂຕຕິດຕັ້ງແພັກເກດສຳລັບປະເພດ MIME ທີ່ບໍ່ຮູ້ຈັກ"
+
+#: data/org.gnome.nautilus.gschema.xml:119
+msgid ""
+"Whether to show the user a package installer dialog in case an unknown MIME "
+"type is opened, in order to search for an app to handle it."
+msgstr "ຈະສະແດງກ່ອງໂຕຕິດຕັ້ງແພັກເກດໃຫ້ຜູ້ໃຊ້ເຫັນ ຫຼື ບໍ່ ໃນກໍລະນີທີ່ເປີດປະເພດ MIME ທີ່ບໍ່ຮູ້ຈັກ, ເພື່ອຄົ້ນຫາແອັບມາຈັດການມັນ."
+
+#: data/org.gnome.nautilus.gschema.xml:123
+msgid "Use extra mouse button events in Files"
+msgstr "ໃຊ້ງານປຸ່ມພິເສດຂອງເມົາສ໌ໃນໄຟລ໌"
+
+#: data/org.gnome.nautilus.gschema.xml:124
+msgid ""
+"For users with mice that have “Forward” and “Back” buttons, this key will "
+"determine if any action is taken inside of Files when either is pressed."
+msgstr "ສຳລັບຜູ້ໃຊ້ທີ່ມີເມົາສ໌ທີ່ມີປຸ່ມ “ໄປໜ້າ” ແລະ “ກັບຄືນ”, ຄີນີ້ຈະກຳນົດວ່າຈະມີການກະທຳໃດໆໃນໄຟລ໌ ຫຼື ບໍ່ ເມື່ອປຸ່ມໃດປຸ່ມໜຶ່ງຖືກກົດ."
+
+#: data/org.gnome.nautilus.gschema.xml:128
+msgid "Mouse button to activate the “Forward” command in browser window"
+msgstr "ປຸ່ມເມົາສ໌ເພື່ອເປີດໃຊ້ຄຳສັ່ງ “ໄປໜ້າ” ໃນໜ້າຕ່າງເບຣົາເຊີ"
+
+#: data/org.gnome.nautilus.gschema.xml:129
+msgid ""
+"For users with mice that have buttons for “Forward” and “Back”, this key "
+"will set which button activates the “Forward” command in a browser window. "
+"Possible values range between 6 and 14."
+msgstr "ສຳລັບຜູ້ໃຊ້ທີ່ມີເມົາສ໌ທີ່ມີປຸ່ມ “ໄປໜ້າ” ແລະ “ກັບຄືນ”, ຄີນີ້ຈະກຳນົດວ່າປຸ່ມໃດຈະເປີດໃຊ້ຄຳສັ່ງ “ໄປໜ້າ” ໃນໜ້າຕ່າງເບຣົາເຊີ. ຄ່າທີ່ເປັນໄປໄດ້ແມ່ນຢູ່ໃນຊ່ວງ 6 ເຖິງ 14."
+
+#: data/org.gnome.nautilus.gschema.xml:133
+msgid "Mouse button to activate the “Back” command in browser window"
+msgstr "ປຸ່ມເມົາສ໌ເພື່ອເປີດໃຊ້ຄຳສັ່ງ “ກັບຄືນ” ໃນໜ້າຕ່າງເບຣົາເຊີ"
+
+#: data/org.gnome.nautilus.gschema.xml:134
+msgid ""
+"For users with mice that have buttons for “Forward” and “Back”, this key "
+"will set which button activates the “Back” command in a browser window. "
+"Possible values range between 6 and 14."
+msgstr "ສຳລັບຜູ້ໃຊ້ທີ່ມີເມົາສ໌ທີ່ມີປຸ່ມ “ໄປໜ້າ” ແລະ “ກັບຄືນ”, ຄີນີ້ຈະກຳນົດວ່າປຸ່ມໃດຈະເປີດໃຊ້ຄຳສັ່ງ “ກັບຄືນ” ໃນໜ້າຕ່າງເບຣົາເຊີ. ຄ່າທີ່ເປັນໄປໄດ້ແມ່ນຢູ່ໃນຊ່ວງ 6 ເຖິງ 14."
+
+#: data/org.gnome.nautilus.gschema.xml:139
+msgid "When to show thumbnails of files"
+msgstr "ເວລາທີ່ຈະສະແດງຮູບຕົວຢ່າງຂອງໄຟລ໌"
+
+#: data/org.gnome.nautilus.gschema.xml:140
+msgid ""
+"Speed trade-off for when to show a file as a thumbnail. If set to “always” "
+"then always thumbnail, even if the folder is on a remote server. If set to "
+"“local-only” then only show thumbnails for local file systems. If set to "
+"“never” then never bother to thumbnail files, just use a generic icon. "
+"Despite what the name may suggest, this applies to any previewable file type."
+msgstr "ການແລກປ່ຽນຄວາມໄວສຳລັບເວລາທີ່ຈະສະແດງໄຟລ໌ເປັນຮູບຕົວຢ່າງ. ຖ້າຕັ້ງເປັນ “ສະເໝີ” ແມ່ນໃຫ້ສະແດງຮູບຕົວຢ່າງຕະຫຼອດ, ເຖິງແມ່ນວ່າໂຟລເດີຈະຢູ່ເທິງເຊີບເວີທາງໄກ. ຖ້າຕັ້ງເປັນ “ສະເພາະໃນເຄື່ອງ” ແມ່ນໃຫ້ສະແດງຮູບຕົວຢ່າງສະເພາະລະບົບໄຟລ໌ໃນເຄື່ອງ. ຖ້າຕັ້ງເປັນ “ບໍ່ເລີຍ” ແມ່ນຈະບໍ່ສ້າງຮູບຕົວຢ່າງຂອງໄຟລ໌, ຈະໃຊ້ພຽງໄອຄອນທົ່ວໄປ. ເຖິງວ່າຊື່ຈະຊີ້ໄປແນວນັ້ນ, ແຕ່ອັນນີ້ຈະນຳໃຊ້ກັບໄຟລ໌ທຸກປະເພດທີ່ສາມາດສະແດງຕົວຢ່າງໄດ້."
+
+#: data/org.gnome.nautilus.gschema.xml:144
+msgid "Maximum image size for thumbnailing"
+msgstr "ຂະໜາດຮູບພາບສູງສຸດສຳລັບການສ້າງຮູບຕົວຢ່າງ"
+
+#: data/org.gnome.nautilus.gschema.xml:145
+msgid ""
+"Images over this size (in megabytes) won’t be thumbnailed. The purpose of "
+"this setting is to avoid thumbnailing large images that may take a long time "
+"to load or use lots of memory."
+msgstr "ຮູບພາບທີ່ມີຂະໜາດໃຫຍ່ກວ່ານີ້ (ເປັນເມກາໄບຕ໌) ຈະບໍ່ຖືກສ້າງຮູບຕົວຢ່າງ. ຈຸດປະສົງຂອງການຕັ້ງຄ່ານີ້ແມ່ນເພື່ອຫຼີກລ່ຽງການສ້າງຮູບຕົວຢ່າງຂອງຮູບພາບຂະໜາດໃຫຍ່ທີ່ອາດຈະໃຊ້ເວລາດົນໃນການໂຫຼດ ຫຼື ໃຊ້ໜ່ວຍຄວາມຈຳຫຼາຍ."
+
+#: data/org.gnome.nautilus.gschema.xml:152
+msgid "Default sort order"
+msgstr "ລຳດັບການຈັດຮຽງເລີ່ມຕົ້ນ"
+
+#: data/org.gnome.nautilus.gschema.xml:153
+msgid ""
+"The default sort-order for items in the icon view. Possible values are "
+"“name”, “size”, “type”, “mtime”, “atime” and “starred”."
+msgstr "ລຳດັບການຈັດຮຽງເລີ່ມຕົ້ນສຳລັບລາຍການໃນມຸມມອງໄອຄອນ. ຄ່າທີ່ເປັນໄປໄດ້ແມ່ນ “ຊື່”, “ຂະໜາດ”, “ປະເພດ”, “ວັນທີແກ້ໄຂ”, “ວັນທີເຂົ້າເຖິງ” ແລະ “ຕິດດາວ”."
+
+#: data/org.gnome.nautilus.gschema.xml:157
+msgid "Reverse sort order in new windows"
+msgstr "ປີ້ນລຳດັບການຈັດຮຽງໃນໜ້າຕ່າງໃໝ່"
+
+#: data/org.gnome.nautilus.gschema.xml:158
+msgid ""
+"If true, files in new windows will be sorted in reverse order. I.e., if "
+"sorted by name, then instead of sorting the files from “a” to “z”, they will "
+"be sorted from “z” to “a”; if sorted by size, instead of being incrementally "
+"they will be sorted decrementally."
+msgstr "ຖ້າເປັນ true, ໄຟລ໌ໃນໜ້າຕ່າງໃໝ່ຈະຖືກຈັດຮຽງແບບປີ້ນລຳດັບ. ຕົວຢ່າງ, ຖ້າຈັດຮຽງຕາມຊື່, ແທນທີ່ຈະຮຽງໄຟລ໌ຈາກ “a” ຫາ “z”, ມັນຈະຖືກຮຽງຈາກ “z” ຫາ “a”; ຖ້າຈັດຮຽງຕາມຂະໜາດ, ແທນທີ່ຈະເປັນການເພີ່ມຂຶ້ນ ມັນຈະຖືກຈັດຮຽງແບບຫຼຸດລົງ."
+
+#: data/org.gnome.nautilus.gschema.xml:168
+msgid "Default folder viewer"
+msgstr "ມຸມມອງໂຟລເດີເລີ່ມຕົ້ນ"
+
+#: data/org.gnome.nautilus.gschema.xml:169
+msgid ""
+"When a folder is visited this viewer is used. Possible values are “list-"
+"view”, and “icon-view”."
+msgstr "ເມື່ອເຂົ້າເບິ່ງໂຟລເດີ ມຸມມອງນີ້ຈະຖືກນຳໃຊ້. ຄ່າທີ່ເປັນໄປໄດ້ແມ່ນ “ມຸມມອງ-ລາຍການ” ແລະ “ມຸມມອງ-ໄອຄອນ”."
+
+#: data/org.gnome.nautilus.gschema.xml:173
+msgid "Whether to show hidden files"
+msgstr "ຈະໃຫ້ສະແດງໄຟລ໌ທີ່ເຊື່ອງໄວ້ ຫຼື ບໍ່"
+
+#: data/org.gnome.nautilus.gschema.xml:174
+msgid ""
+"This key is deprecated and ignored. The “show-hidden” key from "
+"“org.gtk.Settings.FileChooser” is now used instead."
+msgstr "ຄີນີ້ຖືກຍົກເລີກ ແລະ ບໍ່ຖືກນຳໃຊ້ແລ້ວ. ດຽວນີ້ຈະໃຊ້ຄີ “show-hidden” ຈາກ “org.gtk.Settings.FileChooser” ແທນ."
+
+#: data/org.gnome.nautilus.gschema.xml:178
+msgid "Whether GTK 4 settings migration happened"
+msgstr "ການຍ້າຍຂໍ້ມູນການຕັ້ງຄ່າ GTK 4 ໄດ້ເກີດຂຶ້ນແລ້ວ ຫຼື ບໍ່"
+
+#: data/org.gnome.nautilus.gschema.xml:179
+msgid ""
+"Whether settings shared with GtkFileChooser have been migrated from their "
+"GTK 3 keys to the GTK 4 ones."
+msgstr "ການຕັ້ງຄ່າທີ່ໃຊ້ຮ່ວມກັບ GtkFileChooser ໄດ້ຖືກຍ້າຍຈາກຄີ GTK 3 ໄປຍັງຄີ GTK 4 ແລ້ວ ຫຼື ບໍ່."
+
+#: data/org.gnome.nautilus.gschema.xml:183
+msgid ""
+"Whether to open the hovered folder after a timeout when drag and drop "
+"operation"
+msgstr "ຈະເປີດໂຟລເດີທີ່ເລື່ອນເມົາສ໌ຜ່ານຫຼັງຈາກເວລາທີ່ກຳນົດ ຫຼື ບໍ່ ເມື່ອລາກ ແລະ ວາງ"
+
+#: data/org.gnome.nautilus.gschema.xml:184
+msgid ""
+"If this is set to true, when performing a drag and drop operation the "
+"hovered folder will open automatically after a timeout."
+msgstr "ຖ້າຕັ້ງເປັນ true, ເມື່ອດຳເນີນການລາກ ແລະ ວາງ ໂຟລເດີທີ່ເລື່ອນເມົາສ໌ຜ່ານຈະເປີດໂດຍອັດຕະໂນມັດຫຼັງຈາກເວລາທີ່ກຳນົດ."
+
+#: data/org.gnome.nautilus.gschema.xml:188
+msgid ""
+"Whether to have full text search enabled by default when opening a new "
+"window/tab"
+msgstr "ຈະເປີດໃຊ້ການຄົ້ນຫາເນື້ອໃນເຕັມຮູບແບບເປັນຄ່າເລີ່ມຕົ້ນ ຫຼື ບໍ່ ເມື່ອເປີດໜ້າຕ່າງ/ແຖັບໃໝ່"
+
+#: data/org.gnome.nautilus.gschema.xml:189
+msgid ""
+"If set to true, Files will also match the file contents besides the name. "
+"This toggles the default active state, which can still be overridden in the "
+"search popover"
+msgstr "ຖ້າຕັ້ງເປັນ true, ໄຟລ໌ຈະຈັບຄູ່ເນື້ອໃນຂອງໄຟລ໌ນຳ ນອກຈາກຊື່. ອັນນີ້ຈະສະຫຼັບສະຖານະເລີ່ມຕົ້ນ, ເຊິ່ງຍັງສາມາດປ່ຽນແປງໄດ້ໃນປັອບໂອເວີການຄົ້ນຫາ."
+
+#: data/org.gnome.nautilus.gschema.xml:193
+msgid "How to display file timestamps in the views"
+msgstr "ວິທີສະແດງສະແຕມເວລາຂອງໄຟລ໌ໃນມຸມມອງ"
+
+#: data/org.gnome.nautilus.gschema.xml:194
+msgid ""
+"If set to 'simple', Files will show Today and Yesterday with time, otherwise "
+"the exact date without time. If set to 'detailed', it will always show the "
+"exact date and time."
+msgstr "ຖ້າຕັ້ງເປັນ 'ງ່າຍດາຍ', ໄຟລ໌ຈະສະແດງ ມື້ນີ້ ແລະ ມື້ວານນີ້ ພ້ອມເວລາ, ຖ້າບໍ່ດັ່ງນັ້ນຈະສະແດງວັນທີທີ່ແນ່ນອນໂດຍບໍ່ມີເວລາ. ຖ້າຕັ້ງເປັນ 'ລະອຽດ', ມັນຈະສະແດງວັນທີ ແລະ ເວລາທີ່ແນ່ນອນສະເໝີ."
+
+#: data/org.gnome.nautilus.gschema.xml:201
+msgid "Default format for compressing files"
+msgstr "ຮູບແບບເລີ່ມຕົ້ນສຳລັບການບີບອັດໄຟລ໌"
+
+#: data/org.gnome.nautilus.gschema.xml:202
+msgid "The format that will be selected when compressing files."
+msgstr "ຮູບແບບທີ່ຈະຖືກເລືອກເມື່ອບີບອັດໄຟລ໌."
+
+#: data/org.gnome.nautilus.gschema.xml:209
+msgid "List of possible captions on icons"
+msgstr "ລາຍການຄຳອະທິບາຍທີ່ເປັນໄປໄດ້ເທິງໄອຄອນ"
+
+#: data/org.gnome.nautilus.gschema.xml:210
+msgid ""
+"A list of captions below an icon in the icon view. The actual number of "
+"captions shown depends on the zoom level. Some possible values are: “size”, "
+"“type”, “date_modified”, “owner”, “group”, “permissions”, and “mime_type”."
+msgstr "ລາຍການຄຳອະທິບາຍດ້ານລຸ່ມໄອຄອນໃນມຸມມອງໄອຄອນ. ຈຳນວນຄຳອະທິບາຍຕົວຈິງທີ່ສະແດງຂຶ້ນຢູ່ກັບລະດັບການຊູມ. ບາງຄ່າທີ່ເປັນໄປໄດ້ແມ່ນ: “ຂະໜາດ”, “ປະເພດ”, “ວັນທີແກ້ໄຂ”, “ເຈົ້າຂອງ”, “ກຸ່ມ”, “ສິດອະນຸຍາດ”, ແລະ “ປະເພດmime”."
+
+#: data/org.gnome.nautilus.gschema.xml:219
+msgid "Default icon view zoom level"
+msgstr "ລະດັບການຊູມເລີ່ມຕົ້ນຂອງມຸມມອງໄອຄອນ"
+
+#: data/org.gnome.nautilus.gschema.xml:230
+msgid "Default list view zoom level"
+msgstr "ລະດັບການຊູມເລີ່ມຕົ້ນຂອງມຸມມອງລາຍການ"
+
+#: data/org.gnome.nautilus.gschema.xml:234
+msgid "Columns visible in list view"
+msgstr "ຖັນທີ່ເຫັນໄດ້ໃນມຸມມອງລາຍການ"
+
+#: data/org.gnome.nautilus.gschema.xml:238
+msgid "Column order in list view"
+msgstr "ລຳດັບຖັນໃນມຸມມອງລາຍການ"
+
+#: data/org.gnome.nautilus.gschema.xml:242
+msgid "Use tree view"
+msgstr "ໃຊ້ມຸມມອງແບບຕົ້ນໄມ້"
+
+#: data/org.gnome.nautilus.gschema.xml:243
+msgid ""
+"Whether a tree should be used for list view navigation instead of a flat "
+"list."
+msgstr "ຈະໃຊ້ຕົ້ນໄມ້ສຳລັບການນຳທາງໃນມຸມມອງລາຍການແທນທີ່ຈະເປັນລາຍການແບບທຳມະດາ ຫຼື ບໍ່."
+
+#: data/org.gnome.nautilus.gschema.xml:250
+#: data/org.gnome.nautilus.gschema.xml:260
+msgid "Initial size of the window"
+msgstr "ຂະໜາດເລີ່ມຕົ້ນຂອງໜ້າຕ່າງ"
+
+#: data/org.gnome.nautilus.gschema.xml:251
+#: data/org.gnome.nautilus.gschema.xml:261
+msgid "A tuple containing the initial width and height of the app window."
+msgstr "ຄູ່ລຳດັບທີ່ບັນຈຸຄວາມກວ້າງ ແລະ ຄວາມສູງເລີ່ມຕົ້ນຂອງໜ້າຕ່າງແອັບ."
+
+#: data/org.gnome.nautilus.gschema.xml:255
+msgid "Whether the navigation window should be maximized"
+msgstr "ໜ້າຕ່າງນຳທາງຄວນຈະຖືກຂະຫຍາຍໃຫ້ເຕັມຈໍ ຫຼື ບໍ່"
+
+#: data/org.gnome.nautilus.gschema.xml:256
+msgid "Whether the navigation window should be maximized by default."
+msgstr "ໜ້າຕ່າງນຳທາງຄວນຈະຖືກຂະຫຍາຍໃຫ້ເຕັມຈໍເປັນຄ່າເລີ່ມຕົ້ນ ຫຼື ບໍ່."
+
+#: eel/eel-stock-dialogs.c:194
+msgid "You can stop this operation by clicking cancel."
+msgstr "ທ່ານສາມາດຢຸດການດຳເນີນການນີ້ໄດ້ໂດຍການຄລິກຍົກເລີກ."
+
+#: eel/eel-stock-dialogs.c:196 src/nautilus-autorun-software.c:223
+#: src/nautilus-file-chooser.c:239 src/nautilus-file-operations.c:275
+#: src/nautilus-mime-actions.c:697 src/nautilus-mime-actions.c:1111
+#: src/nautilus-mime-actions.c:1419 src/resources/ui/nautilus-app-chooser.ui:16
+#: src/resources/ui/nautilus-batch-rename-dialog.ui:119
+#: src/resources/ui/nautilus-compress-dialog.ui:17
+#: src/resources/ui/nautilus-file-conflict-dialog.ui:15
+#: src/resources/ui/nautilus-file-properties-change-permissions.ui:14
+#: src/resources/ui/nautilus-files-view-select-items.ui:15
+#: src/resources/ui/nautilus-operations-ui-manager-request-passphrase.ui:16
+#: src/resources/ui/nautilus-search-types-dialog.ui:18
+msgid "_Cancel"
+msgstr "_ຍົກເລີກ"
+
+#: extensions/audio-video-properties/totem-properties-view.c:85
+#, c-format
+msgid "%d hour"
+msgstr "%d ຊົ່ວໂມງ"
+
+#: extensions/audio-video-properties/totem-properties-view.c:87
+#, c-format
+msgid "%d minute"
+msgstr "%d ນາທີ"
+
+#: extensions/audio-video-properties/totem-properties-view.c:90
+#, c-format
+msgid "%d second"
+msgstr "%d ວິນາທີ"
+
+#. 5 hours 2 minutes 12 seconds
+#: extensions/audio-video-properties/totem-properties-view.c:96
+#, c-format
+msgctxt "time"
+msgid "%s %s %s"
+msgstr "%s %s %s"
+
+#. 2 minutes 12 seconds
+#: extensions/audio-video-properties/totem-properties-view.c:101
+#, c-format
+msgctxt "time"
+msgid "%s %s"
+msgstr "%s %s"
+
+#. 0 seconds
+#: extensions/audio-video-properties/totem-properties-view.c:111
+msgid "0 seconds"
+msgstr "0 ວິນາທີ"
+
+#: extensions/audio-video-properties/totem-properties-view.c:131
+#: extensions/image-properties/nautilus-image-properties-model.c:238
+#: src/nautilus-batch-rename-dialog.h:165
+#: src/resources/ui/nautilus-batch-rename-dialog.ui:53
+msgid "Title"
+msgstr "ຊື່ເລື່ອງ"
+
+#: extensions/audio-video-properties/totem-properties-view.c:132
+msgid "Artist"
+msgstr "ສິນລະປິນ"
+
+#: extensions/audio-video-properties/totem-properties-view.c:133
+msgid "Album"
+msgstr "ອະລະບ້ຳ"
+
+#: extensions/audio-video-properties/totem-properties-view.c:156
+msgid "Comment"
+msgstr "ຄຳເຫັນ"
+
+#: extensions/audio-video-properties/totem-properties-view.c:167
+#: extensions/audio-video-properties/totem-properties-view.c:176
+msgid "Year"
+msgstr "ປີ"
+
+#: extensions/audio-video-properties/totem-properties-view.c:223
+#, c-format
+msgid "%d kbps"
+msgstr "%d kbps"
+
+#: extensions/audio-video-properties/totem-properties-view.c:239
+#, c-format
+msgid "%d × %d"
+msgstr "%d × %d"
+
+#: extensions/audio-video-properties/totem-properties-view.c:240
+msgid "Dimensions"
+msgstr "ຂະໜາດ"
+
+#: extensions/audio-video-properties/totem-properties-view.c:243
+msgid "Video Codec"
+msgstr "ໂຄເດັກວິດີໂອ"
+
+#: extensions/audio-video-properties/totem-properties-view.c:244
+msgid "Video Bit Rate"
+msgstr "ອັດຕາບິດຕໍ່ວິນາທີຂອງວິດີໂອ"
+
+#: extensions/audio-video-properties/totem-properties-view.c:257
+#, c-format
+msgid "%0.2f frame per second"
+msgstr "%0.2f ເຟຣມຕໍ່ວິນາທີ"
+
+#: extensions/audio-video-properties/totem-properties-view.c:261
+msgid "Frame Rate"
+msgstr "ອັດຕາເຟຣມ"
+
+#: extensions/audio-video-properties/totem-properties-view.c:272
+msgid "Audio Codec"
+msgstr "ໂຄເດັກສຽງ"
+
+#: extensions/audio-video-properties/totem-properties-view.c:274
+msgid "Audio Bit Rate"
+msgstr "ອັດຕາບິດຕໍ່ວິນາທີຂອງສຽງ"
+
+#: extensions/audio-video-properties/totem-properties-view.c:289
+msgid "Sample Rate"
+msgstr "ອັດຕາເກັບຕົວຢ່າງ"
+
+#: extensions/audio-video-properties/totem-properties-view.c:300
+msgid "Surround"
+msgstr "ສຽງຮອບທິດທາງ"
+
+#: extensions/audio-video-properties/totem-properties-view.c:304
+msgid "Mono"
+msgstr "ໂມໂນ"
+
+#: extensions/audio-video-properties/totem-properties-view.c:308
+msgid "Stereo"
+msgstr "ສະເຕີຣິໂອ"
+
+#: extensions/audio-video-properties/totem-properties-view.c:314
+msgid "Channels"
+msgstr "ຊ່ອງສັນຍານ"
+
+#. Some sort of failure occurred. How 'bout we tell the user?
+#: extensions/audio-video-properties/totem-properties-view.c:338
+#: extensions/image-properties/nautilus-image-properties-model.c:280
+#: src/nautilus-application.c:180 src/nautilus-window-slot.c:1822
+msgid "Oops! Something went wrong."
+msgstr "ອຸ້ຍ! ມີບາງຢ່າງຜິດພາດ."
+
+#: extensions/audio-video-properties/totem-properties-view.c:349
+msgid "Audio and Video Properties"
+msgstr "ຄຸນສົມບັດສຽງ ແລະ ວິດີໂອ"
+
+#: extensions/audio-video-properties/totem-properties-view.c:353
+msgid "Audio Properties"
+msgstr "ຄຸນສົມບັດສຽງ"
+
+#: extensions/audio-video-properties/totem-properties-view.c:357
+msgid "Video Properties"
+msgstr "ຄຸນສົມບັດວິດີໂອ"
+
+#: extensions/audio-video-properties/totem-properties-view.c:365
+msgid "Duration"
+msgstr "ໄລຍະເວລາ"
+
+#: extensions/audio-video-properties/totem-properties-view.c:371
+msgid "Container"
+msgstr "ຄອນເທນເນີ"
+
+#: extensions/audio-video-properties/totem-properties-view.c:400
+msgid "Audio/Video Properties"
+msgstr "ຄຸນສົມບັດສຽງ/ວິດີໂອ"
+
+#: extensions/image-properties/nautilus-image-properties-model.c:121
+msgid "Image Type"
+msgstr "ປະເພດຮູບພາບ"
+
+#: extensions/image-properties/nautilus-image-properties-model.c:143
+#: extensions/image-properties/nautilus-image-properties-model.c:151
+#, c-format
+msgid "%d pixel"
+msgstr "%d ພິກເຊລ"
+
+#: extensions/image-properties/nautilus-image-properties-model.c:148
+msgid "Width"
+msgstr "ຄວາມກວ້າງ"
+
+#: extensions/image-properties/nautilus-image-properties-model.c:156
+msgid "Height"
+msgstr "ຄວາມສູງ"
+
+#: extensions/image-properties/nautilus-image-properties-model.c:228
+msgid "Camera Brand"
+msgstr "ຍີ່ຫໍ້ກ້ອງ"
+
+#: extensions/image-properties/nautilus-image-properties-model.c:229
+#: src/resources/ui/nautilus-batch-rename-dialog.ui:28
+msgid "Camera Model"
+msgstr "ລຸ້ນກ້ອງ"
+
+#: extensions/image-properties/nautilus-image-properties-model.c:230
+msgid "Exposure Time"
+msgstr "ເວລາເປີດໜ້າກ້ອງ"
+
+#: extensions/image-properties/nautilus-image-properties-model.c:231
+msgid "Exposure Program"
+msgstr "ໂປຣແກຣມເປີດໜ້າກ້ອງ"
+
+#: extensions/image-properties/nautilus-image-properties-model.c:232
+msgid "Aperture Value"
+msgstr "ຄ່າຮູຮັບແສງ"
+
+#: extensions/image-properties/nautilus-image-properties-model.c:233
+msgid "ISO Speed Rating"
+msgstr "ຄ່າຄວາມໄວ ISO"
+
+#: extensions/image-properties/nautilus-image-properties-model.c:234
+msgid "Flash Fired"
+msgstr "ເປີດແຟລຊ"
+
+#: extensions/image-properties/nautilus-image-properties-model.c:235
+msgid "Metering Mode"
+msgstr "ໂໝດວັດແສງ"
+
+#: extensions/image-properties/nautilus-image-properties-model.c:236
+msgid "Focal Length"
+msgstr "ໄລຍະໂຟກັສ"
+
+#: extensions/image-properties/nautilus-image-properties-model.c:237
+msgid "Software"
+msgstr "ຊັອບແວ"
+
+#: extensions/image-properties/nautilus-image-properties-model.c:239
+msgid "Description"
+msgstr "ລາຍລະອຽດ"
+
+#: extensions/image-properties/nautilus-image-properties-model.c:240
+msgid "Keywords"
+msgstr "ຄຳສຳຄັນ"
+
+#: extensions/image-properties/nautilus-image-properties-model.c:241
+msgid "Creator"
+msgstr "ຜູ້ສ້າງ"
+
+#: extensions/image-properties/nautilus-image-properties-model.c:242
+msgid "Created On"
+msgstr "ສ້າງເມື່ອ"
+
+#: extensions/image-properties/nautilus-image-properties-model.c:243
+msgid "Copyright"
+msgstr "ລິຂະສິດ"
+
+#: extensions/image-properties/nautilus-image-properties-model.c:244
+msgid "Rating"
+msgstr "ຄະແນນ"
+
+#. Translators: "N" and "S" stand for
+#. * north and south in GPS coordinates.
+#: extensions/image-properties/nautilus-image-properties-model.c:254
+msgid "N"
+msgstr "ເໜືອ"
+
+#: extensions/image-properties/nautilus-image-properties-model.c:254
+msgid "S"
+msgstr "ໃຕ້"
+
+#. Translators: "E" and "W" stand for
+#. * east and west in GPS coordinates.
+#: extensions/image-properties/nautilus-image-properties-model.c:258
+msgid "E"
+msgstr "ອອກ"
+
+#: extensions/image-properties/nautilus-image-properties-model.c:258
+msgid "W"
+msgstr "ຕົກ"
+
+#: extensions/image-properties/nautilus-image-properties-model.c:261
+msgid "Coordinates"
+msgstr "ພິກັດ"
+
+#: extensions/image-properties/nautilus-image-properties-model.c:280
+msgid "Failed to load image information"
+msgstr "ບໍ່ສາມາດໂຫຼດຂໍ້ມູນຮູບພາບໄດ້"
+
+#: extensions/image-properties/nautilus-image-properties-model.c:512
+msgid "Image Properties"
+msgstr "ຄຸນສົມບັດຮູບພາບ"
+
+#: src/nautilus-application.c:183
+#, c-format
+msgid ""
+"Unable to create a required folder. Please create the following folder, or "
+"set permissions such that it can be created:\n"
+"%s"
+msgstr "ບໍ່ສາມາດສ້າງໂຟລເດີທີ່ຈຳເປັນໄດ້. ກະລຸນາສ້າງໂຟລເດີຕໍ່ໄປນີ້, ຫຼື ຕັ້ງຄ່າສິດອະນຸຍາດເພື່ອໃຫ້ສາມາດສ້າງໄດ້:\n%s"
+
+#: src/nautilus-application.c:190
+#, c-format
+msgid ""
+"Unable to create required folders. Please create the following folders, or "
+"set permissions such that they can be created:\n"
+"%s"
+msgstr "ບໍ່ສາມາດສ້າງໂຟລເດີທີ່ຈຳເປັນໄດ້. ກະລຸນາສ້າງໂຟລເດີຕໍ່ໄປນີ້, ຫຼື ຕັ້ງຄ່າສິດອະນຸຍາດເພື່ອໃຫ້ສາມາດສ້າງໄດ້:\n%s"
+
+#: src/nautilus-application.c:570
+msgid "--quit cannot be used with URIs."
+msgstr "--quit ບໍ່ສາມາດໃຊ້ຮ່ວມກັບ URI ໄດ້."
+
+#: src/nautilus-application.c:579
+msgid "--select must be used with at least an URI."
+msgstr "--select ຕ້ອງໃຊ້ຮ່ວມກັບ URI ຢ່າງໜ້ອຍໜຶ່ງອັນ."
+
+#: src/nautilus-application.c:715
+msgid "There was an error displaying help"
+msgstr "ເກີດຂໍ້ຜິດພາດໃນການສະແດງຄຳແນະນຳ"
+
+#: src/nautilus-application.c:716 src/nautilus-app-chooser.c:87
+#: src/nautilus-autorun-software.c:161 src/nautilus-mime-actions.c:1278
+#: src/nautilus-ui-utilities.c:353
+msgid "_OK"
+msgstr "_ຕົກລົງ"
+
+#: src/nautilus-application.c:835
+#, c-format
+msgid ""
+"“%s” is an internal protocol. Opening this location directly is not "
+"supported."
+msgstr "“%s” ແມ່ນໂປຣໂຕຄໍພາຍໃນ. ບໍ່ຮອງຮັບການເປີດທີ່ຢູ່ນີ້ໂດຍກົງ."
+
+#: src/nautilus-application.c:917
+msgid "Show the version of the program."
+msgstr "ສະແດງເວີຊັນຂອງໂປຣແກຣມ."
+
+#: src/nautilus-application.c:921
+msgid "Always open a new window for browsing specified URIs"
+msgstr "ເປີດໜ້າຕ່າງໃໝ່ສະເໝີສຳລັບການເບິ່ງ URI ທີ່ລະບຸ"
+
+#: src/nautilus-application.c:925
+msgid "Quit Nautilus."
+msgstr "ອອກຈາກ Nautilus."
+
+#: src/nautilus-application.c:929
+msgid "Select specified URI in parent folder."
+msgstr "ເລືອກ URI ທີ່ລະບຸໃນໂຟລເດີແມ່."
+
+#: src/nautilus-application.c:931
+msgid "[URI…]"
+msgstr "[URI…]"
+
+#: src/nautilus-app-chooser.c:83
+msgid "Could not set as default"
+msgstr "ບໍ່ສາມາດຕັ້ງເປັນຄ່າເລີ່ມຕົ້ນໄດ້"
+
+#: src/nautilus-app-chooser.c:85
+#, c-format
+msgid "Error while setting “%s” as default app: %s"
+msgstr "ເກີດຂໍ້ຜິດພາດຂະນະຕັ້ງ “%s” ເປັນແອັບເລີ່ມຕົ້ນ: %s"
+
+#. Translators: %s is the filename.  i.e. "Choose an app to open test.jpg"
+#: src/nautilus-app-chooser.c:233
+#, c-format
+msgid "Choose an app to open <b>%s</b>"
+msgstr "ເລືອກແອັບເພື່ອເປີດ <b>%s</b>"
+
+#: src/nautilus-app-chooser.c:239
+msgid "Open Items"
+msgstr "ເປີດລາຍການ"
+
+#: src/nautilus-app-chooser.c:243
+msgid "Open Folder"
+msgstr "ເປີດໂຟລເດີ"
+
+#: src/nautilus-app-chooser.c:247 src/resources/ui/nautilus-app-chooser.ui:5
+msgid "Open File"
+msgstr "ເປີດໄຟລ໌"
+
+#: src/nautilus-autorun-software.c:142 src/nautilus-autorun-software.c:145
+#, c-format
+msgid ""
+"Unable to start the program:\n"
+"%s"
+msgstr "ບໍ່ສາມາດເປີດໂປຣແກຣມໄດ້:\n%s"
+
+#: src/nautilus-autorun-software.c:150
+msgid "The program is not marked as executable."
+msgstr "ໂປຣແກຣມບໍ່ໄດ້ຖືກໝາຍວ່າສາມາດເປີດໃຊ້ງານໄດ້."
+
+#: src/nautilus-autorun-software.c:153
+#, c-format
+msgid "Unable to locate the program"
+msgstr "ບໍ່ສາມາດຊອກຫາໂປຣແກຣມໄດ້"
+
+#: src/nautilus-autorun-software.c:159
+msgid "Oops! There was a problem running this software."
+msgstr "ອຸ້ຍ! ເກີດບັນຫາໃນການເປີດໃຊ້ງານຊັອບແວນີ້."
+
+#: src/nautilus-autorun-software.c:189
+msgid "If you don’t trust this location or aren’t sure, press Cancel."
+msgstr "ຖ້າທ່ານບໍ່ເຊື່ອຖືທີ່ຢູ່ນີ້ ຫຼື ບໍ່ແນ່ໃຈ, ໃຫ້ກົດຍົກເລີກ."
+
+#: src/nautilus-autorun-software.c:191
+#, c-format
+msgid ""
+"“%s” contains software intended to be automatically started. Would you like "
+"to run it?"
+msgstr "“%s” ບັນຈຸຊັອບແວທີ່ຖືກອອກແບບມາໃຫ້ເປີດໃຊ້ງານໂດຍອັດຕະໂນມັດ. ທ່ານຕ້ອງການເປີດໃຊ້ມັນ ຫຼື ບໍ່?"
+
+#: src/nautilus-autorun-software.c:224
+msgid "_Run"
+msgstr "_ເປີດໃຊ້ງານ"
+
+#: src/nautilus-batch-rename-dialog.c:524
+#, c-format
+msgid "“%s” would not be a unique new name."
+msgstr "“%s” ຈະບໍ່ແມ່ນຊື່ໃໝ່ທີ່ບໍ່ຊ້ຳໃຜ."
+
+#: src/nautilus-batch-rename-dialog.c:530
+#, c-format
+msgid "“%s” would conflict with an existing file."
+msgstr "“%s” ຈະຊ້ຳກັບໄຟລ໌ທີ່ມີຢູ່ແລ້ວ."
+
+#: src/nautilus-batch-rename-dialog.c:960
+msgid "Name cannot be empty."
+msgstr "ຊື່ບໍ່ສາມາດເປັນຄ່າວ່າງໄດ້."
+
+#: src/nautilus-batch-rename-dialog.c:966
+msgid "Name cannot contain “/”."
+msgstr "ຊື່ບໍ່ສາມາດມີ “/” ໄດ້."
+
+#: src/nautilus-batch-rename-dialog.c:972
+msgid "“.” is not a valid name."
+msgstr "“.” ບໍ່ແມ່ນຊື່ທີ່ຖືກຕ້ອງ."
+
+#: src/nautilus-batch-rename-dialog.c:978
+msgid "“..” is not a valid name."
+msgstr "“..” ບໍ່ແມ່ນຊື່ທີ່ຖືກຕ້ອງ."
+
+#: src/nautilus-batch-rename-dialog.c:1580
+#, c-format
+msgid "Rename %d Folder"
+msgstr "ປ່ຽນຊື່ %d ໂຟລເດີ"
+
+#: src/nautilus-batch-rename-dialog.c:1588
+#, c-format
+msgid "Rename %d File"
+msgstr "ປ່ຽນຊື່ %d ໄຟລ໌"
+
+#. To translators: %d is the total number of files and folders.
+#. * Singular case of the string is never used
+#: src/nautilus-batch-rename-dialog.c:1598
+#, c-format
+msgid "Rename %d File and Folder"
+msgstr "ປ່ຽນຊື່ %d ໄຟລ໌ ແລະ ໂຟລເດີ"
+
+#: src/nautilus-batch-rename-dialog.h:89
+#: src/resources/ui/nautilus-batch-rename-dialog.ui:73
+#: src/resources/ui/nautilus-batch-rename-dialog.ui:231
+msgid "Original Name (Ascending)"
+msgstr "ຊື່ເດີມ (ໜ້ອຍຫາຫຼາຍ)"
+
+#: src/nautilus-batch-rename-dialog.h:94
+#: src/resources/ui/nautilus-batch-rename-dialog.ui:78
+msgid "Original Name (Descending)"
+msgstr "ຊື່ເດີມ (ຫຼາຍຫາໜ້ອຍ)"
+
+#: src/nautilus-batch-rename-dialog.h:99
+#: src/resources/ui/nautilus-batch-rename-dialog.ui:83
+msgid "First Modified"
+msgstr "ແກ້ໄຂກ່ອນສຸດ"
+
+#: src/nautilus-batch-rename-dialog.h:104
+#: src/resources/ui/nautilus-batch-rename-dialog.ui:88
+msgid "Last Modified"
+msgstr "ແກ້ໄຂຫຼ້າສຸດ"
+
+#: src/nautilus-batch-rename-dialog.h:109
+msgid "First Created"
+msgstr "ສ້າງກ່ອນສຸດ"
+
+#: src/nautilus-batch-rename-dialog.h:114
+msgid "Last Created"
+msgstr "ສ້າງຫຼ້າສຸດ"
+
+#: src/nautilus-batch-rename-dialog.h:123
+msgid "Camera model"
+msgstr "ລຸ້ນກ້ອງ"
+
+#: src/nautilus-batch-rename-dialog.h:130
+msgid "Creation date"
+msgstr "ວັນທີສ້າງ"
+
+#: src/nautilus-batch-rename-dialog.h:137
+msgid "Season number"
+msgstr "ໝາຍເລກຊີຊັນ"
+
+#: src/nautilus-batch-rename-dialog.h:144
+msgid "Episode number"
+msgstr "ໝາຍເລກຕອນ"
+
+#: src/nautilus-batch-rename-dialog.h:151
+msgid "Track number"
+msgstr "ໝາຍເລກເພງ"
+
+#: src/nautilus-batch-rename-dialog.h:158
+msgid "Artist name"
+msgstr "ຊື່ສິນລະປິນ"
+
+#: src/nautilus-batch-rename-dialog.h:172
+msgid "Album name"
+msgstr "ຊື່ອະລະບ້ຳ"
+
+#: src/nautilus-batch-rename-dialog.h:179
+msgid "Original file name"
+msgstr "ຊື່ໄຟລ໌ເດີມ"
+
+#: src/nautilus-batch-rename-dialog.h:190
+msgid "1, 2, 3"
+msgstr "1, 2, 3"
+
+#: src/nautilus-batch-rename-dialog.h:197
+msgid "01, 02, 03"
+msgstr "01, 02, 03"
+
+#: src/nautilus-batch-rename-dialog.h:204
+msgid "001, 002, 003"
+msgstr "001, 002, 003"
+
+#: src/nautilus-bookmark.c:110 src/nautilus-file-utilities.c:59
+#: src/nautilus-pathbar.c:419 src/nautilus-shell-search-provider.c:299
+#: src/nautilus-sidebar.c:699 src/nautilus-window.c:143
+msgid "Home"
+msgstr "ໜ້າຫຼັກ"
+
+#: src/nautilus-clipboard.c:80
+#, c-format
+msgid "Clipboard string cannot be NULL."
+msgstr "ສະຕຣິງຂອງຄລິບບອດບໍ່ສາມາດເປັນ NULL ໄດ້."
+
+#. Translators: Do not translate 'cut' and 'copy'. These are literal keywords.
+#: src/nautilus-clipboard.c:89
+#, c-format
+msgid "Nautilus Clipboard must begin with “cut” or “copy”."
+msgstr "ຄລິບບອດຂອງ Nautilus ຕ້ອງເລີ່ມຕົ້ນດ້ວຍ “cut” ຫຼື “copy”."
+
+#: src/nautilus-clipboard.c:98
+#, c-format
+msgid "Nautilus Clipboard must not have empty lines."
+msgstr "ຄລິບບອດຂອງ Nautilus ຕ້ອງບໍ່ມີແຖວວ່າງ."
+
+#: src/nautilus-column-chooser.c:359
+msgid "View More"
+msgstr "ເບິ່ງເພີ່ມເຕີມ"
+
+#: src/nautilus-column-utilities.c:69 src/nautilus-sidebar.c:2004
+msgid "Name"
+msgstr "ຊື່"
+
+#: src/nautilus-column-utilities.c:70
+msgid "The name and icon of the file."
+msgstr "ຊື່ ແລະ ໄອຄອນຂອງໄຟລ໌."
+
+#: src/nautilus-column-utilities.c:76
+msgid "Size"
+msgstr "ຂະໜາດ"
+
+#: src/nautilus-column-utilities.c:77
+msgid "The size of the file."
+msgstr "ຂະໜາດຂອງໄຟລ໌."
+
+#: src/nautilus-column-utilities.c:83
+msgid "Type"
+msgstr "ປະເພດ"
+
+#: src/nautilus-column-utilities.c:84
+msgid "The type of the file."
+msgstr "ປະເພດຂອງໄຟລ໌."
+
+#. Translators: This refers to a date time
+#: src/nautilus-column-utilities.c:90
+#: src/resources/ui/nautilus-properties-window.ui:444
+#: src/resources/ui/nautilus-search-popover.ui:190
+msgid "Modified"
+msgstr "ແກ້ໄຂເມື່ອ"
+
+#: src/nautilus-column-utilities.c:91
+msgid "The date the file was modified."
+msgstr "ວັນທີທີ່ໄຟລ໌ຖືກແກ້ໄຂ."
+
+#: src/nautilus-column-utilities.c:99
+msgid "Detailed Type"
+msgstr "ປະເພດລະອຽດ"
+
+#: src/nautilus-column-utilities.c:100
+msgid "The detailed type of the file."
+msgstr "ປະເພດລະອຽດຂອງໄຟລ໌."
+
+#: src/nautilus-column-utilities.c:106
+#: src/resources/ui/nautilus-properties-window.ui:430
+msgid "Accessed"
+msgstr "ເຂົ້າເຖິງເມື່ອ"
+
+#: src/nautilus-column-utilities.c:107
+msgid "The date the file was accessed."
+msgstr "ວັນທີທີ່ໄຟລ໌ຖືກເຂົ້າເຖິງ."
+
+#. Translators: This refers to a date time
+#: src/nautilus-column-utilities.c:115
+#: src/resources/ui/nautilus-properties-window.ui:458
+#: src/resources/ui/nautilus-search-popover.ui:195
+msgid "Created"
+msgstr "ສ້າງເມື່ອ"
+
+#: src/nautilus-column-utilities.c:116
+msgid "The date the file was created."
+msgstr "ວັນທີທີ່ໄຟລ໌ຖືກສ້າງ."
+
+#: src/nautilus-column-utilities.c:125
+#: src/resources/ui/nautilus-file-properties-change-permissions.ui:35
+msgid "Owner"
+msgstr "ເຈົ້າຂອງ"
+
+#: src/nautilus-column-utilities.c:126
+msgid "The owner of the file."
+msgstr "ເຈົ້າຂອງໄຟລ໌."
+
+#: src/nautilus-column-utilities.c:133
+#: src/resources/ui/nautilus-file-properties-change-permissions.ui:52
+msgid "Group"
+msgstr "ກຸ່ມ"
+
+#: src/nautilus-column-utilities.c:134
+msgid "The group of the file."
+msgstr "ກຸ່ມຂອງໄຟລ໌."
+
+#: src/nautilus-column-utilities.c:141
+msgid "Permissions"
+msgstr "ສິດອະນຸຍາດ"
+
+#: src/nautilus-column-utilities.c:142
+msgid "The permissions of the file."
+msgstr "ສິດອະນຸຍາດຂອງໄຟລ໌."
+
+#: src/nautilus-column-utilities.c:149
+#: src/resources/ui/nautilus-toolbar-view-menu.ui:51
+msgid "Recency"
+msgstr "ໃຊ້ຫຼ້າສຸດ"
+
+#: src/nautilus-column-utilities.c:150
+msgid "The date the file was accessed by the user."
+msgstr "ວັນທີທີ່ໄຟລ໌ຖືກເຂົ້າເຖິງໂດຍຜູ້ໃຊ້."
+
+#: src/nautilus-column-utilities.c:160
+msgid "Shows if file is starred."
+msgstr "ສະແດງວ່າໄຟລ໌ຖືກຕິດດາວ ຫຼື ບໍ່."
+
+#: src/nautilus-column-utilities.c:205
+#: src/resources/ui/nautilus-properties-window.ui:412
+msgid "Trashed On"
+msgstr "ລຶບລົງຖັງເມື່ອ"
+
+#: src/nautilus-column-utilities.c:206
+msgid "Date when file was moved to the Trash"
+msgstr "ວັນທີທີ່ໄຟລ໌ຖືກຍ້າຍໄປຖັງຂີ້ເຫຍື້ອ"
+
+#: src/nautilus-column-utilities.c:213
+msgid "Original Location"
+msgstr "ທີ່ຢູ່ເດີມ"
+
+#: src/nautilus-column-utilities.c:214
+msgid "Original location of file before moved to the Trash"
+msgstr "ທີ່ຢູ່ເດີມຂອງໄຟລ໌ກ່ອນຖືກຍ້າຍໄປຖັງຂີ້ເຫຍື້ອ"
+
+#: src/nautilus-column-utilities.c:232
+#: src/resources/ui/nautilus-toolbar-view-menu.ui:58
+msgid "Relevance"
+msgstr "ຄວາມກ່ຽວຂ້ອງ"
+
+#: src/nautilus-column-utilities.c:233
+msgid "Relevance rank for search"
+msgstr "ອັນດັບຄວາມກ່ຽວຂ້ອງສຳລັບການຄົ້ນຫາ"
+
+#: src/nautilus-compress-dialog.c:253
+msgid "ZIP (.zip)"
+msgstr "ZIP (.zip)"
+
+#: src/nautilus-compress-dialog.c:254
+msgid "Compatible with all operating systems."
+msgstr "ເຂົ້າກັນໄດ້ກັບທຸກລະບົບປະຕິບັດການ."
+
+#: src/nautilus-compress-dialog.c:259
+msgid "Encrypted ZIP (.zip)"
+msgstr "ZIP ເຂົ້າລະຫັດ (.zip)"
+
+#: src/nautilus-compress-dialog.c:260
+msgid "Password-protected ZIP, must be installed on Windows and Mac."
+msgstr "ZIP ທີ່ປ້ອງກັນດ້ວຍລະຫັດຜ່ານ, ຕ້ອງຕິດຕັ້ງໃນ Windows ແລະ Mac."
+
+#: src/nautilus-compress-dialog.c:265
+msgid "TAR (.tar.xz)"
+msgstr "TAR (.tar.xz)"
+
+#: src/nautilus-compress-dialog.c:266
+msgid "Smaller archives but Linux and Mac only."
+msgstr "ໄຟລ໌ຈັດເກັບຂະໜາດນ້ອຍກວ່າ ແຕ່ສະເພາະ Linux ແລະ Mac."
+
+#: src/nautilus-compress-dialog.c:271
+msgid "7Z (.7z)"
+msgstr "7Z (.7z)"
+
+#: src/nautilus-compress-dialog.c:272
+msgid "Smaller archives but must be installed on Windows and Mac."
+msgstr "ໄຟລ໌ຈັດເກັບຂະໜາດນ້ອຍກວ່າ ແຕ່ຕ້ອງຕິດຕັ້ງໃນ Windows ແລະ Mac."
+
+#: src/nautilus-date-utilities.c:474
+#, c-format
+msgid "Since %s"
+msgstr "ນັບແຕ່ %s"
+
+#: src/nautilus-dbus-launcher.c:50
+#, c-format
+msgid "Details: %s"
+msgstr "ລາຍລະອຽດ: %s"
+
+#: src/nautilus-dbus-launcher.c:51 src/nautilus-dbus-launcher.c:80
+#: src/nautilus-program-choosing.c:369 src/nautilus-program-choosing.c:444
+msgid "There was an error launching the app."
+msgstr "ເກີດຂໍ້ຜິດພາດໃນການເປີດແອັບ."
+
+#: src/nautilus-dbus-launcher.c:81
+msgid "Details: The proxy has not been created."
+msgstr "ລາຍລະອຽດ: ພຣັອກຊີຍັງບໍ່ໄດ້ຖືກສ້າງ."
+
+#. Translators: this is of the format "hostname (uri-scheme)"
+#: src/nautilus-directory.c:616
+#, c-format
+msgid "%s (%s)"
+msgstr "%s (%s)"
+
+#: src/nautilus-dnd.c:108
+msgid "_Move Here"
+msgstr "_ຍ້າຍມານີ້"
+
+#: src/nautilus-dnd.c:113
+msgid "_Copy Here"
+msgstr "_ສຳເນົາມານີ້"
+
+#: src/nautilus-dnd.c:118
+msgid "_Link Here"
+msgstr "_ສ້າງລິງກ໌ມານີ້"
+
+#: src/nautilus-dnd.c:127 src/nautilus-file-operations.c:2512
+#: src/nautilus-mime-actions.c:708
+#: src/resources/ui/nautilus-progress-info-widget.ui:39
+#: src/resources/ui/nautilus-toolbar.ui:41
+msgid "Cancel"
+msgstr "ຍົກເລີກ"
+
+#: src/nautilus-dnd.c:258
+msgid "Dropped Image"
+msgstr "ຮູບພາບທີ່ວາງ"
+
+#: src/nautilus-error-reporting.c:83
+#, c-format
+msgid "You do not have the permissions necessary to view the contents of “%s”."
+msgstr "ທ່ານບໍ່ມີສິດອະນຸຍາດທີ່ຈຳເປັນເພື່ອເບິ່ງເນື້ອໃນຂອງ “%s”."
+
+#: src/nautilus-error-reporting.c:90
+#, c-format
+msgid "“%s” could not be found. Perhaps it has recently been deleted."
+msgstr "ບໍ່ພົບ “%s”. ບາງທີມັນອາດຈະຖືກລຶບໄປເມື່ອບໍ່ດົນມານີ້."
+
+#: src/nautilus-error-reporting.c:102
+#, c-format
+msgid "Sorry, could not display all the contents of “%s”: %s"
+msgstr "ຂໍອະໄພ, ບໍ່ສາມາດສະແດງເນື້ອໃນທັງໝົດຂອງ “%s” ໄດ້: %s"
+
+#: src/nautilus-error-reporting.c:113
+msgid "This location could not be displayed."
+msgstr "ບໍ່ສາມາດສະແດງທີ່ຢູ່ນີ້ໄດ້."
+
+#: src/nautilus-error-reporting.c:140
+#, c-format
+msgid "You do not have the permissions necessary to change the group of “%s”."
+msgstr "ທ່ານບໍ່ມີສິດອະນຸຍາດທີ່ຈຳເປັນເພື່ອປ່ຽນກຸ່ມຂອງ “%s”."
+
+#. fall through
+#: src/nautilus-error-reporting.c:163
+#, c-format
+msgid "Sorry, could not change the group of “%s”: %s"
+msgstr "ຂໍອະໄພ, ບໍ່ສາມາດປ່ຽນກຸ່ມຂອງ “%s” ໄດ້: %s"
+
+#: src/nautilus-error-reporting.c:168
+msgid "The group could not be changed."
+msgstr "ບໍ່ສາມາດປ່ຽນກຸ່ມໄດ້."
+
+#: src/nautilus-error-reporting.c:189
+#, c-format
+msgid "Sorry, could not change the owner of “%s”: %s"
+msgstr "ຂໍອະໄພ, ບໍ່ສາມາດປ່ຽນເຈົ້າຂອງຂອງ “%s” ໄດ້: %s"
+
+#: src/nautilus-error-reporting.c:192
+msgid "The owner could not be changed."
+msgstr "ບໍ່ສາມາດປ່ຽນເຈົ້າຂອງໄດ້."
+
+#: src/nautilus-error-reporting.c:213
+#, c-format
+msgid "Sorry, could not change the permissions of “%s”: %s"
+msgstr "ຂໍອະໄພ, ບໍ່ສາມາດປ່ຽນສິດອະນຸຍາດຂອງ “%s” ໄດ້: %s"
+
+#: src/nautilus-error-reporting.c:216
+msgid "The permissions could not be changed."
+msgstr "ບໍ່ສາມາດປ່ຽນສິດອະນຸຍາດໄດ້."
+
+#: src/nautilus-error-reporting.c:251
+#, c-format
+msgid ""
+"The name “%s” is already used in this location. Please use a different name."
+msgstr "ຊື່ “%s” ຖືກໃຊ້ແລ້ວໃນທີ່ຢູ່ນີ້. ກະລຸນາໃຊ້ຊື່ອື່ນ."
+
+#: src/nautilus-error-reporting.c:259
+#, c-format
+msgid ""
+"There is no “%s” in this location. Perhaps it was just moved or deleted?"
+msgstr "ບໍ່ມີ “%s” ໃນທີ່ຢູ່ນີ້. ບາງທີມັນອາດຈະຖືກຍ້າຍ ຫຼື ລຶບໄປແລ້ວ?"
+
+#: src/nautilus-error-reporting.c:267
+#, c-format
+msgid "You do not have the permissions necessary to rename “%s”."
+msgstr "ທ່ານບໍ່ມີສິດອະນຸຍາດທີ່ຈຳເປັນເພື່ອປ່ຽນຊື່ “%s”."
+
+#: src/nautilus-error-reporting.c:279
+#, c-format
+msgid ""
+"The name “%s” is not valid because it contains the character “%c”. Please "
+"use a different name."
+msgstr "ຊື່ “%s” ບໍ່ຖືກຕ້ອງເພາະມີໂຕອັກສອນ “%c”. ກະລຸນາໃຊ້ຊື່ອື່ນ."
+
+#: src/nautilus-error-reporting.c:285
+#, c-format
+msgid "The name “%s” is not valid. Please use a different name."
+msgstr "ຊື່ “%s” ບໍ່ຖືກຕ້ອງ. ກະລຸນາໃຊ້ຊື່ອື່ນ."
+
+#: src/nautilus-error-reporting.c:294
+#, c-format
+msgid "The name “%s” is too long. Please use a different name."
+msgstr "ຊື່ “%s” ຍາວເກີນໄປ. ກະລຸນາໃຊ້ຊື່ອື່ນ."
+
+#: src/nautilus-error-reporting.c:302
+#, c-format
+msgid ""
+"Could not rename “%s” because a process is using it. If it's open in another "
+"application, close it before renaming it."
+msgstr "ບໍ່ສາມາດປ່ຽນຊື່ “%s” ໄດ້ ເພາະມີໂປຣເຊສກຳລັງໃຊ້ມັນຢູ່. ຖ້າມັນເປີດຢູ່ໃນແອັບພລິເຄຊັນອື່ນ, ໃຫ້ປິດມັນກ່ອນປ່ຽນຊື່."
+
+#. fall through
+#: src/nautilus-error-reporting.c:327
+#, c-format
+msgid "Sorry, could not rename “%s” to “%s”: %s"
+msgstr "ຂໍອະໄພ, ບໍ່ສາມາດປ່ຽນຊື່ “%s” ເປັນ “%s” ໄດ້: %s"
+
+#: src/nautilus-error-reporting.c:332
+msgid "The item could not be renamed."
+msgstr "ບໍ່ສາມາດປ່ຽນຊື່ລາຍການໄດ້."
+
+#: src/nautilus-error-reporting.c:444
+#, c-format
+msgid "Renaming “%s” to “%s”."
+msgstr "ກຳລັງປ່ຽນຊື່ “%s” ເປັນ “%s”."
+
+#: src/nautilus-file.c:1306 src/nautilus-vfs-file.c:271
+msgid "This file cannot be mounted"
+msgstr "ບໍ່ສາມາດເມົ້າທ໌ໄຟລ໌ນີ້ໄດ້"
+
+#: src/nautilus-file.c:1360
+msgid "This file cannot be unmounted"
+msgstr "ບໍ່ສາມາດອັນເມົ້າທ໌ໄຟລ໌ນີ້ໄດ້"
+
+#: src/nautilus-file.c:1407
+msgid "This file cannot be ejected"
+msgstr "ບໍ່ສາມາດຖອດໄຟລ໌ນີ້ອອກໄດ້"
+
+#: src/nautilus-file.c:1452 src/nautilus-vfs-file.c:462
+msgid "This file cannot be started"
+msgstr "ບໍ່ສາມາດເລີ່ມໄຟລ໌ນີ້ໄດ້"
+
+#: src/nautilus-file.c:1511 src/nautilus-file.c:1551
+msgid "This file cannot be stopped"
+msgstr "ບໍ່ສາມາດຢຸດໄຟລ໌ນີ້ໄດ້"
+
+#: src/nautilus-file.c:1908
+#, c-format
+msgid "Slashes are not allowed in filenames"
+msgstr "ບໍ່ອະນຸຍາດໃຫ້ມີເຄື່ອງໝາຍສະແລຊໃນຊື່ໄຟລ໌"
+
+#: src/nautilus-file.c:1951
+#, c-format
+msgid "Toplevel files cannot be renamed"
+msgstr "ບໍ່ສາມາດປ່ຽນຊື່ໄຟລ໌ລະດັບເທິງສຸດໄດ້"
+
+#: src/nautilus-file.c:2031
+#, c-format
+msgid "File not found"
+msgstr "ບໍ່ພົບໄຟລ໌"
+
+#: src/nautilus-file.c:5493
+#, c-format
+msgid "Not allowed to set permissions"
+msgstr "ບໍ່ໄດ້ຮັບອະນຸຍາດໃຫ້ຕັ້ງຄ່າສິດ"
+
+#: src/nautilus-file.c:5837
+#, c-format
+msgid "Not allowed to set owner"
+msgstr "ບໍ່ໄດ້ຮັບອະນຸຍາດໃຫ້ຕັ້ງຄ່າເຈົ້າຂອງ"
+
+#: src/nautilus-file.c:5856
+#, c-format
+msgid "Specified owner “%s” doesn’t exist"
+msgstr "ເຈົ້າຂອງທີ່ລະບຸ “%s” ບໍ່ມີຢູ່"
+
+#: src/nautilus-file.c:6146
+#, c-format
+msgid "Not allowed to set group"
+msgstr "ບໍ່ໄດ້ຮັບອະນຸຍາດໃຫ້ຕັ້ງຄ່າກຸ່ມ"
+
+#: src/nautilus-file.c:6165
+#, c-format
+msgid "Specified group “%s” doesn’t exist"
+msgstr "ກຸ່ມທີ່ລະບຸ “%s” ບໍ່ມີຢູ່"
+
+#. Translators: This is a username followed by "(You)" to indicate the file is owned by the current user
+#: src/nautilus-file.c:6305
+#, c-format
+msgid "%s (You)"
+msgstr "%s (ທ່ານ)"
+
+#: src/nautilus-file.c:6337
+#, c-format
+msgid "%'u item"
+msgstr "%'u ລາຍການ"
+
+#: src/nautilus-file.c:6338
+#, c-format
+msgid "%'u folder"
+msgstr "%'u ໂຟລເດີ"
+
+#: src/nautilus-file.c:6339
+#, c-format
+msgid "%'u file"
+msgstr "%'u ໄຟລ໌"
+
+#: src/nautilus-file.c:6423 src/nautilus-properties-window.c:2105
+#, c-format
+msgid "%s byte"
+msgstr "%s ໄບຕ໌"
+
+#. This means no contents at all were readable
+#: src/nautilus-file.c:6827
+msgid "? bytes"
+msgstr "? ໄບຕ໌"
+
+#. This means no contents at all were readable
+#: src/nautilus-file.c:6839
+msgid "? items"
+msgstr "? ລາຍການ"
+
+#. Translators: This about a file type.
+#: src/nautilus-file.c:6848
+msgid "Unknown type"
+msgstr "ບໍ່ຮູ້ຈັກປະເພດ"
+
+#. Fallback, use for both unknown attributes and attributes
+#. * for which we have no more appropriate default.
+#.
+#: src/nautilus-file.c:6879
+msgid "Unknown"
+msgstr "ບໍ່ຮູ້ຈັກ"
+
+#: src/nautilus-file.c:6929 src/nautilus-file.c:6937 src/nautilus-file.c:6996
+msgid "Program"
+msgstr "ໂປຣແກຣມ"
+
+#: src/nautilus-file.c:6930
+msgid "Audio"
+msgstr "ສຽງ"
+
+#: src/nautilus-file.c:6931
+msgid "Font"
+msgstr "ຟອນ"
+
+#: src/nautilus-file.c:6932
+msgid "Image"
+msgstr "ຮູບພາບ"
+
+#: src/nautilus-file.c:6933
+msgid "Archive"
+msgstr "ໄຟລ໌ຈັດເກັບ"
+
+#: src/nautilus-file.c:6934
+msgid "Markup"
+msgstr "ມາກອັບ"
+
+#: src/nautilus-file.c:6935 src/nautilus-file.c:6936
+msgid "Text"
+msgstr "ຂໍ້ຄວາມ"
+
+#: src/nautilus-file.c:6938 src/nautilus-mime-actions.c:301
+msgid "Video"
+msgstr "ວິດີໂອ"
+
+#: src/nautilus-file.c:6939
+msgid "Contacts"
+msgstr "ລາຍຊື່ຜູ່ຕິດຕໍ່"
+
+#: src/nautilus-file.c:6940
+msgid "Calendar"
+msgstr "ປະຕິທິນ"
+
+#: src/nautilus-file.c:6941
+msgid "Document"
+msgstr "ເອກະສານ"
+
+#: src/nautilus-file.c:6942 src/nautilus-mime-actions.c:262
+msgid "Presentation"
+msgstr "ງານນຳສະເໜີ"
+
+#: src/nautilus-file.c:6943 src/nautilus-mime-actions.c:274
+msgid "Spreadsheet"
+msgstr "ສະເປຣດຊີດ"
+
+#. Refers to a file type which is known but not one of the basic types
+#: src/nautilus-file.c:6976
+msgid "Other"
+msgstr "ອື່ນໆ"
+
+#: src/nautilus-file.c:6998
+msgid "Binary"
+msgstr "ໄບນາຣີ"
+
+#: src/nautilus-file.c:7003
+msgid "Folder"
+msgstr "ໂຟລເດີ"
+
+#: src/nautilus-file.c:7061
+msgid "Link"
+msgstr "ລິງກ໌"
+
+#. Note to localizers: convert file type string for file
+#. * (e.g. "folder", "plain text") to file type for symbolic link
+#. * to that kind of file (e.g. "link to folder").
+#.
+#. Translators: File name for new symlink. %s is target's name
+#: src/nautilus-file.c:7067 src/nautilus-filename-utilities.c:253
+#, c-format
+msgid "Link to %s"
+msgstr "ລິງກ໌ໄປຫາ %s"
+
+#: src/nautilus-file.c:7083 src/nautilus-file.c:7099 src/nautilus-file.c:7115
+msgid "Link (broken)"
+msgstr "ລິງກ໌ (ຂາດ)"
+
+#. Translators: This refers to available space in a folder; e.g.: 100 MB Free
+#: src/nautilus-file.c:7276
+#, c-format
+msgid "%s Free"
+msgstr "%s ວ່າງ"
+
+#. Translators: A "." is added in between file name and starring
+#. * action description as a useful pause in the screen reader
+#. * announcement.
+#: src/nautilus-file.c:8646
+#, c-format
+msgid "%s. Starred"
+msgstr "%s. ຕິດດາວແລ້ວ"
+
+#: src/nautilus-file-chooser.c:229
+msgid "Replace When Saving?"
+msgstr "ແທນທີ່ເມື່ອບັນທຶກ?"
+
+#: src/nautilus-file-chooser.c:235
+#, c-format
+msgid ""
+"“%s” already exists in “%s”. Saving will replace or overwrite its contents."
+msgstr "“%s” ມີຢູ່ແລ້ວໃນ “%s”. ການບັນທຶກຈະແທນທີ່ ຫຼື ຂຽນທັບເນື້ອໃນຂອງມັນ."
+
+#: src/nautilus-file-chooser.c:240 src/nautilus-file-chooser.c:332
+#: src/nautilus-file-operations.c:281
+#: src/resources/ui/nautilus-file-conflict-dialog.ui:40
+msgid "_Replace"
+msgstr "_ແທນທີ່"
+
+#: src/nautilus-filename-validator.c:135
+msgid "Folder names cannot contain “/”"
+msgstr "ຊື່ໂຟລເດີບໍ່ສາມາດມີ “/” ໄດ້"
+
+#: src/nautilus-filename-validator.c:136
+msgid "File names cannot contain “/”"
+msgstr "ຊື່ໄຟລ໌ບໍ່ສາມາດມີ “/” ໄດ້"
+
+#: src/nautilus-filename-validator.c:141
+msgid "A folder cannot be called “.”"
+msgstr "ໂຟລເດີບໍ່ສາມາດຊື່ “.” ໄດ້"
+
+#: src/nautilus-filename-validator.c:142
+msgid "A file cannot be called “.”"
+msgstr "ໄຟລ໌ບໍ່ສາມາດຊື່ “.” ໄດ້"
+
+#: src/nautilus-filename-validator.c:147
+msgid "A folder cannot be called “..”"
+msgstr "ໂຟລເດີບໍ່ສາມາດຊື່ “..” ໄດ້"
+
+#: src/nautilus-filename-validator.c:148
+msgid "A file cannot be called “..”"
+msgstr "ໄຟລ໌ບໍ່ສາມາດຊື່ “..” ໄດ້"
+
+#: src/nautilus-filename-validator.c:153
+msgid "Folder name is too long"
+msgstr "ຊື່ໂຟລເດີຍາວເກີນໄປ"
+
+#: src/nautilus-filename-validator.c:154
+msgid "File name is too long"
+msgstr "ຊື່ໄຟລ໌ຍາວເກີນໄປ"
+
+#. We must warn about the side effect
+#: src/nautilus-filename-validator.c:160
+msgid "Folders with “.” at the beginning of their name are hidden"
+msgstr "ໂຟລເດີທີ່ມີ “.” ຢູ່ຕົ້ນຊື່ຈະຖືກເຊື່ອງໄວ້"
+
+#: src/nautilus-filename-validator.c:161
+msgid "Files with “.” at the beginning of their name are hidden"
+msgstr "ໄຟລ໌ທີ່ມີ “.” ຢູ່ຕົ້ນຊື່ຈະຖືກເຊື່ອງໄວ້"
+
+#: src/nautilus-filename-validator.c:170
+msgid "A folder with that name already exists"
+msgstr "ມີໂຟລເດີຊື່ນີ້ຢູ່ແລ້ວ"
+
+#: src/nautilus-filename-validator.c:171
+msgid "A file with that name already exists"
+msgstr "ມີໄຟລ໌ຊື່ນີ້ຢູ່ແລ້ວ"
+
+#: src/nautilus-file-operations.c:276
+#: src/resources/ui/nautilus-file-conflict-dialog.ui:22
+msgid "_Skip"
+msgstr "_ຂ້າມ"
+
+#: src/nautilus-file-operations.c:277
+msgid "S_kip All"
+msgstr "ຂ້າມ_ທັງໝົດ"
+
+#: src/nautilus-file-operations.c:278
+msgid "_Retry"
+msgstr "_ລອງໃໝ່"
+
+#: src/nautilus-file-operations.c:279
+msgid "_Delete"
+msgstr "_ລຶບ"
+
+#: src/nautilus-file-operations.c:280
+msgid "Delete _All"
+msgstr "ລຶບ_ທັງໝົດ"
+
+#: src/nautilus-file-operations.c:282
+msgid "Replace _All"
+msgstr "ແທນທີ່_ທັງໝົດ"
+
+#: src/nautilus-file-operations.c:283 src/nautilus-operations-ui-manager.c:369
+msgid "_Merge"
+msgstr "_ຮວມ"
+
+#: src/nautilus-file-operations.c:284
+msgid "Merge _All"
+msgstr "ຮວມ_ທັງໝົດ"
+
+#: src/nautilus-file-operations.c:285
+msgid "Copy _Anyway"
+msgstr "ສຳເນົາ_ຕໍ່ໄປ"
+
+#: src/nautilus-file-operations.c:286
+msgid "Proceed _Anyway"
+msgstr "ດຳເນີນ_ຕໍ່ໄປ"
+
+#: src/nautilus-file-operations.c:287
+msgid "Empty _Trash"
+msgstr "ລ້າງ_ຖັງຂີ້ເຫຍື້ອ"
+
+#: src/nautilus-file-operations.c:400
+#, c-format
+msgid "%'d second"
+msgstr "%'d ວິນາທີ"
+
+#: src/nautilus-file-operations.c:406 src/nautilus-file-operations.c:418
+#, c-format
+msgid "%'d minute"
+msgstr "%'d ນາທີ"
+
+#: src/nautilus-file-operations.c:417 src/nautilus-file-operations.c:425
+#, c-format
+msgid "%'d hour"
+msgstr "%'d ຊົ່ວໂມງ"
+
+#: src/nautilus-file-operations.c:485 src/nautilus-properties-window.c:908
+msgid "unknown"
+msgstr "ບໍ່ຮູ້ຈັກ"
+
+#: src/nautilus-file-operations.c:1146 src/nautilus-file-operations.c:1207
+#, c-format
+msgid "Permanently Delete “%s”?"
+msgstr "ລຶບ “%s” ຖາວອນ?"
+
+#: src/nautilus-file-operations.c:1150 src/nautilus-file-operations.c:1212
+#, c-format
+msgid "Permanently Delete %'d Selected Item?"
+msgstr "ລຶບ %'d ລາຍການທີ່ເລືອກໄວ້ຖາວອນ?"
+
+#: src/nautilus-file-operations.c:1158 src/nautilus-file-operations.c:1220
+msgid "Permanently deleted items can not be restored"
+msgstr "ລາຍການທີ່ຖືກລຶບຖາວອນບໍ່ສາມາດກູ້ຄືນໄດ້"
+
+#: src/nautilus-file-operations.c:1173
+msgid "Empty Trash?"
+msgstr "ລ້າງຖັງຂີ້ເຫຍື້ອ?"
+
+#: src/nautilus-file-operations.c:1177
+msgid "All items in the Trash will be permanently deleted"
+msgstr "ທຸກລາຍການໃນຖັງຂີ້ເຫຍື້ອຈະຖືກລຶບຖາວອນ"
+
+#. Translators: This action removes a file from Recent
+#: src/nautilus-file-operations.c:1280
+#, c-format
+msgid "Cleared “%s”"
+msgstr "ລ້າງ “%s” ແລ້ວ"
+
+#: src/nautilus-file-operations.c:1284
+#, c-format
+msgid "Deleted “%s”"
+msgstr "ລຶບ “%s” ແລ້ວ"
+
+#. Translators: This action removes a file from Recent
+#: src/nautilus-file-operations.c:1292
+#, c-format
+msgid "Clearing “%s”"
+msgstr "ກຳລັງລ້າງ “%s”"
+
+#: src/nautilus-file-operations.c:1296
+#, c-format
+msgid "Deleting “%s”"
+msgstr "ກຳລັງລຶບ “%s”"
+
+#. Translators: This action removes file(s) from Recent
+#: src/nautilus-file-operations.c:1311
+#, c-format
+msgid "Cleared %'d file"
+msgstr "ລ້າງ %'d ໄຟລ໌ແລ້ວ"
+
+#: src/nautilus-file-operations.c:1317
+#, c-format
+msgid "Deleted %'d file"
+msgstr "ລຶບ %'d ໄຟລ໌ແລ້ວ"
+
+#. Translators: This action removes file(s) from Recent
+#: src/nautilus-file-operations.c:1327
+#, c-format
+msgid "Clearing %'d file"
+msgstr "ກຳລັງລ້າງ %'d ໄຟລ໌"
+
+#: src/nautilus-file-operations.c:1333
+#, c-format
+msgid "Deleting %'d file"
+msgstr "ກຳລັງລຶບ %'d ໄຟລ໌"
+
+#. To translators: %'d is the number of files completed for the operation,
+#. * so it will be something like 2/14.
+#: src/nautilus-file-operations.c:1362 src/nautilus-file-operations.c:1370
+#: src/nautilus-file-operations.c:1410 src/nautilus-file-operations.c:1756
+#: src/nautilus-file-operations.c:1764 src/nautilus-file-operations.c:1804
+#: src/nautilus-file-operations.c:3689 src/nautilus-file-operations.c:3697
+#: src/nautilus-file-operations.c:3768 src/nautilus-file-operations.c:8460
+#: src/nautilus-file-operations.c:8528
+#, c-format
+msgid "%'d / %'d"
+msgstr "%'d / %'d"
+
+#. To translators: %s will expand to a time duration like "2 minutes".
+#. * So the whole thing will be something like "1 / 5 -- 2 hours left (4 files/s)"
+#. *
+#. * The singular/plural form will be used depending on the remaining time (i.e. the %s argument).
+#.
+#: src/nautilus-file-operations.c:1389 src/nautilus-file-operations.c:1783
+#, c-format
+msgid "%'d / %'d — %s left"
+msgstr "%'d / %'d — ເຫຼືອອີກ %s"
+
+#: src/nautilus-file-operations.c:1393 src/nautilus-file-operations.c:1786
+#, c-format
+msgid "(%d file/s)"
+msgstr "(%d ໄຟລ໌/ວິ)"
+
+#: src/nautilus-file-operations.c:1506
+#, c-format
+msgid "Failed to delete all child files"
+msgstr "ບໍ່ສາມາດລຶບໄຟລ໌ລູກທັງໝົດໄດ້"
+
+#: src/nautilus-file-operations.c:1559 src/nautilus-file-operations.c:2839
+msgid "Error while deleting."
+msgstr "ເກີດຂໍ້ຜິດພາດຂະນະກຳລັງລຶບ."
+
+#: src/nautilus-file-operations.c:1566
+#, c-format
+msgid "You do not have sufficient permissions to delete the folder “%s”."
+msgstr "ທ່ານບໍ່ມີສິດພຽງພໍທີ່ຈະລຶບໂຟລເດີ “%s”."
+
+#: src/nautilus-file-operations.c:1569
+#, c-format
+msgid "There was an error deleting the folder “%s”."
+msgstr "ເກີດຂໍ້ຜິດພາດໃນການລຶບໂຟລເດີ “%s”."
+
+#: src/nautilus-file-operations.c:1576
+#, c-format
+msgid "You do not have sufficient permissions to delete the file “%s”."
+msgstr "ທ່ານບໍ່ມີສິດພຽງພໍທີ່ຈະລຶບໄຟລ໌ “%s”."
+
+#: src/nautilus-file-operations.c:1579
+#, c-format
+msgid "There was an error deleting the file “%s”."
+msgstr "ເກີດຂໍ້ຜິດພາດໃນການລຶບໄຟລ໌ “%s”."
+
+#: src/nautilus-file-operations.c:1706
+#, c-format
+msgid "Trashing “%s”"
+msgstr "ກຳລັງຍ້າຍ “%s” ໄປຖັງຂີ້ເຫຍື້ອ"
+
+#: src/nautilus-file-operations.c:1710
+#, c-format
+msgid "Trashed “%s”"
+msgstr "ຍ້າຍ “%s” ໄປຖັງຂີ້ເຫຍື້ອແລ້ວ"
+
+#: src/nautilus-file-operations.c:1721
+#, c-format
+msgid "Trashing %'d file"
+msgstr "ກຳລັງຍ້າຍ %'d ໄຟລ໌ໄປຖັງຂີ້ເຫຍື້ອ"
+
+#: src/nautilus-file-operations.c:1727
+#, c-format
+msgid "Trashed %'d file"
+msgstr "ຍ້າຍ %'d ໄຟລ໌ໄປຖັງຂີ້ເຫຍື້ອແລ້ວ"
+
+#. Translators: %s is a file name
+#: src/nautilus-file-operations.c:1873
+#, c-format
+msgid "“%s” can’t be put in the trash. Do you want to delete it immediately?"
+msgstr "ບໍ່ສາມາດຍ້າຍ “%s” ໄປຖັງຂີ້ເຫຍື້ອໄດ້. ທ່ານຕ້ອງການລຶບມັນທັນທີບໍ່?"
+
+#: src/nautilus-file-operations.c:1885
+msgid "This remote location does not support sending items to the trash."
+msgstr "ທີ່ຢູ່ທາງໄກນີ້ບໍ່ຮອງຮັບການສົ່ງລາຍການໄປຖັງຂີ້ເຫຍື້ອ."
+
+#: src/nautilus-file-operations.c:2175
+msgid "Trashing Files"
+msgstr "ກຳລັງຍ້າຍໄຟລ໌ໄປຖັງຂີ້ເຫຍື້ອ"
+
+#: src/nautilus-file-operations.c:2179
+msgid "Deleting Files"
+msgstr "ກຳລັງລຶບໄຟລ໌"
+
+#. Translators: %s is a file name formatted for display
+#: src/nautilus-file-operations.c:2334 src/nautilus-files-view.c:6530
+#: src/nautilus-sidebar.c:2348 src/nautilus-sidebar.c:2377
+#, c-format
+msgid "Unable to eject “%s”"
+msgstr "ບໍ່ສາມາດຖອດ “%s” ອອກໄດ້"
+
+#: src/nautilus-file-operations.c:2339
+#, c-format
+msgid "Unable to unmount “%s”"
+msgstr "ບໍ່ສາມາດອັນເມົ້າທ໌ “%s” ໄດ້"
+
+#: src/nautilus-file-operations.c:2505
+msgid "Empty Trash Before Ejecting?"
+msgstr "ລ້າງຖັງຂີ້ເຫຍື້ອ ກ່ອນທີ່ຈະຖອດອອກ?"
+
+#: src/nautilus-file-operations.c:2508
+#, c-format
+msgid ""
+"Empty the trash to free up space on “%s”. All trashed items will be "
+"permanently deleted."
+msgstr "ລ້າງຖັງຂີ້ເຫຍື້ອເພື່ອເພີ່ມພື້ນທີ່ວ່າງໃນ “%s”. ທຸກລາຍການໃນຖັງຂີ້ເຫຍື້ອຈະຖືກລຶບຖາວອນ."
+
+#: src/nautilus-file-operations.c:2513
+msgid "Do _Not Empty"
+msgstr "ບໍ່_ຕ້ອງລ້າງ"
+
+#. Translators: This is an action in a dialog to
+#. * clear trashed items.
+#: src/nautilus-file-operations.c:2516
+msgid "_Empty"
+msgstr "_ລ້າງ"
+
+#. Translators: %s is a file name formatted for display
+#: src/nautilus-file-operations.c:2656 src/nautilus-files-view.c:6481
+#: src/nautilus-sidebar.c:1770
+#, c-format
+msgid "Unable to access “%s”"
+msgstr "ບໍ່ສາມາດເຂົ້າເຖິງ “%s” ໄດ້"
+
+#: src/nautilus-file-operations.c:2740
+#, c-format
+msgid "Preparing to copy %'d file (%s)"
+msgstr "ກຳລັງກະກຽມສຳເນົາ %'d ໄຟລ໌ (%s)"
+
+#: src/nautilus-file-operations.c:2753
+#, c-format
+msgid "Preparing to move %'d file (%s)"
+msgstr "ກຳລັງກະກຽມຍ້າຍ %'d ໄຟລ໌ (%s)"
+
+#: src/nautilus-file-operations.c:2766
+#, c-format
+msgid "Preparing to delete %'d file (%s)"
+msgstr "ກຳລັງກະກຽມລຶບ %'d ໄຟລ໌ (%s)"
+
+#: src/nautilus-file-operations.c:2776
+#, c-format
+msgid "Preparing to trash %'d file"
+msgstr "ກຳລັງກະກຽມຍ້າຍ %'d ໄຟລ໌ໄປຖັງຂີ້ເຫຍື້ອ"
+
+#: src/nautilus-file-operations.c:2785
+#, c-format
+msgid "Preparing to compress %'d file"
+msgstr "ກຳລັງກະກຽມບີບອັດ %'d ໄຟລ໌"
+
+#: src/nautilus-file-operations.c:2829 src/nautilus-file-operations.c:4275
+#: src/nautilus-file-operations.c:4467 src/nautilus-file-operations.c:4549
+#: src/nautilus-file-operations.c:4837
+msgid "Error while copying."
+msgstr "ເກີດຂໍ້ຜິດພາດຂະນະກຳລັງສຳເນົາ."
+
+#: src/nautilus-file-operations.c:2834 src/nautilus-file-operations.c:4463
+#: src/nautilus-file-operations.c:4545 src/nautilus-file-operations.c:4833
+msgid "Error while moving."
+msgstr "ເກີດຂໍ້ຜິດພາດຂະນະກຳລັງຍ້າຍ."
+
+#: src/nautilus-file-operations.c:2844
+msgid "Error while moving files to trash."
+msgstr "ເກີດຂໍ້ຜິດພາດຂະນະກຳລັງຍ້າຍໄຟລ໌ໄປຖັງຂີ້ເຫຍື້ອ."
+
+#: src/nautilus-file-operations.c:2849
+msgid "Error while compressing files."
+msgstr "ເກີດຂໍ້ຜິດພາດຂະນະກຳລັງບີບອັດໄຟລ໌."
+
+#: src/nautilus-file-operations.c:2941
+#, c-format
+msgid ""
+"Files in the folder “%s” cannot be handled because you do not have "
+"permissions to see them."
+msgstr "ບໍ່ສາມາດຈັດການໄຟລ໌ໃນໂຟລເດີ “%s” ໄດ້ ເພາະທ່ານບໍ່ມີສິດໃນການເບິ່ງ."
+
+#: src/nautilus-file-operations.c:2947 src/nautilus-file-operations.c:4479
+#, c-format
+msgid ""
+"There was an error getting information about the files in the folder “%s”."
+msgstr "ເກີດຂໍ້ຜິດພາດໃນການເອົາຂໍ້ມູນກ່ຽວກັບໄຟລ໌ໃນໂຟລເດີ “%s”."
+
+#: src/nautilus-file-operations.c:3002
+#, c-format
+msgid ""
+"The folder “%s” cannot be handled because you do not have permissions to "
+"read it."
+msgstr "ບໍ່ສາມາດຈັດການໂຟລເດີ “%s” ໄດ້ ເພາະທ່ານບໍ່ມີສິດໃນການອ່ານ."
+
+#: src/nautilus-file-operations.c:3008 src/nautilus-file-operations.c:4561
+#, c-format
+msgid "There was an error reading the folder “%s”."
+msgstr "ເກີດຂໍ້ຜິດພາດໃນການອ່ານໂຟລເດີ “%s”."
+
+#: src/nautilus-file-operations.c:3118
+#, c-format
+msgid ""
+"The file “%s” cannot be handled because you do not have permissions to read "
+"it."
+msgstr "ບໍ່ສາມາດຈັດການໄຟລ໌ “%s” ໄດ້ ເພາະທ່ານບໍ່ມີສິດໃນການອ່ານ."
+
+#: src/nautilus-file-operations.c:3123
+#, c-format
+msgid "There was an error getting information about “%s”."
+msgstr "ເກີດຂໍ້ຜິດພາດໃນການເອົາຂໍ້ມູນກ່ຽວກັບ “%s”."
+
+#: src/nautilus-file-operations.c:3247 src/nautilus-file-operations.c:3309
+#: src/nautilus-file-operations.c:3364 src/nautilus-file-operations.c:3426
+#, c-format
+msgid "Error while copying to “%s”."
+msgstr "ເກີດຂໍ້ຜິດພາດຂະນະກຳລັງສຳເນົາໄປທີ່ “%s”."
+
+#: src/nautilus-file-operations.c:3252
+msgid "You do not have permissions to access the destination folder."
+msgstr "ທ່ານບໍ່ມີສິດໃນການເຂົ້າເຖິງໂຟລເດີປາຍທາງ."
+
+#: src/nautilus-file-operations.c:3256
+msgid "There was an error getting information about the destination."
+msgstr "ເກີດຂໍ້ຜິດພາດໃນການເອົາຂໍ້ມູນກ່ຽວກັບປາຍທາງ."
+
+#: src/nautilus-file-operations.c:3310
+msgid "The destination is not a folder."
+msgstr "ປາຍທາງບໍ່ແມ່ນໂຟລເດີ."
+
+#: src/nautilus-file-operations.c:3365
+msgid ""
+"There is not enough space on the destination. Try to remove files to make "
+"space."
+msgstr "ພື້ນທີ່ໃນປາຍທາງບໍ່ພຽງພໍ. ລອງລຶບໄຟລ໌ເພື່ອສ້າງພື້ນທີ່."
+
+#: src/nautilus-file-operations.c:3369
+#, c-format
+msgid "%s more space is required to copy to the destination."
+msgstr "ຕ້ອງການພື້ນທີ່ອີກ %s ເພື່ອສຳເນົາໄປຍັງປາຍທາງ."
+
+#: src/nautilus-file-operations.c:3405
+msgid "File too Large for Destination"
+msgstr "ໄຟລ໌ໃຫຍ່ເກີນໄປສຳລັບປາຍທາງ"
+
+#: src/nautilus-file-operations.c:3406
+msgid "Files bigger than 4.3 GB cannot be copied onto a FAT filesystem."
+msgstr "ບໍ່ສາມາດສຳເນົາໄຟລ໌ທີ່ໃຫຍ່ກວ່າ 4.3 GB ໃສ່ລະບົບໄຟລ໌ FAT ໄດ້."
+
+#: src/nautilus-file-operations.c:3427
+msgid "The destination is read-only."
+msgstr "ປາຍທາງສາມາດອ່ານໄດ້ຢ່າງດຽວ."
+
+#: src/nautilus-file-operations.c:3504
+#, c-format
+msgid "Moving “%s” to “%s”"
+msgstr "ກຳລັງຍ້າຍ “%s” ໄປ “%s”"
+
+#: src/nautilus-file-operations.c:3508
+#, c-format
+msgid "Moved “%s” to “%s”"
+msgstr "ຍ້າຍ “%s” ໄປ “%s” ແລ້ວ"
+
+#: src/nautilus-file-operations.c:3515
+#, c-format
+msgid "Copying “%s” to “%s”"
+msgstr "ກຳລັງສຳເນົາ “%s” ໄປ “%s”"
+
+#: src/nautilus-file-operations.c:3519
+#, c-format
+msgid "Copied “%s” to “%s”"
+msgstr "ສຳເນົາ “%s” ໄປ “%s” ແລ້ວ"
+
+#: src/nautilus-file-operations.c:3553
+#, c-format
+msgid "Duplicating “%s”"
+msgstr "ກຳລັງສຳເນົາ “%s”"
+
+#: src/nautilus-file-operations.c:3557
+#, c-format
+msgid "Duplicated “%s”"
+msgstr "ສຳເນົາ “%s” ແລ້ວ"
+
+#: src/nautilus-file-operations.c:3576
+#, c-format
+msgid "Moving %'d file to “%s”"
+msgstr "ກຳລັງຍ້າຍ %'d ໄຟລ໌ໄປ “%s”"
+
+#: src/nautilus-file-operations.c:3582
+#, c-format
+msgid "Copying %'d file to “%s”"
+msgstr "ກຳລັງສຳເນົາ %'d ໄຟລ໌ໄປ “%s”"
+
+#: src/nautilus-file-operations.c:3601
+#, c-format
+msgid "Moved %'d file to “%s”"
+msgstr "ຍ້າຍ %'d ໄຟລ໌ໄປ “%s” ແລ້ວ"
+
+#: src/nautilus-file-operations.c:3607
+#, c-format
+msgid "Copied %'d file to “%s”"
+msgstr "ສຳເນົາ %'d ໄຟລ໌ໄປ “%s” ແລ້ວ"
+
+#: src/nautilus-file-operations.c:3630
+#, c-format
+msgid "Duplicating %'d file in “%s”"
+msgstr "ກຳລັງສຳເນົາ %'d ໄຟລ໌ໃນ “%s”"
+
+#: src/nautilus-file-operations.c:3640
+#, c-format
+msgid "Duplicated %'d file in “%s”"
+msgstr "ສຳເນົາ %'d ໄຟລ໌ໃນ “%s” ແລ້ວ"
+
+#. To translators: %s will expand to a size like "2 bytes" or "3 MB", so something like "4 kB / 4 MB"
+#. To translators: %s will expand to a size like "2 bytes" or "3 MB".
+#. To translators: %s will expand to a size like "2 bytes" or
+#. * "3 MB", so something like "4 kB / 4 MB"
+#.
+#. To translators: %s will expand to a size like "2 bytes" or "3 MB", so something like "4 kB / 4 MB"
+#. To translators: %s will expand to a size like "2 bytes" or "3 MB".
+#: src/nautilus-file-operations.c:3679 src/nautilus-file-operations.c:3739
+#: src/nautilus-file-operations.c:7973 src/nautilus-file-operations.c:8200
+#: src/nautilus-file-operations.c:8455 src/nautilus-file-operations.c:8498
+#, c-format
+msgid "%s / %s"
+msgstr "%s / %s"
+
+#. To translators: %s will expand to a size like "2 bytes" or "3 MB", %s to a time duration like
+#. * "2 minutes". So the whole thing will be something like "2 kB / 4 MB -- 2 hours left (4 kB/s)"
+#. *
+#. * The singular/plural form will be used depending on the remaining time (i.e. the %s argument).
+#.
+#. To translators: %s will expand to a size like "2 bytes" or
+#. * "3 MB", %s to a time duration like "2 minutes". So the whole
+#. * thing will be something like
+#. * "2 kB / 4 MB -- 2 hours left (4 kB/s)"
+#. *
+#. * The singular/plural form will be used depending on the
+#. * remaining time (i.e. the %s argument).
+#.
+#. To translators: %s will expand to a size like "2 bytes" or "3 MB", %s to a time duration like
+#. * "2 minutes". So the whole thing will be something like "2 kB / 4 MB -- 2 hours left (4 kB/s)"
+#. *
+#. * The singular/plural form will be used depending on the remaining time (i.e. the %s argument).
+#.
+#: src/nautilus-file-operations.c:3723 src/nautilus-file-operations.c:7991
+#: src/nautilus-file-operations.c:8487
+#, c-format
+msgid "%s / %s — %s left (%s/s)"
+msgstr "%s / %s — ເຫຼືອອີກ %s (%s/ວິ)"
+
+#. To translators: %s will expand to a time duration like "2 minutes".
+#. * So the whole thing will be something like "1 / 5 -- 2 hours left (4 kB/s)"
+#. *
+#. * The singular/plural form will be used depending on the remaining time (i.e. the %s argument).
+#.
+#: src/nautilus-file-operations.c:3757 src/nautilus-file-operations.c:8517
+#, c-format
+msgid "%'d / %'d — %s left (%s/s)"
+msgstr "%'d / %'d — ເຫຼືອອີກ %s (%s/ວິ)"
+
+#: src/nautilus-file-operations.c:4281
+#, c-format
+msgid ""
+"The folder “%s” cannot be copied because you do not have permissions to "
+"create it in the destination."
+msgstr "ບໍ່ສາມາດສຳເນົາໂຟລເດີ “%s” ໄດ້ ເພາະທ່ານບໍ່ມີສິດໃນການສ້າງມັນໃນປາຍທາງ."
+
+#: src/nautilus-file-operations.c:4287
+#, c-format
+msgid "There was an error creating the folder “%s”."
+msgstr "ເກີດຂໍ້ຜິດພາດໃນການສ້າງໂຟລເດີ “%s”."
+
+#: src/nautilus-file-operations.c:4474
+#, c-format
+msgid ""
+"Files in the folder “%s” cannot be copied because you do not have "
+"permissions to see them."
+msgstr "ບໍ່ສາມາດສຳເນົາໄຟລ໌ໃນໂຟລເດີ “%s” ໄດ້ ເພາະທ່ານບໍ່ມີສິດໃນການເບິ່ງ."
+
+#: src/nautilus-file-operations.c:4490
+msgid "_Skip files"
+msgstr "_ຂ້າມໄຟລ໌"
+
+#: src/nautilus-file-operations.c:4556
+#, c-format
+msgid ""
+"The folder “%s” cannot be copied because you do not have permissions to read "
+"it."
+msgstr "ບໍ່ສາມາດສຳເນົາໂຟລເດີ “%s” ໄດ້ ເພາະທ່ານບໍ່ມີສິດໃນການອ່ານ."
+
+#: src/nautilus-file-operations.c:4621 src/nautilus-file-operations.c:5252
+#: src/nautilus-file-operations.c:5994
+#, c-format
+msgid "Error while moving “%s”."
+msgstr "ເກີດຂໍ້ຜິດພາດຂະນະກຳລັງຍ້າຍ “%s”."
+
+#: src/nautilus-file-operations.c:4622
+msgid "Could not remove the source folder."
+msgstr "ບໍ່ສາມາດລຶບໂຟລເດີຕົ້ນທາງໄດ້."
+
+#: src/nautilus-file-operations.c:4839
+msgid "There was an error getting information about the source."
+msgstr "ເກີດຂໍ້ຜິດພາດໃນການເອົາຂໍ້ມູນກ່ຽວກັບຕົ້ນທາງ."
+
+#. the run_warning() frees all strings passed in automatically
+#: src/nautilus-file-operations.c:4940 src/nautilus-file-operations.c:5754
+msgid "You cannot move a folder into itself."
+msgstr "ທ່ານບໍ່ສາມາດຍ້າຍໂຟລເດີເຂົ້າໄປໃນໂຕມັນເອງໄດ້."
+
+#: src/nautilus-file-operations.c:4941 src/nautilus-file-operations.c:5755
+msgid "You cannot copy a folder into itself."
+msgstr "ທ່ານບໍ່ສາມາດສຳເນົາໂຟລເດີເຂົ້າໄປໃນໂຕມັນເອງໄດ້."
+
+#: src/nautilus-file-operations.c:4942 src/nautilus-file-operations.c:5756
+msgid "The destination folder is inside the source folder."
+msgstr "ໂຟລເດີປາຍທາງຢູ່ໃນໂຟລເດີຕົ້ນທາງ."
+
+#. the run_warning() frees all strings passed in automatically
+#: src/nautilus-file-operations.c:4982 src/nautilus-file-operations.c:5797
+msgid "You cannot move a file over itself."
+msgstr "ທ່ານບໍ່ສາມາດຍ້າຍໄຟລ໌ທັບໂຕມັນເອງໄດ້."
+
+#: src/nautilus-file-operations.c:4983 src/nautilus-file-operations.c:5798
+msgid "You cannot copy a file over itself."
+msgstr "ທ່ານບໍ່ສາມາດສຳເນົາໄຟລ໌ທັບໂຕມັນເອງໄດ້."
+
+#: src/nautilus-file-operations.c:4984 src/nautilus-file-operations.c:5799
+msgid "The source file would be overwritten by the destination."
+msgstr "ໄຟລ໌ຕົ້ນທາງຈະຖືກຂຽນທັບໂດຍປາຍທາງ."
+
+#: src/nautilus-file-operations.c:5256 src/nautilus-file-operations.c:5344
+#, c-format
+msgid "Error while copying “%s”."
+msgstr "ເກີດຂໍ້ຜິດພາດຂະນະກຳລັງສຳເນົາ “%s”."
+
+#: src/nautilus-file-operations.c:5259
+#, c-format
+msgid "Could not remove the already existing file with the same name in %s."
+msgstr "ບໍ່ສາມາດລຶບໄຟລ໌ທີ່ມີຊື່ດຽວກັນຢູ່ແລ້ວໃນ %s ໄດ້."
+
+#: src/nautilus-file-operations.c:5346
+#, c-format
+msgid "There was an error copying the file into %s."
+msgstr "ເກີດຂໍ້ຜິດພາດໃນການສຳເນົາໄຟລ໌ເຂົ້າໄປໃນ %s."
+
+#: src/nautilus-file-operations.c:5538
+msgid "Copying Files"
+msgstr "ກຳລັງສຳເນົາໄຟລ໌"
+
+#: src/nautilus-file-operations.c:5656
+#, c-format
+msgid "Preparing to move to “%s”"
+msgstr "ກຳລັງກະກຽມຍ້າຍໄປ “%s”"
+
+#: src/nautilus-file-operations.c:5660
+#, c-format
+msgid "Preparing to move %'d file"
+msgstr "ກຳລັງກະກຽມຍ້າຍ %'d ໄຟລ໌"
+
+#: src/nautilus-file-operations.c:5996
+#, c-format
+msgid "There was an error moving the file into %s."
+msgstr "ເກີດຂໍ້ຜິດພາດໃນການຍ້າຍໄຟລ໌ເຂົ້າໄປໃນ %s."
+
+#: src/nautilus-file-operations.c:6229
+msgid "Moving Files"
+msgstr "ກຳລັງຍ້າຍໄຟລ໌"
+
+#: src/nautilus-file-operations.c:6334
+#, c-format
+msgid "Creating links in “%s”"
+msgstr "ກຳລັງສ້າງລິງກ໌ໃນ “%s”"
+
+#: src/nautilus-file-operations.c:6338
+#, c-format
+msgid "Making link to %'d file"
+msgstr "ກຳລັງສ້າງລິງກ໌ໄປ %'d ໄຟລ໌"
+
+#: src/nautilus-file-operations.c:6486
+#, c-format
+msgid "Error while creating link to “%s”."
+msgstr "ເກີດຂໍ້ຜິດພາດຂະນະກຳລັງສ້າງລິງກ໌ໄປ “%s”."
+
+#: src/nautilus-file-operations.c:6490
+msgid "Symbolic links only supported for local files"
+msgstr "ຮອງຮັບລິງກ໌ສັນຍາລັກສະເພາະໄຟລ໌ໃນເຄື່ອງ"
+
+#: src/nautilus-file-operations.c:6495
+msgid "The target doesn’t support symbolic links."
+msgstr "ເປົ້າໝາຍບໍ່ຮອງຮັບລິງກ໌ສັນຍາລັກ."
+
+#: src/nautilus-file-operations.c:6503
+#, c-format
+msgid "There was an error creating the symlink in %s."
+msgstr "ເກີດຂໍ້ຜິດພາດໃນການສ້າງລິງກ໌ສັນຍາລັກໃນ %s."
+
+#: src/nautilus-file-operations.c:6833
+msgid "Setting permissions"
+msgstr "ກຳລັງຕັ້ງຄ່າສິດອະນຸຍາດ"
+
+#. localizers: the initial name of a new folder
+#: src/nautilus-file-operations.c:7125
+msgid "Untitled Folder"
+msgstr "ໂຟລເດີບໍ່ມີຊື່"
+
+#. localizers: the initial name of a new empty document
+#: src/nautilus-file-operations.c:7140
+msgid "Untitled Document"
+msgstr "ເອກະສານບໍ່ມີຊື່"
+
+#: src/nautilus-file-operations.c:7366
+#, c-format
+msgid "Error while creating directory “%s”."
+msgstr "ເກີດຂໍ້ຜິດພາດຂະນະກຳລັງສ້າງໄດເຣັກທໍຣີ “%s”."
+
+#: src/nautilus-file-operations.c:7371
+#, c-format
+msgid "Error while creating file “%s”."
+msgstr "ເກີດຂໍ້ຜິດພາດຂະນະກຳລັງສ້າງໄຟລ໌ “%s”."
+
+#: src/nautilus-file-operations.c:7375
+#, c-format
+msgid "There was an error creating the directory in %s."
+msgstr "ເກີດຂໍ້ຜິດພາດໃນການສ້າງໄດເຣັກທໍຣີໃນ %s."
+
+#: src/nautilus-file-operations.c:7476
+msgid "Saving image to file"
+msgstr "ກຳລັງບັນທຶກຮູບພາບລົງໄຟລ໌"
+
+#: src/nautilus-file-operations.c:7485
+msgid "Successfully saved image to file"
+msgstr "ບັນທຶກຮູບພາບລົງໄຟລ໌ສຳເລັດ"
+
+#: src/nautilus-file-operations.c:7515
+msgid "Failed to save image"
+msgstr "ບັນທຶກຮູບພາບບໍ່ສຳເລັດ"
+
+#. Translators: This is used to auto-generate a file name for pasted images from
+#. * the clipboard i.e. "Pasted image.png", "Pasted image 1.png", ...
+#: src/nautilus-file-operations.c:7577
+msgid "Pasted image"
+msgstr "ຮູບພາບທີ່ວາງ"
+
+#: src/nautilus-file-operations.c:7584
+msgid "Retrieving clipboard data"
+msgstr "ກຳລັງດຶງຂໍ້ມູນຄລິບບອດ"
+
+#: src/nautilus-file-operations.c:7616
+msgid "Retrieving image data"
+msgstr "ກຳລັງດຶງຂໍ້ມູນຮູບພາບ"
+
+#: src/nautilus-file-operations.c:7834
+msgid "Emptying Trash"
+msgstr "ກຳລັງລ້າງຖັງຂີ້ເຫຍື້ອ"
+
+#: src/nautilus-file-operations.c:7877
+msgid "Verifying destination"
+msgstr "ກຳລັງກວດສອບປາຍທາງ"
+
+#: src/nautilus-file-operations.c:7931
+#, c-format
+msgid "Extracting “%s”"
+msgstr "ກຳລັງແຕກໄຟລ໌ “%s”"
+
+#: src/nautilus-file-operations.c:8057 src/nautilus-file-operations.c:8147
+#, c-format
+msgid "Error extracting “%s”"
+msgstr "ເກີດຂໍ້ຜິດພາດໃນການແຕກໄຟລ໌ “%s”"
+
+#: src/nautilus-file-operations.c:8064
+#, c-format
+msgid "There was an error while extracting “%s”."
+msgstr "ເກີດຂໍ້ຜິດພາດຂະນະກຳລັງແຕກໄຟລ໌ “%s”."
+
+#: src/nautilus-file-operations.c:8150
+#, c-format
+msgid "Not enough free space to extract “%s”"
+msgstr "ພື້ນທີ່ວ່າງບໍ່ພຽງພໍທີ່ຈະແຕກໄຟລ໌ “%s”"
+
+#: src/nautilus-file-operations.c:8183
+#, c-format
+msgid "Extracted “%s” to “%s”"
+msgstr "ແຕກໄຟລ໌ “%s” ໄປ “%s” ແລ້ວ"
+
+#: src/nautilus-file-operations.c:8189
+#, c-format
+msgid "Extracted %'d file to “%s”"
+msgstr "ແຕກ %'d ໄຟລ໌ໄປ “%s” ແລ້ວ"
+
+#: src/nautilus-file-operations.c:8223
+msgid "Preparing to extract"
+msgstr "ກຳລັງກະກຽມແຕກໄຟລ໌"
+
+#: src/nautilus-file-operations.c:8351
+msgid "Extracting Files"
+msgstr "ກຳລັງແຕກໄຟລ໌"
+
+#: src/nautilus-file-operations.c:8411
+#, c-format
+msgid "Compressing “%s” into “%s”"
+msgstr "ກຳລັງບີບອັດ “%s” ເປັນ “%s”"
+
+#: src/nautilus-file-operations.c:8417
+#, c-format
+msgid "Compressing %'d file into “%s”"
+msgstr "ກຳລັງບີບອັດ %'d ໄຟລ໌ເປັນ “%s”"
+
+#: src/nautilus-file-operations.c:8565
+#, c-format
+msgid "Error compressing “%s” into “%s”"
+msgstr "ເກີດຂໍ້ຜິດພາດໃນການບີບອັດ “%s” ເປັນ “%s”"
+
+#: src/nautilus-file-operations.c:8571
+#, c-format
+msgid "Error compressing %'d file into “%s”"
+msgstr "ເກີດຂໍ້ຜິດພາດໃນການບີບອັດ %'d ໄຟລ໌ເປັນ “%s”"
+
+#: src/nautilus-file-operations.c:8581
+msgid "There was an error while compressing files."
+msgstr "ເກີດຂໍ້ຜິດພາດຂະນະກຳລັງບີບອັດໄຟລ໌."
+
+#: src/nautilus-file-operations.c:8606
+#, c-format
+msgid "Compressed “%s” into “%s”"
+msgstr "ບີບອັດ “%s” ເປັນ “%s” ແລ້ວ"
+
+#: src/nautilus-file-operations.c:8612
+#, c-format
+msgid "Compressed %'d file into “%s”"
+msgstr "ບີບອັດ %'d ໄຟລ໌ເປັນ “%s” ແລ້ວ"
+
+#: src/nautilus-file-operations.c:8731
+msgid "Compressing Files"
+msgstr "ກຳລັງບີບອັດໄຟລ໌"
+
+#: src/nautilus-files-view.c:364
+msgid "Searching…"
+msgstr "ກຳລັງຄົ້ນຫາ..."
+
+#: src/nautilus-files-view.c:364 src/nautilus-window-slot.c:907
+msgid "Loading…"
+msgstr "ກຳລັງໂຫຼດ..."
+
+#: src/nautilus-files-view.c:1773
+msgid "Examples: "
+msgstr "ຕົວຢ່າງ: "
+
+#: src/nautilus-files-view.c:2790 src/nautilus-files-view.c:2797
+#: src/nautilus-files-view.c:2804 src/nautilus-files-view.c:2811
+msgid "Could not paste files"
+msgstr "ບໍ່ສາມາດວາງໄຟລ໌ໄດ້"
+
+#: src/nautilus-files-view.c:2791
+msgid "Cannot paste files into Starred"
+msgstr "ບໍ່ສາມາດວາງໄຟລ໌ໃນລາຍການຕິດດາວໄດ້"
+
+#: src/nautilus-files-view.c:2798
+msgid "Cannot paste files into Recent"
+msgstr "ບໍ່ສາມາດວາງໄຟລ໌ໃນລາຍການລ່າສຸດໄດ້"
+
+#: src/nautilus-files-view.c:2805
+msgid "Cannot paste files into Trash"
+msgstr "ບໍ່ສາມາດວາງໄຟລ໌ໃນຖັງຂີ້ເຫຍື້ອໄດ້"
+
+#: src/nautilus-files-view.c:2812
+msgid "Permissions do not allow pasting files in this directory"
+msgstr "ສິດອະນຸຍາດບໍ່ອະນຸຍາດໃຫ້ວາງໄຟລ໌ໃນໄດເຣັກທໍຣີນີ້"
+
+#: src/nautilus-files-view.c:3405 src/nautilus-files-view.c:3452
+#, c-format
+msgid "“%s” selected"
+msgstr "ເລືອກ “%s” ແລ້ວ"
+
+#: src/nautilus-files-view.c:3409
+#, c-format
+msgid "%'d folder selected"
+msgstr "ເລືອກ %'d ໂຟລເດີແລ້ວ"
+
+#: src/nautilus-files-view.c:3423
+#, c-format
+msgid "(containing %'d item)"
+msgstr "(ມີ %'d ລາຍການ)"
+
+#. translators: this is preceded with a string of form 'N folders' (N more than 1)
+#: src/nautilus-files-view.c:3438
+#, c-format
+msgid "(containing a total of %'d item)"
+msgstr "(ມີທັງໝົດ %'d ລາຍການ)"
+
+#: src/nautilus-files-view.c:3457
+#, c-format
+msgid "%'d item selected"
+msgstr "ເລືອກ %'d ລາຍການແລ້ວ"
+
+#. Folders selected also, use "other" terminology
+#: src/nautilus-files-view.c:3466
+#, c-format
+msgid "%'d other item selected"
+msgstr "ເລືອກລາຍການອື່ນ %'d ລາຍການ"
+
+#. This is marked for translation in case a localiser
+#. * needs to use something other than parentheses. The
+#. * the message in parentheses is the size of the selected items.
+#.
+#: src/nautilus-files-view.c:3481
+#, c-format
+msgid "(%s)"
+msgstr "(%s)"
+
+#. This is marked for translation in case a localizer
+#. * needs to change ", " to something else. The comma
+#. * is between the message about the number of folders
+#. * and the number of items in those folders and the
+#. * message about the number of other items and the
+#. * total size of those items.
+#.
+#: src/nautilus-files-view.c:3531
+#, c-format
+msgid "%s, %s"
+msgstr "%s, %s"
+
+#: src/nautilus-files-view.c:3607
+msgid "Search _Settings"
+msgstr "ຕັ້ງຄ່າ_ການຄົ້ນຫາ"
+
+#: src/nautilus-files-view.c:3619
+msgid "Search _Everywhere"
+msgstr "ຄົ້ນຫາ_ທຸກບ່ອນ"
+
+#: src/nautilus-files-view.c:3649
+msgid "More locations can be added to search in the settings"
+msgstr "ສາມາດເພີ່ມທີ່ຢູ່ສຳລັບຄົ້ນຫາໄດ້ໃນການຕັ້ງຄ່າ"
+
+#. Translators: %s is the name of the search location formatted for display
+#: src/nautilus-files-view.c:3657
+#, c-format
+msgid "No matches in “%s”"
+msgstr "ບໍ່ມີລາຍການທີ່ຕົງກັນໃນ “%s”"
+
+#: src/nautilus-files-view.c:3665
+#: src/resources/ui/nautilus-search-types-dialog.ui:70
+msgid "No Results Found"
+msgstr "ບໍ່ພົບຜົນລັບ"
+
+#: src/nautilus-files-view.c:3670
+msgid "Trash is Empty"
+msgstr "ຖັງຂີ້ເຫຍື້ອວ່າງເປົ່າ"
+
+#: src/nautilus-files-view.c:3676
+msgid "No Starred Files"
+msgstr "ບໍ່ມີໄຟລ໌ທີ່ຕິດດາວ"
+
+#: src/nautilus-files-view.c:3682
+msgid "No Recent Files"
+msgstr "ບໍ່ມີໄຟລ໌ລ່າສຸດ"
+
+#: src/nautilus-files-view.c:3688
+msgid "No Known Connections"
+msgstr "ບໍ່ມີການເຊື່ອມຕໍ່ທີ່ຮູ້ຈັກ"
+
+#: src/nautilus-files-view.c:3689
+msgid "Enter an address to connect to a network location."
+msgstr "ປ້ອນທີ່ຢູ່ເພື່ອເຊື່ອມຕໍ່ກັບທີ່ຢູ່ເຄືອຂ່າຍ."
+
+#: src/nautilus-files-view.c:3694
+msgid "Folder is Empty"
+msgstr "ໂຟລເດີວ່າງເປົ່າ"
+
+#: src/nautilus-files-view.c:5749
+msgid "Select Move Destination"
+msgstr "ເລືອກປາຍທາງການຍ້າຍ"
+
+#: src/nautilus-files-view.c:5753
+msgid "Select Copy Destination"
+msgstr "ເລືອກປາຍທາງການສຳເນົາ"
+
+#: src/nautilus-files-view.c:5764 src/nautilus-files-view.c:6131
+#: src/nautilus-portal.c:431 src/nautilus-properties-window.c:4027
+#: src/resources/ui/nautilus-files-view-select-items.ui:23
+msgid "_Select"
+msgstr "_ເລືອກ"
+
+#: src/nautilus-files-view.c:6130
+msgid "Select Extract Destination"
+msgstr "ເລືອກປາຍທາງການແຕກໄຟລ໌"
+
+#: src/nautilus-files-view.c:6206
+msgid "Error sending email."
+msgstr "ເກີດຂໍ້ຜິດພາດໃນການສົ່ງອີເມວ."
+
+#. Translators: %s is a file name formatted for display
+#: src/nautilus-files-view.c:6507
+#, c-format
+msgid "Unable to remove “%s”"
+msgstr "ບໍ່ສາມາດລຶບ “%s” ອອກໄດ້"
+
+#: src/nautilus-files-view.c:6552
+msgid "Unable to stop drive"
+msgstr "ບໍ່ສາມາດຢຸດໄດຣຟ໌ໄດ້"
+
+#. Translators: %s is a file name formatted for display
+#: src/nautilus-files-view.c:6663 src/nautilus-sidebar.c:1721
+#: src/nautilus-sidebar.c:2592
+#, c-format
+msgid "Unable to start “%s”"
+msgstr "ບໍ່ສາມາດເລີ່ມ “%s” ໄດ້"
+
+#: src/nautilus-files-view.c:7759
+#, c-format
+msgid "New Folder with Selection (%'d Item)"
+msgstr "ໂຟລເດີໃໝ່ຈາກລາຍການທີ່ເລືອກ (%'d ລາຍການ)"
+
+#: src/nautilus-files-view.c:7814
+#, c-format
+msgid "Open With %s"
+msgstr "ເປີດດ້ວຍ %s"
+
+#: src/nautilus-files-view.c:7825
+msgid "Run"
+msgstr "ເປີດໃຊ້ງານ"
+
+#: src/nautilus-files-view.c:7830
+#: src/resources/ui/nautilus-operations-ui-manager-request-passphrase.ui:17
+msgid "Extract"
+msgstr "ແຕກໄຟລ໌"
+
+#: src/nautilus-files-view.c:7831
+msgid "Extract to…"
+msgstr "ແຕກໄຟລ໌ໄປທີ່..."
+
+#: src/nautilus-files-view.c:7835
+#: src/resources/ui/nautilus-files-view-context-menus.ui:93
+msgid "Open"
+msgstr "ເປີດ"
+
+#: src/nautilus-files-view.c:7914 src/nautilus-sidebar.c:3030
+#: src/resources/ui/nautilus-files-view-context-menus.ui:159
+msgid "_Start"
+msgstr "_ເລີ່ມ"
+
+#: src/nautilus-files-view.c:7920
+msgid "_Connect"
+msgstr "_ເຊື່ອມຕໍ່"
+
+#: src/nautilus-files-view.c:7926
+msgid "_Start Multi-disk Drive"
+msgstr "_ເລີ່ມໄດຣຟ໌ຫຼາຍດິສ"
+
+#: src/nautilus-files-view.c:7932
+msgid "U_nlock Drive"
+msgstr "_ປົດລັອກໄດຣຟ໌"
+
+#: src/nautilus-files-view.c:7950
+msgid "Stop Drive"
+msgstr "ຢຸດໄດຣຟ໌"
+
+#: src/nautilus-files-view.c:7956 src/nautilus-sidebar.c:3061
+msgid "_Safely Remove Drive"
+msgstr "_ຖອດໄດຣຟ໌ອອກຢ່າງປອດໄພ"
+
+#: src/nautilus-files-view.c:7962
+msgid "_Disconnect"
+msgstr "_ຕັດການເຊື່ອມຕໍ່"
+
+#: src/nautilus-files-view.c:7968
+msgid "_Stop Multi-disk Drive"
+msgstr "_ຢຸດໄດຣຟ໌ຫຼາຍດິສ"
+
+#: src/nautilus-files-view.c:7974
+msgid "_Lock Drive"
+msgstr "_ລັອກໄດຣຟ໌"
+
+#. Translator: This is the filename used for when you dnd text to a directory
+#: src/nautilus-files-view-dnd.c:103
+msgid "Dropped Text.txt"
+msgstr "ຂໍ້ຄວາມທີ່ວາງ.txt"
+
+#: src/nautilus-files-view-dnd.c:186
+msgid "Drag and drop is not supported."
+msgstr "ບໍ່ຮອງຮັບການລາກ ແລະ ວາງ."
+
+#: src/nautilus-files-view-dnd.c:187
+msgid "An invalid drag type was used."
+msgstr "ປະເພດການລາກທີ່ໃຊ້ບໍ່ຖືກຕ້ອງ."
+
+#: src/nautilus-file-undo-operations.c:177 src/nautilus-window.c:874
+msgid "Undo"
+msgstr "ຍົກເລີກການກະທຳ"
+
+#: src/nautilus-file-undo-operations.c:181
+msgid "Undo last action"
+msgstr "ຍົກເລີກການກະທຳຫຼ້າສຸດ"
+
+#: src/nautilus-file-undo-operations.c:186
+msgid "Redo"
+msgstr "ເຮັດຄືນ"
+
+#: src/nautilus-file-undo-operations.c:190
+msgid "Redo last undone action"
+msgstr "ເຮັດຄືນການກະທຳທີ່ຍົກເລີກໄປຫຼ້າສຸດ"
+
+#: src/nautilus-file-undo-operations.c:453
+#, c-format
+msgid "Move %d item back to “%s”"
+msgstr "ຍ້າຍ %d ລາຍການກັບໄປ “%s”"
+
+#: src/nautilus-file-undo-operations.c:456
+#, c-format
+msgid "Move %d item to “%s”"
+msgstr "ຍ້າຍ %d ລາຍການໄປ “%s”"
+
+#: src/nautilus-file-undo-operations.c:460
+#, c-format
+msgid "_Undo Move %d item"
+msgstr "_ຍົກເລີກການຍ້າຍ %d ລາຍການ"
+
+#: src/nautilus-file-undo-operations.c:463
+#, c-format
+msgid "_Redo Move %d item"
+msgstr "_ເຮັດຄືນການຍ້າຍ %d ລາຍການ"
+
+#: src/nautilus-file-undo-operations.c:469
+#, c-format
+msgid "Move “%s” back to “%s”"
+msgstr "ຍ້າຍ “%s” ກັບໄປ “%s”"
+
+#: src/nautilus-file-undo-operations.c:470
+#, c-format
+msgid "Move “%s” to “%s”"
+msgstr "ຍ້າຍ “%s” ໄປ “%s”"
+
+#: src/nautilus-file-undo-operations.c:472
+msgid "_Undo Move"
+msgstr "_ຍົກເລີກການຍ້າຍ"
+
+#: src/nautilus-file-undo-operations.c:473
+msgid "_Redo Move"
+msgstr "_ເຮັດຄືນການຍ້າຍ"
+
+#: src/nautilus-file-undo-operations.c:478
+msgid "_Undo Restore From Trash"
+msgstr "_ຍົກເລີກການກູ້ຄືນຈາກຖັງຂີ້ເຫຍື້ອ"
+
+#: src/nautilus-file-undo-operations.c:479
+msgid "_Redo Restore From Trash"
+msgstr "_ເຮັດຄືນການກູ້ຄືນຈາກຖັງຂີ້ເຫຍື້ອ"
+
+#: src/nautilus-file-undo-operations.c:483
+#, c-format
+msgid "Move %d item back to trash"
+msgstr "ຍ້າຍ %d ລາຍການກັບໄປຖັງຂີ້ເຫຍື້ອ"
+
+#: src/nautilus-file-undo-operations.c:486
+#: src/nautilus-file-undo-operations.c:1631
+#, c-format
+msgid "Restore %d item from trash"
+msgstr "ກູ້ຄືນ %d ລາຍການຈາກຖັງຂີ້ເຫຍື້ອ"
+
+#: src/nautilus-file-undo-operations.c:492
+#, c-format
+msgid "Move “%s” back to trash"
+msgstr "ຍ້າຍ “%s” ກັບໄປຖັງຂີ້ເຫຍື້ອ"
+
+#: src/nautilus-file-undo-operations.c:493
+#, c-format
+msgid "Restore “%s” from trash"
+msgstr "ກູ້ຄືນ “%s” ຈາກຖັງຂີ້ເຫຍື້ອ"
+
+#: src/nautilus-file-undo-operations.c:500
+#, c-format
+msgid "Delete %d copied item"
+msgstr "ລຶບ %d ລາຍການທີ່ສຳເນົາ"
+
+#: src/nautilus-file-undo-operations.c:503
+#, c-format
+msgid "Copy %d item to “%s”"
+msgstr "ສຳເນົາ %d ລາຍການໄປ “%s”"
+
+#: src/nautilus-file-undo-operations.c:507
+#, c-format
+msgid "_Undo Copy %d item"
+msgstr "_ຍົກເລີກການສຳເນົາ %d ລາຍການ"
+
+#: src/nautilus-file-undo-operations.c:510
+#, c-format
+msgid "_Redo Copy %d item"
+msgstr "_ເຮັດຄືນການສຳເນົາ %d ລາຍການ"
+
+#: src/nautilus-file-undo-operations.c:516
+#: src/nautilus-file-undo-operations.c:543
+#: src/nautilus-file-undo-operations.c:831
+#: src/nautilus-file-undo-operations.c:2388
+#: src/nautilus-file-undo-operations.c:2551
+#, c-format
+msgid "Delete “%s”"
+msgstr "ລຶບ “%s”"
+
+#: src/nautilus-file-undo-operations.c:517
+#, c-format
+msgid "Copy “%s” to “%s”"
+msgstr "ສຳເນົາ “%s” ໄປ “%s”"
+
+#: src/nautilus-file-undo-operations.c:519
+msgid "_Undo Copy"
+msgstr "_ຍົກເລີກການສຳເນົາ"
+
+#: src/nautilus-file-undo-operations.c:520
+msgid "_Redo Copy"
+msgstr "_ເຮັດຄືນການສຳເນົາ"
+
+#: src/nautilus-file-undo-operations.c:527
+#, c-format
+msgid "Delete %d duplicated item"
+msgstr "ລຶບ %d ລາຍການທີ່ສຳເນົາ"
+
+#: src/nautilus-file-undo-operations.c:530
+#, c-format
+msgid "Duplicate %d item in “%s”"
+msgstr "ສຳເນົາ %d ລາຍການໃນ “%s”"
+
+#: src/nautilus-file-undo-operations.c:534
+#, c-format
+msgid "_Undo Duplicate %d item"
+msgstr "_ຍົກເລີກການສຳເນົາ %d ລາຍການ"
+
+#: src/nautilus-file-undo-operations.c:537
+#, c-format
+msgid "_Redo Duplicate %d item"
+msgstr "_ເຮັດຄືນການສຳເນົາ %d ລາຍການ"
+
+#: src/nautilus-file-undo-operations.c:544
+#, c-format
+msgid "Duplicate “%s” in “%s”"
+msgstr "ສຳເນົາ “%s” ໃນ “%s”"
+
+#: src/nautilus-file-undo-operations.c:547
+msgid "_Undo Duplicate"
+msgstr "_ຍົກເລີກການສຳເນົາ"
+
+#: src/nautilus-file-undo-operations.c:548
+msgid "_Redo Duplicate"
+msgstr "_ເຮັດຄືນການສຳເນົາ"
+
+#: src/nautilus-file-undo-operations.c:555
+#, c-format
+msgid "Delete links to %d item"
+msgstr "ລຶບລິງກ໌ໄປ %d ລາຍການ"
+
+#: src/nautilus-file-undo-operations.c:558
+#, c-format
+msgid "Create links to %d item"
+msgstr "ສ້າງລິງກ໌ໄປ %d ລາຍການ"
+
+#: src/nautilus-file-undo-operations.c:564
+#, c-format
+msgid "Delete link to “%s”"
+msgstr "ລຶບລິງກ໌ໄປ “%s”"
+
+#: src/nautilus-file-undo-operations.c:565
+#, c-format
+msgid "Create link to “%s”"
+msgstr "ສ້າງລິງກ໌ໄປ “%s”"
+
+#: src/nautilus-file-undo-operations.c:567
+msgid "_Undo Create Link"
+msgstr "_ຍົກເລີກການສ້າງລິງກ໌"
+
+#: src/nautilus-file-undo-operations.c:568
+msgid "_Redo Create Link"
+msgstr "_ເຮັດຄືນການສ້າງລິງກ໌"
+
+#: src/nautilus-file-undo-operations.c:835
+#, c-format
+msgid "Create an empty file “%s”"
+msgstr "ສ້າງໄຟລ໌ວ່າງ “%s”"
+
+#: src/nautilus-file-undo-operations.c:837
+msgid "_Undo Create Empty File"
+msgstr "_ຍົກເລີກການສ້າງໄຟລ໌ວ່າງ"
+
+#: src/nautilus-file-undo-operations.c:838
+msgid "_Redo Create Empty File"
+msgstr "_ເຮັດຄືນການສ້າງໄຟລ໌ວ່າງ"
+
+#: src/nautilus-file-undo-operations.c:842
+#, c-format
+msgid "Create a new folder “%s”"
+msgstr "ສ້າງໂຟລເດີໃໝ່ “%s”"
+
+#: src/nautilus-file-undo-operations.c:844
+msgid "_Undo Create Folder"
+msgstr "_ຍົກເລີກການສ້າງໂຟລເດີ"
+
+#: src/nautilus-file-undo-operations.c:845
+msgid "_Redo Create Folder"
+msgstr "_ເຮັດຄືນການສ້າງໂຟລເດີ"
+
+#: src/nautilus-file-undo-operations.c:849
+#, c-format
+msgid "Create new file “%s” from template "
+msgstr "ສ້າງໄຟລ໌ໃໝ່ “%s” ຈາກແມ່ແບບ "
+
+#: src/nautilus-file-undo-operations.c:851
+msgid "_Undo Create From Template"
+msgstr "_ຍົກເລີກການສ້າງຈາກແມ່ແບບ"
+
+#: src/nautilus-file-undo-operations.c:852
+msgid "_Redo Create From Template"
+msgstr "_ເຮັດຄືນການສ້າງຈາກແມ່ແບບ"
+
+#: src/nautilus-file-undo-operations.c:1063
+#: src/nautilus-file-undo-operations.c:1064
+#, c-format
+msgid "Rename “%s” as “%s”"
+msgstr "ປ່ຽນຊື່ “%s” ເປັນ “%s”"
+
+#: src/nautilus-file-undo-operations.c:1066
+msgid "_Undo Rename"
+msgstr "_ຍົກເລີກການປ່ຽນຊື່"
+
+#: src/nautilus-file-undo-operations.c:1067
+msgid "_Redo Rename"
+msgstr "_ເຮັດຄືນການປ່ຽນຊື່"
+
+#: src/nautilus-file-undo-operations.c:1184
+#: src/nautilus-file-undo-operations.c:1188
+#, c-format
+msgid "Batch rename %d file"
+msgstr "ປ່ຽນຊື່ %d ໄຟລ໌ພ້ອມກັນ"
+
+#: src/nautilus-file-undo-operations.c:1193
+msgid "_Undo Batch Rename"
+msgstr "_ຍົກເລີກການປ່ຽນຊື່ພ້ອມກັນ"
+
+#: src/nautilus-file-undo-operations.c:1194
+msgid "_Redo Batch Rename"
+msgstr "_ເຮັດຄືນການປ່ຽນຊື່ພ້ອມກັນ"
+
+#: src/nautilus-file-undo-operations.c:1411
+#: src/nautilus-file-undo-operations.c:1428
+#, c-format
+msgid "Unstar %d file"
+msgstr "ປົດດາວ %d ໄຟລ໌"
+
+#: src/nautilus-file-undo-operations.c:1415
+#: src/nautilus-file-undo-operations.c:1424
+#, c-format
+msgid "Star %d file"
+msgstr "ຕິດດາວ %d ໄຟລ໌"
+
+#: src/nautilus-file-undo-operations.c:1419
+msgid "_Undo Starring"
+msgstr "_ຍົກເລີກການຕິດດາວ"
+
+#: src/nautilus-file-undo-operations.c:1420
+msgid "_Redo Starring"
+msgstr "_ເຮັດຄືນການຕິດດາວ"
+
+#: src/nautilus-file-undo-operations.c:1432
+msgid "_Undo Unstarring"
+msgstr "_ຍົກເລີກການປົດດາວ"
+
+#: src/nautilus-file-undo-operations.c:1433
+msgid "_Redo Unstarring"
+msgstr "_ເຮັດຄືນການປົດດາວ"
+
+#: src/nautilus-file-undo-operations.c:1634
+#, c-format
+msgid "Move %d item to trash"
+msgstr "ຍ້າຍ %d ລາຍການໄປຖັງຂີ້ເຫຍື້ອ"
+
+#: src/nautilus-file-undo-operations.c:1648
+#, c-format
+msgid "Restore “%s” to “%s”"
+msgstr "ກູ້ຄືນ “%s” ໄປ “%s”"
+
+#: src/nautilus-file-undo-operations.c:1655
+#, c-format
+msgid "Move “%s” to trash"
+msgstr "ຍ້າຍ “%s” ໄປຖັງຂີ້ເຫຍື້ອ"
+
+#: src/nautilus-file-undo-operations.c:1660
+msgid "_Undo Trash"
+msgstr "_ຍົກເລີກການຍ້າຍໄປຖັງຂີ້ເຫຍື້ອ"
+
+#: src/nautilus-file-undo-operations.c:1661
+msgid "_Redo Trash"
+msgstr "_ເຮັດຄືນການຍ້າຍໄປຖັງຂີ້ເຫຍື້ອ"
+
+#: src/nautilus-file-undo-operations.c:1956
+#, c-format
+msgid "Restore original permissions of items enclosed in “%s”"
+msgstr "ກູ້ຄືນສິດອະນຸຍາດເດີມຂອງລາຍການທີ່ຢູ່ໃນ “%s”"
+
+#: src/nautilus-file-undo-operations.c:1957
+#, c-format
+msgid "Set permissions of items enclosed in “%s”"
+msgstr "ຕັ້ງຄ່າສິດອະນຸຍາດຂອງລາຍການທີ່ຢູ່ໃນ “%s”"
+
+#: src/nautilus-file-undo-operations.c:1959
+#: src/nautilus-file-undo-operations.c:2112
+msgid "_Undo Change Permissions"
+msgstr "_ຍົກເລີກການປ່ຽນສິດອະນຸຍາດ"
+
+#: src/nautilus-file-undo-operations.c:1960
+#: src/nautilus-file-undo-operations.c:2113
+msgid "_Redo Change Permissions"
+msgstr "_ເຮັດຄືນການປ່ຽນສິດອະນຸຍາດ"
+
+#: src/nautilus-file-undo-operations.c:2109
+#, c-format
+msgid "Restore original permissions of “%s”"
+msgstr "ກູ້ຄືນສິດອະນຸຍາດເດີມຂອງ “%s”"
+
+#: src/nautilus-file-undo-operations.c:2110
+#, c-format
+msgid "Set permissions of “%s”"
+msgstr "ຕັ້ງຄ່າສິດອະນຸຍາດຂອງ “%s”"
+
+#: src/nautilus-file-undo-operations.c:2222
+#, c-format
+msgid "Restore group of “%s” to “%s”"
+msgstr "ກູ້ຄືນກຸ່ມຂອງ “%s” ເປັນ “%s”"
+
+#: src/nautilus-file-undo-operations.c:2224
+#, c-format
+msgid "Set group of “%s” to “%s”"
+msgstr "ຕັ້ງຄ່າກຸ່ມຂອງ “%s” ເປັນ “%s”"
+
+#: src/nautilus-file-undo-operations.c:2227
+msgid "_Undo Change Group"
+msgstr "_ຍົກເລີກການປ່ຽນກຸ່ມ"
+
+#: src/nautilus-file-undo-operations.c:2228
+msgid "_Redo Change Group"
+msgstr "_ເຮັດຄືນການປ່ຽນແປງກຸ່ມ"
+
+#: src/nautilus-file-undo-operations.c:2232
+#, c-format
+msgid "Restore owner of “%s” to “%s”"
+msgstr "ກູ້ຄືນເຈົ້າຂອງ “%s” ໃຫ້ “%s”"
+
+#: src/nautilus-file-undo-operations.c:2234
+#, c-format
+msgid "Set owner of “%s” to “%s”"
+msgstr "ຕັ້ງເຈົ້າຂອງ “%s” ໃຫ້ “%s”"
+
+#: src/nautilus-file-undo-operations.c:2237
+msgid "_Undo Change Owner"
+msgstr "_ຍົກເລີກການປ່ຽນແປງເຈົ້າຂອງ"
+
+#: src/nautilus-file-undo-operations.c:2238
+msgid "_Redo Change Owner"
+msgstr "_ເຮັດຄືນການປ່ຽນແປງເຈົ້າຂອງ"
+
+#: src/nautilus-file-undo-operations.c:2374
+msgid "_Undo Extract"
+msgstr "_ຍົກເລີກການແຍກໄຟລ໌"
+
+#: src/nautilus-file-undo-operations.c:2375
+msgid "_Redo Extract"
+msgstr "_ເຮັດຄືນການແຍກໄຟລ໌"
+
+#: src/nautilus-file-undo-operations.c:2392
+#, c-format
+msgid "Delete %d extracted file"
+msgstr "ລຶບ %d ໄຟລ໌ທີ່ແຍກອອກ"
+
+#: src/nautilus-file-undo-operations.c:2406
+#, c-format
+msgid "Extract “%s”"
+msgstr "ແຍກ “%s”"
+
+#: src/nautilus-file-undo-operations.c:2410
+#, c-format
+msgid "Extract %d file"
+msgstr "ແຍກ %d ໄຟລ໌"
+
+#: src/nautilus-file-undo-operations.c:2562
+#, c-format
+msgid "Compress “%s”"
+msgstr "ບີບອັດ “%s”"
+
+#: src/nautilus-file-undo-operations.c:2566
+#, c-format
+msgid "Compress %d file"
+msgstr "ບີບອັດ %d ໄຟລ໌"
+
+#: src/nautilus-file-undo-operations.c:2572
+msgid "_Undo Compress"
+msgstr "_ຍົກເລີກການບີບອັດ"
+
+#: src/nautilus-file-undo-operations.c:2573
+msgid "_Redo Compress"
+msgstr "_ເຮັດຄືນການບີບອັດ"
+
+#: src/nautilus-file-utilities.c:567
+#, c-format
+msgid "Could not determine original location of “%s” "
+msgstr "ບໍ່ສາມາດກຳນົດທີ່ຕັ້ງເດີມຂອງ “%s” ໄດ້ "
+
+#: src/nautilus-file-utilities.c:571
+msgid "The item cannot be restored from trash"
+msgstr "ບໍ່ສາມາດກູ້ຄືນລາຍການຈາກຖັງຂີ້ເຫຍື້ອໄດ້"
+
+#. translators: these describe the contents of removable media
+#: src/nautilus-file-utilities.c:694
+msgid "Photo CD"
+msgstr "ຊີດີຮູບພາບ"
+
+#: src/nautilus-file-utilities.c:698 src/nautilus-file-utilities.c:745
+msgid "Contains digital photos"
+msgstr "ບັນຈຸຮູບພາບດິຈິຕອລ"
+
+#: src/nautilus-file-utilities.c:702
+msgid "Contains music"
+msgstr "ບັນຈຸເພງ"
+
+#: src/nautilus-file-utilities.c:706
+msgid "Contains software to run"
+msgstr "ບັນຈຸຊັອບແວຣ໌ເພື່ອເປີດ"
+
+#: src/nautilus-file-utilities.c:710
+msgid "Contains software to install"
+msgstr "ບັນຈຸຊັອບແວຣ໌ເພື່ອຕິດຕັ້ງ"
+
+#: src/nautilus-file-utilities.c:716
+#, c-format
+msgid "Detected as “%s”"
+msgstr "ກວດພົບເປັນ “%s”"
+
+#. translators: these describe the contents of removable media
+#: src/nautilus-file-utilities.c:737
+msgid "Contains music and photos"
+msgstr "ບັນຈຸເພງ ແລະ ຮູບພາບ"
+
+#: src/nautilus-file-utilities.c:741
+msgid "Contains photos and music"
+msgstr "ບັນຈຸຮູບພາບ ແລະ ເພງ"
+
+#. Translators: This is appended to a file name when a copy of a file is created.
+#: src/nautilus-filename-utilities.c:164
+msgctxt "Noun"
+msgid "Copy"
+msgstr "ສຳເນົາ"
+
+#. Translators: This is appended to a file name when a copy of an already copied file is created.
+#. * `%zu` will be replaced with a number one higher than that of the previous copy.
+#: src/nautilus-filename-utilities.c:167
+#, c-format
+msgctxt "Noun"
+msgid "Copy %zu"
+msgstr "ສຳເນົາ %zu"
+
+#. Translators: File name for new symlink. %s is target's name, %zu is number of symlink.
+#: src/nautilus-filename-utilities.c:258
+#, c-format
+msgid "Link to %s (%zu)"
+msgstr "ລິ້ງໄປຍັງ %s (%zu)"
+
+#: src/nautilus-floating-bar.c:391
+msgctxt "Stop an ongoing operation"
+msgid "Stop"
+msgstr "ຢຸດ"
+
+#: src/nautilus-grid-view.c:521 src/nautilus-list-view.c:385
+#: src/nautilus-network-view.c:350
+msgid "Content View"
+msgstr "ມຸມມອງເນື້ອຫາ"
+
+#: src/nautilus-grid-view.c:523 src/nautilus-list-view.c:387
+#: src/nautilus-network-view.c:352
+msgid "View of the current location"
+msgstr "ມຸມມອງຂອງທີ່ຕັ້ງປັດຈຸບັນ"
+
+#: src/nautilus-internal-place-file.c:165 src/nautilus-sidebar.c:745
+msgid "Network"
+msgstr "ເຄືອຂ່າຍ"
+
+#: src/nautilus-internal-place-file.c:169 src/nautilus-sidebar.c:719
+msgid "Starred"
+msgstr "ຕິດດາວ"
+
+#: src/nautilus-location-banner.c:102
+msgid "Files in the trash are permanently deleted after 1 hour"
+msgstr "ໄຟລ໌ໃນຖັງຂີ້ເຫຍື້ອຈະຖືກລຶບຖິ້ມຢ່າງຖາວອນພາຍຫຼັງ 1 ຊົ່ວໂມງ"
+
+#: src/nautilus-location-banner.c:107
+#, c-format
+msgid "Files in the trash are permanently deleted after %d day"
+msgstr "ໄຟລ໌ໃນຖັງຂີ້ເຫຍື້ອຈະຖືກລຶບຖິ້ມຢ່າງຖາວອນພາຍຫຼັງ %d ມື້"
+
+#: src/nautilus-location-banner.c:212
+msgid "Executable files in this folder will appear in the Scripts menu"
+msgstr "ໄຟລ໌ທີ່ສາມາດປະມວນຜົນໄດ້ໃນໂຟລເດີນີ້ຈະປາກົດໃນເມນູສະຄຣິບ"
+
+#: src/nautilus-location-banner.c:218
+msgid "Turn on File Sharing to share the contents of this folder over the network"
+msgstr "ເປີດການແບ່ງປັນໄຟລ໌ເພື່ອແບ່ງປັນເນື້ອໃນຂອງໂຟລເດີນີ້ຜ່ານເຄືອຂ່າຍ"
+
+#: src/nautilus-location-banner.c:219
+msgid "Sharing Settings"
+msgstr "ການຕັ້ງຄ່າການແບ່ງປັນ"
+
+#: src/nautilus-location-banner.c:226
+msgid "Put files in this folder to use them as templates for new documents"
+msgstr "ວາງໄຟລ໌ໄວ້ໃນໂຟລເດີນີ້ເພື່ອໃຊ້ເປັນແມ່ແບບສຳລັບເອກະສານໃໝ່"
+
+#: src/nautilus-location-banner.c:227
+msgid "_Learn More"
+msgstr "_ຮຽນຮູ້ເພີ່ມເຕີມ"
+
+#: src/nautilus-location-banner.c:240 src/nautilus-sidebar.c:2982
+msgid "_Empty Trash…"
+msgstr "_ລ້າງຖັງຂີ້ເຫຍື້ອ…"
+
+#: src/nautilus-location-banner.c:257
+msgid "_Trash Settings"
+msgstr "_ການຕັ້ງຄ່າຖັງຂີ້ເຫຍື້ອ"
+
+#: src/nautilus-location-entry.c:713 src/nautilus-query-editor.c:631
+msgid "Clear Entry"
+msgstr "ລຶບລາຍການ"
+
+#: src/nautilus-location-entry.c:722
+msgid "Go to Location"
+msgstr "ໄປທີ່ຕຳແໜ່ງ"
+
+#: src/nautilus-main.c:61
+msgid ""
+"Running as root is not supported. Consider running `nautilus admin:///` "
+"instead."
+msgstr "ບໍ່ຮອງຮັບການເຮັດວຽກໃນຖານະ root. ກະລຸນາພິຈາລະນາໃຊ້ `nautilus admin:///` ແທນ."
+
+#: src/nautilus-mime-actions.c:98
+msgid "Anything"
+msgstr "ທຸກຢ່າງ"
+
+#: src/nautilus-mime-actions.c:111
+msgid "Folders"
+msgstr "ໂຟລເດີ"
+
+#: src/nautilus-mime-actions.c:118
+msgid "Documents"
+msgstr "ເອກະສານ"
+
+#: src/nautilus-mime-actions.c:140
+msgid "Illustration"
+msgstr "ພາບປະກອບ"
+
+#: src/nautilus-mime-actions.c:156
+msgid "Music"
+msgstr "ເພງ"
+
+#: src/nautilus-mime-actions.c:229
+msgid "PDF / PostScript"
+msgstr "PDF / PostScript"
+
+#: src/nautilus-mime-actions.c:240
+msgid "Picture"
+msgstr "ຮູບພາບ"
+
+#: src/nautilus-mime-actions.c:293
+msgid "Text File"
+msgstr "ໄຟລ໌ຂໍ້ຄວາມ"
+
+#: src/nautilus-mime-actions.c:682
+msgid "This link cannot be used because it has no target."
+msgstr "ບໍ່ສາມາດໃຊ້ລິ້ງນີ້ໄດ້ ເພາະບໍ່ມີເປົ້າໝາຍ."
+
+#: src/nautilus-mime-actions.c:686
+#, c-format
+msgid "This link cannot be used because its target “%s” doesn’t exist."
+msgstr "ບໍ່ສາມາດໃຊ້ລິ້ງນີ້ໄດ້ ເພາະເປົ້າໝາຍ “%s” ຂອງມັນບໍ່ມີຢູ່."
+
+#: src/nautilus-mime-actions.c:694
+#, c-format
+msgid "The link “%s” is broken. Move it to Trash?"
+msgstr "ລິ້ງ “%s” ເສຍຫາຍ. ຍ້າຍໄປທີ່ຖັງຂີ້ເຫຍື້ອບໍ່?"
+
+#: src/nautilus-mime-actions.c:698
+#: src/resources/ui/nautilus-files-view-context-menus.ui:226
+msgid "Mo_ve to Trash"
+msgstr "ຍ້າຍໄປຖັງຂີ້ເຫຍື້ອ"
+
+#: src/nautilus-mime-actions.c:705
+#, c-format
+msgid "The link “%s” is broken."
+msgstr "ລິ້ງ “%s” ເສຍຫາຍ."
+
+#: src/nautilus-mime-actions.c:1091
+msgid "Are you sure you want to open all files?"
+msgstr "ເຈົ້າແນ່ໃຈບໍ່ວ່າຕ້ອງການເປີດທຸກໄຟລ໌?"
+
+#: src/nautilus-mime-actions.c:1095
+#, c-format
+msgid "This will open %d separate tab and window."
+msgstr "ການກະທຳນີ້ຈະເປີດ %d ແຖບ ແລະ ໜ້າຕ່າງແຍກກັນ."
+
+#: src/nautilus-mime-actions.c:1100
+#, c-format
+msgid "This will open %d separate tab."
+msgstr "ການກະທຳນີ້ຈະເປີດ %d ແຖບແຍກກັນ."
+
+#: src/nautilus-mime-actions.c:1105
+#, c-format
+msgid "This will open %d separate window."
+msgstr "ການກະທຳນີ້ຈະເປີດ %d ໜ້າຕ່າງແຍກກັນ."
+
+#: src/nautilus-mime-actions.c:1112
+msgid "_Open All"
+msgstr "_ເປີດທັງໝົດ"
+
+#: src/nautilus-mime-actions.c:1173
+#, c-format
+msgid "Could Not Display “%s”"
+msgstr "ບໍ່ສາມາດສະແດງ “%s”"
+
+#: src/nautilus-mime-actions.c:1267
+msgid "The file is of an unknown type"
+msgstr "ໄຟລ໌ເປັນປະເພດທີ່ບໍ່ຮູ້ຈັກ"
+
+#: src/nautilus-mime-actions.c:1272
+#, c-format
+msgid "There is no app installed for “%s” files"
+msgstr "ບໍ່ມີແອັບຕິດຕັ້ງສຳລັບໄຟລ໌ “%s”"
+
+#: src/nautilus-mime-actions.c:1277
+msgid "_Select App"
+msgstr "_ເລືອກແອັບ"
+
+#: src/nautilus-mime-actions.c:1313
+msgid "There was an internal error trying to search for apps:"
+msgstr "ເກີດຂໍ້ຜິດພາດພາຍໃນຂະນະພະຍາຍາມຊອກຫາແອັບ:"
+
+#: src/nautilus-mime-actions.c:1315
+msgid "Unable to search for app"
+msgstr "ບໍ່ສາມາດຊອກຫາແອັບໄດ້"
+
+#: src/nautilus-mime-actions.c:1420
+msgid "_Search in Software"
+msgstr "_ຄົ້ນຫາໃນຊັອບແວຣ໌"
+
+#: src/nautilus-mime-actions.c:1423
+#, c-format
+msgid ""
+"There is no app installed for “%s” files. Do you want to search for an app "
+"to open this file?"
+msgstr "ບໍ່ມີແອັບທີ່ຕິດຕັ້ງສຳລັບໄຟລ໌ “%s”. ທ່ານຕ້ອງການຄົ້ນຫາແອັບເພື່ອເປີດໄຟລ໌ນີ້ບໍ່?"
+
+#. if it wasn't cancelled show a dialog
+#: src/nautilus-mime-actions.c:1819 src/nautilus-mime-actions.c:2118
+#: src/nautilus-network-address-bar.c:80
+msgid "Unable to access location"
+msgstr "ບໍ່ສາມາດເຂົ້າເຖິງທີ່ຕັ້ງ"
+
+#: src/nautilus-mime-actions.c:2209
+msgid "Unable to start location"
+msgstr "ບໍ່ສາມາດເລີ່ມທີ່ຕັ້ງ"
+
+#: src/nautilus-mime-actions.c:2302
+#, c-format
+msgid "Opening “%s”."
+msgstr "ກຳລັງເປີດ “%s”."
+
+#: src/nautilus-mime-actions.c:2306
+#, c-format
+msgid "Opening %d item."
+msgstr "ກຳລັງເປີດ %d ລາຍການ."
+
+#: src/nautilus-network-address-bar.c:47
+msgid "_Close"
+msgstr "_ປິດ"
+
+#. Restore from Cancel to Connect
+#: src/nautilus-network-address-bar.c:91
+#: src/resources/ui/nautilus-network-address-bar.ui:101
+msgid "Con_nect"
+msgstr "_ເຊື່ອມຕໍ່"
+
+#. Allow to cancel the operation
+#: src/nautilus-network-address-bar.c:175
+msgid "Cance_l"
+msgstr "ຍົກເລີກ"
+
+#: src/nautilus-network-address-bar.c:219
+msgid "Unable to get remote server location"
+msgstr "ບໍ່ສາມາດເອົາທີ່ຕັ້ງເຊີບເວີທາງໄກໄດ້"
+
+#: src/nautilus-network-address-bar.c:296
+msgid "AppleTalk"
+msgstr "AppleTalk"
+
+#: src/nautilus-network-address-bar.c:302
+msgid "File Transfer Protocol"
+msgstr "ໂປຣໂຕຄໍການໂອນໄຟລ໌"
+
+#. Translators: do not translate ftp:// and ftps://
+#: src/nautilus-network-address-bar.c:304
+msgid "ftp:// or ftps://"
+msgstr "ftp:// ຫຼື ftps://"
+
+#: src/nautilus-network-address-bar.c:310
+msgid "Network File System"
+msgstr "ລະບົບໄຟລ໌ເຄືອຂ່າຍ"
+
+#: src/nautilus-network-address-bar.c:316
+msgid "Samba"
+msgstr "Samba"
+
+#: src/nautilus-network-address-bar.c:322
+msgid "SSH File Transfer Protocol"
+msgstr "ໂປຣໂຕຄໍການໂອນໄຟລ໌ SSH"
+
+#. Translators: do not translate sftp:// and ssh://
+#: src/nautilus-network-address-bar.c:324
+msgid "sftp:// or ssh://"
+msgstr "sftp:// ຫຼື ssh://"
+
+#: src/nautilus-network-address-bar.c:330
+msgid "WebDAV"
+msgstr "WebDAV"
+
+#. Translators: do not translate dav:// and davs://
+#: src/nautilus-network-address-bar.c:332
+msgid "dav:// or davs://"
+msgstr "dav:// ຫຼື davs://"
+
+#. Online accounts do not currently have a target URI.
+#: src/nautilus-network-cell.c:44
+msgid "Online Account"
+msgstr "ບັນຊີອອນລາຍ"
+
+#. Translators: This refers to network places which are currently mounted
+#: src/nautilus-network-view.c:264
+msgid "Connected"
+msgstr "ເຊື່ອມຕໍ່ແລ້ວ"
+
+#. Translators: This refers to network servers the user has previously connected to
+#: src/nautilus-network-view.c:271
+msgid "Previous"
+msgstr "ກ່ອນໜ້າ"
+
+#: src/nautilus-network-view.c:277
+msgid "Available on Current Network"
+msgstr "ສາມາດໃຊ້ໄດ້ໃນເຄືອຂ່າຍປັດຈຸບັນ"
+
+#: src/nautilus-operations-ui-manager.c:154
+#, c-format
+msgid ""
+"You are trying to replace the destination folder “%s” with a symbolic link."
+msgstr "ທ່ານກຳລັງພະຍາຍາມແທນທີ່ໂຟລເດີປາຍທາງ “%s” ດ້ວຍລິ້ງສັນຍາລັກ."
+
+#: src/nautilus-operations-ui-manager.c:156
+#, c-format
+msgid ""
+"This is not allowed in order to avoid the deletion of the destination "
+"folder’s contents."
+msgstr "ບໍ່ອະນຸຍາດໃຫ້ເຮັດການກະທຳນີ້ ເພື່ອຫຼີກລ້ຽງການລຶບເນື້ອໃນຂອງໂຟລເດີປາຍທາງ."
+
+#: src/nautilus-operations-ui-manager.c:157
+msgid "Please rename the symbolic link or press the skip button."
+msgstr "ກະລຸນາປ່ຽນຊື່ລິ້ງສັນຍາລັກ ຫຼືກົດປຸ່ມຂ້າມ."
+
+#: src/nautilus-operations-ui-manager.c:161
+#, c-format
+msgid "Merge folder “%s”?"
+msgstr "ຮວມໂຟລເດີ “%s” ບໍ່?"
+
+#: src/nautilus-operations-ui-manager.c:164
+msgid ""
+"Merging will ask for confirmation before replacing any files in the folder "
+"that conflict with the files being copied."
+msgstr "ການຮວມຈະຂໍການຢືນຢັນກ່ອນທີ່ຈະແທນທີ່ໄຟລ໌ໃດໆໃນໂຟລເດີທີ່ຂັດແຍ້ງກັບໄຟລ໌ທີ່ກຳລັງສຳເນົາ."
+
+#: src/nautilus-operations-ui-manager.c:169
+#, c-format
+msgid "An older folder with the same name already exists in “%s”."
+msgstr "ມີໂຟລເດີເກົ່າທີ່ມີຊື່ດຽວກັນຢູ່ແລ້ວໃນ “%s”."
+
+#: src/nautilus-operations-ui-manager.c:174
+#, c-format
+msgid "A newer folder with the same name already exists in “%s”."
+msgstr "ມີໂຟລເດີໃໝ່ທີ່ມີຊື່ດຽວກັນຢູ່ແລ້ວໃນ “%s”."
+
+#: src/nautilus-operations-ui-manager.c:179
+#, c-format
+msgid "Another folder with the same name already exists in “%s”."
+msgstr "ມີໂຟລເດີອື່ນທີ່ມີຊື່ດຽວກັນຢູ່ແລ້ວໃນ “%s”."
+
+#: src/nautilus-operations-ui-manager.c:185
+#, c-format
+msgid "Replace folder “%s”?"
+msgstr "ແທນທີ່ໂຟລເດີ “%s” ບໍ່?"
+
+#: src/nautilus-operations-ui-manager.c:187
+msgid "Replacing it will remove all files in the folder."
+msgstr "ການແທນທີ່ມັນຈະລຶບໄຟລ໌ທັງໝົດໃນໂຟລເດີ."
+
+#: src/nautilus-operations-ui-manager.c:188
+#, c-format
+msgid "A folder with the same name already exists in “%s”."
+msgstr "ມີໂຟລເດີທີ່ມີຊື່ດຽວກັນຢູ່ແລ້ວໃນ “%s”."
+
+#: src/nautilus-operations-ui-manager.c:194
+#, c-format
+msgid "Replace file “%s”?"
+msgstr "ແທນທີ່ໄຟລ໌ “%s” ບໍ່?"
+
+#: src/nautilus-operations-ui-manager.c:197
+msgid "Replacing it will overwrite its content."
+msgstr "ການແທນທີ່ມັນຈະຂຽນທັບເນື້ອໃນຂອງມັນ."
+
+#: src/nautilus-operations-ui-manager.c:201
+#, c-format
+msgid "An older file with the same name already exists in “%s”."
+msgstr "ມີໄຟລ໌ເກົ່າທີ່ມີຊື່ດຽວກັນຢູ່ແລ້ວໃນ “%s”."
+
+#: src/nautilus-operations-ui-manager.c:206
+#, c-format
+msgid "A newer file with the same name already exists in “%s”."
+msgstr "ມີໄຟລ໌ໃໝ່ທີ່ມີຊື່ດຽວກັນຢູ່ແລ້ວໃນ “%s”."
+
+#: src/nautilus-operations-ui-manager.c:211
+#, c-format
+msgid "Another file with the same name already exists in “%s”."
+msgstr "ມີໄຟລ໌ອື່ນທີ່ມີຊື່ດຽວກັນຢູ່ແລ້ວໃນ “%s”."
+
+#: src/nautilus-operations-ui-manager.c:282
+#: src/resources/ui/nautilus-properties-window.ui:401
+msgid "Original Folder"
+msgstr "ໂຟລເດີເດີມ"
+
+#: src/nautilus-operations-ui-manager.c:283
+#: src/nautilus-operations-ui-manager.c:315
+msgid "Contents:"
+msgstr "ເນື້ອໃນ:"
+
+#: src/nautilus-operations-ui-manager.c:287
+msgid "Original File"
+msgstr "ໄຟລ໌ເດີມ"
+
+#: src/nautilus-operations-ui-manager.c:288
+#: src/nautilus-operations-ui-manager.c:320
+msgid "Size:"
+msgstr "ຂະໜາດ:"
+
+#: src/nautilus-operations-ui-manager.c:293
+#: src/nautilus-operations-ui-manager.c:325
+msgid "Type:"
+msgstr "ປະເພດ:"
+
+#: src/nautilus-operations-ui-manager.c:296
+#: src/nautilus-operations-ui-manager.c:328
+msgid "Last modified:"
+msgstr "ແກ້ໄຂຄັ້ງສຸດທ້າຍ:"
+
+#: src/nautilus-operations-ui-manager.c:314
+msgid "Merge With"
+msgstr "ຮວມກັບ"
+
+#: src/nautilus-operations-ui-manager.c:314
+#: src/nautilus-operations-ui-manager.c:319
+#: src/resources/ui/nautilus-batch-rename-dialog.ui:286
+msgid "Replace With"
+msgstr "ແທນທີ່ດ້ວຍ"
+
+#: src/nautilus-operations-ui-manager.c:393
+msgid "Merge Folder"
+msgstr "ຮວມໂຟລເດີ"
+
+#: src/nautilus-operations-ui-manager.c:394
+#: src/nautilus-operations-ui-manager.c:399
+msgid "File and Folder Conflict"
+msgstr "ໄຟລ໌ ແລະ ໂຟລເດີຂັດແຍ້ງກັນ"
+
+#: src/nautilus-operations-ui-manager.c:400
+msgid "File Conflict"
+msgstr "ໄຟລ໌ຂັດແຍ້ງກັນ"
+
+#: src/nautilus-operations-ui-manager.c:586
+msgid ""
+"Password-protected archives are not yet supported. This list contains apps "
+"that can open the archive."
+msgstr "ຍັງບໍ່ຮອງຮັບໄຟລ໌ບີບອັດທີ່ປ້ອງກັນດ້ວຍລະຫັດຜ່ານ. ລາຍການນີ້ມີແອັບທີ່ສາມາດເປີດໄຟລ໌ບີບອັດໄດ້."
+
+#: src/nautilus-operations-ui-manager.c:655
+#, c-format
+msgid "“%s” is password-protected."
+msgstr "“%s” ຖືກປ້ອງກັນດ້ວຍລະຫັດຜ່ານ."
+
+#: src/nautilus-pathbar.c:315
+msgid "Current Folder Menu"
+msgstr "ເມນູໂຟລເດີປັດຈຸບັນ"
+
+#. Translators: This is the label used in the pathbar when seeing
+#. * the root directory (also known as /)
+#: src/nautilus-pathbar.c:407 src/nautilus-properties-window.c:857
+msgid "Operating System"
+msgstr "ລະບົບປະຕິບັດການ"
+
+#. Translators: This is the filesystem root directory (also known
+#. * as /) when seen as administrator
+#: src/nautilus-pathbar.c:414
+msgid "Administrator Root"
+msgstr "ຮາກຂອງຜູ້ເບິ່ງແຍງລະບົບ"
+
+#: src/nautilus-portal.c:431 src/nautilus-sidebar.c:2819
+#: src/nautilus-sidebar.c:2937 src/resources/ui/nautilus-app-chooser.ui:24
+#: src/resources/ui/nautilus-files-view-context-menus.ui:87
+msgid "_Open"
+msgstr "_ເປີດ"
+
+#: src/nautilus-portal.c:435
+msgid "_Save"
+msgstr "_ບັນທຶກ"
+
+#: src/nautilus-portal.c:519
+msgid "Open Read-Only"
+msgstr "ເປີດແບບອ່ານຢ່າງດຽວ"
+
+#. Translators: this is referred to captions under icons.
+#. Translators: this is referred to the permissions the user has in a directory.
+#: src/nautilus-preferences-dialog.c:84 src/nautilus-properties-window.c:402
+msgid "None"
+msgstr "ບໍ່ມີ"
+
+#. Translators: Both %s will be replaced with formatted timestamps.
+#: src/nautilus-preferences-dialog.c:252
+#, c-format
+msgid "Examples: “%s”, “%s”"
+msgstr "ຕົວຢ່າງ: “%s”, “%s”"
+
+#: src/nautilus-preferences-dialog.c:343
+msgid "Single-Click"
+msgstr "ຄລິກຄັ້ງດຽວ"
+
+#: src/nautilus-preferences-dialog.c:343
+msgid "Double-Click"
+msgstr "ຄລິກສອງຄັ້ງ"
+
+#: src/nautilus-preferences-dialog.c:345 src/nautilus-preferences-dialog.c:347
+#: src/nautilus-preferences-dialog.c:349
+msgid "On This Device Only"
+msgstr "ສະເພາະອຸປະກອນນີ້"
+
+#: src/nautilus-preferences-dialog.c:345
+msgid "All Locations"
+msgstr "ທຸກທີ່ຕັ້ງ"
+
+#: src/nautilus-preferences-dialog.c:345 src/nautilus-preferences-dialog.c:347
+#: src/nautilus-preferences-dialog.c:349
+msgid "Never"
+msgstr "ບໍ່ເຄີຍ"
+
+#: src/nautilus-preferences-dialog.c:347
+msgid "All Files"
+msgstr "ທຸກໄຟລ໌"
+
+#: src/nautilus-preferences-dialog.c:349
+msgid "All Folders"
+msgstr "ທຸກໂຟລເດີ"
+
+#: src/nautilus-program-choosing.c:356
+msgid "Sorry, but you cannot execute commands from a remote site."
+msgstr "ຂໍອະໄພ, ແຕ່ທ່ານບໍ່ສາມາດປະມວນຜົນຄຳສັ່ງຈາກເວັບໄຊທ໌ທາງໄກໄດ້."
+
+#: src/nautilus-program-choosing.c:357
+msgid "This is disabled due to security considerations."
+msgstr "ການກະທຳນີ້ຖືກປິດໄວ້ເນື່ອງຈາກເຫດຜົນດ້ານຄວາມປອດໄພ."
+
+#. all files are non-local
+#. some files are non-local
+#: src/nautilus-program-choosing.c:398 src/nautilus-program-choosing.c:410
+msgid "This drop target only supports local files."
+msgstr "ເປົ້າໝາຍການວາງນີ້ຮອງຮັບສະເພາະໄຟລ໌ໃນເຄື່ອງ."
+
+#: src/nautilus-program-choosing.c:399
+msgid ""
+"To open non-local files copy them to a local folder and then drop them again."
+msgstr "ເພື່ອເປີດໄຟລ໌ທີ່ບໍ່ແມ່ນໃນເຄື່ອງ, ໃຫ້ສຳເນົາໄຟລ໌ເຫຼົ່ານັ້ນໄປທີ່ໂຟລເດີໃນເຄື່ອງ ແລ້ວລອງວາງໃໝ່ອີກຄັ້ງ."
+
+#: src/nautilus-program-choosing.c:411
+msgid ""
+"To open non-local files copy them to a local folder and then drop them "
+"again. The local files you dropped have already been opened."
+msgstr "ເພື່ອເປີດໄຟລ໌ທີ່ບໍ່ແມ່ນໃນເຄື່ອງ, ໃຫ້ສຳເນົາໄຟລ໌ເຫຼົ່ານັ້ນໄປທີ່ໂຟລເດີໃນເຄື່ອງ ແລ້ວລອງວາງໃໝ່ອີກຄັ້ງ. ໄຟລ໌ໃນເຄື່ອງທີ່ທ່ານວາງໄດ້ຖືກເປີດແລ້ວ."
+
+#: src/nautilus-program-choosing.c:443
+msgid "Details: "
+msgstr "ລາຍລະອຽດ: "
+
+#: src/nautilus-progress-info.c:375
+msgid "Cancelled"
+msgstr "ຍົກເລີກແລ້ວ"
+
+#: src/nautilus-progress-info.c:422 src/nautilus-progress-info.c:443
+msgid "Preparing"
+msgstr "ກຳລັງກະກຽມ"
+
+#. Translators: This describes an operation, such as copying or compressing files, as being completed.
+#: src/nautilus-progress-info-widget.c:60
+msgid "Operation Completed"
+msgstr "ການດຳເນີນການສຳເລັດ"
+
+#: src/nautilus-progress-persistence-handler.c:106
+#: src/nautilus-progress-persistence-handler.c:146
+msgid "File Operations"
+msgstr "ການດຳເນີນການກັບໄຟລ໌"
+
+#: src/nautilus-progress-persistence-handler.c:108
+msgid "Show Details"
+msgstr "ສະແດງລາຍລະອຽດ"
+
+#: src/nautilus-progress-persistence-handler.c:111
+#, c-format
+msgid "%'d file operation active"
+msgstr "ການດຳເນີນການກັບໄຟລ໌ %'d ລາຍການກຳລັງເຮັດວຽກ"
+
+#: src/nautilus-progress-persistence-handler.c:148
+msgid "All file operations have been completed"
+msgstr "ການດຳເນີນການກັບໄຟລ໌ທັງໝົດສຳເລັດແລ້ວ"
+
+#: src/nautilus-properties-window.c:353
+msgid "Read and Write"
+msgstr "ອ່ານ ແລະ ຂຽນ"
+
+#: src/nautilus-properties-window.c:357
+msgid "Create and Delete Files"
+msgstr "ສ້າງ ແລະ ລຶບໄຟລ໌"
+
+#: src/nautilus-properties-window.c:361
+msgid "Read and Write, No Access"
+msgstr "ອ່ານ ແລະ ຂຽນ, ບໍ່ມີການເຂົ້າເຖິງ"
+
+#: src/nautilus-properties-window.c:368
+msgid "Read-Only"
+msgstr "ອ່ານຢ່າງດຽວ"
+
+#: src/nautilus-properties-window.c:372
+msgid "Access Files"
+msgstr "ເຂົ້າເຖິງໄຟລ໌"
+
+#: src/nautilus-properties-window.c:376
+msgid "List Files Only"
+msgstr "ສະແດງລາຍການໄຟລ໌ເທົ່ານັ້ນ"
+
+#: src/nautilus-properties-window.c:386
+msgid "Write-Only"
+msgstr "ຂຽນຢ່າງດຽວ"
+
+#: src/nautilus-properties-window.c:390
+msgid "Write-Only, No Access"
+msgstr "ຂຽນຢ່າງດຽວ, ບໍ່ມີການເຂົ້າເຖິງ"
+
+#: src/nautilus-properties-window.c:397
+msgid "Access-Only"
+msgstr "ເຂົ້າເຖິງຢ່າງດຽວ"
+
+#: src/nautilus-properties-window.c:642
+msgid "Custom icon removed"
+msgstr "ໄອຄອນກຳນົດເອງຖືກລຶບອອກແລ້ວ"
+
+#: src/nautilus-properties-window.c:643 src/nautilus-window.c:786
+#: src/resources/ui/nautilus-window.ui:22
+msgid "_Undo"
+msgstr "_ຍົກເລີກ"
+
+#: src/nautilus-properties-window.c:673
+msgid "You cannot assign more than one custom icon at a time!"
+msgstr "ທ່ານບໍ່ສາມາດກຳນົດໄອຄອນກຳນົດເອງຫຼາຍກວ່າໜຶ່ງອັນໃນແຕ່ລະຄັ້ງ!"
+
+#: src/nautilus-properties-window.c:674
+msgid "Please drop just one image to set a custom icon."
+msgstr "ກະລຸນາວາງພຽງຮູບດຽວເພື່ອຕັ້ງເປັນໄອຄອນກຳນົດເອງ."
+
+#: src/nautilus-properties-window.c:690
+msgid "The file that you dropped is not local."
+msgstr "ໄຟລ໌ທີ່ທ່ານວາງບໍ່ແມ່ນໄຟລ໌ໃນເຄື່ອງ."
+
+#: src/nautilus-properties-window.c:691 src/nautilus-properties-window.c:698
+msgid "You can only use local images as custom icons."
+msgstr "ທ່ານສາມາດໃຊ້ໄດ້ແຕ່ຮູບພາບໃນເຄື່ອງເປັນໄອຄອນກຳນົດເອງ."
+
+#: src/nautilus-properties-window.c:697
+msgid "The file that you dropped is not an image."
+msgstr "ໄຟລ໌ທີ່ທ່ານວາງບໍ່ແມ່ນຮູບພາບ."
+
+#. Unmarks a file as starred (starred)
+#: src/nautilus-properties-window.c:747 src/nautilus-star-cell.c:72
+#: src/resources/ui/nautilus-files-view-context-menus.ui:256
+msgid "Unstar"
+msgstr "ຍົກເລີກການຕິດດາວ"
+
+#: src/nautilus-properties-window.c:747 src/nautilus-star-cell.c:72
+msgctxt "Verb"
+msgid "Star"
+msgstr "ຕິດດາວ"
+
+#: src/nautilus-properties-window.c:1592
+msgid "Cancel Group Change?"
+msgstr "ຍົກເລີກການປ່ຽນແປງກຸ່ມບໍ່?"
+
+#: src/nautilus-properties-window.c:1741
+msgid "Cancel Owner Change?"
+msgstr "ຍົກເລີກການປ່ຽນແປງເຈົ້າຂອງບໍ່?"
+
+#: src/nautilus-properties-window.c:1891 src/nautilus-properties-window.c:1938
+msgid "Multiple"
+msgstr "ຫຼາຍລາຍການ"
+
+#: src/nautilus-properties-window.c:2072
+msgid "Empty folder"
+msgstr "ໂຟລເດີວ່າງເປົ່າ"
+
+#: src/nautilus-properties-window.c:2076
+msgid "Contents unreadable"
+msgstr "ບໍ່ສາມາດອ່ານເນື້ອໃນ"
+
+#: src/nautilus-properties-window.c:2088
+#, c-format
+msgid "%'d item, with size %s"
+msgstr "%'d ລາຍການ, ລວມທັງໝົດ %s"
+
+#: src/nautilus-properties-window.c:2098
+msgid "(some contents unreadable)"
+msgstr "(ບາງເນື້ອໃນບໍ່ສາມາດອ່ານໄດ້)"
+
+#. Translators: %s will be filled with a filesystem type, such as 'ext4' or 'msdos'.
+#: src/nautilus-properties-window.c:2430
+#, c-format
+msgid "%s Filesystem"
+msgstr "ລະບົບໄຟລ໌ %s"
+
+#: src/nautilus-properties-window.c:3535
+#, c-format
+msgid "The permissions of “%s” could not be determined."
+msgstr "ບໍ່ສາມາດກຳນົດສິດຂອງ “%s” ໄດ້."
+
+#: src/nautilus-properties-window.c:3897
+msgid "Creating Properties window."
+msgstr "ກຳລັງສ້າງໜ້າຕ່າງຄຸນສົມບັດ."
+
+#: src/nautilus-properties-window.c:4026
+msgid "Select Custom Icon"
+msgstr "ເລືອກໄອຄອນກຳນົດເອງ"
+
+#: src/nautilus-query-editor.c:145
+msgid "Search may be slow and will not include subfolders or file contents"
+msgstr "ການຄົ້ນຫາອາດຈະຊ້າ ແລະ ຈະບໍ່ລວມໂຟລເດີຍ່ອຍ ຫຼື ເນື້ອໃນໄຟລ໌"
+
+#: src/nautilus-query-editor.c:152
+msgid "Search may be slow and will not include file contents"
+msgstr "ການຄົ້ນຫາອາດຈະຊ້າ ແລະ ຈະບໍ່ລວມເນື້ອໃນໄຟລ໌"
+
+#: src/nautilus-query-editor.c:160
+msgid "Remote Location"
+msgstr "ທີ່ຕັ້ງທາງໄກ"
+
+#: src/nautilus-query-editor.c:166
+msgid "External Drive"
+msgstr "ໄດຣຟ໌ພາຍນອກ"
+
+#: src/nautilus-query-editor.c:172
+msgid "Folder Not in Search Locations"
+msgstr "ໂຟລເດີບໍ່ຢູ່ໃນທີ່ຕັ້ງການຄົ້ນຫາ"
+
+#: src/nautilus-query-editor.c:179
+msgid "Subfolders Not in Search Locations"
+msgstr "ໂຟລເດີຍ່ອຍບໍ່ຢູ່ໃນທີ່ຕັ້ງການຄົ້ນຫາ"
+
+#: src/nautilus-query-editor.c:188
+msgid "Some subfolders will not be included in search results"
+msgstr "ບາງໂຟລເດີຍ່ອຍຈະບໍ່ຖືກລວມໃນຜົນການຄົ້ນຫາ"
+
+#: src/nautilus-query-editor.c:195
+msgid ""
+"Search will be slower and will not include file contents for some folders"
+msgstr "ການຄົ້ນຫາຈະຊ້າລົງ ແລະ ຈະບໍ່ລວມເນື້ອໃນໄຟລ໌ສຳລັບບາງໂຟລເດີ"
+
+#. translators: This opens the search panel in the Settings app.
+#: src/nautilus-query-editor.c:651
+msgid "_Search Settings"
+msgstr "_ການຕັ້ງຄ່າການຄົ້ນຫາ"
+
+#: src/nautilus-query-editor.c:664
+msgid "Filter Search Results"
+msgstr "ກັ່ນຕອງຜົນການຄົ້ນຫາ"
+
+#: src/nautilus-query-editor.c:671
+msgid "Search Information"
+msgstr "ຂໍ້ມູນການຄົ້ນຫາ"
+
+#: src/nautilus-query-editor.c:751
+msgid "Search current folder"
+msgstr "ຄົ້ນຫາໃນໂຟລເດີປັດຈຸບັນ"
+
+#: src/nautilus-query-editor.c:752
+msgid "Search everywhere"
+msgstr "ຄົ້ນຫາທຸກບ່ອນ"
+
+#: src/nautilus-rename-file-popover.c:223
+msgid "Rename Folder"
+msgstr "ປ່ຽນຊື່ໂຟລເດີ"
+
+#: src/nautilus-rename-file-popover.c:224
+msgid "Rename File"
+msgstr "ປ່ຽນຊື່ໄຟລ໌"
+
+#: src/nautilus-search-directory-file.c:223
+#, c-format
+msgid "Search for “%s”"
+msgstr "ຄົ້ນຫາ “%s”"
+
+#: src/nautilus-search-engine.c:237
+msgid "Unable to complete the requested search"
+msgstr "ບໍ່ສາມາດຄົ້ນຫາຕາມທີ່ຮ້ອງຂໍໄດ້ສຳເລັດ"
+
+#: src/nautilus-search-popover.c:547
+msgid "Date Used"
+msgstr "ວັນທີໃຊ້"
+
+#: src/nautilus-search-popover.c:551
+msgid "Date Created"
+msgstr "ວັນທີສ້າງ"
+
+#: src/nautilus-search-popover.c:555
+msgid "Date Modified"
+msgstr "ວັນທີແກ້ໄຂ"
+
+#. trash
+#: src/nautilus-shell-search-provider.c:304 src/nautilus-sidebar.c:756
+msgid "Trash"
+msgstr "ຖັງຂີ້ເຫຍື້ອ"
+
+#: src/nautilus-sidebar.c:393 src/resources/ui/nautilus-network-cell.ui:70
+msgid "Disconnect"
+msgstr "ຕັດການເຊື່ອມຕໍ່"
+
+#: src/nautilus-sidebar.c:397
+msgid "Eject"
+msgstr "ຖອດອອກ"
+
+#: src/nautilus-sidebar.c:401
+msgid "Unmount"
+msgstr "ຍົກເລີກການເຊື່ອມຕໍ່"
+
+#. translators: %s is the name of a cloud provider for files
+#: src/nautilus-sidebar.c:607 src/nautilus-window.c:917
+#, c-format
+msgid "Open %s"
+msgstr "ເປີດ %s"
+
+#: src/nautilus-sidebar.c:701
+msgid "Open Personal Folder"
+msgstr "ເປີດໂຟລເດີສ່ວນຕົວ"
+
+#: src/nautilus-sidebar.c:710
+msgid "Recent"
+msgstr "ລ່າສຸດ"
+
+#: src/nautilus-sidebar.c:712
+msgid "Recent Files"
+msgstr "ໄຟລ໌ລ່າສຸດ"
+
+#: src/nautilus-sidebar.c:721
+msgid "Starred Files"
+msgstr "ໄຟລ໌ທີ່ຕິດດາວ"
+
+#: src/nautilus-sidebar.c:733
+msgid "Desktop"
+msgstr "ໜ້າຈໍ"
+
+#: src/nautilus-sidebar.c:735
+msgid "Open the contents of your desktop in a folder"
+msgstr "ເປີດເນື້ອໃນຂອງໜ້າຈໍໃນໂຟລເດີ"
+
+#: src/nautilus-sidebar.c:747
+msgid "Open Network Locations"
+msgstr "ເປີດທີ່ຕັ້ງເຄືອຂ່າຍ"
+
+#: src/nautilus-sidebar.c:758
+msgid "Open Trash"
+msgstr "ເປີດຖັງຂີ້ເຫຍື້ອ"
+
+#: src/nautilus-sidebar.c:860 src/nautilus-sidebar.c:890
+#: src/nautilus-sidebar.c:1068
+#, c-format
+msgid "Mount and Open “%s”"
+msgstr "ເຊື່ອມຕໍ່ ແລະ ເປີດ “%s”"
+
+#: src/nautilus-sidebar.c:1046
+msgid "New bookmark"
+msgstr "ທີ່ຄັ່ນໜ້າໃໝ່"
+
+#: src/nautilus-sidebar.c:1048
+msgid "Add a new bookmark"
+msgstr "ເພີ່ມທີ່ຄັ່ນໜ້າໃໝ່"
+
+#. Translators: This means that unlocking an encrypted storage
+#. * device failed. %s is the name of the device.
+#.
+#: src/nautilus-sidebar.c:1766
+#, c-format
+msgid "Error unlocking “%s”"
+msgstr "ຜິດພາດໃນການປົດລັອກ “%s”"
+
+#: src/nautilus-sidebar.c:1920
+msgid "This name is already taken"
+msgstr "ຊື່ນີ້ຖືກໃຊ້ແລ້ວ"
+
+#: src/nautilus-sidebar.c:2010 src/nautilus-sidebar.c:2971
+#: src/resources/ui/nautilus-batch-rename-dialog.ui:126
+#: src/resources/ui/nautilus-file-conflict-dialog.ui:30
+#: src/resources/ui/nautilus-rename-file-popover.ui:47
+msgid "_Rename"
+msgstr "_ປ່ຽນຊື່"
+
+#: src/nautilus-sidebar.c:2319
+#, c-format
+msgid "Unable to stop “%s”"
+msgstr "ບໍ່ສາມາດຢຸດ “%s” ໄດ້"
+
+#: src/nautilus-sidebar.c:2544
+#, c-format
+msgid "Unable to poll “%s” for media changes"
+msgstr "ບໍ່ສາມາດກວດສອບການປ່ຽນແປງຂອງມີເດຍໃນ “%s” ໄດ້"
+
+#: src/nautilus-sidebar.c:2827 src/nautilus-sidebar.c:2945
+#: src/resources/ui/nautilus-files-view-context-menus.ui:98
+#: src/resources/ui/nautilus-pathbar-context-menu.ui:10
+msgid "Open in New _Tab"
+msgstr "ເປີດໃນແຖບໃໝ່"
+
+#: src/nautilus-sidebar.c:2834 src/nautilus-sidebar.c:2954
+#: src/resources/ui/nautilus-files-view-context-menus.ui:103
+#: src/resources/ui/nautilus-pathbar-context-menu.ui:6
+msgid "Open in New _Window"
+msgstr "ເປີດໃນໜ້າຕ່າງໃໝ່"
+
+#: src/nautilus-sidebar.c:2966
+msgid "_Remove from Bookmarks"
+msgstr "_ລຶບອອກຈາກທີ່ຄັ່ນໜ້າ"
+
+#: src/nautilus-sidebar.c:2995
+#: src/resources/ui/nautilus-files-view-context-menus.ui:144
+msgid "_Mount"
+msgstr "_ເຊື່ອມຕໍ່"
+
+#: src/nautilus-sidebar.c:3004
+#: src/resources/ui/nautilus-files-view-context-menus.ui:149
+msgid "_Unmount"
+msgstr "_ຍົກເລີກການເຊື່ອມຕໍ່"
+
+#: src/nautilus-sidebar.c:3011
+#: src/resources/ui/nautilus-files-view-context-menus.ui:154
+msgid "_Eject"
+msgstr "_ຖອດອອກ"
+
+#: src/nautilus-sidebar.c:3021
+#: src/resources/ui/nautilus-files-view-context-menus.ui:169
+msgid "_Detect Media"
+msgstr "_ກວດສອບມີເດຍ"
+
+#: src/nautilus-sidebar.c:3034
+msgid "_Power On"
+msgstr "_ເປີດເຄື່ອງ"
+
+#: src/nautilus-sidebar.c:3038
+msgid "_Connect Drive"
+msgstr "_ເຊື່ອມຕໍ່ໄດຣຟ໌"
+
+#: src/nautilus-sidebar.c:3042
+msgid "_Start Multi-disk Device"
+msgstr "_ເລີ່ມອຸປະກອນຫຼາຍດິສ"
+
+#: src/nautilus-sidebar.c:3046
+msgid "_Unlock Device"
+msgstr "_ປົດລັອກອຸປະກອນ"
+
+#: src/nautilus-sidebar.c:3057
+#: src/resources/ui/nautilus-files-view-context-menus.ui:164
+msgid "_Stop"
+msgstr "_ຢຸດ"
+
+#: src/nautilus-sidebar.c:3065
+msgid "_Disconnect Drive"
+msgstr "_ຕັດການເຊື່ອມຕໍ່ໄດຣຟ໌"
+
+#: src/nautilus-sidebar.c:3069
+msgid "_Stop Multi-disk Device"
+msgstr "_ຢຸດອຸປະກອນຫຼາຍດິສ"
+
+#: src/nautilus-sidebar.c:3073
+msgid "_Lock Device"
+msgstr "_ລັອກອຸປະກອນ"
+
+#: src/nautilus-sidebar.c:3083
+msgid "Format…"
+msgstr "ຟໍແມັດ…"
+
+#: src/nautilus-sidebar.c:3094 src/resources/ui/nautilus-properties-window.ui:5
+#: src/resources/ui/nautilus-properties-window.ui:16
+msgid "Properties"
+msgstr "ຄຸນສົມບັດ"
+
+#: src/nautilus-sidebar.c:3620
+msgid "Device"
+msgstr "ອຸປະກອນ"
+
+#: src/nautilus-sidebar.c:3662
+msgid "Sidebar"
+msgstr "ແຖບດ້ານຂ້າງ"
+
+#: src/nautilus-sidebar.c:3664
+msgid "List of common shortcuts, mountpoints, and bookmarks."
+msgstr "ລາຍການທາງລັດ, ຈຸດເຊື່ອມຕໍ່, ແລະ ທີ່ຄັ່ນໜ້າທີ່ໃຊ້ທົ່ວໄປ."
+
+#: src/nautilus-tag-manager.c:218
+msgid "starred"
+msgstr "ຕິດດາວ"
+
+#: src/nautilus-tag-manager.c:228
+msgid "unstarred"
+msgstr "ຍົກເລີກການຕິດດາວ"
+
+#: src/nautilus-window.c:144
+msgid "New tab"
+msgstr "ແຖບໃໝ່"
+
+#: src/nautilus-window.c:145
+msgid "Close current view"
+msgstr "ປິດມຸມມອງປັດຈຸບັນ"
+
+#. Translators: only one item has been moved to trash and %s is its name.
+#: src/nautilus-window.c:709
+#, c-format
+msgid "“%s” moved to trash"
+msgstr "“%s” ຖືກຍ້າຍໄປທີ່ຖັງຂີ້ເຫຍື້ອແລ້ວ"
+
+#. Translators: one or more items might have been moved to trash, and %d
+#. * is the count.
+#: src/nautilus-window.c:716
+#, c-format
+msgid "%d file moved to trash"
+msgstr "%d ໄຟລ໌ຖືກຍ້າຍໄປທີ່ຖັງຂີ້ເຫຍື້ອແລ້ວ"
+
+#. Translators: one item has been unstarred and %s is its name.
+#: src/nautilus-window.c:735
+#, c-format
+msgid "“%s” unstarred"
+msgstr "“%s” ຖືກຍົກເລີກການຕິດດາວແລ້ວ"
+
+#. Translators: one or more items have been unstarred, and %d
+#. * is the count.
+#: src/nautilus-window.c:741
+#, c-format
+msgid "%d file unstarred"
+msgstr "%d ໄຟລ໌ຖືກຍົກເລີກການຕິດດາວແລ້ວ"
+
+#: src/nautilus-window.c:796 src/resources/ui/nautilus-window.ui:26
+msgid "_Redo"
+msgstr "_ເຮັດຄືນ"
+
+#: src/nautilus-window.c:1702 src/nautilus-window.c:1707
+#: src/nautilus-window.c:1712
+msgid "The GNOME Project"
+msgstr "ໂຄງການ GNOME"
+
+#: src/nautilus-window.c:1719
+msgid "No plugins currently installed."
+msgstr "ບໍ່ມີປລັກອິນຕິດຕັ້ງໃນຂະນະນີ້."
+
+#: src/nautilus-window.c:1723
+msgid "Currently installed plugins:"
+msgstr "ປລັກອິນທີ່ຕິດຕັ້ງໃນຂະນະນີ້:"
+
+#: src/nautilus-window.c:1725
+msgid "For bug testing only, the following command can be used:"
+msgstr "ສຳລັບການທົດສອບຂໍ້ຜິດພາດເທົ່ານັ້ນ, ສາມາດໃຊ້ຄຳສັ່ງຕໍ່ໄປນີ້:"
+
+#. Translators should localize the following string which will be displayed at the bottom of
+#. * the about box to give credit to the translator(s).
+#: src/nautilus-window.c:1740
+msgid "translator-credits"
+msgstr "ແປໂດຍ: ທິມງານແປພາສາລາວ GNOME"
+
+#: src/nautilus-window-slot.c:167
+msgid "Parent folder"
+msgstr "ໂຟລເດີແມ່"
+
+#: src/nautilus-window-slot.c:168
+#: src/resources/ui/nautilus-history-controls.ui:11
+msgid "Back"
+msgstr "ກັບຄືນ"
+
+#: src/nautilus-window-slot.c:169
+#: src/resources/ui/nautilus-history-controls.ui:19
+msgid "Forward"
+msgstr "ໄປໜ້າ"
+
+#: src/nautilus-window-slot.c:893 src/resources/ui/nautilus-file-chooser.ui:27
+#: src/resources/ui/nautilus-window.ui:116
+msgid "Search Everywhere"
+msgstr "ຄົ້ນຫາທຸກບ່ອນ"
+
+#: src/nautilus-window-slot.c:894
+msgid "Find files and folders in all search locations"
+msgstr "ຊອກຫາໄຟລ໌ ແລະ ໂຟລເດີໃນທຸກທີ່ຕັ້ງການຄົ້ນຫາ"
+
+#: src/nautilus-window-slot.c:897
+msgid "Search Settings"
+msgstr "ການຕັ້ງຄ່າການຄົ້ນຫາ"
+
+#: src/nautilus-window-slot.c:1828
+msgid "Unable to display the contents of this folder."
+msgstr "ບໍ່ສາມາດສະແດງເນື້ອໃນຂອງໂຟລເດີນີ້ໄດ້."
+
+#: src/nautilus-window-slot.c:1832
+msgid "This location doesn’t appear to be a folder."
+msgstr "ທີ່ຕັ້ງນີ້ເບິ່ງຄືວ່າບໍ່ແມ່ນໂຟລເດີ."
+
+#: src/nautilus-window-slot.c:1844
+#, c-format
+msgid "Unable to find “%s”. Please check the spelling and try again."
+msgstr "ບໍ່ພົບ “%s”. ກະລຸນາກວດສອບການສະກົດຄຳ ແລະ ລອງໃໝ່ອີກຄັ້ງ."
+
+#: src/nautilus-window-slot.c:1849
+msgid ""
+"Unable to find the requested file. Please check the spelling and try again."
+msgstr "ບໍ່ພົບໄຟລ໌ທີ່ຮ້ອງຂໍ. ກະລຸນາກວດສອບການສະກົດຄຳ ແລະ ລອງໃໝ່ອີກຄັ້ງ."
+
+#: src/nautilus-window-slot.c:1860
+#, c-format
+msgid "“%s” locations are not supported."
+msgstr "ບໍ່ຮອງຮັບທີ່ຕັ້ງ “%s”."
+
+#: src/nautilus-window-slot.c:1865
+msgid "Unable to handle this kind of location."
+msgstr "ບໍ່ສາມາດຈັດການທີ່ຕັ້ງປະເພດນີ້ໄດ້."
+
+#: src/nautilus-window-slot.c:1873
+msgid "Unable to access the requested location."
+msgstr "ບໍ່ສາມາດເຂົ້າເຖິງທີ່ຕັ້ງທີ່ຮ້ອງຂໍ."
+
+#: src/nautilus-window-slot.c:1879
+msgid "Don’t have permission to access the requested location."
+msgstr "ບໍ່ມີສິດເຂົ້າເຖິງທີ່ຕັ້ງທີ່ຮ້ອງຂໍ."
+
+#. This case can be hit for user-typed strings like "foo" due to
+#. * the code that guesses web addresses when there's no initial "/".
+#. * But this case is also hit for legitimate web addresses when
+#. * the proxy is set up wrong.
+#.
+#: src/nautilus-window-slot.c:1890
+msgid ""
+"Unable to find the requested location. Please check the spelling or the "
+"network settings."
+msgstr "ບໍ່ພົບທີ່ຕັ້ງທີ່ຮ້ອງຂໍ. ກະລຸນາກວດສອບການສະກົດຄຳ ຫຼື ການຕັ້ງຄ່າເຄືອຂ່າຍ."
+
+#. This case can be hit when server application is not installed
+#. * or is inactive in the system user is trying to connect to.
+#.
+#: src/nautilus-window-slot.c:1899
+msgid ""
+"The server has refused the connection. Typically this means that the "
+"firewall is blocking access or that the remote service is not running."
+msgstr "ເຊີບເວີປະຕິເສດການເຊື່ອມຕໍ່. ໂດຍປົກກະຕິແລ້ວ ໝາຍຄວາມວ່າໄຟວໍກຳລັງຂັດຂວາງການເຂົ້າເຖິງ ຫຼື ບໍລິການທາງໄກບໍ່ໄດ້ເຮັດວຽກ."
+
+#: src/nautilus-window-slot.c:1918
+#, c-format
+msgid "Unhandled error message: %s"
+msgstr "ຂໍ້ຄວາມຜິດພາດທີ່ບໍ່ໄດ້ຈັດການ: %s"
+
+#: src/nautilus-x-content-bar.c:141
+msgid "Open with:"
+msgstr "ເປີດດ້ວຍ:"
+
+#: src/resources/gtk/help-overlay.ui:11
+msgctxt "shortcut window"
+msgid "General"
+msgstr "ທົ່ວໄປ"
+
+#: src/resources/gtk/help-overlay.ui:14
+msgctxt "shortcut window"
+msgid "New Window"
+msgstr "ໜ້າຕ່າງໃໝ່"
+
+#: src/resources/gtk/help-overlay.ui:20
+msgctxt "shortcut window"
+msgid "Close Window or Tab"
+msgstr "ປິດໜ້າຕ່າງ ຫຼື ແຖບ"
+
+#: src/resources/gtk/help-overlay.ui:26
+msgctxt "shortcut window"
+msgid "Quit"
+msgstr "ອອກ"
+
+#: src/resources/gtk/help-overlay.ui:32
+msgctxt "shortcut window"
+msgid "Search Everywhere"
+msgstr "ຄົ້ນຫາທຸກບ່ອນ"
+
+#: src/resources/gtk/help-overlay.ui:38
+msgctxt "shortcut window"
+msgid "Search Current Folder"
+msgstr "ຄົ້ນຫາໂຟລເດີປັດຈຸບັນ"
+
+#: src/resources/gtk/help-overlay.ui:44
+msgctxt "shortcut window"
+msgid "Bookmark Current Location"
+msgstr "ຄັ່ນໜ້າທີ່ຕັ້ງປັດຈຸບັນ"
+
+#: src/resources/gtk/help-overlay.ui:50
+msgctxt "shortcut window"
+msgid "Show Help"
+msgstr "ສະແດງການຊ່ວຍເຫຼືອ"
+
+#: src/resources/gtk/help-overlay.ui:56
+msgctxt "shortcut window"
+msgid "Show Preferences"
+msgstr "ສະແດງການຕັ້ງຄ່າ"
+
+#: src/resources/gtk/help-overlay.ui:62
+msgctxt "shortcut window"
+msgid "Shortcuts"
+msgstr "ທາງລັດ"
+
+#: src/resources/gtk/help-overlay.ui:68
+msgctxt "shortcut window"
+msgid "Undo"
+msgstr "ຍົກເລີກ"
+
+#: src/resources/gtk/help-overlay.ui:74
+msgctxt "shortcut window"
+msgid "Redo"
+msgstr "ເຮັດຄືນ"
+
+#: src/resources/gtk/help-overlay.ui:82
+msgctxt "shortcut window"
+msgid "Opening"
+msgstr "ການເປີດ"
+
+#: src/resources/gtk/help-overlay.ui:85
+msgctxt "shortcut window"
+msgid "Open"
+msgstr "ເປີດ"
+
+#: src/resources/gtk/help-overlay.ui:91
+msgctxt "shortcut window"
+msgid "Open in New Tab"
+msgstr "ເປີດໃນແຖບໃໝ່"
+
+#: src/resources/gtk/help-overlay.ui:97
+msgctxt "shortcut window"
+msgid "Open in New Window"
+msgstr "ເປີດໃນໜ້າຕ່າງໃໝ່"
+
+#: src/resources/gtk/help-overlay.ui:103
+msgctxt "shortcut window"
+msgid "Open Item Location (Search and Recent Only)"
+msgstr "ເປີດທີ່ຕັ້ງລາຍການ (ສະເພາະການຄົ້ນຫາ ແລະ ລ່າສຸດ)"
+
+#: src/resources/gtk/help-overlay.ui:109
+msgctxt "shortcut window"
+msgid "Open With Default App"
+msgstr "ເປີດດ້ວຍແອັບເລີ່ມຕົ້ນ"
+
+#: src/resources/gtk/help-overlay.ui:115
+msgctxt "shortcut window"
+msgid "Open Current Directory in Console"
+msgstr "ເປີດໄດເຣັກທໍຣີປັດຈຸບັນໃນຄອນໂຊນ"
+
+#: src/resources/gtk/help-overlay.ui:123
+msgctxt "shortcut window"
+msgid "Tabs"
+msgstr "ແຖບ"
+
+#: src/resources/gtk/help-overlay.ui:126
+msgctxt "shortcut window"
+msgid "New Tab"
+msgstr "ແຖບໃໝ່"
+
+#: src/resources/gtk/help-overlay.ui:132
+msgctxt "shortcut window"
+msgid "Go to Previous Tab"
+msgstr "ໄປທີ່ແຖບກ່ອນໜ້າ"
+
+#: src/resources/gtk/help-overlay.ui:138
+msgctxt "shortcut window"
+msgid "Go to Next Tab"
+msgstr "ໄປທີ່ແຖບຖັດໄປ"
+
+#: src/resources/gtk/help-overlay.ui:144
+msgctxt "shortcut window"
+msgid "Open Tab"
+msgstr "ເປີດແຖບ"
+
+#: src/resources/gtk/help-overlay.ui:150
+msgctxt "shortcut window"
+msgid "Move Tab Left"
+msgstr "ຍ້າຍແຖບໄປຊ້າຍ"
+
+#: src/resources/gtk/help-overlay.ui:156
+msgctxt "shortcut window"
+msgid "Move Tab Right"
+msgstr "ຍ້າຍແຖບໄປຂວາ"
+
+#: src/resources/gtk/help-overlay.ui:162
+msgctxt "shortcut window"
+msgid "Restore Closed Tab"
+msgstr "ກູ້ຄືນແຖບທີ່ປິດແລ້ວ"
+
+#: src/resources/gtk/help-overlay.ui:170
+msgctxt "shortcut window"
+msgid "Navigation"
+msgstr "ການນຳທາງ"
+
+#: src/resources/gtk/help-overlay.ui:173 src/resources/gtk/help-overlay.ui:180
+msgctxt "shortcut window"
+msgid "Go Back"
+msgstr "ກັບຄືນ"
+
+#: src/resources/gtk/help-overlay.ui:187 src/resources/gtk/help-overlay.ui:194
+msgctxt "shortcut window"
+msgid "Go Forward"
+msgstr "ໄປໜ້າ"
+
+#: src/resources/gtk/help-overlay.ui:201
+msgctxt "shortcut window"
+msgid "Go Up"
+msgstr "ຂຶ້ນເທິງ"
+
+#: src/resources/gtk/help-overlay.ui:207
+msgctxt "shortcut window"
+msgid "Go Down"
+msgstr "ລົງລຸ່ມ"
+
+#: src/resources/gtk/help-overlay.ui:213
+msgctxt "shortcut window"
+msgid "Go to Home Folder"
+msgstr "ໄປທີ່ໂຟລເດີບ້ານ"
+
+#: src/resources/gtk/help-overlay.ui:219
+msgctxt "shortcut window"
+msgid "Enter Location"
+msgstr "ປ້ອນທີ່ຕັ້ງ"
+
+#: src/resources/gtk/help-overlay.ui:225
+msgctxt "shortcut window"
+msgid "Location Bar With Root Location"
+msgstr "ແຖບທີ່ຕັ້ງພ້ອມກັບທີ່ຕັ້ງຮາກ"
+
+#: src/resources/gtk/help-overlay.ui:231
+msgctxt "shortcut window"
+msgid "Location Bar With Home Location"
+msgstr "ແຖບທີ່ຕັ້ງພ້ອມກັບທີ່ຕັ້ງບ້ານ"
+
+#: src/resources/gtk/help-overlay.ui:239
+msgctxt "shortcut window"
+msgid "View"
+msgstr "ມຸມມອງ"
+
+#: src/resources/gtk/help-overlay.ui:242
+msgctxt "shortcut window"
+msgid "Zoom In"
+msgstr "ຂະຫຍາຍເຂົ້າ"
+
+#: src/resources/gtk/help-overlay.ui:248
+msgctxt "shortcut window"
+msgid "Zoom Out"
+msgstr "ຂະຫຍາຍອອກ"
+
+#: src/resources/gtk/help-overlay.ui:254
+msgctxt "shortcut window"
+msgid "Reset Zoom"
+msgstr "ຕັ້ງຄ່າການຂະຫຍາຍໃໝ່"
+
+#: src/resources/gtk/help-overlay.ui:260
+msgctxt "shortcut window"
+msgid "Refresh View"
+msgstr "ໂຫຼດມຸມມອງຄືນໃໝ່"
+
+#: src/resources/gtk/help-overlay.ui:266
+msgctxt "shortcut window"
+msgid "Show/Hide Hidden Files"
+msgstr "ສະແດງ/ເຊື່ອງໄຟລ໌ທີ່ເຊື່ອງໄວ້"
+
+#: src/resources/gtk/help-overlay.ui:272
+msgctxt "shortcut window"
+msgid "Show/Hide Sidebar"
+msgstr "ສະແດງ/ເຊື່ອງແຖບດ້ານຂ້າງ"
+
+#: src/resources/gtk/help-overlay.ui:278
+msgctxt "shortcut window"
+msgid "Open Current Folder Menu"
+msgstr "ເປີດເມນູໂຟລເດີປັດຈຸບັນ"
+
+#: src/resources/gtk/help-overlay.ui:284
+msgctxt "shortcut window"
+msgid "Open Context Menu"
+msgstr "ເປີດເມນູບໍລິບົດ"
+
+#: src/resources/gtk/help-overlay.ui:290
+msgctxt "shortcut window"
+msgid "List View"
+msgstr "ມຸມມອງລາຍການ"
+
+#: src/resources/gtk/help-overlay.ui:296
+msgctxt "shortcut window"
+msgid "Grid View"
+msgstr "ມຸມມອງຕາຕະລາງ"
+
+#: src/resources/gtk/help-overlay.ui:302 src/resources/gtk/help-overlay.ui:309
+msgctxt "shortcut window"
+msgid "Expand Folder"
+msgstr "ຂະຫຍາຍໂຟລເດີ"
+
+#: src/resources/gtk/help-overlay.ui:316 src/resources/gtk/help-overlay.ui:323
+msgctxt "shortcut window"
+msgid "Collapse Folder"
+msgstr "ຫຍໍ້ໂຟລເດີ"
+
+#: src/resources/gtk/help-overlay.ui:332
+msgctxt "shortcut window"
+msgid "Editing"
+msgstr "ການແກ້ໄຂ"
+
+#: src/resources/gtk/help-overlay.ui:335
+msgctxt "shortcut window"
+msgid "Create Folder"
+msgstr "ສ້າງໂຟລເດີ"
+
+#: src/resources/gtk/help-overlay.ui:341
+msgctxt "shortcut window"
+msgid "Rename"
+msgstr "ປ່ຽນຊື່"
+
+#: src/resources/gtk/help-overlay.ui:347
+msgctxt "shortcut window"
+msgid "Move to Trash"
+msgstr "ຍ້າຍໄປທີ່ຖັງຂີ້ເຫຍື້ອ"
+
+#: src/resources/gtk/help-overlay.ui:353
+msgctxt "shortcut window"
+msgid "Delete Permanently"
+msgstr "ລຶບຢ່າງຖາວອນ"
+
+#: src/resources/gtk/help-overlay.ui:359
+msgctxt "shortcut window"
+msgid "Create Link to Copied Item"
+msgstr "ສ້າງລິ້ງໄປຍັງລາຍການທີ່ສຳເນົາ"
+
+#: src/resources/gtk/help-overlay.ui:365
+msgctxt "shortcut window"
+msgid "Create Link to Selected Item"
+msgstr "ສ້າງລິ້ງໄປຍັງລາຍການທີ່ເລືອກ"
+
+#: src/resources/gtk/help-overlay.ui:371
+msgctxt "shortcut window"
+msgid "Cut"
+msgstr "ຕັດ"
+
+#: src/resources/gtk/help-overlay.ui:377
+msgctxt "shortcut window"
+msgid "Copy"
+msgstr "ສຳເນົາ"
+
+#: src/resources/gtk/help-overlay.ui:383
+msgctxt "shortcut window"
+msgid "Paste"
+msgstr "ວາງ"
+
+#: src/resources/gtk/help-overlay.ui:389
+msgctxt "shortcut window"
+msgid "Select All"
+msgstr "ເລືອກທັງໝົດ"
+
+#: src/resources/gtk/help-overlay.ui:395
+msgctxt "shortcut window"
+msgid "Invert Selection"
+msgstr "ປີ້ນການເລືອກ"
+
+#: src/resources/gtk/help-overlay.ui:401
+msgctxt "shortcut window"
+msgid "Select Items Matching"
+msgstr "ເລືອກລາຍການທີ່ກົງກັນ"
+
+#: src/resources/gtk/help-overlay.ui:407
+msgctxt "shortcut window"
+msgid "Show Item Properties"
+msgstr "ສະແດງຄຸນສົມບັດລາຍການ"
+
+#: src/resources/ui/nautilus-app-chooser.ui:51
+msgid "Choose an app to open the selected files"
+msgstr "ເລືອກແອັບເພື່ອເປີດໄຟລ໌ທີ່ເລືອກ"
+
+#: src/resources/ui/nautilus-app-chooser.ui:63
+msgid "Always use for this file type"
+msgstr "ໃຊ້ສະເໝີສຳລັບປະເພດໄຟລ໌ນີ້"
+
+#: src/resources/ui/nautilus-batch-rename-dialog.ui:6
+msgid "Automatic Numbers"
+msgstr "ຕົວເລກອັດຕະໂນມັດ"
+
+#: src/resources/ui/nautilus-batch-rename-dialog.ui:8
+msgid "1, 2, 3, 4"
+msgstr "1, 2, 3, 4"
+
+#: src/resources/ui/nautilus-batch-rename-dialog.ui:12
+msgid "01, 02, 03, 04"
+msgstr "01, 02, 03, 04"
+
+#: src/resources/ui/nautilus-batch-rename-dialog.ui:16
+msgid "001, 002, 003, 004"
+msgstr "001, 002, 003, 004"
+
+#: src/resources/ui/nautilus-batch-rename-dialog.ui:21
+msgid "Metadata"
+msgstr "ຂໍ້ມູນເມຕາ"
+
+#: src/resources/ui/nautilus-batch-rename-dialog.ui:23
+msgid "Creation Date"
+msgstr "ວັນທີສ້າງ"
+
+#: src/resources/ui/nautilus-batch-rename-dialog.ui:33
+msgid "Season Number"
+msgstr "ເລກລະດູການ"
+
+#: src/resources/ui/nautilus-batch-rename-dialog.ui:38
+msgid "Episode Number"
+msgstr "ເລກຕອນ"
+
+#: src/resources/ui/nautilus-batch-rename-dialog.ui:43
+msgid "Track Number"
+msgstr "ເລກເພງ"
+
+#: src/resources/ui/nautilus-batch-rename-dialog.ui:48
+msgid "Artist Name"
+msgstr "ຊື່ສິນລະປິນ"
+
+#: src/resources/ui/nautilus-batch-rename-dialog.ui:58
+msgid "Album Name"
+msgstr "ຊື່ອັນລະບັ້ມ"
+
+#: src/resources/ui/nautilus-batch-rename-dialog.ui:65
+msgid "Original File Name"
+msgstr "ຊື່ໄຟລ໌ເດີມ"
+
+#: src/resources/ui/nautilus-batch-rename-dialog.ui:155
+msgid "Rename _using a template"
+msgstr "ປ່ຽນຊື່ໂດຍໃຊ້ແມ່ແບບ"
+
+#: src/resources/ui/nautilus-batch-rename-dialog.ui:163
+msgid "Find and replace _text"
+msgstr "ຊອກຫາ ແລະ ແທນທີ່ຂໍ້ຄວາມ"
+
+#. Translators: This is a noun, not a verb
+#: src/resources/ui/nautilus-batch-rename-dialog.ui:180
+msgid "Format"
+msgstr "ຮູບແບບ"
+
+#: src/resources/ui/nautilus-batch-rename-dialog.ui:205
+msgid "Add"
+msgstr "ເພີ່ມ"
+
+#: src/resources/ui/nautilus-batch-rename-dialog.ui:226
+msgid "Automatic Numbering Order"
+msgstr "ລຳດັບການໃສ່ຕົວເລກອັດຕະໂນມັດ"
+
+#: src/resources/ui/nautilus-batch-rename-dialog.ui:247
+msgctxt "title"
+msgid "Replace"
+msgstr "ແທນທີ່"
+
+#: src/resources/ui/nautilus-batch-rename-dialog.ui:260
+msgid "Existing Text"
+msgstr "ຂໍ້ຄວາມທີ່ມີຢູ່"
+
+#: src/resources/ui/nautilus-batch-rename-dialog.ui:453
+msgid "Next Conflict"
+msgstr "ຂໍ້ຂັດແຍ້ງຖັດໄປ"
+
+#: src/resources/ui/nautilus-batch-rename-dialog.ui:463
+msgid "Previous Conflict"
+msgstr "ຂໍ້ຂັດແຍ້ງກ່ອນໜ້າ"
+
+#: src/resources/ui/nautilus-column-chooser.ui:14
+msgid "Visible Columns"
+msgstr "ຖັນທີ່ເບິ່ງເຫັນ"
+
+#: src/resources/ui/nautilus-column-chooser.ui:24
+msgid "This folder uses custom settings"
+msgstr "ໂຟລເດີນີ້ໃຊ້ການຕັ້ງຄ່າກຳນົດເອງ"
+
+#: src/resources/ui/nautilus-column-chooser.ui:25
+msgid "_Revert"
+msgstr "_ກັບຄືນ"
+
+#: src/resources/ui/nautilus-column-chooser.ui:54
+msgid "_Only Apply to Current Folder"
+msgstr "_ໃຊ້ສະເພາະກັບໂຟລເດີປັດຈຸບັນ"
+
+#: src/resources/ui/nautilus-column-chooser.ui:69
+msgid "Move _Up"
+msgstr "ຍ້າຍຂຶ້ນ"
+
+#: src/resources/ui/nautilus-column-chooser.ui:73
+msgid "Move _Down"
+msgstr "ຍ້າຍລົງ"
+
+#: src/resources/ui/nautilus-compress-dialog.ui:5
+msgid "Compress Files and Folders"
+msgstr "ບີບອັດໄຟລ໌ ແລະ ໂຟລເດີ"
+
+#: src/resources/ui/nautilus-compress-dialog.ui:24
+msgid "C_ompress"
+msgstr "ບີບອັດ"
+
+#: src/resources/ui/nautilus-compress-dialog.ui:48
+msgid "Archive _Name"
+msgstr "ຊື່ໄຟລ໌ບີບອັດ"
+
+#: src/resources/ui/nautilus-compress-dialog.ui:76
+msgid "Co_mpression Method"
+msgstr "ວິທີການບີບອັດ"
+
+#: src/resources/ui/nautilus-compress-dialog.ui:85
+msgid "Encryption"
+msgstr "ການເຂົ້າລະຫັດ"
+
+#: src/resources/ui/nautilus-compress-dialog.ui:86
+msgid ""
+"Encrypt contents of the archive with a password when the compression method "
+"supports password-protection."
+msgstr "ເຂົ້າລະຫັດເນື້ອໃນຂອງໄຟລ໌ບີບອັດດ້ວຍລະຫັດຜ່ານເມື່ອວິທີການບີບອັດຮອງຮັບການປ້ອງກັນດ້ວຍລະຫັດຜ່ານ."
+
+#: src/resources/ui/nautilus-compress-dialog.ui:89
+msgid "_Password"
+msgstr "_ລະຫັດຜ່ານ"
+
+#: src/resources/ui/nautilus-compress-dialog.ui:96
+msgid "_Confirm Password"
+msgstr "_ຢືນຢັນລະຫັດຜ່ານ"
+
+#: src/resources/ui/nautilus-date-entry-row.ui:9
+msgid "Pick Date"
+msgstr "ເລືອກວັນທີ"
+
+#: src/resources/ui/nautilus-date-range-dialog.ui:5
+msgid "Add Date Filter"
+msgstr "ເພີ່ມຕົວກັ່ນຕອງວັນທີ"
+
+#: src/resources/ui/nautilus-date-range-dialog.ui:15
+msgid "Filter by Date"
+msgstr "ກັ່ນຕອງຕາມວັນທີ"
+
+#: src/resources/ui/nautilus-date-range-dialog.ui:26
+msgid "_Date Range"
+msgstr "_ຊ່ວງວັນທີ"
+
+#. Keep in sync with code
+#: src/resources/ui/nautilus-date-range-dialog.ui:32
+msgid "Single Day"
+msgstr "ມື້ດຽວ"
+
+#: src/resources/ui/nautilus-date-range-dialog.ui:33
+msgid "± 1 day"
+msgstr "± 1 ມື້"
+
+#: src/resources/ui/nautilus-date-range-dialog.ui:34
+msgid "± 3 days"
+msgstr "± 3 ມື້"
+
+#: src/resources/ui/nautilus-date-range-dialog.ui:35
+msgid "± 7 days"
+msgstr "± 7 ມື້"
+
+#: src/resources/ui/nautilus-date-range-dialog.ui:36
+msgid "± 14 days"
+msgstr "± 14 ມື້"
+
+#: src/resources/ui/nautilus-date-range-dialog.ui:37
+msgid "Specify Range"
+msgstr "ລະບຸຊ່ວງ"
+
+#: src/resources/ui/nautilus-date-range-dialog.ui:50
+msgid "_Date"
+msgstr "_ວັນທີ"
+
+#: src/resources/ui/nautilus-date-range-dialog.ui:58
+msgid "Fro_m"
+msgstr "ຈາກ"
+
+#: src/resources/ui/nautilus-date-range-dialog.ui:67
+msgid "_To"
+msgstr "_ເຖິງ"
+
+#: src/resources/ui/nautilus-date-range-dialog.ui:80
+msgid "_Filter"
+msgstr "_ກັ່ນຕອງ"
+
+#: src/resources/ui/nautilus-new-folder-dialog.ui:5
+#: src/resources/ui/nautilus-file-chooser.ui:187
+#: src/resources/ui/nautilus-toolbar.ui:119
+msgid "New Folder"
+msgstr "ໂຟລເດີໃໝ່"
+
+#: src/resources/ui/nautilus-new-folder-dialog.ui:18
+msgid "_Folder Name"
+msgstr "_ຊື່ໂຟລເດີ"
+
+#: src/resources/ui/nautilus-new-folder-dialog.ui:43
+msgid "_Create"
+msgstr "_ສ້າງ"
+
+#: src/resources/ui/nautilus-file-chooser.ui:148
+#: src/resources/ui/nautilus-toolbar.ui:90
+msgid "Show Sidebar"
+msgstr "ສະແດງແຖບດ້ານຂ້າງ"
+
+#: src/resources/ui/nautilus-file-chooser.ui:220
+msgid "Edit File Name"
+msgstr "ແກ້ໄຂຊື່ໄຟລ໌"
+
+#: src/resources/ui/nautilus-file-chooser.ui:251
+msgid "Reset File Name"
+msgstr "ຕັ້ງຄ່າຊື່ໄຟລ໌ໃໝ່"
+
+#: src/resources/ui/nautilus-file-chooser.ui:266
+msgid "File Name"
+msgstr "ຊື່ໄຟລ໌"
+
+#. Translators: 'Show' is a verb
+#: src/resources/ui/nautilus-file-chooser.ui:312
+msgctxt "File Chooser tooltips"
+msgid "Show Options"
+msgstr "ສະແດງຕົວເລືອກ"
+
+#: src/resources/ui/nautilus-file-chooser.ui:318
+msgid "Visible Files Filter"
+msgstr "ຕົວກັ່ນຕອງໄຟລ໌ທີ່ເບິ່ງເຫັນ"
+
+#: src/resources/ui/nautilus-file-conflict-dialog.ui:108
+msgid "Select a _new name for the destination"
+msgstr "ເລືອກຊື່ໃໝ່ສຳລັບປາຍທາງ"
+
+#: src/resources/ui/nautilus-file-conflict-dialog.ui:126
+msgid "R_eset"
+msgstr "ຕັ້ງຄ່າໃໝ່"
+
+#: src/resources/ui/nautilus-file-conflict-dialog.ui:139
+msgid "_Apply this action to all files and folders"
+msgstr "_ນຳໃຊ້ການກະທຳນີ້ກັບທຸກໄຟລ໌ ແລະ ໂຟລເດີ"
+
+#: src/resources/ui/nautilus-file-properties-change-permissions.ui:5
+msgid "Change Permissions for Enclosed Files"
+msgstr "ປ່ຽນສິດສຳລັບໄຟລ໌ທີ່ຢູ່ພາຍໃນ"
+
+#: src/resources/ui/nautilus-file-properties-change-permissions.ui:21
+msgid "C_hange"
+msgstr "ປ່ຽນ"
+
+#: src/resources/ui/nautilus-file-properties-change-permissions.ui:38
+msgid "_Files"
+msgstr "_ໄຟລ໌"
+
+#: src/resources/ui/nautilus-file-properties-change-permissions.ui:44
+msgid "F_olders"
+msgstr "ໂຟລເດີ"
+
+#: src/resources/ui/nautilus-file-properties-change-permissions.ui:55
+msgid "Fi_les"
+msgstr "ໄຟລ໌"
+
+#: src/resources/ui/nautilus-file-properties-change-permissions.ui:61
+msgid "Fol_ders"
+msgstr "ໂຟລເດີ"
+
+#: src/resources/ui/nautilus-file-properties-change-permissions.ui:69
+msgid "Others"
+msgstr "ອື່ນໆ"
+
+#: src/resources/ui/nautilus-file-properties-change-permissions.ui:72
+msgid "Fil_es"
+msgstr "ໄຟລ໌"
+
+#: src/resources/ui/nautilus-file-properties-change-permissions.ui:78
+msgid "Folde_rs"
+msgstr "ໂຟລເດີ"
+
+#: src/resources/ui/nautilus-files-view-context-menus.ui:6
+#: src/resources/ui/nautilus-pathbar-context-menu.ui:20
+msgid "New _Folder…"
+msgstr "ໂຟລເດີໃໝ່…"
+
+#: src/resources/ui/nautilus-files-view-context-menus.ui:10
+#: src/resources/ui/nautilus-pathbar-context-menu.ui:25
+msgid "New _Document"
+msgstr "ເອກະສານໃໝ່"
+
+#: src/resources/ui/nautilus-files-view-context-menus.ui:16
+#: src/resources/ui/nautilus-files-view-context-menus.ui:76
+#: src/resources/ui/nautilus-files-view-context-menus.ui:110
+#: src/resources/ui/nautilus-pathbar-context-menu.ui:30
+msgid "Open _With…"
+msgstr "ເປີດດ້ວຍ…"
+
+#: src/resources/ui/nautilus-files-view-context-menus.ui:21
+#: src/resources/ui/nautilus-files-view-context-menus.ui:115
+#: src/resources/ui/nautilus-pathbar-context-menu.ui:34
+msgid "Open in Consol_e"
+msgstr "ເປີດໃນຄອນໂຊນ"
+
+#: src/resources/ui/nautilus-files-view-context-menus.ui:27
+#: src/resources/ui/nautilus-pathbar-context-menu.ui:83
+msgid "_Paste"
+msgstr "_ວາງ"
+
+#: src/resources/ui/nautilus-files-view-context-menus.ui:32
+msgid "Paste as _Link"
+msgstr "ວາງເປັນລິ້ງ"
+
+#: src/resources/ui/nautilus-files-view-context-menus.ui:37
+#: src/resources/ui/nautilus-pathbar-context-menu.ui:92
+msgid "Select _All"
+msgstr "ເລືອກທັງໝົດ"
+
+#: src/resources/ui/nautilus-files-view-context-menus.ui:41
+msgid "_Visible Columns"
+msgstr "_ຖັນທີ່ເບິ່ງເຫັນ"
+
+#: src/resources/ui/nautilus-files-view-context-menus.ui:48
+#: src/resources/ui/nautilus-pathbar-context-menu.ui:99
+msgid "Empty _Trash…"
+msgstr "ລ້າງຖັງຂີ້ເຫຍື້ອ…"
+
+#: src/resources/ui/nautilus-files-view-context-menus.ui:56
+#: src/resources/ui/nautilus-files-view-context-menus.ui:276
+#: src/resources/ui/nautilus-pathbar-context-menu.ui:106
+msgid "P_roperties"
+msgstr "ຄຸນສົມບັດ"
+
+#: src/resources/ui/nautilus-files-view-context-menus.ui:66
+msgid "_Extract"
+msgstr "_ແຍກ"
+
+#: src/resources/ui/nautilus-files-view-context-menus.ui:71
+msgid "E_xtract to…"
+msgstr "ແຍກໄປທີ່…"
+
+#: src/resources/ui/nautilus-files-view-context-menus.ui:82
+msgid "_Run as a Program"
+msgstr "_ເປີດເປັນໂປຣແກຣມ"
+
+#: src/resources/ui/nautilus-files-view-context-menus.ui:123
+msgid "_Open Item Location"
+msgstr "_ເປີດທີ່ຕັ້ງຂອງລາຍການ"
+
+#: src/resources/ui/nautilus-files-view-context-menus.ui:130
+msgid "_Scripts"
+msgstr "_ສະຄຣິບ"
+
+#: src/resources/ui/nautilus-files-view-context-menus.ui:135
+msgid "_Open Scripts Folder"
+msgstr "_ເປີດໂຟລເດີສະຄຣິບ"
+
+#: src/resources/ui/nautilus-files-view-context-menus.ui:178
+msgid "Cu_t"
+msgstr "ຕັດ"
+
+#: src/resources/ui/nautilus-files-view-context-menus.ui:182
+msgid "_Copy"
+msgstr "_ສຳເນົາ"
+
+#: src/resources/ui/nautilus-files-view-context-menus.ui:186
+msgid "Move to…"
+msgstr "ຍ້າຍໄປທີ່…"
+
+#: src/resources/ui/nautilus-files-view-context-menus.ui:190
+msgid "Copy to…"
+msgstr "ສຳເນົາໄປທີ່…"
+
+#: src/resources/ui/nautilus-files-view-context-menus.ui:197
+msgid "Rena_me…"
+msgstr "ປ່ຽນຊື່…"
+
+#: src/resources/ui/nautilus-files-view-context-menus.ui:201
+msgid "_Paste Into Folder"
+msgstr "_ວາງໃສ່ໂຟລເດີ"
+
+#: src/resources/ui/nautilus-files-view-context-menus.ui:206
+#: src/resources/ui/nautilus-preferences-dialog.ui:38
+msgid "Create _Link"
+msgstr "ສ້າງລິ້ງ"
+
+#: src/resources/ui/nautilus-files-view-context-menus.ui:211
+msgid "C_ompress…"
+msgstr "ບີບອັດ…"
+
+#: src/resources/ui/nautilus-files-view-context-menus.ui:216
+msgid "Set as Background…"
+msgstr "ຕັ້ງເປັນພື້ນຫຼັງ…"
+
+#. Translators: This is the transitive verb meaning 'to send via email' (e.g. 'email this document to Angela).
+#: src/resources/ui/nautilus-files-view-context-menus.ui:221
+msgid "Email…"
+msgstr "ອີເມລ…"
+
+#: src/resources/ui/nautilus-files-view-context-menus.ui:231
+msgid "_Delete From Trash…"
+msgstr "_ລຶບອອກຈາກຖັງຂີ້ເຫຍື້ອ…"
+
+#: src/resources/ui/nautilus-files-view-context-menus.ui:236
+#: src/resources/ui/nautilus-files-view-context-menus.ui:241
+msgid "_Delete Permanently…"
+msgstr "_ລຶບຢ່າງຖາວອນ…"
+
+#: src/resources/ui/nautilus-files-view-context-menus.ui:246
+msgid "_Restore From Trash"
+msgstr "_ກູ້ຄືນຈາກຖັງຂີ້ເຫຍື້ອ"
+
+#: src/resources/ui/nautilus-files-view-context-menus.ui:251
+msgid "_Remove From Recent"
+msgstr "_ລຶບອອກຈາກລ່າສຸດ"
+
+#: src/resources/ui/nautilus-files-view-context-menus.ui:264
+msgid "_Copy Address"
+msgstr "_ສຳເນົາທີ່ຢູ່"
+
+#: src/resources/ui/nautilus-files-view-context-menus.ui:268
+msgid "_Remove"
+msgstr "_ລຶບອອກ"
+
+#: src/resources/ui/nautilus-files-view-select-items.ui:5
+msgid "Select Items Matching"
+msgstr "ເລືອກລາຍການທີ່ກົງກັນ"
+
+#: src/resources/ui/nautilus-files-view-select-items.ui:44
+msgid "Pattern"
+msgstr "ຮູບແບບ"
+
+#: src/resources/ui/nautilus-name-cell.ui:114
+msgid "Full Text Match"
+msgstr "ກົງກັບຂໍ້ຄວາມທັງໝົດ"
+
+#: src/resources/ui/nautilus-network-address-bar.ui:16
+msgid "Server Addresses"
+msgstr "ທີ່ຢູ່ເຊີບເວີ"
+
+#: src/resources/ui/nautilus-network-address-bar.ui:28
+msgid ""
+"Server addresses are made up of a protocol prefix and an address. Examples:"
+msgstr "ທີ່ຢູ່ເຊີບເວີປະກອບດ້ວຍຄຳນຳໜ້າໂປຣໂຕຄໍ ແລະ ທີ່ຢູ່. ຕົວຢ່າງ:"
+
+#: src/resources/ui/nautilus-network-address-bar.ui:54
+msgid "Available Protocols"
+msgstr "ໂປຣໂຕຄໍທີ່ສາມາດໃຊ້ໄດ້"
+
+#: src/resources/ui/nautilus-network-address-bar.ui:67
+msgid "Prefix"
+msgstr "ຄຳນຳໜ້າ"
+
+#: src/resources/ui/nautilus-network-address-bar.ui:94
+msgid "Server address"
+msgstr "ທີ່ຢູ່ເຊີບເວີ"
+
+#: src/resources/ui/nautilus-network-address-bar.ui:111
+msgid "Server Address Information"
+msgstr "ຂໍ້ມູນທີ່ຢູ່ເຊີບເວີ"
+
+#: src/resources/ui/nautilus-operations-ui-manager-request-passphrase.ui:5
+msgid "Password Required"
+msgstr "ຕ້ອງການລະຫັດຜ່ານ"
+
+#: src/resources/ui/nautilus-operations-ui-manager-request-passphrase.ui:11
+msgid "Enter password…"
+msgstr "ປ້ອນລະຫັດຜ່ານ…"
+
+#: src/resources/ui/nautilus-pathbar-context-menu.ui:14
+msgid "_Properties"
+msgstr "_ຄຸນສົມບັດ"
+
+#: src/resources/ui/nautilus-pathbar-context-menu.ui:40
+msgid "R_eload"
+msgstr "ໂຫຼດຄືນໃໝ່"
+
+#: src/resources/ui/nautilus-pathbar-context-menu.ui:46
+msgid "St_op"
+msgstr "ຢຸດ"
+
+#: src/resources/ui/nautilus-pathbar-context-menu.ui:51
+msgid "Add to _Bookmarks"
+msgstr "ເພີ່ມໃສ່ທີ່ຄັ່ນໜ້າ"
+
+#: src/resources/ui/nautilus-pathbar-context-menu.ui:57
+msgid "Remove from _Bookmarks"
+msgstr "ລຶບອອກຈາກທີ່ຄັ່ນໜ້າ"
+
+#: src/resources/ui/nautilus-pathbar-context-menu.ui:62
+msgid "_Star Folder"
+msgstr "_ຕິດດາວໂຟລເດີ"
+
+#: src/resources/ui/nautilus-pathbar-context-menu.ui:67
+msgid "_Unstar Folder"
+msgstr "_ຍົກເລີກການຕິດດາວໂຟລເດີ"
+
+#: src/resources/ui/nautilus-pathbar-context-menu.ui:72
+msgid "_Copy Location"
+msgstr "_ສຳເນົາທີ່ຕັ້ງ"
+
+#: src/resources/ui/nautilus-pathbar-context-menu.ui:76
+msgid "_Open in File Manager"
+msgstr "_ເປີດໃນຕົວຈັດການໄຟລ໌"
+
+#: src/resources/ui/nautilus-pathbar-context-menu.ui:87
+msgid "Paste as Lin_k"
+msgstr "ວາງເປັນລິ້ງ"
+
+#: src/resources/ui/nautilus-preferences-dialog.ui:8
+#: src/resources/ui/nautilus-preferences-dialog.ui:11
+msgid "General"
+msgstr "ທົ່ວໄປ"
+
+#: src/resources/ui/nautilus-preferences-dialog.ui:14
+msgid "Sort _Folders Before Files"
+msgstr "ຈັດລຽງໂຟລເດີກ່ອນໄຟລ໌"
+
+#: src/resources/ui/nautilus-preferences-dialog.ui:20
+msgid "_Expandable Folders in List View"
+msgstr "_ໂຟລເດີທີ່ຂະຫຍາຍໄດ້ໃນມຸມມອງລາຍການ"
+
+#: src/resources/ui/nautilus-preferences-dialog.ui:26
+msgid "_Action to Open Items"
+msgstr "_ການກະທຳເພື່ອເປີດລາຍການ"
+
+#: src/resources/ui/nautilus-preferences-dialog.ui:34
+msgid "Optional Context Menu Actions"
+msgstr "ການກະທຳໃນເມນູບໍລິບົດທີ່ເລືອກໄດ້"
+
+#: src/resources/ui/nautilus-preferences-dialog.ui:35
+msgid ""
+"Show more actions in the menus. Keyboard shortcuts can be used even if the "
+"actions are not shown."
+msgstr "ສະແດງການກະທຳເພີ່ມເຕີມໃນເມນູ. ທາງລັດແປ້ນພິມສາມາດໃຊ້ໄດ້ເຖິງແມ່ນວ່າການກະທຳຈະບໍ່ຖືກສະແດງ."
+
+#: src/resources/ui/nautilus-preferences-dialog.ui:44
+msgid "_Delete Permanently"
+msgstr "_ລຶບຢ່າງຖາວອນ"
+
+#: src/resources/ui/nautilus-preferences-dialog.ui:52
+msgid "Performance"
+msgstr "ປະສິດທິພາບ"
+
+#: src/resources/ui/nautilus-preferences-dialog.ui:53
+msgid ""
+"These features may cause slowdowns and excess network usage, especially when "
+"browsing files outside this device, such as on a remote server."
+msgstr "ຄຸນສົມບັດເຫຼົ່ານີ້ອາດເຮັດໃຫ້ການເຮັດວຽກຊ້າລົງ ແລະ ໃຊ້ງານເຄືອຂ່າຍຫຼາຍເກີນໄປ, ໂດຍສະເພາະເມື່ອເບິ່ງໄຟລ໌ທີ່ຢູ່ນອກອຸປະກອນນີ້, ເຊັ່ນ ໃນເຊີບເວີທາງໄກ."
+
+#: src/resources/ui/nautilus-preferences-dialog.ui:56
+msgid "Search in Su_bfolders"
+msgstr "ຄົ້ນຫາໃນໂຟລເດີຍ່ອຍ"
+
+#: src/resources/ui/nautilus-preferences-dialog.ui:62
+msgid "Show _Thumbnails"
+msgstr "ສະແດງຮູບຕົວຢ່າງ"
+
+#: src/resources/ui/nautilus-preferences-dialog.ui:68
+msgid "_Count Number of Files in Folders"
+msgstr "_ນັບຈຳນວນໄຟລ໌ໃນໂຟລເດີ"
+
+#: src/resources/ui/nautilus-preferences-dialog.ui:76
+msgid "Date and Time Format"
+msgstr "ຮູບແບບວັນທີ ແລະ ເວລາ"
+
+#: src/resources/ui/nautilus-preferences-dialog.ui:77
+msgid "Choose how dates and times are displayed in list and grid views."
+msgstr "ເລືອກວິທີສະແດງວັນທີ ແລະ ເວລາໃນມຸມມອງລາຍການ ແລະ ຕາຕະລາງ."
+
+#: src/resources/ui/nautilus-preferences-dialog.ui:80
+msgid "_Simple"
+msgstr "_ງ່າຍດາຍ"
+
+#: src/resources/ui/nautilus-preferences-dialog.ui:94
+msgid "Deta_iled"
+msgstr "ລະອຽດ"
+
+#: src/resources/ui/nautilus-preferences-dialog.ui:111
+msgid ""
+"Add information to be displayed beneath file and folder names. More "
+"information will appear when zooming closer."
+msgstr "ເພີ່ມຂໍ້ມູນທີ່ຈະສະແດງຢູ່ໃຕ້ຊື່ໄຟລ໌ ແລະ ໂຟລເດີ. ຂໍ້ມູນເພີ່ມເຕີມຈະປາກົດຂຶ້ນເມື່ອຂະຫຍາຍເຂົ້າໃກ້."
+
+#: src/resources/ui/nautilus-preferences-dialog.ui:112
+msgid "Grid View Captions"
+msgstr "ຄຳອະທິບາຍໃນມຸມມອງຕາຕະລາງ"
+
+#. Translators: This is an ordinal number
+#: src/resources/ui/nautilus-preferences-dialog.ui:115
+msgctxt "the n-th position of an icon caption"
+msgid "Fi_rst"
+msgstr "ທຳອິດ"
+
+#. Translators: This is an ordinal number
+#: src/resources/ui/nautilus-preferences-dialog.ui:121
+msgctxt "the n-th position of an icon caption"
+msgid "Seco_nd"
+msgstr "ທີສອງ"
+
+#. Translators: This is an ordinal number
+#: src/resources/ui/nautilus-preferences-dialog.ui:127
+msgctxt "the n-th position of an icon caption"
+msgid "T_hird"
+msgstr "ທີສາມ"
+
+#: src/resources/ui/nautilus-progress-indicator.ui:35
+msgid "Show File Operations"
+msgstr "ສະແດງການດຳເນີນການກັບໄຟລ໌"
+
+#: src/resources/ui/nautilus-properties-window.ui:100
+msgid "Set Custom Icon"
+msgstr "ຕັ້ງໄອຄອນກຳນົດເອງ"
+
+#: src/resources/ui/nautilus-properties-window.ui:121
+msgid "Remove Custom Icon"
+msgstr "ລຶບໄອຄອນກຳນົດເອງ"
+
+#: src/resources/ui/nautilus-properties-window.ui:168
+msgid "Unknown Filesystem"
+msgstr "ລະບົບໄຟລ໌ທີ່ບໍ່ຮູ້ຈັກ"
+
+#: src/resources/ui/nautilus-properties-window.ui:255
+msgid "total"
+msgstr "ທັງໝົດ"
+
+#. Refers to the capacity of the filesystem
+#: src/resources/ui/nautilus-properties-window.ui:285
+msgid "used"
+msgstr "ໃຊ້ແລ້ວ"
+
+#. Refers to the capacity of the filesystem
+#: src/resources/ui/nautilus-properties-window.ui:316
+msgid "free"
+msgstr "ວ່າງ"
+
+#. Disks refers to GNOME Disks.
+#: src/resources/ui/nautilus-properties-window.ui:333
+msgid "_Open in Disks"
+msgstr "_ເປີດໃນດິສ"
+
+#: src/resources/ui/nautilus-properties-window.ui:346
+msgid "_Link Target"
+msgstr "_ເປົ້າໝາຍຂອງລິ້ງ"
+
+#: src/resources/ui/nautilus-properties-window.ui:358
+msgid "Open Link Target"
+msgstr "ເປີດເປົ້າໝາຍຂອງລິ້ງ"
+
+#: src/resources/ui/nautilus-properties-window.ui:371
+msgid "Parent _Folder"
+msgstr "ໂຟລເດີແມ່"
+
+#: src/resources/ui/nautilus-properties-window.ui:383
+msgid "Open Parent Folder"
+msgstr "ເປີດໂຟລເດີແມ່"
+
+#: src/resources/ui/nautilus-properties-window.ui:478
+msgid "_Permissions"
+msgstr "_ສິດ"
+
+#: src/resources/ui/nautilus-properties-window.ui:500
+msgid "_Executable as Program"
+msgstr "_ສາມາດເປີດເປັນໂປຣແກຣມ"
+
+#: src/resources/ui/nautilus-properties-window.ui:528
+msgid "Set Custom Permissions"
+msgstr "ຕັ້ງສິດກຳນົດເອງ"
+
+#: src/resources/ui/nautilus-properties-window.ui:542
+msgid "Unknown Permissions"
+msgstr "ສິດທີ່ບໍ່ຮູ້ຈັກ"
+
+#: src/resources/ui/nautilus-properties-window.ui:543
+msgid "The permissions of the selected files could not be determined"
+msgstr "ບໍ່ສາມາດກຳນົດສິດຂອງໄຟລ໌ທີ່ເລືອກໄດ້"
+
+#: src/resources/ui/nautilus-properties-window.ui:556
+msgid "Only the owner can edit these permissions"
+msgstr "ສະເພາະເຈົ້າຂອງເທົ່ານັ້ນທີ່ສາມາດແກ້ໄຂສິດເຫຼົ່ານີ້ໄດ້"
+
+#: src/resources/ui/nautilus-properties-window.ui:566
+msgid "_Owner"
+msgstr "_ເຈົ້າຂອງ"
+
+#: src/resources/ui/nautilus-properties-window.ui:578
+#: src/resources/ui/nautilus-properties-window.ui:618
+#: src/resources/ui/nautilus-properties-window.ui:647
+msgid "Access"
+msgstr "ການເຂົ້າເຖິງ"
+
+#: src/resources/ui/nautilus-properties-window.ui:586
+#: src/resources/ui/nautilus-properties-window.ui:626
+#: src/resources/ui/nautilus-properties-window.ui:655
+msgid "Folder Access"
+msgstr "ການເຂົ້າເຖິງໂຟລເດີ"
+
+#: src/resources/ui/nautilus-properties-window.ui:594
+#: src/resources/ui/nautilus-properties-window.ui:634
+#: src/resources/ui/nautilus-properties-window.ui:663
+msgid "File Access"
+msgstr "ການເຂົ້າເຖິງໄຟລ໌"
+
+#: src/resources/ui/nautilus-properties-window.ui:606
+msgid "_Group"
+msgstr "_ກຸ່ມ"
+
+#: src/resources/ui/nautilus-properties-window.ui:642
+msgid "Other Users"
+msgstr "ຜູ້ໃຊ້ອື່ນໆ"
+
+#: src/resources/ui/nautilus-properties-window.ui:674
+msgid "Security Context"
+msgstr "ບໍລິບົດຄວາມປອດໄພ"
+
+#: src/resources/ui/nautilus-properties-window.ui:691
+msgid "Change Permissions for _Enclosed Files…"
+msgstr "ປ່ຽນສິດສຳລັບໄຟລ໌ທີ່ຢູ່ພາຍໃນ…"
+
+#: src/resources/ui/nautilus-rename-file-popover.ui:24
+msgid "New Filename"
+msgstr "ຊື່ໄຟລ໌ໃໝ່"
+
+#: src/resources/ui/nautilus-search-popover.ui:25
+msgid "File Types"
+msgstr "ປະເພດໄຟລ໌"
+
+#: src/resources/ui/nautilus-search-popover.ui:44
+msgid "_Audio"
+msgstr "_ສຽງ"
+
+#: src/resources/ui/nautilus-search-popover.ui:56
+msgid "_Documents"
+msgstr "_ເອກະສານ"
+
+#: src/resources/ui/nautilus-search-popover.ui:68
+msgid "_Folders"
+msgstr "_ໂຟລເດີ"
+
+#: src/resources/ui/nautilus-search-popover.ui:80
+msgid "_Images"
+msgstr "_ຮູບພາບ"
+
+#: src/resources/ui/nautilus-search-popover.ui:92
+msgid "_PDF"
+msgstr "_PDF"
+
+#: src/resources/ui/nautilus-search-popover.ui:104
+msgid "_Spreadsheets"
+msgstr "_ຕາຕະລາງ"
+
+#: src/resources/ui/nautilus-search-popover.ui:116
+msgid "Te_xt"
+msgstr "ຂໍ້ຄວາມ"
+
+#: src/resources/ui/nautilus-search-popover.ui:128
+msgid "_Videos"
+msgstr "_ວິດີໂອ"
+
+#: src/resources/ui/nautilus-search-popover.ui:144
+msgid "Specific Type"
+msgstr "ປະເພດສະເພາະ"
+
+#. Translators: This refers to a date time
+#: src/resources/ui/nautilus-search-popover.ui:185
+msgid "Used"
+msgstr "ໃຊ້ແລ້ວ"
+
+#: src/resources/ui/nautilus-search-popover.ui:213
+msgid "_Today"
+msgstr "_ມື້ນີ້"
+
+#: src/resources/ui/nautilus-search-popover.ui:220
+msgid "_Yesterday"
+msgstr "_ມື້ວານນີ້"
+
+#: src/resources/ui/nautilus-search-popover.ui:227
+msgid "Past _Week"
+msgstr "ອາທິດທີ່ຜ່ານມາ"
+
+#: src/resources/ui/nautilus-search-popover.ui:234
+msgid "Past _Month"
+msgstr "ເດືອນທີ່ຜ່ານມາ"
+
+#: src/resources/ui/nautilus-search-popover.ui:241
+msgid "Past Y_ear"
+msgstr "ປີທີ່ຜ່ານມາ"
+
+#: src/resources/ui/nautilus-search-popover.ui:255
+msgid "Custom Date Range"
+msgstr "ຊ່ວງວັນທີກຳນົດເອງ"
+
+#: src/resources/ui/nautilus-search-popover.ui:276
+msgid "Text Matching"
+msgstr "ການຈັບຄູ່ຂໍ້ຄວາມ"
+
+#: src/resources/ui/nautilus-search-popover.ui:292
+msgid "_Content & Filename"
+msgstr "_ເນື້ອໃນ ແລະ ຊື່ໄຟລ໌"
+
+#: src/resources/ui/nautilus-search-popover.ui:293
+msgid "Search Inside Files"
+msgstr "ຄົ້ນຫາພາຍໃນໄຟລ໌"
+
+#: src/resources/ui/nautilus-search-popover.ui:301
+msgid "_Only Filename"
+msgstr "_ສະເພາະຊື່ໄຟລ໌"
+
+#: src/resources/ui/nautilus-search-popover.ui:302
+msgid "Don't Search Inside Files"
+msgstr "ບໍ່ຄົ້ນຫາພາຍໃນໄຟລ໌"
+
+#: src/resources/ui/nautilus-search-popover.ui:312
+msgid "Only Co_ntents"
+msgstr "ສະເພາະເນື້ອໃນ"
+
+#: src/resources/ui/nautilus-search-types-dialog.ui:5
+msgid "Add File Type Filter"
+msgstr "ເພີ່ມຕົວກັ່ນຕອງປະເພດໄຟລ໌"
+
+#: src/resources/ui/nautilus-search-types-dialog.ui:26
+msgid "_Add"
+msgstr "_ເພີ່ມ"
+
+#: src/resources/ui/nautilus-search-types-dialog.ui:44
+msgid "Search for file types"
+msgstr "ຄົ້ນຫາປະເພດໄຟລ໌"
+
+#: src/resources/ui/nautilus-search-types-dialog.ui:58
+msgid "Search File Types"
+msgstr "ຄົ້ນຫາປະເພດໄຟລ໌"
+
+#: src/resources/ui/nautilus-search-types-dialog.ui:59
+msgid "Search by type, name, or description"
+msgstr "ຄົ້ນຫາຕາມປະເພດ, ຊື່, ຫຼື ລາຍລະອຽດ"
+
+#: src/resources/ui/nautilus-search-types-dialog.ui:71
+msgid "Try a different search"
+msgstr "ລອງຄົ້ນຫາແບບອື່ນ"
+
+#: src/resources/ui/nautilus-toolbar.ui:67
+msgid "Search Current Folder"
+msgstr "ຄົ້ນຫາໃນໂຟລເດີປັດຈຸບັນ"
+
+#. This is used to sort by name in the toolbar view menu
+#: src/resources/ui/nautilus-toolbar-view-menu.ui:8
+msgctxt "Sort Criterion"
+msgid "_A-Z"
+msgstr "_A-Z"
+
+#. This is used to sort by name, in descending order in the toolbar view menu
+#: src/resources/ui/nautilus-toolbar-view-menu.ui:14
+msgctxt "Sort Criterion"
+msgid "_Z-A"
+msgstr "_Z-A"
+
+#: src/resources/ui/nautilus-toolbar-view-menu.ui:20
+msgid "Last _Modified"
+msgstr "ແກ້ໄຂຄັ້ງສຸດທ້າຍ"
+
+#: src/resources/ui/nautilus-toolbar-view-menu.ui:26
+msgid "_First Modified"
+msgstr "ແກ້ໄຂຄັ້ງທຳອິດ"
+
+#: src/resources/ui/nautilus-toolbar-view-menu.ui:32
+msgid "_Size"
+msgstr "_ຂະໜາດ"
+
+#: src/resources/ui/nautilus-toolbar-view-menu.ui:38
+msgid "_Type"
+msgstr "_ປະເພດ"
+
+#: src/resources/ui/nautilus-toolbar-view-menu.ui:44
+msgid "Last _Trashed"
+msgstr "ລຶບລົງຖັງຂີ້ເຫຍື້ອຄັ້ງສຸດທ້າຍ"
+
+#: src/resources/ui/nautilus-view-controls.ui:5
+msgid "Icon Size"
+msgstr "ຂະໜາດໄອຄອນ"
+
+#. Translators: a menu item in a group of sorting options in a toolbar menu, with criterions such as "A-Z" or "Last Modified".
+#: src/resources/ui/nautilus-view-controls.ui:15
+msgctxt "menu item"
+msgid "Sort"
+msgstr "ຈັດລຽງ"
+
+#: src/resources/ui/nautilus-view-controls.ui:25
+msgid "Show _Hidden Files"
+msgstr "ສະແດງໄຟລ໌ທີ່ເຊື່ອງໄວ້"
+
+#: src/resources/ui/nautilus-view-controls.ui:32
+msgid "_Visible Columns…"
+msgstr "_ຖັນທີ່ເບິ່ງເຫັນ…"
+
+#. Translators: This is a noun, meaning the options pertaining to the view.
+#: src/resources/ui/nautilus-view-controls.ui:43
+msgid "View Options"
+msgstr "ຕົວເລືອກມຸມມອງ"
+
+#: src/resources/ui/nautilus-view-controls.ui:52
+msgid "Zoom Out"
+msgstr "ຂະຫຍາຍອອກ"
+
+#: src/resources/ui/nautilus-view-controls.ui:62
+msgid "Zoom In"
+msgstr "ຂະຫຍາຍເຂົ້າ"
+
+#: src/resources/ui/nautilus-window.ui:7
+msgid "New _Window"
+msgstr "ໜ້າຕ່າງໃໝ່"
+
+#: src/resources/ui/nautilus-window.ui:12
+msgid "New _Tab"
+msgstr "ແຖບໃໝ່"
+
+#: src/resources/ui/nautilus-window.ui:32
+msgid "_Preferences"
+msgstr "_ການຕັ້ງຄ່າ"
+
+#: src/resources/ui/nautilus-window.ui:36
+msgid "_Keyboard Shortcuts"
+msgstr "_ທາງລັດແປ້ນພິມ"
+
+#: src/resources/ui/nautilus-window.ui:40
+msgid "_Help"
+msgstr "_ຊ່ວຍເຫຼືອ"
+
+#: src/resources/ui/nautilus-window.ui:44
+msgid "_About Files"
+msgstr "_ກ່ຽວກັບໄຟລ໌"
+
+#: src/resources/ui/nautilus-window.ui:52
+msgid "_New Tab"
+msgstr "_ແຖບໃໝ່"
+
+#: src/resources/ui/nautilus-window.ui:56
+msgid "Re_store Closed Tab"
+msgstr "ກູ້ຄືນແຖບທີ່ປິດແລ້ວ"
+
+#: src/resources/ui/nautilus-window.ui:62
+msgid "Move Tab to New _Window"
+msgstr "ຍ້າຍແຖບໄປທີ່ໜ້າຕ່າງໃໝ່"
+
+#. Translators: use “Move Tab _Right” for RTL languages
+#: src/resources/ui/nautilus-window.ui:66
+msgid "Move Tab _Left"
+msgstr "ຍ້າຍແຖບໄປຊ້າຍ"
+
+#. Translators: use “Move Tab _Left” for RTL languages
+#: src/resources/ui/nautilus-window.ui:70
+msgid "Move Tab _Right"
+msgstr "ຍ້າຍແຖບໄປຂວາ"
+
+#: src/resources/ui/nautilus-window.ui:76
+msgid "_Close Tab"
+msgstr "_ປິດແຖບ"
+
+#: src/resources/ui/nautilus-window.ui:80
+msgid "Close _Other Tabs"
+msgstr "ປິດແຖບອື່ນ"
+
+#: src/resources/ui/nautilus-window.ui:128
+msgid "Main Menu"
+msgstr "ເມນູຫຼັກ"
