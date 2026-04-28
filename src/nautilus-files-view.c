@@ -584,7 +584,7 @@ get_directory_sort_by (NautilusFile *file,
 
     *reversed = nautilus_file_get_boolean_metadata (file,
                                                     NAUTILUS_METADATA_KEY_VIEW_SORT_REVERSED,
-                                                    *reversed);
+                                                    FALSE);
 
     const char *folder_sort_key =
         nautilus_file_get_metadata (file, NAUTILUS_METADATA_KEY_VIEW_SORT_BY);
@@ -597,7 +597,7 @@ get_directory_sort_by (NautilusFile *file,
 static void
 update_sort_order_from_metadata_and_preferences (NautilusFilesView *self)
 {
-    gboolean reversed;
+    gboolean reversed = FALSE;
     const char *sort_attribute = get_directory_sort_by (self->directory_as_file, &reversed);
 
     g_signal_handlers_block_by_func (self->view_action_group, on_sort_action_state_changed, self);
@@ -4437,7 +4437,7 @@ schedule_timeout_display_of_pending_files (NautilusFilesView *self,
 static void
 display_pending_files_with_tradeoff (NautilusFilesView *self)
 {
-    gboolean reversed;
+    gboolean reversed = FALSE;
     const char *sort_attribute = get_directory_sort_by (self->directory_as_file, &reversed);
 
     unschedule_display_of_pending_files (self);
