@@ -358,10 +358,11 @@ nautilus_bookmark_list_move_item (NautilusBookmarkList *bookmarks,
         return;
     }
 
+    GList *link_at_destination = g_list_nth (bookmarks->list, destination);
+
     bookmarks->list = g_list_remove_link (bookmarks->list,
                                           link_to_move);
 
-    GList *link_at_destination = g_list_nth (bookmarks->list, destination);
     /* NULL link at destination means end of the list */
     bookmarks->list = g_list_insert_before_link (bookmarks->list,
                                                  link_at_destination,
