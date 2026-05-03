@@ -57,36 +57,33 @@ open_cb (NautilusAppChooser *self)
 
     info = nautilus_app_chooser_get_app_info (self);
 
-    if (!self->single_content_type)
+    if (self->single_content_type)
     {
-        /* Don't attempt to set an association with multiple content types */
-        return;
-    }
+        /* The switch is insensitive if the selected app is already default */
+        if (gtk_widget_get_sensitive (self->set_default_row))
+        {
+            set_new_default = adw_switch_row_get_active (ADW_SWITCH_ROW (self->set_default_row));
+        }
 
-    /* The switch is insensitive if the selected app is already default */
-    if (gtk_widget_get_sensitive (self->set_default_row))
-    {
-        set_new_default = adw_switch_row_get_active (ADW_SWITCH_ROW (self->set_default_row));
-    }
+        if (set_new_default)
+        {
+            g_app_info_set_as_default_for_type (info, self->content_type,
+                                                &error);
+            g_signal_emit_by_name (nautilus_signaller_get_current (), "mime-data-changed");
+        }
 
-    if (set_new_default)
-    {
-        g_app_info_set_as_default_for_type (info, self->content_type,
-                                            &error);
-        g_signal_emit_by_name (nautilus_signaller_get_current (), "mime-data-changed");
-    }
+        if (error != NULL)
+        {
+            AdwAlertDialog *dialog;
 
-    if (error != NULL)
-    {
-        AdwAlertDialog *dialog;
+            dialog = ADW_ALERT_DIALOG (adw_alert_dialog_new (_("Could not set as default"), NULL));
+            adw_alert_dialog_format_body (dialog,
+                                          _("Error while setting “%s” as default app: %s"),
+                                          g_app_info_get_display_name (info), error->message);
+            adw_alert_dialog_add_response (dialog, "close", _("_OK"));
 
-        dialog = ADW_ALERT_DIALOG (adw_alert_dialog_new (_("Could not set as default"), NULL));
-        adw_alert_dialog_format_body (dialog,
-                                      _("Error while setting “%s” as default app: %s"),
-                                      g_app_info_get_display_name (info), error->message);
-        adw_alert_dialog_add_response (dialog, "close", _("_OK"));
-
-        adw_dialog_present (ADW_DIALOG (dialog), GTK_WIDGET (self));
+            adw_dialog_present (ADW_DIALOG (dialog), GTK_WIDGET (self));
+        }
     }
 
     g_signal_emit (self, signals[SIGNAL_APP_SELECTED], 0, info);
