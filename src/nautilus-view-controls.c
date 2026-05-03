@@ -38,7 +38,6 @@ on_slot_toolbar_menu_sections_changed (NautilusViewControls *self,
                                        NautilusWindowSlot   *slot)
 {
     NautilusToolbarMenuSections *new_sections;
-    g_autoptr (GMenuItem) zoom_item = NULL;
     g_autoptr (GMenuItem) sort_item = NULL;
 
     new_sections = nautilus_window_slot_get_toolbar_menu_sections (slot);
