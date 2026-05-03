@@ -375,6 +375,9 @@ nautilus_name_cell_dispose (GObject *object)
 {
     NautilusNameCell *self = (NautilusNameCell *) object;
 
+    g_clear_handle_id (&self->loading_timeout_id, g_source_remove);
+    g_clear_object (&self->item_signal_group);
+
     gtk_widget_dispose_template (GTK_WIDGET (self), NAUTILUS_TYPE_NAME_CELL);
 
     G_OBJECT_CLASS (nautilus_name_cell_parent_class)->dispose (object);
@@ -385,8 +388,6 @@ nautilus_name_cell_finalize (GObject *object)
 {
     NautilusNameCell *self = (NautilusNameCell *) object;
 
-    g_clear_handle_id (&self->loading_timeout_id, g_source_remove);
-    g_clear_object (&self->item_signal_group);
     g_clear_object (&self->file_path_base_location);
     G_OBJECT_CLASS (nautilus_name_cell_parent_class)->finalize (object);
 }
