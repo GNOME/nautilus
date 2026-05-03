@@ -175,6 +175,7 @@ nautilus_view_controls_dispose (GObject *obj)
 {
     NautilusViewControls *self = NAUTILUS_VIEW_CONTROLS (obj);
 
+    disconnect_toolbar_menu_sections_change_handler (self);
     adw_bin_set_child (ADW_BIN (self), NULL);
     gtk_widget_dispose_template (GTK_WIDGET (self), NAUTILUS_TYPE_VIEW_CONTROLS);
 
@@ -186,11 +187,7 @@ nautilus_view_controls_finalize (GObject *obj)
 {
     NautilusViewControls *self = NAUTILUS_VIEW_CONTROLS (obj);
 
-    if (self->window_slot != NULL)
-    {
-        g_signal_handlers_disconnect_by_data (self->window_slot, self);
-        self->window_slot = NULL;
-    }
+    g_clear_object (&self->window_slot);
 
     G_OBJECT_CLASS (nautilus_view_controls_parent_class)->finalize (obj);
 }
