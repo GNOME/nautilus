@@ -7774,7 +7774,6 @@ update_selection_menu (NautilusFilesView *self,
     gboolean show_stop;
     gboolean show_detect_media;
     gboolean show_scripts = FALSE;
-    gint i;
     GDriveStartStopType start_stop_type;
 
     selection = nautilus_files_view_get_selection (self);
@@ -7887,11 +7886,9 @@ update_selection_menu (NautilusFilesView *self,
         else
         {
             object = gtk_builder_get_object (builder, "open-with-application-section");
-            i = nautilus_g_menu_model_find_by_string (G_MENU_MODEL (object),
-                                                      "nautilus-menu-item",
-                                                      "open_with_in_main_menu");
-            nautilus_g_menu_replace_string_in_item (G_MENU (object), i,
-                                                    "action", "doesnt-exist");
+            nautilus_menu_item_change_attribute (G_MENU_MODEL (object),
+                                                 "open_with_in_main_menu",
+                                                 "action", "doesnt-exist");
         }
 
         g_free (item_label);
@@ -7899,12 +7896,10 @@ update_selection_menu (NautilusFilesView *self,
 
     /* The "Open" submenu should be hidden if the item doesn't open in the view. */
     object = gtk_builder_get_object (builder, "open-with-application-section");
-    i = nautilus_g_menu_model_find_by_string (G_MENU_MODEL (object),
-                                              "nautilus-menu-item",
-                                              "open_in_view_submenu");
-    nautilus_g_menu_replace_string_in_item (G_MENU (object), i,
-                                            "hidden-when",
-                                            !item_opens_in_view ? "action-missing" : NULL);
+    nautilus_menu_item_change_attribute (G_MENU_MODEL (object),
+                                         "open_in_view_submenu",
+                                         "hidden-when",
+                                         !item_opens_in_view ? "action-missing" : NULL);
 
     /* Drives */
     for (l = selection; l != NULL && (show_mount || show_unmount
@@ -8032,12 +8027,10 @@ update_selection_menu (NautilusFilesView *self,
     }
 
     object = gtk_builder_get_object (builder, "open-with-application-section");
-    i = nautilus_g_menu_model_find_by_string (G_MENU_MODEL (object),
-                                              "nautilus-menu-item",
-                                              "scripts-submenu");
-    nautilus_g_menu_replace_string_in_item (G_MENU (object), i,
-                                            "hidden-when",
-                                            (!show_scripts) ? "action-missing" : NULL);
+    nautilus_menu_item_change_attribute (G_MENU_MODEL (object),
+                                         "scripts-submenu",
+                                         "hidden-when",
+                                         !show_scripts ? "action-missing" : NULL);
 
     const char *view_name = NAUTILUS_IS_NETWORK_VIEW (self->list_base) ? "network" : "normal";
 
@@ -8053,7 +8046,6 @@ update_background_menu (NautilusFilesView *self,
     NautilusMode mode = nautilus_window_slot_get_mode (self->slot);
     GObject *object;
     gboolean remove_submenu = TRUE;
-    gint i;
 
     if (nautilus_files_view_supports_creating_files (self) &&
         !showing_recent_directory (self) &&
@@ -8084,12 +8076,10 @@ update_background_menu (NautilusFilesView *self,
         self->templates_menu_updated = FALSE;
     }
 
-    i = nautilus_g_menu_model_find_by_string (G_MENU_MODEL (self->background_menu_model),
-                                              "nautilus-menu-item",
-                                              "templates-submenu");
-    nautilus_g_menu_replace_string_in_item (self->background_menu_model, i,
-                                            "hidden-when",
-                                            remove_submenu ? "action-missing" : NULL);
+    nautilus_menu_item_change_attribute (G_MENU_MODEL (self->background_menu_model),
+                                         "templates-submenu",
+                                         "hidden-when",
+                                         remove_submenu ? "action-missing" : NULL);
 
     const char *view_name = NAUTILUS_IS_NETWORK_VIEW (self->list_base) ? "network" : "normal";
 
@@ -8133,23 +8123,25 @@ nautilus_files_view_reset_view_menu (NautilusFilesView *self)
     NautilusFile *file = self->directory_as_file;
     GMenuModel *sort_section = self->toolbar_menu_sections->sort_section;
     const gchar *action;
-    gint i;
 
     /* When not in the special location, set an inexistant action to hide the
      * menu item. This works under the assumptiont that the menu item has its
      * "hidden-when" attribute set to "action-disabled", and that an inexistant
      * action is treated as a disabled action. */
     action = nautilus_file_is_in_trash (file) ? "view.sort" : "doesnt-exist";
-    i = nautilus_g_menu_model_find_by_string (sort_section, "nautilus-menu-item", "last_trashed");
-    nautilus_g_menu_replace_string_in_item (G_MENU (sort_section), i, "action", action);
+    nautilus_menu_item_change_attribute (sort_section,
+                                         "last_trashed",
+                                         G_MENU_ATTRIBUTE_ACTION, action);
 
     action = nautilus_file_is_in_recent (file) ? "view.sort" : "doesnt-exist";
-    i = nautilus_g_menu_model_find_by_string (sort_section, "nautilus-menu-item", "recency");
-    nautilus_g_menu_replace_string_in_item (G_MENU (sort_section), i, "action", action);
+    nautilus_menu_item_change_attribute (sort_section,
+                                         "recency",
+                                         G_MENU_ATTRIBUTE_ACTION, action);
 
     action = nautilus_file_is_in_search (file) ? "view.sort" : "doesnt-exist";
-    i = nautilus_g_menu_model_find_by_string (sort_section, "nautilus-menu-item", "relevance");
-    nautilus_g_menu_replace_string_in_item (G_MENU (sort_section), i, "action", action);
+    nautilus_menu_item_change_attribute (sort_section,
+                                         "relevance",
+                                         G_MENU_ATTRIBUTE_ACTION, action);
 }
 
 /* Convenience function to reset the menus owned by the view but managed on

@@ -111,7 +111,7 @@ nautilus_gmenu_set_from_model (GMenu      *target_menu,
  *
  * Returns: The index of the first match in the model, or -1 if no item matches.
  */
-gint
+static gint
 nautilus_g_menu_model_find_by_string (GMenuModel  *model,
                                       const gchar *attribute,
                                       const gchar *string)
@@ -212,8 +212,8 @@ nautilus_g_menu_model_set_for_view (GMenuModel *model,
 
 /**
  * nautilus_g_menu_replace_string_in_item:
- * @menu: the #GMenu to modify
- * @i: the position of the item to change
+ * @model: the #GMenuModel whic contains the item
+ * @item_name: the menu item whose attribute to change
  * @attribute: the menu item attribute to change
  * @string: the string to change the value of @attribute to
  *
@@ -228,12 +228,13 @@ nautilus_g_menu_model_set_for_view (GMenuModel *model,
  * It is assumed that @attribute has the a GVariant format string "s".
  */
 void
-nautilus_g_menu_replace_string_in_item (GMenu       *menu,
-                                        gint         i,
-                                        const gchar *attribute,
-                                        const gchar *string)
+nautilus_menu_item_change_attribute (GMenuModel  *menu_model,
+                                     const gchar *item_name,
+                                     const gchar *attribute,
+                                     const gchar *string)
 {
-    GMenuModel *menu_model = G_MENU_MODEL (menu);
+    int i = nautilus_g_menu_model_find_by_string (menu_model, "nautilus-menu-item", item_name);
+
     g_return_if_fail (i > -1 && i < g_menu_model_get_n_items (menu_model));
 
     g_autofree gchar *old_string = NULL;
@@ -257,8 +258,8 @@ nautilus_g_menu_replace_string_in_item (GMenu       *menu,
         g_menu_item_set_attribute (item, attribute, NULL);
     }
 
-    g_menu_remove (menu, i);
-    g_menu_insert_item (menu, i, item);
+    g_menu_remove (G_MENU (menu_model), i);
+    g_menu_insert_item (G_MENU (menu_model), i, item);
 }
 
 static GdkTexture *filmholes_left = NULL;

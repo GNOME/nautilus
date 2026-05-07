@@ -39,9 +39,6 @@ char      * nautilus_capitalize_str                 (const char    *string);
 
 void        nautilus_gmenu_set_from_model           (GMenu             *target_menu,
                                                      GMenuModel        *source_model);
-gint        nautilus_g_menu_model_find_by_string    (GMenuModel        *model,
-                                                     const gchar       *attribute,
-                                                     const gchar       *string);
 
 void        nautilus_g_menu_model_set_for_mode      (GMenuModel        *model,
                                                      NautilusMode       mode);
@@ -49,10 +46,10 @@ void        nautilus_g_menu_model_set_for_mode      (GMenuModel        *model,
 void        nautilus_g_menu_model_set_for_view      (GMenuModel        *model,
                                                      const char        *view_name);
 
-void        nautilus_g_menu_replace_string_in_item  (GMenu             *menu,
-                                                     gint               i,
+void        nautilus_menu_item_change_attribute     (GMenuModel        *menu_model,
+                                                     const gchar       *item_name,
                                                      const gchar       *attribute,
-                                                     const gchar       *string);
+                                                     const gchar       *new_value);
 
 void        nautilus_ui_frame_video                 (GtkSnapshot       *snapshot,
                                                      gdouble            width,

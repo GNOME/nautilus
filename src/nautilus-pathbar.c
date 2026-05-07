@@ -506,8 +506,6 @@ void
 nautilus_path_bar_set_templates_menu (NautilusPathBar *self,
                                       GMenuModel      *menu)
 {
-    gint i;
-
     g_return_if_fail (NAUTILUS_IS_PATH_BAR (self));
 
     if (!gtk_widget_is_visible (GTK_WIDGET (self->current_view_menu_popover)))
@@ -525,12 +523,10 @@ nautilus_path_bar_set_templates_menu (NautilusPathBar *self,
         self->bind_menu_model_to_popover_id = g_idle_add ((GSourceFunc) bind_current_view_menu_model_to_popover, self);
     }
 
-    i = nautilus_g_menu_model_find_by_string (G_MENU_MODEL (self->current_view_menu),
-                                              "nautilus-menu-item",
-                                              "templates-submenu");
-    nautilus_g_menu_replace_string_in_item (self->current_view_menu, i,
-                                            "hidden-when",
-                                            (menu == NULL) ? "action-missing" : NULL);
+    nautilus_menu_item_change_attribute (G_MENU_MODEL (self->current_view_menu),
+                                         "templates-submenu",
+                                         "hidden-when",
+                                         (menu == NULL) ? "action-missing" : NULL);
 }
 
 /* Public functions and their helpers */
