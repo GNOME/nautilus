@@ -47,16 +47,21 @@ static GdkPaintable *
 nautilus_icon_info_get_fallback (int size,
                                  int scale)
 {
-    static GdkPaintable *fallback_paintable = NULL;
+    static gboolean in_fallback = FALSE;
+    GIcon *icon = nautilus_icon_info_get_default_file_icon ();
+    GdkPaintable *fallback_paintable;
 
-    if (G_UNLIKELY (fallback_paintable == NULL))
+    if (in_fallback)
     {
-        GIcon *icon = nautilus_icon_info_get_default_file_icon ();
-
-        fallback_paintable = GDK_PAINTABLE (lookup_themed_icon (icon, size, scale));
+        return NULL;
     }
 
-    return g_object_ref (fallback_paintable);
+    /* Use existing cache to cache the fallback paintable */
+    in_fallback = TRUE;
+    fallback_paintable = nautilus_icon_info_lookup (icon, size, scale);
+    in_fallback = FALSE;
+
+    return fallback_paintable;
 }
 
 typedef struct
