@@ -245,12 +245,33 @@ themed_icon_cache_add (ThemedIconKey *key,
     }
 }
 
+static GtkIconTheme *
+get_icon_theme (void)
+{
+    GtkIconTheme *theme = gtk_icon_theme_get_for_display (gdk_display_get_default ());
+
+    if (g_test_initialized ())
+    {
+        /* During tests, force Adwaita theme */
+        static GtkIconTheme *test_theme = NULL;
+
+        if (test_theme == NULL)
+        {
+            test_theme = gtk_icon_theme_new ();
+            gtk_icon_theme_set_theme_name (test_theme, "Adwaita");
+        }
+        theme = test_theme;
+    }
+
+    return theme;
+}
+
 static GtkIconPaintable *
 lookup_themed_icon (GIcon *icon,
                     int    size,
                     float  scale)
 {
-    GtkIconTheme *theme = gtk_icon_theme_get_for_display (gdk_display_get_default ());
+    GtkIconTheme *theme = get_icon_theme ();
 
     if (!gtk_icon_theme_has_gicon (theme, icon))
     {
