@@ -7890,7 +7890,8 @@ update_selection_menu (NautilusFilesView *self,
             i = nautilus_g_menu_model_find_by_string (G_MENU_MODEL (object),
                                                       "nautilus-menu-item",
                                                       "open_with_in_main_menu");
-            g_menu_remove (G_MENU (object), i);
+            nautilus_g_menu_replace_string_in_item (G_MENU (object), i,
+                                                    "action", "doesnt-exist");
         }
 
         g_free (item_label);
