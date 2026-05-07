@@ -100,19 +100,22 @@ static NautilusIconInfo *
 nautilus_icon_info_get_fallback (int size,
                                  int scale)
 {
-    static NautilusIconInfo *fallback_info = NULL;
+    static gboolean in_fallback = FALSE;
 
-    if (G_UNLIKELY (fallback_info == NULL))
+    if (in_fallback)
     {
-        GIcon *icon = nautilus_icon_info_get_default_file_icon ();
-        g_autoptr (GtkIconPaintable) paintable = lookup_themed_icon (icon, size, scale);
-
-        g_assert (paintable != NULL);
-
-        fallback_info = nautilus_icon_info_new_for_paintable (GDK_PAINTABLE (paintable));
+        return NULL;
     }
 
-    return g_object_ref (fallback_info);
+    GIcon *icon = nautilus_icon_info_get_default_file_icon ();
+    NautilusIconInfo *fallback_info;
+
+    /* Use existing cache to cache the fallback paintable */
+    in_fallback = TRUE;
+    fallback_info = nautilus_icon_info_lookup (icon, size, scale);
+    in_fallback = FALSE;
+
+    return fallback_info;
 }
 
 static NautilusIconInfo *
