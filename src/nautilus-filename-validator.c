@@ -136,17 +136,11 @@ nautilus_filename_validator_name_is_valid (NautilusFilenameValidator  *self,
         *error_message = is_folder ? _("Folder names cannot contain “/”") :
                                      _("File names cannot contain “/”");
     }
-    else if (strcmp (name, ".") == 0)
+    else if (strcmp (name, ".") == 0 || strcmp (name, "..") == 0)
     {
         is_valid = FALSE;
-        *error_message = is_folder ? _("A folder cannot be called “.”") :
-                                     _("A file cannot be called “.”");
-    }
-    else if (strcmp (name, "..") == 0)
-    {
-        is_valid = FALSE;
-        *error_message = is_folder ? _("A folder cannot be called “..”") :
-                                     _("A file cannot be called “..”");
+        *error_message = is_folder ? _("A folder cannot be called “.” or “..”") :
+                                     _("A file cannot be called “.” or “..”");
     }
     else if (nautilus_filename_validator_is_name_too_long (self, name))
     {
