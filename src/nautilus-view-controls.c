@@ -6,9 +6,15 @@
 
 #include "nautilus-view-controls.h"
 
-#include "nautilus-toolbar-menu-sections.h"
+#include "nautilus-file.h"
+#include "nautilus-file-utilities.h"
+#include "nautilus-scheme.h"
+#include "nautilus-ui-utilities.h"
 #include "nautilus-window-slot.h"
 #include <glib/gi18n.h>
+
+/* Assume sort section is second item in view_menu. See nautilus-view-controls.blp */
+#define SORT_ITEM_POSITION 1
 
 struct _NautilusViewControls
 {
@@ -16,6 +22,7 @@ struct _NautilusViewControls
 
     GtkWidget *view_split_button;
     GMenuModel *view_menu;
+    GMenuModel *sort_section;
 
     NautilusWindowSlot *window_slot;
 };
@@ -33,28 +40,50 @@ enum
 static GParamSpec *properties[N_PROPS];
 
 static void
-on_slot_toolbar_menu_sections_changed (NautilusViewControls *self,
-                                       GParamSpec           *param,
-                                       NautilusWindowSlot   *slot)
+update_sort_section (NautilusViewControls *self,
+                     NautilusFile         *file)
 {
-    NautilusToolbarMenuSections *new_sections;
-    g_autoptr (GMenuItem) sort_item = NULL;
+    const char *action;
 
-    new_sections = nautilus_window_slot_get_toolbar_menu_sections (slot);
+    /* When not in the special location, set an inexistant action to hide the
+     * menu item. This works under the assumptiont that the menu item has its
+     * "hidden-when" attribute set to "action-disabled", and that an inexistant
+     * action is treated as a disabled action. */
+    action = nautilus_file_is_in_trash (file) ? "view.sort" : "doesnt-exist";
+    nautilus_menu_item_change_attribute (self->sort_section,
+                                         "last_trashed",
+                                         G_MENU_ATTRIBUTE_ACTION, action);
 
-    gtk_widget_set_sensitive (self->view_split_button, (new_sections != NULL));
-    if (new_sections == NULL)
+    action = nautilus_file_is_in_recent (file) ? "view.sort" : "doesnt-exist";
+    nautilus_menu_item_change_attribute (self->sort_section,
+                                         "recency",
+                                         G_MENU_ATTRIBUTE_ACTION, action);
+
+    action = nautilus_file_is_in_search (file) ? "view.sort" : "doesnt-exist";
+    nautilus_menu_item_change_attribute (self->sort_section,
+                                         "relevance",
+                                         G_MENU_ATTRIBUTE_ACTION, action);
+}
+
+static void
+adjust_to_location (NautilusViewControls *self,
+                    GParamSpec           *param,
+                    NautilusWindowSlot   *slot)
+{
+    GFile *location = nautilus_window_slot_get_location (slot);
+    gboolean has_menu = location != NULL &&
+                        !nautilus_is_root_for_scheme (location, SCHEME_NETWORK_VIEW);
+
+    gtk_widget_set_sensitive (self->view_split_button, has_menu);
+
+    if (!has_menu)
     {
         return;
     }
 
-    /* Let's assume that sort section is the second item
-     * in view_menu, as per nautilus-toolbar.ui. */
+    g_autoptr (NautilusFile) file = nautilus_file_get (location);
 
-    sort_item = g_menu_item_new_from_model (self->view_menu, 1);
-    g_menu_remove (G_MENU (self->view_menu), 1);
-    g_menu_item_set_section (sort_item, new_sections->sort_section);
-    g_menu_insert_item (G_MENU (self->view_menu), 1, sort_item);
+    update_sort_section (self, file);
 }
 
 static void
@@ -87,7 +116,7 @@ disconnect_toolbar_menu_sections_change_handler (NautilusViewControls *self)
     }
 
     g_signal_handlers_disconnect_by_func (self->window_slot,
-                                          G_CALLBACK (on_slot_toolbar_menu_sections_changed),
+                                          G_CALLBACK (adjust_to_location),
                                           self);
     g_signal_handlers_disconnect_by_func (self->window_slot,
                                           G_CALLBACK (on_tooltip_changed),
@@ -113,9 +142,9 @@ nautilus_view_controls_set_window_slot (NautilusViewControls *self,
 
     if (self->window_slot != NULL)
     {
-        on_slot_toolbar_menu_sections_changed (self, NULL, self->window_slot);
-        g_signal_connect_swapped (self->window_slot, "notify::toolbar-menu-sections",
-                                  G_CALLBACK (on_slot_toolbar_menu_sections_changed), self);
+        adjust_to_location (self, NULL, self->window_slot);
+        g_signal_connect_swapped (self->window_slot, "notify::location",
+                                  G_CALLBACK (adjust_to_location), self);
         g_signal_connect_swapped (self->window_slot, "notify::tooltip",
                                   G_CALLBACK (on_tooltip_changed), self);
     }
@@ -186,6 +215,7 @@ nautilus_view_controls_finalize (GObject *obj)
 {
     NautilusViewControls *self = NAUTILUS_VIEW_CONTROLS (obj);
 
+    g_clear_object (&self->sort_section);
     g_clear_object (&self->window_slot);
 
     G_OBJECT_CLASS (nautilus_view_controls_parent_class)->finalize (obj);
@@ -219,4 +249,12 @@ static void
 nautilus_view_controls_init (NautilusViewControls *self)
 {
     gtk_widget_init_template (GTK_WIDGET (self));
+
+    g_autoptr (GtkBuilder) builder =
+        gtk_builder_new_from_resource ("/org/gnome/nautilus/menu/nautilus-toolbar-view-menu.ui");
+    g_autoptr (GMenuItem) sort_item = g_menu_item_new_from_model (self->view_menu, SORT_ITEM_POSITION);
+
+    self->sort_section = G_MENU_MODEL (g_object_ref (gtk_builder_get_object (builder, "sort_section")));
+    g_menu_item_set_section (sort_item, self->sort_section);
+    g_menu_insert_item (G_MENU (self->view_menu), SORT_ITEM_POSITION, sort_item);
 }

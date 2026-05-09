@@ -240,7 +240,6 @@ libnautilus_sources = [
   'nautilus-thumbnails.h',
   'nautilus-toolbar.c',
   'nautilus-toolbar.h',
-  'nautilus-toolbar-menu-sections.h',
   'nautilus-trash-monitor.c',
   'nautilus-trash-monitor.h',
   'nautilus-types.h',

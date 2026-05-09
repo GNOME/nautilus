@@ -71,7 +71,6 @@
 #include "nautilus-search-directory.h"
 #include "nautilus-signaller.h"
 #include "nautilus-tag-manager.h"
-#include "nautilus-toolbar-menu-sections.h"
 #include "nautilus-trash-monitor.h"
 #include "nautilus-ui-utilities.h"
 #include "nautilus-view-info.h"
@@ -234,9 +233,6 @@ struct _NautilusFilesView
     guint floating_bar_loading_timeout_id;
     guint floating_bar_set_passthrough_timeout_id;
     GtkWidget *floating_bar;
-
-    /* Toolbar menu */
-    NautilusToolbarMenuSections *toolbar_menu_sections;
 
     /* Exposed menus, for the path bar etc. */
     GMenuModel *extensions_background_menu;
@@ -928,29 +924,6 @@ nautilus_files_view_invert_selection (NautilusFilesView *self)
     gtk_bitset_subtract (new_selected, selected);
 
     gtk_selection_model_set_selection (selection_model, new_selected, all);
-}
-
-/**
- * nautilus_files_view_get_toolbar_menu_sections:
- * @self: a #NautilusFilesView
- *
- * Retrieves the menu sections that should be added to the toolbar menu when
- * this view is active
- *
- * Returns: (transfer none): a #NautilusToolbarMenuSections with the details of
- * which menu sections should be added to the menu
- */
-NautilusToolbarMenuSections *
-nautilus_files_view_get_toolbar_menu_sections (NautilusFilesView *self)
-{
-    g_return_val_if_fail (NAUTILUS_IS_FILES_VIEW (self), NULL);
-
-    if (NAUTILUS_IS_NETWORK_VIEW (self->list_base))
-    {
-        return NULL;
-    }
-
-    return self->toolbar_menu_sections;
 }
 
 static void
@@ -3335,14 +3308,11 @@ nautilus_files_view_finalize (GObject *object)
     g_clear_object (&self->view_action_group);
     g_clear_object (&self->background_menu_model);
     g_clear_object (&self->selection_menu_model);
-    g_clear_object (&self->toolbar_menu_sections->sort_section);
     g_clear_object (&self->extensions_background_menu);
     g_clear_object (&self->templates_menu);
     g_clear_object (&self->scripts_menu);
     /* We don't own the slot, so no unref */
     self->slot = NULL;
-
-    g_free (self->toolbar_menu_sections);
 
     g_hash_table_unref (self->pending_reveal);
     g_hash_table_unref (self->awaiting_acknowledge);
@@ -8120,33 +8090,6 @@ nautilus_files_view_update_context_menus (NautilusFilesView *self)
     nautilus_files_view_update_actions_state (self);
 }
 
-static void
-nautilus_files_view_reset_view_menu (NautilusFilesView *self)
-{
-    NautilusFile *file = self->directory_as_file;
-    GMenuModel *sort_section = self->toolbar_menu_sections->sort_section;
-    const gchar *action;
-
-    /* When not in the special location, set an inexistant action to hide the
-     * menu item. This works under the assumptiont that the menu item has its
-     * "hidden-when" attribute set to "action-disabled", and that an inexistant
-     * action is treated as a disabled action. */
-    action = nautilus_file_is_in_trash (file) ? "view.sort" : "doesnt-exist";
-    nautilus_menu_item_change_attribute (sort_section,
-                                         "last_trashed",
-                                         G_MENU_ATTRIBUTE_ACTION, action);
-
-    action = nautilus_file_is_in_recent (file) ? "view.sort" : "doesnt-exist";
-    nautilus_menu_item_change_attribute (sort_section,
-                                         "recency",
-                                         G_MENU_ATTRIBUTE_ACTION, action);
-
-    action = nautilus_file_is_in_search (file) ? "view.sort" : "doesnt-exist";
-    nautilus_menu_item_change_attribute (sort_section,
-                                         "relevance",
-                                         G_MENU_ATTRIBUTE_ACTION, action);
-}
-
 /* Convenience function to reset the menus owned by the view but managed on
  * the toolbar, and update them with the current state.
  * It will also update the actions state, which will also update children
@@ -8167,7 +8110,6 @@ nautilus_files_view_update_toolbar_menus (NautilusFilesView *self)
     }
 
     nautilus_files_view_update_actions_state (self);
-    nautilus_files_view_reset_view_menu (self);
 }
 
 static void
@@ -9434,7 +9376,6 @@ nautilus_files_view_class_init (NautilusFilesViewClass *klass)
 static void
 nautilus_files_view_init (NautilusFilesView *self)
 {
-    GtkBuilder *builder;
     NautilusDirectory *scripts_directory;
     NautilusDirectory *templates_directory;
     GtkEventController *controller;
@@ -9448,11 +9389,6 @@ nautilus_files_view_init (NautilusFilesView *self)
     /* Ensure opaque background, to hide the view underneath it. */
     gtk_widget_add_css_class (self->empty_view_page, "view");
 
-    /* Toolbar menu */
-    builder = gtk_builder_new_from_resource ("/org/gnome/nautilus/menu/nautilus-toolbar-view-menu.ui");
-    self->toolbar_menu_sections = g_new0 (NautilusToolbarMenuSections, 1);
-    self->toolbar_menu_sections->sort_section = G_MENU_MODEL (g_object_ref (gtk_builder_get_object (builder, "sort_section")));
-
     g_signal_connect (self,
                       "notify::selection",
                       G_CALLBACK (nautilus_files_view_preview_update),
@@ -9461,8 +9397,6 @@ nautilus_files_view_init (NautilusFilesView *self)
                       "notify::parent",
                       G_CALLBACK (on_parent_changed),
                       NULL);
-
-    g_object_unref (builder);
 
     g_type_ensure (NAUTILUS_TYPE_FLOATING_BAR);
     gtk_widget_init_template (GTK_WIDGET (self));

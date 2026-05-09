@@ -117,9 +117,6 @@ void              nautilus_files_view_preview_selection_event    (NautilusFilesV
                                                                   GtkDirectionType        direction);
 void              nautilus_files_view_stop_loading               (NautilusFilesView      *view);
 
-NautilusToolbarMenuSections *
-nautilus_files_view_get_toolbar_menu_sections (NautilusFilesView *self);
-
 /* testing-only */
 NautilusViewModel *
 nautilus_files_view_get_private_model (NautilusFilesView *self);

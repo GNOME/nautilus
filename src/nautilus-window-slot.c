@@ -56,7 +56,6 @@ enum
     PROP_ACTIVE = 1,
     PROP_MODE,
     PROP_ICON_NAME,
-    PROP_TOOLBAR_MENU_SECTIONS,
     PROP_EXTENSIONS_BACKGROUND_MENU,
     PROP_FILTER,
     PROP_TEMPLATES_MENU,
@@ -265,7 +264,6 @@ nautilus_window_slot_set_view_id (NautilusWindowSlot *self,
     nautilus_files_view_change (self->content_view, view_id);
 
     g_object_notify_by_pspec (G_OBJECT (self), properties[PROP_ICON_NAME]);
-    g_object_notify_by_pspec (G_OBJECT (self), properties[PROP_TOOLBAR_MENU_SECTIONS]);
     g_object_notify_by_pspec (G_OBJECT (self), properties[PROP_TOOLTIP]);
 }
 
@@ -777,12 +775,6 @@ nautilus_window_slot_get_property (GObject    *object,
         case PROP_ICON_NAME:
         {
             g_value_set_static_string (value, nautilus_window_slot_get_icon_name (self));
-        }
-        break;
-
-        case PROP_TOOLBAR_MENU_SECTIONS:
-        {
-            g_value_set_object (value, nautilus_window_slot_get_toolbar_menu_sections (self));
         }
         break;
 
@@ -2730,7 +2722,6 @@ create_and_bind_new_content_view (NautilusWindowSlot *self,
                                                            self, "templates-menu",
                                                            G_BINDING_DEFAULT | G_BINDING_SYNC_CREATE);
     g_object_notify_by_pspec (G_OBJECT (self), properties[PROP_ICON_NAME]);
-    g_object_notify_by_pspec (G_OBJECT (self), properties[PROP_TOOLBAR_MENU_SECTIONS]);
     g_object_notify_by_pspec (G_OBJECT (self), properties[PROP_EXTENSIONS_BACKGROUND_MENU]);
     g_object_notify_by_pspec (G_OBJECT (self), properties[PROP_TEMPLATES_MENU]);
     g_object_notify_by_pspec (G_OBJECT (self), properties[PROP_TOOLTIP]);
@@ -2883,12 +2874,6 @@ nautilus_window_slot_class_init (NautilusWindowSlotClass *klass)
                              "The icon that represents the slot",
                              NULL,
                              G_PARAM_READABLE);
-
-    properties[PROP_TOOLBAR_MENU_SECTIONS] =
-        g_param_spec_pointer ("toolbar-menu-sections",
-                              "Menu sections for the toolbar menu",
-                              "The menu sections to add to the toolbar menu for this slot",
-                              G_PARAM_READABLE);
 
     properties[PROP_EXTENSIONS_BACKGROUND_MENU] =
         g_param_spec_object ("extensions-background-menu",
@@ -3121,17 +3106,6 @@ nautilus_window_slot_get_tooltip_with_description (NautilusWindowSlot  *self,
         return NULL;
     }
     return nautilus_files_view_get_toggle_tooltip (self->content_view, description);
-}
-
-
-NautilusToolbarMenuSections *
-nautilus_window_slot_get_toolbar_menu_sections (NautilusWindowSlot *self)
-{
-    g_return_val_if_fail (NAUTILUS_IS_WINDOW_SLOT (self), NULL);
-
-    return self->content_view != NULL
-           ? nautilus_files_view_get_toolbar_menu_sections (self->content_view)
-           : NULL;
 }
 
 gboolean
