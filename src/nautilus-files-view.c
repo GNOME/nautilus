@@ -285,6 +285,9 @@ static void     load_directory (NautilusFilesView *view,
                                 NautilusDirectory *directory);
 static void on_clipboard_owner_changed (GdkClipboard *clipboard,
                                         gpointer      user_data);
+static void     nautilus_files_view_update_actions_state (NautilusFilesView *self);
+static void     nautilus_files_view_update_context_menus (NautilusFilesView *self);
+static void     nautilus_files_view_update_toolbar_menus (NautilusFilesView *self);
 static void     schedule_update_context_menus (NautilusFilesView *view);
 static void     remove_update_context_menus_timeout_callback (NautilusFilesView *view);
 static void     schedule_update_status (NautilusFilesView *view);
@@ -7221,7 +7224,7 @@ nautilus_handles_all_files_to_extract (GList *files)
     return TRUE;
 }
 
-void
+static void
 nautilus_files_view_update_actions_state (NautilusFilesView *self)
 {
     NautilusMode mode = nautilus_window_slot_get_mode (self->slot);
@@ -8088,7 +8091,7 @@ update_background_menu (NautilusFilesView *self,
     nautilus_g_menu_model_set_for_mode (G_MENU_MODEL (self->background_menu_model), mode);
 }
 
-void
+static void
 nautilus_files_view_update_context_menus (NautilusFilesView *self)
 {
     NautilusMode mode = nautilus_window_slot_get_mode (self->slot);
@@ -8149,7 +8152,7 @@ nautilus_files_view_reset_view_menu (NautilusFilesView *self)
  * It will also update the actions state, which will also update children
  * actions state if the children subclass nautilus_files_view_update_actions_state
  */
-void
+static void
 nautilus_files_view_update_toolbar_menus (NautilusFilesView *self)
 {
     g_assert (NAUTILUS_IS_FILES_VIEW (self));
