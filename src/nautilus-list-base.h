@@ -54,7 +54,6 @@ struct _NautilusListBaseClass
 void nautilus_list_base_disable_dnd (NautilusListBase *self);
 NautilusViewItem *nautilus_list_base_get_backing_item (NautilusListBase *self);
 GtkWidget *nautilus_list_base_get_selected_item_ui (NautilusListBase  *self);
-GVariant *nautilus_list_base_get_sort_state        (NautilusListBase  *self);
 NautilusViewInfo nautilus_list_base_get_view_info  (NautilusListBase  *self) G_GNUC_PURE;
 int     nautilus_list_base_get_zoom_level          (NautilusListBase  *self);
 void nautilus_list_base_preview_selection_event (NautilusListBase *self,
@@ -67,8 +66,6 @@ void    nautilus_list_base_set_model               (NautilusListBase  *self,
                                                     NautilusViewModel *model);
 void    nautilus_list_base_add_overlay             (NautilusListBase  *self,
                                                     GtkWidget         *widget);
-void    nautilus_list_base_set_sort_state          (NautilusListBase  *self,
-                                                    GVariant          *sort_state);
 void    nautilus_list_base_set_zoom_level          (NautilusListBase  *self,
                                                     int                new_zoom_level);
 void    nautilus_list_base_setup_directory         (NautilusListBase  *self,

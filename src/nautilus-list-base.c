@@ -114,26 +114,11 @@ nautilus_list_base_get_icon_size (NautilusListBase *self)
     return NAUTILUS_LIST_BASE_CLASS (G_OBJECT_GET_CLASS (self))->get_icon_size (self);
 }
 
-GVariant *
-nautilus_list_base_get_sort_state (NautilusListBase *self)
-{
-    return NAUTILUS_LIST_BASE_CLASS (G_OBJECT_GET_CLASS (self))->get_sort_state (self);
-}
-
 void
 nautilus_list_base_set_model (NautilusListBase  *self,
                               NautilusViewModel *model)
 {
     g_object_set (self, "model", model, NULL);
-}
-
-void
-nautilus_list_base_set_sort_state (NautilusListBase *self,
-                                   GVariant         *sort_state)
-{
-    NAUTILUS_LIST_BASE_CLASS (G_OBJECT_GET_CLASS (self))->set_sort_state (self, sort_state);
-
-    g_object_notify_by_pspec (G_OBJECT (self), properties[PROP_SORT_STATE]);
 }
 
 void
@@ -1196,7 +1181,10 @@ nautilus_list_base_get_property (GObject    *object,
 
         case PROP_SORT_STATE:
         {
-            g_value_take_variant (value, nautilus_list_base_get_sort_state (self));
+            GVariant *variant =
+                NAUTILUS_LIST_BASE_CLASS (G_OBJECT_GET_CLASS (self))->get_sort_state (self);
+
+            g_value_take_variant (value, variant);
         }
         break;
 
@@ -1226,7 +1214,11 @@ nautilus_list_base_set_property (GObject      *object,
 
         case PROP_SORT_STATE:
         {
-            nautilus_list_base_set_sort_state (self, g_value_get_variant (value));
+            GVariant *sort_state = g_value_get_variant (value);
+
+            NAUTILUS_LIST_BASE_CLASS (G_OBJECT_GET_CLASS (self))->set_sort_state (self, sort_state);
+
+            g_object_notify_by_pspec (G_OBJECT (self), properties[PROP_SORT_STATE]);
         }
         break;
 
