@@ -3622,6 +3622,43 @@ nautilus_file_compare_for_sort_internal (NautilusFile *file_1,
     return 0;
 }
 
+static NautilusDateType
+sort_to_date_type (NautilusFileSortType sort_type)
+{
+    switch (sort_type)
+    {
+        case NAUTILUS_FILE_SORT_BY_MTIME:
+        {
+            return NAUTILUS_DATE_TYPE_MODIFIED;
+        }
+
+        case NAUTILUS_FILE_SORT_BY_ATIME:
+        {
+            return NAUTILUS_DATE_TYPE_ACCESSED;
+        }
+
+        case NAUTILUS_FILE_SORT_BY_BTIME:
+        {
+            return NAUTILUS_DATE_TYPE_CREATED;
+        }
+
+        case NAUTILUS_FILE_SORT_BY_TRASHED_TIME:
+        {
+            return NAUTILUS_DATE_TYPE_TRASHED;
+        }
+
+        case NAUTILUS_FILE_SORT_BY_RECENCY:
+        {
+            return NAUTILUS_DATE_TYPE_RECENCY;
+        }
+
+        default:
+        {
+            g_return_val_if_reached (NAUTILUS_DATE_TYPE_MODIFIED);
+        }
+    }
+}
+
 /**
  * nautilus_file_compare_for_sort:
  * @file_1: A file object
@@ -3710,38 +3747,14 @@ nautilus_file_compare_for_sort (NautilusFile         *file_1,
             break;
 
             case NAUTILUS_FILE_SORT_BY_MTIME:
-            {
-                result = compare_by_time (file_1, file_2, NAUTILUS_DATE_TYPE_MODIFIED);
-                if (result == 0)
-                {
-                    result = compare_by_full_path (file_1, file_2);
-                }
-            }
-            break;
-
             case NAUTILUS_FILE_SORT_BY_ATIME:
-            {
-                result = compare_by_time (file_1, file_2, NAUTILUS_DATE_TYPE_ACCESSED);
-                if (result == 0)
-                {
-                    result = compare_by_full_path (file_1, file_2);
-                }
-            }
-            break;
-
             case NAUTILUS_FILE_SORT_BY_BTIME:
-            {
-                result = compare_by_time (file_1, file_2, NAUTILUS_DATE_TYPE_CREATED);
-                if (result == 0)
-                {
-                    result = compare_by_full_path (file_1, file_2);
-                }
-            }
-            break;
-
             case NAUTILUS_FILE_SORT_BY_TRASHED_TIME:
+            case NAUTILUS_FILE_SORT_BY_RECENCY:
             {
-                result = compare_by_time (file_1, file_2, NAUTILUS_DATE_TYPE_TRASHED);
+                NautilusDateType date_type = sort_to_date_type (sort_type);
+
+                result = compare_by_time (file_1, file_2, date_type);
                 if (result == 0)
                 {
                     result = compare_by_full_path (file_1, file_2);
@@ -3759,16 +3772,6 @@ nautilus_file_compare_for_sort (NautilusFile         *file_1,
                     /* ensure alphabetical order for files of the same relevance
                      * grows in reverse (higher character = lower relevance) */
                     result = -result;
-                }
-            }
-            break;
-
-            case NAUTILUS_FILE_SORT_BY_RECENCY:
-            {
-                result = compare_by_time (file_1, file_2, NAUTILUS_DATE_TYPE_RECENCY);
-                if (result == 0)
-                {
-                    result = compare_by_full_path (file_1, file_2);
                 }
             }
             break;
