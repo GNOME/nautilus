@@ -98,12 +98,12 @@ sort_network_items (gconstpointer a,
         get_section (item_b) == SECTION_PREVIOUS)
     {
         return nautilus_file_compare_for_sort (file_a, file_b,
-                                               NAUTILUS_FILE_SORT_BY_ATIME,
+                                               NAUTILUS_SORT_BY_ATIME,
                                                FALSE, TRUE /* reversed */);
     }
 
     return nautilus_file_compare_for_sort (file_a, file_b,
-                                           NAUTILUS_FILE_SORT_BY_DISPLAY_NAME,
+                                           NAUTILUS_SORT_BY_NAME,
                                            FALSE, FALSE);
 }
 

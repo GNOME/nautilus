@@ -54,24 +54,24 @@ typedef enum {
 	 * keep the values in sync with the "org.gnome.nautilus.SortOrder" enum in the
 	 * `data/org.gnome.nautilus.gschema.xml` schemas file.
 	 */
-	NAUTILUS_FILE_SORT_BY_DISPLAY_NAME = 0,
-	NAUTILUS_FILE_SORT_BY_SIZE = 1,
-	NAUTILUS_FILE_SORT_BY_TYPE = 2,
-	NAUTILUS_FILE_SORT_BY_MTIME = 3,
-	NAUTILUS_FILE_SORT_BY_ATIME = 4,
-	NAUTILUS_FILE_SORT_BY_BTIME = 5,
-	NAUTILUS_FILE_SORT_BY_STARRED = 6,
+	NAUTILUS_SORT_BY_NAME = 0,
+	NAUTILUS_SORT_BY_SIZE = 1,
+	NAUTILUS_SORT_BY_TYPE = 2,
+	NAUTILUS_SORT_BY_MTIME = 3,
+	NAUTILUS_SORT_BY_ATIME = 4,
+	NAUTILUS_SORT_BY_BTIME = 5,
+	NAUTILUS_SORT_BY_STARRED = 6,
 
 	/* The following are specific to special locations and as such are not to be
 	 * included in the "org.gnome.nautilus.SortOrder" enum.
 	 */
-	NAUTILUS_FILE_SORT_BY_TRASHED_TIME,
-	NAUTILUS_FILE_SORT_BY_SEARCH_RELEVANCE,
-	NAUTILUS_FILE_SORT_BY_RECENCY,
+	NAUTILUS_SORT_BY_TRASHED_TIME,
+	NAUTILUS_SORT_BY_SEARCH_RELEVANCE,
+	NAUTILUS_SORT_BY_RECENCY,
 
 	/* Dummy value not actually used for sorting */
-	NAUTILUS_FILE_SORT_BY_OTHER
-} NautilusFileSortType;
+	NAUTILUS_SORT_BY_OTHER
+} NautilusSortType;
 
 typedef enum {
 	NAUTILUS_REQUEST_NOT_STARTED,
@@ -374,13 +374,13 @@ gboolean                nautilus_file_matches_uri                       (Nautilu
 gboolean                nautilus_file_has_local_path                    (NautilusFile                   *file);
 
 /* Comparing two file objects for sorting */
-NautilusFileSortType    nautilus_file_get_default_sort_type             (NautilusFile                   *file,
+NautilusSortType        nautilus_file_get_default_sort_type             (NautilusFile                   *file,
 									 gboolean                       *reversed);
-const char *            nautilus_file_sort_type_get_attribute           (NautilusFileSortType            sort_type);
+const char *            nautilus_file_sort_type_get_attribute           (NautilusSortType                sort_type);
 
 int                     nautilus_file_compare_for_sort                  (NautilusFile                   *file_1,
 									 NautilusFile                   *file_2,
-									 NautilusFileSortType            sort_type,
+									 NautilusSortType                sort_type,
 									 gboolean			 directories_first,
 									 gboolean		  	 reversed);
 int                     nautilus_file_compare_for_sort_by_attribute     (NautilusFile                   *file_1,

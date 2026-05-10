@@ -58,7 +58,7 @@ test_file_sort_order (void)
 {
     g_autoptr (NautilusFile) file_1 = nautilus_file_get_by_uri ("file:///etc");
     g_autoptr (NautilusFile) file_2 = nautilus_file_get_by_uri ("file:///usr");
-    NautilusFileSortType sort_type = NAUTILUS_FILE_SORT_BY_DISPLAY_NAME;
+    NautilusSortType sort_type = NAUTILUS_SORT_BY_NAME;
 
     g_assert_cmpint (G_OBJECT (file_1)->ref_count, ==, 1);
     g_assert_cmpint (G_OBJECT (file_2)->ref_count, ==, 1);
@@ -74,7 +74,7 @@ static void
 test_file_sort_with_self (void)
 {
     g_autoptr (NautilusFile) file_1 = nautilus_file_get_by_uri ("file:///etc");
-    NautilusFileSortType sort_type = NAUTILUS_FILE_SORT_BY_DISPLAY_NAME;
+    NautilusSortType sort_type = NAUTILUS_SORT_BY_NAME;
     int order;
 
     order = nautilus_file_compare_for_sort (file_1, file_1, sort_type, TRUE, TRUE);

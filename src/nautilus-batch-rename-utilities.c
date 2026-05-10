@@ -420,7 +420,7 @@ compare_files_by_name_ascending (gconstpointer a,
     file2 = NAUTILUS_FILE (b);
 
     return nautilus_file_compare_for_sort (file1, file2,
-                                           NAUTILUS_FILE_SORT_BY_DISPLAY_NAME,
+                                           NAUTILUS_SORT_BY_NAME,
                                            FALSE, FALSE);
 }
 
@@ -435,7 +435,7 @@ compare_files_by_name_descending (gconstpointer a,
     file2 = NAUTILUS_FILE (b);
 
     return nautilus_file_compare_for_sort (file1, file2,
-                                           NAUTILUS_FILE_SORT_BY_DISPLAY_NAME,
+                                           NAUTILUS_SORT_BY_NAME,
                                            FALSE, TRUE);
 }
 
@@ -450,7 +450,7 @@ compare_files_by_first_modified (gconstpointer a,
     file2 = NAUTILUS_FILE (b);
 
     return nautilus_file_compare_for_sort (file1, file2,
-                                           NAUTILUS_FILE_SORT_BY_MTIME,
+                                           NAUTILUS_SORT_BY_MTIME,
                                            FALSE, FALSE);
 }
 
@@ -465,7 +465,7 @@ compare_files_by_last_modified (gconstpointer a,
     file2 = NAUTILUS_FILE (b);
 
     return nautilus_file_compare_for_sort (file1, file2,
-                                           NAUTILUS_FILE_SORT_BY_MTIME,
+                                           NAUTILUS_SORT_BY_MTIME,
                                            FALSE, TRUE);
 }
 

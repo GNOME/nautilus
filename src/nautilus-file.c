@@ -3623,31 +3623,31 @@ nautilus_file_compare_for_sort_internal (NautilusFile *file_1,
 }
 
 static NautilusDateType
-sort_to_date_type (NautilusFileSortType sort_type)
+sort_to_date_type (NautilusSortType sort_type)
 {
     switch (sort_type)
     {
-        case NAUTILUS_FILE_SORT_BY_MTIME:
+        case NAUTILUS_SORT_BY_MTIME:
         {
             return NAUTILUS_DATE_TYPE_MODIFIED;
         }
 
-        case NAUTILUS_FILE_SORT_BY_ATIME:
+        case NAUTILUS_SORT_BY_ATIME:
         {
             return NAUTILUS_DATE_TYPE_ACCESSED;
         }
 
-        case NAUTILUS_FILE_SORT_BY_BTIME:
+        case NAUTILUS_SORT_BY_BTIME:
         {
             return NAUTILUS_DATE_TYPE_CREATED;
         }
 
-        case NAUTILUS_FILE_SORT_BY_TRASHED_TIME:
+        case NAUTILUS_SORT_BY_TRASHED_TIME:
         {
             return NAUTILUS_DATE_TYPE_TRASHED;
         }
 
-        case NAUTILUS_FILE_SORT_BY_RECENCY:
+        case NAUTILUS_SORT_BY_RECENCY:
         {
             return NAUTILUS_DATE_TYPE_RECENCY;
         }
@@ -3675,11 +3675,11 @@ sort_to_date_type (NautilusFileSortType sort_type)
  * of the sort criterion being the primary but not only differentiator.
  **/
 int
-nautilus_file_compare_for_sort (NautilusFile         *file_1,
-                                NautilusFile         *file_2,
-                                NautilusFileSortType  sort_type,
-                                gboolean              directories_first,
-                                gboolean              reversed)
+nautilus_file_compare_for_sort (NautilusFile     *file_1,
+                                NautilusFile     *file_2,
+                                NautilusSortType  sort_type,
+                                gboolean          directories_first,
+                                gboolean          reversed)
 {
     int result;
 
@@ -3694,7 +3694,7 @@ nautilus_file_compare_for_sort (NautilusFile         *file_1,
     {
         switch (sort_type)
         {
-            case NAUTILUS_FILE_SORT_BY_DISPLAY_NAME:
+            case NAUTILUS_SORT_BY_NAME:
             {
                 result = compare_by_display_name (file_1, file_2);
                 if (result == 0)
@@ -3710,7 +3710,7 @@ nautilus_file_compare_for_sort (NautilusFile         *file_1,
             }
             break;
 
-            case NAUTILUS_FILE_SORT_BY_SIZE:
+            case NAUTILUS_SORT_BY_SIZE:
             {
                 /* Compare directory sizes ourselves, then if necessary
                  * use GnomeVFS to compare file sizes.
@@ -3723,7 +3723,7 @@ nautilus_file_compare_for_sort (NautilusFile         *file_1,
             }
             break;
 
-            case NAUTILUS_FILE_SORT_BY_TYPE:
+            case NAUTILUS_SORT_BY_TYPE:
             {
                 /* GnomeVFS doesn't know about our special text for certain
                  * mime types, so we handle the mime-type sorting ourselves.
@@ -3736,7 +3736,7 @@ nautilus_file_compare_for_sort (NautilusFile         *file_1,
             }
             break;
 
-            case NAUTILUS_FILE_SORT_BY_STARRED:
+            case NAUTILUS_SORT_BY_STARRED:
             {
                 result = compare_by_starred (file_1, file_2);
                 if (result == 0)
@@ -3746,11 +3746,11 @@ nautilus_file_compare_for_sort (NautilusFile         *file_1,
             }
             break;
 
-            case NAUTILUS_FILE_SORT_BY_MTIME:
-            case NAUTILUS_FILE_SORT_BY_ATIME:
-            case NAUTILUS_FILE_SORT_BY_BTIME:
-            case NAUTILUS_FILE_SORT_BY_TRASHED_TIME:
-            case NAUTILUS_FILE_SORT_BY_RECENCY:
+            case NAUTILUS_SORT_BY_MTIME:
+            case NAUTILUS_SORT_BY_ATIME:
+            case NAUTILUS_SORT_BY_BTIME:
+            case NAUTILUS_SORT_BY_TRASHED_TIME:
+            case NAUTILUS_SORT_BY_RECENCY:
             {
                 NautilusDateType date_type = sort_to_date_type (sort_type);
 
@@ -3762,7 +3762,7 @@ nautilus_file_compare_for_sort (NautilusFile         *file_1,
             }
             break;
 
-            case NAUTILUS_FILE_SORT_BY_SEARCH_RELEVANCE:
+            case NAUTILUS_SORT_BY_SEARCH_RELEVANCE:
             {
                 result = compare_by_search_relevance (file_1, file_2);
                 if (result == 0)
@@ -3791,56 +3791,56 @@ nautilus_file_compare_for_sort (NautilusFile         *file_1,
     return result;
 }
 
-static NautilusFileSortType
+static NautilusSortType
 quark_to_sort_type (GQuark attribute)
 {
     if (attribute == 0 || attribute == attribute_name_q)
     {
-        return NAUTILUS_FILE_SORT_BY_DISPLAY_NAME;
+        return NAUTILUS_SORT_BY_NAME;
     }
     else if (attribute == attribute_size_q)
     {
-        return NAUTILUS_FILE_SORT_BY_SIZE;
+        return NAUTILUS_SORT_BY_SIZE;
     }
     else if (attribute == attribute_type_q)
     {
-        return NAUTILUS_FILE_SORT_BY_TYPE;
+        return NAUTILUS_SORT_BY_TYPE;
     }
     else if (attribute == attribute_starred_q)
     {
-        return NAUTILUS_FILE_SORT_BY_STARRED;
+        return NAUTILUS_SORT_BY_STARRED;
     }
     else if (attribute == attribute_modification_date_q ||
              attribute == attribute_date_modified_q ||
              attribute == attribute_date_modified_full_q)
     {
-        return NAUTILUS_FILE_SORT_BY_MTIME;
+        return NAUTILUS_SORT_BY_MTIME;
     }
     else if (attribute == attribute_accessed_date_q ||
              attribute == attribute_date_accessed_q ||
              attribute == attribute_date_accessed_full_q)
     {
-        return NAUTILUS_FILE_SORT_BY_ATIME;
+        return NAUTILUS_SORT_BY_ATIME;
     }
     else if (attribute == attribute_date_created_q || attribute == attribute_date_created_full_q)
     {
-        return NAUTILUS_FILE_SORT_BY_BTIME;
+        return NAUTILUS_SORT_BY_BTIME;
     }
     else if (attribute == attribute_trashed_on_q || attribute == attribute_trashed_on_full_q)
     {
-        return NAUTILUS_FILE_SORT_BY_TRASHED_TIME;
+        return NAUTILUS_SORT_BY_TRASHED_TIME;
     }
     else if (attribute == attribute_search_relevance_q)
     {
-        return NAUTILUS_FILE_SORT_BY_SEARCH_RELEVANCE;
+        return NAUTILUS_SORT_BY_SEARCH_RELEVANCE;
     }
     else if (attribute == attribute_recency_q)
     {
-        return NAUTILUS_FILE_SORT_BY_RECENCY;
+        return NAUTILUS_SORT_BY_RECENCY;
     }
     else
     {
-        return NAUTILUS_FILE_SORT_BY_OTHER;
+        return NAUTILUS_SORT_BY_OTHER;
     }
 }
 
@@ -3858,12 +3858,12 @@ nautilus_file_compare_for_sort_by_attribute_q   (NautilusFile *file_1,
         return 0;
     }
 
-    /* Convert certain attributes into NautilusFileSortTypes and use
+    /* Convert certain attributes into NautilusSortTypes and use
      * nautilus_file_compare_for_sort()
      */
-    NautilusFileSortType sort_type = quark_to_sort_type (attribute);
+    NautilusSortType sort_type = quark_to_sort_type (attribute);
 
-    if (sort_type != NAUTILUS_FILE_SORT_BY_OTHER)
+    if (sort_type != NAUTILUS_SORT_BY_OTHER)
     {
         return nautilus_file_compare_for_sort (file_1, file_2,
                                                sort_type,
@@ -8057,9 +8057,9 @@ nautilus_file_list_copy (GList *list)
  * value and @reversed flag are dictated by design. Otherwise, they stem from
  * the "default-sort-order" and "default-sort-in-reverse-order" preference keys.
  *
- * Returns: The default #NautilusFileSortType for this @file.
+ * Returns: The default #NautilusSortType for this @file.
  */
-NautilusFileSortType
+NautilusSortType
 nautilus_file_get_default_sort_type (NautilusFile *file,
                                      gboolean     *reversed)
 {
@@ -8069,22 +8069,22 @@ nautilus_file_get_default_sort_type (NautilusFile *file,
     if (nautilus_file_is_user_special_directory (file, G_USER_DIRECTORY_DOWNLOAD))
     {
         *reversed = TRUE;
-        return NAUTILUS_FILE_SORT_BY_MTIME;
+        return NAUTILUS_SORT_BY_MTIME;
     }
     else if (nautilus_file_is_in_trash (file))
     {
         *reversed = TRUE;
-        return NAUTILUS_FILE_SORT_BY_TRASHED_TIME;
+        return NAUTILUS_SORT_BY_TRASHED_TIME;
     }
     else if (nautilus_file_is_in_recent (file))
     {
         *reversed = TRUE;
-        return NAUTILUS_FILE_SORT_BY_RECENCY;
+        return NAUTILUS_SORT_BY_RECENCY;
     }
     else if (nautilus_file_is_in_search (file))
     {
         *reversed = TRUE;
-        return NAUTILUS_FILE_SORT_BY_SEARCH_RELEVANCE;
+        return NAUTILUS_SORT_BY_SEARCH_RELEVANCE;
     }
 
     /* Use defaults */
@@ -8096,67 +8096,67 @@ nautilus_file_get_default_sort_type (NautilusFile *file,
 }
 
 const char *
-nautilus_file_sort_type_get_attribute (NautilusFileSortType sort_type)
+nautilus_file_sort_type_get_attribute (NautilusSortType sort_type)
 {
     GQuark sort_q = 0;
 
     switch (sort_type)
     {
-        case NAUTILUS_FILE_SORT_BY_DISPLAY_NAME:
+        case NAUTILUS_SORT_BY_NAME:
         {
             sort_q = attribute_name_q;
         }
         break;
 
-        case NAUTILUS_FILE_SORT_BY_SIZE:
+        case NAUTILUS_SORT_BY_SIZE:
         {
             sort_q = attribute_size_q;
         }
         break;
 
-        case NAUTILUS_FILE_SORT_BY_TYPE:
+        case NAUTILUS_SORT_BY_TYPE:
         {
             sort_q = attribute_type_q;
         }
         break;
 
-        case NAUTILUS_FILE_SORT_BY_MTIME:
+        case NAUTILUS_SORT_BY_MTIME:
         {
             sort_q = attribute_date_modified_q;
         }
         break;
 
-        case NAUTILUS_FILE_SORT_BY_ATIME:
+        case NAUTILUS_SORT_BY_ATIME:
         {
             sort_q = attribute_date_accessed_q;
         }
         break;
 
-        case NAUTILUS_FILE_SORT_BY_BTIME:
+        case NAUTILUS_SORT_BY_BTIME:
         {
             sort_q = attribute_date_created_q;
         }
         break;
 
-        case NAUTILUS_FILE_SORT_BY_TRASHED_TIME:
+        case NAUTILUS_SORT_BY_TRASHED_TIME:
         {
             sort_q = attribute_trashed_on_q;
         }
         break;
 
-        case NAUTILUS_FILE_SORT_BY_SEARCH_RELEVANCE:
+        case NAUTILUS_SORT_BY_SEARCH_RELEVANCE:
         {
             sort_q = attribute_search_relevance_q;
         }
         break;
 
-        case NAUTILUS_FILE_SORT_BY_RECENCY:
+        case NAUTILUS_SORT_BY_RECENCY:
         {
             sort_q = attribute_recency_q;
         }
         break;
 
-        case NAUTILUS_FILE_SORT_BY_STARRED:
+        case NAUTILUS_SORT_BY_STARRED:
         {
             sort_q = attribute_starred_q;
         }
