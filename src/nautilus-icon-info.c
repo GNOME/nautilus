@@ -47,14 +47,31 @@ static GdkPaintable *
 nautilus_icon_info_get_fallback (int size,
                                  int scale)
 {
-    static gboolean in_fallback = FALSE;
+    static gboolean in_fallback = FALSE, no_fallback = FALSE;
+
+    if (in_fallback || no_fallback)
+    {
+        /* Use hard coded fallback texture */
+        static GdkTexture *texture = NULL;
+        g_autoptr (GtkSnapshot) snapshot = gtk_snapshot_new ();
+        int width = size * scale;
+        int height = size * scale;
+
+        if (texture == NULL)
+        {
+            const char *resource_path = "/org/gnome/nautilus/image/text-x-preview.png";
+
+            texture = gdk_texture_new_from_resource (resource_path);
+        }
+
+        gdk_paintable_snapshot (GDK_PAINTABLE (texture), snapshot, width, height);
+        no_fallback = TRUE;
+
+        return gtk_snapshot_to_paintable (snapshot, NULL);
+    }
+
     GIcon *icon = nautilus_icon_info_get_default_file_icon ();
     GdkPaintable *fallback_paintable;
-
-    if (in_fallback)
-    {
-        return NULL;
-    }
 
     /* Use existing cache to cache the fallback paintable */
     in_fallback = TRUE;
