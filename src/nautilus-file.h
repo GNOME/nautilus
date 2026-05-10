@@ -67,7 +67,10 @@ typedef enum {
 	 */
 	NAUTILUS_FILE_SORT_BY_TRASHED_TIME,
 	NAUTILUS_FILE_SORT_BY_SEARCH_RELEVANCE,
-	NAUTILUS_FILE_SORT_BY_RECENCY
+	NAUTILUS_FILE_SORT_BY_RECENCY,
+
+	/* Dummy value not actually used for sorting */
+	NAUTILUS_FILE_SORT_BY_OTHER
 } NautilusFileSortType;
 
 typedef enum {

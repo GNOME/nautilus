@@ -3791,6 +3791,59 @@ nautilus_file_compare_for_sort (NautilusFile         *file_1,
     return result;
 }
 
+static NautilusFileSortType
+quark_to_sort_type (GQuark attribute)
+{
+    if (attribute == 0 || attribute == attribute_name_q)
+    {
+        return NAUTILUS_FILE_SORT_BY_DISPLAY_NAME;
+    }
+    else if (attribute == attribute_size_q)
+    {
+        return NAUTILUS_FILE_SORT_BY_SIZE;
+    }
+    else if (attribute == attribute_type_q)
+    {
+        return NAUTILUS_FILE_SORT_BY_TYPE;
+    }
+    else if (attribute == attribute_starred_q)
+    {
+        return NAUTILUS_FILE_SORT_BY_STARRED;
+    }
+    else if (attribute == attribute_modification_date_q ||
+             attribute == attribute_date_modified_q ||
+             attribute == attribute_date_modified_full_q)
+    {
+        return NAUTILUS_FILE_SORT_BY_MTIME;
+    }
+    else if (attribute == attribute_accessed_date_q ||
+             attribute == attribute_date_accessed_q ||
+             attribute == attribute_date_accessed_full_q)
+    {
+        return NAUTILUS_FILE_SORT_BY_ATIME;
+    }
+    else if (attribute == attribute_date_created_q || attribute == attribute_date_created_full_q)
+    {
+        return NAUTILUS_FILE_SORT_BY_BTIME;
+    }
+    else if (attribute == attribute_trashed_on_q || attribute == attribute_trashed_on_full_q)
+    {
+        return NAUTILUS_FILE_SORT_BY_TRASHED_TIME;
+    }
+    else if (attribute == attribute_search_relevance_q)
+    {
+        return NAUTILUS_FILE_SORT_BY_SEARCH_RELEVANCE;
+    }
+    else if (attribute == attribute_recency_q)
+    {
+        return NAUTILUS_FILE_SORT_BY_RECENCY;
+    }
+    else
+    {
+        return NAUTILUS_FILE_SORT_BY_OTHER;
+    }
+}
+
 int
 nautilus_file_compare_for_sort_by_attribute_q   (NautilusFile *file_1,
                                                  NautilusFile *file_2,
@@ -3808,73 +3861,12 @@ nautilus_file_compare_for_sort_by_attribute_q   (NautilusFile *file_1,
     /* Convert certain attributes into NautilusFileSortTypes and use
      * nautilus_file_compare_for_sort()
      */
-    if (attribute == 0 || attribute == attribute_name_q)
+    NautilusFileSortType sort_type = quark_to_sort_type (attribute);
+
+    if (sort_type != NAUTILUS_FILE_SORT_BY_OTHER)
     {
         return nautilus_file_compare_for_sort (file_1, file_2,
-                                               NAUTILUS_FILE_SORT_BY_DISPLAY_NAME,
-                                               directories_first,
-                                               reversed);
-    }
-    else if (attribute == attribute_size_q)
-    {
-        return nautilus_file_compare_for_sort (file_1, file_2,
-                                               NAUTILUS_FILE_SORT_BY_SIZE,
-                                               directories_first,
-                                               reversed);
-    }
-    else if (attribute == attribute_type_q)
-    {
-        return nautilus_file_compare_for_sort (file_1, file_2,
-                                               NAUTILUS_FILE_SORT_BY_TYPE,
-                                               directories_first,
-                                               reversed);
-    }
-    else if (attribute == attribute_starred_q)
-    {
-        return nautilus_file_compare_for_sort (file_1, file_2,
-                                               NAUTILUS_FILE_SORT_BY_STARRED,
-                                               directories_first,
-                                               reversed);
-    }
-    else if (attribute == attribute_modification_date_q || attribute == attribute_date_modified_q || attribute == attribute_date_modified_full_q)
-    {
-        return nautilus_file_compare_for_sort (file_1, file_2,
-                                               NAUTILUS_FILE_SORT_BY_MTIME,
-                                               directories_first,
-                                               reversed);
-    }
-    else if (attribute == attribute_accessed_date_q || attribute == attribute_date_accessed_q || attribute == attribute_date_accessed_full_q)
-    {
-        return nautilus_file_compare_for_sort (file_1, file_2,
-                                               NAUTILUS_FILE_SORT_BY_ATIME,
-                                               directories_first,
-                                               reversed);
-    }
-    else if (attribute == attribute_date_created_q || attribute == attribute_date_created_full_q)
-    {
-        return nautilus_file_compare_for_sort (file_1, file_2,
-                                               NAUTILUS_FILE_SORT_BY_BTIME,
-                                               directories_first,
-                                               reversed);
-    }
-    else if (attribute == attribute_trashed_on_q || attribute == attribute_trashed_on_full_q)
-    {
-        return nautilus_file_compare_for_sort (file_1, file_2,
-                                               NAUTILUS_FILE_SORT_BY_TRASHED_TIME,
-                                               directories_first,
-                                               reversed);
-    }
-    else if (attribute == attribute_search_relevance_q)
-    {
-        return nautilus_file_compare_for_sort (file_1, file_2,
-                                               NAUTILUS_FILE_SORT_BY_SEARCH_RELEVANCE,
-                                               directories_first,
-                                               reversed);
-    }
-    else if (attribute == attribute_recency_q)
-    {
-        return nautilus_file_compare_for_sort (file_1, file_2,
-                                               NAUTILUS_FILE_SORT_BY_RECENCY,
+                                               sort_type,
                                                directories_first,
                                                reversed);
     }
