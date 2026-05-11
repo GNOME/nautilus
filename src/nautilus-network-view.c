@@ -95,7 +95,7 @@ sort_network_items (gconstpointer a,
     NautilusFile *file_b = nautilus_view_item_get_file (item_b);
 
     if (get_section (item_a) == SECTION_PREVIOUS &&
-        get_section (item_a) == SECTION_PREVIOUS)
+        get_section (item_b) == SECTION_PREVIOUS)
     {
         return nautilus_file_compare_for_sort (file_a, file_b,
                                                NAUTILUS_FILE_SORT_BY_ATIME,
