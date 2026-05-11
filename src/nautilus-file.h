@@ -375,7 +375,8 @@ gboolean                nautilus_file_has_local_path                    (Nautilu
 
 /* Comparing two file objects for sorting */
 NautilusSortType        nautilus_file_get_default_sort_type             (NautilusFile                   *file,
-									 gboolean                       *reversed);
+									 gboolean                       *reversed,
+									 gboolean                       *is_forced);
 const char *            nautilus_file_sort_type_get_attribute           (NautilusSortType                sort_type);
 
 int                     nautilus_file_compare_for_sort                  (NautilusFile                   *file_1,

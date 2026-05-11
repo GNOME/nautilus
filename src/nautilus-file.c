@@ -8050,6 +8050,7 @@ nautilus_file_list_copy (GList *list)
  * nautilus_file_get_default_sort_type:
  * @file: A #NautilusFile representing a location
  * @reversed: (out): Location to store whether the order is reversed by default.
+ * @is_forced: (out): Bool pointer set to TRUE when file has enforced sort order
  *
  * Gets which sort order applies by default for the provided locations.
  *
@@ -8061,9 +8062,11 @@ nautilus_file_list_copy (GList *list)
  */
 NautilusSortType
 nautilus_file_get_default_sort_type (NautilusFile *file,
-                                     gboolean     *reversed)
+                                     gboolean     *reversed,
+                                     gboolean     *is_forced)
 {
     g_assert (reversed != NULL);
+    g_return_val_if_fail (is_forced != NULL, NAUTILUS_SORT_BY_NAME);
 
     /* Special handling for certain directories */
     if (nautilus_file_is_user_special_directory (file, G_USER_DIRECTORY_DOWNLOAD))
@@ -8074,16 +8077,19 @@ nautilus_file_get_default_sort_type (NautilusFile *file,
     else if (nautilus_file_is_in_trash (file))
     {
         *reversed = TRUE;
+        *is_forced = TRUE;
         return NAUTILUS_SORT_BY_TRASHED_TIME;
     }
     else if (nautilus_file_is_in_recent (file))
     {
         *reversed = TRUE;
+        *is_forced = TRUE;
         return NAUTILUS_SORT_BY_RECENCY;
     }
     else if (nautilus_file_is_in_search (file))
     {
         *reversed = TRUE;
+        *is_forced = TRUE;
         return NAUTILUS_SORT_BY_SEARCH_RELEVANCE;
     }
 

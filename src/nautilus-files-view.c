@@ -572,13 +572,12 @@ static const char *
 get_directory_sort_by (NautilusFile *file,
                        gboolean     *reversed)
 {
-    NautilusSortType default_sort = nautilus_file_get_default_sort_type (file, reversed);
+    gboolean is_forced = FALSE;
+    NautilusSortType default_sort = nautilus_file_get_default_sort_type (file, reversed, &is_forced);
 
-    if (default_sort == NAUTILUS_SORT_BY_RECENCY ||
-        default_sort == NAUTILUS_SORT_BY_TRASHED_TIME ||
-        default_sort == NAUTILUS_SORT_BY_SEARCH_RELEVANCE)
+    if (is_forced)
     {
-        /* These defaults are important. Ignore metadata. */
+        /* These defaults can't be overwritten. Ignore metadata. */
         return nautilus_file_sort_type_get_attribute (default_sort);
     }
 
