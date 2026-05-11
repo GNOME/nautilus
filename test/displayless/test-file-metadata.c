@@ -5,7 +5,7 @@
 #include <nautilus-metadata.h>
 
 static const char *TEST_FILE = "file:///etc/passwd";
-static const char *KEY_BOOL = NAUTILUS_METADATA_KEY_ICON_VIEW_SORT_REVERSED;
+static const char *KEY_BOOL = "bool-test";
 static const char *KEY_STR = NAUTILUS_METADATA_KEY_ICON_VIEW_SORT_BY;
 
 static void
