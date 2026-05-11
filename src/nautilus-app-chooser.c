@@ -11,6 +11,7 @@
 
 #include "nautilus-file.h"
 #include "nautilus-signaller.h"
+#include "nautilus-app-chooser-widget.h"
 
 struct _NautilusAppChooser
 {
@@ -26,7 +27,7 @@ struct _NautilusAppChooser
     GtkWidget *set_default_list_box;
     GtkWidget *set_default_row;
 
-    GtkWidget *app_chooser_widget;
+    NautilusAppChooserWidget *app_chooser_widget;
 };
 
 G_DEFINE_TYPE (NautilusAppChooser, nautilus_app_chooser, ADW_TYPE_DIALOG)
@@ -99,9 +100,9 @@ on_application_activated (NautilusAppChooser *self)
 }
 
 static void
-on_application_selected (GtkAppChooserWidget *widget,
-                         GAppInfo            *info,
-                         gpointer             user_data)
+on_application_selected (NautilusAppChooserWidget *widget,
+                         GAppInfo                 *info,
+                         gpointer                  user_data)
 {
     NautilusAppChooser *self = NAUTILUS_APP_CHOOSER (user_data);
     g_autoptr (GAppInfo) default_app = NULL;
@@ -124,7 +125,7 @@ focus_app_chooser_widget (NautilusAppChooser *self)
      * implementation, so we'll live with this rather than patching GTK.
      */
 
-    GtkWidget *child = gtk_widget_get_first_child (self->app_chooser_widget);
+    GtkWidget *child = gtk_widget_get_first_child (GTK_WIDGET (self->app_chooser_widget));
     g_return_if_fail (GTK_IS_OVERLAY (child));
 
     child = gtk_widget_get_first_child (child);
@@ -199,14 +200,14 @@ nautilus_app_chooser_constructed (GObject *object)
 
     G_OBJECT_CLASS (nautilus_app_chooser_parent_class)->constructed (object);
 
-    self->app_chooser_widget = gtk_app_chooser_widget_new (self->content_type);
-    gtk_widget_set_vexpand (self->app_chooser_widget, TRUE);
-    gtk_widget_add_css_class (self->app_chooser_widget, "lowres-icon");
-    gtk_box_append (GTK_BOX (self->content_box), self->app_chooser_widget);
+    self->app_chooser_widget = nautilus_app_chooser_widget_new (self->content_type);
+    gtk_widget_set_vexpand (GTK_WIDGET (self->app_chooser_widget), TRUE);
+    gtk_widget_add_css_class (GTK_WIDGET (self->app_chooser_widget), "lowres-icon");
+    gtk_box_append (GTK_BOX (self->content_box), GTK_WIDGET (self->app_chooser_widget));
 
-    gtk_app_chooser_widget_set_show_default (GTK_APP_CHOOSER_WIDGET (self->app_chooser_widget), TRUE);
-    gtk_app_chooser_widget_set_show_fallback (GTK_APP_CHOOSER_WIDGET (self->app_chooser_widget), TRUE);
-    gtk_app_chooser_widget_set_show_other (GTK_APP_CHOOSER_WIDGET (self->app_chooser_widget), TRUE);
+    nautilus_app_chooser_widget_set_show_default (self->app_chooser_widget, TRUE);
+    nautilus_app_chooser_widget_set_show_fallback (self->app_chooser_widget, TRUE);
+    nautilus_app_chooser_widget_set_show_other (self->app_chooser_widget, TRUE);
 
     /* See comment in focus_app_chooser_widget(). Hold self reference to prevent segfaults. */
     guint upper_dialog_creation_estimate = 100;
@@ -218,7 +219,7 @@ nautilus_app_chooser_constructed (GObject *object)
     info = nautilus_app_chooser_get_app_info (self);
     if (info != NULL)
     {
-        on_application_selected (GTK_APP_CHOOSER_WIDGET (self->app_chooser_widget),
+        on_application_selected (self->app_chooser_widget,
                                  info, self);
     }
 
@@ -355,5 +356,5 @@ nautilus_app_chooser_new (GList *files)
 GAppInfo *
 nautilus_app_chooser_get_app_info (NautilusAppChooser *self)
 {
-    return gtk_app_chooser_get_app_info (GTK_APP_CHOOSER (self->app_chooser_widget));
+    return nautilus_app_chooser_widget_get_app_info (self->app_chooser_widget);
 }

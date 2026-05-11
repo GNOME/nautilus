@@ -1,6 +1,7 @@
 blueprints = custom_target('blueprints',
   input: files(
     'ui/nautilus-app-chooser.blp',
+    'ui/nautilus-app-chooser-widget.blp',
     'ui/nautilus-batch-rename-dialog.blp',
     'ui/nautilus-column-chooser.blp',
     'ui/nautilus-compress-dialog.blp',
