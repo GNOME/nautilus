@@ -40,6 +40,13 @@
     <value value="4" nick="date_accessed"/>
     <value value="5" nick="date_created"/>
     <value value="6" nick="starred"/>
+    <value value="20" nick="name-reversed"/>
+    <value value="21" nick="size-reversed"/>
+    <value value="22" nick="type-reversed"/>
+    <value value="23" nick="mtime-reversed"/>
+    <value value="24" nick="atime-reversed"/>
+    <value value="25" nick="btime-reversed"/>
+    <value value="26" nick="starred-reversed"/>
   </enum>
 
   <enum id="org.gnome.nautilus.GridZoomLevel">
@@ -149,11 +156,6 @@
       <default>'name'</default>
       <summary>Default sort order</summary>
       <description>The default sort-order for viewed items.</description>
-    </key>
-    <key type="b" name="default-sort-in-reverse-order">
-      <default>false</default>
-      <summary>Reverse sort order in new windows</summary>
-      <description>If true, files in new windows will be sorted in reverse order. I.e., if sorted by name, then instead of sorting the files from “a” to “z”, they will be sorted from “z” to “a”; if sorted by size, instead of being incrementally they will be sorted decrementally.</description>
     </key>
     <key name="default-folder-viewer" enum="org.gnome.nautilus.FolderView">
       <aliases>

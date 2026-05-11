@@ -18,6 +18,7 @@
 #include "nautilus-column-utilities.h"
 #include "nautilus-directory.h"
 #include "nautilus-file.h"
+#include "nautilus-file-utilities.h"
 #include "nautilus-global-preferences.h"
 #include "nautilus-label-cell.h"
 #include "nautilus-name-cell.h"
@@ -442,8 +443,6 @@ real_get_sort_state (NautilusListBase *list_base)
     NautilusListView *self = NAUTILUS_LIST_VIEW (list_base);
     GtkColumnViewSorter *column_view_sorter = GTK_COLUMN_VIEW_SORTER (gtk_column_view_get_sorter (self->view_ui));
     GtkColumnViewColumn *primary;
-    const char *sort_text;
-    gboolean reversed;
 
     primary = gtk_column_view_sorter_get_primary_sort_column (column_view_sorter);
 
@@ -452,10 +451,13 @@ real_get_sort_state (NautilusListBase *list_base)
         return NULL;
     }
 
-    sort_text = gtk_column_view_column_get_id (primary);
-    reversed = gtk_column_view_sorter_get_primary_sort_order (column_view_sorter);
+    const char *sort_text = gtk_column_view_column_get_id (primary);
+    gboolean reversed = gtk_column_view_sorter_get_primary_sort_order (column_view_sorter);
+    g_autofree char *sort_str = g_strdup_printf ("%s%s",
+                                                 sort_text,
+                                                 reversed ? NAUTILUS_FILE_SORT_REVERSE_SUFFIX : "");
 
-    return g_variant_take_ref (g_variant_new ("(sb)", sort_text, reversed));
+    return g_variant_take_ref (g_variant_new_string (sort_str));
 }
 
 static void
@@ -473,12 +475,12 @@ real_set_sort_state (NautilusListBase *list_base,
 {
     NautilusListView *self = NAUTILUS_LIST_VIEW (list_base);
     GtkSorter *column_view_sorter = gtk_column_view_get_sorter (self->view_ui);
-    const gchar *target_name;
-    gboolean reversed;
+    const char *variant_str = g_variant_get_string (value, NULL);
+    g_autofree char *sort_str = nautilus_remove_suffix (variant_str,
+                                                        NAUTILUS_FILE_SORT_REVERSE_SUFFIX);
+    gboolean reversed = !g_str_equal (variant_str, sort_str);
     GListModel *view_columns;
     g_autoptr (GtkColumnViewColumn) sort_column = NULL;
-
-    g_variant_get (value, "(&sb)", &target_name, &reversed);
 
     view_columns = gtk_column_view_get_columns (self->view_ui);
     for (guint i = 0; i < g_list_model_get_n_items (view_columns); i++)
@@ -488,7 +490,7 @@ real_set_sort_state (NautilusListBase *list_base,
 
         view_column = g_list_model_get_item (view_columns, i);
         attribute = gtk_column_view_column_get_id (view_column);
-        if (g_strcmp0 (target_name, attribute) == 0)
+        if (g_strcmp0 (sort_str, attribute) == 0)
         {
             sort_column = g_steal_pointer (&view_column);
             break;

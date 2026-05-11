@@ -402,7 +402,7 @@ compare_files_by_name_ascending (gconstpointer a,
     return nautilus_file_compare_for_sort ((NautilusFile *) a,
                                            (NautilusFile *) b,
                                            NAUTILUS_FILE_SORT_BY_NAME,
-                                           FALSE, FALSE);
+                                           FALSE);
 }
 
 static gint
@@ -411,8 +411,8 @@ compare_files_by_name_descending (gconstpointer a,
 {
     return nautilus_file_compare_for_sort ((NautilusFile *) a,
                                            (NautilusFile *) b,
-                                           NAUTILUS_FILE_SORT_BY_NAME,
-                                           FALSE, TRUE);
+                                           NAUTILUS_FILE_SORT_BY_NAME_REV,
+                                           FALSE);
 }
 
 static gint
@@ -422,7 +422,7 @@ compare_files_by_first_modified (gconstpointer a,
     return nautilus_file_compare_for_sort ((NautilusFile *) a,
                                            (NautilusFile *) b,
                                            NAUTILUS_FILE_SORT_BY_MTIME,
-                                           FALSE, FALSE);
+                                           FALSE);
 }
 
 static gint
@@ -431,8 +431,8 @@ compare_files_by_last_modified (gconstpointer a,
 {
     return nautilus_file_compare_for_sort ((NautilusFile *) a,
                                            (NautilusFile *) b,
-                                           NAUTILUS_FILE_SORT_BY_MTIME,
-                                           FALSE, TRUE);
+                                           NAUTILUS_FILE_SORT_BY_MTIME_REV,
+                                           FALSE);
 }
 
 static gint
