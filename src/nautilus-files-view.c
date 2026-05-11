@@ -4413,16 +4413,16 @@ display_pending_files_with_tradeoff (NautilusFilesView *self)
 
     unschedule_display_of_pending_files (self);
 
-    if (!nautilus_file_attribute_slow_sort (sort_attribute))
-    {
-        display_pending_files (self);
-    }
-    else
+    if (g_str_equal (sort_attribute, "size"))
     {
         /* Schedule a pending update with the minimal update interval. This
          * gives the view a short chance at gathering the (cached) deep counts.
          */
         schedule_timeout_display_of_pending_files (self, UPDATE_INTERVAL_MIN);
+    }
+    else
+    {
+        display_pending_files (self);
     }
 }
 
