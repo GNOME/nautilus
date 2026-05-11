@@ -4157,53 +4157,6 @@ nautilus_file_set_metadata_list (NautilusFile  *file,
     NAUTILUS_FILE_CLASS (G_OBJECT_GET_CLASS (file))->set_metadata_as_list (file, key, list);
 }
 
-gboolean
-nautilus_file_get_boolean_metadata (NautilusFile *file,
-                                    const char   *key,
-                                    gboolean      default_metadata)
-{
-    g_return_val_if_fail (key != NULL, default_metadata);
-    g_return_val_if_fail (key[0] != '\0', default_metadata);
-    g_return_val_if_fail (NAUTILUS_IS_FILE (file), default_metadata);
-
-    if (file == NULL)
-    {
-        return default_metadata;
-    }
-
-    const char *value = nautilus_file_get_metadata_impl (file, key, default_metadata ? "true" : "false");
-
-    g_assert (value != NULL);
-
-    if (g_ascii_strcasecmp (value, "true") == 0)
-    {
-        return TRUE;
-    }
-    else if (g_ascii_strcasecmp (value, "false") == 0)
-    {
-        return FALSE;
-    }
-    else
-    {
-        g_error ("boolean metadata with value other than true or false");
-        return default_metadata;
-    }
-}
-
-void
-nautilus_file_set_boolean_metadata (NautilusFile *file,
-                                    const char   *key,
-                                    gboolean      metadata)
-{
-    g_return_if_fail (NAUTILUS_IS_FILE (file));
-    g_return_if_fail (key != NULL);
-    g_return_if_fail (key[0] != '\0');
-
-    nautilus_file_set_metadata (file, key,
-                                NULL, /* No default needed. Boolean string below is never NULL. */
-                                metadata ? "true" : "false");
-}
-
 static const char *
 nautilus_file_peek_display_name_collation_key (NautilusFile *file)
 {
