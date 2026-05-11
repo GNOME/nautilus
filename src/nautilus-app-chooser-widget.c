@@ -851,21 +851,20 @@ selection_changed_cb (GListModel               *model,
                       NautilusAppChooserWidget *self)
 {
     guint position;
-    NautilusAppItem *app_item;
 
     position = gtk_single_selection_get_selected (GTK_SINGLE_SELECTION (model));
     if (position == GTK_INVALID_LIST_POSITION)
     {
-        return;
+        g_clear_object (&self->selected_app_info);
+    }
+    else
+    {
+        g_autoptr (NautilusAppItem) app_item = g_list_model_get_item (model, position);
+
+        g_set_object (&self->selected_app_info, app_item->app_info);
     }
 
-    app_item = g_list_model_get_item (model, position);
-
-    g_set_object (&self->selected_app_info, app_item->app_info);
-
     g_signal_emit (self, signals[SIGNAL_APPLICATION_SELECTED], 0, self->selected_app_info);
-
-    g_object_unref (app_item);
 }
 
 static int
@@ -1246,7 +1245,13 @@ static void
 changed_cb (GtkEditable              *editable,
             NautilusAppChooserWidget *self)
 {
+    GtkListView *list_view = GTK_LIST_VIEW (self->program_list);
+    GtkSingleSelection *selection_model = GTK_SINGLE_SELECTION (gtk_list_view_get_model (list_view));
+
     gtk_string_filter_set_search (self->filter, gtk_editable_get_text (editable));
+
+    /* Force selection change signal emission */
+    selection_changed_cb (G_LIST_MODEL (selection_model), NULL, self);
 }
 
 void

@@ -5,6 +5,8 @@ template $NautilusAppChooser: Adw.Dialog {
   title: _("Open File");
   content-width: 420;
   content-height: 560;
+  default-widget: ok_button;
+  focus-widget: search_entry;
 
   child: Adw.ToolbarView {
     [top]
@@ -26,12 +28,25 @@ template $NautilusAppChooser: Adw.Dialog {
         use-underline: true;
         can-shrink: true;
         sensitive: false;
+        activate => $open_cb(template);
         clicked => $open_cb(template);
 
         styles [
           "suggested-action",
         ]
       }
+    }
+
+    [top]
+    Adw.Bin {
+      styles [
+        "toolbar",
+      ]
+
+      child: SearchEntry search_entry {
+        activates-default: true;
+
+      };
     }
 
     content: Adw.Clamp {
