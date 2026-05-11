@@ -573,12 +573,12 @@ get_directory_sort_by (NautilusFile *file,
                        gboolean     *reversed)
 {
     gboolean is_forced = FALSE;
-    NautilusSortType default_sort = nautilus_file_get_default_sort_type (file, reversed, &is_forced);
+    const char *default_sort_str = nautilus_file_get_default_sort_str (file, reversed, &is_forced);
 
     if (is_forced)
     {
         /* These defaults can't be overwritten. Ignore metadata. */
-        return nautilus_file_sort_type_get_attribute (default_sort);
+        return default_sort_str;
     }
 
     *reversed = nautilus_file_get_boolean_metadata (file,
@@ -587,7 +587,7 @@ get_directory_sort_by (NautilusFile *file,
 
     return nautilus_file_get_metadata (file,
                                        NAUTILUS_METADATA_KEY_ICON_VIEW_SORT_BY,
-                                       nautilus_file_sort_type_get_attribute (default_sort));
+                                       default_sort_str);
 }
 
 static void

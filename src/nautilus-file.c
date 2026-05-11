@@ -8047,7 +8047,7 @@ nautilus_file_list_copy (GList *list)
 }
 
 /**
- * nautilus_file_get_default_sort_type:
+ * nautilus_file_get_default_sort_str:
  * @file: A #NautilusFile representing a location
  * @reversed: (out): Location to store whether the order is reversed by default.
  * @is_forced: (out): Bool pointer set to TRUE when file has enforced sort order
@@ -8058,12 +8058,12 @@ nautilus_file_list_copy (GList *list)
  * value and @reversed flag are dictated by design. Otherwise, they stem from
  * the "default-sort-order" and "default-sort-in-reverse-order" preference keys.
  *
- * Returns: The default #NautilusSortType for this @file.
+ * Returns: Identifier of the default sort type for this @file.
  */
-NautilusSortType
-nautilus_file_get_default_sort_type (NautilusFile *file,
-                                     gboolean     *reversed,
-                                     gboolean     *is_forced)
+const char *
+nautilus_file_get_default_sort_str (NautilusFile *file,
+                                    gboolean     *reversed,
+                                    gboolean     *is_forced)
 {
     g_assert (reversed != NULL);
     g_return_val_if_fail (is_forced != NULL, NAUTILUS_SORT_BY_NAME);
@@ -8072,112 +8072,33 @@ nautilus_file_get_default_sort_type (NautilusFile *file,
     if (nautilus_file_is_user_special_directory (file, G_USER_DIRECTORY_DOWNLOAD))
     {
         *reversed = TRUE;
-        return NAUTILUS_SORT_BY_MTIME;
+        return "date_modified";
     }
     else if (nautilus_file_is_in_trash (file))
     {
         *reversed = TRUE;
         *is_forced = TRUE;
-        return NAUTILUS_SORT_BY_TRASHED_TIME;
+        return "trashed_on";
     }
     else if (nautilus_file_is_in_recent (file))
     {
         *reversed = TRUE;
         *is_forced = TRUE;
-        return NAUTILUS_SORT_BY_RECENCY;
+        return "recency";
     }
     else if (nautilus_file_is_in_search (file))
     {
         *reversed = TRUE;
         *is_forced = TRUE;
-        return NAUTILUS_SORT_BY_SEARCH_RELEVANCE;
+        return "search_relevance";
     }
 
     /* Use defaults */
     *reversed = g_settings_get_boolean (nautilus_preferences,
                                         NAUTILUS_PREFERENCES_DEFAULT_SORT_IN_REVERSE_ORDER);
 
-    return g_settings_get_enum (nautilus_preferences,
-                                NAUTILUS_PREFERENCES_DEFAULT_SORT_ORDER);
-}
-
-const char *
-nautilus_file_sort_type_get_attribute (NautilusSortType sort_type)
-{
-    GQuark sort_q = 0;
-
-    switch (sort_type)
-    {
-        case NAUTILUS_SORT_BY_NAME:
-        {
-            sort_q = attribute_name_q;
-        }
-        break;
-
-        case NAUTILUS_SORT_BY_SIZE:
-        {
-            sort_q = attribute_size_q;
-        }
-        break;
-
-        case NAUTILUS_SORT_BY_TYPE:
-        {
-            sort_q = attribute_type_q;
-        }
-        break;
-
-        case NAUTILUS_SORT_BY_MTIME:
-        {
-            sort_q = attribute_date_modified_q;
-        }
-        break;
-
-        case NAUTILUS_SORT_BY_ATIME:
-        {
-            sort_q = attribute_date_accessed_q;
-        }
-        break;
-
-        case NAUTILUS_SORT_BY_BTIME:
-        {
-            sort_q = attribute_date_created_q;
-        }
-        break;
-
-        case NAUTILUS_SORT_BY_TRASHED_TIME:
-        {
-            sort_q = attribute_trashed_on_q;
-        }
-        break;
-
-        case NAUTILUS_SORT_BY_SEARCH_RELEVANCE:
-        {
-            sort_q = attribute_search_relevance_q;
-        }
-        break;
-
-        case NAUTILUS_SORT_BY_RECENCY:
-        {
-            sort_q = attribute_recency_q;
-        }
-        break;
-
-        case NAUTILUS_SORT_BY_STARRED:
-        {
-            sort_q = attribute_starred_q;
-        }
-        break;
-
-        default:
-        {
-            g_assert_not_reached ();
-        }
-        break;
-    }
-
-    g_assert (sort_q != 0);
-
-    return g_quark_to_string (sort_q);
+    return g_settings_get_string (nautilus_preferences,
+                                  NAUTILUS_PREFERENCES_DEFAULT_SORT_ORDER);
 }
 
 static int
