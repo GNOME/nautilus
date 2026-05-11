@@ -37,6 +37,8 @@ libnautilus_sources = [
   ),
   'nautilus-app-chooser.c',
   'nautilus-app-chooser.h',
+  'nautilus-app-chooser-widget.c',
+  'nautilus-app-chooser-widget.h',
   'nautilus-application.c',
   'nautilus-application.h',
   'nautilus-batch-rename-dialog.c',
