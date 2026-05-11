@@ -340,15 +340,6 @@ void                    nautilus_file_set_metadata                      (Nautilu
 									 NautilusMetadataType type,
                             		 gpointer             value);
 
-/* Covers for common data types. */
-gboolean                nautilus_file_get_boolean_metadata              (NautilusFile                   *file,
-									 const char                     *key,
-									 gboolean                        default_metadata);
-void                    nautilus_file_set_boolean_metadata              (NautilusFile                   *file,
-									 const char                     *key,
-									 gboolean                        metadata);
-
-
 /* Attributes for file objects as user-displayable strings. */
 char *                  nautilus_file_get_string_attribute              (NautilusFile                   *file,
 									 const char                     *attribute_name);

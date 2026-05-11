@@ -4092,52 +4092,6 @@ nautilus_file_set_metadata (NautilusFile         *file,
     NAUTILUS_FILE_CLASS (G_OBJECT_GET_CLASS (file))->set_metadata (file, key, type, value);
 }
 
-gboolean
-nautilus_file_get_boolean_metadata (NautilusFile *file,
-                                    const char   *key,
-                                    gboolean      default_metadata)
-{
-    g_return_val_if_fail (key != NULL, default_metadata);
-    g_return_val_if_fail (key[0] != '\0', default_metadata);
-    g_return_val_if_fail (NAUTILUS_IS_FILE (file), default_metadata);
-
-    if (file == NULL)
-    {
-        return default_metadata;
-    }
-
-    const char *value = nautilus_file_get_metadata_impl (file, key);
-
-    if (value == NULL)
-    {
-        return default_metadata;
-    }
-    else if (g_ascii_strcasecmp (value, "true") == 0)
-    {
-        return TRUE;
-    }
-    else if (g_ascii_strcasecmp (value, "false") == 0)
-    {
-        return FALSE;
-    }
-    else
-    {
-        g_warning ("Invalid boolean metadata value \"%s\" for key \"%s\", "
-                   "using default value",
-                   value, key);
-        return default_metadata;
-    }
-}
-
-void
-nautilus_file_set_boolean_metadata (NautilusFile *file,
-                                    const char   *key,
-                                    gboolean      metadata)
-{
-    nautilus_file_set_metadata (file, key, NAUTILUS_METADATA_STRING,
-                                metadata ? "true" : "false");
-}
-
 static const char *
 nautilus_file_peek_display_name_collation_key (NautilusFile *file)
 {
