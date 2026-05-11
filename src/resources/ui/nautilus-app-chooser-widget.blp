@@ -1,0 +1,50 @@
+using Gtk 4.0;
+
+template $NautilusAppChooserWidget: Widget {
+  Overlay overlay {
+    child: ScrolledWindow scrolled_window {
+      max-content-width: 400;
+      max-content-height: 300;
+      hscrollbar-policy: never;
+      has-frame: true;
+
+      child: ListView program_list {
+        tab-behavior: item;
+      };
+    };
+
+    [overlay]
+    Box no_apps {
+      visible: false;
+      orientation: vertical;
+      halign: center;
+      valign: center;
+
+      Image {
+        icon-name: "application-x-executable-symbolic";
+        pixel-size: 48;
+        margin-start: 12;
+        margin-end: 12;
+        margin-top: 12;
+        margin-bottom: 12;
+
+        styles [
+          "dim-label",
+        ]
+      }
+
+      Label no_apps_label {
+        label: _("No applications found.");
+        halign: center;
+        valign: center;
+        wrap: true;
+        attributes: "0 -1 scale 1.2";
+
+        styles [
+          "dim-label",
+        ]
+      }
+    }
+  }
+}
+
