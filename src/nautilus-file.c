@@ -7885,7 +7885,7 @@ nautilus_file_list_copy (GList *list)
 }
 
 /**
- * nautilus_file_get_default_sort_type:
+ * nautilus_file_get_default_sort_order:
  * @file: A #NautilusFile representing a location
  * @reversed: (out): Location to store whether the order is reversed by default.
  * @is_forced: (out): Bool pointer set to TRUE when file has enforced sort order
@@ -7896,12 +7896,12 @@ nautilus_file_list_copy (GList *list)
  * value and @reversed flag are dictated by design. Otherwise, they stem from
  * the "default-sort-order" and "default-sort-in-reverse-order" preference keys.
  *
- * Returns: The default #NautilusFileSortType for this @file.
+ * Returns: Identifier of the default sort type for this @file.
  */
-NautilusFileSortType
-nautilus_file_get_default_sort_type (NautilusFile *file,
-                                     gboolean     *reversed,
-                                     gboolean     *is_forced)
+const char *
+nautilus_file_get_default_sort_order (NautilusFile *file,
+                                      gboolean     *reversed,
+                                      gboolean     *is_forced)
 {
     g_assert (reversed != NULL);
     g_assert (is_forced != NULL);
@@ -7910,97 +7910,36 @@ nautilus_file_get_default_sort_type (NautilusFile *file,
     if (nautilus_file_is_user_special_directory (file, G_USER_DIRECTORY_DOWNLOAD))
     {
         *reversed = TRUE;
-        return NAUTILUS_FILE_SORT_BY_MTIME;
+        return g_quark_to_string (attribute_date_modified_q);
     }
     else if (nautilus_file_is_in_trash (file))
     {
         *reversed = TRUE;
         *is_forced = TRUE;
-        return NAUTILUS_FILE_SORT_BY_TRASHED_TIME;
+        return g_quark_to_string (attribute_trashed_on_q);
     }
     else if (nautilus_file_is_in_recent (file))
     {
         *reversed = TRUE;
         *is_forced = TRUE;
-        return NAUTILUS_FILE_SORT_BY_RECENCY;
+        return g_quark_to_string (attribute_recency_q);
     }
     else if (nautilus_file_is_in_search (file))
     {
         *reversed = TRUE;
         *is_forced = TRUE;
-        return NAUTILUS_FILE_SORT_BY_SEARCH_RELEVANCE;
+        return g_quark_to_string (attribute_search_relevance_q);
     }
 
     /* Use defaults */
     *reversed = g_settings_get_boolean (nautilus_preferences,
                                         NAUTILUS_PREFERENCES_DEFAULT_SORT_IN_REVERSE_ORDER);
 
-    return g_settings_get_enum (nautilus_preferences,
-                                NAUTILUS_PREFERENCES_DEFAULT_SORT_ORDER);
-}
+    g_autofree char *sort_order_str = g_settings_get_string (nautilus_preferences,
+                                                             NAUTILUS_PREFERENCES_DEFAULT_SORT_ORDER);
+    GQuark sort_order = g_quark_from_string (sort_order_str);
 
-const char *
-nautilus_file_sort_type_get_attribute (NautilusFileSortType sort_type)
-{
-    switch (sort_type)
-    {
-        case NAUTILUS_FILE_SORT_BY_DISPLAY_NAME:
-        {
-            return g_quark_to_string (attribute_name_q);
-        }
-
-        case NAUTILUS_FILE_SORT_BY_SIZE:
-        {
-            return g_quark_to_string (attribute_size_q);
-        }
-
-        case NAUTILUS_FILE_SORT_BY_TYPE:
-        {
-            return g_quark_to_string (attribute_type_q);
-        }
-
-        case NAUTILUS_FILE_SORT_BY_MTIME:
-        {
-            return g_quark_to_string (attribute_date_modified_q);
-        }
-
-        case NAUTILUS_FILE_SORT_BY_ATIME:
-        {
-            return g_quark_to_string (attribute_date_accessed_q);
-        }
-
-        case NAUTILUS_FILE_SORT_BY_BTIME:
-        {
-            return g_quark_to_string (attribute_date_created_q);
-        }
-
-        case NAUTILUS_FILE_SORT_BY_TRASHED_TIME:
-        {
-            return g_quark_to_string (attribute_trashed_on_q);
-        }
-
-        case NAUTILUS_FILE_SORT_BY_SEARCH_RELEVANCE:
-        {
-            return g_quark_to_string (attribute_search_relevance_q);
-        }
-
-        case NAUTILUS_FILE_SORT_BY_RECENCY:
-        {
-            return g_quark_to_string (attribute_recency_q);
-        }
-
-        case NAUTILUS_FILE_SORT_BY_STARRED:
-        {
-            return g_quark_to_string (attribute_starred_q);
-        }
-
-        case NAUTILUS_FILE_SORT_BY_OTHER:
-        default:
-        {
-            g_warn_if_reached ();
-            return g_quark_to_string (attribute_name_q);
-        }
-    }
+    return g_quark_to_string (sort_order);
 }
 
 static int
