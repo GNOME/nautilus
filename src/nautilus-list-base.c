@@ -1257,7 +1257,7 @@ nautilus_list_base_class_init (NautilusListBaseClass *klass)
                                                   NAUTILUS_TYPE_VIEW_MODEL,
                                                   G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS);
     properties[PROP_SORT_STATE] = g_param_spec_variant ("sort-state", NULL, NULL,
-                                                        G_VARIANT_TYPE ("(sb)"),
+                                                        G_VARIANT_TYPE_STRING,
                                                         NULL,
                                                         G_PARAM_READWRITE | G_PARAM_EXPLICIT_NOTIFY | G_PARAM_STATIC_STRINGS);
     g_object_class_install_properties (object_class, N_PROPS, properties);

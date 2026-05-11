@@ -97,14 +97,15 @@ sort_network_items (gconstpointer a,
     if (get_section (item_a) == SECTION_PREVIOUS &&
         get_section (item_b) == SECTION_PREVIOUS)
     {
+        /* Sort previous section by most recenct access */
         return nautilus_file_compare_for_sort (file_a, file_b,
-                                               NAUTILUS_SORT_BY_ATIME,
-                                               FALSE, TRUE /* reversed */);
+                                               NAUTILUS_SORT_BY_ATIME_REV,
+                                               FALSE);
     }
 
     return nautilus_file_compare_for_sort (file_a, file_b,
                                            NAUTILUS_SORT_BY_NAME,
-                                           FALSE, FALSE);
+                                           FALSE);
 }
 
 static void
@@ -166,7 +167,7 @@ real_scroll_to (NautilusListBase   *list_base_view,
 static GVariant *
 real_get_sort_state (NautilusListBase *list_base)
 {
-    return g_variant_take_ref (g_variant_new ("(sb)", "invalid", FALSE));
+    return g_variant_take_ref (g_variant_new_string ("invalid"));
 }
 
 static void

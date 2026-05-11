@@ -55,7 +55,6 @@ G_BEGIN_DECLS
 /* Sorting order */
 #define NAUTILUS_PREFERENCES_SORT_DIRECTORIES_FIRST		"sort-directories-first"
 #define NAUTILUS_PREFERENCES_DEFAULT_SORT_ORDER			"default-sort-order"
-#define NAUTILUS_PREFERENCES_DEFAULT_SORT_IN_REVERSE_ORDER	"default-sort-in-reverse-order"
 
 /* The default folder viewer - one of the two enums below */
 #define NAUTILUS_PREFERENCES_DEFAULT_FOLDER_VIEWER		"default-folder-viewer"

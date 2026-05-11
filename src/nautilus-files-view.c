@@ -554,36 +554,25 @@ on_sort_action_state_changed (GActionGroup *action_group,
                               gpointer      user_data)
 {
     NautilusFilesView *self = NAUTILUS_FILES_VIEW (user_data);
-    const gchar *target_name;
-    gboolean reversed;
-
-    g_variant_get (value, "(&sb)", &target_name, &reversed);
+    const gchar *target_name = g_variant_get_string (value, NULL);
 
     nautilus_file_set_metadata (self->directory_as_file,
                                 NAUTILUS_METADATA_KEY_ICON_VIEW_SORT_BY,
                                 NULL,
                                 target_name);
-    nautilus_file_set_boolean_metadata (self->directory_as_file,
-                                        NAUTILUS_METADATA_KEY_ICON_VIEW_SORT_REVERSED,
-                                        reversed);
 }
 
 static const char *
-get_directory_sort_by (NautilusFile *file,
-                       gboolean     *reversed)
+get_directory_sort_by (NautilusFile *file)
 {
     gboolean is_forced = FALSE;
-    const char *default_sort_str = nautilus_file_get_default_sort_str (file, reversed, &is_forced);
+    const char *default_sort_str = nautilus_file_get_default_sort_str (file, &is_forced);
 
     if (is_forced)
     {
         /* These defaults can't be overwritten. Ignore metadata. */
         return default_sort_str;
     }
-
-    *reversed = nautilus_file_get_boolean_metadata (file,
-                                                    NAUTILUS_METADATA_KEY_ICON_VIEW_SORT_REVERSED,
-                                                    *reversed);
 
     return nautilus_file_get_metadata (file,
                                        NAUTILUS_METADATA_KEY_ICON_VIEW_SORT_BY,
@@ -593,16 +582,13 @@ get_directory_sort_by (NautilusFile *file,
 static void
 update_sort_order_from_metadata_and_preferences (NautilusFilesView *self)
 {
-    gboolean reversed;
-    const char *sort_attribute = get_directory_sort_by (self->directory_as_file, &reversed);
+    const char *sort_attribute = get_directory_sort_by (self->directory_as_file);
 
     g_signal_handlers_block_by_func (self->view_action_group, on_sort_action_state_changed, self);
 
     g_action_group_change_action_state (self->view_action_group,
                                         "sort",
-                                        g_variant_new ("(sb)",
-                                                       sort_attribute,
-                                                       reversed));
+                                        g_variant_new_string (sort_attribute));
 
     g_signal_handlers_unblock_by_func (self->view_action_group, on_sort_action_state_changed, self);
 }
@@ -4407,8 +4393,7 @@ schedule_timeout_display_of_pending_files (NautilusFilesView *self,
 static void
 display_pending_files_with_tradeoff (NautilusFilesView *self)
 {
-    gboolean reversed;
-    const char *sort_attribute = get_directory_sort_by (self->directory_as_file, &reversed);
+    const char *sort_attribute = get_directory_sort_by (self->directory_as_file);
 
     unschedule_display_of_pending_files (self);
 
@@ -6784,7 +6769,7 @@ const GActionEntry view_entries[] =
     { .name = "zoom-in", .activate = action_zoom_in },
     { .name = "zoom-out", .activate = action_zoom_out },
     { .name = "zoom-standard", .activate = action_zoom_standard },
-    { .name = "sort", .parameter_type = "(sb)", .state = "('invalid',false)", .change_state = action_sort_order_changed },
+    { .name = "sort", .parameter_type = "s", .state = "'invalid'", .change_state = action_sort_order_changed },
     { .name = "show-hidden-files", .state = "true", .change_state = action_show_hidden_files },
     { .name = "visible-columns", .activate = action_visible_columns },
     { .name = "visible-captions", .activate = action_visible_captions },
@@ -9446,11 +9431,6 @@ nautilus_files_view_init (NautilusFilesView *self)
 
     g_signal_connect_object (nautilus_preferences,
                              "changed::" NAUTILUS_PREFERENCES_DEFAULT_SORT_ORDER,
-                             G_CALLBACK (update_sort_order_from_metadata_and_preferences),
-                             self,
-                             G_CONNECT_SWAPPED);
-    g_signal_connect_object (nautilus_preferences,
-                             "changed::" NAUTILUS_PREFERENCES_DEFAULT_SORT_IN_REVERSE_ORDER,
                              G_CALLBACK (update_sort_order_from_metadata_and_preferences),
                              self,
                              G_CONNECT_SWAPPED);

@@ -58,15 +58,17 @@ test_file_sort_order (void)
 {
     g_autoptr (NautilusFile) file_1 = nautilus_file_get_by_uri ("file:///etc");
     g_autoptr (NautilusFile) file_2 = nautilus_file_get_by_uri ("file:///usr");
-    NautilusSortType sort_type = NAUTILUS_SORT_BY_NAME;
 
     g_assert_cmpint (G_OBJECT (file_1)->ref_count, ==, 1);
     g_assert_cmpint (G_OBJECT (file_2)->ref_count, ==, 1);
 
-    int order = nautilus_file_compare_for_sort (file_1, file_2, sort_type, FALSE, FALSE);
+    int order = nautilus_file_compare_for_sort (file_1, file_2, NAUTILUS_SORT_BY_NAME, FALSE);
+
     g_assert_cmpint (order, <, 0);
 
-    int order_reversed = nautilus_file_compare_for_sort (file_1, file_2, sort_type, FALSE, TRUE);
+    int order_reversed = nautilus_file_compare_for_sort (file_1, file_2,
+                                                         NAUTILUS_SORT_BY_NAME_REV, FALSE);
+
     g_assert_cmpint (order_reversed, >, 0);
 }
 
@@ -74,19 +76,18 @@ static void
 test_file_sort_with_self (void)
 {
     g_autoptr (NautilusFile) file_1 = nautilus_file_get_by_uri ("file:///etc");
-    NautilusSortType sort_type = NAUTILUS_SORT_BY_NAME;
     int order;
 
-    order = nautilus_file_compare_for_sort (file_1, file_1, sort_type, TRUE, TRUE);
+    order = nautilus_file_compare_for_sort (file_1, file_1, NAUTILUS_SORT_BY_NAME_REV, TRUE);
     g_assert_cmpint (order, ==, 0);
 
-    order = nautilus_file_compare_for_sort (file_1, file_1, sort_type, TRUE, FALSE);
+    order = nautilus_file_compare_for_sort (file_1, file_1, NAUTILUS_SORT_BY_NAME, TRUE);
     g_assert_cmpint (order, ==, 0);
 
-    order = nautilus_file_compare_for_sort (file_1, file_1, sort_type, FALSE, TRUE);
+    order = nautilus_file_compare_for_sort (file_1, file_1, NAUTILUS_SORT_BY_NAME_REV, FALSE);
     g_assert_cmpint (order, ==, 0);
 
-    order = nautilus_file_compare_for_sort (file_1, file_1, sort_type, FALSE, FALSE);
+    order = nautilus_file_compare_for_sort (file_1, file_1, NAUTILUS_SORT_BY_NAME, FALSE);
     g_assert_cmpint (order, ==, 0);
 }
 

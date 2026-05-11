@@ -7,6 +7,7 @@
 #include "nautilus-grid-view.h"
 
 #include "nautilus-file.h"
+#include "nautilus-file-utilities.h"
 #include "nautilus-global-preferences.h"
 #include "nautilus-grid-cell.h"
 #include "nautilus-list-base-private.h"
@@ -352,10 +353,11 @@ static GVariant *
 real_get_sort_state (NautilusListBase *list_base)
 {
     NautilusGridView *self = NAUTILUS_GRID_VIEW (list_base);
+    g_autofree char *sort_str = g_strdup_printf ("%s%s",
+                                                 g_quark_to_string (self->sort_attribute),
+                                                 self->reversed ? NAUTILUS_SORT_REVERSE_SUFFIX : "");
 
-    return g_variant_take_ref (g_variant_new ("(sb)",
-                                              g_quark_to_string (self->sort_attribute),
-                                              self->reversed));
+    return g_variant_take_ref (g_variant_new_string (sort_str));
 }
 
 static void
@@ -372,15 +374,17 @@ real_set_sort_state (NautilusListBase *list_base,
                      GVariant         *value)
 {
     NautilusGridView *self = NAUTILUS_GRID_VIEW (list_base);
-    const gchar *target_name;
     NautilusViewModel *model = nautilus_list_base_get_model (list_base);
     g_autoptr (GtkCustomSorter) sorter = NULL;
 
     /* Sort state binding should be set after the model is set.*/
     g_return_if_fail (model != NULL);
 
-    g_variant_get (value, "(&sb)", &target_name, &self->reversed);
-    self->sort_attribute = g_quark_from_string (target_name);
+    const char *variant_str = g_variant_get_string (value, NULL);
+    g_autofree char *sort_str = nautilus_remove_suffix (variant_str, NAUTILUS_SORT_REVERSE_SUFFIX);
+
+    self->sort_attribute = g_quark_from_string (sort_str);
+    self->reversed = !g_str_equal (variant_str, sort_str);
 
     sorter = gtk_custom_sorter_new (nautilus_grid_view_sort, self, NULL);
     nautilus_view_model_set_sorter (model, GTK_SORTER (sorter));

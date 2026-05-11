@@ -3665,8 +3665,6 @@ sort_to_date_type (NautilusSortType sort_type)
  * @file_2: Another file object
  * @sort_type: Sort criterion
  * @directories_first: Put all directories before any non-directories
- * @reversed: Reverse the order of the items, except that
- * the directories_first flag is still respected.
  *
  * Return value: int < 0 if @file_1 should come before file_2 in a
  * sorted list; int > 0 if @file_2 should come before file_1 in a
@@ -3678,14 +3676,21 @@ int
 nautilus_file_compare_for_sort (NautilusFile     *file_1,
                                 NautilusFile     *file_2,
                                 NautilusSortType  sort_type,
-                                gboolean          directories_first,
-                                gboolean          reversed)
+                                gboolean          directories_first)
 {
     int result;
 
     if (file_1 == file_2)
     {
         return 0;
+    }
+
+    gboolean reversed = FALSE;
+
+    if (sort_type >= NAUTILUS_SORT_REVERSE_OFFSET)
+    {
+        reversed = TRUE;
+        sort_type -= NAUTILUS_SORT_REVERSE_OFFSET;
     }
 
     result = nautilus_file_compare_for_sort_internal (file_1, file_2, directories_first, reversed);
@@ -3865,10 +3870,14 @@ nautilus_file_compare_for_sort_by_attribute_q   (NautilusFile *file_1,
 
     if (sort_type != NAUTILUS_SORT_BY_OTHER)
     {
+        if (reversed)
+        {
+            sort_type += NAUTILUS_SORT_REVERSE_OFFSET;
+        }
+
         return nautilus_file_compare_for_sort (file_1, file_2,
                                                sort_type,
-                                               directories_first,
-                                               reversed);
+                                               directories_first);
     }
 
     /* it is a normal attribute, compare by strings */
@@ -8049,54 +8058,43 @@ nautilus_file_list_copy (GList *list)
 /**
  * nautilus_file_get_default_sort_str:
  * @file: A #NautilusFile representing a location
- * @reversed: (out): Location to store whether the order is reversed by default.
  * @is_forced: (out): Bool pointer set to TRUE when file has enforced sort order
  *
  * Gets which sort order applies by default for the provided locations.
  *
- * If @file is a location with special needs (e.g. Trash or Recent), the return
- * value and @reversed flag are dictated by design. Otherwise, they stem from
- * the "default-sort-order" and "default-sort-in-reverse-order" preference keys.
+ * If @file is a special location such as Trash or Recent, a dedicated value is
+ * returned. Otherwise, the "default-sort-order" preference's value is used.
  *
  * Returns: Identifier of the default sort type for this @file.
  */
 const char *
 nautilus_file_get_default_sort_str (NautilusFile *file,
-                                    gboolean     *reversed,
                                     gboolean     *is_forced)
 {
-    g_assert (reversed != NULL);
     g_return_val_if_fail (is_forced != NULL, NAUTILUS_SORT_BY_NAME);
 
     /* Special handling for certain directories */
     if (nautilus_file_is_user_special_directory (file, G_USER_DIRECTORY_DOWNLOAD))
     {
-        *reversed = TRUE;
-        return "date_modified";
+        return "date_modified-reversed";
     }
     else if (nautilus_file_is_in_trash (file))
     {
-        *reversed = TRUE;
         *is_forced = TRUE;
-        return "trashed_on";
+        return "trashed_on-reversed";
     }
     else if (nautilus_file_is_in_recent (file))
     {
-        *reversed = TRUE;
         *is_forced = TRUE;
-        return "recency";
+        return "recency-reversed";
     }
     else if (nautilus_file_is_in_search (file))
     {
-        *reversed = TRUE;
         *is_forced = TRUE;
-        return "search_relevance";
+        return "search_relevance-reversed";
     }
 
     /* Use defaults */
-    *reversed = g_settings_get_boolean (nautilus_preferences,
-                                        NAUTILUS_PREFERENCES_DEFAULT_SORT_IN_REVERSE_ORDER);
-
     return g_settings_get_string (nautilus_preferences,
                                   NAUTILUS_PREFERENCES_DEFAULT_SORT_ORDER);
 }

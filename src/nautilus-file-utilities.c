@@ -1005,6 +1005,26 @@ nautilus_get_common_filename_prefix_from_filenames (const char * const *filename
     return g_steal_pointer (&truncated);
 }
 
+char *
+nautilus_remove_suffix (const char *str,
+                        const char *suffix)
+{
+    g_return_val_if_fail (str != NULL && suffix != NULL, g_strdup (str));
+
+    gsize str_len = strlen (str);
+    gsize suffix_len = strlen (suffix);
+
+    if (str_len < suffix_len ||
+        g_strcmp0 (str + str_len - suffix_len, suffix) != 0)
+    {
+        return g_strdup (str);
+    }
+    else
+    {
+        return g_strndup (str, str_len - suffix_len);
+    }
+}
+
 glong
 nautilus_get_max_child_name_length_for_location (GFile *location)
 {

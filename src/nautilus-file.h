@@ -49,6 +49,9 @@ typedef struct NautilusFile NautilusFile;
 #define NAUTILUS_FILE_GET_CLASS(obj) \
   (G_TYPE_INSTANCE_GET_CLASS ((obj), NAUTILUS_TYPE_FILE, NautilusFileClass))
 
+#define NAUTILUS_SORT_REVERSE_OFFSET 20
+#define NAUTILUS_SORT_REVERSE_SUFFIX "-reversed"
+
 typedef enum {
 	/* These may be set as default-sort-order. When touching this, make sure to
 	 * keep the values in sync with the "org.gnome.nautilus.SortOrder" enum in the
@@ -68,6 +71,13 @@ typedef enum {
 	NAUTILUS_SORT_BY_TRASHED_TIME,
 	NAUTILUS_SORT_BY_SEARCH_RELEVANCE,
 	NAUTILUS_SORT_BY_RECENCY,
+
+	/* Reverse order */
+	NAUTILUS_SORT_BY_NAME_REV = NAUTILUS_SORT_BY_NAME + NAUTILUS_SORT_REVERSE_OFFSET,
+	NAUTILUS_SORT_BY_SIZE_REV = NAUTILUS_SORT_BY_SIZE + NAUTILUS_SORT_REVERSE_OFFSET,
+	NAUTILUS_SORT_BY_TYPE_REV = NAUTILUS_SORT_BY_TYPE + NAUTILUS_SORT_REVERSE_OFFSET,
+	NAUTILUS_SORT_BY_MTIME_REV = NAUTILUS_SORT_BY_MTIME + NAUTILUS_SORT_REVERSE_OFFSET,
+	NAUTILUS_SORT_BY_ATIME_REV = NAUTILUS_SORT_BY_ATIME + NAUTILUS_SORT_REVERSE_OFFSET,
 
 	/* Dummy value not actually used for sorting */
 	NAUTILUS_SORT_BY_OTHER
@@ -375,14 +385,12 @@ gboolean                nautilus_file_has_local_path                    (Nautilu
 
 /* Comparing two file objects for sorting */
 const char *            nautilus_file_get_default_sort_str              (NautilusFile                   *file,
-									 gboolean                       *reversed,
 									 gboolean                       *is_forced);
 
 int                     nautilus_file_compare_for_sort                  (NautilusFile                   *file_1,
 									 NautilusFile                   *file_2,
 									 NautilusSortType                sort_type,
-									 gboolean			 directories_first,
-									 gboolean		  	 reversed);
+									 gboolean                        directories_first);
 int                     nautilus_file_compare_for_sort_by_attribute     (NautilusFile                   *file_1,
 									 NautilusFile                   *file_2,
 									 const char                     *attribute,

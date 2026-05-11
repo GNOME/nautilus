@@ -115,6 +115,10 @@ char * nautilus_get_common_filename_prefix (GList *file_list,
 char * nautilus_get_common_filename_prefix_from_filenames (const char * const *filenames,
                                                            int                 min_required_len);
 
+char *
+nautilus_remove_suffix (const char *str,
+                        const char *suffix);
+
 /**
  * nautilus_get_max_child_name_for_location:
  * @location: a #GFile representing a directory
