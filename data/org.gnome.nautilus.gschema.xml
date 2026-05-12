@@ -30,14 +30,15 @@
   <enum id="org.gnome.nautilus.SortOrder">
     <!--
       When touching this, make sure to keep the values in sync with the
-      #NautilusFileSortType enum in the `src/nautilus-file.h` code header file.
+      #NautilusFileSortType enum in `src/nautilus-file.h` and the nicks with
+      the attribute GQuark strings in `src/nautilus-file.c`
     -->
     <value value="0" nick="name"/>
     <value value="1" nick="size"/>
     <value value="2" nick="type"/>
-    <value value="3" nick="mtime"/>
-    <value value="4" nick="atime"/>
-    <value value="5" nick="btime"/>
+    <value value="3" nick="date_modified"/>
+    <value value="4" nick="date_accessed"/>
+    <value value="5" nick="date_created"/>
     <value value="6" nick="starred"/>
   </enum>
 
@@ -140,6 +141,11 @@
       <description>Images over this size (in megabytes) won’t be thumbnailed. The purpose of this setting is to avoid thumbnailing large images that may take a long time to load or use lots of memory.</description>
     </key>
     <key name="default-sort-order" enum="org.gnome.nautilus.SortOrder">
+      <aliases>
+        <alias value='atime' target='date_accessed'/>
+        <alias value='btime' target='date_created'/>
+        <alias value='mtime' target='date_modified'/>
+      </aliases>
       <default>'name'</default>
       <summary>Default sort order</summary>
       <description>The default sort-order for items in the icon view. Possible values are “name”, “size”, “type”, “mtime”, “atime” and “starred”.</description>
