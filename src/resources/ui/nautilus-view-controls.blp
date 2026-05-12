@@ -15,12 +15,81 @@ menu view_menu {
     }
   }
 
-  section {
-    /* Sort section. The toolbar code assumes this is the second item of this
-     * menu model. Its contents is provided by the view.
-     */
+  section sort_section {
     /* Translators: a menu item in a group of sorting options in a toolbar menu, with criterions such as "A-Z" or "Last Modified". */
-    label: C_("menu item", "Sort");
+    item {
+      label: C_("menu item", "Sort");
+    }
+
+    item {
+      action: "view.sort";
+      target: "name";
+
+      /* Translators: This is used to sort by name in the toolbar view menu */
+      label: C_("Sort Criterion", "_A-Z");
+      hidden-when: "action-disabled";
+    }
+
+    item {
+      action: "view.sort";
+      target: "name-reversed";
+
+      /* Translators: This is used to sort by name, in descending order in the toolbar view menu */
+      label: C_("Sort Criterion", "_Z-A");
+      hidden-when: "action-disabled";
+    }
+
+    item {
+      action: "view.sort";
+      target: "date_modified-reversed";
+      label: _("Last _Modified");
+      hidden-when: "action-disabled";
+    }
+
+    item {
+      action: "view.sort";
+      target: "date_modified";
+      label: _("_First Modified");
+      hidden-when: "action-disabled";
+    }
+
+    item {
+      action: "view.sort";
+      target: "size-reversed";
+      label: _("_Size");
+      hidden-when: "action-disabled";
+    }
+
+    item {
+      action: "view.sort";
+      target: "type";
+      label: _("_Type");
+      hidden-when: "action-disabled";
+    }
+
+    item {
+      action: "view.sort";
+      target: "trashed_on-reversed";
+      label: _("Last _Trashed");
+      hidden-when: "action-disabled";
+      nautilus-menu-item: "last_trashed";
+    }
+
+    item {
+      action: "view.sort";
+      target: "recency-reversed";
+      label: _("Recency");
+      hidden-when: "action-disabled";
+      nautilus-menu-item: "recency";
+    }
+
+    item {
+      action: "view.sort";
+      target: "search_relevance-reversed";
+      label: _("Relevance");
+      hidden-when: "action-disabled";
+      nautilus-menu-item: "relevance";
+    }
   }
 
   section {

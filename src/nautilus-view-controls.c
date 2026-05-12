@@ -13,9 +13,6 @@
 #include "nautilus-window-slot.h"
 #include <glib/gi18n.h>
 
-/* Assume sort section is second item in view_menu. See nautilus-view-controls.blp */
-#define SORT_ITEM_POSITION 1
-
 struct _NautilusViewControls
 {
     AdwBin parent_instance;
@@ -243,18 +240,11 @@ nautilus_view_controls_class_init (NautilusViewControlsClass *klass)
                                                  "/org/gnome/nautilus/ui/nautilus-view-controls.ui");
     gtk_widget_class_bind_template_child (widget_class, NautilusViewControls, view_menu);
     gtk_widget_class_bind_template_child (widget_class, NautilusViewControls, view_split_button);
+    gtk_widget_class_bind_template_child (widget_class, NautilusViewControls, sort_section);
 }
 
 static void
 nautilus_view_controls_init (NautilusViewControls *self)
 {
     gtk_widget_init_template (GTK_WIDGET (self));
-
-    g_autoptr (GtkBuilder) builder =
-        gtk_builder_new_from_resource ("/org/gnome/nautilus/menu/nautilus-toolbar-view-menu.ui");
-    g_autoptr (GMenuItem) sort_item = g_menu_item_new_from_model (self->view_menu, SORT_ITEM_POSITION);
-
-    self->sort_section = G_MENU_MODEL (g_object_ref (gtk_builder_get_object (builder, "sort_section")));
-    g_menu_item_set_section (sort_item, self->sort_section);
-    g_menu_insert_item (G_MENU (self->view_menu), SORT_ITEM_POSITION, sort_item);
 }
