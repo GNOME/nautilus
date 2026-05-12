@@ -30,14 +30,15 @@
   <enum id="org.gnome.nautilus.SortOrder">
     <!--
       When touching this, make sure to keep the values in sync with the
-      #NautilusSortType enum in the `src/nautilus-file.h` code header file.
+      #NautilusSortType enum in `src/nautilus-file.h` and the nicks with
+      the attribute GQuark strings in `src/nautilus-file.c`
     -->
     <value value="0" nick="name"/>
     <value value="1" nick="size"/>
     <value value="2" nick="type"/>
-    <value value="3" nick="mtime"/>
-    <value value="4" nick="atime"/>
-    <value value="5" nick="btime"/>
+    <value value="3" nick="date_modified"/>
+    <value value="4" nick="date_accessed"/>
+    <value value="5" nick="date_created"/>
     <value value="6" nick="starred"/>
   </enum>
 
@@ -141,7 +142,9 @@
     </key>
     <key name="default-sort-order" enum="org.gnome.nautilus.SortOrder">
       <aliases>
-        <alias value='modification_date' target='mtime'/>
+        <alias value='atime' target='date_accessed'/>
+        <alias value='btime' target='date_created'/>
+        <alias value='mtime' target='date_modified'/>
       </aliases>
       <default>'name'</default>
       <summary>Default sort order</summary>
