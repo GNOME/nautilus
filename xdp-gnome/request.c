@@ -59,9 +59,9 @@ request_finalize (GObject *object)
 {
   Request *request = (Request *)object;
 
-  g_free (request->sender);
-  g_free (request->app_id);
-  g_free (request->id);
+  g_clear_pointer (&request->sender, g_free);
+  g_clear_pointer (&request->app_id, g_free);
+  g_clear_pointer (&request->id, g_free);
 
   G_OBJECT_CLASS (request_parent_class)->finalize (object);
 }
