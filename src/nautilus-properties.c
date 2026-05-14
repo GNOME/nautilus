@@ -3763,8 +3763,9 @@ nautilus_properties_present_dialog (NautilusFileList *files,
 
     adw_dialog_set_content_width (dialog, DEFAULT_PROPERTIES_WIDTH);
     adw_dialog_set_child (dialog, GTK_WIDGET (self));
-    g_signal_connect_swapped (self, "hide-properties",
-                              G_CALLBACK (adw_dialog_force_close), dialog);
+    g_signal_connect_object (self, "hide-properties",
+                             G_CALLBACK (adw_dialog_force_close), dialog,
+                             G_CONNECT_SWAPPED);
 
     self->dialog = dialog;
     gtk_widget_set_visible (self->popout_button, TRUE);
