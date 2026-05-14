@@ -74,6 +74,11 @@ nautilus_file_undo_manager_new (void)
 static void
 file_undo_manager_clear (NautilusFileUndoManager *self)
 {
+    if (self->trash_signal_id != 0)
+    {
+        g_clear_signal_handler (&self->trash_signal_id, nautilus_trash_monitor_get ());
+    }
+
     g_clear_object (&self->info);
     self->state = NAUTILUS_FILE_UNDO_MANAGER_STATE_NONE;
 }
@@ -98,17 +103,12 @@ trash_state_changed_cb (NautilusTrashMonitor *monitor,
 static void
 nautilus_file_undo_manager_init (NautilusFileUndoManager *self)
 {
-    self->trash_signal_id = g_signal_connect (nautilus_trash_monitor_get (),
-                                              "trash-state-changed",
-                                              G_CALLBACK (trash_state_changed_cb), self);
 }
 
 static void
 nautilus_file_undo_manager_finalize (GObject *object)
 {
     NautilusFileUndoManager *self = NAUTILUS_FILE_UNDO_MANAGER (object);
-
-    g_clear_signal_handler (&self->trash_signal_id, nautilus_trash_monitor_get ());
 
     file_undo_manager_clear (self);
 
@@ -238,6 +238,19 @@ nautilus_file_undo_manager_set_action (NautilusFileUndoInfo *info)
         undo_singleton->info = g_object_ref (info);
         undo_singleton->state = NAUTILUS_FILE_UNDO_MANAGER_STATE_UNDO;
         undo_singleton->last_state = NAUTILUS_FILE_UNDO_MANAGER_STATE_NONE;
+
+        /* Connect to the trash monitor lazily instead of in _init() to
+         * avoid mounting the trash backend when Nautilus is only running
+         * as a D-Bus service e.g. for the shell search provider. */
+        if (NAUTILUS_IS_FILE_UNDO_INFO_TRASH (info) &&
+            undo_singleton->trash_signal_id == 0)
+        {
+            undo_singleton->trash_signal_id =
+                g_signal_connect (nautilus_trash_monitor_get (),
+                                  "trash-state-changed",
+                                  G_CALLBACK (trash_state_changed_cb),
+                                  undo_singleton);
+        }
     }
 
     g_signal_emit (undo_singleton, signals[SIGNAL_UNDO_CHANGED], 0);
