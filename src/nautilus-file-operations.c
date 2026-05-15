@@ -97,7 +97,6 @@ typedef struct
     GFile *destination;
     GFile *fake_display_source;
     GHashTable *debuting_files;
-    gchar *target_name;
     NautilusCopyCallback done_callback;
     gpointer done_callback_data;
 } CopyMoveJob;
@@ -4610,11 +4609,6 @@ copy_move_file (CopyMoveJob   *copy_job,
          * destination so the conflict dialog is not shown a second time. */
         dest = g_object_ref (precomputed_dest);
     }
-    else if (copy_job->target_name != NULL)
-    {
-        dest = get_target_file_with_custom_name (src, dest_dir, *dest_fs_type, same_fs,
-                                                 copy_job->target_name);
-    }
     else if (g_file_has_uri_scheme (src, "google-drive") &&
              g_file_has_uri_scheme (dest_dir, "google-drive"))
     {
@@ -5097,7 +5091,6 @@ copy_task_done (GObject      *source_object,
         g_object_unref (job->destination);
     }
     g_hash_table_unref (job->debuting_files);
-    g_free (job->target_name);
 
     g_clear_object (&job->fake_display_source);
 
