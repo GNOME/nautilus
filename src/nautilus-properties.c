@@ -3782,6 +3782,16 @@ close_popout_window (gpointer user_data)
     g_application_release (g_application_get_default ());
 }
 
+static gboolean
+close_request_popout_window (gpointer user_data)
+{
+    GtkWindow *window = GTK_WINDOW (user_data);
+
+    close_popout_window (window);
+
+    return FALSE;
+}
+
 static void
 popout_window_clicked (NautilusPropertiesWidget *self)
 {
@@ -3812,6 +3822,8 @@ popout_window_clicked (NautilusPropertiesWidget *self)
     g_signal_emit (self, signals[HIDE], 0);
     g_signal_connect_swapped (self, "hide-properties",
                               G_CALLBACK (close_popout_window), new_window);
+    g_signal_connect (new_window, "close-request",
+                      G_CALLBACK (close_request_popout_window), NULL);
 
     gtk_window_present (new_window);
 }
