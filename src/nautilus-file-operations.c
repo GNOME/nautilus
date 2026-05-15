@@ -3932,6 +3932,7 @@ copy_move_file (CopyMoveJob  *job,
                 GFile        *dest_dir,
                 gboolean      same_fs,
                 gboolean      unique_names,
+                GFile        *precomputed_dest,
                 char        **dest_fs_type,
                 SourceInfo   *source_info,
                 TransferInfo *transfer_info,
@@ -4178,6 +4179,7 @@ copy_move_directory (CopyMoveJob   *copy_job,
                 src_file = g_file_get_child (src,
                                              g_file_info_get_name (info));
                 local_skipped_file = !copy_move_file (copy_job, src_file, *dest, same_fs, FALSE,
+                                                      NULL,
                                                       &dest_fs_type, source_info, transfer_info,
                                                       NULL, FALSE, reset_perms);
 
@@ -4565,6 +4567,7 @@ copy_move_file (CopyMoveJob   *copy_job,
                 GFile         *dest_dir,
                 gboolean       same_fs,
                 gboolean       unique_names,
+                GFile         *precomputed_dest,
                 char         **dest_fs_type,
                 SourceInfo    *source_info,
                 TransferInfo  *transfer_info,
@@ -4599,6 +4602,13 @@ copy_move_file (CopyMoveJob   *copy_job,
     if (unique_names)
     {
         dest = get_unique_target_file (src, dest_dir, job->cancellable, *dest_fs_type, unique_name_nr++);
+    }
+    else if (precomputed_dest != NULL)
+    {
+        /* Set by the cross-filesystem move fallback when the user already
+         * picked a new name during move_file_prepare. Reuse that exact
+         * destination so the conflict dialog is not shown a second time. */
+        dest = g_object_ref (precomputed_dest);
     }
     else if (copy_job->target_name != NULL)
     {
@@ -5050,6 +5060,7 @@ copy_files (CopyMoveJob  *job,
         {
             if (!copy_move_file (job, src, dest,
                                  same_fs, unique_names,
+                                 NULL,
                                  &dest_fs_type,
                                  source_info, transfer_info,
                                  job->debuting_files,
@@ -5268,19 +5279,33 @@ report_preparing_move_progress (CopyMoveJob *move_job,
 typedef struct
 {
     GFile *file;
+    /* If set, the copy+delete move phase must use this destination
+     * (e.g. after the user picked a new name in move_file_prepare). */
+    GFile *precomputed_dest;
     gboolean overwrite;
 } MoveFileCopyFallback;
 
-G_DEFINE_AUTOPTR_CLEANUP_FUNC (MoveFileCopyFallback, g_free)
+static void
+move_file_copy_fallback_free (MoveFileCopyFallback *fallback)
+{
+    g_clear_object (&fallback->precomputed_dest);
+    g_free (fallback);
+}
+
+G_DEFINE_AUTOPTR_CLEANUP_FUNC (MoveFileCopyFallback, move_file_copy_fallback_free)
 
 static MoveFileCopyFallback *
 move_copy_file_callback_new (GFile    *file,
+                             GFile    *precomputed_dest,
                              gboolean  overwrite)
 {
     MoveFileCopyFallback *fallback;
 
     fallback = g_new (MoveFileCopyFallback, 1);
     fallback->file = file;
+    fallback->precomputed_dest = precomputed_dest != NULL
+                                 ? g_object_ref (precomputed_dest)
+                                 : NULL;
     fallback->overwrite = overwrite;
 
     return fallback;
@@ -5528,6 +5553,7 @@ move_file_prepare (CopyMoveJob  *move_job,
                  IS_IO_ERROR (error, NOT_SUPPORTED))
         {
             fallback = move_copy_file_callback_new (src,
+                                                    dest,
                                                     overwrite);
             *fallback_files = g_list_prepend (*fallback_files, fallback);
         }
@@ -5632,7 +5658,9 @@ move_files (CopyMoveJob   *job,
         }
 
         if (!copy_move_file (job, src, job->destination,
-                             same_fs, FALSE, dest_fs_type,
+                             same_fs, FALSE,
+                             fallback->precomputed_dest,
+                             dest_fs_type,
                              source_info, transfer_info,
                              job->debuting_files,
                              fallback->overwrite, FALSE))
