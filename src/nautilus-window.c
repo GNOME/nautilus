@@ -438,7 +438,8 @@ get_slot_with_open_location (NautilusWindow *self,
         NautilusWindowSlot *slot = l->data;
         GFile *slot_location = nautilus_window_slot_get_location (slot);
 
-        if (g_file_equal (location, slot_location))
+        if (slot_location != NULL &&
+            g_file_equal (location, slot_location))
         {
             return slot;
         }
