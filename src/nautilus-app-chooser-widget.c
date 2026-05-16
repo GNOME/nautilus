@@ -256,18 +256,11 @@ nautilus_app_chooser_widget_add_default (NautilusAppChooserWidget *self,
 static void
 update_no_applications_label (NautilusAppChooserWidget *self)
 {
-    char *text = NULL, *desc = NULL;
     const char *string;
 
     if (self->default_text == NULL)
     {
-        if (self->content_type)
-        {
-            desc = g_content_type_get_description (self->content_type);
-        }
-
-        string = text = g_strdup_printf (_("No apps found for “%s”."), desc);
-        g_free (desc);
+        string = _("No Results Found");
     }
     else
     {
@@ -275,8 +268,6 @@ update_no_applications_label (NautilusAppChooserWidget *self)
     }
 
     gtk_label_set_text (GTK_LABEL (self->no_apps_label), string);
-
-    g_free (text);
 }
 
 static void
