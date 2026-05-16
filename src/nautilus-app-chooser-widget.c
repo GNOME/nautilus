@@ -798,9 +798,12 @@ bind_header_cb (GtkListItemFactory *factory,
     GtkListHeader *header = GTK_LIST_HEADER (list_item);
     GtkWidget *label;
     NautilusAppItem *app_item;
+    const char *domain = textdomain (NULL);
 
     label = gtk_list_header_get_child (header);
     app_item = gtk_list_header_get_item (header);
+
+    textdomain ("gtk40");
 
     if (app_item->is_default)
     {
@@ -818,6 +821,8 @@ bind_header_cb (GtkListItemFactory *factory,
     {
         gtk_label_set_label (GTK_LABEL (label), _("Other Apps"));
     }
+
+    textdomain (domain);
 }
 
 static void
