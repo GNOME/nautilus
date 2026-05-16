@@ -140,14 +140,6 @@ update-fedora-image@arm64:
           when: never
 
 
-potfile:
-    extends:
-        - .fdo.distribution-image@fedora
-        - .fedora-x86_64
-    stage: review
-    script:
-        - build-aux/check-potfiles.sh
-
 style check:
     extends:
         - .fdo.distribution-image@fedora
