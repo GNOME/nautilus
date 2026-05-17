@@ -35,11 +35,11 @@
 #include <glib/gi18n.h>
 #include <glib/gstdio.h>
 #include <gtk/gtk.h>
+#include <gxdp.h>
 #include <libportal/portal.h>
 #include <nautilus-extension.h>
 #include <sys/stat.h>
 #include <sys/types.h>
-#include <gxdp.h>
 
 #include "nautilus-bookmark-list.h"
 #include "nautilus-clipboard.h"

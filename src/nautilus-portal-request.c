@@ -1,18 +1,6 @@
 /*
- * Copyright © 2016 Red Hat, Inc
- *
- * This program is free software; you can redistribute it and/or
- * modify it under the terms of the GNU Lesser General Public
- * License as published by the Free Software Foundation; either
- * version 2 of the License, or (at your option) any later version.
- *
- * This library is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
- * Lesser General Public License for more details.
- *
- * You should have received a copy of the GNU Lesser General Public
- * License along with this library. If not, see <http://www.gnu.org/licenses/>.
+ * SPDX-FileCopyrightText: 2016 Red Hat, Inc
+ * SPDX-License-Identifier: GPL-2.0-or-later
  *
  * Authors:
  *       Alexander Larsson <alexl@redhat.com>
@@ -25,94 +13,105 @@
 
 static void request_skeleton_iface_init (XdpImplRequestIface *iface);
 
-G_DEFINE_TYPE_WITH_CODE (Request, request, XDP_IMPL_TYPE_REQUEST_SKELETON,
+struct _NautilusPortalRequest
+{
+    XdpImplRequestSkeleton parent_instance;
+
+    gboolean exported;
+    char *sender;
+    char *app_id;
+    char *id;
+};
+
+G_DEFINE_TYPE_WITH_CODE (NautilusPortalRequest, nautilus_portal_request, XDP_IMPL_TYPE_REQUEST_SKELETON,
                          G_IMPLEMENT_INTERFACE (XDP_IMPL_TYPE_REQUEST, request_skeleton_iface_init))
 
 static gboolean
-handle_close (XdpImplRequest *object,
+handle_close (XdpImplRequest        *object,
               GDBusMethodInvocation *invocation)
 {
-  Request *request = (Request *)object;
-  g_autoptr(GError) error = NULL;
+    NautilusPortalRequest *self = (NautilusPortalRequest *) object;
+    g_autoptr (GError) error = NULL;
 
-  if (request->exported)
-    request_unexport (request);
+    if (self->exported)
+    {
+        nautilus_portal_request_unexport (self);
+    }
 
-  xdp_impl_request_complete_close (XDP_IMPL_REQUEST (request), invocation);
+    xdp_impl_request_complete_close (XDP_IMPL_REQUEST (self), invocation);
 
-  return TRUE;
+    return TRUE;
 }
 
 static void
 request_skeleton_iface_init (XdpImplRequestIface *iface)
 {
-  iface->handle_close = handle_close;
+    iface->handle_close = handle_close;
 }
 
 static void
-request_init (Request *request)
+nautilus_portal_request_init (NautilusPortalRequest *self)
 {
 }
 
 static void
-request_finalize (GObject *object)
+portal_request_finalize (GObject *object)
 {
-  Request *request = (Request *)object;
+    NautilusPortalRequest *self = (NautilusPortalRequest *) object;
 
-  g_free (request->sender);
-  g_free (request->app_id);
-  g_free (request->id);
+    g_free (self->sender);
+    g_free (self->app_id);
+    g_free (self->id);
 
-  G_OBJECT_CLASS (request_parent_class)->finalize (object);
+    G_OBJECT_CLASS (nautilus_portal_request_parent_class)->finalize (object);
 }
 
 static void
-request_class_init (RequestClass *klass)
+nautilus_portal_request_class_init (NautilusPortalRequestClass *klass)
 {
-  GObjectClass *gobject_class;
+    GObjectClass *gobject_class;
 
-  gobject_class = G_OBJECT_CLASS (klass);
-  gobject_class->finalize  = request_finalize;
+    gobject_class = G_OBJECT_CLASS (klass);
+    gobject_class->finalize = portal_request_finalize;
 }
 
-Request *
-request_new (const char *sender,
-             const char *app_id,
-             const char *id)
+NautilusPortalRequest *
+nautilus_portal_request_new (const char *sender,
+                             const char *app_id,
+                             const char *id)
 {
-  Request *request;
+    NautilusPortalRequest *self = g_object_new (nautilus_portal_request_get_type (), NULL);
 
-  request = g_object_new (request_get_type (), NULL);
-  request->sender = g_strdup (sender);
-  request->app_id = g_strdup (app_id);
-  request->id = g_strdup (id);
+    self->sender = g_strdup (sender);
+    self->app_id = g_strdup (app_id);
+    self->id = g_strdup (id);
 
-  return request;
+    return self;
 }
 
 void
-request_export (Request *request,
-                GDBusConnection *connection)
+nautilus_portal_request_export (NautilusPortalRequest *self,
+                                GDBusConnection       *connection)
 {
-  g_autoptr(GError) error = NULL;
+    g_autoptr (GError) error = NULL;
 
-  if (!g_dbus_interface_skeleton_export (G_DBUS_INTERFACE_SKELETON (request),
-                                         connection,
-                                         request->id,
-                                         &error))
+    if (!g_dbus_interface_skeleton_export (G_DBUS_INTERFACE_SKELETON (self),
+                                           connection,
+                                           self->id,
+                                           &error))
     {
-      g_warning ("error exporting request: %s\n", error->message);
-      g_clear_error (&error);
+        g_warning ("error exporting request: %s\n", error->message);
+        g_clear_error (&error);
     }
 
-  g_object_ref (request);
-  request->exported = TRUE;
+    g_object_ref (self);
+    self->exported = TRUE;
 }
 
 void
-request_unexport (Request *request)
+nautilus_portal_request_unexport (NautilusPortalRequest *self)
 {
-  request->exported = FALSE;
-  g_dbus_interface_skeleton_unexport (G_DBUS_INTERFACE_SKELETON (request));
-  g_object_unref (request);
+    self->exported = FALSE;
+    g_dbus_interface_skeleton_unexport (G_DBUS_INTERFACE_SKELETON (self));
+    g_object_unref (self);
 }

@@ -23,32 +23,19 @@
 
 #include "xdg-desktop-portal-dbus.h"
 
-typedef struct _Request Request;
-typedef struct _RequestClass RequestClass;
+#define NAUTILUS_TYPE_PORTAL_REQUEST (nautilus_portal_request_get_type ())
+G_DECLARE_FINAL_TYPE (NautilusPortalRequest,
+                      nautilus_portal_request,
+                      NAUTILUS, PORTAL_REQUEST,
+                      XdpImplRequestSkeleton)
 
-struct _Request
-{
-  XdpImplRequestSkeleton parent_instance;
+NautilusPortalRequest *
+nautilus_portal_request_new (const char *sender,
+                             const char *app_id,
+                             const char *id);
 
-  gboolean exported;
-  char *sender;
-  char *app_id;
-  char *id;
-};
-
-struct _RequestClass
-{
-  XdpImplRequestSkeletonClass parent_class;
-};
-
-GType request_get_type (void) G_GNUC_CONST;
-
-G_DEFINE_AUTOPTR_CLEANUP_FUNC (Request, g_object_unref)
-
-Request *request_new (const char *sender,
-                      const char *app_id,
-                      const char *id);
-
-void request_export (Request *request,
-                     GDBusConnection *connection);
-void request_unexport (Request *request);
+void
+nautilus_portal_request_export (NautilusPortalRequest *request,
+                                GDBusConnection       *connection);
+void
+nautilus_portal_request_unexport (NautilusPortalRequest *request);
