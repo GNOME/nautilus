@@ -43,7 +43,7 @@ typedef struct
     NautilusPortal *self;
 
     GDBusMethodInvocation *invocation;
-    Request *request;
+    NautilusPortalRequest *request;
 
     GxdpExternalWindow *external_parent;
     GtkWindow *window;
@@ -123,7 +123,7 @@ complete_file_chooser (FileChooserData *data,
         g_assert_not_reached ();
     }
 
-    request_unexport (data->request);
+    nautilus_portal_request_unexport (data->request);
 
     save_window_size (data->window);
     gtk_window_destroy (data->window);
@@ -614,11 +614,12 @@ handle_file_chooser_methods (XdpImplFileChooser    *object,
     gtk_window_present (data->window);
 
     /* Setup request. */
-    data->request = request_new (g_dbus_method_invocation_get_sender (invocation),
-                                 arg_app_id,
-                                 arg_handle);
+    data->request = nautilus_portal_request_new (g_dbus_method_invocation_get_sender (invocation),
+                                                 arg_app_id,
+                                                 arg_handle);
     g_signal_connect (data->request, "handle-close", G_CALLBACK (handle_close), data);
-    request_export (data->request, g_dbus_method_invocation_get_connection (invocation));
+    nautilus_portal_request_export (data->request,
+                                    g_dbus_method_invocation_get_connection (invocation));
 
     return G_DBUS_METHOD_INVOCATION_HANDLED;
 }
