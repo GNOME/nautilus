@@ -32,6 +32,5 @@ G_DECLARE_FINAL_TYPE (NautilusProgressPersistenceHandler, nautilus_progress_pers
 
 /* @app is actually a NautilusApplication, but we need to avoid circular dependencies */
 NautilusProgressPersistenceHandler * nautilus_progress_persistence_handler_new (GObject *app);
-void nautilus_progress_persistence_handler_make_persistent (NautilusProgressPersistenceHandler *self);
 
 G_END_DECLS
