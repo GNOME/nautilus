@@ -3773,15 +3773,6 @@ nautilus_properties_present_dialog (NautilusFileList *files,
 }
 
 static void
-close_popout_window (gpointer user_data)
-{
-    GtkWindow *window = user_data;
-
-    gtk_window_close (window);
-    g_application_release (g_application_get_default ());
-}
-
-static void
 popout_window_clicked (NautilusPropertiesWidget *self)
 {
     GtkWidget *previous_container;
@@ -3805,12 +3796,13 @@ popout_window_clicked (NautilusPropertiesWidget *self)
     gtk_window_set_display (new_window, gtk_widget_get_display (previous_container));
     self->dialog = NULL;
     gtk_widget_set_visible (self->popout_button, FALSE);
-    g_application_hold (g_application_get_default ());
 
     /* Cleanup previous container, then connect new one */
     g_signal_emit (self, signals[HIDE], 0);
     g_signal_connect_swapped (self, "hide-properties",
-                              G_CALLBACK (close_popout_window), new_window);
+                              G_CALLBACK (gtk_window_close), new_window);
+    g_signal_connect_object (g_application_get_default (), "last-window-closed",
+                             G_CALLBACK (gtk_window_close), new_window, G_CONNECT_SWAPPED);
 
     gtk_window_present (new_window);
 }
