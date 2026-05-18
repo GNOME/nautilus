@@ -121,13 +121,10 @@ progress_persistence_handler_update_notification (NautilusProgressPersistenceHan
     g_free (body);
 }
 
-void
-nautilus_progress_persistence_handler_make_persistent (NautilusProgressPersistenceHandler *self)
+static void
+make_persistent (NautilusProgressPersistenceHandler *self)
 {
-    GList *windows;
-
-    windows = nautilus_application_get_windows (self->app);
-    if (self->active_infos > 0 && windows == NULL)
+    if (self->active_infos > 0)
     {
         progress_persistence_handler_update_notification (self);
     }
@@ -362,6 +359,8 @@ nautilus_progress_persistence_handler_init (NautilusProgressPersistenceHandler *
     self->manager = nautilus_progress_info_manager_dup_singleton ();
     g_signal_connect (self->manager, "new-progress-info",
                       G_CALLBACK (new_progress_info_cb), self);
+    g_signal_connect_object (g_application_get_default (), "last-window-closed",
+                             G_CALLBACK (make_persistent), self, G_CONNECT_SWAPPED);
 }
 
 static void
