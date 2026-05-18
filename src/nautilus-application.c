@@ -99,6 +99,14 @@ struct _NautilusApplication
 
 G_DEFINE_FINAL_TYPE (NautilusApplication, nautilus_application, ADW_TYPE_APPLICATION)
 
+enum
+{
+    LAST_WINDOW_CLOSED,
+    LAST_SIGNAL
+};
+
+static guint signals[LAST_SIGNAL];
+
 void
 nautilus_application_set_accelerator (GApplication *app,
                                       const gchar  *action_name,
@@ -1197,6 +1205,7 @@ nautilus_application_window_removed (GtkApplication *app,
     {
         nautilus_previewer_call_close ();
         nautilus_progress_persistence_handler_make_persistent (self->progress_handler);
+        g_signal_emit (self, signals[LAST_WINDOW_CLOSED], 0);
     }
 
     schedule_dbus_location_update (self);
@@ -1241,6 +1250,14 @@ nautilus_application_class_init (NautilusApplicationClass *class)
     gtkapp_class = GTK_APPLICATION_CLASS (class);
     gtkapp_class->window_added = nautilus_application_window_added;
     gtkapp_class->window_removed = nautilus_application_window_removed;
+
+    signals[LAST_WINDOW_CLOSED] = g_signal_new ("last-window-closed",
+                                                G_TYPE_FROM_CLASS (object_class),
+                                                G_SIGNAL_RUN_LAST,
+                                                0,
+                                                NULL, NULL,
+                                                g_cclosure_marshal_VOID__VOID,
+                                                G_TYPE_NONE, 0);
 }
 
 NautilusApplication *
