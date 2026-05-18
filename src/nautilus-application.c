@@ -1203,7 +1203,6 @@ nautilus_application_window_removed (GtkApplication *app,
     /* if this was the last window, close the previewer */
     if (self->windows == NULL)
     {
-        nautilus_previewer_call_close ();
         nautilus_progress_persistence_handler_make_persistent (self->progress_handler);
         g_signal_emit (self, signals[LAST_WINDOW_CLOSED], 0);
     }

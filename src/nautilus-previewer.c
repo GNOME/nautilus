@@ -58,6 +58,7 @@ static void real_call_show_file (const gchar *uri,
                                  const gchar *window_handle,
                                  gboolean     close_if_already_visible,
                                  const char  *activation_token);
+static void previewer_call_close (void);
 static void create_new_bus (void);
 static void previewer_selection_event (GDBusConnection *connection,
                                        const gchar     *sender_name,
@@ -267,6 +268,8 @@ nautilus_previewer_call_show_file (const gchar        *uri,
     /* Otherwise, obtain a new window handle. */
     clear_exported_window_handle ();
     g_set_weak_pointer (&current_window, window);
+    g_signal_connect_object (g_application_get_default (), "last-window-closed",
+                             G_CALLBACK (previewer_call_close), window, 0);
 
     GdkSurface *gdk_surface = gtk_native_get_surface (GTK_NATIVE (window));
 #ifdef GDK_WINDOWING_X11
@@ -337,8 +340,8 @@ real_call_show_file (const gchar *uri,
                        NULL);
 }
 
-void
-nautilus_previewer_call_close (void)
+static void
+previewer_call_close (void)
 {
     if (!ensure_previewer_proxy ())
     {
