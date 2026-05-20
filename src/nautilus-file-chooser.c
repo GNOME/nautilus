@@ -178,6 +178,12 @@ mode_can_accept_current_directory (NautilusMode  mode,
 }
 
 static gboolean
+file_chooser_has_filename_entry (NautilusFileChooser *self)
+{
+    return (self->mode == NAUTILUS_MODE_SAVE_FILE);
+}
+
+static gboolean
 nautilus_file_chooser_can_accept (NautilusFileChooser *self,
                                   NautilusFileList    *files,
                                   GFile               *location,
@@ -308,6 +314,19 @@ action_accept (GSimpleAction *action,
 
             emit_accepted (self, &(GList){ .data = location });
         }
+    }
+}
+
+static void
+action_focus_entry (GSimpleAction *action,
+                    GVariant      *parameter,
+                    gpointer       user_data)
+{
+    NautilusFileChooser *self = user_data;
+
+    if (file_chooser_has_filename_entry (self))
+    {
+        open_filename_entry (self);
     }
 }
 
@@ -797,6 +816,7 @@ nautilus_file_chooser_constructed (GObject *object)
 const GActionEntry chooser_action_entries[] =
 {
     { .name = "accept", .activate = action_accept },
+    { .name = "focus-entry", .activate = action_focus_entry },
 };
 
 static void
@@ -915,6 +935,12 @@ nautilus_file_chooser_class_init (NautilusFileChooserClass *klass)
     gtk_widget_class_bind_template_callback (widget_class, on_validator_will_overwrite_changed);
     gtk_widget_class_bind_template_callback (widget_class, on_file_drop);
     gtk_widget_class_bind_template_callback (widget_class, get_filter_width_chars);
+
+    gtk_widget_class_add_binding_action (widget_class, GDK_KEY_e, GDK_CONTROL_MASK,
+                                         "chooser.focus-entry", NULL);
+    /* This shortcut was provided via a mnemonic by the GTK file chooser */
+    gtk_widget_class_add_binding_action (widget_class, GDK_KEY_n, GDK_ALT_MASK,
+                                         "chooser.focus-entry", NULL);
 
     properties[PROP_MODE] =
         g_param_spec_enum ("mode", NULL, NULL,
