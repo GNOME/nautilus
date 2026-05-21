@@ -154,287 +154,285 @@ template $NautilusBatchRenameDialog: Adw.Dialog {
     }
 
     content: Box {
-      Box {
-        orientation: vertical;
-        spacing: 6;
+      orientation: vertical;
+      spacing: 6;
+      hexpand: true;
+
+      Box stack_switcher {
+        orientation: horizontal;
+        spacing: 12;
         hexpand: true;
+        halign: center;
+        margin-top: 18;
+        margin-bottom: 18;
+        margin-start: 12;
+        margin-end: 12;
 
-        Box stack_switcher {
-          orientation: horizontal;
-          spacing: 12;
-          hexpand: true;
-          halign: center;
-          margin-top: 18;
-          margin-bottom: 18;
-          margin-start: 12;
-          margin-end: 12;
-
-          CheckButton format_mode_button {
-            label: _("Rename _using a template");
-            use-underline: true;
-            active: true;
-            toggled => $batch_rename_dialog_mode_changed() swapped;
-          }
-
-          CheckButton replace_mode_button {
-            label: _("Find and replace _text");
-            use-underline: true;
-            group: format_mode_button;
-            toggled => $batch_rename_dialog_mode_changed() swapped;
-          }
+        CheckButton format_mode_button {
+          label: _("Rename _using a template");
+          use-underline: true;
+          active: true;
+          toggled => $batch_rename_dialog_mode_changed() swapped;
         }
 
-        Stack mode_stack {
-          vhomogeneous: false;
-          hhomogeneous: true;
-          transition-type: crossfade;
-          transition-duration: 100;
+        CheckButton replace_mode_button {
+          label: _("Find and replace _text");
+          use-underline: true;
+          group: format_mode_button;
+          toggled => $batch_rename_dialog_mode_changed() swapped;
+        }
+      }
 
-          StackPage {
-            name: "format";
+      Stack mode_stack {
+        vhomogeneous: false;
+        hhomogeneous: true;
+        transition-type: crossfade;
+        transition-duration: 100;
 
-            /* Translators: Translators: This is a noun, not a verb */
-            title: _("Format");
+        StackPage {
+          name: "format";
 
-            child: Box {
-              orientation: vertical;
+          /* Translators: Translators: This is a noun, not a verb */
+          title: _("Format");
+
+          child: Box {
+            orientation: vertical;
+            margin-start: 18;
+            margin-end: 18;
+            margin-bottom: 12;
+            spacing: 12;
+
+            Adw.Clamp {
+              child: Box {
+                Entry name_entry {
+                  hexpand: true;
+                  activates-default: true;
+                  activate => $file_names_widget_on_activate() swapped;
+                }
+
+                MenuButton {
+                  menu-model: add_tag_menu;
+
+                  child: Adw.ButtonContent {
+                    icon-name: "list-add-symbolic";
+                    label: _("Add");
+                  };
+                }
+
+                styles [
+                  "linked",
+                ]
+              };
+            }
+
+            Revealer numbering_revealer {
+              halign: center;
+
+              child: Box numbering_box {
+                orientation: horizontal;
+                spacing: 12;
+
+                Label numbering_label {
+                  label: _("Automatic Numbering Order");
+                }
+
+                MenuButton numbering_order_button {
+                  label: _("Original Name (Ascending)");
+                  menu-model: numbering_order_menu;
+                  always-show-arrow: true;
+                }
+              };
+            }
+          };
+        }
+
+        StackPage {
+          name: "replace";
+          title: C_("title", "Replace");
+
+          child: Adw.Clamp {
+            child: Grid replace_stack_child {
               margin-start: 18;
               margin-end: 18;
               margin-bottom: 12;
-              spacing: 12;
+              hexpand: true;
+              row-spacing: 12;
+              column-spacing: 6;
 
-              Adw.Clamp {
-                child: Box {
-                  Entry name_entry {
-                    hexpand: true;
-                    activates-default: true;
-                    activate => $file_names_widget_on_activate() swapped;
-                  }
+              Label existing_text_label {
+                label: _("Existing Text");
+                sensitive: false;
 
-                  MenuButton {
-                    menu-model: add_tag_menu;
-
-                    child: Adw.ButtonContent {
-                      icon-name: "list-add-symbolic";
-                      label: _("Add");
-                    };
-                  }
-
-                  styles [
-                    "linked",
-                  ]
-                };
+                layout {
+                  column: "0";
+                  row: "0";
+                }
               }
 
-              Revealer numbering_revealer {
-                halign: center;
-
-                child: Box numbering_box {
-                  orientation: horizontal;
-                  spacing: 12;
-
-                  Label numbering_label {
-                    label: _("Automatic Numbering Order");
-                  }
-
-                  MenuButton numbering_order_button {
-                    label: _("Original Name (Ascending)");
-                    menu-model: numbering_order_menu;
-                    always-show-arrow: true;
-                  }
-                };
-              }
-            };
-          }
-
-          StackPage {
-            name: "replace";
-            title: C_("title", "Replace");
-
-            child: Adw.Clamp {
-              child: Grid replace_stack_child {
-                margin-start: 18;
-                margin-end: 18;
-                margin-bottom: 12;
+              Entry find_entry {
                 hexpand: true;
-                row-spacing: 12;
-                column-spacing: 6;
+                activates-default: true;
+                changed => $file_names_widget_entry_on_changed() swapped;
+                activate => $file_names_widget_on_activate() swapped;
 
-                Label existing_text_label {
-                  label: _("Existing Text");
-                  sensitive: false;
-
-                  layout {
-                    column: "0";
-                    row: "0";
-                  }
+                layout {
+                  column: "1";
+                  row: "0";
+                  column-span: "3";
                 }
 
-                Entry find_entry {
-                  hexpand: true;
-                  activates-default: true;
-                  changed => $file_names_widget_entry_on_changed() swapped;
-                  activate => $file_names_widget_on_activate() swapped;
+                accessibility {
+                  labelled-by: [
+                    existing_text_label,
+                  ];
+                }
+              }
 
-                  layout {
-                    column: "1";
-                    row: "0";
-                    column-span: "3";
-                  }
+              Label replace_label {
+                label: _("Replace With");
+                sensitive: false;
 
-                  accessibility {
-                    labelled-by: [
-                      existing_text_label,
-                    ];
-                  }
+                layout {
+                  column: "0";
+                  row: "1";
+                }
+              }
+
+              Entry replace_entry {
+                hexpand: true;
+                changed => $file_names_widget_entry_on_changed() swapped;
+                activate => $file_names_widget_on_activate() swapped;
+
+                layout {
+                  column: "1";
+                  row: "1";
+                  column-span: "3";
                 }
 
-                Label replace_label {
-                  label: _("Replace With");
-                  sensitive: false;
-
-                  layout {
-                    column: "0";
-                    row: "1";
-                  }
+                accessibility {
+                  labelled-by: [
+                    replace_label,
+                  ];
                 }
-
-                Entry replace_entry {
-                  hexpand: true;
-                  changed => $file_names_widget_entry_on_changed() swapped;
-                  activate => $file_names_widget_on_activate() swapped;
-
-                  layout {
-                    column: "1";
-                    row: "1";
-                    column-span: "3";
-                  }
-
-                  accessibility {
-                    labelled-by: [
-                      replace_label,
-                    ];
-                  }
-                }
-              };
+              }
             };
-          }
+          };
+        }
 
-          StackPage {
-            /* This stack page is never shown and only exists for correct spacing */
-            name: "longest-string";
+        StackPage {
+          /* This stack page is never shown and only exists for correct spacing */
+          name: "longest-string";
 
-            child: Box {
-              margin-start: 70;
-              margin-end: 70;
-              orientation: vertical;
+          child: Box {
+            margin-start: 70;
+            margin-end: 70;
+            orientation: vertical;
 
-              Label {
-                /* Placeholder to soft-request a minimum dialog width without enforcing it */
-                label: "________________________________________________________________";
+            Label {
+              /* Placeholder to soft-request a minimum dialog width without enforcing it */
+              label: "________________________________________________________________";
+              ellipsize: end;
+            }
+
+            Box {
+              /* Holds longest string to prevent list view recycling from changing dialog width */
+              Label placeholder_label {
                 ellipsize: end;
               }
 
-              Box {
-                /* Holds longest string to prevent list view recycling from changing dialog width */
-                Label placeholder_label {
-                  ellipsize: end;
-                }
-
-                Label {
-                  ellipsize: end;
-                  label: bind placeholder_label.label;
-                }
+              Label {
+                ellipsize: end;
+                label: bind placeholder_label.label;
               }
-            };
-          }
+            }
+          };
         }
+      }
 
-        ScrolledWindow scrolled_window {
-          hexpand: false;
-          vexpand: true;
-          hscrollbar-policy: never;
-          propagate-natural-height: true;
-          propagate-natural-width: true;
+      ScrolledWindow scrolled_window {
+        hexpand: false;
+        vexpand: true;
+        hscrollbar-policy: never;
+        propagate-natural-height: true;
+        propagate-natural-width: true;
 
-          styles [
-            "batch-rename-preview",
-          ]
+        styles [
+          "batch-rename-preview",
+        ]
 
-          child: ListView batch_listview {
-            factory: BuilderListItemFactory {
-              template ListItem {
-                child: CenterBox batch_row {
-                  orientation: bind $batch_row_orientation(
-                    template.item as <$NautilusBatchRenameItem>
+        child: ListView batch_listview {
+          factory: BuilderListItemFactory {
+            template ListItem {
+              child: CenterBox batch_row {
+                orientation: bind $batch_row_orientation(
+                  template.item as <$NautilusBatchRenameItem>
+                    .dialog as <$NautilusBatchRenameDialog>
+                    .current-breakpoint,
+                  template.item as <$NautilusBatchRenameItem>.dialog
+                  ) as <Orientation>;
+                css-classes: bind $batch_row_conflict_css_name(
+                  template.item as <$NautilusBatchRenameItem>.has-conflict
+                  ) as <$GStrv>;
+
+                [start]
+                Label original_name_label {
+                  hexpand: true;
+                  xalign: 0;
+                  use-markup: true;
+                  ellipsize: end;
+                  max-width-chars: 0;
+                  label: bind template.item as <$NautilusBatchRenameItem>.name-before;
+                  tooltip-markup: bind template.item as <$NautilusBatchRenameItem>.name-before;
+                }
+
+                [center]
+                Image centered_arrow {
+                  icon-name: "arrow-next-symbolic";
+                  margin-start: 6;
+                  margin-end: 6;
+                  visible: bind $show_centered_arrow(
+                    template
+                      .item as <$NautilusBatchRenameItem>
                       .dialog as <$NautilusBatchRenameDialog>
                       .current-breakpoint,
                     template.item as <$NautilusBatchRenameItem>.dialog
-                    ) as <Orientation>;
-                  css-classes: bind $batch_row_conflict_css_name(
-                    template.item as <$NautilusBatchRenameItem>.has-conflict
-                    ) as <$GStrv>;
+                    ) as <bool>;
 
-                  [start]
-                  Label original_name_label {
+                  styles [
+                    "dimmed",
+                  ]
+                }
+
+                [end]
+                Box {
+                  Image {
+                    icon-name: "arrow-next-symbolic";
+                    margin-end: 6;
+                    visible: bind centered_arrow.visible inverted;
+                  }
+
+                  Label result_label {
                     hexpand: true;
                     xalign: 0;
                     use-markup: true;
                     ellipsize: end;
                     max-width-chars: 0;
-                    label: bind template.item as <$NautilusBatchRenameItem>.name-before;
-                    tooltip-markup: bind template.item as <$NautilusBatchRenameItem>.name-before;
+                    label: bind template.item as <$NautilusBatchRenameItem>.name-after;
+                    tooltip-markup: bind template.item as <$NautilusBatchRenameItem>.name-after;
                   }
-
-                  [center]
-                  Image centered_arrow {
-                    icon-name: "arrow-next-symbolic";
-                    margin-start: 6;
-                    margin-end: 6;
-                    visible: bind $show_centered_arrow(
-                      template
-                        .item as <$NautilusBatchRenameItem>
-                        .dialog as <$NautilusBatchRenameDialog>
-                        .current-breakpoint,
-                      template.item as <$NautilusBatchRenameItem>.dialog
-                      ) as <bool>;
-
-                    styles [
-                      "dimmed",
-                    ]
-                  }
-
-                  [end]
-                  Box {
-                    Image {
-                      icon-name: "arrow-next-symbolic";
-                      margin-end: 6;
-                      visible: bind centered_arrow.visible inverted;
-                    }
-
-                    Label result_label {
-                      hexpand: true;
-                      xalign: 0;
-                      use-markup: true;
-                      ellipsize: end;
-                      max-width-chars: 0;
-                      label: bind template.item as <$NautilusBatchRenameItem>.name-after;
-                      tooltip-markup: bind template.item as <$NautilusBatchRenameItem>.name-after;
-                    }
-                  }
-                };
-              }
-            };
-
-            show-separators: true;
-
-            model: NoSelection {
-              model: Gio.ListStore batch_listmodel {
-                item-type: typeof<$NautilusBatchRenameItem>;
+                }
               };
+            }
+          };
+
+          show-separators: true;
+
+          model: NoSelection {
+            model: Gio.ListStore batch_listmodel {
+              item-type: typeof<$NautilusBatchRenameItem>;
             };
           };
-        }
+        };
       }
     };
 
