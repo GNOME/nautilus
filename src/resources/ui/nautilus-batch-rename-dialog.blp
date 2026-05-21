@@ -114,6 +114,7 @@ template $NautilusBatchRenameDialog: Adw.Dialog {
   width-request: 360;
   height-request: 300;
   follows-content-size: true;
+  close-attempt => $batch_rename_dialog_on_cancel() swapped;
 
   Adw.Breakpoint narrow_breakpoint {
     condition ("max-width: 480sp")
@@ -127,28 +128,7 @@ template $NautilusBatchRenameDialog: Adw.Dialog {
 
   child: Adw.ToolbarView toolbar_view {
     [top]
-    Adw.HeaderBar {
-      show-start-title-buttons: false;
-      show-end-title-buttons: false;
-
-      [start]
-      Button {
-        label: _("_Cancel");
-        use-underline: true;
-        clicked => $batch_rename_dialog_on_cancel() swapped;
-      }
-
-      [end]
-      Button rename_button {
-        label: _("_Rename");
-        use-underline: true;
-        clicked => $prepare_batch_rename() swapped;
-
-        styles [
-          "suggested-action",
-        ]
-      }
-    }
+    Adw.HeaderBar {}
 
     content: Box {
       orientation: vertical;
@@ -466,5 +446,22 @@ template $NautilusBatchRenameDialog: Adw.Dialog {
         };
       }
     };
+
+    [bottom]
+    Adw.HeaderBar {
+      show-start-title-buttons: false;
+      show-end-title-buttons: false;
+
+      title-widget: Button rename_button {
+        label: _("_Rename");
+        use-underline: true;
+        clicked => $prepare_batch_rename() swapped;
+
+        styles [
+          "suggested-action",
+          "pill",
+        ]
+      };
+    }
   };
 }
