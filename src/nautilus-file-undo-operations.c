@@ -1952,36 +1952,60 @@ rec_permissions_redo_func (NautilusFileUndoInfo           *info,
 }
 
 static void
+rec_permissions_undo_thread (GTask        *task,
+                             gpointer      source_object,
+                             gpointer      task_data,
+                             GCancellable *cancellable)
+{
+    NautilusFileUndoInfoRecPermissions *self = NAUTILUS_FILE_UNDO_INFO_REC_PERMISSIONS (source_object);
+
+    for (GList *l = g_task_get_task_data (task); l != NULL; l = l->next)
+    {
+        char *item = l->data;
+        guint32 perm = GPOINTER_TO_UINT (g_hash_table_lookup (self->original_permissions, item));
+        g_autoptr (GFile) dest = g_file_new_for_uri (item);
+
+        g_file_set_attribute_uint32 (dest,
+                                     G_FILE_ATTRIBUTE_UNIX_MODE,
+                                     perm,
+                                     G_FILE_QUERY_INFO_NOFOLLOW_SYMLINKS,
+                                     cancellable,
+                                     NULL);
+    }
+
+    g_task_return_boolean (task, TRUE);
+}
+
+static void
+rec_permissions_undo_callback (GObject      *source,
+                               GAsyncResult *res,
+                               gpointer      user_data)
+{
+    NautilusFileUndoInfoRecPermissions *self = NAUTILUS_FILE_UNDO_INFO_REC_PERMISSIONS (source);
+    gboolean success = g_task_propagate_boolean (G_TASK (res), NULL);
+
+    file_undo_info_transfer_callback (NULL, success, self);
+}
+
+static void
 rec_permissions_undo_func (NautilusFileUndoInfo           *info,
                            GtkWindow                      *parent_window,
                            NautilusFileOperationsDBusData *dbus_data)
 {
     NautilusFileUndoInfoRecPermissions *self = NAUTILUS_FILE_UNDO_INFO_REC_PERMISSIONS (info);
+    g_autoptr (GList) files_list = g_hash_table_get_keys (self->original_permissions);
 
-    if (g_hash_table_size (self->original_permissions) > 0)
+    if (files_list == NULL)
     {
-        GList *gfiles_list;
-        guint32 perm;
-        GList *l;
-        GFile *dest;
-        char *item;
-
-        gfiles_list = g_hash_table_get_keys (self->original_permissions);
-        for (l = gfiles_list; l != NULL; l = l->next)
-        {
-            item = l->data;
-            perm = GPOINTER_TO_UINT (g_hash_table_lookup (self->original_permissions, item));
-            dest = g_file_new_for_uri (item);
-            g_file_set_attribute_uint32 (dest,
-                                         G_FILE_ATTRIBUTE_UNIX_MODE,
-                                         perm, G_FILE_QUERY_INFO_NOFOLLOW_SYMLINKS, NULL, NULL);
-            g_object_unref (dest);
-        }
-
-        g_list_free (gfiles_list);
-        /* Here we must do what's necessary for the callback */
-        file_undo_info_transfer_callback (NULL, TRUE, self);
+        return;
     }
+
+    g_autoptr (GTask) task = g_task_new (G_OBJECT (self), NULL,
+                                         rec_permissions_undo_callback,
+                                         NULL);
+    g_task_set_task_data (task, g_steal_pointer (&files_list), (GDestroyNotify) g_list_free);
+
+    g_task_run_in_thread (task, rec_permissions_undo_thread);
 }
 
 static void
