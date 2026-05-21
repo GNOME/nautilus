@@ -47,9 +47,8 @@ struct _NautilusBatchRenameDialog
     GtkWidget *name_entry;
     GtkWidget *rename_button;
     GtkWidget *find_entry;
-    GtkWidget *mode_stack;
+    AdwViewStack *mode_stack;
     GtkWidget *replace_entry;
-    GtkWidget *format_mode_button;
     GtkWidget *numbering_order_button;
     GtkWidget *numbering_revealer;
     GtkRevealer *conflict_revealer;
@@ -1092,29 +1091,22 @@ update_display_text (NautilusBatchRenameDialog *dialog)
 }
 
 static void
-batch_rename_dialog_mode_changed (NautilusBatchRenameDialog *dialog)
+batch_rename_dialog_mode_changed (AdwViewStack              *stack,
+                                  GParamSpec                *psepc,
+                                  NautilusBatchRenameDialog *dialog)
 {
-    if (gtk_check_button_get_active (GTK_CHECK_BUTTON (dialog->format_mode_button)))
-    {
-        gtk_stack_set_visible_child_name (GTK_STACK (dialog->mode_stack), "format");
+    const char *visible = adw_view_stack_get_visible_child_name (stack);
 
+    if (g_str_equal (visible, "format"))
+    {
         dialog->mode = NAUTILUS_BATCH_RENAME_DIALOG_FORMAT;
 
-        if (gtk_widget_get_root (GTK_WIDGET (dialog)) != NULL)
-        {
-            gtk_entry_grab_focus_without_selecting (GTK_ENTRY (dialog->name_entry));
-        }
+        gtk_entry_grab_focus_without_selecting (GTK_ENTRY (dialog->name_entry));
     }
-    else
+    else if (g_str_equal (visible, "replace"))
     {
-        gtk_stack_set_visible_child_name (GTK_STACK (dialog->mode_stack), "replace");
-
         dialog->mode = NAUTILUS_BATCH_RENAME_DIALOG_REPLACE;
-
-        if (gtk_widget_get_root (GTK_WIDGET (dialog)) != NULL)
-        {
-            gtk_entry_grab_focus_without_selecting (GTK_ENTRY (dialog->find_entry));
-        }
+        gtk_entry_grab_focus_without_selecting (GTK_ENTRY (dialog->find_entry));
     }
 
     update_display_text (dialog);
@@ -1553,7 +1545,6 @@ nautilus_batch_rename_dialog_class_init (NautilusBatchRenameDialogClass *klass)
     gtk_widget_class_bind_template_child (widget_class, NautilusBatchRenameDialog, find_entry);
     gtk_widget_class_bind_template_child (widget_class, NautilusBatchRenameDialog, replace_entry);
     gtk_widget_class_bind_template_child (widget_class, NautilusBatchRenameDialog, mode_stack);
-    gtk_widget_class_bind_template_child (widget_class, NautilusBatchRenameDialog, format_mode_button);
     gtk_widget_class_bind_template_child (widget_class, NautilusBatchRenameDialog, numbering_order_button);
     gtk_widget_class_bind_template_child (widget_class, NautilusBatchRenameDialog, numbering_order_menu);
     gtk_widget_class_bind_template_child (widget_class, NautilusBatchRenameDialog, numbering_revealer);
@@ -1566,7 +1557,6 @@ nautilus_batch_rename_dialog_class_init (NautilusBatchRenameDialogClass *klass)
 
     gtk_widget_class_bind_template_callback (widget_class, file_names_widget_on_activate);
     gtk_widget_class_bind_template_callback (widget_class, file_names_widget_entry_on_changed);
-    gtk_widget_class_bind_template_callback (widget_class, batch_rename_dialog_mode_changed);
     gtk_widget_class_bind_template_callback (widget_class, select_next_conflict_up);
     gtk_widget_class_bind_template_callback (widget_class, select_next_conflict_down);
     gtk_widget_class_bind_template_callback (widget_class, batch_rename_dialog_on_cancel);
@@ -1715,6 +1705,8 @@ nautilus_batch_rename_dialog_init (NautilusBatchRenameDialog *self)
                              "delete-text", G_CALLBACK (on_delete_text), self, 0);
     g_signal_connect_object (gtk_editable_get_delegate (GTK_EDITABLE (self->name_entry)),
                              "insert-text", G_CALLBACK (on_insert_text), self, 0);
+    g_signal_connect_object (self->mode_stack, "notify::visible-child",
+                             G_CALLBACK (batch_rename_dialog_mode_changed), self, 0);
 
     self->metadata_cancellable = g_cancellable_new ();
 }
