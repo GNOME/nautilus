@@ -390,9 +390,21 @@ file_info_ready_callback (GObject      *source_object,
     ThumbnailCacheItem *cache_item = thumbnail_cache_get (self->source);
 
     self->source_mtime = g_file_info_get_attribute_uint64 (info, G_FILE_ATTRIBUTE_TIME_MODIFIED);
-    self->source_content_type = g_file_info_has_attribute (info, G_FILE_ATTRIBUTE_STANDARD_CONTENT_TYPE)
-                                ? g_strdup (g_file_info_get_content_type (info))
-                                : g_strdup ("application/octet-stream");
+
+    if (g_file_info_has_attribute (info, G_FILE_ATTRIBUTE_STANDARD_CONTENT_TYPE))
+    {
+        self->source_content_type = g_strdup (g_file_info_get_content_type (info));
+    }
+    else if (g_file_info_has_attribute (info, G_FILE_ATTRIBUTE_STANDARD_FAST_CONTENT_TYPE))
+    {
+        self->source_content_type =
+            g_strdup (g_file_info_get_attribute_string (info,
+                                                        G_FILE_ATTRIBUTE_STANDARD_FAST_CONTENT_TYPE));
+    }
+    else
+    {
+        self->source_content_type = g_strdup ("application/octet-stream");
+    }
 
     /* Look in nautilus's thumbnail cache */
     if (cache_item != NULL &&
@@ -613,6 +625,7 @@ nautilus_image_set_source (NautilusImage *self,
         g_file_query_info_async (self->source,
                                  G_FILE_ATTRIBUTE_STANDARD_SIZE ","
                                  G_FILE_ATTRIBUTE_STANDARD_CONTENT_TYPE ","
+                                 G_FILE_ATTRIBUTE_STANDARD_FAST_CONTENT_TYPE ","
                                  G_FILE_ATTRIBUTE_ACCESS_CAN_READ ","
                                  G_FILE_ATTRIBUTE_TIME_MODIFIED ","
                                  G_FILE_ATTRIBUTE_THUMBNAIL_IS_VALID ","
