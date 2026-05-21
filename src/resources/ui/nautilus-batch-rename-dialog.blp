@@ -126,9 +126,6 @@ template $NautilusBatchRenameDialog: Adw.Dialog {
   }
 
   child: Adw.ToolbarView toolbar_view {
-    reveal-bottom-bars: false;
-    bottom-bar-style: raised;
-
     [top]
     Adw.HeaderBar {
       show-start-title-buttons: false;
@@ -199,7 +196,6 @@ template $NautilusBatchRenameDialog: Adw.Dialog {
             orientation: vertical;
             margin-start: 18;
             margin-end: 18;
-            margin-bottom: 12;
             spacing: 12;
 
             Adw.Clamp {
@@ -254,7 +250,6 @@ template $NautilusBatchRenameDialog: Adw.Dialog {
             child: Grid replace_stack_child {
               margin-start: 18;
               margin-end: 18;
-              margin-bottom: 12;
               hexpand: true;
               row-spacing: 12;
               column-spacing: 6;
@@ -349,6 +344,42 @@ template $NautilusBatchRenameDialog: Adw.Dialog {
         }
       }
 
+      Revealer conflict_revealer {
+        transition-type: slide_down;
+
+        Box {
+          margin-start: 18;
+          margin-end: 18;
+
+          styles [
+            "toolbar",
+          ]
+
+          Label conflict_label {
+            hexpand: true;
+            xalign: 0;
+          }
+
+          Box {
+            styles [
+              "linked",
+            ]
+
+            Button conflict_down {
+              icon-name: "go-down-symbolic";
+              tooltip-text: _("Next Conflict");
+              clicked => $select_next_conflict_down() swapped;
+            }
+
+            Button conflict_up {
+              icon-name: "go-up-symbolic";
+              tooltip-text: _("Previous Conflict");
+              clicked => $select_next_conflict_up() swapped;
+            }
+          }
+        }
+      }
+
       ScrolledWindow scrolled_window {
         hexpand: false;
         vexpand: true;
@@ -435,39 +466,5 @@ template $NautilusBatchRenameDialog: Adw.Dialog {
         };
       }
     };
-
-    [bottom]
-    Box {
-      styles [
-        "toolbar",
-      ]
-
-      Label conflict_label {
-        hexpand: true;
-        xalign: 0;
-      }
-
-      Box {
-        Button conflict_down {
-          icon-name: "go-down-symbolic";
-          tooltip-text: _("Next Conflict");
-          clicked => $select_next_conflict_down() swapped;
-
-          styles [
-            "flat",
-          ]
-        }
-
-        Button conflict_up {
-          icon-name: "go-up-symbolic";
-          tooltip-text: _("Previous Conflict");
-          clicked => $select_next_conflict_up() swapped;
-
-          styles [
-            "flat",
-          ]
-        }
-      }
-    }
   };
 }
