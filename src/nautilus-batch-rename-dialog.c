@@ -38,6 +38,7 @@ struct _NautilusBatchRenameDialog
     GtkWidget *format_mode_button;
     GtkWidget *numbering_order_button;
     GtkWidget *numbering_revealer;
+    GtkRevealer *conflict_revealer;
     GtkWidget *conflict_label;
     GtkWidget *conflict_down;
     GtkWidget *conflict_up;
@@ -657,7 +658,7 @@ update_listbox (NautilusBatchRenameDialog *dialog)
 
         gtk_widget_set_sensitive (dialog->rename_button, FALSE);
 
-        adw_toolbar_view_set_reveal_bottom_bars (dialog->toolbar_view, TRUE);
+        gtk_revealer_set_reveal_child (dialog->conflict_revealer, TRUE);
 
         dialog->selected_conflict = 0;
         dialog->conflicts_number = g_list_length (dialog->duplicates);
@@ -677,7 +678,7 @@ update_listbox (NautilusBatchRenameDialog *dialog)
     }
     else
     {
-        adw_toolbar_view_set_reveal_bottom_bars (dialog->toolbar_view, FALSE);
+        gtk_revealer_set_reveal_child (dialog->conflict_revealer, FALSE);
 
         /* re-enable the rename button if there are no more name conflicts */
         if (dialog->duplicates == NULL && !gtk_widget_is_sensitive (dialog->rename_button))
@@ -984,13 +985,13 @@ have_unallowed_character (NautilusBatchRenameDialog *dialog)
         gtk_widget_set_sensitive (dialog->conflict_down, FALSE);
         gtk_widget_set_sensitive (dialog->conflict_up, FALSE);
 
-        adw_toolbar_view_set_reveal_bottom_bars (dialog->toolbar_view, TRUE);
+        gtk_revealer_set_reveal_child (dialog->conflict_revealer, TRUE);
 
         return TRUE;
     }
     else
     {
-        adw_toolbar_view_set_reveal_bottom_bars (dialog->toolbar_view, FALSE);
+        gtk_revealer_set_reveal_child (dialog->conflict_revealer, FALSE);
 
         return FALSE;
     }
@@ -1543,6 +1544,7 @@ nautilus_batch_rename_dialog_class_init (NautilusBatchRenameDialogClass *klass)
     gtk_widget_class_bind_template_child (widget_class, NautilusBatchRenameDialog, numbering_order_menu);
     gtk_widget_class_bind_template_child (widget_class, NautilusBatchRenameDialog, numbering_revealer);
     gtk_widget_class_bind_template_child (widget_class, NautilusBatchRenameDialog, placeholder_label);
+    gtk_widget_class_bind_template_child (widget_class, NautilusBatchRenameDialog, conflict_revealer);
     gtk_widget_class_bind_template_child (widget_class, NautilusBatchRenameDialog, conflict_label);
     gtk_widget_class_bind_template_child (widget_class, NautilusBatchRenameDialog, conflict_up);
     gtk_widget_class_bind_template_child (widget_class, NautilusBatchRenameDialog, conflict_down);
