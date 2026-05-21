@@ -120,57 +120,37 @@ template $NautilusBatchRenameDialog: Adw.Dialog {
     condition ("max-width: 480sp")
 
     setters {
-      stack_switcher.halign: start;
-      stack_switcher.orientation: vertical;
+      view_switcher.policy: narrow;
       numbering_box.orientation: vertical;
     }
   }
 
   child: Adw.ToolbarView toolbar_view {
     [top]
-    Adw.HeaderBar {}
+    Adw.HeaderBar {
+      title-widget: Adw.ViewSwitcher view_switcher {
+        stack: mode_stack;
+        policy: wide;
+      };
+    }
 
     content: Box {
       orientation: vertical;
       spacing: 6;
       hexpand: true;
 
-      Box stack_switcher {
-        orientation: horizontal;
-        spacing: 12;
-        hexpand: true;
-        halign: center;
-        margin-top: 18;
-        margin-bottom: 18;
-        margin-start: 12;
-        margin-end: 12;
-
-        CheckButton format_mode_button {
-          label: _("Rename _using a template");
-          use-underline: true;
-          active: true;
-          toggled => $batch_rename_dialog_mode_changed() swapped;
-        }
-
-        CheckButton replace_mode_button {
-          label: _("Find and replace _text");
-          use-underline: true;
-          group: format_mode_button;
-          toggled => $batch_rename_dialog_mode_changed() swapped;
-        }
-      }
-
-      Stack mode_stack {
+      Adw.ViewStack mode_stack {
         vhomogeneous: false;
         hhomogeneous: true;
-        transition-type: crossfade;
         transition-duration: 100;
 
-        StackPage {
+        Adw.ViewStackPage {
           name: "format";
 
           /* Translators: Translators: This is a noun, not a verb */
-          title: _("Format");
+          title: _("Rename With _Template");
+          use-underline: true;
+          icon-name: "document-edit-symbolic";
 
           child: Box {
             orientation: vertical;
@@ -222,9 +202,11 @@ template $NautilusBatchRenameDialog: Adw.Dialog {
           };
         }
 
-        StackPage {
+        Adw.ViewStackPage {
           name: "replace";
-          title: C_("title", "Replace");
+          title: C_("title", "_Find and Replace");
+          use-underline: true;
+          icon-name: "edit-find-replace-symbolic";
 
           child: Adw.Clamp {
             child: Grid replace_stack_child {
@@ -294,7 +276,7 @@ template $NautilusBatchRenameDialog: Adw.Dialog {
           };
         }
 
-        StackPage {
+        Adw.ViewStackPage {
           /* This stack page is never shown and only exists for correct spacing */
           name: "longest-string";
 
