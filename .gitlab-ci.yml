@@ -52,7 +52,7 @@ workflow:
 .fedora:
     variables:
         FDO_DISTRIBUTION_VERSION: rawhide
-        BASE_TAG: '2026-05-20.0'
+        BASE_TAG: '2026-05-21.0'
         FDO_DISTRIBUTION_COMPRESSION_FORMAT: zstd:chunked
         FDO_DISTRIBUTION_PACKAGES:
             git
@@ -83,6 +83,7 @@ workflow:
             dbus-x11
             glycin-thumbnailer
             libasan
+            glibc-langpack-en
 
 .fedora-x86_64:
     extends:
