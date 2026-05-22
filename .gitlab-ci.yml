@@ -14,6 +14,7 @@ variables:
     MESON_BUILD_DIR: _build
     CI_REGISTRY_IMAGE: registry.gitlab.gnome.org/gnome/nautilus
     TARBALL_ARTIFACT_PATH: ".flatpak-builder/build/nautilus/_flatpak_build/meson-dist/${CI_PROJECT_NAME}-${CI_COMMIT_TAG}.tar.xz"
+    FDO_UPSTREAM_REPO: gnome/nautilus
 
 stages:
     - image
