@@ -1071,10 +1071,7 @@ batch_rename_dialog_mode_changed (NautilusBatchRenameDialog *dialog)
 
         dialog->mode = NAUTILUS_BATCH_RENAME_DIALOG_FORMAT;
 
-        if (gtk_widget_get_root (GTK_WIDGET (dialog)) != NULL)
-        {
-            gtk_entry_grab_focus_without_selecting (GTK_ENTRY (dialog->name_entry));
-        }
+        gtk_entry_grab_focus_without_selecting (GTK_ENTRY (dialog->name_entry));
     }
     else
     {
