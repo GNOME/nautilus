@@ -261,12 +261,16 @@ update_no_applications_label (NautilusAppChooserWidget *self)
 
     if (self->default_text == NULL)
     {
+        const char *domain = textdomain (NULL);
+
         if (self->content_type)
         {
             desc = g_content_type_get_description (self->content_type);
         }
 
+        textdomain ("gtk40");
         string = text = g_strdup_printf (_("No apps found for “%s”."), desc);
+        textdomain (domain);
         g_free (desc);
     }
     else
