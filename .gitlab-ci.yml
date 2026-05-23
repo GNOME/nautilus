@@ -90,7 +90,7 @@ workflow:
         - .fedora
     variables:
         FDO_DISTRIBUTION_TAG: "x86_64-$BASE_TAG"
-        FDO_UPSTREAM_REPO: gnome/Nautilus
+        FDO_UPSTREAM_REPO: gnome/nautilus
     needs:
         - job: "update-fedora-image@x86_64"
           optional: true
