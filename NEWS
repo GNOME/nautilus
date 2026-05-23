@@ -1,3 +1,33 @@
+Major Changes in 50.2
+=====================
+* Enhancements:
+- Add Lao translation (Saikeo Kavhanxay)
+- Flush search results based on time instead of file count (Khalid Abu Shawarib)
+- Allow opening multiple files with different extensions (pagarao)
+
+* Fixed regressions:
+- Added search entry to applicaton chooser (Khalid Abu Shawarib, Peter Eisenmann)
+
+* Bugfixes:
+- Fix app staying in the background after properties windows are closed (Khalid Abu Shawarib)
+- Fix possible crash with properties window (Khalid Abu Shawarib)
+- Fix thumbnails not appearing in remote locations (Khalid Abu Shawarib)
+- Fix fallback icons not changing size with zoom level (Khalid Abu Shawarib)
+- Fix duplicate conflict dialog when moving files across volumes (Kristóf Széles)
+- Handle trailing '.' character for FAT volumes (iwasMateo)
+- Fix search recursion for directories with no ID (Khalid Abu Shawarib)
+- Fix off-by-one insertion of bookmarks (eric)
+- Fix templates unique naming with a file extension (Khalid Abu Shawarib)
+- Fix a thin line of checker pattern appearing in thumbnails (Khalid Abu Shawarib)
+- Fix opening files with nautilus itself (Khalid Abu Shawarib)
+- Avoid potential crash in list view (Khalid Abu Shawarib)
+
+* Cleanups:
+- Don't create trash monitor when not needed (Ondrej Holy)
+- Correctly clear name-cell callbacks on disposal (Marc Rendiet)
+
+* Translation updates (GNOME Translation Project contributors)
+
 Major Changes in 50.1
 =====================
 * Bugfixes:
