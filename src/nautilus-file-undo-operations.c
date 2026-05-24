@@ -1696,12 +1696,9 @@ trash_retrieve_files_to_restore_thread (GTask        *task,
 {
     NautilusFileUndoInfoTrash *self = NAUTILUS_FILE_UNDO_INFO_TRASH (source_object);
     GFileEnumerator *enumerator;
-    GHashTable *to_restore;
     GFile *trash;
     GError *error = NULL;
-
-    to_restore = g_hash_table_new_full (g_file_hash, (GEqualFunc) g_file_equal,
-                                        g_object_unref, g_object_unref);
+    gboolean restored_at_least_once = FALSE;
 
     trash = g_file_new_for_uri (SCHEME_TRASH ":///");
 
@@ -1716,7 +1713,6 @@ trash_retrieve_files_to_restore_thread (GTask        *task,
     {
         GFileInfo *info;
         gpointer lookupvalue;
-        GFile *item;
         gint64 orig_trash_time;
         gint64 trash_time;
         const char *origpath;
@@ -1747,8 +1743,12 @@ trash_retrieve_files_to_restore_thread (GTask        *task,
                 if (ABS (orig_trash_time - trash_time) <= TRASH_TIME_EPSILON)
                 {
                     /* File in the trash */
-                    item = g_file_get_child (trash, g_file_info_get_name (info));
-                    g_hash_table_insert (to_restore, item, g_object_ref (origfile));
+                    g_autoptr (GFile) item = g_file_get_child (trash, g_file_info_get_name (info));
+
+                    restored_at_least_once = TRUE;
+                    g_file_move (item, origfile,
+                                 G_FILE_COPY_NOFOLLOW_SYMLINKS,
+                                 NULL, NULL, NULL, NULL);
                 }
             }
 
@@ -1762,11 +1762,10 @@ trash_retrieve_files_to_restore_thread (GTask        *task,
     if (error != NULL)
     {
         g_task_return_error (task, error);
-        g_hash_table_destroy (to_restore);
     }
     else
     {
-        g_task_return_pointer (task, to_restore, NULL);
+        g_task_return_boolean (task, restored_at_least_once);
     }
 }
 
@@ -1790,43 +1789,11 @@ trash_retrieve_files_ready (GObject      *source,
                             gpointer      user_data)
 {
     NautilusFileUndoInfoTrash *self = NAUTILUS_FILE_UNDO_INFO_TRASH (source);
-    GHashTable *files_to_restore;
-    GError *error = NULL;
+    g_autoptr (GError) error = NULL;
+    gboolean success = g_task_propagate_boolean (G_TASK (res), &error);
 
-    files_to_restore = g_task_propagate_pointer (G_TASK (res), &error);
-
-    if (error == NULL && g_hash_table_size (files_to_restore) > 0)
-    {
-        GList *gfiles_in_trash, *l;
-        GFile *item;
-        GFile *dest;
-
-        gfiles_in_trash = g_hash_table_get_keys (files_to_restore);
-
-        for (l = gfiles_in_trash; l != NULL; l = l->next)
-        {
-            item = l->data;
-            dest = g_hash_table_lookup (files_to_restore, item);
-
-            g_file_move (item, dest, G_FILE_COPY_NOFOLLOW_SYMLINKS, NULL, NULL, NULL, NULL);
-        }
-
-        g_list_free (gfiles_in_trash);
-
-        /* Here we must do what's necessary for the callback */
-        file_undo_info_transfer_callback (NULL, (error == NULL), self);
-    }
-    else
-    {
-        file_undo_info_transfer_callback (NULL, FALSE, self);
-    }
-
-    if (files_to_restore != NULL)
-    {
-        g_hash_table_destroy (files_to_restore);
-    }
-
-    g_clear_error (&error);
+    /* Here we must do what's necessary for the callback */
+    file_undo_info_transfer_callback (NULL, success, self);
 }
 
 static void
