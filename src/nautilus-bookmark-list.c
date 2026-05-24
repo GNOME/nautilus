@@ -110,13 +110,6 @@ bookmark_in_list_changed_callback (NautilusBookmark     *bookmark,
 }
 
 static void
-bookmark_in_list_icon_changed (NautilusBookmarkList *bookmarks)
-{
-    /* emit the changed signal without saving, as only appearance properties changed */
-    g_signal_emit (bookmarks, signals[CHANGED], 0);
-}
-
-static void
 bookmark_in_list_name_changed (NautilusBookmarkList *bookmarks)
 {
     nautilus_bookmark_list_save_file (bookmarks);
@@ -128,9 +121,6 @@ stop_monitoring_bookmark (NautilusBookmark *bookmark,
 {
     g_signal_handlers_disconnect_by_func (bookmark,
                                           bookmark_in_list_changed_callback,
-                                          user_data);
-    g_signal_handlers_disconnect_by_func (bookmark,
-                                          bookmark_in_list_icon_changed,
                                           user_data);
     g_signal_handlers_disconnect_by_func (bookmark,
                                           bookmark_in_list_name_changed,
@@ -279,8 +269,6 @@ insert_bookmark_internal (NautilusBookmarkList *bookmarks,
 
     g_signal_connect_object (bookmark, "contents-changed",
                              G_CALLBACK (bookmark_in_list_changed_callback), bookmarks, 0);
-    g_signal_connect_object (bookmark, "notify::icon",
-                             G_CALLBACK (bookmark_in_list_icon_changed), bookmarks, G_CONNECT_SWAPPED);
     g_signal_connect_object (bookmark, "notify::name",
                              G_CALLBACK (bookmark_in_list_name_changed), bookmarks, G_CONNECT_SWAPPED);
 
