@@ -77,10 +77,21 @@ nautilus_bookmark_list_get_file (void)
 {
     g_autofree char *filename = NULL;
 
-    filename = g_build_filename (g_get_user_config_dir (),
-                                 "gtk-3.0",
-                                 "bookmarks",
-                                 NULL);
+    if (g_test_initialized () &&
+        g_getenv ("XDG_CONFIG_HOME"))
+    {
+        filename = g_build_filename (g_getenv ("XDG_CONFIG_HOME"),
+                                     "gtk-3.0",
+                                     "bookmarks",
+                                     NULL);
+    }
+    else
+    {
+        filename = g_build_filename (g_get_user_config_dir (),
+                                     "gtk-3.0",
+                                     "bookmarks",
+                                     NULL);
+    }
 
     return g_file_new_for_path (filename);
 }
