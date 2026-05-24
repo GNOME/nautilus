@@ -90,12 +90,18 @@ empty_directory_by_prefix (GFile *parent,
 {
     g_autoptr (GFileEnumerator) enumerator = NULL;
     g_autoptr (GFile) child = NULL;
+    g_autoptr (GError) error = NULL;
 
     enumerator = g_file_enumerate_children (parent,
                                             G_FILE_ATTRIBUTE_STANDARD_NAME,
                                             G_FILE_QUERY_INFO_NONE,
                                             NULL,
-                                            NULL);
+                                            &error);
+
+    if (g_error_matches (error, G_IO_ERROR, G_IO_ERROR_NOT_FOUND))
+    {
+        return;
+    }
 
     g_file_enumerator_iterate (enumerator, NULL, &child, NULL, NULL);
     while (child != NULL)
