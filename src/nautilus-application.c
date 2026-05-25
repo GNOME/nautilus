@@ -94,6 +94,8 @@ struct _NautilusApplication
 
     NautilusDBusLauncher *dbus_launcher;
 
+    GCancellable *check_dirs_cancellable;
+
     guint dbus_location_update_timeout_id;
 };
 
@@ -139,17 +141,53 @@ nautilus_application_get_bookmarks (NautilusApplication *self)
 }
 
 static void
-check_required_directories (NautilusApplication *self)
+check_required_directories_callback (GObject      *source_object,
+                                     GAsyncResult *result,
+                                     gpointer      user_data)
 {
-    g_autofree char *user_directory = nautilus_get_user_directory ();
+    GTask *task = G_TASK (result);
 
-    if (!g_file_test (user_directory, G_FILE_TEST_IS_DIR))
+    /* Application may have been finalized. */
+    if (g_cancellable_is_cancelled (g_task_get_cancellable (task)))
+    {
+        return;
+    }
+
+    NautilusApplication *self = NAUTILUS_APPLICATION (source_object);
+
+    g_clear_object (&self->check_dirs_cancellable);
+
+    if (!g_task_propagate_boolean (task, NULL))
     {
         nautilus_show_ok_dialog (
             _("No Home Directory"),
             _("Make sure the directory exists and has correct access permissions set."),
             NULL);
     }
+}
+
+static void
+check_required_directories_thread_func (GTask        *task,
+                                        gpointer      source_object,
+                                        gpointer      task_data,
+                                        GCancellable *cancellable)
+{
+    g_autofree char *user_directory = nautilus_get_user_directory ();
+
+    g_task_return_boolean (task, g_file_test (user_directory, G_FILE_TEST_IS_DIR));
+}
+
+static void
+check_required_directories_async (NautilusApplication *self)
+{
+    g_autoptr (GTask) task = NULL;
+
+    self->check_dirs_cancellable = g_cancellable_new ();
+    task = g_task_new (self,
+                       self->check_dirs_cancellable,
+                       check_required_directories_callback,
+                       NULL);
+    g_task_run_in_thread (task, check_required_directories_thread_func);
 }
 
 static void
@@ -412,6 +450,12 @@ nautilus_application_finalize (GObject *object)
     nautilus_trash_monitor_clear ();
 
     g_clear_handle_id (&self->dbus_location_update_timeout_id, g_source_remove);
+
+    if (self->check_dirs_cancellable != NULL)
+    {
+        g_cancellable_cancel (self->check_dirs_cancellable);
+        g_clear_object (&self->check_dirs_cancellable);
+    }
 
     G_OBJECT_CLASS (nautilus_application_parent_class)->finalize (object);
 }
@@ -1004,7 +1048,7 @@ nautilus_application_startup (GApplication *app)
     /* Check the user's .nautilus directories and post warnings
      * if there are problems.
      */
-    check_required_directories (self);
+    check_required_directories_async (self);
 
     nautilus_init_application_actions (self);
 
