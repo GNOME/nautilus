@@ -2869,8 +2869,6 @@ static gboolean
 set_up_scripts_directory_global (void)
 {
     g_autofree gchar *scripts_directory_path = NULL;
-    g_autoptr (GFile) scripts_directory = NULL;
-    g_autoptr (GError) error = NULL;
 
     if (scripts_directory_uri != NULL)
     {
@@ -2878,20 +2876,12 @@ set_up_scripts_directory_global (void)
     }
 
     scripts_directory_path = nautilus_get_scripts_directory_path ();
-    scripts_directory = g_file_new_for_path (scripts_directory_path);
 
-    g_file_make_directory_with_parents (scripts_directory, NULL, &error);
-
-    if (error == NULL ||
-        g_error_matches (error, G_IO_ERROR, G_IO_ERROR_EXISTS))
+    if (g_mkdir_with_parents (scripts_directory_path, 0700) == 0)
     {
-        g_file_set_attribute_uint32 (scripts_directory,
-                                     G_FILE_ATTRIBUTE_UNIX_MODE,
-                                     S_IRWXU,
-                                     G_FILE_QUERY_INFO_NONE,
-                                     NULL, NULL);
+        g_autoptr (GFile) scripts_directory_file = g_file_new_for_path (scripts_directory_path);
 
-        scripts_directory_uri = g_file_get_uri (scripts_directory);
+        scripts_directory_uri = g_file_get_uri (scripts_directory_file);
         scripts_directory_uri_length = strlen (scripts_directory_uri);
     }
 
