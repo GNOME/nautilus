@@ -84,7 +84,7 @@ nautilus_label_cell_init (NautilusLabelCell *self)
     child = gtk_label_new (NULL);
     gtk_widget_set_parent (child, GTK_WIDGET (self));
     gtk_widget_set_valign (child, GTK_ALIGN_CENTER);
-    gtk_widget_add_css_class (child, "dim-label");
+    gtk_widget_add_css_class (child, "dimmed");
     self->label = GTK_LABEL (child);
 
     /* Connect automatically to an item. */

@@ -95,7 +95,7 @@ caption_widget_new (void)
 
     gtk_widget_set_valign (caption, GTK_ALIGN_START);
     gtk_widget_add_css_class (caption, "caption");
-    gtk_widget_add_css_class (caption, "dim-label");
+    gtk_widget_add_css_class (caption, "dimmed");
 
     gtk_label_set_ellipsize (GTK_LABEL (caption), PANGO_ELLIPSIZE_END);
     gtk_label_set_justify (GTK_LABEL (caption), GTK_JUSTIFY_CENTER);

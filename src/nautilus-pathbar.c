@@ -1242,7 +1242,7 @@ make_button_data (NautilusPathBar *self,
             GtkWidget *separator_label;
 
             separator_label = gtk_label_new (G_DIR_SEPARATOR_S);
-            gtk_widget_add_css_class (separator_label, "dim-label");
+            gtk_widget_add_css_class (separator_label, "dimmed");
             button_data->label = gtk_label_new (NULL);
             child = gtk_box_new (GTK_ORIENTATION_HORIZONTAL, 2);
             button_data->container = gtk_box_new (GTK_ORIENTATION_HORIZONTAL, 0);
@@ -1275,8 +1275,8 @@ make_button_data (NautilusPathBar *self,
 
         if (!current_dir)
         {
-            gtk_widget_add_css_class (button_data->label, "dim-label");
-            gtk_widget_add_css_class (button_data->image, "dim-label");
+            gtk_widget_add_css_class (button_data->label, "dimmed");
+            gtk_widget_add_css_class (button_data->image, "dimmed");
         }
     }
 

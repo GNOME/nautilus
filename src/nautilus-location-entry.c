@@ -239,7 +239,7 @@ set_prefix_dimming (GtkCellRenderer *completion_cell,
 
     attrs = pango_attr_list_new ();
 
-    /* 55% opacity. This is the same as the dim-label style class in Adwaita. */
+    /* 55% opacity. This is the same as the dimmed style class in Adwaita. */
     attr = pango_attr_foreground_alpha_new (36045);
     attr->end_index = strlen (typed_path);
     pango_attr_list_insert (attrs, attr);

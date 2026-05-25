@@ -164,7 +164,7 @@ extension_combo_row_setup_item_full (GtkSignalListItemFactory *factory,
 
     subtitle = gtk_label_new ("");
     gtk_label_set_xalign (GTK_LABEL (subtitle), 0.0);
-    gtk_widget_add_css_class (subtitle, "dim-label");
+    gtk_widget_add_css_class (subtitle, "dimmed");
     gtk_widget_add_css_class (subtitle, "caption");
 
     checkmark = gtk_image_new_from_icon_name ("object-select-symbolic");

@@ -124,7 +124,7 @@ nautilus_star_cell_init (NautilusStarCell *self)
     star = gtk_button_new ();
     gtk_widget_set_halign (star, GTK_ALIGN_END);
     gtk_widget_set_valign (star, GTK_ALIGN_CENTER);
-    gtk_widget_add_css_class (star, "dim-label");
+    gtk_widget_add_css_class (star, "dimmed");
     gtk_widget_add_css_class (star, "star");
     gtk_widget_add_css_class (star, "flat");
     gtk_widget_add_css_class (star, "circular");
