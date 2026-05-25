@@ -103,12 +103,15 @@ template $NautilusPropertiesWidget: Adw.Bin {
                     StackPage {
                       child: Overlay icon_overlay {
                         Frame {
+                          height-request: 96;
+
                           styles [
                             "image-frame",
                           ]
 
                           $NautilusImage {
                             size: 96;
+                            valign: center;
                             fallback: bind icon_image.fallback;
                             source: bind icon_image.source;
 
