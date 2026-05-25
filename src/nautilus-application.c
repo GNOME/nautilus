@@ -182,8 +182,7 @@ menu_provider_init_callback (void)
 }
 
 NautilusWindow *
-nautilus_application_create_window (NautilusApplication *self,
-                                    const char          *startup_id)
+nautilus_application_create_window (NautilusApplication *self)
 {
     NautilusWindow *window;
     gboolean maximized;
@@ -194,10 +193,6 @@ nautilus_application_create_window (NautilusApplication *self,
     g_return_val_if_fail (NAUTILUS_IS_APPLICATION (self), NULL);
 
     window = nautilus_window_new ();
-    if (startup_id)
-    {
-        gtk_window_set_startup_id (GTK_WINDOW (window), startup_id);
-    }
 
     maximized = g_settings_get_boolean
                     (nautilus_window_state, NAUTILUS_WINDOW_STATE_MAXIMIZED);
@@ -318,11 +313,16 @@ nautilus_application_open_location_full (NautilusApplication *self,
                   gtk_root_get_display (GTK_ROOT (active_window)) :
                   gdk_display_get_default ();
 
-        target_window = nautilus_application_create_window (self, startup_id);
+        target_window = nautilus_application_create_window (self);
         gtk_window_set_display (GTK_WINDOW (target_window), display);
     }
 
     g_assert (target_window != NULL);
+
+    if (startup_id)
+    {
+        gtk_window_set_startup_id (GTK_WINDOW (target_window), startup_id);
+    }
 
     /* Application is the one that manages windows, so this flag shouldn't use
      * it anymore by any client */

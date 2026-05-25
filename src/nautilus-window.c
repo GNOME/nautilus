@@ -996,7 +996,7 @@ tab_view_create_window_cb (AdwTabView     *tab_view,
     NautilusWindow *new_window;
 
     app = NAUTILUS_APPLICATION (g_application_get_default ());
-    new_window = nautilus_application_create_window (app, NULL);
+    new_window = nautilus_application_create_window (app);
     gtk_window_set_display (GTK_WINDOW (new_window),
                             gtk_widget_get_display (GTK_WIDGET (tab_view)));
 
