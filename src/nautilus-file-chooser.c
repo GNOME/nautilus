@@ -325,9 +325,7 @@ action_focus_entry (GSimpleAction *action,
 
     if (file_chooser_has_filename_entry(self))
     {
-        gtk_stack_set_visible_child (GTK_STACK (self->filename_widget),
-                                     self->filename_entry);
-        gtk_widget_grab_focus (self->filename_entry);
+        open_filename_entry (self);
     }
 }
 
