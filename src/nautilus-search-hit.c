@@ -10,6 +10,7 @@
 #include <string.h>
 #include <gio/gio.h>
 
+#include "nautilus-date-utilities.h"
 #include "nautilus-search-hit.h"
 
 struct _NautilusSearchHit
@@ -171,54 +172,21 @@ void
 nautilus_search_hit_set_modification_time (NautilusSearchHit *hit,
                                            GDateTime         *date)
 {
-    if (hit->modification_time != NULL)
-    {
-        g_date_time_unref (hit->modification_time);
-    }
-    if (date != NULL)
-    {
-        hit->modification_time = g_date_time_ref (date);
-    }
-    else
-    {
-        hit->modification_time = NULL;
-    }
+    g_set_date_time (&hit->modification_time, date);
 }
 
 void
 nautilus_search_hit_set_access_time (NautilusSearchHit *hit,
                                      GDateTime         *date)
 {
-    if (hit->access_time != NULL)
-    {
-        g_date_time_unref (hit->access_time);
-    }
-    if (date != NULL)
-    {
-        hit->access_time = g_date_time_ref (date);
-    }
-    else
-    {
-        hit->access_time = NULL;
-    }
+    g_set_date_time (&hit->access_time, date);
 }
 
 void
 nautilus_search_hit_set_creation_time (NautilusSearchHit *hit,
                                        GDateTime         *date)
 {
-    if (hit->creation_time != NULL)
-    {
-        g_date_time_unref (hit->creation_time);
-    }
-    if (date != NULL)
-    {
-        hit->creation_time = g_date_time_ref (date);
-    }
-    else
-    {
-        hit->creation_time = NULL;
-    }
+    g_set_date_time (&hit->creation_time, date);
 }
 
 void
