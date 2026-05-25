@@ -358,20 +358,9 @@ nautilus_search_hit_finalize (GObject *object)
     NautilusSearchHit *hit = NAUTILUS_SEARCH_HIT (object);
 
     g_free (hit->uri);
-
-    if (hit->access_time != NULL)
-    {
-        g_date_time_unref (hit->access_time);
-    }
-    if (hit->modification_time != NULL)
-    {
-        g_date_time_unref (hit->modification_time);
-    }
-    if (hit->creation_time != NULL)
-    {
-        g_date_time_unref (hit->creation_time);
-    }
-
+    g_clear_pointer (&hit->access_time, g_date_time_unref);
+    g_clear_pointer (&hit->modification_time, g_date_time_unref);
+    g_clear_pointer (&hit->creation_time, g_date_time_unref);
     g_free (hit->fts_snippet);
 
     G_OBJECT_CLASS (nautilus_search_hit_parent_class)->finalize (object);
