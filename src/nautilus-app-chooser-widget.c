@@ -261,7 +261,7 @@ update_no_applications_label (NautilusAppChooserWidget *self)
 
     if (self->default_text == NULL)
     {
-        const char *domain = textdomain (NULL);
+        g_autofree char *domain = g_strdup (textdomain (NULL));
 
         if (self->content_type)
         {
@@ -811,7 +811,7 @@ bind_header_cb (GtkListItemFactory *factory,
     GtkListHeader *header = GTK_LIST_HEADER (list_item);
     GtkWidget *label;
     NautilusAppItem *app_item;
-    const char *domain = textdomain (NULL);
+    g_autofree char *domain = g_strdup (textdomain (NULL));
 
     label = gtk_list_header_get_child (header);
     app_item = gtk_list_header_get_item (header);
