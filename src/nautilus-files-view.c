@@ -5342,8 +5342,7 @@ update_directory_in_scripts_menu (NautilusFilesView *view,
 
 
 static void
-update_scripts_menu (NautilusFilesView *view,
-                     GtkBuilder        *builder)
+update_scripts_menu (NautilusFilesView *view)
 {
     g_autolist (NautilusDirectory) sorted_copy = NULL;
     g_autoptr (NautilusDirectory) directory = NULL;
@@ -7978,7 +7977,7 @@ update_selection_menu (NautilusFilesView *self,
 
     if (!self->scripts_menu_updated && mode == NAUTILUS_MODE_BROWSE)
     {
-        update_scripts_menu (self, builder);
+        update_scripts_menu (self);
         self->scripts_menu_updated = TRUE;
     }
 
