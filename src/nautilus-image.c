@@ -379,6 +379,7 @@ file_info_ready_callback (GObject      *source_object,
 
     self->is_loading_attributes = FALSE;
     self->error = g_steal_pointer (&error);
+    gtk_widget_queue_draw (GTK_WIDGET (self));
 
     if (info == NULL || self->error != NULL)
     {
