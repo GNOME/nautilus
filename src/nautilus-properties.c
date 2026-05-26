@@ -79,6 +79,8 @@ struct _NautilusPropertiesWidget
 
     GList *files;
     NautilusFileListHandle *handle;
+    GFileInfo *volume_fs_info;
+    GCancellable *volume_fs_info_cancellable;
     AdwDialog *dialog;
 
     AdwToastOverlay *toast_overlay;
@@ -2410,22 +2412,12 @@ should_show_volume_usage (NautilusPropertiesWidget *self)
 static void
 setup_volume_information (NautilusPropertiesWidget *self)
 {
-    NautilusFile *file;
-    const char *fs_type;
-    g_autofree gchar *uri = NULL;
-    g_autoptr (GFile) location = NULL;
-    g_autoptr (GFileInfo) info = NULL;
-
-    file = get_file (self);
-
-    uri = nautilus_file_get_activation_uri (file);
-
-    location = g_file_new_for_uri (uri);
-    info = g_file_query_filesystem_info (location, G_FILE_ATTRIBUTE_FILESYSTEM_TYPE,
-                                         NULL, NULL);
-    if (info)
+    if (self->volume_fs_info != NULL &&
+        g_file_info_has_attribute (self->volume_fs_info,
+                                   G_FILE_ATTRIBUTE_FILESYSTEM_TYPE))
     {
-        fs_type = g_file_info_get_attribute_string (info, G_FILE_ATTRIBUTE_FILESYSTEM_TYPE);
+        const char *fs_type = g_file_info_get_attribute_string (self->volume_fs_info,
+                                                                G_FILE_ATTRIBUTE_FILESYSTEM_TYPE);
 
         /* We shouldn't be using filesystem::type, it's not meant for UI.
          * https://gitlab.gnome.org/GNOME/nautilus/-/issues/98
@@ -2456,15 +2448,11 @@ setup_volume_information (NautilusPropertiesWidget *self)
 static void
 setup_volume_usage_widget (NautilusPropertiesWidget *self)
 {
-    NautilusFile *file = get_file (self);
-    g_autofree gchar *uri = nautilus_file_get_activation_uri (file);
-    g_autoptr (GFile) location = g_file_new_for_uri (uri);
-    g_autoptr (GFileInfo) info = NULL;
+    GFileInfo *info = self->volume_fs_info;
     guint64 volume_capacity = 0;
     guint64 volume_free = 0;
     guint64 volume_used = 0;
 
-    info = g_file_query_filesystem_info (location, "filesystem::*", NULL, NULL);
     if (info != NULL)
     {
         volume_capacity = g_file_info_get_attribute_uint64 (info, G_FILE_ATTRIBUTE_FILESYSTEM_SIZE);
@@ -3668,15 +3656,11 @@ setup_properties_widget (NautilusPropertiesWidget *self)
 #define DEFAULT_PROPERTIES_WIDTH 480
 
 static void
-properties_files_are_ready (GList    *file_list,
-                            gpointer  data)
+properties_files_are_ready (NautilusPropertiesWidget *self)
 {
     const char * const main_tag[] = {"main"};
-    NautilusPropertiesWidget *self = data;
 
     setup_properties_widget (self);
-
-    self->handle = NULL;
     /* Show main page */
     adw_navigation_view_replace_with_tags (self->nav_view, main_tag, 1);
 
@@ -3703,6 +3687,57 @@ properties_files_are_ready (GList    *file_list,
     }
 }
 
+static void
+volume_fs_info_callback (GObject      *object,
+                         GAsyncResult *res,
+                         gpointer      data)
+{
+    g_autoptr (GError) error = NULL;
+    g_autoptr (GFileInfo) info = g_file_query_filesystem_info_finish (G_FILE (object), res, &error);
+
+    if (g_error_matches (error, G_IO_ERROR, G_IO_ERROR_CANCELLED))
+    {
+        /* Properties was disposed, bailout. */
+        return;
+    }
+
+    NautilusPropertiesWidget *self = NAUTILUS_PROPERTIES_WIDGET (data);
+
+    self->volume_fs_info = g_steal_pointer (&info);
+    g_clear_object (&self->volume_fs_info_cancellable);
+
+    properties_files_are_ready (self);
+}
+
+static void
+file_list_ready_callback (GList    *file_list,
+                          gpointer  data)
+{
+    NautilusPropertiesWidget *self = NAUTILUS_PROPERTIES_WIDGET (data);
+
+    self->handle = NULL;
+
+    if (should_show_volume_usage (self))
+    {
+        /* Need to additionally query Filesystem info for a volume */
+        NautilusFile *file = get_file (self);
+        g_autofree gchar *uri = nautilus_file_get_activation_uri (file);
+        g_autoptr (GFile) location = g_file_new_for_uri (uri);
+
+        self->volume_fs_info_cancellable = g_cancellable_new ();
+
+        g_file_query_filesystem_info_async (location, "filesystem::*",
+                                            G_PRIORITY_DEFAULT,
+                                            self->volume_fs_info_cancellable,
+                                            volume_fs_info_callback,
+                                            self);
+    }
+    else
+    {
+        properties_files_are_ready (self);
+    }
+}
+
 static NautilusPropertiesWidget *
 properties_widget_new (NautilusFileList *files)
 {
@@ -3715,7 +3750,7 @@ properties_widget_new (NautilusFileList *files)
                                         NAUTILUS_ATTRIBUTE_INFO |
                                         NAUTILUS_ATTRIBUTE_THUMBNAIL_BUFFER,
                                         &self->handle,
-                                        properties_files_are_ready,
+                                        file_list_ready_callback,
                                         self);
 
     return self;
@@ -3847,6 +3882,11 @@ real_dispose (GObject *object)
     g_clear_object (&self->icon_pending_location);
     g_clear_pointer (&self->custom_icon_for_undo, g_free);
     g_clear_pointer (&self->handle, nautilus_file_list_cancel_call_when_ready);
+    if (self->volume_fs_info_cancellable)
+    {
+        g_cancellable_cancel (self->volume_fs_info_cancellable);
+        g_clear_object (&self->volume_fs_info_cancellable);
+    }
 
     g_list_foreach (self->files,
                     (GFunc) nautilus_file_monitor_remove,
@@ -3856,6 +3896,7 @@ real_dispose (GObject *object)
     g_clear_list (&self->changed_files, (GDestroyNotify) nautilus_file_unref);
 
     g_clear_handle_id (&self->deep_count_spinner_timeout_id, g_source_remove);
+    g_clear_object (&self->volume_fs_info);
 
     while (self->deep_count_files)
     {
