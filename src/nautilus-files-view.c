@@ -4356,14 +4356,30 @@ process_pending_files (NautilusFilesView *self)
     g_signal_emit (self, signals[END_FILE_CHANGES], 0);
 }
 
+static gboolean
+files_view_has_focus (NautilusFilesView *self)
+{
+    GtkRoot *root = gtk_widget_get_root (GTK_WIDGET (self));
+    GtkWidget *focus_before = root != NULL ? gtk_root_get_focus (root) : NULL;
+    GtkWidget *focus_check = GTK_WIDGET (self->list_base);
+
+    return focus_before != NULL &&
+           self->list_base != NULL &&
+           (focus_before == focus_check || gtk_widget_is_ancestor (focus_before, focus_check));
+}
+
 static void
 display_pending_files (NautilusFilesView *view)
 {
     transition_emit_delayed_signals_if_pending (view);
 
+    /* Remember focus, so we can restore it if it gets lost. */
+    gboolean view_had_focus = files_view_has_focus (view);
+
     /* Get selection after delayed signals are emitted. */
     g_autoptr (GtkBitset) selection = gtk_selection_model_get_selection (GTK_SELECTION_MODEL (view->model));
     gboolean no_selection = gtk_bitset_is_empty (selection);
+    guint old_cursor_pos = no_selection ? 0 : gtk_bitset_get_minimum (selection);
 
     process_pending_files (view);
 
@@ -4372,6 +4388,16 @@ display_pending_files (NautilusFilesView *view)
         nautilus_files_view_is_searching (view))
     {
         nautilus_files_view_select_first (view, NAUTILUS_SELECTION_SOURCE_IN_SEARCH);
+    }
+
+    guint n_items = g_list_model_get_n_items (G_LIST_MODEL (view->model));
+
+    if (view_had_focus && n_items > 0 && !files_view_has_focus (view))
+    {
+        guint restore_pos = (old_cursor_pos <= n_items - 1) ? old_cursor_pos : 0;
+
+        nautilus_list_base_set_cursor (view->list_base, restore_pos, TRUE, TRUE);
+        gtk_widget_grab_focus (GTK_WIDGET (view));
     }
 
     if (view->model != NULL
