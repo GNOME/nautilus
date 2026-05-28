@@ -576,14 +576,16 @@ nautilus_app_chooser_widget_size_allocate (GtkWidget *widget,
                                            int        baseline)
 {
     NautilusAppChooserWidget *self = NAUTILUS_APP_CHOOSER_WIDGET (widget);
+    GtkAllocation allocation;
 
     GTK_WIDGET_CLASS (nautilus_app_chooser_widget_parent_class)->size_allocate (widget, width, height, baseline);
 
-    gtk_widget_size_allocate (self->overlay,
-                              &(GtkAllocation) {
+    allocation = (GtkAllocation)
+    {
         0, 0,
         width, height
-    }, baseline);
+    };
+    gtk_widget_size_allocate (self->overlay, &allocation, baseline);
 }
 
 static void
