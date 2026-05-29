@@ -117,9 +117,7 @@ nautilus_app_item_new (GAppInfo *app_info,
                        gboolean  is_recommended,
                        gboolean  is_fallback)
 {
-    NautilusAppItem *item;
-
-    item = g_object_new (nautilus_app_item_get_type (), NULL);
+    NautilusAppItem *item = g_object_new (nautilus_app_item_get_type (), NULL);
 
     item->app_info = g_object_ref (app_info);
     item->is_default = is_default;
@@ -193,14 +191,11 @@ nautilus_app_chooser_widget_add_section (NautilusAppChooserWidget *self,
                                          GList                    *applications,
                                          GList                    *exclude_apps)
 {
-    gboolean retval;
-
-    retval = FALSE;
+    gboolean retval = FALSE;
 
     for (GList *l = applications; l != NULL; l = l->next)
     {
         GAppInfo *app = l->data;
-        NautilusAppItem *item;
 
         if (self->content_type != NULL &&
             !g_app_info_supports_uris (app) &&
@@ -214,9 +209,9 @@ nautilus_app_chooser_widget_add_section (NautilusAppChooserWidget *self,
             continue;
         }
 
-        item = nautilus_app_item_new (app, FALSE, recommended, fallback);
+        g_autoptr (NautilusAppItem) item = nautilus_app_item_new (app, FALSE, recommended, fallback);
+
         g_list_store_append (self->app_info_store, item);
-        g_object_unref (item);
         retval = TRUE;
     }
 
@@ -227,37 +222,30 @@ static void
 nautilus_app_chooser_widget_add_default (NautilusAppChooserWidget *self,
                                          GAppInfo                 *app)
 {
-    NautilusAppItem *item;
+    g_autoptr (NautilusAppItem) item = nautilus_app_item_new (app, TRUE, FALSE, FALSE);
 
-    item = nautilus_app_item_new (app, TRUE, FALSE, FALSE);
     g_list_store_append (self->app_info_store, item);
-    g_object_unref (item);
 }
 
 static void
 update_no_applications_label (NautilusAppChooserWidget *self)
 {
-    char *text = NULL, *desc = NULL;
-    const char *string;
-
     if (self->default_text == NULL)
     {
+        g_autofree char *desc = NULL, *text = NULL;
+
         if (self->content_type)
         {
             desc = g_content_type_get_description (self->content_type);
         }
 
-        string = text = g_strdup_printf (_("No apps found for “%s”."), desc);
-        g_free (desc);
+        text = g_strdup_printf (_("No apps found for “%s”."), desc);
+        gtk_label_set_text (GTK_LABEL (self->no_apps_label), text);
     }
     else
     {
-        string = self->default_text;
+        gtk_label_set_text (GTK_LABEL (self->no_apps_label), self->default_text);
     }
-
-    gtk_label_set_text (GTK_LABEL (self->no_apps_label), string);
-
-    g_free (text);
 }
 
 static void
@@ -269,14 +257,12 @@ nautilus_app_chooser_widget_select_first (NautilusAppChooserWidget *self)
 static void
 nautilus_app_chooser_widget_real_add_items (NautilusAppChooserWidget *self)
 {
-    GList *all_applications = NULL;
-    GList *recommended_apps = NULL;
-    GList *fallback_apps = NULL;
-    GList *exclude_apps = NULL;
-    GAppInfo *default_app = NULL;
-    gboolean apps_added;
-
-    apps_added = FALSE;
+    g_autolist (GAppInfo) all_applications = NULL;
+    g_autolist (GAppInfo) recommended_apps = NULL;
+    g_autolist (GAppInfo) fallback_apps = NULL;
+    g_autoptr (GList) exclude_apps = NULL;
+    g_autoptr (GAppInfo) default_app = NULL;
+    gboolean apps_added = FALSE;
 
     gtk_list_view_set_header_factory (GTK_LIST_VIEW (self->program_list),
                                       self->header_factory);
@@ -341,16 +327,6 @@ nautilus_app_chooser_widget_real_add_items (NautilusAppChooserWidget *self)
     gtk_widget_set_visible (self->no_apps, !apps_added);
 
     nautilus_app_chooser_widget_select_first (self);
-
-    if (default_app != NULL)
-    {
-        g_object_unref (default_app);
-    }
-
-    g_list_free_full (all_applications, g_object_unref);
-    g_list_free_full (recommended_apps, g_object_unref);
-    g_list_free_full (fallback_apps, g_object_unref);
-    g_list_free (exclude_apps);
 }
 
 static void
@@ -502,18 +478,16 @@ nautilus_app_chooser_widget_size_allocate (GtkWidget *widget,
 static void
 nautilus_app_chooser_widget_class_init (NautilusAppChooserWidgetClass *klass)
 {
-    GtkWidgetClass *widget_class;
-    GObjectClass *gobject_class;
+    GObjectClass *gobject_class = G_OBJECT_CLASS (klass);
+    GtkWidgetClass *widget_class = GTK_WIDGET_CLASS (klass);
     GParamSpec *pspec;
 
-    gobject_class = G_OBJECT_CLASS (klass);
     gobject_class->dispose = nautilus_app_chooser_widget_dispose;
     gobject_class->finalize = nautilus_app_chooser_widget_finalize;
     gobject_class->set_property = nautilus_app_chooser_widget_set_property;
     gobject_class->get_property = nautilus_app_chooser_widget_get_property;
     gobject_class->constructed = nautilus_app_chooser_widget_constructed;
 
-    widget_class = GTK_WIDGET_CLASS (klass);
     widget_class->measure = nautilus_app_chooser_widget_measure;
     widget_class->size_allocate = nautilus_app_chooser_widget_size_allocate;
     widget_class->snapshot = nautilus_app_chooser_widget_snapshot;
@@ -596,19 +570,16 @@ static void
 setup_listitem_cb (GtkListItemFactory *factory,
                    GtkListItem        *list_item)
 {
-    GtkWidget *box;
-    GtkWidget *image;
-    GtkWidget *label;
+    GtkWidget *box = gtk_box_new (GTK_ORIENTATION_HORIZONTAL, 12);
+    GtkWidget *image = gtk_image_new ();
+    GtkWidget *label = gtk_label_new ("");
 
-    box = gtk_box_new (GTK_ORIENTATION_HORIZONTAL, 12);
-    image = gtk_image_new ();
     gtk_accessible_update_property (GTK_ACCESSIBLE (image),
                                     GTK_ACCESSIBLE_PROPERTY_LABEL,
                                     "App icon",
                                     -1);
     gtk_image_set_icon_size (GTK_IMAGE (image), GTK_ICON_SIZE_LARGE);
     gtk_box_append (GTK_BOX (box), image);
-    label = gtk_label_new ("");
     gtk_box_append (GTK_BOX (box), label);
     gtk_list_item_set_child (list_item, box);
 }
@@ -617,13 +588,9 @@ static void
 bind_listitem_cb (GtkListItemFactory *factory,
                   GtkListItem        *list_item)
 {
-    GtkWidget *image;
-    GtkWidget *label;
-    NautilusAppItem *app_item;
-
-    image = gtk_widget_get_first_child (gtk_list_item_get_child (list_item));
-    label = gtk_widget_get_next_sibling (image);
-    app_item = gtk_list_item_get_item (list_item);
+    GtkWidget *image = gtk_widget_get_first_child (gtk_list_item_get_child (list_item));
+    GtkWidget *label = gtk_widget_get_next_sibling (image);
+    NautilusAppItem *app_item = gtk_list_item_get_item (list_item);
 
     gtk_image_set_from_gicon (GTK_IMAGE (image), g_app_info_get_icon (app_item->app_info));
     gtk_label_set_label (GTK_LABEL (label), g_app_info_get_display_name (app_item->app_info));
@@ -635,9 +602,8 @@ setup_header_cb (GtkListItemFactory *factory,
                  GtkListItem        *list_item)
 {
     GtkListHeader *header = GTK_LIST_HEADER (list_item);
-    GtkWidget *label;
+    GtkWidget *label = gtk_label_new ("");
 
-    label = gtk_label_new ("");
     gtk_label_set_xalign (GTK_LABEL (label), 0);
     gtk_widget_add_css_class (label, "heading");
     gtk_widget_set_margin_start (label, 20);
@@ -653,11 +619,8 @@ bind_header_cb (GtkListItemFactory *factory,
                 GtkListItem        *list_item)
 {
     GtkListHeader *header = GTK_LIST_HEADER (list_item);
-    GtkWidget *label;
-    NautilusAppItem *app_item;
-
-    label = gtk_list_header_get_child (header);
-    app_item = gtk_list_header_get_item (header);
+    GtkWidget *label = gtk_list_header_get_child (header);
+    NautilusAppItem *app_item = gtk_list_header_get_item (header);
 
     if (app_item->is_default)
     {
@@ -682,15 +645,12 @@ activate_cb (GtkListView              *list,
              guint                     position,
              NautilusAppChooserWidget *self)
 {
-    NautilusAppItem *app_item;
-
-    app_item = g_list_model_get_item (G_LIST_MODEL (gtk_list_view_get_model (list)), position);
+    g_autoptr (NautilusAppItem) app_item =
+        g_list_model_get_item (G_LIST_MODEL (gtk_list_view_get_model (list)), position);
 
     g_set_object (&self->selected_app_info, app_item->app_info);
 
     g_signal_emit (self, signals[SIGNAL_APPLICATION_ACTIVATED], 0, self->selected_app_info);
-
-    g_object_unref (app_item);
 }
 
 static void
@@ -698,9 +658,8 @@ selection_changed_cb (GListModel               *model,
                       GParamSpec               *pspec,
                       NautilusAppChooserWidget *self)
 {
-    guint position;
+    guint position = gtk_single_selection_get_selected (GTK_SINGLE_SELECTION (model));
 
-    position = gtk_single_selection_get_selected (GTK_SINGLE_SELECTION (model));
     if (position == GTK_INVALID_LIST_POSITION)
     {
         g_clear_object (&self->selected_app_info);
@@ -856,11 +815,8 @@ nautilus_app_chooser_widget_set_default_text (NautilusAppChooserWidget *self,
 {
     g_return_if_fail (NAUTILUS_IS_APP_CHOOSER_WIDGET (self));
 
-    if (g_strcmp0 (text, self->default_text) != 0)
+    if (g_set_str (&self->default_text, text))
     {
-        g_free (self->default_text);
-        self->default_text = g_strdup (text);
-
         g_object_notify (G_OBJECT (self), "default-text");
 
         nautilus_app_chooser_widget_refresh (self);
