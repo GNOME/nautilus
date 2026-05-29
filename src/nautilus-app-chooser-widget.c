@@ -576,7 +576,8 @@ setup_listitem_cb (GtkListItemFactory *factory,
 
     gtk_accessible_update_property (GTK_ACCESSIBLE (image),
                                     GTK_ACCESSIBLE_PROPERTY_LABEL,
-                                    "App icon",
+                                    /* translators: This is an accessible label for a shown icon. */
+                                    _("App icon"),
                                     -1);
     gtk_image_set_icon_size (GTK_IMAGE (image), GTK_ICON_SIZE_LARGE);
     gtk_box_append (GTK_BOX (box), image);
