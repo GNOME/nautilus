@@ -32,10 +32,6 @@ void          nautilus_app_chooser_widget_set_show_recommended (NautilusAppChoos
                                                                 gboolean             setting);
 gboolean      nautilus_app_chooser_widget_get_show_recommended (NautilusAppChooserWidget *self);
 
-void          nautilus_app_chooser_widget_set_show_all         (NautilusAppChooserWidget *self,
-                                                                gboolean             setting);
-gboolean      nautilus_app_chooser_widget_get_show_all         (NautilusAppChooserWidget *self);
-
 void          nautilus_app_chooser_widget_set_default_text     (NautilusAppChooserWidget *self,
                                                                 const char          *text);
 const char *  nautilus_app_chooser_widget_get_default_text     (NautilusAppChooserWidget *self);
