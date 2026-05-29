@@ -180,9 +180,6 @@ nautilus_app_chooser_constructed (GObject *object)
     gtk_widget_add_css_class (GTK_WIDGET (self->app_chooser_widget), "lowres-icon");
     gtk_box_append (GTK_BOX (self->content_box), GTK_WIDGET (self->app_chooser_widget));
 
-    nautilus_app_chooser_widget_set_show_default (self->app_chooser_widget, TRUE);
-    nautilus_app_chooser_widget_set_show_fallback (self->app_chooser_widget, TRUE);
-    nautilus_app_chooser_widget_set_show_other (self->app_chooser_widget, TRUE);
     nautilus_app_chooser_widget_set_search_entry (self->app_chooser_widget,
                                                   GTK_EDITABLE (self->search_entry));
 

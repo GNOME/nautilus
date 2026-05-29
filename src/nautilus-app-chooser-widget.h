@@ -28,21 +28,9 @@ GType         nautilus_app_chooser_widget_get_type             (void) G_GNUC_CON
 
 NautilusAppChooserWidget *nautilus_app_chooser_widget_new      (const char          *content_type);
 
-void          nautilus_app_chooser_widget_set_show_default     (NautilusAppChooserWidget *self,
-                                                                gboolean             setting);
-gboolean      nautilus_app_chooser_widget_get_show_default     (NautilusAppChooserWidget *self);
-
 void          nautilus_app_chooser_widget_set_show_recommended (NautilusAppChooserWidget *self,
                                                                 gboolean             setting);
 gboolean      nautilus_app_chooser_widget_get_show_recommended (NautilusAppChooserWidget *self);
-
-void          nautilus_app_chooser_widget_set_show_fallback    (NautilusAppChooserWidget *self,
-                                                                gboolean             setting);
-gboolean      nautilus_app_chooser_widget_get_show_fallback    (NautilusAppChooserWidget *self);
-
-void          nautilus_app_chooser_widget_set_show_other       (NautilusAppChooserWidget *self,
-                                                                gboolean             setting);
-gboolean      nautilus_app_chooser_widget_get_show_other       (NautilusAppChooserWidget *self);
 
 void          nautilus_app_chooser_widget_set_show_all         (NautilusAppChooserWidget *self,
                                                                 gboolean             setting);

@@ -29,10 +29,7 @@
  *
  * `NautilusAppChooserWidget` offers detailed control over what applications
  * are shown, using the
- * [property@Nautilus.AppChooserWidget:show-default],
  * [property@Nautilus.AppChooserWidget:show-recommended],
- * [property@Nautilus.AppChooserWidget:show-fallback],
- * [property@Nautilus.AppChooserWidget:show-other] and
  * [property@Nautilus.AppChooserWidget:show-all] properties.
  *
  * To keep track of the selected application, use the
@@ -150,10 +147,7 @@ struct _NautilusAppChooserWidget
     char *content_type;
     char *default_text;
 
-    guint show_default     : 1;
     guint show_recommended : 1;
-    guint show_fallback    : 1;
-    guint show_other       : 1;
     guint show_all         : 1;
 
     GListStore *app_info_store;
@@ -184,10 +178,7 @@ enum
 {
     PROP_CONTENT_TYPE = 1,
     PROP_GFILE,
-    PROP_SHOW_DEFAULT,
     PROP_SHOW_RECOMMENDED,
-    PROP_SHOW_FALLBACK,
-    PROP_SHOW_OTHER,
     PROP_SHOW_ALL,
     PROP_DEFAULT_TEXT,
     N_PROPERTIES
@@ -307,7 +298,7 @@ nautilus_app_chooser_widget_real_add_items (NautilusAppChooserWidget *self)
     gtk_list_view_set_header_factory (GTK_LIST_VIEW (self->program_list),
                                       show_headings ? self->header_factory : NULL);
 
-    if (self->show_default && self->content_type)
+    if (self->content_type)
     {
         default_app = g_app_info_get_default_for_type (self->content_type, FALSE);
 
@@ -336,7 +327,7 @@ nautilus_app_chooser_widget_real_add_items (NautilusAppChooserWidget *self)
                                       g_list_copy (recommended_apps));
     }
 
-    if ((self->content_type && self->show_fallback) || self->show_all)
+    if (self->content_type || self->show_all)
     {
         if (self->content_type)
         {
@@ -352,15 +343,12 @@ nautilus_app_chooser_widget_real_add_items (NautilusAppChooserWidget *self)
     }
 #endif
 
-    if (self->show_other || self->show_all)
-    {
-        all_applications = g_app_info_get_all ();
+    all_applications = g_app_info_get_all ();
 
-        apps_added |= nautilus_app_chooser_widget_add_section (self,
-                                                               FALSE,
-                                                               FALSE,
-                                                               all_applications, exclude_apps);
-    }
+    apps_added |= nautilus_app_chooser_widget_add_section (self,
+                                                           FALSE,
+                                                           FALSE,
+                                                           all_applications, exclude_apps);
 
     if (!apps_added)
     {
@@ -398,27 +386,9 @@ nautilus_app_chooser_widget_set_property (GObject      *object,
             break;
         }
 
-        case PROP_SHOW_DEFAULT:
-        {
-            nautilus_app_chooser_widget_set_show_default (self, g_value_get_boolean (value));
-            break;
-        }
-
         case PROP_SHOW_RECOMMENDED:
         {
             nautilus_app_chooser_widget_set_show_recommended (self, g_value_get_boolean (value));
-            break;
-        }
-
-        case PROP_SHOW_FALLBACK:
-        {
-            nautilus_app_chooser_widget_set_show_fallback (self, g_value_get_boolean (value));
-            break;
-        }
-
-        case PROP_SHOW_OTHER:
-        {
-            nautilus_app_chooser_widget_set_show_other (self, g_value_get_boolean (value));
             break;
         }
 
@@ -458,27 +428,9 @@ nautilus_app_chooser_widget_get_property (GObject    *object,
             break;
         }
 
-        case PROP_SHOW_DEFAULT:
-        {
-            g_value_set_boolean (value, self->show_default);
-            break;
-        }
-
         case PROP_SHOW_RECOMMENDED:
         {
             g_value_set_boolean (value, self->show_recommended);
-            break;
-        }
-
-        case PROP_SHOW_FALLBACK:
-        {
-            g_value_set_boolean (value, self->show_fallback);
-            break;
-        }
-
-        case PROP_SHOW_OTHER:
-        {
-            g_value_set_boolean (value, self->show_other);
             break;
         }
 
@@ -621,20 +573,6 @@ nautilus_app_chooser_widget_class_init (NautilusAppChooserWidgetClass *klass)
     g_object_class_install_property (gobject_class, PROP_CONTENT_TYPE, pspec);
 
     /**
-     * NautilusAppChooserWidget:show-default:
-     *
-     * Determines whether the app chooser should show the default
-     * handler for the content type in a separate section.
-     *
-     * If %FALSE, the default handler is listed among the recommended
-     * applications.
-     */
-    pspec = g_param_spec_boolean ("show-default", NULL, NULL,
-                                  FALSE,
-                                  G_PARAM_READWRITE | G_PARAM_CONSTRUCT | G_PARAM_STATIC_STRINGS | G_PARAM_EXPLICIT_NOTIFY);
-    g_object_class_install_property (gobject_class, PROP_SHOW_DEFAULT, pspec);
-
-    /**
      * NautilusAppChooserWidget:show-recommended:
      *
      * Determines whether the app chooser should show a section
@@ -647,31 +585,6 @@ nautilus_app_chooser_widget_class_init (NautilusAppChooserWidgetClass *klass)
                                   TRUE,
                                   G_PARAM_READWRITE | G_PARAM_CONSTRUCT | G_PARAM_STATIC_STRINGS | G_PARAM_EXPLICIT_NOTIFY);
     g_object_class_install_property (gobject_class, PROP_SHOW_RECOMMENDED, pspec);
-
-    /**
-     * NautilusAppChooserWidget:show-fallback:
-     *
-     * Determines whether the app chooser should show a section
-     * for fallback applications.
-     *
-     * If %FALSE, the fallback applications are listed among the
-     * other applications.
-     */
-    pspec = g_param_spec_boolean ("show-fallback", NULL, NULL,
-                                  FALSE,
-                                  G_PARAM_READWRITE | G_PARAM_CONSTRUCT | G_PARAM_STATIC_STRINGS | G_PARAM_EXPLICIT_NOTIFY);
-    g_object_class_install_property (gobject_class, PROP_SHOW_FALLBACK, pspec);
-
-    /**
-     * NautilusAppChooserWidget:show-other:
-     *
-     * Determines whether the app chooser should show a section
-     * for other applications.
-     */
-    pspec = g_param_spec_boolean ("show-other", NULL, NULL,
-                                  FALSE,
-                                  G_PARAM_READWRITE | G_PARAM_CONSTRUCT | G_PARAM_STATIC_STRINGS | G_PARAM_EXPLICIT_NOTIFY);
-    g_object_class_install_property (gobject_class, PROP_SHOW_OTHER, pspec);
 
     /**
      * NautilusAppChooserWidget:show-all:
@@ -997,47 +910,6 @@ nautilus_app_chooser_widget_new (const char *content_type)
 }
 
 /**
- * nautilus_app_chooser_widget_set_show_default:
- * @self: a `NautilusAppChooserWidget`
- * @setting: the new value for [property@Nautilus.AppChooserWidget:show-default]
- *
- * Sets whether the app chooser should show the default handler
- * for the content type in a separate section.
- */
-void
-nautilus_app_chooser_widget_set_show_default (NautilusAppChooserWidget *self,
-                                              gboolean                  setting)
-{
-    g_return_if_fail (NAUTILUS_IS_APP_CHOOSER_WIDGET (self));
-
-    if (self->show_default != setting)
-    {
-        self->show_default = setting;
-
-        g_object_notify (G_OBJECT (self), "show-default");
-
-        nautilus_app_chooser_widget_refresh (self);
-    }
-}
-
-/**
- * nautilus_app_chooser_widget_get_show_default:
- * @self: a `NautilusAppChooserWidget`
- *
- * Gets whether the app chooser should show the default handler
- * for the content type in a separate section.
- *
- * Returns: the value of [property@Nautilus.AppChooserWidget:show-default]
- */
-gboolean
-nautilus_app_chooser_widget_get_show_default (NautilusAppChooserWidget *self)
-{
-    g_return_val_if_fail (NAUTILUS_IS_APP_CHOOSER_WIDGET (self), FALSE);
-
-    return self->show_default;
-}
-
-/**
  * nautilus_app_chooser_widget_set_show_recommended:
  * @self: a `NautilusAppChooserWidget`
  * @setting: the new value for [property@Nautilus.AppChooserWidget:show-recommended]
@@ -1076,88 +948,6 @@ nautilus_app_chooser_widget_get_show_recommended (NautilusAppChooserWidget *self
     g_return_val_if_fail (NAUTILUS_IS_APP_CHOOSER_WIDGET (self), FALSE);
 
     return self->show_recommended;
-}
-
-/**
- * nautilus_app_chooser_widget_set_show_fallback:
- * @self: a `NautilusAppChooserWidget`
- * @setting: the new value for [property@Nautilus.AppChooserWidget:show-fallback]
- *
- * Sets whether the app chooser should show related applications
- * for the content type in a separate section.
- */
-void
-nautilus_app_chooser_widget_set_show_fallback (NautilusAppChooserWidget *self,
-                                               gboolean                  setting)
-{
-    g_return_if_fail (NAUTILUS_IS_APP_CHOOSER_WIDGET (self));
-
-    if (self->show_fallback != setting)
-    {
-        self->show_fallback = setting;
-
-        g_object_notify (G_OBJECT (self), "show-fallback");
-
-        nautilus_app_chooser_widget_refresh (self);
-    }
-}
-
-/**
- * nautilus_app_chooser_widget_get_show_fallback:
- * @self: a `NautilusAppChooserWidget`
- *
- * Gets whether the app chooser should show related applications
- * for the content type in a separate section.
- *
- * Returns: the value of [property@Nautilus.AppChooserWidget:show-fallback]
- */
-gboolean
-nautilus_app_chooser_widget_get_show_fallback (NautilusAppChooserWidget *self)
-{
-    g_return_val_if_fail (NAUTILUS_IS_APP_CHOOSER_WIDGET (self), FALSE);
-
-    return self->show_fallback;
-}
-
-/**
- * nautilus_app_chooser_widget_set_show_other:
- * @self: a `NautilusAppChooserWidget`
- * @setting: the new value for [property@Nautilus.AppChooserWidget:show-other]
- *
- * Sets whether the app chooser should show applications
- * which are unrelated to the content type.
- */
-void
-nautilus_app_chooser_widget_set_show_other (NautilusAppChooserWidget *self,
-                                            gboolean                  setting)
-{
-    g_return_if_fail (NAUTILUS_IS_APP_CHOOSER_WIDGET (self));
-
-    if (self->show_other != setting)
-    {
-        self->show_other = setting;
-
-        g_object_notify (G_OBJECT (self), "show-other");
-
-        nautilus_app_chooser_widget_refresh (self);
-    }
-}
-
-/**
- * nautilus_app_chooser_widget_get_show_other:
- * @self: a `NautilusAppChooserWidget`
- *
- * Gets whether the app chooser should show applications
- * which are unrelated to the content type.
- *
- * Returns: the value of [property@Nautilus.AppChooserWidget:show-other]
- */
-gboolean
-nautilus_app_chooser_widget_get_show_other (NautilusAppChooserWidget *self)
-{
-    g_return_val_if_fail (NAUTILUS_IS_APP_CHOOSER_WIDGET (self), FALSE);
-
-    return self->show_other;
 }
 
 /**
