@@ -15,12 +15,10 @@ tests = {
   'test-filename-common-prefix': {},
   'test-filename-utilities': {},
   'test-nautilus-search-engine': {},
-  # disable localsearch tests for now, until issues with accessing it from
-  # within the sandbox are resolved
-  # 'test-nautilus-search-engine-localsearch': {
-  #   'suite': ['tracker'],
-  #   'tracker': true,
-  # },
+  'test-nautilus-search-engine-localsearch': {
+    'suite': ['tracker'],
+    'tracker': true,
+  },
   'test-nautilus-search-engine-model': {},
   'test-nautilus-search-engine-simple': {},
   'test-ui-utilities': {},
