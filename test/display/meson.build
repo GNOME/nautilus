@@ -14,6 +14,7 @@ tests = {
   'test-portal-file-chooser': {
     'is_parallel' : false,
   },
+  'test-thumbnails': {},
 }
 
 foreach test_name, extra_args : tests
