@@ -27,10 +27,6 @@
  * Most applications only need to use the latter; but you can use
  * this widget as part of a larger widget if you have special needs.
  *
- * `NautilusAppChooserWidget` offers detailed control over what applications
- * are shown, using the
- * [property@Nautilus.AppChooserWidget:show-recommended] property
- *
  * To keep track of the selected application, use the
  * [signal@Nautilus.AppChooserWidget::application-selected] and
  * [signal@Nautilus.AppChooserWidget::application-activated] signals.
@@ -146,8 +142,6 @@ struct _NautilusAppChooserWidget
     char *content_type;
     char *default_text;
 
-    guint show_recommended : 1;
-
     GListStore *app_info_store;
     GtkListItemFactory *header_factory;
     GtkStringFilter *filter;
@@ -176,7 +170,6 @@ enum
 {
     PROP_CONTENT_TYPE = 1,
     PROP_GFILE,
-    PROP_SHOW_RECOMMENDED,
     PROP_DEFAULT_TEXT,
     N_PROPERTIES
 };
@@ -301,7 +294,7 @@ nautilus_app_chooser_widget_real_add_items (NautilusAppChooserWidget *self)
     }
 
 #ifndef G_OS_WIN32
-    if (self->content_type && self->show_recommended)
+    if (self->content_type)
     {
         if (self->content_type)
         {
@@ -376,12 +369,6 @@ nautilus_app_chooser_widget_set_property (GObject      *object,
             break;
         }
 
-        case PROP_SHOW_RECOMMENDED:
-        {
-            nautilus_app_chooser_widget_set_show_recommended (self, g_value_get_boolean (value));
-            break;
-        }
-
         case PROP_DEFAULT_TEXT:
         {
             nautilus_app_chooser_widget_set_default_text (self, g_value_get_string (value));
@@ -409,12 +396,6 @@ nautilus_app_chooser_widget_get_property (GObject    *object,
         case PROP_CONTENT_TYPE:
         {
             g_value_set_string (value, self->content_type);
-            break;
-        }
-
-        case PROP_SHOW_RECOMMENDED:
-        {
-            g_value_set_boolean (value, self->show_recommended);
             break;
         }
 
@@ -549,20 +530,6 @@ nautilus_app_chooser_widget_class_init (NautilusAppChooserWidgetClass *klass)
                                  G_PARAM_CONSTRUCT_ONLY | G_PARAM_READWRITE |
                                  G_PARAM_STATIC_STRINGS);
     g_object_class_install_property (gobject_class, PROP_CONTENT_TYPE, pspec);
-
-    /**
-     * NautilusAppChooserWidget:show-recommended:
-     *
-     * Determines whether the app chooser should show a section
-     * for recommended applications.
-     *
-     * If %FALSE, the recommended applications are listed
-     * among the other applications.
-     */
-    pspec = g_param_spec_boolean ("show-recommended", NULL, NULL,
-                                  TRUE,
-                                  G_PARAM_READWRITE | G_PARAM_CONSTRUCT | G_PARAM_STATIC_STRINGS | G_PARAM_EXPLICIT_NOTIFY);
-    g_object_class_install_property (gobject_class, PROP_SHOW_RECOMMENDED, pspec);
 
     /**
      * NautilusAppChooserWidget:default-text:
@@ -873,47 +840,6 @@ nautilus_app_chooser_widget_new (const char *content_type)
     return g_object_new (NAUTILUS_TYPE_APP_CHOOSER_WIDGET,
                          "content-type", content_type,
                          NULL);
-}
-
-/**
- * nautilus_app_chooser_widget_set_show_recommended:
- * @self: a `NautilusAppChooserWidget`
- * @setting: the new value for [property@Nautilus.AppChooserWidget:show-recommended]
- *
- * Sets whether the app chooser should show recommended applications
- * for the content type in a separate section.
- */
-void
-nautilus_app_chooser_widget_set_show_recommended (NautilusAppChooserWidget *self,
-                                                  gboolean                  setting)
-{
-    g_return_if_fail (NAUTILUS_IS_APP_CHOOSER_WIDGET (self));
-
-    if (self->show_recommended != setting)
-    {
-        self->show_recommended = setting;
-
-        g_object_notify (G_OBJECT (self), "show-recommended");
-
-        nautilus_app_chooser_widget_refresh (self);
-    }
-}
-
-/**
- * nautilus_app_chooser_widget_get_show_recommended:
- * @self: a `NautilusAppChooserWidget`
- *
- * Gets whether the app chooser should show recommended applications
- * for the content type in a separate section.
- *
- * Returns: the value of [property@Nautilus.AppChooserWidget:show-recommended]
- */
-gboolean
-nautilus_app_chooser_widget_get_show_recommended (NautilusAppChooserWidget *self)
-{
-    g_return_val_if_fail (NAUTILUS_IS_APP_CHOOSER_WIDGET (self), FALSE);
-
-    return self->show_recommended;
 }
 
 /**
