@@ -127,8 +127,6 @@ nautilus_app_item_new (GAppInfo *app_info,
     return item;
 }
 
-typedef struct _NautilusAppChooserWidgetClass NautilusAppChooserWidgetClass;
-
 struct _NautilusAppChooserWidget
 {
     GtkWidget parent_instance;
@@ -150,17 +148,6 @@ struct _NautilusAppChooserWidget
     GAppInfoMonitor *monitor;
 
     GtkWidget *popup_menu;
-};
-
-struct _NautilusAppChooserWidgetClass
-{
-    GtkWidgetClass parent_class;
-
-    void (* application_selected)  (NautilusAppChooserWidget *self,
-                                    GAppInfo                 *app_info);
-
-    void (* application_activated) (NautilusAppChooserWidget *self,
-                                    GAppInfo                 *app_info);
 };
 
 enum
@@ -496,7 +483,7 @@ nautilus_app_chooser_widget_class_init (NautilusAppChooserWidgetClass *klass)
         g_signal_new ("application-selected",
                       NAUTILUS_TYPE_APP_CHOOSER_WIDGET,
                       G_SIGNAL_RUN_FIRST,
-                      G_STRUCT_OFFSET (NautilusAppChooserWidgetClass, application_selected),
+                      0,
                       NULL, NULL,
                       NULL,
                       G_TYPE_NONE,
@@ -517,7 +504,7 @@ nautilus_app_chooser_widget_class_init (NautilusAppChooserWidgetClass *klass)
         g_signal_new ("application-activated",
                       NAUTILUS_TYPE_APP_CHOOSER_WIDGET,
                       G_SIGNAL_RUN_FIRST,
-                      G_STRUCT_OFFSET (NautilusAppChooserWidgetClass, application_activated),
+                      0,
                       NULL, NULL,
                       NULL,
                       G_TYPE_NONE,
