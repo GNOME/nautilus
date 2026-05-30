@@ -28,8 +28,8 @@ template $NautilusAppChooser: Adw.Dialog {
         use-underline: true;
         can-shrink: true;
         sensitive: false;
-        activate => $open_cb(template);
-        clicked => $open_cb(template);
+        activate => $on_app_chosen(template);
+        clicked => $on_app_chosen(template);
 
         styles [
           "suggested-action",

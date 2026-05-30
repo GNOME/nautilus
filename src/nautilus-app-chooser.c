@@ -55,9 +55,9 @@ enum
 static guint signals[SIGNAL_LAST] = { 0, };
 
 static void
-app_chosen (NautilusAppChooser *self,
-            GAppInfo           *info)
+on_app_chosen (NautilusAppChooser *self)
 {
+    g_autoptr (GAppInfo) info = nautilus_app_chooser_get_app_info (self);
     gboolean set_new_default = FALSE;
     g_autoptr (GError) error = NULL;
 
@@ -91,14 +91,6 @@ app_chosen (NautilusAppChooser *self,
     }
 
     g_signal_emit (self, signals[SIGNAL_APP_CHOSEN], 0, info);
-}
-
-static void
-open_cb (NautilusAppChooser *self)
-{
-    g_autoptr (GAppInfo) info = nautilus_app_chooser_get_app_info (self);
-
-    app_chosen (self, info);
 }
 
 static void
@@ -246,7 +238,7 @@ nautilus_app_chooser_constructed (GObject *object)
     g_signal_connect_object (self->app_chooser_widget, "application-selected",
                              G_CALLBACK (on_application_selected), self, G_CONNECT_DEFAULT);
     g_signal_connect_object (self->app_chooser_widget, "app-chosen",
-                             G_CALLBACK (app_chosen), self, G_CONNECT_SWAPPED);
+                             G_CALLBACK (on_app_chosen), self, G_CONNECT_SWAPPED);
 
     if (self->file_name != NULL)
     {
@@ -323,7 +315,7 @@ nautilus_app_chooser_class_init (NautilusAppChooserClass *klass)
     gtk_widget_class_bind_template_child (widget_class, NautilusAppChooser, set_default_row);
     gtk_widget_class_bind_template_child (widget_class, NautilusAppChooser, search_entry);
 
-    gtk_widget_class_bind_template_callback (widget_class, open_cb);
+    gtk_widget_class_bind_template_callback (widget_class, on_app_chosen);
 
     properties[PROP_CONTENT_TYPE] =
         g_param_spec_string ("content-type", "", "",
