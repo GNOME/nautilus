@@ -231,7 +231,7 @@ update_no_applications_label (NautilusAppChooserWidget *self)
     if (self->content_type != NULL)
     {
         g_autofree char *desc = g_content_type_get_description (self->content_type);
-        g_autofree char *text = g_strdup_printf (_("No apps found for “%s”."), desc);
+        g_autofree char *text = g_strdup_printf (_("No apps found for “%s”"), desc);
 
         gtk_label_set_text (GTK_LABEL (self->no_apps_label), text);
     }
