@@ -138,7 +138,6 @@ struct _NautilusAppChooserWidget
     GtkWidget *overlay;
 
     char *content_type;
-    char *default_text;
 
     GListStore *app_info_store;
     GtkListItemFactory *header_factory;
@@ -168,7 +167,6 @@ enum
 {
     PROP_CONTENT_TYPE = 1,
     PROP_GFILE,
-    PROP_DEFAULT_TEXT,
     N_PROPERTIES
 };
 
@@ -230,21 +228,16 @@ nautilus_app_chooser_widget_add_default (NautilusAppChooserWidget *self,
 static void
 update_no_applications_label (NautilusAppChooserWidget *self)
 {
-    if (self->default_text == NULL)
+    if (self->content_type != NULL)
     {
-        g_autofree char *desc = NULL, *text = NULL;
+        g_autofree char *desc = g_content_type_get_description (self->content_type);
+        g_autofree char *text = g_strdup_printf (_("No apps found for “%s”."), desc);
 
-        if (self->content_type)
-        {
-            desc = g_content_type_get_description (self->content_type);
-        }
-
-        text = g_strdup_printf (_("No apps found for “%s”."), desc);
         gtk_label_set_text (GTK_LABEL (self->no_apps_label), text);
     }
     else
     {
-        gtk_label_set_text (GTK_LABEL (self->no_apps_label), self->default_text);
+        gtk_label_set_text (GTK_LABEL (self->no_apps_label), _("No apps found"));
     }
 }
 
@@ -345,12 +338,6 @@ nautilus_app_chooser_widget_set_property (GObject      *object,
             break;
         }
 
-        case PROP_DEFAULT_TEXT:
-        {
-            nautilus_app_chooser_widget_set_default_text (self, g_value_get_string (value));
-            break;
-        }
-
         default:
         {
             G_OBJECT_WARN_INVALID_PROPERTY_ID (object, property_id, pspec);
@@ -372,12 +359,6 @@ nautilus_app_chooser_widget_get_property (GObject    *object,
         case PROP_CONTENT_TYPE:
         {
             g_value_set_string (value, self->content_type);
-            break;
-        }
-
-        case PROP_DEFAULT_TEXT:
-        {
-            g_value_set_string (value, self->default_text);
             break;
         }
 
@@ -405,7 +386,6 @@ nautilus_app_chooser_widget_finalize (GObject *object)
     NautilusAppChooserWidget *self = NAUTILUS_APP_CHOOSER_WIDGET (object);
 
     g_free (self->content_type);
-    g_free (self->default_text);
     g_object_unref (self->monitor);
     g_object_unref (self->app_info_store);
     g_object_unref (self->header_factory);
@@ -504,17 +484,6 @@ nautilus_app_chooser_widget_class_init (NautilusAppChooserWidgetClass *klass)
                                  G_PARAM_CONSTRUCT_ONLY | G_PARAM_READWRITE |
                                  G_PARAM_STATIC_STRINGS);
     g_object_class_install_property (gobject_class, PROP_CONTENT_TYPE, pspec);
-
-    /**
-     * NautilusAppChooserWidget:default-text:
-     *
-     * The text that appears in the widget when there are no applications
-     * for the given content type.
-     */
-    pspec = g_param_spec_string ("default-text", NULL, NULL,
-                                 NULL,
-                                 G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS | G_PARAM_EXPLICIT_NOTIFY);
-    g_object_class_install_property (gobject_class, PROP_DEFAULT_TEXT, pspec);
 
     /**
      * NautilusAppChooserWidget::application-selected:
@@ -800,45 +769,6 @@ nautilus_app_chooser_widget_new (const char *content_type)
     return g_object_new (NAUTILUS_TYPE_APP_CHOOSER_WIDGET,
                          "content-type", content_type,
                          NULL);
-}
-
-/**
- * nautilus_app_chooser_widget_set_default_text:
- * @self: a `NautilusAppChooserWidget`
- * @text: the new value for [property@Nautilus.AppChooserWidget:default-text]
- *
- * Sets the text that is shown if there are not applications
- * that can handle the content type.
- */
-void
-nautilus_app_chooser_widget_set_default_text (NautilusAppChooserWidget *self,
-                                              const char               *text)
-{
-    g_return_if_fail (NAUTILUS_IS_APP_CHOOSER_WIDGET (self));
-
-    if (g_set_str (&self->default_text, text))
-    {
-        g_object_notify (G_OBJECT (self), "default-text");
-
-        nautilus_app_chooser_widget_refresh (self);
-    }
-}
-
-/**
- * nautilus_app_chooser_widget_get_default_text:
- * @self: a `NautilusAppChooserWidget`
- *
- * Returns the text that is shown if there are not applications
- * that can handle the content type.
- *
- * Returns: (nullable): the value of [property@Nautilus.AppChooserWidget:default-text]
- */
-const char *
-nautilus_app_chooser_widget_get_default_text (NautilusAppChooserWidget *self)
-{
-    g_return_val_if_fail (NAUTILUS_IS_APP_CHOOSER_WIDGET (self), NULL);
-
-    return self->default_text;
 }
 
 static void

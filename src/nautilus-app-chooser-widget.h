@@ -28,10 +28,6 @@ GType         nautilus_app_chooser_widget_get_type             (void) G_GNUC_CON
 
 NautilusAppChooserWidget *nautilus_app_chooser_widget_new      (const char          *content_type);
 
-void          nautilus_app_chooser_widget_set_default_text     (NautilusAppChooserWidget *self,
-                                                                const char          *text);
-const char *  nautilus_app_chooser_widget_get_default_text     (NautilusAppChooserWidget *self);
-
 void          nautilus_app_chooser_widget_set_search_entry     (NautilusAppChooserWidget *self,
                                                                 GtkEditable         *editable);
 
