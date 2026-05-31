@@ -36,6 +36,7 @@
  * `NautilusAppChooserWidget` has a single CSS node with name appchooser.
  */
 
+#define NAUTILUS_TYPE_APP_ITEM (nautilus_app_item_get_type ())
 G_DECLARE_FINAL_TYPE (NautilusAppItem, nautilus_app_item, NAUTILUS, APP_ITEM, GObject)
 
 struct _NautilusAppItem
@@ -117,7 +118,7 @@ nautilus_app_item_new (GAppInfo *app_info,
                        gboolean  is_recommended,
                        gboolean  is_fallback)
 {
-    NautilusAppItem *item = g_object_new (nautilus_app_item_get_type (), NULL);
+    NautilusAppItem *item = g_object_new (NAUTILUS_TYPE_APP_ITEM, NULL);
 
     item->app_info = g_object_ref (app_info);
     item->is_default = is_default;
@@ -681,11 +682,11 @@ nautilus_app_chooser_widget_init (NautilusAppChooserWidget *self)
 
     gtk_widget_init_template (GTK_WIDGET (self));
 
-    expression = gtk_property_expression_new (nautilus_app_item_get_type (), NULL, "name");
+    expression = gtk_property_expression_new (NAUTILUS_TYPE_APP_ITEM, NULL, "name");
     self->filter = gtk_string_filter_new (gtk_expression_ref (expression));
     self->sorter = gtk_string_sorter_new (expression);
 
-    self->app_info_store = g_list_store_new (nautilus_app_item_get_type ());
+    self->app_info_store = g_list_store_new (NAUTILUS_TYPE_APP_ITEM);
     filter = gtk_filter_list_model_new (G_LIST_MODEL (g_object_ref (self->app_info_store)), GTK_FILTER (g_object_ref (self->filter)));
     sort = gtk_sort_list_model_new (G_LIST_MODEL (filter), GTK_SORTER (g_object_ref (self->sorter)));
 
