@@ -135,8 +135,8 @@ bookmark_list_changed_cb (NautilusBookmarkList  *list,
 }
 
 static gboolean
-file_has_string (GFile *file,
-                 char  *string)
+file_has_string (GFile      *file,
+                 const char *string)
 {
     g_autoptr (GError) error = NULL;
     g_autofree char *content = NULL;
@@ -153,7 +153,7 @@ file_has_string (GFile *file,
 }
 
 static void
-test_bookmark_list_changed_signal (void)
+test_bookmark_list_changed_signal_internal (void)
 {
     const char *tmp_dir = test_get_tmp_dir ();
     g_autoptr (GFile) bookmarks_list_file = g_file_new_build_filename (tmp_dir,
@@ -169,6 +169,7 @@ test_bookmark_list_changed_signal (void)
                                                              NULL);
     ChangedSignalTestData test_data = { 0, 0 };
     NautilusBookmark *existing_bookmark;
+    const char *existing_bookmark_new_name = "New Name";
 
     setup_tmp_bookmarks_file (tmp_dir);
     list = nautilus_bookmark_list_new ();
@@ -195,23 +196,45 @@ test_bookmark_list_changed_signal (void)
     existing_bookmark = nautilus_bookmark_list_get_bookmark (list, bookmark1);
     g_assert_nonnull (existing_bookmark);
     test_data.expected_signal_count++;
-    nautilus_bookmark_set_name (existing_bookmark, "New Name");
+    nautilus_bookmark_set_name (existing_bookmark, existing_bookmark_new_name);
     g_assert_cmpint (test_data.signal_count, ==, test_data.expected_signal_count);
 
     /* Wait for the list to be written to the file. */
-    ITER_CONTEXT_WHILE (!file_has_string (bookmarks_list_file, "New Name"));
-    /* Allow bookmark list to handle the save callback and start monitoring the
-     * file again. */
-    g_main_context_iteration (NULL, FALSE);
+    ITER_CONTEXT_WHILE (!file_has_string (bookmarks_list_file, existing_bookmark_new_name));
 
-    /* Test external changes by modifying the bookmarks file */
+    g_assert_nonnull (nautilus_bookmark_list_get_bookmark (list, bookmark1));
+    g_assert_null (nautilus_bookmark_list_get_bookmark (list, bookmark2));
+    g_assert_cmpstr (nautilus_bookmark_get_name (nautilus_bookmark_list_get_bookmark (list,
+                                                                                      bookmark1)),
+                     ==,
+                     existing_bookmark_new_name);
+
+    /* Make sure no late change signals are still pending */
+    ITER_CONTEXT_WHILE (g_main_context_pending (NULL));
+
+    test_clear_tmp_dir ();
+}
+
+static void
+test_bookmark_list_changed_signal_external (void)
+{
+    const char *tmp_dir = test_get_tmp_dir ();
+    g_autoptr (GFile) bookmarks_list_file = g_file_new_build_filename (tmp_dir,
+                                                                       "gtk-3.0",
+                                                                       "bookmarks",
+                                                                       NULL);
+    g_autoptr (NautilusBookmarkList) list = NULL;
+    ChangedSignalTestData test_data = { 0, 0 };
+    g_autoptr (GFile) tmp_bookmark = g_file_new_for_path ("/tmp/file1");
     g_autoptr (GFile) external_bookmark = g_file_new_for_path ("/tmp/external");
-    const char *content = "file:///tmp/external External\n";
+    const char *old_content = "file:///tmp/file1 File1\n";
+    const char *new_content = "file:///tmp/external External\n";
     g_autoptr (GError) error = NULL;
 
-    test_data.expected_signal_count++;
+    /* Initialize file with old content */
+    setup_tmp_bookmarks_file (tmp_dir);
     g_file_replace_contents (bookmarks_list_file,
-                             content, strlen (content),
+                             old_content, strlen (old_content),
                              NULL,
                              FALSE,
                              G_FILE_CREATE_NONE,
@@ -220,9 +243,37 @@ test_bookmark_list_changed_signal (void)
                              &error);
     g_assert_no_error (error);
 
-    ITER_CONTEXT_WHILE (nautilus_bookmark_list_get_bookmark (list, external_bookmark) == NULL);
+    list = nautilus_bookmark_list_new ();
+    g_signal_connect (list, "changed", G_CALLBACK (bookmark_list_changed_cb), &test_data);
+
+    /* Wait for the list to be loaded */
+    test_data.expected_signal_count++;
     ITER_CONTEXT_WHILE (test_data.signal_count < test_data.expected_signal_count);
     g_assert_cmpint (test_data.signal_count, ==, test_data.expected_signal_count);
+
+    /* Test external changes by modifying the bookmarks file */
+    test_data.expected_signal_count++;
+    g_file_replace_contents (bookmarks_list_file,
+                             new_content, strlen (new_content),
+                             NULL,
+                             FALSE,
+                             G_FILE_CREATE_NONE,
+                             NULL,
+                             NULL,
+                             &error);
+    g_assert_no_error (error);
+
+    /* Insure new bookmark exists and old bookmark is gone */
+    ITER_CONTEXT_WHILE (nautilus_bookmark_list_get_bookmark (list, external_bookmark) == NULL);
+    g_assert_cmpstr (nautilus_bookmark_get_name (nautilus_bookmark_list_get_bookmark (list, external_bookmark)),
+                     ==,
+                     "External");
+    g_assert_null (nautilus_bookmark_list_get_bookmark (list, tmp_bookmark));
+    ITER_CONTEXT_WHILE (test_data.signal_count < test_data.expected_signal_count);
+    g_assert_cmpint (test_data.signal_count, ==, test_data.expected_signal_count);
+
+    /* Make sure no late change signals are still pending */
+    ITER_CONTEXT_WHILE (g_main_context_pending (NULL));
 
     test_clear_tmp_dir ();
 }
@@ -240,8 +291,10 @@ main (int   argc,
 
     g_test_add_func ("/bookmark-list/basic",
                      test_bookmark_list_basic);
-    g_test_add_func ("/bookmark-list/changed-signal",
-                     test_bookmark_list_changed_signal);
+    g_test_add_func ("/bookmark-list/changed-signal/internal",
+                     test_bookmark_list_changed_signal_internal);
+    g_test_add_func ("/bookmark-list/changed-signal/external",
+                     test_bookmark_list_changed_signal_external);
 
     return g_test_run ();
 }
