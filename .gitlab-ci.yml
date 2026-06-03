@@ -194,6 +194,7 @@ fedora_rawhide@arm64:
         - .fedora-arm64
         - .vars-devel
     stage: test
+    when: manual
     rules:
         - if: $CI_PROJECT_NAMESPACE == "GNOME" && $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
           when: always
