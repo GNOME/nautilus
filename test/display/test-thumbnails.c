@@ -95,6 +95,7 @@ test_thumbnail_test_queue (void)
 {
     GStrvBuilder *strv_builder = g_strv_builder_new ();
     g_auto (GStrv) files_hier = NULL;
+    const guint64 old_mtime = 1;
     g_autolist (GFile) image_locations = NULL;
     guint n_images = MAX (g_get_num_processors (), 4);
     g_autoptr (GPtrArray) cancellables_array = g_ptr_array_new_with_free_func ((GDestroyNotify) g_object_unref);
@@ -104,7 +105,8 @@ test_thumbnail_test_queue (void)
         g_strv_builder_take (strv_builder, g_strdup_printf ("image_%u.png", i + 1));
     }
     files_hier = g_strv_builder_unref_to_strv (strv_builder);
-    file_hierarchy_foreach (files_hier, "", (HierarchyCallback) make_image_file, NULL);
+    file_hierarchy_foreach (files_hier, "",
+                            (HierarchyCallback) make_image_file_with_mtime, (gpointer) old_mtime);
     image_locations = file_hierarchy_get_files_list (files_hier, "", FALSE);
 
     /* Add to thumbnailing queue */
@@ -249,10 +251,11 @@ test_thumbnail_image_no_mtime (void)
     g_autoptr (GFile) image_location = g_file_new_build_filename (test_get_tmp_dir (),
                                                                   "Image.png",
                                                                   NULL);
+    const guint64 mtime = 1;
     g_autofree gchar *uri = g_file_get_uri (image_location);
     g_autofree gchar *mime_type = NULL;
 
-    make_image_file (image_location);
+    make_image_file_with_mtime (image_location, mtime);
     get_file_mime_type_and_mtime (image_location, &mime_type);
 
     g_assert_true (nautilus_thumbnail_is_mimetype_limited_by_size (mime_type));
@@ -290,13 +293,14 @@ test_thumbnail_cancel (void)
     g_autoptr (GFile) image_location = g_file_new_build_filename (test_get_tmp_dir (),
                                                                   "Image.png",
                                                                   NULL);
+    guint64 mtime = 1;
     g_autofree gchar *uri = g_file_get_uri (image_location);
 
-    make_image_file (image_location);
+    make_image_file_with_mtime (image_location, mtime);
 
     g_autofree gchar *mime_type = NULL;
-    guint64 mtime = get_file_mime_type_and_mtime (image_location, &mime_type);
 
+    mtime = get_file_mime_type_and_mtime (image_location, &mime_type);
     g_assert_true (nautilus_thumbnail_is_mimetype_limited_by_size (mime_type));
 
     g_autofree gchar *thumbnail_path = nautilus_thumbnail_get_path_for_uri (uri);
@@ -457,6 +461,16 @@ make_text_file (void)
 
     g_output_stream_write_all (G_OUTPUT_STREAM (stream), text, strlen (text), NULL, NULL, &error);
     g_assert_no_error (error);
+    g_output_stream_close (G_OUTPUT_STREAM (stream), NULL, &error);
+    g_assert_no_error (error);
+
+    /* Speed up thumbnailing */
+    g_file_set_attribute_uint64 (text_location,
+                                 G_FILE_ATTRIBUTE_TIME_MODIFIED,
+                                 1,
+                                 G_FILE_QUERY_INFO_NONE,
+                                 NULL,
+                                 NULL);
 
     return g_steal_pointer (&text_location);
 }
