@@ -185,6 +185,8 @@ fedora_rawhide@x86_64:
     artifacts:
         paths:
             - $MESON_BUILD_DIR
+        reports:
+            junit: $MESON_BUILD_DIR/meson-logs/testlog.junit.xml
 
 fedora_rawhide@arm64:
     extends:
@@ -205,6 +207,8 @@ fedora_rawhide@arm64:
     artifacts:
         paths:
             - $MESON_BUILD_DIR
+        reports:
+            junit: $MESON_BUILD_DIR/meson-logs/testlog.junit.xml
 
 flatpak@x86_64:
     extends: ['.flatpak@x86_64', '.vars-devel']
