@@ -1018,6 +1018,9 @@ nautilus_application_startup (GApplication *app)
     gxdp_init_gtk (GXDP_SERVICE_CLIENT_TYPE_FILE_CHOOSER,
                    (const char *[]) { "org.freedesktop.portal.FileChooser", NULL },
                    &error);
+    /* Remove environment variable that disables libadwaita portal use until it
+     * is fixed in libgxdp */
+    g_unsetenv ("ADW_DISABLE_PORTAL");
 
     if (error != NULL)
     {
