@@ -58,6 +58,15 @@ nautilus_application_open_location_full (NautilusApplication *application,
                                          const char          *startup_id);
 
 NautilusApplication *nautilus_application_get_default (void);
+
+/* Notification category strings to use with g_notification_set_catergory ().
+ * From https://specifications.freedesktop.org/notification/latest/categories.html */
+
+#define XDG_NOTIFICATION_CATEGORY_TRANSFER "transfer"
+#define XDG_NOTIFICATION_CATEGORY_TRANSFER_COMPLETE "transfer.complete"
+#define XDG_NOTIFICATION_CATEGORY_DEVICE "device"
+#define XDG_NOTIFICATION_CATEGORY_DEVICE_REMOVED "device.removed"
+
 void nautilus_application_send_notification (NautilusApplication *self,
                                              const gchar         *notification_id,
                                              GNotification       *notification);

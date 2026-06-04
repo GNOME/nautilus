@@ -113,6 +113,7 @@ progress_persistence_handler_update_notification (NautilusProgressPersistenceHan
                                       self->active_infos),
                             self->active_infos);
     g_notification_set_body (notification, body);
+    g_notification_set_category (notification, XDG_NOTIFICATION_CATEGORY_TRANSFER);
 
     nautilus_application_send_notification (self->app,
                                             "progress", notification);
@@ -146,6 +147,7 @@ progress_persistence_handler_show_complete_notification (NautilusProgressPersist
     complete_notification = g_notification_new (_("File Operations"));
     g_notification_set_body (complete_notification,
                              _("All file operations have been completed"));
+    g_notification_set_category (complete_notification, XDG_NOTIFICATION_CATEGORY_TRANSFER_COMPLETE);
     nautilus_application_send_notification (self->app,
                                             "transfer-complete",
                                             complete_notification);

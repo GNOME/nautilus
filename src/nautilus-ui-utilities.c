@@ -657,6 +657,7 @@ notify_unmount_done (GMountOperation *op,
         unplug = g_notification_new (strings[0]);
         g_notification_set_body (unplug, strings[1]);
         g_notification_set_icon (unplug, icon);
+        g_notification_set_category (unplug, XDG_NOTIFICATION_CATEGORY_DEVICE_REMOVED);
 
         nautilus_application_send_notification (application, notification_id, unplug);
         g_object_unref (unplug);
@@ -685,6 +686,7 @@ notify_unmount_show (GMountOperation *op,
     unmount = g_notification_new (strings[0]);
     g_notification_set_body (unmount, strings[1]);
     g_notification_set_icon (unmount, icon);
+    g_notification_set_category (unmount, XDG_NOTIFICATION_CATEGORY_DEVICE);
     g_notification_set_priority (unmount, G_NOTIFICATION_PRIORITY_URGENT);
 
     notification_id = g_strdup_printf ("nautilus-mount-operation-%p", op);
