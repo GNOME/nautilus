@@ -216,10 +216,12 @@ test_bookmark_list_changed_signal_external (void)
     g_autoptr (GFile) bookmarks_list_file = setup_tmp_bookmarks_file (tmp_dir);
     g_autoptr (NautilusBookmarkList) list = NULL;
     ChangedSignalTestData test_data = { 0, 0 };
-    g_autoptr (GFile) tmp_bookmark = g_file_new_for_path ("/tmp/file1");
-    g_autoptr (GFile) external_bookmark = g_file_new_for_path ("/tmp/external");
-    const char *old_content = "file:///tmp/file1 File1\n";
-    const char *new_content = "file:///tmp/external External\n";
+    g_autoptr (GFile) tmp_bookmark = g_file_new_build_filename (tmp_dir, "file1", NULL);
+    g_autoptr (GFile) external_bookmark = g_file_new_build_filename (tmp_dir, "external", NULL);
+    g_autofree char *tmp_uri = g_file_get_uri (tmp_bookmark);
+    g_autofree char *external_uri = g_file_get_uri (external_bookmark);
+    g_autofree char *old_content = g_strdup_printf ("%s File1\n", tmp_uri);
+    g_autofree char *new_content = g_strdup_printf ("%s External\n", external_uri);
     g_autoptr (GError) error = NULL;
 
     g_assert_true (g_file_query_exists (bookmarks_list_file, NULL));
