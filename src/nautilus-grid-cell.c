@@ -167,7 +167,7 @@ update_emblems (NautilusGridCell *self)
     item = nautilus_view_cell_get_item (NAUTILUS_VIEW_CELL (self));
     g_return_if_fail (item != NULL);
     file = nautilus_view_item_get_file (item);
-    file_uri = nautilus_file_get_uri (file);
+    file_uri = nautilus_file_get_activation_uri (file);
 
     /* Remove old emblems. */
     while ((child = gtk_widget_get_first_child (self->emblems_box)) != NULL)

@@ -7734,16 +7734,13 @@ nautilus_files_view_update_actions_state (NautilusFilesView *self)
                   (can_star_current_directory || selection_contains_starred);
     for (l = selection; l != NULL; l = l->next)
     {
-        NautilusFile *file;
-        g_autofree gchar *uri = NULL;
-
-        file = NAUTILUS_FILE (l->data);
-        uri = nautilus_file_get_uri (file);
-
         if (!show_star && !show_unstar)
         {
             break;
         }
+
+        NautilusFile *file = NAUTILUS_FILE (l->data);
+        g_autofree gchar *uri = nautilus_file_get_activation_uri (file);
 
         if (nautilus_tag_manager_file_is_starred (nautilus_tag_manager_get (), uri))
         {

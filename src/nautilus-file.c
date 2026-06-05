@@ -3456,8 +3456,8 @@ compare_by_starred (NautilusFile *file_1,
     gboolean file_1_is_starred;
     gboolean file_2_is_starred;
 
-    uri_1 = nautilus_file_get_uri (file_1);
-    uri_2 = nautilus_file_get_uri (file_2);
+    uri_1 = nautilus_file_get_activation_uri (file_1);
+    uri_2 = nautilus_file_get_activation_uri (file_2);
 
     file_1_is_starred = nautilus_tag_manager_file_is_starred (tag_manager,
                                                               uri_1);
