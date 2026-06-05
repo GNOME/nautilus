@@ -2177,13 +2177,20 @@ is_network_directory (NautilusFile *file)
 }
 
 static gboolean
+is_trash_directory (NautilusFile *file)
+{
+    g_autoptr (GFile) location = nautilus_file_get_location (file);
+
+    return nautilus_is_root_for_scheme (location, SCHEME_TRASH);
+}
+
+static gboolean
 is_burn_directory (NautilusFile *file)
 {
     g_autoptr (GFile) location = nautilus_file_get_location (file);
 
     return nautilus_is_root_for_scheme (location, SCHEME_BURN);
 }
-
 
 static gboolean
 is_volume_properties (NautilusPropertiesWidget *self)
@@ -2330,17 +2337,9 @@ should_show_location_info (NautilusPropertiesWidget *self)
 static gboolean
 should_show_trashed_info (NautilusPropertiesWidget *self)
 {
-    GList *l;
-
-    for (l = self->files; l != NULL; l = l->next)
-    {
-        if (!nautilus_file_is_in_trash (NAUTILUS_FILE (l->data)))
-        {
-            return FALSE;
-        }
-    }
-
-    return TRUE;
+    return !is_multi_file_window (self) &&
+           nautilus_file_is_in_trash (get_file (self)) &&
+           !is_trash_directory (get_file (self));
 }
 
 static gboolean
