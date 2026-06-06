@@ -2281,17 +2281,7 @@ should_show_file_type (NautilusPropertiesWidget *self)
 static GFile *
 get_parent_location (NautilusFile *file)
 {
-    if (nautilus_file_is_in_recent (file))
-    {
-        /* Use activation location since parent location points to recent:// */
-        g_autoptr (GFile) location = nautilus_file_get_activation_location (file);
-
-        return g_file_get_parent (location);
-    }
-    else
-    {
-        return nautilus_file_get_parent_location (file);
-    }
+    return nautilus_file_get_parent_location (file);
 }
 
 static gboolean
@@ -2388,7 +2378,6 @@ should_show_free_space (NautilusPropertiesWidget *self)
     if (!is_multi_file_window (self)
         && (nautilus_file_is_in_trash (get_file (self)) ||
             is_network_directory (get_file (self)) ||
-            nautilus_file_is_in_recent (get_file (self)) ||
             is_burn_directory (get_file (self)) ||
             is_volume_properties (self)))
     {
@@ -3578,13 +3567,12 @@ should_show_permissions (NautilusPropertiesWidget *self)
 {
     GList *l;
 
-    /* Don't show permissions for Trash and Recent since they're not
-     * really file system objects.
+    /* Don't show permissions for Trash since they're not really file system
+     * objects.
      */
     for (l = self->files; l != NULL; l = l->next)
     {
-        if (nautilus_file_is_in_trash (NAUTILUS_FILE (l->data)) ||
-            nautilus_file_is_in_recent (NAUTILUS_FILE (l->data)))
+        if (nautilus_file_is_in_trash (NAUTILUS_FILE (l->data)))
         {
             return FALSE;
         }
@@ -3744,7 +3732,23 @@ properties_widget_new (NautilusFileList *files)
     NautilusPropertiesWidget *self =
         NAUTILUS_PROPERTIES_WIDGET (g_object_new (NAUTILUS_TYPE_PROPERTIES_WIDGET, NULL));
 
-    self->files = nautilus_file_list_copy (files);
+    for (GList *l = files; l != NULL; l = l->next)
+    {
+        NautilusFile *file = l->data;
+
+        if (nautilus_file_is_in_recent (file))
+        {
+            g_autofree char *uri = nautilus_file_get_activation_uri (file);
+
+            self->files = g_list_prepend (self->files, nautilus_file_get_by_uri (uri));
+        }
+        else
+        {
+            self->files = g_list_prepend (self->files, nautilus_file_ref (file));
+        }
+    }
+
+    self->files = g_list_reverse (self->files);
 
     nautilus_file_list_call_when_ready (self->files,
                                         NAUTILUS_ATTRIBUTE_INFO |
