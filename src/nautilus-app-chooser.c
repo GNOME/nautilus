@@ -115,6 +115,19 @@ on_application_selected (NautilusAppChooserWidget *widget,
     gtk_widget_set_sensitive (GTK_WIDGET (self->set_default_row), !is_default);
 }
 
+static gboolean
+on_search_entry_key_pressed (NautilusAppChooser *self,
+                             guint               keyval)
+{
+    if (keyval == GDK_KEY_Escape)
+    {
+        adw_dialog_close (ADW_DIALOG (self));
+        return GDK_EVENT_STOP;
+    }
+
+    return GDK_EVENT_PROPAGATE;
+}
+
 static void
 nautilus_app_chooser_set_property (GObject      *object,
                                    guint         param_id,
@@ -157,6 +170,12 @@ nautilus_app_chooser_init (NautilusAppChooser *self)
     gtk_widget_init_template (GTK_WIDGET (self));
 
     gtk_widget_add_css_class (GTK_WIDGET (self), "nautilus-app-chooser");
+
+    GtkEventController *controller = gtk_event_controller_key_new ();
+
+    gtk_widget_add_controller (self->search_entry, controller);
+    g_signal_connect_swapped (controller, "key-pressed",
+                              G_CALLBACK (on_search_entry_key_pressed), self);
 }
 
 static gboolean
