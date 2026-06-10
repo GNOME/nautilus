@@ -3867,14 +3867,13 @@ pre_copy_move (NautilusFilesView *directory_view)
  * from the debuting uri hash table.
  */
 static gboolean
-copy_move_done_was_not_debuting (NautilusFile *added_file,
-                                 gpointer      callback_data)
+copy_move_done_was_debuting (NautilusFile *added_file,
+                             gpointer      callback_data)
 {
     GHashTable *debuting_files = callback_data;
     g_autoptr (GFile) location = nautilus_file_get_location (added_file);
-    gboolean was_debuting = g_hash_table_remove (debuting_files, location);
 
-    return !was_debuting;
+    return g_hash_table_remove (debuting_files, location);
 }
 
 static gboolean
@@ -3923,12 +3922,10 @@ copy_move_done_callback (GHashTable *debuting_files,
 
         debuting_files_data = g_new (DebutingFilesData, 1);
         debuting_files_data->debuting_files = g_hash_table_ref (debuting_files);
-        NautilusFileList *added_files = nautilus_file_list_copy (copy_move_done_data->added_files);
-
-        added_files = nautilus_file_list_filter (added_files,
-                                                 copy_move_done_was_not_debuting,
-                                                 debuting_files);
-        debuting_files_data->added_files = added_files;
+        debuting_files_data->added_files =
+            nautilus_file_list_filter (g_steal_pointer (&copy_move_done_data->added_files),
+                                       copy_move_done_was_debuting,
+                                       debuting_files);
 
         /* We're passed the same data used by pre_copy_move_add_files_callback, so disconnecting
          * it will free data. We've already siphoned off the added_files we need, and stashed the
