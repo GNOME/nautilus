@@ -124,3 +124,19 @@ typedef enum {
   NAUTILUS_SIDEBAR_SECTION_MOUNTS,
   NAUTILUS_SIDEBAR_N_SECTION_TYPES
 } NautilusSidebarSectionType;
+
+/**
+ * NautilusSelectionSource:
+ * @NAUTILUS_SELECTION_SOURCE_NONE: Fallback for undefined source.
+ * @NAUTILUS_SELECTION_SOURCE_MANUAL: Selection was manual by the user through
+ * manual clicking, rubberbanding, pattern selection, or selection shortcuts.
+ * @NAUTILUS_SELECTION_SOURCE_AUTO: Selection was programmatically by a source
+ * other than what is defined below.
+ *
+ **/
+typedef enum
+{
+    NAUTILUS_SELECTION_SOURCE_NONE,
+    NAUTILUS_SELECTION_SOURCE_MANUAL,
+    NAUTILUS_SELECTION_SOURCE_AUTO,
+} NautilusSelectionSource;

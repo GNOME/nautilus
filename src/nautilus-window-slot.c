@@ -410,7 +410,7 @@ hide_query_editor (NautilusWindowSlot *self)
          * press [Esc], and have the selected search result still selected and
          * revealed in the unfiltered folder view. */
         g_autolist (NautilusFile) selection = nautilus_files_view_get_selection (view);
-        gboolean selection_is_auto = nautilus_files_view_is_selection_auto (view);
+        NautilusSelectionSource selection_source = nautilus_files_view_get_selection_source (view);
 
         /* Now that we have saved the search, clear the view's query. The view
          * will immediately clear its model model and load the previous location
@@ -425,7 +425,7 @@ hide_query_editor (NautilusWindowSlot *self)
         nautilus_window_slot_set_view_id (self, view_id);
 
         /* Apply the saved selection */
-        nautilus_files_view_set_selection (view, selection, selection_is_auto);
+        nautilus_files_view_set_selection (view, selection, selection_source);
     }
 
     if (nautilus_window_slot_get_active (self))
@@ -852,10 +852,10 @@ nautilus_window_slot_get_selection (NautilusWindowSlot *self)
     return self->selection;
 }
 
-gboolean
-nautilus_window_slot_is_selection_auto (NautilusWindowSlot *self)
+NautilusSelectionSource
+nautilus_window_slot_get_selection_source (NautilusWindowSlot *self)
 {
-    return nautilus_files_view_is_selection_auto (self->content_view);
+    return nautilus_files_view_get_selection_source (self->content_view);
 }
 
 static void
@@ -1430,7 +1430,9 @@ nautilus_window_slot_open_location_full (NautilusWindowSlot *self,
     {
         if (self->content_view != NULL && new_selection != NULL)
         {
-            nautilus_files_view_set_selection (self->content_view, new_selection, FALSE);
+            nautilus_files_view_set_selection (self->content_view,
+                                               new_selection,
+                                               NAUTILUS_SELECTION_SOURCE_MANUAL);
         }
 
         return;
@@ -2127,7 +2129,9 @@ static void
 apply_pending_location_and_selection_on_view (NautilusWindowSlot *self)
 {
     nautilus_files_view_set_location (self->content_view, self->pending_location);
-    nautilus_files_view_set_selection (self->content_view, self->pending_selection, TRUE);
+    nautilus_files_view_set_selection (self->content_view,
+                                       self->pending_selection,
+                                       NAUTILUS_SELECTION_SOURCE_AUTO);
 
     nautilus_file_list_free (self->pending_selection);
     self->pending_selection = NULL;
@@ -3026,10 +3030,11 @@ nautilus_window_slot_stop_loading (NautilusWindowSlot *self)
          * to cancel.
          */
         g_autolist (NautilusFile) selection = nautilus_files_view_get_selection (self->content_view);
-        gboolean selection_is_auto = nautilus_files_view_is_selection_auto (self->content_view);
+        NautilusSelectionSource selection_source
+            = nautilus_files_view_get_selection_source (self->content_view);
 
         nautilus_files_view_set_location (self->content_view, location);
-        nautilus_files_view_set_selection (self->content_view, selection, selection_is_auto);
+        nautilus_files_view_set_selection (self->content_view, selection, selection_source);
     }
 
     end_location_change (self);

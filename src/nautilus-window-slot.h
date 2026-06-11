@@ -103,7 +103,7 @@ gboolean nautilus_window_slot_get_search_global            (NautilusWindowSlot *
 
 GList* nautilus_window_slot_get_selection                  (NautilusWindowSlot *slot);
 
-gboolean nautilus_window_slot_is_selection_auto            (NautilusWindowSlot *self);
+NautilusSelectionSource nautilus_window_slot_get_selection_source (NautilusWindowSlot *self);
 
 void     nautilus_window_slot_search                       (NautilusWindowSlot *slot,
                                                             NautilusQuery      *query);

@@ -190,7 +190,7 @@ struct _NautilusFilesView
     NautilusFileList *pending_selection;
     GHashTable *pending_reveal;
     GHashTable *awaiting_acknowledge;
-    gboolean pending_selection_is_auto;
+    NautilusSelectionSource pending_selection_source;
 
     /* whether we are in the active slot */
     gboolean active;
@@ -207,8 +207,8 @@ struct _NautilusFilesView
     gboolean show_hidden_files;
 
     gboolean selection_was_removed;
-    gboolean auto_selection;
-    gboolean in_auto_selection;
+    NautilusSelectionSource selection_source;
+    NautilusSelectionSource in_progress_selection_source;
 
     gboolean metadata_for_directory_as_file_pending;
     gboolean metadata_for_files_in_directory_pending;
@@ -764,21 +764,21 @@ nautilus_files_view_select_all (NautilusFilesView *self)
 }
 
 static void
-nautilus_files_view_select_first (NautilusFilesView *self,
-                                  gboolean           is_auto)
+nautilus_files_view_select_first (NautilusFilesView       *self,
+                                  NautilusSelectionSource  selection_source)
 {
     if (g_list_model_get_n_items (G_LIST_MODEL (self->model)) > 0)
     {
-        self->in_auto_selection = is_auto;
+        self->in_progress_selection_source = selection_source;
         nautilus_list_base_set_cursor (self->list_base, 0, TRUE, TRUE);
-        self->in_auto_selection = FALSE;
+        self->in_progress_selection_source = NAUTILUS_SELECTION_SOURCE_NONE;
     }
 }
 
 static void
-nautilus_files_view_call_set_selection (NautilusFilesView *self,
-                                        NautilusFileList  *selection,
-                                        gboolean           auto_selection)
+nautilus_files_view_call_set_selection (NautilusFilesView       *self,
+                                        NautilusFileList        *selection,
+                                        NautilusSelectionSource  selection_source)
 {
     g_autoptr (NautilusFileList) files_to_find = g_list_copy (selection);
     g_autoptr (GtkBitset) update_set = NULL;
@@ -813,7 +813,7 @@ nautilus_files_view_call_set_selection (NautilusFilesView *self,
         }
     }
 
-    self->in_auto_selection = auto_selection;
+    self->in_progress_selection_source = selection_source;
 
     /* Set focus on the first selected row, and scroll it into view. */
     if (!gtk_bitset_is_empty (new_selection_set))
@@ -831,7 +831,7 @@ nautilus_files_view_call_set_selection (NautilusFilesView *self,
     gtk_selection_model_set_selection (GTK_SELECTION_MODEL (self->model),
                                        new_selection_set,
                                        update_set);
-    self->in_auto_selection = FALSE;
+    self->in_progress_selection_source = NAUTILUS_SELECTION_SOURCE_NONE;
 }
 
 static gboolean
@@ -1045,10 +1045,10 @@ nautilus_files_view_get_selection (NautilusFilesView *self)
     return get_selection_internal (self, FALSE);
 }
 
-gboolean
-nautilus_files_view_is_selection_auto (NautilusFilesView *self)
+NautilusSelectionSource
+nautilus_files_view_get_selection_source (NautilusFilesView *self)
 {
-    return self->auto_selection;
+    return self->selection_source;
 }
 
 typedef struct
@@ -1761,7 +1761,7 @@ pattern_select_response_select (AdwDialog *dialog,
         selection = g_list_concat (selection, nautilus_directory_match_pattern (subdirectory, text));
     }
 
-    nautilus_files_view_call_set_selection (self, selection, FALSE);
+    nautilus_files_view_call_set_selection (self, selection, NAUTILUS_SELECTION_SOURCE_MANUAL);
 
     adw_dialog_close (dialog);
 }
@@ -1907,7 +1907,7 @@ new_folder_done (GFile    *new_folder,
         /* The file was already added */
         nautilus_files_view_call_set_selection (directory_view,
                                                 &(NautilusFileList){ .data = file },
-                                                TRUE);
+                                                NAUTILUS_SELECTION_SOURCE_AUTO);
     }
     else
     {
@@ -2116,7 +2116,7 @@ compress_done (GFile    *new_file,
         /* The file was already added */
         nautilus_files_view_call_set_selection (view,
                                                 &(NautilusFileList){ .data = file },
-                                                TRUE);
+                                                NAUTILUS_SELECTION_SOURCE_AUTO);
     }
     else
     {
@@ -3058,16 +3058,16 @@ nautilus_files_view_grab_focus (GtkWidget *widget)
  * Sets the current selection of the view.
  */
 void
-nautilus_files_view_set_selection (NautilusFilesView *self,
-                                   NautilusFileList  *selection,
-                                   gboolean           auto_selection)
+nautilus_files_view_set_selection (NautilusFilesView       *self,
+                                   NautilusFileList        *selection,
+                                   NautilusSelectionSource  selection_source)
 {
     if (!self->loading)
     {
         /* If we aren't still loading, set the selection right now,
          * and reveal the new selection.
          */
-        nautilus_files_view_call_set_selection (self, selection, auto_selection);
+        nautilus_files_view_call_set_selection (self, selection, selection_source);
     }
     else
     {
@@ -3079,7 +3079,7 @@ nautilus_files_view_set_selection (NautilusFilesView *self,
         g_list_free_full (self->pending_selection, g_object_unref);
 
         self->pending_selection = pending_selection;
-        self->pending_selection_is_auto = auto_selection;
+        self->pending_selection_source = selection_source;
     }
 }
 
@@ -3730,7 +3730,7 @@ done_loading (NautilusFilesView *self,
         if (nautilus_files_view_is_searching (self) &&
             all_files_seen && no_selection && self->pending_selection == NULL)
         {
-            nautilus_files_view_select_first (self, TRUE);
+            nautilus_files_view_select_first (self, NAUTILUS_SELECTION_SOURCE_AUTO);
         }
         else if (self->pending_selection != NULL && all_files_seen)
         {
@@ -3739,8 +3739,8 @@ done_loading (NautilusFilesView *self,
 
             nautilus_files_view_call_set_selection (self,
                                                     pending_selection,
-                                                    self->pending_selection_is_auto);
-            self->pending_selection_is_auto = FALSE;
+                                                    self->pending_selection_source);
+            self->pending_selection_source = NAUTILUS_SELECTION_SOURCE_NONE;
         }
 
         g_clear_pointer (&self->pending_selection, nautilus_file_list_free);
@@ -3800,7 +3800,9 @@ debuting_files_add_files_callback (NautilusFilesView *view,
 
     if (g_hash_table_size (data->debuting_files) == 0)
     {
-        nautilus_files_view_call_set_selection (view, data->added_files, TRUE);
+        nautilus_files_view_call_set_selection (view,
+                                                data->added_files,
+                                                NAUTILUS_SELECTION_SOURCE_AUTO);
         g_signal_handlers_disconnect_by_func (view,
                                               G_CALLBACK (debuting_files_add_files_callback),
                                               data);
@@ -3947,11 +3949,12 @@ copy_move_done_callback (GHashTable *debuting_files,
         if (g_hash_table_size (debuting_files) == 0)
         {
             /* on the off-chance that all the icons have already been added */
-            if (debuting_files_data->added_files != NULL)
+            if (debuting_files_data->added_files != NULL &&
+                directory_view->selection_source)
             {
                 nautilus_files_view_call_set_selection (directory_view,
                                                         debuting_files_data->added_files,
-                                                        TRUE);
+                                                        NAUTILUS_SELECTION_SOURCE_AUTO);
             }
             debuting_files_data_free (debuting_files_data);
         }
@@ -4014,7 +4017,7 @@ files_view_end_file_changes (NautilusFilesView *self)
     {
         g_autoptr (NautilusFileList) selection = g_hash_table_get_keys (self->pending_reveal);
 
-        nautilus_files_view_set_selection (self, selection, TRUE);
+        nautilus_files_view_set_selection (self, selection, NAUTILUS_SELECTION_SOURCE_AUTO);
         g_hash_table_remove_all (self->pending_reveal);
     }
 }
@@ -4283,7 +4286,7 @@ display_pending_files (NautilusFilesView *view)
         !view->pending_selection &&
         nautilus_files_view_is_searching (view))
     {
-        nautilus_files_view_select_first (view, TRUE);
+        nautilus_files_view_select_first (view, NAUTILUS_SELECTION_SOURCE_AUTO);
     }
 
     if (view->model != NULL
@@ -5994,7 +5997,7 @@ extract_done (GList    *outputs,
                                         nautilus_file_get (l->data));
         }
 
-        nautilus_files_view_set_selection (data->view, selection, TRUE);
+        nautilus_files_view_set_selection (data->view, selection, NAUTILUS_SELECTION_SOURCE_AUTO);
     }
     else
     {
@@ -8278,7 +8281,17 @@ nautilus_files_view_notify_selection_changed (NautilusFilesView *view)
     }
 
     view->selection_was_removed = FALSE;
-    view->auto_selection = view->in_auto_selection;
+    /* When setting the selection programmatically, we must have already
+     * specified the source of selection. */
+    if (view->in_progress_selection_source != NAUTILUS_SELECTION_SOURCE_NONE)
+    {
+        view->selection_source = view->in_progress_selection_source;
+    }
+    else
+    {
+        /* Assume the source is manual */
+        view->selection_source = NAUTILUS_SELECTION_SOURCE_MANUAL;
+    }
 
     /* Schedule a display of the new selection. */
     if (view->display_selection_idle_id == 0)
@@ -8838,7 +8851,9 @@ nautilus_files_view_set_property (GObject      *object,
 
         case PROP_SELECTION:
         {
-            nautilus_files_view_set_selection (self, g_value_get_pointer (value), TRUE);
+            nautilus_files_view_set_selection (self,
+                                               g_value_get_pointer (value),
+                                               NAUTILUS_SELECTION_SOURCE_AUTO);
         }
         break;
 
