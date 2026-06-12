@@ -3730,12 +3730,20 @@ done_loading (NautilusFilesView *self,
         if (nautilus_files_view_is_searching (self) &&
             all_files_seen && no_selection && self->pending_selection == NULL)
         {
-            nautilus_files_view_select_first (self, NAUTILUS_SELECTION_SOURCE_AUTO);
+            nautilus_files_view_select_first (self, NAUTILUS_SELECTION_SOURCE_IN_SEARCH);
         }
         else if (self->pending_selection != NULL && all_files_seen)
         {
             g_autolist (NautilusFile) pending_selection = NULL;
             pending_selection = g_steal_pointer (&self->pending_selection);
+
+            if (self->pending_selection_source == NAUTILUS_SELECTION_SOURCE_IN_SEARCH &&
+                !nautilus_files_view_is_searching (self))
+            {
+                /* We need differentiation between auto selection during search
+                 * and afterwards. The transition is done here manually. */
+                self->pending_selection_source = NAUTILUS_SELECTION_SOURCE_AFTER_SEARCH;
+            }
 
             nautilus_files_view_call_set_selection (self,
                                                     pending_selection,
@@ -4286,7 +4294,7 @@ display_pending_files (NautilusFilesView *view)
         !view->pending_selection &&
         nautilus_files_view_is_searching (view))
     {
-        nautilus_files_view_select_first (view, NAUTILUS_SELECTION_SOURCE_AUTO);
+        nautilus_files_view_select_first (view, NAUTILUS_SELECTION_SOURCE_IN_SEARCH);
     }
 
     if (view->model != NULL

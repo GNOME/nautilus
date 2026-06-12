@@ -132,6 +132,10 @@ typedef enum {
  * manual clicking, rubberbanding, pattern selection, or selection shortcuts.
  * @NAUTILUS_SELECTION_SOURCE_AUTO: Selection was programmatically by a source
  * other than what is defined below.
+ * @NAUTILUS_SELECTION_SOURCE_IN_SEARCH: Automatic selection of the first item
+ * during search
+ * @NAUTILUS_SELECTION_SOURCE_AFTER_SEARCH: Same as IN_SEARCH, but transferred
+ * after exiting search without change.
  *
  **/
 typedef enum
@@ -139,4 +143,6 @@ typedef enum
     NAUTILUS_SELECTION_SOURCE_NONE,
     NAUTILUS_SELECTION_SOURCE_MANUAL,
     NAUTILUS_SELECTION_SOURCE_AUTO,
+    NAUTILUS_SELECTION_SOURCE_IN_SEARCH,
+    NAUTILUS_SELECTION_SOURCE_AFTER_SEARCH,
 } NautilusSelectionSource;

@@ -1186,3 +1186,10 @@ nautilus_location_is_autofs_mountpoint (GFile *location)
 
     return (buf.f_type == AUTOFS_SUPER_MAGIC);
 }
+
+gboolean
+selection_source_is_intentional (NautilusSelectionSource selection_source)
+{
+    return selection_source == NAUTILUS_SELECTION_SOURCE_MANUAL ||
+           selection_source == NAUTILUS_SELECTION_SOURCE_AFTER_SEARCH;
+}

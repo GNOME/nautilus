@@ -17,6 +17,7 @@
 #include "nautilus-directory.h"
 #include "nautilus-enum-types.h"
 #include "nautilus-file.h"
+#include "nautilus-file-utilities.h"
 #include "nautilus-filename-utilities.h"
 #include "nautilus-filename-validator.h"
 #include "nautilus-global-preferences.h"
@@ -470,7 +471,7 @@ on_slot_selection_notify (NautilusFileChooser *self)
     NautilusSelectionSource selection_source
         = nautilus_window_slot_get_selection_source (self->slot);
 
-    if (selection_source == NAUTILUS_SELECTION_SOURCE_AUTO)
+    if (!selection_source_is_intentional (selection_source))
     {
         /* If the selection is auto, don't override the suggested name with the
          *  auto-selected file. */

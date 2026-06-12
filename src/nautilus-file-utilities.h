@@ -22,6 +22,8 @@
 
 #pragma once
 
+#include "nautilus-enums.h"
+
 #include <gio/gio.h>
 #include <gtk/gtk.h>
 
@@ -144,3 +146,6 @@ GList *
 nautilus_location_list_from_file_list (GList *files);
 
 gboolean nautilus_location_is_autofs_mountpoint (GFile *location);
+
+gboolean
+selection_source_is_intentional (NautilusSelectionSource selection_source);
