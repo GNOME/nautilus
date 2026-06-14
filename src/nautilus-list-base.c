@@ -371,15 +371,15 @@ on_view_click_pressed (GtkGestureClick *gesture,
     gtk_widget_grab_focus (GTK_WIDGET (self));
 
     /* Don't interfere with GtkListBase default selection handling when
-     * holding Ctrl and Shift. */
+     * holding Ctrl and Shift. Also, don't unselect when right clicking. */
     modifiers = gtk_event_controller_get_current_event_state (GTK_EVENT_CONTROLLER (gesture));
+    button = gtk_gesture_single_get_current_button (GTK_GESTURE_SINGLE (gesture));
     selection_mode = (modifiers & (GDK_CONTROL_MASK | GDK_SHIFT_MASK));
-    if (!selection_mode)
+    if (!selection_mode && button != GDK_BUTTON_SECONDARY)
     {
         gtk_selection_model_unselect_all (GTK_SELECTION_MODEL (priv->model));
     }
 
-    button = gtk_gesture_single_get_current_button (GTK_GESTURE_SINGLE (gesture));
     if (button == GDK_BUTTON_SECONDARY)
     {
         g_signal_emit (self, signals[POPUP_BACKGROUND_CONTEXT_MENU], 0, x, y);
