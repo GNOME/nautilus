@@ -136,6 +136,10 @@ typedef enum {
  * during search
  * @NAUTILUS_SELECTION_SOURCE_AFTER_SEARCH: Same as IN_SEARCH, but transferred
  * after exiting search without change.
+ * @NAUTILUS_SELECTION_SOURCE_OP_START: The selection that existed at the time
+ * of an operation start.
+ * @NAUTILUS_SELECTION_SOURCE_OP_DONE: Selection that appears as a result of an
+ * operation after it has finished.
  *
  **/
 typedef enum
@@ -145,4 +149,6 @@ typedef enum
     NAUTILUS_SELECTION_SOURCE_AUTO,
     NAUTILUS_SELECTION_SOURCE_IN_SEARCH,
     NAUTILUS_SELECTION_SOURCE_AFTER_SEARCH,
+    NAUTILUS_SELECTION_SOURCE_OP_START,
+    NAUTILUS_SELECTION_SOURCE_OP_DONE,
 } NautilusSelectionSource;

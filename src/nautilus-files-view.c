@@ -44,6 +44,7 @@
 #include "nautilus-compress-dialog.h"
 #include "nautilus-dbus-launcher.h"
 #include "nautilus-directory.h"
+#include "nautilus-directory-private.h"
 #include "nautilus-dnd.h"
 #include "nautilus-enums.h"
 #include "nautilus-error-reporting.h"
@@ -780,6 +781,13 @@ nautilus_files_view_call_set_selection (NautilusFilesView       *self,
                                         NautilusFileList        *selection,
                                         NautilusSelectionSource  selection_source)
 {
+    if (selection_source == NAUTILUS_SELECTION_SOURCE_OP_DONE &&
+        selection_source_is_intentional (self->selection_source))
+    {
+        /* Don't override intentional selection with operation results. */
+        return;
+    }
+
     g_autoptr (NautilusFileList) files_to_find = g_list_copy (selection);
     g_autoptr (GtkBitset) update_set = NULL;
     g_autoptr (GtkBitset) new_selection_set = NULL;
@@ -1049,6 +1057,24 @@ NautilusSelectionSource
 nautilus_files_view_get_selection_source (NautilusFilesView *self)
 {
     return self->selection_source;
+}
+
+static gboolean
+location_in_view (NautilusFilesView *view,
+                  GFile             *location)
+{
+    NautilusDirectory *directory = nautilus_directory_get_existing (location);
+    gboolean view_has_subdir = directory != NULL &&
+                               nautilus_files_view_has_subdirectory (view, directory);
+
+    if (view_has_subdir)
+    {
+        return TRUE;
+    }
+
+    GFile *view_location = nautilus_files_view_get_location (view);
+
+    return (view_location != NULL && g_file_equal (view_location, location));
 }
 
 typedef struct
@@ -1907,7 +1933,7 @@ new_folder_done (GFile    *new_folder,
         /* The file was already added */
         nautilus_files_view_call_set_selection (directory_view,
                                                 &(NautilusFileList){ .data = file },
-                                                NAUTILUS_SELECTION_SOURCE_AUTO);
+                                                NAUTILUS_SELECTION_SOURCE_OP_DONE);
     }
     else
     {
@@ -2051,6 +2077,7 @@ nautilus_files_view_new_folder_dialog_new (NautilusFilesView *view,
 
     uri = nautilus_files_view_get_backing_uri (view);
     containing_directory = nautilus_directory_get_by_uri (uri);
+    view->selection_source = NAUTILUS_SELECTION_SOURCE_OP_START;
 
     if (with_selection)
     {
@@ -2116,7 +2143,7 @@ compress_done (GFile    *new_file,
         /* The file was already added */
         nautilus_files_view_call_set_selection (view,
                                                 &(NautilusFileList){ .data = file },
-                                                NAUTILUS_SELECTION_SOURCE_AUTO);
+                                                NAUTILUS_SELECTION_SOURCE_OP_DONE);
     }
     else
     {
@@ -2153,6 +2180,11 @@ create_archive_callback (const char *archive_name,
      */
     parent = g_file_get_parent (G_FILE (g_list_first (source_files)->data));
     output = g_file_get_child (parent, archive_name);
+
+    if (location_in_view (view, output))
+    {
+        view->selection_source = NAUTILUS_SELECTION_SOURCE_OP_START;
+    }
 
     data = g_new (CompressData, 1);
     data->view = view;
@@ -2330,6 +2362,7 @@ nautilus_files_view_new_file (NautilusFilesView *directory_view,
         g_assert (container_uri != NULL);
     }
 
+    directory_view->selection_source = NAUTILUS_SELECTION_SOURCE_OP_START;
     if (source == NULL)
     {
         nautilus_files_view_new_file_with_initial_contents (directory_view,
@@ -2368,6 +2401,7 @@ action_empty_trash (GSimpleAction *action,
     view = NAUTILUS_FILES_VIEW (user_data);
     window = gtk_widget_get_root (GTK_WIDGET (view));
 
+    view->selection_source = NAUTILUS_SELECTION_SOURCE_OP_START;
     nautilus_file_operations_empty_trash (GTK_WIDGET (window), TRUE, NULL);
 }
 
@@ -2741,6 +2775,7 @@ paste_files (NautilusFilesView *view,
     clipboard = gtk_widget_get_clipboard (GTK_WIDGET (view));
     formats = gdk_clipboard_get_formats (clipboard);
 
+    view->selection_source = NAUTILUS_SELECTION_SOURCE_OP_START;
     real_dest_uri = dest_uri != NULL ? dest_uri : nautilus_files_view_get_backing_uri (view);
 
     if (gdk_content_formats_contain_gtype (formats, GDK_TYPE_TEXTURE))
@@ -3810,7 +3845,7 @@ debuting_files_add_files_callback (NautilusFilesView *view,
     {
         nautilus_files_view_call_set_selection (view,
                                                 data->added_files,
-                                                NAUTILUS_SELECTION_SOURCE_AUTO);
+                                                NAUTILUS_SELECTION_SOURCE_OP_DONE);
         g_signal_handlers_disconnect_by_func (view,
                                               G_CALLBACK (debuting_files_add_files_callback),
                                               data);
@@ -3962,7 +3997,7 @@ copy_move_done_callback (GHashTable *debuting_files,
             {
                 nautilus_files_view_call_set_selection (directory_view,
                                                         debuting_files_data->added_files,
-                                                        NAUTILUS_SELECTION_SOURCE_AUTO);
+                                                        NAUTILUS_SELECTION_SOURCE_OP_DONE);
             }
             debuting_files_data_free (debuting_files_data);
         }
@@ -4025,7 +4060,7 @@ files_view_end_file_changes (NautilusFilesView *self)
     {
         g_autoptr (NautilusFileList) selection = g_hash_table_get_keys (self->pending_reveal);
 
-        nautilus_files_view_set_selection (self, selection, NAUTILUS_SELECTION_SOURCE_AUTO);
+        nautilus_files_view_set_selection (self, selection, NAUTILUS_SELECTION_SOURCE_OP_DONE);
         g_hash_table_remove_all (self->pending_reveal);
     }
 }
@@ -5716,6 +5751,7 @@ on_destination_dialog_response (GtkFileDialog *dialog,
     {
         char *target_uri;
         GList *uris, *l;
+        NautilusFilesView *view = copy_data->view;
 
         target_uri = g_file_get_uri (target_location);
         uris = NULL;
@@ -5726,7 +5762,12 @@ on_destination_dialog_response (GtkFileDialog *dialog,
         }
         uris = g_list_reverse (uris);
 
-        nautilus_files_view_move_copy_items (copy_data->view, uris, target_uri,
+        if (location_in_view (view, target_location))
+        {
+            view->selection_source = NAUTILUS_SELECTION_SOURCE_OP_START;
+        }
+
+        nautilus_files_view_move_copy_items (view, uris, target_uri,
                                              copy_data->is_move ? GDK_ACTION_MOVE : GDK_ACTION_COPY);
 
         g_list_free_full (uris, g_free);
@@ -5861,6 +5902,7 @@ action_create_links_in_place (GSimpleAction *action,
     item_uris = g_list_reverse (item_uris);
 
     destination_uri = nautilus_files_view_get_backing_uri (view);
+    view->selection_source = NAUTILUS_SELECTION_SOURCE_OP_START;
 
     nautilus_files_view_move_copy_items (view, item_uris, destination_uri,
                                          GDK_ACTION_LINK);
@@ -6005,7 +6047,9 @@ extract_done (GList    *outputs,
                                         nautilus_file_get (l->data));
         }
 
-        nautilus_files_view_set_selection (data->view, selection, NAUTILUS_SELECTION_SOURCE_AUTO);
+        nautilus_files_view_set_selection (data->view,
+                                           selection,
+                                           NAUTILUS_SELECTION_SOURCE_OP_DONE);
     }
     else
     {
@@ -6054,7 +6098,7 @@ extract_files (NautilusFilesView *view,
         data->added_locations = g_hash_table_new_full (g_file_hash,
                                                        (GEqualFunc) g_file_equal,
                                                        g_object_unref, NULL);
-
+        view->selection_source = NAUTILUS_SELECTION_SOURCE_OP_START;
 
         g_object_add_weak_pointer (G_OBJECT (data->view),
                                    (gpointer *) &data->view);
