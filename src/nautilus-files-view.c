@@ -4150,9 +4150,21 @@ nautilus_files_view_add_files (NautilusFilesView *self,
                                GList             *files)
 {
     g_autolist (NautilusViewItem) items = NULL;
+    NautilusSelectionSource tmp_source = self->in_progress_selection_source;
 
     items = g_list_copy_deep (files, (GCopyFunc) nautilus_view_item_new, NULL);
+    /* Adding files can change selection indices, causing changed signal which
+     * is interpereted as manual selection source from the user. Instead,
+     * override that here. The selection of operation results is handled
+     * elsewhere in this file. */
+    if (self->in_progress_selection_source == NAUTILUS_SELECTION_SOURCE_NONE)
+    {
+        self->in_progress_selection_source = self->selection_source;
+    }
+
     nautilus_view_model_add_items (self->model, items);
+
+    self->in_progress_selection_source = tmp_source;
 }
 
 static void
@@ -4175,7 +4187,20 @@ files_view_remove_files (NautilusFilesView *self,
 
     if (g_hash_table_size (items) > 0)
     {
+        NautilusSelectionSource tmp_source = self->in_progress_selection_source;
+
+        /* Removing files can change selection indices, causing changed signal
+         * which is interpereted as manual selection source from the user.
+         * Instead, override that here. The selection of operation results is
+         * handled elsewhere in this file. */
+        if (self->in_progress_selection_source == NAUTILUS_SELECTION_SOURCE_NONE)
+        {
+            self->in_progress_selection_source = self->selection_source;
+        }
+
         nautilus_view_model_remove_items (self->model, items, directory);
+
+        self->in_progress_selection_source = tmp_source;
     }
 }
 
