@@ -608,20 +608,6 @@ nautilus_view_model_remove_all_items (NautilusViewModel *self)
     g_hash_table_remove_all (self->directory_reverse_map);
 }
 
-void
-nautilus_view_model_add_item (NautilusViewModel *self,
-                              NautilusViewItem  *item)
-{
-    NautilusFile *file;
-    g_autoptr (NautilusFile) parent = NULL;
-
-    file = nautilus_view_item_get_file (item);
-    parent = nautilus_file_get_parent (file);
-
-    g_list_store_append (get_directory_store (self, parent), item);
-    g_hash_table_insert (self->map_files_to_model, file, item);
-}
-
 static void
 splice_items_into_common_parent (NautilusViewModel *self,
                                  GPtrArray         *items,
