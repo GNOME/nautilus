@@ -2722,7 +2722,11 @@ paste_value_received_callback (GObject      *source_object,
     value = gdk_clipboard_read_value_finish (clipboard, result, &error);
     if (error != NULL)
     {
-        g_warning ("Failed to read clipboard: %s", error->message);
+        if (!g_error_matches (error, G_IO_ERROR, G_IO_ERROR_CANCELLED))
+        {
+            g_warning ("Failed to read clipboard: %s", error->message);
+        }
+
         return;
     }
 
