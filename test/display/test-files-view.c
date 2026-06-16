@@ -10,11 +10,13 @@
 #include <nautilus-application.h>
 #include <nautilus-enums.h>
 #include <nautilus-file.h>
+#include <nautilus-file-undo-manager.h>
 #include <nautilus-file-utilities.h>
 #include <nautilus-files-view.h>
 #include <nautilus-global-preferences.h>
 #include <nautilus-list-base.h>
 #include <nautilus-resources.h>
+#include <nautilus-query.h>
 #include <nautilus-tag-manager.h>
 #include <nautilus-view-info.h>
 #include <nautilus-view-model.h>
@@ -301,6 +303,164 @@ test_selection_actions (void)
                      ==,
                      NAUTILUS_SELECTION_SOURCE_MANUAL);
     g_assert_null (got_selection);
+    g_clear_pointer (&got_selection, nautilus_file_list_free);
+
+    test_clear_tmp_dir ();
+}
+
+static void
+test_selection_source_in_search (void)
+{
+    g_autoptr (NautilusWindowSlot) slot = nautilus_window_slot_new (NAUTILUS_MODE_BROWSE);
+    g_autoptr (NautilusFilesView) files_view = nautilus_files_view_new (NAUTILUS_VIEW_GRID_ID, slot);
+    NautilusViewModel *model = nautilus_files_view_get_private_model (files_view);
+    g_autoptr (GFile) tmp_location = g_file_new_for_path (test_get_tmp_dir ());
+    const guint file_count = 10;
+    g_autoptr (NautilusQuery) search_query = nautilus_query_new ();
+    NautilusFileList *got_selection = NULL;
+
+    /* Need to subtract one since it creates an extra directory. */
+    create_multiple_files ("select_test", file_count - 1);
+
+    nautilus_files_view_set_location (files_view, tmp_location);
+    ITER_CONTEXT_WHILE (nautilus_files_view_get_loading (files_view));
+
+    g_assert_cmpint (g_list_model_get_n_items (G_LIST_MODEL (model)), ==, file_count);
+
+    nautilus_query_set_text (search_query, "2");
+    nautilus_query_set_location (search_query, tmp_location);
+    nautilus_files_view_set_search_query (files_view, search_query);
+    ITER_CONTEXT_WHILE (nautilus_files_view_get_loading (files_view));
+
+    g_assert_cmpint (nautilus_files_view_get_selection_source (files_view),
+                     ==,
+                     NAUTILUS_SELECTION_SOURCE_IN_SEARCH);
+
+    got_selection = nautilus_files_view_get_selection (files_view);
+    g_assert_cmpint (g_list_length (got_selection), ==, 1);
+    g_clear_pointer (&got_selection, nautilus_file_list_free);
+
+    /* Cannot check for NAUTILUS_SELECTION_SOURCE_AFTER_SEARCH because it is
+     * set through selection restoration through the slot. */
+
+    test_clear_tmp_dir ();
+}
+
+static void
+test_selection_source_operation (void)
+{
+    GStrv files_hierarchy = (char *[]) {
+        "file_1",
+        "file_2",
+        "file_3",
+        "file_4",
+        NULL
+    };
+    g_autoptr (NautilusWindowSlot) slot = nautilus_window_slot_new (NAUTILUS_MODE_BROWSE);
+    g_autoptr (NautilusFilesView) files_view = nautilus_files_view_new (NAUTILUS_VIEW_GRID_ID, slot);
+    NautilusViewModel *model = nautilus_files_view_get_private_model (files_view);
+    g_autoptr (GFile) tmp_location = g_file_new_for_path (test_get_tmp_dir ());
+    const guint file_count = 4;
+    const guint selected_count = 2;
+    g_autolist (GFile) file_list = NULL;
+    g_autoptr (NautilusFileList) first_selection = NULL;
+    g_autoptr (NautilusFileList) second_selection = NULL;
+    NautilusFileList *got_selection = NULL;
+
+    file_hierarchy_create (files_hierarchy, "");
+
+    nautilus_files_view_set_location (files_view, tmp_location);
+    ITER_CONTEXT_WHILE (nautilus_files_view_get_loading (files_view));
+
+    g_assert_cmpint (g_list_model_get_n_items (G_LIST_MODEL (model)), ==, file_count);
+
+    /* Build two disjoint selection sets. */
+    file_list = file_hierarchy_get_files_list (files_hierarchy, "", TRUE);
+
+    for (guint i = 0; i < selected_count; i++)
+    {
+        GFile *location = g_list_nth_data (file_list, i);
+        g_autoptr (NautilusFile) file = nautilus_file_get (location);
+
+        first_selection = g_list_append (first_selection, g_steal_pointer (&file));
+    }
+    for (guint i = selected_count; i < file_count; i++)
+    {
+        GFile *location = g_list_nth_data (file_list, i);
+        g_autoptr (NautilusFile) file = nautilus_file_get (location);
+
+        second_selection = g_list_append (second_selection, g_steal_pointer (&file));
+    }
+
+    /* Set a selection with MANUAL source, then start a copy operation, then
+     * wait for the operation to complete, verifying the selection source
+     * transitions correctly at each step.
+     */
+
+    /*
+     * #1: No manual selection before the operation ends
+     */
+    nautilus_files_view_set_selection (files_view,
+                                       first_selection,
+                                       NAUTILUS_SELECTION_SOURCE_MANUAL);
+    g_assert_cmpint (nautilus_files_view_get_selection_source (files_view),
+                     ==,
+                     NAUTILUS_SELECTION_SOURCE_MANUAL);
+    got_selection = nautilus_files_view_get_selection (files_view);
+    g_assert_cmpint (g_list_length (got_selection), ==, selected_count);
+    g_clear_pointer (&got_selection, nautilus_file_list_free);
+
+    gtk_widget_activate_action (GTK_WIDGET (files_view), "view.copy", NULL);
+    gtk_widget_activate_action (GTK_WIDGET (files_view), "view.paste", NULL);
+    got_selection = nautilus_files_view_get_selection (files_view);
+    g_assert_cmpint (g_list_length (got_selection), ==, selected_count);
+    g_assert_cmpint (nautilus_files_view_get_selection_source (files_view),
+                     ==,
+                     NAUTILUS_SELECTION_SOURCE_OP_START);
+    g_clear_pointer (&got_selection, nautilus_file_list_free);
+
+    ITER_CONTEXT_WHILE (nautilus_files_view_get_selection_source (files_view) !=
+                        NAUTILUS_SELECTION_SOURCE_OP_DONE);
+    got_selection = nautilus_files_view_get_selection (files_view);
+    g_assert_cmpint (g_list_length (got_selection), ==, selected_count);
+    g_clear_pointer (&got_selection, nautilus_file_list_free);
+
+    /*
+     * #2: Manual selection before the operation ends
+     */
+    nautilus_files_view_set_selection (files_view,
+                                       first_selection,
+                                       NAUTILUS_SELECTION_SOURCE_MANUAL);
+    g_assert_cmpint (nautilus_files_view_get_selection_source (files_view),
+                     ==,
+                     NAUTILUS_SELECTION_SOURCE_MANUAL);
+    got_selection = nautilus_files_view_get_selection (files_view);
+    g_assert_cmpint (g_list_length (got_selection), ==, selected_count);
+    g_clear_pointer (&got_selection, nautilus_file_list_free);
+
+    gtk_widget_activate_action (GTK_WIDGET (files_view), "view.copy", NULL);
+    gtk_widget_activate_action (GTK_WIDGET (files_view), "view.paste", NULL);
+    got_selection = nautilus_files_view_get_selection (files_view);
+    g_assert_cmpint (g_list_length (got_selection), ==, selected_count);
+    g_assert_cmpint (nautilus_files_view_get_selection_source (files_view),
+                     ==,
+                     NAUTILUS_SELECTION_SOURCE_OP_START);
+    g_clear_pointer (&got_selection, nautilus_file_list_free);
+
+    nautilus_files_view_set_selection (files_view,
+                                       second_selection,
+                                       NAUTILUS_SELECTION_SOURCE_MANUAL);
+    g_assert_cmpint (nautilus_files_view_get_selection_source (files_view),
+                     ==,
+                     NAUTILUS_SELECTION_SOURCE_MANUAL);
+
+    ITER_CONTEXT_WHILE (nautilus_file_undo_manager_get_state () ==
+                        NAUTILUS_FILE_UNDO_MANAGER_STATE_NONE);
+    got_selection = nautilus_files_view_get_selection (files_view);
+    g_assert_cmpint (g_list_length (got_selection), ==, selected_count);
+    g_assert_cmpint (nautilus_files_view_get_selection_source (files_view),
+                     ==,
+                     NAUTILUS_SELECTION_SOURCE_MANUAL);
     g_clear_pointer (&got_selection, nautilus_file_list_free);
 
     test_clear_tmp_dir ();
@@ -906,6 +1066,10 @@ main (int   argc,
                      test_hidden_files_renamed);
     g_test_add_func ("/view/selection/actions",
                      test_selection_actions);
+    g_test_add_func ("/view/selection/in_search",
+                     test_selection_source_in_search);
+    g_test_add_func ("/view/selection/operation",
+                     test_selection_source_operation);
     g_test_add_func ("/view/actions/zoom",
                      test_zoom_actions);
 
