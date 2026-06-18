@@ -256,10 +256,9 @@ coverage:
     script:
         - ninja coverage -C $MESON_BUILD_DIR
     artifacts:
-        expose_as: 'Coverage'
+        expose_as: 'Coverage Report'
         paths:
             - $MESON_BUILD_DIR/meson-logs/coveragereport/index.html
-            - $MESON_BUILD_DIR/meson-logs/coveragereport
         reports:
             coverage_report:
                 coverage_format: cobertura
