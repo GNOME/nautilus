@@ -231,6 +231,43 @@ test_image_source_image_thumbnail (void)
 }
 
 static void
+test_image_source_image_large (void)
+{
+    GtkWindow *window;
+    NautilusImage *image = build_window_with_image (&window);
+    g_autoptr (GFile) image_source = g_file_new_build_filename (test_get_tmp_dir (),
+                                                                "Large.png",
+                                                                NULL);
+    guint64 mtime = 1;
+    guint8 color[4] = {0, 255, 0, 255};
+    guint size = 4096;
+    guint changed_counter = 0;
+
+    make_image_file_full (image_source, color, size, size, mtime);
+    nautilus_image_set_size (image, DEFAULT_SIZE);
+    g_signal_connect_swapped (image, "notify::source", G_CALLBACK (increment), &changed_counter);
+
+    nautilus_image_set_source (image, image_source);
+    g_assert_cmpint (changed_counter, ==, 1);
+    g_assert_true (g_file_equal (image_source, nautilus_image_get_source (image)));
+
+    ITER_CONTEXT_WHILE (nautilus_image_get_status (image) != NAUTILUS_IMAGE_STATUS_THUMBNAIL);
+
+    /* Wait for widget snapshot */
+    gtk_test_widget_wait_for_draw (GTK_WIDGET (image));
+    g_assert_cmpint (gtk_widget_get_width (GTK_WIDGET (image)), ==, DEFAULT_SIZE);
+    g_assert_cmpint (gtk_widget_get_height (GTK_WIDGET (image)), ==, DEFAULT_SIZE);
+
+    nautilus_image_set_source (image, NULL);
+    g_assert_cmpint (changed_counter, ==, 2);
+    g_assert_null (nautilus_image_get_source (image));
+    g_assert_true (nautilus_image_get_status (image) == NAUTILUS_IMAGE_STATUS_FALLBACK);
+
+    gtk_window_close (window);
+    test_clear_tmp_dir ();
+}
+
+static void
 test_image_fallback (void)
 {
     GtkWindow *window;
@@ -307,6 +344,8 @@ main (int   argc,
                      test_image_source_image_thumbnailed);
     g_test_add_func ("/image/source/image/thumbnail",
                      test_image_source_image_thumbnail);
+    g_test_add_func ("/image/source/image/large",
+                     test_image_source_image_large);
     g_test_add_func ("/image/fallback",
                      test_image_fallback);
 
