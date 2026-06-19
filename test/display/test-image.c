@@ -274,6 +274,7 @@ test_image_fallback (void)
     NautilusImage *image = build_window_with_image (&window);
     GtkIconTheme *icon_theme = gtk_icon_theme_get_for_display (gdk_display_get_default ());
     g_autoptr (GIcon) icon = g_themed_icon_new ("image-missing");
+    g_autoptr (GIcon) dir_icon = g_themed_icon_new ("inode-directory");
     g_autoptr (GtkIconPaintable) paintable =
         gtk_icon_theme_lookup_by_gicon (icon_theme, icon,
                                         DEFAULT_SIZE, 1,
@@ -281,6 +282,7 @@ test_image_fallback (void)
                                         GTK_ICON_LOOKUP_PRELOAD);
     guint changed_counter = 0;
     GdkPaintable *fallback;
+    int different_size = 2 * DEFAULT_SIZE;
 
     g_signal_connect_swapped (image, "notify::fallback", G_CALLBACK (increment), &changed_counter);
 
@@ -297,11 +299,39 @@ test_image_fallback (void)
     g_assert_cmpint (gdk_paintable_get_intrinsic_height (fallback), ==, DEFAULT_SIZE);
     g_assert_cmpint (gdk_paintable_get_intrinsic_width (fallback), ==, DEFAULT_SIZE);
 
-    nautilus_image_set_fallback (image, NULL);
+    /* Set a fallback with the same size */
+    g_autoptr (GtkIconPaintable) same_size_paintable =
+        gtk_icon_theme_lookup_by_gicon (icon_theme, dir_icon,
+                                        DEFAULT_SIZE, 1,
+                                        GTK_TEXT_DIR_NONE,
+                                        GTK_ICON_LOOKUP_PRELOAD);
+
+    nautilus_image_set_fallback (image, GDK_PAINTABLE (same_size_paintable));
     g_assert_cmpint (changed_counter, ==, 2);
+    gtk_test_widget_wait_for_draw (GTK_WIDGET (image));
+    fallback = nautilus_image_get_fallback (image);
+    g_assert_cmpint (gdk_paintable_get_intrinsic_height (fallback), ==, DEFAULT_SIZE);
+    g_assert_cmpint (gdk_paintable_get_intrinsic_width (fallback), ==, DEFAULT_SIZE);
+
+    /* Set a fallback with different size */
+    g_autoptr (GtkIconPaintable) different_size_paintable =
+        gtk_icon_theme_lookup_by_gicon (icon_theme, dir_icon,
+                                        different_size, 1,
+                                        GTK_TEXT_DIR_NONE,
+                                        GTK_ICON_LOOKUP_PRELOAD);
+
+    nautilus_image_set_fallback (image, GDK_PAINTABLE (different_size_paintable));
+    g_assert_cmpint (changed_counter, ==, 3);
+    gtk_test_widget_wait_for_draw (GTK_WIDGET (image));
+    fallback = nautilus_image_get_fallback (image);
+    g_assert_cmpint (gdk_paintable_get_intrinsic_height (fallback), ==, different_size);
+    g_assert_cmpint (gdk_paintable_get_intrinsic_width (fallback), ==, different_size);
+
+    nautilus_image_set_fallback (image, NULL);
+    g_assert_cmpint (changed_counter, ==, 4);
     g_assert_null (nautilus_image_get_fallback (image));
     nautilus_image_set_fallback (image, NULL);
-    g_assert_cmpint (changed_counter, ==, 2);
+    g_assert_cmpint (changed_counter, ==, 4);
     g_assert_null (nautilus_image_get_fallback (image));
 
     gtk_window_close (window);
