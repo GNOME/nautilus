@@ -3998,6 +3998,8 @@ nautilus_properties_widget_class_init (NautilusPropertiesWidgetClass *klass)
     oclass->dispose = real_dispose;
     oclass->finalize = real_finalize;
 
+    g_type_ensure (NAUTILUS_TYPE_IMAGE);
+
     signals[HIDE] = g_signal_new ("hide-properties",
                                   G_TYPE_FROM_CLASS (klass),
                                   G_SIGNAL_RUN_LAST,
