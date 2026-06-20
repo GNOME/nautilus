@@ -14,6 +14,7 @@ tests = {
   'test-portal-file-chooser': {
     'is_parallel' : false,
   },
+  'test-properties': {},
   'test-thumbnails': {},
 }
 
