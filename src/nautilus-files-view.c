@@ -8844,10 +8844,12 @@ nautilus_files_view_trash_state_changed_callback (NautilusTrashMonitor *trash_mo
                                                   gboolean              state,
                                                   gpointer              callback_data)
 {
-    NautilusFilesView *view;
+    NautilusFilesView *view = NAUTILUS_FILES_VIEW (callback_data);
 
-    view = (NautilusFilesView *) callback_data;
-    g_assert (NAUTILUS_IS_FILES_VIEW (view));
+    if (!showing_trash_directory (view))
+    {
+        return;
+    }
 
     schedule_update_context_menus (view);
 }
