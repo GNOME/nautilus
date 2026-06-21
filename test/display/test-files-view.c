@@ -10,6 +10,7 @@
 #include <nautilus-application.h>
 #include <nautilus-enums.h>
 #include <nautilus-file.h>
+#include <nautilus-file-operations.h>
 #include <nautilus-file-undo-manager.h>
 #include <nautilus-file-utilities.h>
 #include <nautilus-files-view.h>
@@ -21,6 +22,8 @@
 #include <nautilus-view-info.h>
 #include <nautilus-view-model.h>
 #include <nautilus-window-slot.h>
+
+#include <gnome-autoar/gnome-autoar.h>
 
 #define G_LOG_DOMAIN "test-files-view"
 
@@ -211,6 +214,134 @@ const GStrv hidden_files_hierarchy = (char *[])
     ".hidden",
     NULL
 };
+
+
+typedef struct
+{
+    gboolean success;
+    GMainLoop *loop;
+} ExtractionTestData;
+
+static ExtractionTestData *
+extraction_test_data_new (void)
+{
+    ExtractionTestData *data = g_new0 (ExtractionTestData, 1);
+
+    data->loop = g_main_loop_new (NULL, FALSE);
+
+    return data;
+}
+
+static void
+extraction_test_data_free (ExtractionTestData *data)
+{
+    g_clear_pointer (&data->loop, g_main_loop_unref);
+    g_free (data);
+}
+
+G_DEFINE_AUTOPTR_CLEANUP_FUNC (ExtractionTestData, extraction_test_data_free)
+
+static void
+compress_callback (GFile    *new_file,
+                   gboolean  success,
+                   gpointer  user_data)
+{
+    ExtractionTestData *data = user_data;
+
+    data->success = success;
+    g_main_loop_quit (data->loop);
+}
+
+static void
+test_extract_action (void)
+{
+    g_autoptr (NautilusWindowSlot) slot = nautilus_window_slot_new (NAUTILUS_MODE_BROWSE);
+    g_autoptr (NautilusFilesView) files_view = NULL;
+    NautilusViewModel *model;
+    g_autoptr (GFile) tmp_location = g_file_new_for_path (test_get_tmp_dir ());
+    g_autoptr (GError) error = NULL;
+    /* Create a file that will be compressed into an archive */
+    g_autoptr (GFile) document_location = g_file_get_child (tmp_location, "document");
+    g_autoptr (GFileOutputStream) output_stream = g_file_create (document_location,
+                                                                 G_FILE_CREATE_NONE, NULL, NULL);
+    g_autoptr (GFile) archive_file = g_file_get_child (tmp_location, "document.zip");
+    g_autoptr (ExtractionTestData) compress_data = extraction_test_data_new ();
+
+    g_assert_nonnull (output_stream);
+    g_output_stream_close (G_OUTPUT_STREAM (output_stream), NULL, &error);
+    g_assert_no_error (error);
+
+    /* Compress it into a .zip archive */
+    nautilus_file_operations_compress (&(GList){ .data = document_location },
+                                       archive_file,
+                                       AUTOAR_FORMAT_ZIP,
+                                       AUTOAR_FILTER_NONE,
+                                       NULL,
+                                       NULL,
+                                       NULL,
+                                       compress_callback,
+                                       compress_data);
+    g_main_loop_run (compress_data->loop);
+    g_assert_true (compress_data->success);
+    g_assert_true (g_file_query_exists (archive_file, NULL));
+
+    /* Delete the inner file so we can verify extraction recreates it */
+    g_assert_true (g_file_delete (document_location, NULL, NULL));
+    g_assert_false (g_file_query_exists (document_location, NULL));
+
+    files_view = nautilus_files_view_new (NAUTILUS_VIEW_GRID_ID, slot);
+    model = nautilus_files_view_get_private_model (files_view);
+    nautilus_files_view_set_location (files_view, tmp_location);
+    ITER_CONTEXT_WHILE (nautilus_files_view_get_loading (files_view));
+
+    GActionGroup *group = nautilus_files_view_get_private_action_group (files_view);
+    GAction *action_extract_here = g_action_map_lookup_action (G_ACTION_MAP (group),
+                                                               "extract-here");
+
+    g_assert_nonnull (action_extract_here);
+    /* With no selection, action should be disabled */
+    g_assert_false (g_action_get_enabled (action_extract_here));
+
+    /* Select the archive file and extract it with the action */
+    g_autoptr (NautilusFile) archive_nautilus_file = nautilus_file_get (archive_file);
+    g_autoptr (NautilusFile) document_file = NULL;
+    g_autolist (NautilusFile) out_selection = NULL;
+
+    nautilus_files_view_set_selection (files_view,
+                                       &(GList) { .data = archive_nautilus_file},
+                                       NAUTILUS_SELECTION_SOURCE_MANUAL);
+
+    /* It will switch between default activation and "extract-here" depending
+     * on whether Files is the default app for zip archives. */
+    if (g_action_get_enabled (action_extract_here))
+    {
+        gtk_widget_activate_action (GTK_WIDGET (files_view), "view.extract-here", NULL);
+    }
+    else
+    {
+        GAction *action_default_activate =
+            g_action_map_lookup_action (G_ACTION_MAP (group), "open-with-default-application");
+
+        g_assert_true (g_action_get_enabled (action_default_activate));
+        gtk_widget_activate_action (GTK_WIDGET (files_view),
+                                    "view.open-with-default-application", NULL);
+    }
+
+    document_file = nautilus_file_get (document_location);
+    ITER_CONTEXT_WHILE (nautilus_view_model_get_item_for_file (model, document_file) == NULL);
+    g_assert_true (g_file_query_exists (document_location, NULL));
+
+    out_selection = nautilus_files_view_get_selection (files_view);
+    g_assert_nonnull (out_selection);
+    g_assert_cmpint (g_list_length (out_selection), ==, 1);
+    g_assert_cmpint (nautilus_files_view_get_selection_source (files_view),
+                     ==,
+                     NAUTILUS_SELECTION_SOURCE_OP_DONE);
+    /* With text file selected, action should be disabled */
+    g_assert_false (g_action_get_enabled (action_extract_here));
+
+    test_clear_tmp_dir ();
+}
 
 static void
 test_selection_actions (void)
@@ -1070,6 +1201,8 @@ main (int   argc,
                      test_selection_source_in_search);
     g_test_add_func ("/view/selection/operation",
                      test_selection_source_operation);
+    g_test_add_func ("/view/actions/extract",
+                     test_extract_action);
     g_test_add_func ("/view/actions/zoom",
                      test_zoom_actions);
 
