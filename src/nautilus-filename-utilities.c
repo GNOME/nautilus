@@ -430,8 +430,8 @@ nautilus_filename_shorten_base (char       **filename,
         reduced_length = reduce_pos - base;
 
         char *new_filename = g_new0 (char, suffix_length + reduced_length + 1);
-        strncpy (new_filename, base, reduced_length);
-        strncpy (new_filename + reduced_length, *filename + base_length, suffix_length);
+        memcpy (new_filename, base, reduced_length);
+        memcpy (new_filename + reduced_length, *filename + base_length, suffix_length);
 
         g_free (*filename);
         *filename = new_filename;
