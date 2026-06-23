@@ -105,9 +105,11 @@ test_thumbnail_test_queue (void)
         g_strv_builder_take (strv_builder, g_strdup_printf ("image_%u.png", i + 1));
     }
     files_hier = g_strv_builder_unref_to_strv (strv_builder);
-    file_hierarchy_foreach (files_hier, "",
-                            (HierarchyCallback) make_image_file_with_mtime, (gpointer) old_mtime);
     image_locations = file_hierarchy_get_files_list (files_hier, "", FALSE);
+    for (GList *l = image_locations; l != NULL; l = l->next)
+    {
+        make_image_file_with_mtime (l->data, old_mtime, FALSE);
+    }
 
     /* Add to thumbnailing queue */
     for (GList *l = image_locations; l != NULL; l = l->next)
@@ -167,7 +169,7 @@ test_thumbnail_image (void)
                                                                   NULL);
     g_autofree gchar *uri = g_file_get_uri (image_location);
 
-    make_image_file (image_location);
+    make_image_file (image_location, FALSE);
 
     g_autofree gchar *mime_type = NULL;
     guint64 mtime = get_file_mime_type_and_mtime (image_location, &mime_type);
@@ -209,7 +211,7 @@ test_thumbnail_old_time (void)
                                                                   NULL);
     g_autofree gchar *uri = g_file_get_uri (image_location);
 
-    make_image_file_with_mtime (image_location, old_mtime);
+    make_image_file_with_mtime (image_location, old_mtime, FALSE);
 
     g_autofree gchar *mime_type = NULL;
     guint64 mtime = get_file_mime_type_and_mtime (image_location, &mime_type);
@@ -253,7 +255,7 @@ test_thumbnail_image_no_mtime (void)
     g_autofree gchar *uri = g_file_get_uri (image_location);
     g_autofree gchar *mime_type = NULL;
 
-    make_image_file_with_mtime (image_location, mtime);
+    make_image_file_with_mtime (image_location, mtime, FALSE);
     get_file_mime_type_and_mtime (image_location, &mime_type);
 
     g_assert_true (nautilus_thumbnail_is_mimetype_limited_by_size (mime_type));
@@ -293,7 +295,7 @@ test_thumbnail_cancel (void)
     guint64 mtime = 1;
     g_autofree gchar *uri = g_file_get_uri (image_location);
 
-    make_image_file_with_mtime (image_location, mtime);
+    make_image_file_with_mtime (image_location, mtime, FALSE);
 
     g_autofree gchar *mime_type = NULL;
 
@@ -332,7 +334,7 @@ test_thumbnail_overwrite (void)
                                                                   NULL);
     g_autofree gchar *uri = g_file_get_uri (image_location);
 
-    make_image_file (image_location);
+    make_image_file (image_location, FALSE);
 
     g_autofree gchar *mime_type = NULL;
     guint64 mtime = get_file_mime_type_and_mtime (image_location, &mime_type);
@@ -353,7 +355,7 @@ test_thumbnail_overwrite (void)
 
     /* Overwrite the image file while thumbnailing is in progress */
     g_usleep (50 * 1000);
-    make_image_file (image_location);
+    make_image_file (image_location, FALSE);
     mtime = get_file_mime_type_and_mtime (image_location, &mime_type);
 
     nautilus_create_thumbnail_async (uri,
@@ -414,7 +416,7 @@ test_thumbnail_rethumbnail_failed_on_mtime_change (void)
     thumbnail_data_free (&thumbnailing_data);
 
     /* Replace the corrupt image with a valid one, updating mtime */
-    make_image_file (image_location);
+    make_image_file (image_location, FALSE);
 
     g_autofree gchar *mime_type = NULL;
     guint64 new_mtime = get_file_mime_type_and_mtime (image_location, &mime_type);
