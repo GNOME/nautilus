@@ -131,16 +131,6 @@ test_image_source_dir (void)
 }
 
 static void
-thumbnailing_done_cb (GObject      *source_object,
-                      GAsyncResult *res,
-                      gpointer      data)
-{
-    GMainLoop *loop = data;
-
-    g_main_loop_quit (loop);
-}
-
-static void
 test_image_source_image_thumbnailed (void)
 {
     GtkWindow *window;
@@ -156,14 +146,7 @@ test_image_source_image_thumbnailed (void)
     guint changed_counter = 0;
 
     /* Create a thumbnail beforehand */
-    make_image_file_full (image_source, color, size, size, mtime);
-    nautilus_create_thumbnail_async (uri, "image/png",
-                                     0,
-                                     NULL,
-                                     thumbnailing_done_cb,
-                                     loop);
-    g_main_loop_run (loop);
-
+    make_image_file_full (image_source, color, size, size, mtime, TRUE);
     nautilus_image_set_size (image, size);
     g_signal_connect_swapped (image, "notify::source", G_CALLBACK (increment), &changed_counter);
 
@@ -218,7 +201,7 @@ test_image_source_image_thumbnail (void)
     guint size = DEFAULT_SIZE;
     guint changed_counter = 0;
 
-    make_image_file_full (image_source, color, size, size, mtime);
+    make_image_file_full (image_source, color, size, size, mtime, FALSE);
     nautilus_image_set_size (image, size);
     g_signal_connect_swapped (image, "notify::source", G_CALLBACK (increment), &changed_counter);
 
@@ -264,7 +247,7 @@ test_image_source_image_large (void)
     guint size = 4096;
     guint changed_counter = 0;
 
-    make_image_file_full (image_source, color, size, size, mtime);
+    make_image_file_full (image_source, color, size, size, mtime, FALSE);
     nautilus_image_set_size (image, DEFAULT_SIZE);
     g_signal_connect_swapped (image, "notify::source", G_CALLBACK (increment), &changed_counter);
 
