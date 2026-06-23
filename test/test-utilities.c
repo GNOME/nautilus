@@ -15,6 +15,7 @@
 #include <nautilus-file.h>
 #include <src/nautilus-file-undo-manager.h>
 #include <src/nautilus-file-utilities.h>
+#include <nautilus-thumbnails.h>
 
 #include <glycin.h>
 
@@ -637,12 +638,23 @@ tile_memory (void  *data,
     return buffer;
 }
 
+static void
+loop_quit_cb (GObject      *source_object,
+              GAsyncResult *res,
+              gpointer      data)
+{
+    GMainLoop *loop = data;
+
+    g_main_loop_quit (loop);
+}
+
 void
-make_image_file_full (GFile  *file,
-                      guint8  color[4],
-                      guint   width,
-                      guint   height,
-                      guint64 mtime)
+make_image_file_full (GFile   *file,
+                      guint8   color[4],
+                      guint    width,
+                      guint    height,
+                      guint64  mtime,
+                      gboolean thumbnailed)
 {
     gsize length = 4 * width * height;
     void *tile_data = tile_memory (color, 4, width * height);
@@ -685,21 +697,36 @@ make_image_file_full (GFile  *file,
     }
 
     g_assert_no_error (error);
+
+    if (thumbnailed)
+    {
+        g_autoptr (GMainLoop) loop = g_main_loop_new (NULL, FALSE);
+        g_autofree char *uri = g_file_get_uri (file);
+
+        nautilus_create_thumbnail_async (uri, "image/png",
+                                         mtime,
+                                         NULL,
+                                         loop_quit_cb,
+                                         loop);
+        g_main_loop_run (loop);
+    }
 }
 
 void
-make_image_file_with_mtime (GFile   *file,
-                            guint64  mtime)
+make_image_file_with_mtime (GFile    *file,
+                            guint64   mtime,
+                            gboolean  thumbnailed)
 {
     guint8 yellow[4] = {255, 255, 0, 0};
 
-    make_image_file_full (file, yellow, DEFAULT_IMAGE_SIZE, DEFAULT_IMAGE_SIZE, mtime);
+    make_image_file_full (file, yellow, DEFAULT_IMAGE_SIZE, DEFAULT_IMAGE_SIZE, mtime, thumbnailed);
 }
 
 void
-make_image_file (GFile *file)
+make_image_file (GFile    *file,
+                 gboolean  thumbnailed)
 {
     guint8 yellow[4] = {255, 255, 0, 0};
 
-    make_image_file_full (file, yellow, DEFAULT_IMAGE_SIZE, DEFAULT_IMAGE_SIZE, 0);
+    make_image_file_full (file, yellow, DEFAULT_IMAGE_SIZE, DEFAULT_IMAGE_SIZE, 0, thumbnailed);
 }
