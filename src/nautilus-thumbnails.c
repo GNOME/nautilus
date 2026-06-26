@@ -614,6 +614,7 @@ thumbnail_generated_cb (GObject      *source_object,
          *  only the written thumbnail file.
          */
         gdk_pixbuf_set_option (pixbuf, "tEXt::Thumb::MTime", mtime);
+        g_clear_object (&info->pixbuf);
         info->pixbuf = pixbuf;
 
         gnome_desktop_thumbnail_factory_save_thumbnail_async (thumbnail_factory,
