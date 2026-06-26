@@ -87,6 +87,7 @@ test_image_source_dir (void)
     GtkWindow *window;
     NautilusImage *image = build_window_with_image (&window);
     g_autoptr (GFile) source = g_file_new_for_path (test_get_tmp_dir ());
+    g_autoptr (GFile) duplicate_source = g_file_dup (source);
     guint changed_counter = 0;
 
     g_signal_connect_swapped (image, "notify::source", G_CALLBACK (increment), &changed_counter);
@@ -95,7 +96,9 @@ test_image_source_dir (void)
     g_assert_cmpint (changed_counter, ==, 1);
     nautilus_image_set_source (image, source);
     g_assert_cmpint (changed_counter, ==, 1);
-    g_assert_true (g_file_equal (source, nautilus_image_get_source (image)));
+    nautilus_image_set_source (image, duplicate_source);
+    g_assert_cmpint (changed_counter, ==, 1);
+    g_assert_true (g_file_equal (duplicate_source, nautilus_image_get_source (image)));
 
     g_assert_true (nautilus_image_get_status (image) == NAUTILUS_IMAGE_STATUS_LOADING_ATTRIBUTES);
     ITER_CONTEXT_WHILE (nautilus_image_get_status (image) == NAUTILUS_IMAGE_STATUS_LOADING_ATTRIBUTES);
@@ -113,6 +116,15 @@ test_image_source_dir (void)
     g_assert_cmpint (changed_counter, ==, 2);
     g_assert_null (nautilus_image_get_source (image));
     g_assert_true (nautilus_image_get_status (image) == NAUTILUS_IMAGE_STATUS_FALLBACK);
+
+    /* Try setting the same source again for a cache hit */
+    nautilus_image_set_source (image, source);
+    g_assert_cmpint (changed_counter, ==, 3);
+    g_assert_true (g_file_equal (source, nautilus_image_get_source (image)));
+
+    ITER_CONTEXT_WHILE (nautilus_image_get_status (image) == NAUTILUS_IMAGE_STATUS_LOADING_ATTRIBUTES);
+    g_assert_true (nautilus_image_get_status (image) == NAUTILUS_IMAGE_STATUS_FALLBACK);
+    g_assert_cmpint (changed_counter, ==, 3);
 
     gtk_window_close (window);
     test_clear_tmp_dir ();
@@ -179,6 +191,15 @@ test_image_source_image_thumbnailed (void)
     g_assert_cmpint (changed_counter, ==, 2);
     g_assert_null (nautilus_image_get_source (image));
     g_assert_true (nautilus_image_get_status (image) == NAUTILUS_IMAGE_STATUS_FALLBACK);
+
+    /* Try setting the same source again for a cache hit */
+    nautilus_image_set_source (image, image_source);
+    g_assert_cmpint (changed_counter, ==, 3);
+    g_assert_true (g_file_equal (image_source, nautilus_image_get_source (image)));
+
+    ITER_CONTEXT_WHILE (nautilus_image_get_status (image) == NAUTILUS_IMAGE_STATUS_LOADING_ATTRIBUTES);
+    g_assert_true (nautilus_image_get_status (image) == NAUTILUS_IMAGE_STATUS_THUMBNAIL);
+    g_assert_cmpint (changed_counter, ==, 3);
 
     gtk_window_close (window);
     test_clear_tmp_dir ();
