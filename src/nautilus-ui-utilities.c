@@ -957,7 +957,7 @@ draw_drag_count_badge (GdkPaintable *stacked_icons,
     /* Determine badge colors. The matching foreground for the accent is white. */
     GdkRGBA badge_fg = { 1.f, 1.f, 1.f, 1.f };
     AdwStyleManager *style_manager = adw_style_manager_get_default ();
-    GdkRGBA badge_bg = *adw_style_manager_get_accent_color_rgba (style_manager);
+    g_autofree GdkRGBA *badge_bg = adw_style_manager_get_accent_color_rgba (style_manager);
 
     /* Set up badge geometry constants and limits. */
     const float badge_height = 22.f;
@@ -998,7 +998,7 @@ draw_drag_count_badge (GdkPaintable *stacked_icons,
 
     /* Draw the badge background with a rounded clip. */
     gtk_snapshot_push_rounded_clip (snapshot, &rounded_rect);
-    gtk_snapshot_append_color (snapshot, &badge_bg, &badge_rect);
+    gtk_snapshot_append_color (snapshot, badge_bg, &badge_rect);
     gtk_snapshot_pop (snapshot);
 
     /* Draw the count text centered within the badge. */
