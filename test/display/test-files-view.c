@@ -478,6 +478,61 @@ test_selection_source_in_search (void)
 }
 
 static void
+test_open_item_location_in_search (void)
+{
+    const GStrv test_hierarchy = (char *[]) {
+        "dir/",
+        "dir/my_nested_file",
+        NULL
+    };
+    g_autoptr (NautilusWindowSlot) slot = nautilus_window_slot_new (NAUTILUS_MODE_BROWSE);
+    g_autoptr (NautilusFilesView) files_view = nautilus_files_view_new (NAUTILUS_VIEW_GRID_ID, slot);
+    NautilusViewModel *model = nautilus_files_view_get_private_model (files_view);
+    g_autoptr (GFile) tmp_location = g_file_new_for_path (test_get_tmp_dir ());
+    g_autoptr (NautilusQuery) search_query = nautilus_query_new ();
+    g_autoptr (GFile) dir_location = g_file_get_child (tmp_location, "dir");
+    g_autoptr (GFile) nested_file_location = g_file_get_child (dir_location, "my_nested_file");
+    g_autolist (NautilusFile) out_selection = NULL;
+    g_autoptr (GFile) out_location = NULL;
+
+    file_hierarchy_create (test_hierarchy, "");
+
+    nautilus_files_view_set_location (files_view, tmp_location);
+    ITER_CONTEXT_WHILE (nautilus_files_view_get_loading (files_view));
+
+    /* The model should contain only the nested directory at this level. */
+    g_assert_cmpint (g_list_model_get_n_items (G_LIST_MODEL (model)), ==, 1);
+
+    /* Search for the nested file. */
+    nautilus_query_set_text (search_query, "my_nested_file");
+    nautilus_query_set_location (search_query, tmp_location);
+    nautilus_files_view_set_search_query (files_view, search_query);
+    ITER_CONTEXT_WHILE (nautilus_files_view_get_loading (files_view));
+
+    g_assert_cmpint (nautilus_files_view_get_selection_source (files_view),
+                     ==,
+                     NAUTILUS_SELECTION_SOURCE_IN_SEARCH);
+
+    /* Trigger the open-item-location action while searching. */
+    gtk_widget_activate_action (GTK_WIDGET (files_view), "view.open-item-location", NULL);
+    ITER_CONTEXT_WHILE (g_file_equal (dir_location,
+                                      nautilus_files_view_get_location (files_view)));
+
+    out_selection = nautilus_files_view_get_selection (files_view);
+    g_assert_cmpint (g_list_length (out_selection), ==, 1);
+    out_location = nautilus_file_get_location (out_selection->data);
+    g_assert_true (g_file_equal (out_location, nested_file_location));
+
+    /* FIXME: This doesn't work since the slot doesn't store pending selection
+     * source.
+     * g_assert_cmpint (nautilus_files_view_get_selection_source (files_view),
+     *                  ==,
+     *                  NAUTILUS_SELECTION_SOURCE_AFTER_SEARCH); */
+
+    test_clear_tmp_dir ();
+}
+
+static void
 test_selection_source_operation (void)
 {
     GStrv files_hierarchy = (char *[]) {
@@ -1206,6 +1261,8 @@ main (int   argc,
                      test_selection_actions);
     g_test_add_func ("/view/selection/in_search",
                      test_selection_source_in_search);
+    g_test_add_func ("/view/selection/open_item_location/search",
+                     test_open_item_location_in_search);
     g_test_add_func ("/view/selection/operation",
                      test_selection_source_operation);
     g_test_add_func ("/view/actions/extract",
