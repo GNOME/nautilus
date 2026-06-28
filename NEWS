@@ -1,3 +1,98 @@
+Major Changes in 51.alpha
+=========================
+* Enhancements:
+- Show selected items count badge while dragging multiple files (Aaryan Dadu)
+- Combine '.' and '..' name errors in validators (pagarao)
+- Hide parent folder for mount root children (Krish)
+- Don't show placeholder trashed info for multiple files or the Trash in properties (Khalid Abu Shawarib)
+- Add a tooltip to properties detach window button (Lukáš Tyrychtr)
+- Show either an unreadable or read-only emblem (Peter Eisenmann)
+- Show symbolic link emblem before read-only/unreadable  (Peter Eisenmann)
+- Adjust non-indexed search description in info popover (parzival)
+- Advertise notification categories for file and mount/unmount operations (Khalid Abu Shawarib)
+- Slightly enhance view reloading performance  (Khalid Abu Shawarib)
+- Add more tests for bookmarks list, icon-info, image widget, file creation, and thumbnailing (Khalid Abu Shawarib)
+
+* Bugfixes:
+- Show the correct starred status and normal features of properties in Recents (Khalid Abu Shawarib)
+- Don't unselect when right clicking the view's background (Khalid Abu Shawarib)
+- Don't override manual selection with file operation results (Khalid Abu Shawarib)
+- Fix a bug where copied files are not selected after the operation has ended (Khalid Abu Shawarib)
+- Removed several usages of blocking IO in the main thread (Khalid Abu Shawarib)
+- Fixed "Window is ready" notification when other apps call "Open location" instead of raising the window (Khalid Abu Shawarib)
+- Fix Escape not closing the app chooser dialog when the entry is focused (Peter Eisenmann)
+- Fix accessibility label and description of view mode button (Sergio Costas)
+- Fix thumbnail not being updated while loading is some cases (Khalid Abu Shawarib)
+- Fixed leaks (Khalid Abu Shawarib)
+- Remove redundant bookmark list updates signals (Khalid Abu Shawarib)
+- Fix loading getting stuck while thumbnailing in flatpak (Khalid Abu Shawarib)
+- CI fixes (Khalid Abu Shawarib, Peter Eisenmann)
+
+* Cleanups:
+- Various dead code removals and simplifications (Peter Eisenmann, Khalid Abu Shawarib)
+- Reduce the usage of deprecated APIs (Khalid Abu Shawarib, Peter Eisenmann)
+- Fix gdbus commands in CONTRIBUTING.md (Lynn)
+- Renable compilation of localsearch test but keeep skipping them (Khalid Abu Shawarib)
+- Use newer image widget for previews in properties and conflict dialog (Khalid Abu Shawarib)
+- Use libgxdp for the file chooser window attachment and remove the local copy (Khalid Abu Shawarib, Peter Eisenmann)
+- Moved thumbnails test to display suite (Khalid Abu Shawarib)
+
+* Translation updates (GNOME Translation Project contributors)
+
+Major Changes in 50.2.2
+=======================
+* Bugfixes:
+- Fix app chooser breaking translation domains (Khalid Abu Shawarib)
+
+Major Changes in 50.2
+=====================
+* Enhancements:
+- Add Lao translation (Saikeo Kavhanxay)
+- Flush search results based on time instead of file count (Khalid Abu Shawarib)
+- Allow opening multiple files with different extensions (pagarao)
+
+* Fixed regressions:
+- Added search entry to applicaton chooser (Khalid Abu Shawarib, Peter Eisenmann)
+
+* Bugfixes:
+- Fix app staying in the background after properties windows are closed (Khalid Abu Shawarib)
+- Fix possible crash with properties window (Khalid Abu Shawarib)
+- Fix thumbnails not appearing in remote locations (Khalid Abu Shawarib)
+- Fix fallback icons not changing size with zoom level (Khalid Abu Shawarib)
+- Fix duplicate conflict dialog when moving files across volumes (Kristóf Széles)
+- Handle trailing '.' character for FAT volumes (iwasMateo)
+- Fix search recursion for directories with no ID (Khalid Abu Shawarib)
+- Fix off-by-one insertion of bookmarks (eric)
+- Fix templates unique naming with a file extension (Khalid Abu Shawarib)
+- Fix a thin line of checker pattern appearing in thumbnails (Khalid Abu Shawarib)
+- Fix opening files with nautilus itself (Khalid Abu Shawarib)
+- Avoid potential crash in list view (Khalid Abu Shawarib)
+
+* Cleanups:
+- Don't create trash monitor when not needed (Ondrej Holy)
+- Correctly clear name-cell callbacks on disposal (Marc Rendiet)
+
+* Translation updates (GNOME Translation Project contributors)
+
+Major Changes in 50.1
+=====================
+* Bugfixes:
+- Fix a crash on empty MIME type (Khalid Abu Shawarib)
+- Fix read-only/not accessible emblems (Peter Eisenmann)
+- Assure view item deduplication on slow machines (Ondrej Holy)
+- Fix error icon size (Khalid Abu Shawarib)
+- Restore default focus for permanent delete dialog (Peter Eisenmann)
+- Autocomplete folders with trailing slash again (Peter Eisenmann)
+- Fix opening folder with many custom icons (Khalid Abu Shawarib)
+- Fix showing properties for encrypted partition (Khalid Abu Shawarib)
+- Fix image rounding (Khalid Abu Shawarib)
+
+* Cleanups:
+- Don't allow editing custom icons for trash or trashed files (Khalid Abu Shawarib)
+- Use GIcon for launch context (Khalid Abu Shawarib)
+
+* Translation updates (GNOME Translation Project contributors)
+
 Major Changes in 50.0
 =====================
 * Enhancements:
