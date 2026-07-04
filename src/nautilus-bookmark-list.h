@@ -59,6 +59,11 @@ nautilus_bookmark_list_move_item (NautilusBookmarkList *bookmarks,
                                   GFile                *location,
                                   guint                 destination);
 void
+nautilus_bookmark_list_change_location (NautilusBookmarkList *bookmarks,
+                                        GFile                *old_location,
+                                        GFile                *new_location,
+                                        gboolean              keep_name);
+void
 nautilus_bookmark_list_remove (NautilusBookmarkList *bookmarks,
                                GFile                *location);
 

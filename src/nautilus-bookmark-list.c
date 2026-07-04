@@ -384,6 +384,40 @@ nautilus_bookmark_list_move_item (NautilusBookmarkList *bookmarks,
 }
 
 /**
+ * nautilus_bookmark_list_change_location:
+ *
+ * Change the location of a bookmark.
+ * @old_location: location of the bookmark to change.
+ * @new_location: new location to use for the bookmark.
+ * @keep_name: whether to keep the bookmark's current name.
+ **/
+void
+nautilus_bookmark_list_change_location (NautilusBookmarkList *bookmarks,
+                                        GFile                *old_location,
+                                        GFile                *new_location,
+                                        gboolean              keep_name)
+{
+    guint index;
+    GList *old_link = bookmark_list_get_node (bookmarks, old_location, &index);
+
+    if (old_link == NULL)
+    {
+        /* Location not bookmarked, ignoring */
+        return;
+    }
+
+    NautilusBookmark *old_bookmark = old_link->data;
+    const char *new_name = keep_name ? nautilus_bookmark_get_name (old_bookmark) : NULL;
+
+    bookmarks->list = g_list_remove_link (bookmarks->list, old_link);
+    bookmarks->list = g_list_insert_before (bookmarks->list,
+                                            g_list_nth (bookmarks->list, index),
+                                            nautilus_bookmark_new (new_location, new_name));
+
+    nautilus_bookmark_list_save_file (bookmarks);
+}
+
+/**
  * nautilus_bookmark_list_remove:
  *
  * Removes any bookmark for @location

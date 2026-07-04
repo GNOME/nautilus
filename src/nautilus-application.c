@@ -1040,7 +1040,7 @@ nautilus_application_startup (GApplication *app)
     nautilus_global_preferences_init ();
 
     /* Check if xdg-users-dirs need localization update */
-    nautilus_user_dirs_check_update_locales ();
+    nautilus_user_dirs_check_update_locales (nautilus_application_get_bookmarks (self));
 
     /* initialize data preference watchers */
     nautilus_date_setup_preferences ();

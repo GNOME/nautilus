@@ -5,6 +5,8 @@
  */
 #include "nautilus-user-dirs-check.h"
 
+#include "nautilus-bookmark-list.h"
+
 #include <sys/types.h>
 #include <sys/wait.h>
 #include <unistd.h>
@@ -23,41 +25,6 @@ typedef struct
     char *type;
     char *path;
 } XdgDirEntry;
-
-typedef struct
-{
-    char *uri;
-    char *label;
-} GtkBookmark;
-
-static char *
-get_gtk_bookmarks_filename (void)
-{
-    char *filename, *legacy_filename;
-    gboolean exists, legacy_exists;
-
-    filename = g_build_filename (g_get_user_config_dir (), "gtk-3.0", "bookmarks", NULL);
-    exists = g_file_test (filename, G_FILE_TEST_EXISTS);
-
-    if (exists)
-    {
-        return filename;
-    }
-
-    legacy_filename = g_build_filename (g_get_home_dir (), ".gtk-bookmarks", NULL);
-    legacy_exists = g_file_test (legacy_filename, G_FILE_TEST_EXISTS);
-
-    if (legacy_exists)
-    {
-        g_free (filename);
-        return legacy_filename;
-    }
-
-    g_free (legacy_filename);
-
-    /* if neither exist, return the new filename */
-    return filename;
-}
 
 static char *
 parse_xdg_dirs_locale (void)
@@ -191,90 +158,6 @@ parse_xdg_dirs (const char *config_file)
 out:
     g_free (config_file_free);
     return (XdgDirEntry *) g_array_free (array, FALSE);
-}
-
-static GList *
-parse_gtk_bookmarks (void)
-{
-    char *filename, *contents;
-    GError **error = NULL;
-    char **lines;
-    int i;
-    GtkBookmark *bookmark;
-    GList *bookmarks;
-
-    filename = get_gtk_bookmarks_filename ();
-    bookmarks = NULL;
-
-    /* Read new list from file */
-    if (g_file_get_contents (filename, &contents, NULL, error))
-    {
-        lines = g_strsplit (contents, "\n", -1);
-        g_free (contents);
-        for (i = 0; lines[i]; i++)
-        {
-            if (lines[i][0])
-            {
-                /* gtk 2.7/2.8 might have labels appended to bookmarks which are separated by a space
-                 * we must seperate the bookmark uri and the potential label
-                 */
-                char *space;
-
-                bookmark = g_new0 (GtkBookmark, 1);
-
-                bookmark->label = NULL;
-                space = strchr (lines[i], ' ');
-                if (space)
-                {
-                    *space = '\0';
-                    bookmark->label = g_strdup (space + 1);
-                }
-                bookmark->uri = g_strdup (lines[i]);
-
-                bookmarks = g_list_append (bookmarks, bookmark);
-            }
-        }
-        g_strfreev (lines);
-    }
-    g_free (filename);
-
-    return bookmarks;
-}
-
-static void
-save_gtk_bookmarks (GList *bookmarks)
-{
-    char *filename, *dirname;
-    GString *str;
-    GList *l;
-    GtkBookmark *bookmark;
-
-    filename = get_gtk_bookmarks_filename ();
-    str = g_string_new ("");
-
-    for (l = bookmarks; l != NULL; l = l->next)
-    {
-        bookmark = l->data;
-
-        if (bookmark->label)
-        {
-            g_string_append_printf (str, "%s %s\n", bookmark->uri, bookmark->label);
-        }
-        else
-        {
-            g_string_append_printf (str, "%s\n", bookmark->uri);
-        }
-    }
-
-    dirname = g_path_get_dirname (filename);
-    if (g_mkdir_with_parents (dirname, 0700) == 0)
-    {
-        g_file_set_contents (filename, str->str, str->len, NULL);
-    }
-
-    g_string_free (str, TRUE);
-    g_free (filename);
-    g_free (dirname);
 }
 
 static XdgDirEntry *
@@ -611,16 +494,13 @@ update_locale (XdgDirEntry *old_entries)
 }
 
 void
-nautilus_user_dirs_check_update_locales (void)
+nautilus_user_dirs_check_update_locales (NautilusBookmarkList *bookmark_list)
 {
     XdgDirEntry *old_entries, *new_entries, *entry;
     XdgDirEntry *desktop_entry;
-    GtkBookmark *bookmark;
-    GList *bookmarks, *l;
+    GList *bookmarks;
     char *old_locale;
     char *locale, *dot;
-    int i;
-    gboolean modified_bookmarks;
     char *uri;
 
     old_entries = parse_xdg_dirs (NULL);
@@ -641,9 +521,8 @@ nautilus_user_dirs_check_update_locales (void)
 
     new_entries = parse_xdg_dirs (NULL);
 
-    bookmarks = parse_gtk_bookmarks ();
+    bookmarks = nautilus_bookmark_list_get_all (bookmark_list);
 
-    modified_bookmarks = FALSE;
     if (bookmarks == NULL)
     {
         char *make_bm_for[] =
@@ -658,7 +537,7 @@ nautilus_user_dirs_check_update_locales (void)
         /* No previous bookmarks. Generate standard ones */
 
         desktop_entry = find_dir_entry (new_entries, "DESKTOP");
-        for (i = 0; make_bm_for[i] != NULL; i++)
+        for (guint i = 0; make_bm_for[i] != NULL; i++)
         {
             entry = find_dir_entry (new_entries, make_bm_for[i]);
 
@@ -668,10 +547,9 @@ nautilus_user_dirs_check_update_locales (void)
                 uri = g_filename_to_uri (entry->path, NULL, NULL);
                 if (uri)
                 {
-                    modified_bookmarks = TRUE;
-                    bookmark = g_new0 (GtkBookmark, 1);
-                    bookmark->uri = uri;
-                    bookmarks = g_list_append (bookmarks, bookmark);
+                    g_autoptr (GFile) file = g_file_new_for_uri (uri);
+
+                    nautilus_bookmark_list_add (bookmark_list, file, -1);
                 }
             }
         }
@@ -679,39 +557,17 @@ nautilus_user_dirs_check_update_locales (void)
     else
     {
         /* Map old bookmarks that were moved */
-
-        for (l = bookmarks; l != NULL; l = l->next)
+        for (guint i = 0; old_entries[i].path != NULL; i++)
         {
-            char *path;
+            g_autoptr (GFile) location = g_file_new_for_path (old_entries[i].path);
 
-            bookmark = l->data;
-
-            path = g_filename_from_uri (bookmark->uri, NULL, NULL);
-            if (path)
+            if (nautilus_bookmark_list_contains (bookmark_list, location))
             {
-                entry = find_dir_entry_by_path (old_entries, path);
-                if (entry)
-                {
-                    entry = find_dir_entry (new_entries, entry->type);
-                    if (entry)
-                    {
-                        uri = g_filename_to_uri (entry->path, NULL, NULL);
-                        if (uri)
-                        {
-                            modified_bookmarks = TRUE;
-                            g_free (bookmark->uri);
-                            bookmark->uri = uri;
-                        }
-                    }
-                }
-                g_free (path);
+                g_autoptr (GFile) new_location = g_file_new_for_path (new_entries[i].path);
+
+                nautilus_bookmark_list_change_location (bookmark_list, location, new_location, FALSE);
             }
         }
-    }
-
-    if (modified_bookmarks)
-    {
-        save_gtk_bookmarks (bookmarks);
     }
 
     g_free (new_entries);
