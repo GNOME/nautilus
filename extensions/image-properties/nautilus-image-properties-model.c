@@ -33,6 +33,8 @@ typedef struct
     GListStore *group_model;
 
     GExiv2Metadata *md;
+
+    GCancellable *cancellable;
 } NautilusImagesPropertiesModel;
 
 /* tags and their alternatives */
@@ -54,9 +56,39 @@ const char *creator[] = { "Xmp.dc.creator", "Exif.Image.Artist", NULL };
 const char *rights[] = { "Xmp.dc.rights", NULL };
 const char *rating[] = { "Xmp.xmp.Rating", NULL };
 
+typedef struct
+{
+    gboolean gexiv_success;
+    union
+    {
+        GExiv2Metadata *md;
+        struct
+        {
+            char *mime_type;
+            int width;
+            int height;
+        } glycin_result;
+    } result;
+} LoadResult;
+
+static void
+load_task_data_free (LoadResult *data)
+{
+    g_clear_pointer (&data->result.glycin_result.mime_type, g_free);
+    g_clear_object (&data->result.md);
+    g_free (data);
+}
+
+G_DEFINE_AUTOPTR_CLEANUP_FUNC (LoadResult, load_task_data_free)
+
 static void
 nautilus_images_properties_model_free (NautilusImagesPropertiesModel *self)
 {
+    if (self->cancellable != NULL)
+    {
+        g_cancellable_cancel (self->cancellable);
+        g_clear_object (&self->cancellable);
+    }
     g_clear_object (&self->md);
     g_clear_object (&self->group_model);
 
@@ -125,26 +157,6 @@ append_gexiv_basic_info (NautilusImagesPropertiesModel *self)
     {
         append_basic_info (self, mime_type, width, height);
     }
-}
-
-static gboolean
-append_glycin_basic_info (NautilusImagesPropertiesModel *self,
-                          GFile                         *file)
-{
-    g_autoptr (GlyLoader) loader = gly_loader_new (file);
-    g_autoptr (GlyImage) image = gly_loader_load (loader, NULL);
-
-    if (image == NULL)
-    {
-        return FALSE;
-    }
-
-    append_basic_info (self,
-                       gly_image_get_mime_type (image),
-                       gly_image_get_width (image),
-                       gly_image_get_height (image));
-
-    return TRUE;
 }
 
 static void
@@ -256,12 +268,101 @@ append_gexiv2_info (NautilusImagesPropertiesModel *self)
 }
 
 static void
+load_task_thread_func (GTask        *task,
+                       gpointer      source_object,
+                       gpointer      task_data,
+                       GCancellable *cancellable)
+{
+    /* Check if already cancelled */
+    if (g_task_return_error_if_cancelled (task))
+    {
+        return;
+    }
+
+    GFile *file = task_data;
+    g_autofree char *path = g_file_get_path (file);
+    g_autoptr (GExiv2Metadata) md = gexiv2_metadata_new ();
+
+    if (gexiv2_metadata_open_path (md, path, NULL))
+    {
+        g_autoptr (LoadResult) data = g_new0 (LoadResult, 1);
+
+        data->gexiv_success = TRUE;
+        data->result.md = g_steal_pointer (&md);
+        g_task_return_pointer (task, g_steal_pointer (&data), (GDestroyNotify) load_task_data_free);
+
+        return;
+    }
+
+    /* Check again if already cancelled before reading */
+    if (g_task_return_error_if_cancelled (task))
+    {
+        return;
+    }
+
+    /* Fallback to glycin for basic image info */
+    g_autoptr (GlyLoader) loader = gly_loader_new (file);
+    g_autoptr (GlyImage) image = gly_loader_load (loader, NULL);
+
+    if (image != NULL)
+    {
+        g_autoptr (LoadResult) data = g_new0 (LoadResult, 1);
+
+        data->result.glycin_result.mime_type = g_strdup (gly_image_get_mime_type (image));
+        data->result.glycin_result.width = gly_image_get_width (image);
+        data->result.glycin_result.height = gly_image_get_height (image);
+        g_task_return_pointer (task, g_steal_pointer (&data), (GDestroyNotify) load_task_data_free);
+    }
+    else
+    {
+        g_task_return_error (task, g_error_new (G_IO_ERROR, G_IO_ERROR_FAILED,
+                                                "Couldn't load ""%s"" through GExiv2 or Glycin",
+                                                path));
+    }
+}
+
+static void
+load_task_callback (GObject      *source_object,
+                    GAsyncResult *result,
+                    gpointer      user_data)
+{
+    g_autoptr (GError) error = NULL;
+    g_autoptr (LoadResult) data = g_task_propagate_pointer (G_TASK (result), &error);
+    NautilusImagesPropertiesModel *self = user_data;
+
+    if (g_error_matches (error, G_IO_ERROR, G_IO_ERROR_CANCELLED))
+    {
+        return;
+    }
+
+    if (data == NULL)
+    {
+        append_item (self, _("Oops! Something went wrong."), _("Failed to load image information"));
+
+        return;
+    }
+
+    if (data->gexiv_success)
+    {
+        self->md = g_steal_pointer (&data->result.md);
+        append_gexiv_basic_info (self);
+        append_gexiv2_info (self);
+    }
+    else
+    {
+        append_basic_info (self,
+                           data->result.glycin_result.mime_type,
+                           data->result.glycin_result.width,
+                           data->result.glycin_result.height);
+    }
+}
+
+static void
 nautilus_image_properties_model_load_from_file_info (NautilusImagesPropertiesModel *self,
                                                      NautilusFileInfo              *file_info)
 {
     g_return_if_fail (file_info != NULL);
 
-    g_autoptr (GError) error = NULL;
     g_autofree char *uri = nautilus_file_info_get_uri (file_info);
     g_autoptr (GFile) file = g_file_new_for_uri (uri);
     const char *path = g_file_peek_path (file);
@@ -287,17 +388,12 @@ nautilus_image_properties_model_load_from_file_info (NautilusImagesPropertiesMod
         return;
     }
 
-    self->md = gexiv2_metadata_new ();
+    g_autoptr (GTask) task = NULL;
 
-    if (gexiv2_metadata_open_path (self->md, path, &error))
-    {
-        append_gexiv_basic_info (self);
-        append_gexiv2_info (self);
-    }
-    else if (!append_glycin_basic_info (self, file))
-    {
-        append_item (self, _("Oops! Something went wrong."), _("Failed to load image information"));
-    }
+    self->cancellable = g_cancellable_new ();
+    task = g_task_new (NULL, self->cancellable, load_task_callback, self);
+    g_task_set_task_data (task, g_object_ref (file), (GDestroyNotify) g_object_unref);
+    g_task_run_in_thread (task, load_task_thread_func);
 }
 
 NautilusPropertiesModel *
