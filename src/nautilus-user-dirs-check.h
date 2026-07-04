@@ -4,5 +4,7 @@
  */
 #pragma once
 
+#include "nautilus-types.h"
+
 void
-nautilus_user_dirs_check_update_locales (void);
+nautilus_user_dirs_check_update_locales (NautilusBookmarkList *bookmark_list);
