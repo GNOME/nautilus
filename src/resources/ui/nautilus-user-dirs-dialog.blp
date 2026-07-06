@@ -1,0 +1,52 @@
+using Gtk 4.0;
+using Adw 1;
+
+Adw.AlertDialog user_dirs_dialog {
+  heading: _("Update standard folders to current language?");
+  body: _(
+    "You have logged in in a new language. You can automatically update the names of some standard folders in your home folder to match this language. The update would change the following folders:"
+  );
+  prefer-wide-layout: true;
+  default-response: "update";
+  close-response: "keep";
+
+  extra-child: Box {
+    orientation: vertical;
+    spacing: 6;
+
+    ColumnView {
+      show-row-separators: true;
+      reorderable: false;
+
+      model: NoSelection selection_model {};
+
+      ColumnViewColumn current_column {
+        title: _("Current folder name");
+        factory: SignalListItemFactory old_factory {};
+      }
+
+      ColumnViewColumn new_column {
+        title: _("New folder name");
+        expand: true;
+        factory: SignalListItemFactory new_factory {};
+      }
+
+      styles [
+        "frame",
+      ]
+    }
+
+    Label {
+      label: _("Note that existing content will not be moved.");
+      selectable: true;
+      xalign: 0.0;
+      wrap: true;
+    }
+  };
+
+  responses [
+    never: _("Never Update"),
+    keep: _("_Keep Old Names"),
+    update: _("Update Names") suggested,
+  ]
+}
