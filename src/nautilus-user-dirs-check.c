@@ -5,6 +5,7 @@
 #include "nautilus-user-dirs-check.h"
 
 #include "nautilus-bookmark-list.h"
+#include "nautilus-global-preferences.h"
 
 #include <adwaita.h>
 #include <glib.h>
@@ -297,8 +298,15 @@ on_response (AdwDialog *self,
             }
         }
     }
+    else if (g_strcmp0 (response, "keep") == 0)
+    {
+        save_locale ();
+    }
     else if (g_strcmp0 (response, "never") == 0)
     {
+        g_settings_set_boolean (nautilus_preferences,
+                                NAUTILUS_PREFERENCES_XDG_USER_DIR_RENAMING,
+                                FALSE);
         save_locale ();
     }
 
@@ -456,6 +464,12 @@ update_locale (XdgDirEntry *old_entries)
 void
 nautilus_user_dirs_check_update_locales (NautilusBookmarkList *bookmark_list)
 {
+    if (!g_settings_get_boolean (nautilus_preferences, NAUTILUS_PREFERENCES_XDG_USER_DIR_RENAMING))
+    {
+        /* User previously selected to never update directory names */
+        return;
+    }
+
     XdgDirEntry *old_entries, *new_entries, *entry;
     XdgDirEntry *desktop_entry;
     GList *bookmarks;
