@@ -31,6 +31,7 @@ blueprint_names = [
   'nautilus-search-types-dialog',
   'nautilus-sidebar-row',
   'nautilus-toolbar',
+  'nautilus-user-dirs-dialog.blp',
   'nautilus-view-controls',
   'nautilus-window',
   'shortcuts-dialog',
