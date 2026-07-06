@@ -128,6 +128,9 @@ typedef enum
 /* Date and time format in the view */
 #define NAUTILUS_PREFERENCES_DATE_TIME_FORMAT "date-time-format"
 
+/* XDG user directory renaming */
+#define NAUTILUS_PREFERENCES_XDG_USER_DIR_RENAMING "xdg-user-dir-renaming"
+
 typedef enum
 {
         NAUTILUS_DATE_TIME_FORMAT_SIMPLE = 0,
