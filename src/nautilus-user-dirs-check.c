@@ -335,19 +335,12 @@ update_locale (XdgDirEntry *old_entries)
 {
     XdgDirEntry *new_entries;
     EntryData *data;
-    AdwDialog *dialog;
-    GtkWidget *vbox;
     int exit_status;
     int fd;
     char *filename;
     char *cmdline;
     int i, j;
     GListStore *list_store;
-    GtkSelectionModel *selection_model;
-    GtkWidget *view;
-    GtkColumnViewColumn *column;
-    GtkListItemFactory *factory;
-    GtkWidget *label;
     char *std_out, *std_err;
     gboolean has_changes;
 
@@ -435,50 +428,18 @@ update_locale (XdgDirEntry *old_entries)
         return;
     }
 
-    dialog = adw_alert_dialog_new (_("Update standard folders to current language?"),
-                                   _("You have logged in in a new language. You can automatically update the names of some standard folders in your home folder to match this language. The update would change the following folders:"));
+    g_autoptr (GtkBuilder) builder = gtk_builder_new_from_resource ("/org/gnome/nautilus/ui/nautilus-user-dirs-dialog.ui");
+    AdwDialog *dialog = (AdwDialog *) gtk_builder_get_object (builder, "user_dirs_dialog");
+    GtkListItemFactory *old_factory = (GtkListItemFactory *) gtk_builder_get_object (builder, "old_factory");
+    GtkListItemFactory *new_factory = (GtkListItemFactory *) gtk_builder_get_object (builder, "new_factory");
+    GtkNoSelection *selection_model = (GtkNoSelection *) gtk_builder_get_object (builder, "selection_model");
 
-    adw_alert_dialog_add_responses (ADW_ALERT_DIALOG (dialog),
-                                    "never", _("Never Update"),
-                                    "keep", _("_Keep Old Names"),
-                                    "update", _("Update Names"),
-                                    NULL);
-    adw_alert_dialog_set_response_appearance (ADW_ALERT_DIALOG (dialog), "update", ADW_RESPONSE_SUGGESTED);
-    adw_alert_dialog_set_prefer_wide_layout (ADW_ALERT_DIALOG (dialog), TRUE);
+    g_signal_connect (old_factory, "setup", G_CALLBACK (setup), NULL);
+    g_signal_connect (old_factory, "bind", G_CALLBACK (bind), GINT_TO_POINTER (0));
+    g_signal_connect (new_factory, "setup", G_CALLBACK (setup), NULL);
+    g_signal_connect (new_factory, "bind", G_CALLBACK (bind), GINT_TO_POINTER (1));
 
-    selection_model = GTK_SELECTION_MODEL (gtk_no_selection_new (G_LIST_MODEL (list_store)));
-    view = gtk_column_view_new (selection_model);
-    gtk_widget_add_css_class (view, "frame");
-    gtk_column_view_set_show_row_separators (GTK_COLUMN_VIEW (view), TRUE);
-    gtk_column_view_set_reorderable (GTK_COLUMN_VIEW (view), FALSE);
-
-    factory = gtk_signal_list_item_factory_new ();
-    g_signal_connect (factory, "setup", G_CALLBACK (setup), NULL);
-    g_signal_connect (factory, "bind", G_CALLBACK (bind), GINT_TO_POINTER (0));
-
-    column = gtk_column_view_column_new (_("Current folder name"), factory);
-    gtk_column_view_append_column (GTK_COLUMN_VIEW (view), column);
-    g_object_unref (column);
-
-    factory = gtk_signal_list_item_factory_new ();
-    g_signal_connect (factory, "setup", G_CALLBACK (setup), NULL);
-    g_signal_connect (factory, "bind", G_CALLBACK (bind), GINT_TO_POINTER (1));
-
-    column = gtk_column_view_column_new (_("New folder name"), factory);
-    gtk_column_view_column_set_expand (column, TRUE);
-    gtk_column_view_append_column (GTK_COLUMN_VIEW (view), column);
-    g_object_unref (column);
-
-    vbox = gtk_box_new (GTK_ORIENTATION_VERTICAL, 6);
-
-    label = gtk_label_new (_("Note that existing content will not be moved."));
-    gtk_label_set_wrap (GTK_LABEL (label), TRUE);
-    gtk_label_set_selectable (GTK_LABEL (label), TRUE);
-    gtk_label_set_xalign (GTK_LABEL (label), 0);
-
-    gtk_box_append (GTK_BOX (vbox), view);
-    gtk_box_append (GTK_BOX (vbox), label);
-    adw_alert_dialog_set_extra_child (ADW_ALERT_DIALOG (dialog), vbox);
+    gtk_no_selection_set_model (selection_model, G_LIST_MODEL (list_store));
 
     data = g_new0 (EntryData, 1);
     data->old_entries = old_entries;
