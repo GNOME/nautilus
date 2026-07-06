@@ -188,6 +188,11 @@
       <summary>How to display file timestamps in the views</summary>
       <description>If set to 'simple', Files will show Today and Yesterday with time, otherwise the exact date without time. If set to 'detailed', it will always show the exact date and time.</description>
     </key>
+    <key type="b" name="xdg-user-dir-renaming">
+      <default>true</default>
+      <summary>Ask about renaming XDG user directories</summary>
+      <description>Whether to prompt about renaming XDG user directories whenever the system's language is changed. Affects such folders as Downloads, Documents and Pictures.</description>
+    </key>
   </schema>
 
   <schema path="/org/gnome/nautilus/compression/" id="org.gnome.nautilus.compression" gettext-domain="nautilus">
