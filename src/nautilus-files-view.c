@@ -7797,7 +7797,6 @@ update_selection_menu (NautilusFilesView *self,
     gboolean item_opens_in_view;
     gchar *item_label;
     GAppInfo *app;
-    g_autoptr (GIcon) app_icon = NULL;
     GMenuItem *menu_item;
     GObject *object;
     gboolean show_mount;
@@ -7878,13 +7877,8 @@ update_selection_menu (NautilusFilesView *self,
         if (app != NULL)
         {
             g_autofree char *escaped_app = escape_underscores (g_app_info_get_name (app));
-            item_label = g_strdup_printf (_("Open With %s"), escaped_app);
 
-            app_icon = g_app_info_get_icon (app);
-            if (app_icon != NULL)
-            {
-                g_object_ref (app_icon);
-            }
+            item_label = g_strdup_printf (_("Open With %s"), escaped_app);
             g_object_unref (app);
         }
         else if (show_run)
@@ -7906,10 +7900,6 @@ update_selection_menu (NautilusFilesView *self,
         if (!item_opens_in_view)
         {
             menu_item = g_menu_item_new (item_label, "view.open-with-default-application");
-            if (app_icon != NULL)
-            {
-                g_menu_item_set_icon (menu_item, app_icon);
-            }
 
             object = gtk_builder_get_object (builder, "open-with-application-section");
             g_menu_prepend_item (G_MENU (object), menu_item);
