@@ -5213,7 +5213,6 @@ add_script_to_scripts_menus (NautilusFilesView *self,
     gchar *action_name, *detailed_action_name;
     ScriptLaunchParameters *launch_parameters;
     GAction *action;
-    GMenuItem *menu_item;
     const gchar *shortcut;
 
     launch_parameters = script_launch_parameters_new (file, self);
@@ -5236,9 +5235,7 @@ add_script_to_scripts_menus (NautilusFilesView *self,
     g_object_unref (action);
 
     detailed_action_name = g_strconcat ("view.", action_name, NULL);
-    menu_item = g_menu_item_new (name, detailed_action_name);
-
-    g_menu_append_item (menu, menu_item);
+    g_menu_append (menu, name, detailed_action_name);
 
     if ((shortcut = g_hash_table_lookup (script_accels, name)))
     {
@@ -5249,7 +5246,6 @@ add_script_to_scripts_menus (NautilusFilesView *self,
 
     g_free (action_name);
     g_free (detailed_action_name);
-    g_object_unref (menu_item);
 }
 
 static gboolean
@@ -5332,7 +5328,6 @@ update_directory_in_scripts_menu (NautilusFilesView *view,
                                   NautilusDirectory *directory)
 {
     GMenu *menu, *children_menu;
-    GMenuItem *menu_item;
     gboolean any_scripts;
     NautilusFile *file;
     NautilusDirectory *dir;
@@ -5376,11 +5371,9 @@ update_directory_in_scripts_menu (NautilusFilesView *view,
                 if (children_menu != NULL)
                 {
                     const char *file_name = nautilus_file_get_display_name (file);
-                    menu_item = g_menu_item_new_submenu (file_name,
-                                                         G_MENU_MODEL (children_menu));
-                    g_menu_append_item (menu, menu_item);
+
+                    g_menu_append_submenu (menu, file_name, G_MENU_MODEL (children_menu));
                     any_scripts = TRUE;
-                    g_object_unref (menu_item);
                     g_object_unref (children_menu);
                 }
 
@@ -7899,12 +7892,8 @@ update_selection_menu (NautilusFilesView *self,
         /* The action already exists in the submenu if item opens in view */
         if (!item_opens_in_view)
         {
-            menu_item = g_menu_item_new (item_label, "view.open-with-default-application");
-
             object = gtk_builder_get_object (builder, "open-with-application-section");
-            g_menu_prepend_item (G_MENU (object), menu_item);
-
-            g_object_unref (menu_item);
+            g_menu_prepend (G_MENU (object), item_label, "view.open-with-default-application");
         }
         else
         {
@@ -7988,10 +7977,8 @@ update_selection_menu (NautilusFilesView *self,
             break;
         }
 
-        menu_item = g_menu_item_new (item_label, "view.start-volume");
         object = gtk_builder_get_object (builder, "drive-section");
-        g_menu_append_item (G_MENU (object), menu_item);
-        g_object_unref (menu_item);
+        g_menu_append (G_MENU (object), item_label, "view.start-volume");
     }
 
     if (show_stop)
@@ -8030,10 +8017,8 @@ update_selection_menu (NautilusFilesView *self,
             break;
         }
 
-        menu_item = g_menu_item_new (item_label, "view.stop-volume");
         object = gtk_builder_get_object (builder, "drive-section");
-        g_menu_append_item (G_MENU (object), menu_item);
-        g_object_unref (menu_item);
+        g_menu_append (G_MENU (object), item_label, "view.stop-volume");
     }
 
     if (!self->scripts_menu_updated && mode == NAUTILUS_MODE_BROWSE)
