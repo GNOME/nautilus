@@ -813,8 +813,6 @@ update_undo_redo_menu_items (NautilusWindow               *window,
     g_autofree gchar *redo_description = NULL;
     gboolean is_undo;
     g_autoptr (GMenu) updated_section = g_menu_new ();
-    g_autoptr (GMenuItem) undo_menu_item = NULL;
-    g_autoptr (GMenuItem) redo_menu_item = NULL;
     GAction *action;
 
     /* Look at the last action from the undo manager, and get the text that
@@ -840,8 +838,7 @@ update_undo_redo_menu_items (NautilusWindow               *window,
     {
         g_set_str (&undo_label, _("_Undo"));
     }
-    undo_menu_item = g_menu_item_new (undo_label, "win.undo");
-    g_menu_append_item (updated_section, undo_menu_item);
+    g_menu_append (updated_section, undo_label, "win.undo");
     action = g_action_map_lookup_action (G_ACTION_MAP (window), "undo");
     g_simple_action_set_enabled (G_SIMPLE_ACTION (action), undo_active);
 
@@ -849,8 +846,7 @@ update_undo_redo_menu_items (NautilusWindow               *window,
     {
         g_set_str (&redo_label, _("_Redo"));
     }
-    redo_menu_item = g_menu_item_new (redo_label, "win.redo");
-    g_menu_append_item (updated_section, redo_menu_item);
+    g_menu_append (updated_section, redo_label, "win.redo");
     action = g_action_map_lookup_action (G_ACTION_MAP (window), "redo");
     g_simple_action_set_enabled (G_SIMPLE_ACTION (action), redo_active);
 
