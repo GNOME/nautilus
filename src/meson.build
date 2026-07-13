@@ -222,6 +222,8 @@ libnautilus_sources = [
   'nautilus-rename-file-popover.h',
   'nautilus-scheme.c',
   'nautilus-scheme.h',
+  'nautilus-scripts.c',
+  'nautilus-scripts.h',
   'nautilus-search-directory.c',
   'nautilus-search-directory.h',
   'nautilus-search-directory-file.c',
