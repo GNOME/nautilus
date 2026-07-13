@@ -43,11 +43,13 @@ scripts_directory_changed (NautilusDirectory *directory,
                            gpointer           user_data);
 
 /* Expected format: accel script_name */
-static void
-load_custom_accel_for_scripts (NautilusScriptsMonitor *self)
+static GHashTable *
+load_custom_accel_for_scripts (void)
 {
-    gchar *path, *contents;
-    gchar **lines;
+    g_autoptr (GHashTable) accels = g_hash_table_new_full (g_str_hash, g_str_equal,
+                                                           g_free, g_free);
+    g_autofree gchar *path = NULL;
+    g_autofree gchar *contents = NULL;
     GError *error = NULL;
     const int max_len = 100;
 
@@ -55,7 +57,8 @@ load_custom_accel_for_scripts (NautilusScriptsMonitor *self)
 
     if (g_file_get_contents (path, &contents, NULL, &error))
     {
-        lines = g_strsplit (contents, "\n", -1);
+        g_auto (GStrv) lines = g_strsplit (contents, "\n", -1);
+
         for (guint i = 0; lines[i] != NULL; i++)
         {
             g_auto (GStrv) result = g_strsplit (lines[i], " ", 2);
@@ -65,13 +68,10 @@ load_custom_accel_for_scripts (NautilusScriptsMonitor *self)
                 continue;
             }
 
-            g_hash_table_insert (self->script_accels,
+            g_hash_table_insert (accels,
                                  g_strndup (result[1], max_len),
                                  g_strndup (result[0], max_len));
         }
-
-        g_free (contents);
-        g_strfreev (lines);
     }
     else
     {
@@ -79,7 +79,7 @@ load_custom_accel_for_scripts (NautilusScriptsMonitor *self)
         g_clear_error (&error);
     }
 
-    g_free (path);
+    return g_steal_pointer (&accels);
 }
 
 static void
@@ -291,9 +291,30 @@ nautilus_scripts_monitor_dispose (GObject *object)
     G_OBJECT_CLASS (nautilus_scripts_monitor_parent_class)->dispose (object);
 }
 
-static void
-nautilus_scripts_monitor_init (NautilusScriptsMonitor *self)
+typedef struct
 {
+    char *scripts_directory_uri;
+    int scripts_directory_uri_length;
+    GHashTable *script_accels;
+} ScriptsInitData;
+
+static void
+scripts_init_data_free (ScriptsInitData *data)
+{
+    g_free (data->scripts_directory_uri);
+    g_clear_pointer (&data->script_accels, g_hash_table_unref);
+    g_free (data);
+}
+
+G_DEFINE_AUTOPTR_CLEANUP_FUNC (ScriptsInitData, scripts_init_data_free)
+
+static void
+scripts_init_in_thread (GTask        *task,
+                        gpointer      source_object,
+                        gpointer      task_data,
+                        GCancellable *cancellable)
+{
+    g_autoptr (ScriptsInitData) data = g_new0 (ScriptsInitData, 1);
     g_autofree gchar *scripts_directory_path = NULL;
 
     scripts_directory_path = nautilus_get_scripts_directory_path ();
@@ -302,13 +323,34 @@ nautilus_scripts_monitor_init (NautilusScriptsMonitor *self)
     {
         g_autoptr (GFile) scripts_directory_file = g_file_new_for_path (scripts_directory_path);
 
-        self->scripts_directory_uri = g_file_get_uri (scripts_directory_file);
-        self->scripts_directory_uri_length = strlen (self->scripts_directory_uri);
+        data->scripts_directory_uri = g_file_get_uri (scripts_directory_file);
+        data->scripts_directory_uri_length = strlen (data->scripts_directory_uri);
     }
 
-    self->script_accels = g_hash_table_new_full (g_str_hash, g_str_equal,
-                                                 g_free, g_free);
-    load_custom_accel_for_scripts (self);
+    data->script_accels = load_custom_accel_for_scripts ();
+
+    g_task_return_pointer (task, g_steal_pointer (&data), (GDestroyNotify) scripts_init_data_free);
+}
+
+static void
+scripts_init_callback (GObject      *source_object,
+                       GAsyncResult *result,
+                       gpointer      user_data)
+{
+    NautilusScriptsMonitor *self = NAUTILUS_SCRIPTS_MONITOR (source_object);
+    g_autoptr (GError) error = NULL;
+    g_autoptr (ScriptsInitData) data = g_task_propagate_pointer (G_TASK (result), &error);
+
+    if (data == NULL)
+    {
+        g_warning ("Failed to initialize scripts: %s", error->message);
+
+        return;
+    }
+
+    self->scripts_directory_uri = g_steal_pointer (&data->scripts_directory_uri);
+    self->scripts_directory_uri_length = data->scripts_directory_uri_length;
+    self->script_accels = g_steal_pointer (&data->script_accels);
 
     if (self->scripts_directory_uri != NULL)
     {
@@ -320,6 +362,14 @@ nautilus_scripts_monitor_init (NautilusScriptsMonitor *self)
     {
         g_warning ("Ignoring scripts directory, it may be a broken link");
     }
+}
+
+static void
+nautilus_scripts_monitor_init (NautilusScriptsMonitor *self)
+{
+    g_autoptr (GTask) task = g_task_new (self, NULL, scripts_init_callback, NULL);
+
+    g_task_run_in_thread (task, scripts_init_in_thread);
 }
 
 static void
