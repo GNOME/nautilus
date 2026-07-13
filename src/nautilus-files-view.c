@@ -69,6 +69,7 @@
 #include "nautilus-recent-servers.h"
 #include "nautilus-rename-file-popover.h"
 #include "nautilus-scheme.h"
+#include "nautilus-scripts.h"
 #include "nautilus-search-directory.h"
 #include "nautilus-signaller.h"
 #include "nautilus-tag-manager.h"
@@ -94,8 +95,6 @@
 
 #define MAX_MENU_LEVELS 5
 #define TEMPLATE_LIMIT 30
-
-#define SHORTCUTS_PATH "/nautilus/scripts-accels"
 
 /* Delay to show the Loading... floating bar */
 #define FLOATING_BAR_LOADING_DELAY 200 /* ms */
@@ -134,13 +133,6 @@ enum
 static GParamSpec *properties[NUM_PROPERTIES];
 static guint signals[LAST_SIGNAL];
 
-static char *scripts_directory_uri = NULL;
-static int scripts_directory_uri_length;
-
-static GHashTable *script_accels = NULL;
-
-static GList *scripts_directory_list = NULL;
-
 struct _NautilusFilesView
 {
     AdwBin parent;
@@ -164,7 +156,6 @@ struct _NautilusFilesView
     GtkWidget *rename_file_popover;
 
     GList *templates_directory_list;
-    gboolean scripts_menu_updated;
     gboolean templates_menu_updated;
 
     guint display_selection_idle_id;
@@ -279,11 +270,6 @@ typedef struct
 
 /* forward declarations */
 
-static void
-nautilus_load_custom_accel_for_scripts (void);
-static void
-add_directory_to_scripts_directory_list (NautilusFilesView *self,
-                                         NautilusDirectory *directory);
 static void     display_selection_info_idle_callback (gpointer data);
 static void     load_directory (NautilusFilesView *view,
                                 NautilusDirectory *directory);
@@ -2922,55 +2908,12 @@ show_hidden_files_changed_callback (gpointer callback_data)
 }
 
 static void
-set_up_scripts_directory_global (void)
+scripts_added_or_changed_callback (NautilusScripts *scripts,
+                                   gpointer         user_data)
 {
-    g_autofree gchar *scripts_directory_path = NULL;
+    NautilusFilesView *self = NAUTILUS_FILES_VIEW (user_data);
 
-    if (scripts_directory_uri != NULL)
-    {
-        return;
-    }
-
-    scripts_directory_path = nautilus_get_scripts_directory_path ();
-
-    if (g_mkdir_with_parents (scripts_directory_path, 0700) == 0)
-    {
-        g_autoptr (GFile) scripts_directory_file = g_file_new_for_path (scripts_directory_path);
-
-        scripts_directory_uri = g_file_get_uri (scripts_directory_file);
-        scripts_directory_uri_length = strlen (scripts_directory_uri);
-    }
-
-    if (script_accels == NULL)
-    {
-        script_accels = g_hash_table_new_full (g_str_hash, g_str_equal,
-                                               g_free, g_free);
-        nautilus_load_custom_accel_for_scripts ();
-    }
-
-    if (scripts_directory_uri != NULL)
-    {
-        g_autoptr (NautilusDirectory) scripts_directory = nautilus_directory_get_by_uri (scripts_directory_uri);
-
-        add_directory_to_scripts_directory_list (NULL, scripts_directory);
-    }
-    else
-    {
-        g_warning ("Ignoring scripts directory, it may be a broken link\n");
-    }
-}
-
-static void
-scripts_added_or_changed_callback (NautilusDirectory *directory,
-                                   GList             *files,
-                                   gpointer           callback_data)
-{
-    // TODO: This is broken now because we pass null as callback_data.
-    g_return_if_fail (callback_data != NULL);
-
-    NautilusFilesView *self = callback_data;
-
-    self->scripts_menu_updated = FALSE;
+    g_clear_object (&self->scripts_menu);
     if (self->active)
     {
         schedule_update_context_menus (self);
@@ -3037,24 +2980,6 @@ remove_directory_from_directory_list (NautilusFilesView  *view,
     nautilus_directory_unref (directory);
 }
 
-
-static void
-add_directory_to_scripts_directory_list (NautilusFilesView *self,
-                                         NautilusDirectory *directory)
-{
-    add_directory_to_directory_list (self, directory,
-                                     &scripts_directory_list,
-                                     G_CALLBACK (scripts_added_or_changed_callback));
-}
-
-static void
-remove_directory_from_scripts_directory_list (NautilusFilesView *self,
-                                              NautilusDirectory *directory)
-{
-    remove_directory_from_directory_list (self, directory,
-                                          &scripts_directory_list,
-                                          G_CALLBACK (scripts_added_or_changed_callback));
-}
 
 static void
 add_directory_to_templates_directory_list (NautilusFilesView *self,
@@ -5240,7 +5165,8 @@ run_script (GSimpleAction *action,
 static void
 add_script_to_scripts_menus (NautilusFilesView *self,
                              NautilusFile      *file,
-                             GMenu             *menu)
+                             GMenu             *menu,
+                             GHashTable        *script_accels)
 {
     const gchar *name;
     g_autofree gchar *uri = NULL;
@@ -5281,174 +5207,6 @@ add_script_to_scripts_menus (NautilusFilesView *self,
 
     g_free (action_name);
     g_free (detailed_action_name);
-}
-
-static gboolean
-directory_belongs_in_scripts_menu (const char *uri)
-{
-    int num_levels;
-    int i;
-
-    if (!g_str_has_prefix (uri, scripts_directory_uri))
-    {
-        return FALSE;
-    }
-
-    num_levels = 0;
-    for (i = scripts_directory_uri_length; uri[i] != '\0'; i++)
-    {
-        if (uri[i] == '/')
-        {
-            num_levels++;
-        }
-    }
-
-    if (num_levels > MAX_MENU_LEVELS)
-    {
-        return FALSE;
-    }
-
-    return TRUE;
-}
-
-/* Expected format: accel script_name */
-static void
-nautilus_load_custom_accel_for_scripts (void)
-{
-    gchar *path, *contents;
-    gchar **lines;
-    GError *error = NULL;
-    const int max_len = 100;
-
-    path = g_build_filename (g_get_user_config_dir (), SHORTCUTS_PATH, NULL);
-
-    if (g_file_get_contents (path, &contents, NULL, &error))
-    {
-        lines = g_strsplit (contents, "\n", -1);
-        for (guint i = 0; lines[i] != NULL; i++)
-        {
-            g_auto (GStrv) result = g_strsplit (lines[i], " ", 2);
-
-            if (result[0] == NULL || result[1] == NULL)
-            {
-                continue;
-            }
-
-            g_hash_table_insert (script_accels,
-                                 g_strndup (result[1], max_len),
-                                 g_strndup (result[0], max_len));
-        }
-
-        g_free (contents);
-        g_strfreev (lines);
-    }
-    else
-    {
-        g_debug ("Unable to open '%s', error message: %s", path, error->message);
-        g_clear_error (&error);
-    }
-
-    g_free (path);
-}
-
-static gboolean
-filter_hidden_scripts (NautilusFile *file,
-                       gpointer      callback_data)
-{
-    return nautilus_file_should_show (file, FALSE);
-}
-
-static GMenu *
-update_directory_in_scripts_menu (NautilusFilesView *view,
-                                  NautilusDirectory *directory)
-{
-    GMenu *menu, *children_menu;
-    gboolean any_scripts;
-    NautilusFile *file;
-    NautilusDirectory *dir;
-    char *uri;
-    int num;
-
-    g_return_val_if_fail (NAUTILUS_IS_FILES_VIEW (view), NULL);
-    g_return_val_if_fail (NAUTILUS_IS_DIRECTORY (directory), NULL);
-
-    g_autolist (NautilusFile) file_list = nautilus_directory_get_file_list (directory);
-
-    file_list = nautilus_file_list_filter (file_list, filter_hidden_scripts, NULL);
-    file_list = nautilus_file_list_sort_by_display_name (file_list);
-
-    menu = g_menu_new ();
-
-    num = 0;
-    any_scripts = FALSE;
-    for (NautilusFileList *node = file_list;
-         num < TEMPLATE_LIMIT && node != NULL;
-         node = node->next, num++)
-    {
-        file = node->data;
-        if (nautilus_file_is_directory (file))
-        {
-            uri = nautilus_file_get_uri (file);
-            if (directory_belongs_in_scripts_menu (uri))
-            {
-                dir = nautilus_directory_get_by_uri (uri);
-                add_directory_to_scripts_directory_list (view, dir);
-
-                children_menu = update_directory_in_scripts_menu (view, dir);
-
-                if (children_menu != NULL)
-                {
-                    const char *file_name = nautilus_file_get_display_name (file);
-
-                    g_menu_append_submenu (menu, file_name, G_MENU_MODEL (children_menu));
-                    any_scripts = TRUE;
-                    g_object_unref (children_menu);
-                }
-
-                nautilus_directory_unref (dir);
-            }
-            g_free (uri);
-        }
-        else if (nautilus_file_is_launchable (file))
-        {
-            add_script_to_scripts_menus (view, file, menu);
-            any_scripts = TRUE;
-        }
-    }
-
-    if (!any_scripts)
-    {
-        g_object_unref (menu);
-        menu = NULL;
-    }
-
-    return menu;
-}
-
-
-
-static void
-update_scripts_menu (NautilusFilesView *view)
-{
-    g_autolist (NautilusDirectory) sorted_copy = NULL;
-    g_autoptr (NautilusDirectory) directory = NULL;
-    g_autoptr (GMenu) submenu = NULL;
-
-    sorted_copy = nautilus_directory_list_sort_by_uri
-                      (nautilus_directory_list_copy (scripts_directory_list));
-
-    for (GList *dir_l = sorted_copy; dir_l != NULL; dir_l = dir_l->next)
-    {
-        g_autofree char *uri = nautilus_directory_get_uri (dir_l->data);
-        if (!directory_belongs_in_scripts_menu (uri))
-        {
-            remove_directory_from_scripts_directory_list (view, dir_l->data);
-        }
-    }
-
-    directory = nautilus_directory_get_by_uri (scripts_directory_uri);
-    submenu = update_directory_in_scripts_menu (view, directory);
-    g_set_object (&view->scripts_menu, G_MENU_MODEL (submenu));
 }
 
 static void
@@ -5709,7 +5467,9 @@ action_open_scripts_folder (GSimpleAction *action,
 
     if (location == NULL)
     {
-        location = g_file_new_for_uri (scripts_directory_uri);
+        g_autofree char *path = nautilus_get_scripts_directory_path ();
+
+        location = g_file_new_for_path (path);
     }
 
     nautilus_application_open_location_full (NAUTILUS_APPLICATION (g_application_get_default ()),
@@ -8060,10 +7820,13 @@ update_selection_menu (NautilusFilesView *self,
         g_menu_append (G_MENU (object), item_label, "view.stop-volume");
     }
 
-    if (!self->scripts_menu_updated && mode == NAUTILUS_MODE_BROWSE)
+    if (self->scripts_menu == NULL && mode == NAUTILUS_MODE_BROWSE)
     {
-        update_scripts_menu (self);
-        self->scripts_menu_updated = TRUE;
+        g_autoptr (GMenu) menu = nautilus_scripts_get_menu_for_view (nautilus_scripts_get (),
+                                                                     self,
+                                                                     add_script_to_scripts_menus);
+
+        g_set_object (&self->scripts_menu, G_MENU_MODEL (menu));
     }
 
     if (self->scripts_menu != NULL)
@@ -9461,7 +9224,9 @@ nautilus_files_view_init (NautilusFilesView *self)
     self->pending_reveal = g_hash_table_new (NULL, NULL);
     self->awaiting_acknowledge = g_hash_table_new (NULL, NULL);
 
-    set_up_scripts_directory_global ();
+    g_signal_connect_object (nautilus_scripts_get (), "scripts-changed",
+                             G_CALLBACK (scripts_added_or_changed_callback),
+                             self, G_CONNECT_DEFAULT);
 
     if (nautilus_should_use_templates_directory ())
     {
