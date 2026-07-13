@@ -171,6 +171,54 @@ static guint signals[N_SIGNALS];
 
 G_DEFINE_FINAL_TYPE (NautilusAppChooserWidget, nautilus_app_chooser_widget, GTK_TYPE_WIDGET);
 
+static guint
+app_info_hash (gconstpointer key)
+{
+    GAppInfo *app = (gpointer) key;
+    guint hash = g_str_hash (g_app_info_get_name (app));
+    const GIcon *icon = g_app_info_get_icon (app);
+    const char *executable = g_app_info_get_executable (app);
+    const char *commandline = g_app_info_get_commandline (app);
+
+    if (icon != NULL)
+    {
+        hash ^= g_icon_hash (icon);
+    }
+
+    if (executable != NULL)
+    {
+        hash ^= g_str_hash (executable);
+    }
+
+    if (commandline != NULL)
+    {
+        hash ^= g_str_hash (commandline);
+    }
+
+    return hash;
+}
+
+static gboolean
+app_info_equal (gconstpointer a,
+                gconstpointer b)
+{
+    GAppInfo *app_a = (gpointer) a;
+    GAppInfo *app_b = (gpointer) b;
+    const char *name_a = g_app_info_get_name (app_a);
+    const char *name_b = g_app_info_get_name (app_b);
+    GIcon *icon_a = g_app_info_get_icon (app_a);
+    GIcon *icon_b = g_app_info_get_icon (app_b);
+    const char *exec_a = g_app_info_get_executable (app_a);
+    const char *exec_b = g_app_info_get_executable (app_b);
+    const char *cmd_a = g_app_info_get_commandline (app_a);
+    const char *cmd_b = g_app_info_get_commandline (app_b);
+
+    return g_strcmp0 (name_a, name_b) == 0 &&
+           g_icon_equal (icon_a, icon_b) &&
+           g_strcmp0 (exec_a, exec_b) == 0 &&
+           g_strcmp0 (cmd_a, cmd_b) == 0;
+}
+
 static gboolean
 nautilus_app_chooser_widget_add_section (NautilusAppChooserWidget *self,
                                          gboolean                  recommended,
@@ -179,6 +227,7 @@ nautilus_app_chooser_widget_add_section (NautilusAppChooserWidget *self,
                                          GList                    *exclude_apps)
 {
     gboolean retval = FALSE;
+    g_autoptr (GHashTable) seen_apps = g_hash_table_new (app_info_hash, app_info_equal);
 
     for (GList *l = applications; l != NULL; l = l->next)
     {
@@ -195,6 +244,13 @@ nautilus_app_chooser_widget_add_section (NautilusAppChooserWidget *self,
         {
             continue;
         }
+
+        if (g_hash_table_contains (seen_apps, app))
+        {
+            continue;
+        }
+
+        g_hash_table_add (seen_apps, app);
 
         g_autoptr (NautilusAppItem) item = nautilus_app_item_new (app, FALSE, recommended, fallback);
 
