@@ -5875,7 +5875,7 @@ action_create_links_in_place (GSimpleAction *action,
     g_autolist (NautilusFile) selection = NULL;
     GList *item_uris;
     GList *l;
-    char *destination_uri;
+    g_autofree char *destination_uri = NULL;
 
     view = NAUTILUS_FILES_VIEW (user_data);
 
