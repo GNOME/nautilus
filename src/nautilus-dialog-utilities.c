@@ -158,6 +158,13 @@ add_dialog_responses (AdwAlertDialog         *dialog,
 }
 
 static void
+remove_timeout_on_weak_notify (gpointer  data,
+                               GObject  *ex_object)
+{
+    g_source_remove (GPOINTER_TO_UINT (data));
+}
+
+static void
 enable_interactivity (gpointer widget)
 {
     gtk_widget_set_sensitive (GTK_WIDGET (widget), TRUE);
@@ -174,10 +181,14 @@ nautilus_dialog_with_responses (const char             *heading,
 
     if (delay_interactivity)
     {
+        guint timeout_id;
+
         gtk_widget_set_sensitive (GTK_WIDGET (dialog), FALSE);
-        g_timeout_add_seconds_once (BUTTON_ACTIVATION_DELAY_IN_SECONDS,
-                                    enable_interactivity,
-                                    dialog);
+        timeout_id = g_timeout_add_seconds_once (BUTTON_ACTIVATION_DELAY_IN_SECONDS,
+                                                 enable_interactivity,
+                                                 dialog);
+        g_object_weak_ref (G_OBJECT (dialog), remove_timeout_on_weak_notify,
+                           GUINT_TO_POINTER (timeout_id));
     }
 
     if (details)

@@ -41,6 +41,7 @@ struct _NautilusFileConflictDialog
     gchar *suggested_name;
 
     ConflictResponse response;
+    gint activation_timeout_id;
 
     /* UI objects */
     GtkWidget *primary_label;
@@ -280,6 +281,7 @@ do_finalize (GObject *self)
 
     g_free (dialog->conflict_name);
     g_free (dialog->suggested_name);
+    g_clear_handle_id (&dialog->activation_timeout_id, g_source_remove);
 
     G_OBJECT_CLASS (nautilus_file_conflict_dialog_parent_class)->finalize (self);
 }
@@ -316,7 +318,7 @@ nautilus_file_conflict_dialog_class_init (NautilusFileConflictDialogClass *klass
     G_OBJECT_CLASS (klass)->finalize = do_finalize;
 }
 
-static gboolean
+static void
 activate_buttons (NautilusFileConflictDialog *fcd)
 {
     gtk_widget_set_sensitive (GTK_WIDGET (fcd->cancel_button), TRUE);
@@ -324,7 +326,6 @@ activate_buttons (NautilusFileConflictDialog *fcd)
     gtk_widget_set_sensitive (GTK_WIDGET (fcd->rename_button), TRUE);
     gtk_widget_set_sensitive (GTK_WIDGET (fcd->replace_button), TRUE);
     gtk_widget_set_sensitive (GTK_WIDGET (fcd->expander), TRUE);
-    return G_SOURCE_REMOVE;
 }
 
 void
@@ -336,9 +337,9 @@ nautilus_file_conflict_dialog_delay_buttons_activation (NautilusFileConflictDial
     gtk_widget_set_sensitive (GTK_WIDGET (fcd->replace_button), FALSE);
     gtk_widget_set_sensitive (GTK_WIDGET (fcd->expander), FALSE);
 
-    g_timeout_add_seconds (BUTTON_ACTIVATION_DELAY_IN_SECONDS,
-                           G_SOURCE_FUNC (activate_buttons),
-                           fcd);
+    fcd->activation_timeout_id = g_timeout_add_seconds_once (BUTTON_ACTIVATION_DELAY_IN_SECONDS,
+                                                             (GSourceOnceFunc) activate_buttons,
+                                                             fcd);
 }
 
 char *
