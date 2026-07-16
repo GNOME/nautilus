@@ -253,10 +253,18 @@ on_address_entry_text_changed (NautilusNetworkAddressBar *self)
     if (scheme != NULL && !supported)
     {
         gtk_widget_add_css_class (self->address_entry, "error");
+        gtk_accessible_update_state (GTK_ACCESSIBLE (self->address_entry),
+                                     GTK_ACCESSIBLE_STATE_INVALID,
+                                     GTK_ACCESSIBLE_INVALID_TRUE,
+                                     -1);
     }
     else
     {
         gtk_widget_remove_css_class (self->address_entry, "error");
+        gtk_accessible_update_state (GTK_ACCESSIBLE (self->address_entry),
+                                     GTK_ACCESSIBLE_STATE_INVALID,
+                                     GTK_ACCESSIBLE_INVALID_FALSE,
+                                     -1);
     }
 }
 
