@@ -35,9 +35,9 @@ struct _NautilusRenameFilePopover
     gulong file_changed_handler_id;
 };
 
-G_DEFINE_TYPE (NautilusRenameFilePopover,
-               nautilus_rename_file_popover,
-               GTK_TYPE_POPOVER);
+G_DEFINE_FINAL_TYPE (NautilusRenameFilePopover,
+                     nautilus_rename_file_popover,
+                     GTK_TYPE_POPOVER);
 
 static void
 disconnect_signal_handlers (NautilusRenameFilePopover *self)

@@ -41,7 +41,7 @@ struct _NautilusNameCell
     guint loading_timeout_id;
 };
 
-G_DEFINE_TYPE (NautilusNameCell, nautilus_name_cell, NAUTILUS_TYPE_VIEW_CELL)
+G_DEFINE_FINAL_TYPE (NautilusNameCell, nautilus_name_cell, NAUTILUS_TYPE_VIEW_CELL)
 
 static gchar *
 get_path_text (NautilusFile *file,

@@ -45,8 +45,7 @@ static NautilusProgressInfoManager *singleton = NULL;
 
 static guint signals[LAST_SIGNAL] = { 0, };
 
-G_DEFINE_TYPE (NautilusProgressInfoManager, nautilus_progress_info_manager,
-               G_TYPE_OBJECT);
+G_DEFINE_FINAL_TYPE (NautilusProgressInfoManager, nautilus_progress_info_manager, G_TYPE_OBJECT);
 
 static void remove_viewer (NautilusProgressInfoManager *self,
                            GObject                     *viewer);

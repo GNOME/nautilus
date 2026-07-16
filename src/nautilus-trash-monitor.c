@@ -43,7 +43,7 @@ enum
 
 static guint signals[LAST_SIGNAL];
 
-G_DEFINE_TYPE (NautilusTrashMonitor, nautilus_trash_monitor, G_TYPE_OBJECT)
+G_DEFINE_FINAL_TYPE (NautilusTrashMonitor, nautilus_trash_monitor, G_TYPE_OBJECT)
 
 static NautilusTrashMonitor *nautilus_trash_monitor_singleton = NULL;
 

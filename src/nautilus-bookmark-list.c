@@ -64,7 +64,7 @@ static GQuark      nautilus_bookmark_list_error_quark (void);
 static void        nautilus_bookmark_list_load_file (NautilusBookmarkList *bookmarks);
 static void        nautilus_bookmark_list_save_file (NautilusBookmarkList *bookmarks);
 
-G_DEFINE_TYPE (NautilusBookmarkList, nautilus_bookmark_list, G_TYPE_OBJECT)
+G_DEFINE_FINAL_TYPE (NautilusBookmarkList, nautilus_bookmark_list, G_TYPE_OBJECT)
 
 static GQuark
 nautilus_bookmark_list_error_quark (void)

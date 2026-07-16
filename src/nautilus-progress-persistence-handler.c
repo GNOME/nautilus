@@ -44,7 +44,9 @@ struct _NautilusProgressPersistenceHandler
     guint active_infos;
 };
 
-G_DEFINE_TYPE (NautilusProgressPersistenceHandler, nautilus_progress_persistence_handler, G_TYPE_OBJECT);
+G_DEFINE_FINAL_TYPE (NautilusProgressPersistenceHandler,
+                     nautilus_progress_persistence_handler,
+                     G_TYPE_OBJECT)
 
 /* Our policy for showing progress notification is the following:
  * - file operations that end within two seconds do not get notified in any way

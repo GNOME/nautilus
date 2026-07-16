@@ -22,7 +22,7 @@ struct _NautilusStarCell
     GtkButton *star;
 };
 
-G_DEFINE_TYPE (NautilusStarCell, nautilus_star_cell, NAUTILUS_TYPE_VIEW_CELL)
+G_DEFINE_FINAL_TYPE (NautilusStarCell, nautilus_star_cell, NAUTILUS_TYPE_VIEW_CELL)
 
 static void
 toggle_star (NautilusStarCell *self)

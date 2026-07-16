@@ -27,7 +27,7 @@ struct _NautilusDateRangeDialog
     GtkButton *select_button;
 };
 
-G_DEFINE_TYPE (NautilusDateRangeDialog, nautilus_date_range_dialog, ADW_TYPE_DIALOG);
+G_DEFINE_FINAL_TYPE (NautilusDateRangeDialog, nautilus_date_range_dialog, ADW_TYPE_DIALOG);
 
 enum
 {

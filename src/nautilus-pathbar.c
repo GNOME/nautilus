@@ -130,7 +130,7 @@ struct _NautilusPathBar
     NautilusWindowSlot *slot;
 };
 
-G_DEFINE_TYPE (NautilusPathBar, nautilus_path_bar, GTK_TYPE_BOX);
+G_DEFINE_FINAL_TYPE (NautilusPathBar, nautilus_path_bar, GTK_TYPE_BOX);
 
 static void nautilus_path_bar_update_button_state (ButtonData *button_data,
                                                    gboolean    current_dir);

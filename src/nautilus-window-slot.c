@@ -158,7 +158,7 @@ struct _NautilusWindowSlot
     NautilusFileList *selection;
 };
 
-G_DEFINE_TYPE (NautilusWindowSlot, nautilus_window_slot, ADW_TYPE_BIN);
+G_DEFINE_FINAL_TYPE (NautilusWindowSlot, nautilus_window_slot, ADW_TYPE_BIN);
 
 static const GtkPadActionEntry pad_actions[] =
 {

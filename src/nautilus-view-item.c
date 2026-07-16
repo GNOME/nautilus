@@ -18,7 +18,7 @@ struct _NautilusViewItem
     GtkWidget *item_ui;
 };
 
-G_DEFINE_TYPE (NautilusViewItem, nautilus_view_item, G_TYPE_OBJECT)
+G_DEFINE_FINAL_TYPE (NautilusViewItem, nautilus_view_item, G_TYPE_OBJECT)
 
 enum
 {

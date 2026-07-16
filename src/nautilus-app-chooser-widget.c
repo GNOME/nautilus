@@ -56,7 +56,7 @@ enum
 
 static GParamSpec *item_properties[NUM_ITEM_PROPS];
 
-G_DEFINE_TYPE (NautilusAppItem, nautilus_app_item, G_TYPE_OBJECT)
+G_DEFINE_FINAL_TYPE (NautilusAppItem, nautilus_app_item, G_TYPE_OBJECT)
 
 static void
 nautilus_app_item_init (NautilusAppItem *item)

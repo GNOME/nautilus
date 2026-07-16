@@ -232,7 +232,7 @@ static GMountOperation * get_mount_operation (NautilusSidebar *sidebar);
 static GMountOperation * get_unmount_operation (NautilusSidebar *sidebar);
 
 
-G_DEFINE_TYPE (NautilusSidebar, nautilus_sidebar, GTK_TYPE_WIDGET);
+G_DEFINE_FINAL_TYPE (NautilusSidebar, nautilus_sidebar, GTK_TYPE_WIDGET);
 
 static void
 call_open_location (NautilusSidebar    *self,

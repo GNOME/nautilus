@@ -103,7 +103,7 @@ typedef struct
 static void     update_display_text (NautilusBatchRenameDialog *dialog);
 static void     cancel_conflict_check (NautilusBatchRenameDialog *self);
 
-G_DEFINE_TYPE (NautilusBatchRenameDialog, nautilus_batch_rename_dialog, ADW_TYPE_DIALOG);
+G_DEFINE_FINAL_TYPE (NautilusBatchRenameDialog, nautilus_batch_rename_dialog, ADW_TYPE_DIALOG);
 
 static void
 change_numbering_order (GSimpleAction *action,

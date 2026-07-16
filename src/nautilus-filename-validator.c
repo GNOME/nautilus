@@ -58,7 +58,7 @@ enum
 static guint signals[LAST_SIGNAL];
 static GParamSpec *properties[NUM_PROPERTIES];
 
-G_DEFINE_TYPE (NautilusFilenameValidator, nautilus_filename_validator, G_TYPE_OBJECT)
+G_DEFINE_FINAL_TYPE (NautilusFilenameValidator, nautilus_filename_validator, G_TYPE_OBJECT)
 
 void
 nautilus_filename_validator_set_target_is_folder (NautilusFilenameValidator *self,

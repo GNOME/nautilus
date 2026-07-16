@@ -134,7 +134,7 @@ enum
 
 static guint signals[LAST_SIGNAL] = { 0 };
 
-G_DEFINE_TYPE (NautilusWindow, nautilus_window, ADW_TYPE_APPLICATION_WINDOW);
+G_DEFINE_FINAL_TYPE (NautilusWindow, nautilus_window, ADW_TYPE_APPLICATION_WINDOW);
 
 enum
 {

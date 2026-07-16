@@ -53,7 +53,7 @@ struct _NautilusFileUndoManager
     gulong trash_signal_id;
 };
 
-G_DEFINE_TYPE (NautilusFileUndoManager, nautilus_file_undo_manager, G_TYPE_OBJECT)
+G_DEFINE_FINAL_TYPE (NautilusFileUndoManager, nautilus_file_undo_manager, G_TYPE_OBJECT)
 
 static NautilusFileUndoManager *undo_singleton = NULL;
 

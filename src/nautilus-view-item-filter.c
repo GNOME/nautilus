@@ -31,7 +31,7 @@ struct _NautilusViewItemFilter
     GFileInfo *mannequin;
 };
 
-G_DEFINE_TYPE (NautilusViewItemFilter, nautilus_view_item_filter, GTK_TYPE_FILTER)
+G_DEFINE_FINAL_TYPE (NautilusViewItemFilter, nautilus_view_item_filter, GTK_TYPE_FILTER)
 
 static GtkFilterMatch
 nautilus_view_item_filter_get_strictness (GtkFilter *filter)

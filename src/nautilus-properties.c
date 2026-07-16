@@ -284,9 +284,9 @@ struct _NautilusPermissionEntry
     PermissionValue permission_value;
 };
 
-G_DEFINE_TYPE (NautilusPermissionEntry,
-               nautilus_permission_entry,
-               G_TYPE_OBJECT)
+G_DEFINE_FINAL_TYPE (NautilusPermissionEntry,
+                     nautilus_permission_entry,
+                     G_TYPE_OBJECT)
 
 static void
 nautilus_permission_entry_init (NautilusPermissionEntry *self)
@@ -451,7 +451,7 @@ static void refresh_extension_model_pages (NautilusPropertiesWidget *self);
 static gboolean is_root_directory (NautilusFile *file);
 static gboolean is_volume_properties (NautilusPropertiesWidget *self);
 
-G_DEFINE_TYPE (NautilusPropertiesWidget, nautilus_properties_widget, ADW_TYPE_BIN);
+G_DEFINE_FINAL_TYPE (NautilusPropertiesWidget, nautilus_properties_widget, ADW_TYPE_BIN)
 
 static GtkWindow *
 get_parent_window (NautilusPropertiesWidget *self)

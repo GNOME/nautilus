@@ -45,7 +45,7 @@ struct _NautilusSidebarRow
     GtkWidget *busy_spinner;
 };
 
-G_DEFINE_TYPE (NautilusSidebarRow, nautilus_sidebar_row, GTK_TYPE_LIST_BOX_ROW)
+G_DEFINE_FINAL_TYPE (NautilusSidebarRow, nautilus_sidebar_row, GTK_TYPE_LIST_BOX_ROW)
 
 enum
 {

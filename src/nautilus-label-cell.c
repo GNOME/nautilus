@@ -28,7 +28,7 @@ struct _NautilusLabelCell
     gboolean show_snippet;
 };
 
-G_DEFINE_TYPE (NautilusLabelCell, nautilus_label_cell, NAUTILUS_TYPE_VIEW_CELL)
+G_DEFINE_FINAL_TYPE (NautilusLabelCell, nautilus_label_cell, NAUTILUS_TYPE_VIEW_CELL)
 
 enum
 {

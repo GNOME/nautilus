@@ -23,8 +23,8 @@ struct _NautilusPortalRequest
     char *id;
 };
 
-G_DEFINE_TYPE_WITH_CODE (NautilusPortalRequest, nautilus_portal_request, XDP_IMPL_TYPE_REQUEST_SKELETON,
-                         G_IMPLEMENT_INTERFACE (XDP_IMPL_TYPE_REQUEST, request_skeleton_iface_init))
+G_DEFINE_FINAL_TYPE_WITH_CODE (NautilusPortalRequest, nautilus_portal_request, XDP_IMPL_TYPE_REQUEST_SKELETON,
+                               G_IMPLEMENT_INTERFACE (XDP_IMPL_TYPE_REQUEST, request_skeleton_iface_init))
 
 static gboolean
 handle_close (XdpImplRequest        *object,

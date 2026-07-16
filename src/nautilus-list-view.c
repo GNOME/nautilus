@@ -56,7 +56,7 @@ struct _NautilusListView
     GtkSorter *view_model_sorter;
 };
 
-G_DEFINE_TYPE (NautilusListView, nautilus_list_view, NAUTILUS_TYPE_LIST_BASE)
+G_DEFINE_FINAL_TYPE (NautilusListView, nautilus_list_view, NAUTILUS_TYPE_LIST_BASE)
 
 enum
 {

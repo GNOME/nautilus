@@ -31,7 +31,7 @@ struct _NautilusAppChooser
     NautilusAppChooserWidget *app_chooser_widget;
 };
 
-G_DEFINE_TYPE (NautilusAppChooser, nautilus_app_chooser, ADW_TYPE_DIALOG)
+G_DEFINE_FINAL_TYPE (NautilusAppChooser, nautilus_app_chooser, ADW_TYPE_DIALOG)
 
 enum
 {

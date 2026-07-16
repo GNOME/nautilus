@@ -39,7 +39,7 @@ struct _NautilusFreedesktopDBus
     NautilusFreedesktopFileManager1 *skeleton;
 };
 
-G_DEFINE_TYPE (NautilusFreedesktopDBus, nautilus_freedesktop_dbus, G_TYPE_OBJECT);
+G_DEFINE_FINAL_TYPE (NautilusFreedesktopDBus, nautilus_freedesktop_dbus, G_TYPE_OBJECT);
 
 static gboolean
 skeleton_handle_show_items_cb (NautilusFreedesktopFileManager1 *object,

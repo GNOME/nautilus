@@ -38,7 +38,7 @@ struct _NautilusDBusManager
     NautilusDBusFileOperations2 *file_operations2;
 };
 
-G_DEFINE_TYPE (NautilusDBusManager, nautilus_dbus_manager, G_TYPE_OBJECT);
+G_DEFINE_FINAL_TYPE (NautilusDBusManager, nautilus_dbus_manager, G_TYPE_OBJECT);
 
 static void
 nautilus_dbus_manager_dispose (GObject *object)

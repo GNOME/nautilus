@@ -69,8 +69,7 @@ enum
 static GParamSpec *properties[NUM_PROPERTIES] = { NULL, };
 static guint signals[NUM_SIGNALS] = { 0, };
 
-G_DEFINE_TYPE (NautilusFloatingBar, nautilus_floating_bar,
-               GTK_TYPE_BOX);
+G_DEFINE_FINAL_TYPE (NautilusFloatingBar, nautilus_floating_bar, GTK_TYPE_BOX);
 
 static void
 nautilus_floating_bar_set_show_spinner (NautilusFloatingBar *self,

@@ -91,7 +91,7 @@ struct _NautilusSearchPopover
 
 static void          show_other_types_dialog (NautilusSearchPopover *popover);
 
-G_DEFINE_TYPE (NautilusSearchPopover, nautilus_search_popover, GTK_TYPE_POPOVER)
+G_DEFINE_FINAL_TYPE (NautilusSearchPopover, nautilus_search_popover, GTK_TYPE_POPOVER)
 
 enum
 {

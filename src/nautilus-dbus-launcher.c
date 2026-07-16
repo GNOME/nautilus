@@ -30,7 +30,7 @@ struct _NautilusDBusLauncher
     NautilusDBusLauncherData *data[NAUTILUS_DBUS_LAUNCHER_N_APPS];
 };
 
-G_DEFINE_TYPE (NautilusDBusLauncher, nautilus_dbus_launcher, G_TYPE_OBJECT)
+G_DEFINE_FINAL_TYPE (NautilusDBusLauncher, nautilus_dbus_launcher, G_TYPE_OBJECT)
 
 static NautilusDBusLauncher *launcher = NULL;
 

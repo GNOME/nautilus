@@ -29,7 +29,7 @@ struct _NautilusCompressDialog
     gpointer callback_data;
 };
 
-G_DEFINE_TYPE (NautilusCompressDialog, nautilus_compress_dialog, ADW_TYPE_DIALOG);
+G_DEFINE_FINAL_TYPE (NautilusCompressDialog, nautilus_compress_dialog, ADW_TYPE_DIALOG);
 
 #define NAUTILUS_TYPE_COMPRESS_ITEM (nautilus_compress_item_get_type ())
 G_DECLARE_FINAL_TYPE (NautilusCompressItem, nautilus_compress_item, NAUTILUS, COMPRESS_ITEM, GObject)
@@ -43,7 +43,7 @@ struct _NautilusCompressItem
     char *description;
 };
 
-G_DEFINE_TYPE (NautilusCompressItem, nautilus_compress_item, G_TYPE_OBJECT);
+G_DEFINE_FINAL_TYPE (NautilusCompressItem, nautilus_compress_item, G_TYPE_OBJECT);
 
 static void
 nautilus_compress_item_init (NautilusCompressItem *item)

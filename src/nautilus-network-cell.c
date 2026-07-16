@@ -26,7 +26,7 @@ struct _NautilusNetworkCell
     GtkWidget *unmount_button;
 };
 
-G_DEFINE_TYPE (NautilusNetworkCell, nautilus_network_cell, NAUTILUS_TYPE_VIEW_CELL)
+G_DEFINE_FINAL_TYPE (NautilusNetworkCell, nautilus_network_cell, NAUTILUS_TYPE_VIEW_CELL)
 
 static void
 update_labels (NautilusNetworkCell *self)

@@ -52,7 +52,7 @@ enum
     NUM_PROPERTIES
 };
 
-G_DEFINE_TYPE (NautilusSearchHit, nautilus_search_hit, G_TYPE_OBJECT)
+G_DEFINE_FINAL_TYPE (NautilusSearchHit, nautilus_search_hit, G_TYPE_OBJECT)
 
 void
 nautilus_search_hit_compute_scores (NautilusSearchHit *hit,

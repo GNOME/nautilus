@@ -28,7 +28,7 @@ struct _NautilusNetworkAddressBar
     GCancellable *cancellable;
 };
 
-G_DEFINE_TYPE (NautilusNetworkAddressBar, nautilus_network_address_bar, GTK_TYPE_BOX)
+G_DEFINE_FINAL_TYPE (NautilusNetworkAddressBar, nautilus_network_address_bar, GTK_TYPE_BOX)
 
 const char *unsupported_protocols[] =
 {

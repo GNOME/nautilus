@@ -31,7 +31,7 @@ struct _NautilusGridCell
     gboolean in_file_change;
 };
 
-G_DEFINE_TYPE (NautilusGridCell, nautilus_grid_cell, NAUTILUS_TYPE_VIEW_CELL)
+G_DEFINE_FINAL_TYPE (NautilusGridCell, nautilus_grid_cell, NAUTILUS_TYPE_VIEW_CELL)
 
 static void
 update_icon (NautilusGridCell *self)

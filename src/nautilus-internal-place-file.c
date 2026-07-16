@@ -24,7 +24,7 @@ struct _NautilusInternalPlaceFile
     GCancellable *network_mount_cancellable;
 };
 
-G_DEFINE_TYPE (NautilusInternalPlaceFile, nautilus_internal_place_file, NAUTILUS_TYPE_FILE);
+G_DEFINE_FINAL_TYPE (NautilusInternalPlaceFile, nautilus_internal_place_file, NAUTILUS_TYPE_FILE);
 
 static void
 real_monitor_add (NautilusFile       *file,

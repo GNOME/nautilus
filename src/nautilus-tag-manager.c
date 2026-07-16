@@ -48,7 +48,7 @@ struct _NautilusTagManager
     GCancellable *cancellable;
 };
 
-G_DEFINE_TYPE (NautilusTagManager, nautilus_tag_manager, G_TYPE_OBJECT);
+G_DEFINE_FINAL_TYPE (NautilusTagManager, nautilus_tag_manager, G_TYPE_OBJECT);
 
 static NautilusTagManager *tag_manager = NULL;
 

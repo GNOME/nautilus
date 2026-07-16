@@ -54,7 +54,7 @@ struct _NautilusQuery
     GPtrArray *prepared_words;
 };
 
-G_DEFINE_TYPE (NautilusQuery, nautilus_query, G_TYPE_OBJECT);
+G_DEFINE_FINAL_TYPE (NautilusQuery, nautilus_query, G_TYPE_OBJECT);
 
 static NautilusSpeedTradeoffValue
 get_recursion_tradeoff (GFile *location)

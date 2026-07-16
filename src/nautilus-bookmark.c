@@ -71,7 +71,7 @@ struct _NautilusBookmark
 
 static void nautilus_bookmark_disconnect_file (NautilusBookmark *file);
 
-G_DEFINE_TYPE (NautilusBookmark, nautilus_bookmark, G_TYPE_OBJECT);
+G_DEFINE_FINAL_TYPE (NautilusBookmark, nautilus_bookmark, G_TYPE_OBJECT);
 
 void
 nautilus_bookmark_set_name (NautilusBookmark *bookmark,

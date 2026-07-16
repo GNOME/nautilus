@@ -83,7 +83,7 @@ static guint signals[LAST_SIGNAL];
 
 static void nautilus_query_editor_changed (NautilusQueryEditor *editor);
 
-G_DEFINE_TYPE (NautilusQueryEditor, nautilus_query_editor, GTK_TYPE_WIDGET);
+G_DEFINE_FINAL_TYPE (NautilusQueryEditor, nautilus_query_editor, GTK_TYPE_WIDGET);
 
 static void
 update_filter_button (NautilusQueryEditor *self)

@@ -23,7 +23,7 @@ struct _NautilusNetworkView
     GtkListView *view_ui;
 };
 
-G_DEFINE_TYPE (NautilusNetworkView, nautilus_network_view, NAUTILUS_TYPE_LIST_BASE)
+G_DEFINE_FINAL_TYPE (NautilusNetworkView, nautilus_network_view, NAUTILUS_TYPE_LIST_BASE)
 
 #define get_view_item(li) \
         (NAUTILUS_VIEW_ITEM (gtk_tree_list_row_get_item (GTK_TREE_LIST_ROW (gtk_list_item_get_item (li)))))

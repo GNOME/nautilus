@@ -36,7 +36,7 @@ struct _NautilusPortal
     XdpImplFileChooser *impl_file_chooser_skeleton;
 };
 
-G_DEFINE_TYPE (NautilusPortal, nautilus_portal, G_TYPE_OBJECT);
+G_DEFINE_FINAL_TYPE (NautilusPortal, nautilus_portal, G_TYPE_OBJECT);
 
 typedef struct
 {

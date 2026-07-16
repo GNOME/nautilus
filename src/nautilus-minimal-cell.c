@@ -22,7 +22,7 @@ struct _NautilusMinimalCell
     GObject *paintable;
 };
 
-G_DEFINE_TYPE (NautilusMinimalCell, nautilus_minimal_cell, G_TYPE_OBJECT)
+G_DEFINE_FINAL_TYPE (NautilusMinimalCell, nautilus_minimal_cell, G_TYPE_OBJECT)
 
 enum
 {

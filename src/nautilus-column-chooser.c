@@ -69,7 +69,7 @@ enum
 };
 static guint signals[LAST_SIGNAL];
 
-G_DEFINE_TYPE (NautilusColumnChooser, nautilus_column_chooser, ADW_TYPE_DIALOG);
+G_DEFINE_FINAL_TYPE (NautilusColumnChooser, nautilus_column_chooser, ADW_TYPE_DIALOG);
 
 static GStrv
 get_column_names (NautilusColumnChooser *chooser,

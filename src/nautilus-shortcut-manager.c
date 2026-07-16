@@ -31,9 +31,9 @@ nautilus_shortcut_manager_interface_init (GtkShortcutManagerInterface *iface)
 {
 }
 
-G_DEFINE_TYPE_WITH_CODE (NautilusShortcutManager, nautilus_shortcut_manager, ADW_TYPE_BIN,
-                         G_IMPLEMENT_INTERFACE (GTK_TYPE_SHORTCUT_MANAGER,
-                                                nautilus_shortcut_manager_interface_init))
+G_DEFINE_FINAL_TYPE_WITH_CODE (NautilusShortcutManager, nautilus_shortcut_manager, ADW_TYPE_BIN,
+                               G_IMPLEMENT_INTERFACE (GTK_TYPE_SHORTCUT_MANAGER,
+                                                      nautilus_shortcut_manager_interface_init))
 
 static void
 nautilus_shortcut_manager_class_init (NautilusShortcutManagerClass *klass)

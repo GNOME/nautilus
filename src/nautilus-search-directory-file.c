@@ -42,7 +42,7 @@ struct _NautilusSearchDirectoryFile
     gchar *metadata_filename;
 };
 
-G_DEFINE_TYPE (NautilusSearchDirectoryFile, nautilus_search_directory_file, NAUTILUS_TYPE_FILE);
+G_DEFINE_FINAL_TYPE (NautilusSearchDirectoryFile, nautilus_search_directory_file, NAUTILUS_TYPE_FILE);
 
 
 static void

@@ -187,13 +187,13 @@ nautilus_view_model_selection_model_init (GtkSelectionModelInterface *iface)
     iface->unselect_all = nautilus_view_model_unselect_all;
 }
 
-G_DEFINE_TYPE_WITH_CODE (NautilusViewModel, nautilus_view_model, G_TYPE_OBJECT,
-                         G_IMPLEMENT_INTERFACE (G_TYPE_LIST_MODEL,
-                                                nautilus_view_model_list_model_init)
-                         G_IMPLEMENT_INTERFACE (GTK_TYPE_SECTION_MODEL,
-                                                nautilus_view_model_section_model_init)
-                         G_IMPLEMENT_INTERFACE (GTK_TYPE_SELECTION_MODEL,
-                                                nautilus_view_model_selection_model_init))
+G_DEFINE_FINAL_TYPE_WITH_CODE (NautilusViewModel, nautilus_view_model, G_TYPE_OBJECT,
+                               G_IMPLEMENT_INTERFACE (G_TYPE_LIST_MODEL,
+                                                      nautilus_view_model_list_model_init)
+                               G_IMPLEMENT_INTERFACE (GTK_TYPE_SECTION_MODEL,
+                                                      nautilus_view_model_section_model_init)
+                               G_IMPLEMENT_INTERFACE (GTK_TYPE_SELECTION_MODEL,
+                                                      nautilus_view_model_selection_model_init))
 
 enum
 {

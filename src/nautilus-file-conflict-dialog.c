@@ -58,7 +58,7 @@ struct _NautilusFileConflictDialog
     NautilusImage *src_icon;
 };
 
-G_DEFINE_TYPE (NautilusFileConflictDialog, nautilus_file_conflict_dialog, ADW_TYPE_WINDOW);
+G_DEFINE_FINAL_TYPE (NautilusFileConflictDialog, nautilus_file_conflict_dialog, ADW_TYPE_WINDOW);
 
 void
 nautilus_file_conflict_dialog_set_text (NautilusFileConflictDialog *fcd,

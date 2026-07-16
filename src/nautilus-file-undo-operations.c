@@ -406,7 +406,7 @@ struct _NautilusFileUndoInfoExt
     GQueue *destinations;     /* Relative to dest_dir */
 };
 
-G_DEFINE_TYPE (NautilusFileUndoInfoExt, nautilus_file_undo_info_ext, NAUTILUS_TYPE_FILE_UNDO_INFO)
+G_DEFINE_FINAL_TYPE (NautilusFileUndoInfoExt, nautilus_file_undo_info_ext, NAUTILUS_TYPE_FILE_UNDO_INFO)
 
 static char *
 ext_get_first_target_short_name (NautilusFileUndoInfoExt *self)
@@ -808,7 +808,7 @@ struct _NautilusFileUndoInfoCreate
     gsize length;
 };
 
-G_DEFINE_TYPE (NautilusFileUndoInfoCreate, nautilus_file_undo_info_create, NAUTILUS_TYPE_FILE_UNDO_INFO)
+G_DEFINE_FINAL_TYPE (NautilusFileUndoInfoCreate, nautilus_file_undo_info_create, NAUTILUS_TYPE_FILE_UNDO_INFO)
 
 static void
 create_strings_func (NautilusFileUndoInfo  *info,
@@ -1039,7 +1039,7 @@ struct _NautilusFileUndoInfoRename
     gchar *new_display_name;
 };
 
-G_DEFINE_TYPE (NautilusFileUndoInfoRename, nautilus_file_undo_info_rename, NAUTILUS_TYPE_FILE_UNDO_INFO)
+G_DEFINE_FINAL_TYPE (NautilusFileUndoInfoRename, nautilus_file_undo_info_rename, NAUTILUS_TYPE_FILE_UNDO_INFO)
 
 static void
 rename_strings_func (NautilusFileUndoInfo  *info,
@@ -1162,7 +1162,7 @@ struct _NautilusFileUndoInfoBatchRename
     GList *new_display_names;
 };
 
-G_DEFINE_TYPE (NautilusFileUndoInfoBatchRename, nautilus_file_undo_info_batch_rename, NAUTILUS_TYPE_FILE_UNDO_INFO);
+G_DEFINE_FINAL_TYPE (NautilusFileUndoInfoBatchRename, nautilus_file_undo_info_batch_rename, NAUTILUS_TYPE_FILE_UNDO_INFO);
 
 static void
 batch_rename_strings_func (NautilusFileUndoInfo  *info,
@@ -1365,7 +1365,7 @@ struct _NautilusFileUndoInfoStarred
     gboolean starred;
 };
 
-G_DEFINE_TYPE (NautilusFileUndoInfoStarred, nautilus_file_undo_info_starred, NAUTILUS_TYPE_FILE_UNDO_INFO);
+G_DEFINE_FINAL_TYPE (NautilusFileUndoInfoStarred, nautilus_file_undo_info_starred, NAUTILUS_TYPE_FILE_UNDO_INFO);
 
 enum
 {
@@ -1592,7 +1592,7 @@ struct _NautilusFileUndoInfoTrash
     GHashTable *trashed;
 };
 
-G_DEFINE_TYPE (NautilusFileUndoInfoTrash, nautilus_file_undo_info_trash, NAUTILUS_TYPE_FILE_UNDO_INFO)
+G_DEFINE_FINAL_TYPE (NautilusFileUndoInfoTrash, nautilus_file_undo_info_trash, NAUTILUS_TYPE_FILE_UNDO_INFO)
 
 static void
 trash_strings_func (NautilusFileUndoInfo  *info,
@@ -1874,7 +1874,7 @@ struct _NautilusFileUndoInfoRecPermissions
     guint32 file_permissions;
 };
 
-G_DEFINE_TYPE (NautilusFileUndoInfoRecPermissions, nautilus_file_undo_info_rec_permissions, NAUTILUS_TYPE_FILE_UNDO_INFO)
+G_DEFINE_FINAL_TYPE (NautilusFileUndoInfoRecPermissions, nautilus_file_undo_info_rec_permissions, NAUTILUS_TYPE_FILE_UNDO_INFO)
 
 static void
 rec_permissions_strings_func (NautilusFileUndoInfo  *info,
@@ -2048,7 +2048,7 @@ struct _NautilusFileUndoInfoPermissions
     guint32 new_permissions;
 };
 
-G_DEFINE_TYPE (NautilusFileUndoInfoPermissions, nautilus_file_undo_info_permissions, NAUTILUS_TYPE_FILE_UNDO_INFO)
+G_DEFINE_FINAL_TYPE (NautilusFileUndoInfoPermissions, nautilus_file_undo_info_permissions, NAUTILUS_TYPE_FILE_UNDO_INFO)
 
 static void
 permissions_strings_func (NautilusFileUndoInfo  *info,
@@ -2157,7 +2157,7 @@ struct _NautilusFileUndoInfoOwnership
     char *new_ownership;
 };
 
-G_DEFINE_TYPE (NautilusFileUndoInfoOwnership, nautilus_file_undo_info_ownership, NAUTILUS_TYPE_FILE_UNDO_INFO)
+G_DEFINE_FINAL_TYPE (NautilusFileUndoInfoOwnership, nautilus_file_undo_info_ownership, NAUTILUS_TYPE_FILE_UNDO_INFO)
 
 static void
 ownership_strings_func (NautilusFileUndoInfo  *info,
@@ -2299,7 +2299,7 @@ struct _NautilusFileUndoInfoExtract
     GList *outputs;
 };
 
-G_DEFINE_TYPE (NautilusFileUndoInfoExtract, nautilus_file_undo_info_extract, NAUTILUS_TYPE_FILE_UNDO_INFO)
+G_DEFINE_FINAL_TYPE (NautilusFileUndoInfoExtract, nautilus_file_undo_info_extract, NAUTILUS_TYPE_FILE_UNDO_INFO)
 
 static void
 extract_callback (GList    *outputs,
@@ -2474,7 +2474,7 @@ struct _NautilusFileUndoInfoCompress
     gchar *passphrase;
 };
 
-G_DEFINE_TYPE (NautilusFileUndoInfoCompress, nautilus_file_undo_info_compress, NAUTILUS_TYPE_FILE_UNDO_INFO)
+G_DEFINE_FINAL_TYPE (NautilusFileUndoInfoCompress, nautilus_file_undo_info_compress, NAUTILUS_TYPE_FILE_UNDO_INFO)
 
 static void
 compress_callback (GFile    *new_file,

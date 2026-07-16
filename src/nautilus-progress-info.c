@@ -86,7 +86,7 @@ struct _NautilusProgressInfo
 
 G_LOCK_DEFINE_STATIC (progress_info);
 
-G_DEFINE_TYPE (NautilusProgressInfo, nautilus_progress_info, G_TYPE_OBJECT)
+G_DEFINE_FINAL_TYPE (NautilusProgressInfo, nautilus_progress_info, G_TYPE_OBJECT)
 
 static void set_details (NautilusProgressInfo *info,
                          const char           *details);
