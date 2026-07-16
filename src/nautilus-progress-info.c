@@ -318,7 +318,7 @@ idle_callback (gpointer data)
         g_signal_emit (info,
                        signals[PROGRESS_CHANGED],
                        0);
-        g_object_notify (G_OBJECT (info), "progress");
+        g_object_notify_by_pspec (G_OBJECT (info), properties[PROP_PROGRESS]);
     }
 
     if (status_at_idle)
@@ -328,7 +328,7 @@ idle_callback (gpointer data)
 
     if (finish_at_idle)
     {
-        g_object_notify (G_OBJECT (info), "icon-name");
+        g_object_notify_by_pspec (G_OBJECT (info), properties[PROP_ICON_NAME]);
         g_signal_emit (info,
                        signals[FINISHED],
                        0);
@@ -336,7 +336,7 @@ idle_callback (gpointer data)
 
     if (cancelled_at_idle)
     {
-        g_object_notify (G_OBJECT (info), "icon-name");
+        g_object_notify_by_pspec (G_OBJECT (info), properties[PROP_ICON_NAME]);
         g_signal_emit (info,
                        signals[CANCELLED],
                        0);

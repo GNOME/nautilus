@@ -119,7 +119,7 @@ nautilus_search_engine_start (NautilusSearchEngine *self,
     /* Keep reference on self while running */
     g_object_ref (self);
     self->running = TRUE;
-    g_object_notify (G_OBJECT (self), "running");
+    g_object_notify_by_pspec (G_OBJECT (self), properties[PROP_RUNNING]);
 
     g_debug ("Search engine start");
     search_engine_start_real (self);
@@ -215,7 +215,7 @@ check_providers_status (NautilusSearchEngine *self)
     else
     {
         self->running = FALSE;
-        g_object_notify (G_OBJECT (self), "running");
+        g_object_notify_by_pspec (G_OBJECT (self), properties[PROP_RUNNING]);
 
         g_object_unref (self);
     }
