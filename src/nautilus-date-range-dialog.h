@@ -16,6 +16,3 @@ G_DECLARE_FINAL_TYPE (NautilusDateRangeDialog, nautilus_date_range_dialog, NAUTI
 
 NautilusDateRangeDialog *
 nautilus_date_range_dialog_new (GPtrArray *initial_date_range);
-
-GPtrArray *
-nautilus_date_range_dialog_get_range (NautilusDateRangeDialog *self);

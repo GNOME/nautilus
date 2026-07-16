@@ -24,7 +24,3 @@
 #include "nautilus-types.h"
 
 #include <glib-object.h>
-
-NautilusUndoManager * nautilus_undo_get_undo_manager    (GObject               *attached_object);
-void                  nautilus_undo_attach_undo_manager (GObject               *object,
-							 NautilusUndoManager   *manager);

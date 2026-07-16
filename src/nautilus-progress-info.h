@@ -40,8 +40,6 @@ G_DECLARE_FINAL_TYPE (NautilusProgressInfo, nautilus_progress_info, NAUTILUS, PR
 
 NautilusProgressInfo *nautilus_progress_info_new (void);
 
-GList *       nautilus_get_all_progress_info (void);
-
 char *        nautilus_progress_info_get_short_status (NautilusProgressInfo *info);
 char *        nautilus_progress_info_get_status      (NautilusProgressInfo *info);
 char *        nautilus_progress_info_get_details     (NautilusProgressInfo *info);

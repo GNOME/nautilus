@@ -16,7 +16,6 @@ G_DECLARE_FINAL_TYPE (NautilusSidebarRow,
                       NAUTILUS, SIDEBAR_ROW,
                       GtkListBoxRow)
 
-NautilusSidebarRow *nautilus_sidebar_row_new    (void);
 NautilusSidebarRow *nautilus_sidebar_row_new_placeholder (void);
 
 NautilusSidebarRow *nautilus_sidebar_row_clone  (NautilusSidebarRow *self);

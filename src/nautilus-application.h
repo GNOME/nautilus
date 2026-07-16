@@ -76,9 +76,6 @@ void nautilus_application_withdraw_notification (NautilusApplication *self,
 NautilusBookmarkList *
      nautilus_application_get_bookmarks  (NautilusApplication *application);
 
-GtkWidget * nautilus_application_connect_server (NautilusApplication *application,
-						 NautilusWindow      *window);
-
 void nautilus_application_search (NautilusApplication *application,
                                   NautilusQuery       *query);
 gboolean nautilus_application_is_sandboxed (void);
