@@ -1974,6 +1974,10 @@ handle_mount_if_needed (NautilusWindowSlot *self,
         data = g_new0 (MountNotMountedData, 1);
         data->cancellable = g_cancellable_new ();
         data->slot = self;
+        if (self->mount_cancellable != NULL)
+        {
+            g_cancellable_cancel (self->mount_cancellable);
+        }
         self->mount_cancellable = data->cancellable;
         g_file_mount_enclosing_volume (location, 0, mount_op, self->mount_cancellable,
                                        mount_not_mounted_callback, data);
