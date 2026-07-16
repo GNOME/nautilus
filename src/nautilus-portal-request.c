@@ -31,7 +31,6 @@ handle_close (XdpImplRequest        *object,
               GDBusMethodInvocation *invocation)
 {
     NautilusPortalRequest *self = (NautilusPortalRequest *) object;
-    g_autoptr (GError) error = NULL;
 
     if (self->exported)
     {

@@ -209,8 +209,6 @@ nautilus_bookmarks_monitor_file (NautilusBookmarkList *bookmarks)
 static void
 nautilus_bookmark_list_init (NautilusBookmarkList *bookmarks)
 {
-    g_autoptr (GFile) file = NULL;
-
     nautilus_bookmark_list_load_file (bookmarks);
     nautilus_bookmarks_monitor_file (bookmarks);
 }
@@ -541,7 +539,6 @@ save_callback (GObject      *source_object,
     NautilusBookmarkList *self = NAUTILUS_BOOKMARK_LIST (source_object);
     g_autoptr (GError) error = NULL;
     gboolean success;
-    g_autoptr (GFile) file = NULL;
 
     success = g_task_propagate_boolean (G_TASK (res), &error);
     g_clear_object (&self->save_cancellable);

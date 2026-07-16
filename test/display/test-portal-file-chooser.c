@@ -149,7 +149,6 @@ save_file_callback (GObject      *connection,
                     gpointer      user_data)
 {
     PortalTestData *data = user_data;
-    g_autoptr (GError) error = NULL;
     g_autoptr (GVariant) result = NULL;
 
     result = g_dbus_connection_call_finish (G_DBUS_CONNECTION (connection), res, &data->error);

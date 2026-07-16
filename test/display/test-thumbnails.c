@@ -176,7 +176,6 @@ test_thumbnail_image (void)
 
     g_autofree gchar *thumbnail_path = nautilus_thumbnail_get_path_for_uri (uri);
     g_autoptr (GFile) thumbnail_location = g_file_new_for_path (thumbnail_path);
-    g_autoptr (GdkPaintable) icon_paintable = NULL;
     g_auto (ThumbnailCallbackData) thumbnailing_data = { NULL, FALSE, NULL };
 
     nautilus_create_thumbnail_async (uri,
@@ -220,7 +219,6 @@ test_thumbnail_old_time (void)
 
     g_autofree gchar *thumbnail_path = nautilus_thumbnail_get_path_for_uri (uri);
     g_autoptr (GFile) thumbnail_location = g_file_new_for_path (thumbnail_path);
-    g_autoptr (GdkPaintable) icon_paintable = NULL;
     g_auto (ThumbnailCallbackData) thumbnailing_data = { NULL, FALSE, NULL };
 
     nautilus_create_thumbnail_async (uri,
@@ -262,7 +260,6 @@ test_thumbnail_image_no_mtime (void)
 
     g_autofree gchar *thumbnail_path = nautilus_thumbnail_get_path_for_uri (uri);
     g_autoptr (GFile) thumbnail_location = g_file_new_for_path (thumbnail_path);
-    g_autoptr (GdkPaintable) icon_paintable = NULL;
     g_auto (ThumbnailCallbackData) thumbnailing_data = { NULL, FALSE, NULL };
 
     nautilus_create_thumbnail_async (uri,

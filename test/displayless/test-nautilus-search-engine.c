@@ -39,7 +39,6 @@ main (int   argc,
     g_autoptr (GMainLoop) loop = NULL;
     g_autoptr (NautilusQuery) query = NULL;
     g_autoptr (GFile) location = NULL;
-    g_autoptr (GFile) file = NULL;
 
     loop = g_main_loop_new (NULL, FALSE);
 
