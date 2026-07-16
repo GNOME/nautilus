@@ -7192,7 +7192,7 @@ nautilus_file_is_public_share_folder (NautilusFile *file)
     {
         return TRUE;
     }
-    if (g_strcmp0 (g_get_home_dir (), g_get_user_special_dir (G_USER_DIRECTORY_PUBLIC_SHARE)))
+    if (g_strcmp0 (g_get_home_dir (), g_get_user_special_dir (G_USER_DIRECTORY_PUBLIC_SHARE)) != 0)
     {
         /* In order to match the behavior of gnome-user-share the ~/Public folder
          * is considered to be the public sharing folder when XDG_PUBLICSHARE_DIR

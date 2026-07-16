@@ -319,7 +319,7 @@ split_entry_text (NautilusBatchRenameDialog *self,
         normal_text = g_string_new (substring);
         g_free (substring);
 
-        if (g_strcmp0 (normal_text->str, ""))
+        if (g_strcmp0 (normal_text->str, "") != 0)
         {
             result = g_list_prepend (result, normal_text);
         }

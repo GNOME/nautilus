@@ -1019,7 +1019,7 @@ setup_view_columns (NautilusListView *self)
         gtk_column_view_column_set_title (view_column, label);
         gtk_column_view_column_set_sorter (view_column, GTK_SORTER (sorter));
 
-        if (!strcmp (name, "name"))
+        if (strcmp (name, "name") == 0)
         {
             g_signal_connect (factory, "setup", G_CALLBACK (setup_name_cell), self);
             g_signal_connect (factory, "bind", G_CALLBACK (bind_name_cell), self);

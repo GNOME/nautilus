@@ -73,7 +73,7 @@ update_star (GtkButton    *star,
 
     /* Setting the tooltip is somewhat expensive as it involves system calls, so only
      * update UI on change. */
-    if (g_strcmp0 (gtk_widget_get_tooltip_text (GTK_WIDGET (star)), tooltip))
+    if (g_strcmp0 (gtk_widget_get_tooltip_text (GTK_WIDGET (star)), tooltip) != 0)
     {
         gtk_button_set_icon_name (star, is_starred ? "starred-symbolic" : "non-starred-symbolic");
         gtk_widget_set_tooltip_text (GTK_WIDGET (star), tooltip);
