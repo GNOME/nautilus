@@ -63,7 +63,7 @@ nautilus_clipboard_to_string (NautilusClipboard *clip)
         g_free (uri);
     }
 
-    return g_string_free (uris, FALSE);
+    return g_string_free_and_steal (uris);
 }
 
 static NautilusClipboard *

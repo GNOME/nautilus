@@ -5123,7 +5123,7 @@ get_file_paths_or_uris_as_newline_delimited_string (NautilusFileList *selection,
         }
     }
 
-    return g_string_free (expanding_string, FALSE);
+    return g_string_free_and_steal (expanding_string);
 }
 
 static char *
