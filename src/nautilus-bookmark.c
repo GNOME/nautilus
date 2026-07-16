@@ -522,6 +522,8 @@ nautilus_bookmark_constructed (GObject *obj)
 {
     NautilusBookmark *self = NAUTILUS_BOOKMARK (obj);
 
+    G_OBJECT_CLASS (nautilus_bookmark_parent_class)->constructed (obj);
+
     nautilus_bookmark_connect_file (self);
     nautilus_bookmark_update_exists (self);
 }

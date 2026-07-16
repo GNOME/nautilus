@@ -481,6 +481,8 @@ nautilus_progress_indicator_constructed (GObject *object)
 {
     NautilusProgressIndicator *self = NAUTILUS_PROGRESS_INDICATOR (object);
 
+    G_OBJECT_CLASS (nautilus_progress_indicator_parent_class)->constructed (object);
+
     self->progress_manager = nautilus_progress_info_manager_dup_singleton ();
     g_signal_connect_object (self->progress_manager, "new-progress-info",
                              G_CALLBACK (on_new_progress_info), self,

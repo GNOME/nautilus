@@ -173,6 +173,8 @@ nautilus_history_controls_contructed (GObject *object)
     NautilusHistoryControls *self;
     GtkEventController *controller;
 
+    G_OBJECT_CLASS (nautilus_history_controls_parent_class)->constructed (object);
+
     self = NAUTILUS_HISTORY_CONTROLS (object);
 
     controller = GTK_EVENT_CONTROLLER (gtk_gesture_long_press_new ());
