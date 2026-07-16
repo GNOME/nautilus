@@ -197,13 +197,13 @@ nautilus_clipboard_deserialize_finish (GObject      *source,
 {
     GdkContentDeserializer *deserializer = user_data;
     GOutputStream *output = G_OUTPUT_STREAM (source);
-    GError *error = NULL;
+    g_autoptr (GError) error = NULL;
     g_autofree gchar *string = NULL;
     g_autoptr (NautilusClipboard) clip = NULL;
 
     if (g_output_stream_splice_finish (output, result, &error) < 0)
     {
-        gdk_content_deserializer_return_error (deserializer, error);
+        gdk_content_deserializer_return_error (deserializer, g_steal_pointer (&error));
         return;
     }
 
@@ -211,7 +211,7 @@ nautilus_clipboard_deserialize_finish (GObject      *source,
     if (g_output_stream_write (output, "", 1, NULL, &error) < 0 ||
         !g_output_stream_close (output, NULL, &error))
     {
-        gdk_content_deserializer_return_error (deserializer, error);
+        gdk_content_deserializer_return_error (deserializer, g_steal_pointer (&error));
         return;
     }
 
@@ -221,7 +221,7 @@ nautilus_clipboard_deserialize_finish (GObject      *source,
 
     if (clip == NULL)
     {
-        gdk_content_deserializer_return_error (deserializer, error);
+        gdk_content_deserializer_return_error (deserializer, g_steal_pointer (&error));
         return;
     }
 
