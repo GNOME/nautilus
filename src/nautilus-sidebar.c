@@ -1191,7 +1191,7 @@ check_valid_drop_target (NautilusSidebar    *sidebar,
 
     g_object_get (row,
                   "place-type", &place_type,
-                  "section_type", &section_type,
+                  "section-type", &section_type,
                   "uri", &uri,
                   "file", &dest_file,
                   NULL);
@@ -3198,7 +3198,7 @@ on_row_pressed (GtkGestureClick    *gesture,
 
     g_object_get (row,
                   "sidebar", &sidebar,
-                  "section_type", &section_type,
+                  "section-type", &section_type,
                   NULL);
 
     if (section_type == NAUTILUS_SIDEBAR_SECTION_BOOKMARKS)
@@ -3224,7 +3224,7 @@ on_row_released (GtkGestureClick    *gesture,
 
     g_object_get (row,
                   "sidebar", &sidebar,
-                  "section_type", &section_type,
+                  "section-type", &section_type,
                   NULL);
 
     button = gtk_gesture_single_get_current_button (GTK_GESTURE_SINGLE (gesture));
