@@ -122,8 +122,7 @@ bookmark_file_changed_callback (NautilusFile     *file,
     {
         g_debug ("%s: file got moved", nautilus_bookmark_get_name (bookmark));
 
-        g_object_unref (bookmark->location);
-        bookmark->location = g_object_ref (location);
+        g_set_object (&bookmark->location, location);
 
         g_object_notify_by_pspec (G_OBJECT (bookmark), properties[PROP_LOCATION]);
         g_signal_emit (bookmark, signals[CONTENTS_CHANGED], 0);

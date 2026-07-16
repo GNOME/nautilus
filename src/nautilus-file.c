@@ -1420,8 +1420,7 @@ nautilus_file_stop (NautilusFile                  *file,
             op = nautilus_file_operation_new (file, callback, callback_data);
             if (cancellable)
             {
-                g_object_unref (op->cancellable);
-                op->cancellable = g_object_ref (cancellable);
+                g_set_object (&op->cancellable, cancellable);
             }
 
             g_drive_stop (drive,

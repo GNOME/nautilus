@@ -231,8 +231,7 @@ nautilus_location_entry_set_location (NautilusLocationEntry *entry,
     if (!priv->last_location ||
         !g_file_equal (priv->last_location, location))
     {
-        g_clear_object (&priv->last_location);
-        priv->last_location = g_object_ref (location);
+        g_set_object (&priv->last_location, location);
     }
 
     nautilus_location_entry_update_action (entry);

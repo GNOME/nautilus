@@ -855,8 +855,7 @@ nautilus_progress_info_set_destination (NautilusProgressInfo *info,
                                         GFile                *file)
 {
     G_LOCK (progress_info);
-    g_clear_object (&info->destination);
-    info->destination = g_object_ref (file);
+    g_set_object (&info->destination, file);
     G_UNLOCK (progress_info);
 }
 

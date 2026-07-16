@@ -278,8 +278,7 @@ vfs_file_mount (NautilusFile                  *file,
     op = nautilus_file_operation_new (file, callback, callback_data);
     if (cancellable)
     {
-        g_object_unref (op->cancellable);
-        op->cancellable = g_object_ref (cancellable);
+        g_set_object (&op->cancellable, cancellable);
     }
 
     location = nautilus_file_get_location (file);
@@ -336,8 +335,7 @@ vfs_file_unmount (NautilusFile                  *file,
     op = nautilus_file_operation_new (file, callback, callback_data);
     if (cancellable)
     {
-        g_object_unref (op->cancellable);
-        op->cancellable = g_object_ref (cancellable);
+        g_set_object (&op->cancellable, cancellable);
     }
 
     location = nautilus_file_get_location (file);
@@ -394,8 +392,7 @@ vfs_file_eject (NautilusFile                  *file,
     op = nautilus_file_operation_new (file, callback, callback_data);
     if (cancellable)
     {
-        g_object_unref (op->cancellable);
-        op->cancellable = g_object_ref (cancellable);
+        g_set_object (&op->cancellable, cancellable);
     }
 
     location = nautilus_file_get_location (file);
@@ -469,8 +466,7 @@ vfs_file_start (NautilusFile                  *file,
     op = nautilus_file_operation_new (file, callback, callback_data);
     if (cancellable)
     {
-        g_object_unref (op->cancellable);
-        op->cancellable = g_object_ref (cancellable);
+        g_set_object (&op->cancellable, cancellable);
     }
 
     location = nautilus_file_get_location (file);
@@ -527,8 +523,7 @@ vfs_file_stop (NautilusFile                  *file,
     op = nautilus_file_operation_new (file, callback, callback_data);
     if (cancellable)
     {
-        g_object_unref (op->cancellable);
-        op->cancellable = g_object_ref (cancellable);
+        g_set_object (&op->cancellable, cancellable);
     }
 
     location = nautilus_file_get_location (file);
