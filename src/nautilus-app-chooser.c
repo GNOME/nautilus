@@ -42,6 +42,8 @@ enum
     LAST_PROP
 };
 
+static GParamSpec *properties[LAST_PROP];
+
 enum
 {
     SIGNAL_APP_SELECTED,
@@ -299,23 +301,22 @@ nautilus_app_chooser_class_init (NautilusAppChooserClass *klass)
 
     gtk_widget_class_bind_template_callback (widget_class, open_cb);
 
-    g_object_class_install_property (object_class,
-                                     PROP_CONTENT_TYPE,
-                                     g_param_spec_string ("content-type", "", "",
-                                                          NULL,
-                                                          G_PARAM_CONSTRUCT_ONLY | G_PARAM_WRITABLE));
+    properties[PROP_CONTENT_TYPE] =
+        g_param_spec_string ("content-type", "", "",
+                             NULL,
+                             G_PARAM_CONSTRUCT_ONLY | G_PARAM_WRITABLE);
 
-    g_object_class_install_property (object_class,
-                                     PROP_FILE_NAME,
-                                     g_param_spec_string ("file-name", "", "",
-                                                          NULL,
-                                                          G_PARAM_CONSTRUCT_ONLY | G_PARAM_WRITABLE));
+    properties[PROP_FILE_NAME] =
+        g_param_spec_string ("file-name", "", "",
+                             NULL,
+                             G_PARAM_CONSTRUCT_ONLY | G_PARAM_WRITABLE);
 
-    g_object_class_install_property (object_class,
-                                     PROP_SINGLE_CONTENT_TYPE,
-                                     g_param_spec_boolean ("single-content-type", "", "",
-                                                           TRUE,
-                                                           G_PARAM_CONSTRUCT_ONLY | G_PARAM_WRITABLE));
+    properties[PROP_SINGLE_CONTENT_TYPE] =
+        g_param_spec_boolean ("single-content-type", "", "",
+                              TRUE,
+                              G_PARAM_CONSTRUCT_ONLY | G_PARAM_WRITABLE);
+
+    g_object_class_install_properties (object_class, G_N_ELEMENTS (properties), properties);
 }
 
 NautilusAppChooser *

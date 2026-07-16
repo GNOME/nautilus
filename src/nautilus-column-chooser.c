@@ -62,6 +62,8 @@ enum
     NUM_PROPERTIES
 };
 
+static GParamSpec *properties[NUM_PROPERTIES];
+
 enum
 {
     CHANGED,
@@ -615,12 +617,13 @@ nautilus_column_chooser_class_init (NautilusColumnChooserClass *chooser_class)
                            G_TYPE_NONE,
                            2, G_TYPE_STRV, G_TYPE_STRV);
 
-    g_object_class_install_property (oclass,
-                                     PROP_FILE,
-                                     g_param_spec_object ("file", NULL, NULL,
-                                                          NAUTILUS_TYPE_FILE,
-                                                          G_PARAM_CONSTRUCT_ONLY |
-                                                          G_PARAM_WRITABLE));
+    properties[PROP_FILE] =
+        g_param_spec_object ("file", NULL, NULL,
+                             NAUTILUS_TYPE_FILE,
+                             G_PARAM_CONSTRUCT_ONLY |
+                             G_PARAM_WRITABLE);
+
+    g_object_class_install_properties (oclass, G_N_ELEMENTS (properties), properties);
 }
 
 static void

@@ -154,9 +154,10 @@ struct _NautilusAppChooserWidget
 enum
 {
     PROP_CONTENT_TYPE = 1,
-    PROP_GFILE,
     N_PROPERTIES
 };
+
+static GParamSpec *widget_properties[N_PROPERTIES];
 
 enum
 {
@@ -448,7 +449,6 @@ nautilus_app_chooser_widget_class_init (NautilusAppChooserWidgetClass *klass)
 {
     GObjectClass *gobject_class = G_OBJECT_CLASS (klass);
     GtkWidgetClass *widget_class = GTK_WIDGET_CLASS (klass);
-    GParamSpec *pspec;
 
     gobject_class->dispose = nautilus_app_chooser_widget_dispose;
     gobject_class->finalize = nautilus_app_chooser_widget_finalize;
@@ -467,11 +467,14 @@ nautilus_app_chooser_widget_class_init (NautilusAppChooserWidgetClass *klass)
      *
      * See `GContentType` for more information about content types.
      */
-    pspec = g_param_spec_string ("content-type", NULL, NULL,
-                                 NULL,
-                                 G_PARAM_CONSTRUCT_ONLY | G_PARAM_READWRITE |
-                                 G_PARAM_STATIC_STRINGS);
-    g_object_class_install_property (gobject_class, PROP_CONTENT_TYPE, pspec);
+    widget_properties[PROP_CONTENT_TYPE] =
+        g_param_spec_string ("content-type", NULL, NULL,
+                             NULL,
+                             G_PARAM_CONSTRUCT_ONLY | G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS);
+
+    g_object_class_install_properties (gobject_class,
+                                       G_N_ELEMENTS (widget_properties),
+                                       widget_properties);
 
     /**
      * NautilusAppChooserWidget::application-selected:

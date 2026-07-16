@@ -52,6 +52,8 @@ enum
     NUM_PROPERTIES
 };
 
+static GParamSpec *properties[NUM_PROPERTIES];
+
 G_DEFINE_FINAL_TYPE (NautilusSearchHit, nautilus_search_hit, G_TYPE_OBJECT)
 
 void
@@ -403,58 +405,52 @@ nautilus_search_hit_class_init (NautilusSearchHitClass *class)
     object_class->get_property = nautilus_search_hit_get_property;
     object_class->set_property = nautilus_search_hit_set_property;
 
-    g_object_class_install_property (object_class,
-                                     PROP_URI,
-                                     g_param_spec_string ("uri",
-                                                          "URI",
-                                                          "URI",
-                                                          NULL,
-                                                          G_PARAM_CONSTRUCT_ONLY | G_PARAM_WRITABLE | G_PARAM_READABLE));
-    g_object_class_install_property (object_class,
-                                     PROP_MODIFICATION_TIME,
-                                     g_param_spec_boxed ("modification-time",
-                                                         "Modification time",
-                                                         "Modification time",
-                                                         G_TYPE_DATE_TIME,
-                                                         G_PARAM_READWRITE | G_PARAM_CONSTRUCT));
-    g_object_class_install_property (object_class,
-                                     PROP_ACCESS_TIME,
-                                     g_param_spec_boxed ("access-time",
-                                                         "access time",
-                                                         "access time",
-                                                         G_TYPE_DATE_TIME,
-                                                         G_PARAM_READWRITE | G_PARAM_CONSTRUCT));
+    properties[PROP_URI] =
+        g_param_spec_string ("uri",
+                             "URI",
+                             "URI",
+                             NULL,
+                             G_PARAM_CONSTRUCT_ONLY | G_PARAM_WRITABLE | G_PARAM_READABLE);
+    properties[PROP_MODIFICATION_TIME] =
+        g_param_spec_boxed ("modification-time",
+                            "Modification time",
+                            "Modification time",
+                            G_TYPE_DATE_TIME,
+                            G_PARAM_READWRITE | G_PARAM_CONSTRUCT);
+    properties[PROP_ACCESS_TIME] =
+        g_param_spec_boxed ("access-time",
+                            "access time",
+                            "access time",
+                            G_TYPE_DATE_TIME,
+                            G_PARAM_READWRITE | G_PARAM_CONSTRUCT);
+    properties[PROP_CREATION_TIME] =
+        g_param_spec_boxed ("creation-time",
+                            "creation time",
+                            "creation time",
+                            G_TYPE_DATE_TIME,
+                            G_PARAM_READWRITE | G_PARAM_CONSTRUCT);
+    properties[PROP_RELEVANCE] =
+        g_param_spec_double ("relevance",
+                             NULL,
+                             NULL,
+                             -G_MAXDOUBLE, G_MAXDOUBLE,
+                             0,
+                             G_PARAM_READWRITE);
+    properties[PROP_FTS_RANK] =
+        g_param_spec_double ("fts-rank",
+                             NULL,
+                             NULL,
+                             -G_MAXDOUBLE, G_MAXDOUBLE,
+                             0,
+                             G_PARAM_READWRITE);
+    properties[PROP_FTS_SNIPPET] =
+        g_param_spec_string ("fts-snippet",
+                             "fts-snippet",
+                             "fts-snippet",
+                             NULL,
+                             G_PARAM_READWRITE);
 
-    g_object_class_install_property (object_class,
-                                     PROP_CREATION_TIME,
-                                     g_param_spec_boxed ("creation-time",
-                                                         "creation time",
-                                                         "creation time",
-                                                         G_TYPE_DATE_TIME,
-                                                         G_PARAM_READWRITE | G_PARAM_CONSTRUCT));
-    g_object_class_install_property (object_class,
-                                     PROP_RELEVANCE,
-                                     g_param_spec_double ("relevance",
-                                                          NULL,
-                                                          NULL,
-                                                          -G_MAXDOUBLE, G_MAXDOUBLE,
-                                                          0,
-                                                          G_PARAM_READWRITE));
-    g_object_class_install_property (object_class,
-                                     PROP_FTS_RANK,
-                                     g_param_spec_double ("fts-rank",
-                                                          NULL,
-                                                          NULL,
-                                                          -G_MAXDOUBLE, G_MAXDOUBLE,
-                                                          0,
-                                                          G_PARAM_READWRITE));
-    g_object_class_install_property (object_class,
-                                     PROP_FTS_SNIPPET,
-                                     g_param_spec_string ("fts-snippet",
-                                                          "fts-snippet",
-                                                          "fts-snippet",
-                                                          NULL,
-                                                          G_PARAM_READWRITE));
+    g_object_class_install_properties (object_class, G_N_ELEMENTS (properties), properties);
 }
 
 static void

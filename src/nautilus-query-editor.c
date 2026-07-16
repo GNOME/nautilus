@@ -79,6 +79,8 @@ enum
     LAST_PROP
 };
 
+static GParamSpec *properties[LAST_PROP];
+
 static guint signals[LAST_SIGNAL];
 
 static void nautilus_query_editor_changed (NautilusQueryEditor *editor);
@@ -482,11 +484,9 @@ nautilus_query_editor_class_init (NautilusQueryEditorClass *class)
      * Binding target for the slot's location. To be applied to the existing
      * query, or when creating a new one.
      */
-    g_object_class_install_property (gobject_class,
-                                     PROP_LOCATION,
-                                     g_param_spec_object ("location", NULL, NULL,
-                                                          G_TYPE_FILE,
-                                                          G_PARAM_WRITABLE | G_PARAM_STATIC_STRINGS));
+    properties[PROP_LOCATION] = g_param_spec_object ("location", NULL, NULL,
+                                                     G_TYPE_FILE,
+                                                     G_PARAM_WRITABLE | G_PARAM_STATIC_STRINGS);
 
     /**
      * NautilusQueryEditor::query:
@@ -494,13 +494,13 @@ nautilus_query_editor_class_init (NautilusQueryEditorClass *class)
      * The current query of the query editor. It it always synchronized
      * with the filter popover's query.
      */
-    g_object_class_install_property (gobject_class,
-                                     PROP_QUERY,
-                                     g_param_spec_object ("query",
-                                                          "Query of the search",
-                                                          "The query that the editor is handling",
-                                                          NAUTILUS_TYPE_QUERY,
-                                                          G_PARAM_READWRITE));
+    properties[PROP_QUERY] = g_param_spec_object ("query",
+                                                  "Query of the search",
+                                                  "The query that the editor is handling",
+                                                  NAUTILUS_TYPE_QUERY,
+                                                  G_PARAM_READWRITE);
+
+    g_object_class_install_properties (gobject_class, G_N_ELEMENTS (properties), properties);
 
     gtk_widget_class_set_layout_manager_type (widget_class, GTK_TYPE_BOX_LAYOUT);
     gtk_widget_class_set_css_name (widget_class, "entry");
@@ -802,7 +802,7 @@ nautilus_query_editor_set_location (NautilusQueryEditor *editor,
 
     if (should_notify)
     {
-        g_object_notify (G_OBJECT (editor), "location");
+        g_object_notify_by_pspec (G_OBJECT (editor), properties[PROP_LOCATION]);
     }
 }
 
@@ -850,7 +850,7 @@ nautilus_query_editor_set_query (NautilusQueryEditor *self,
         }
         update_fts_sensitivity (self);
 
-        g_object_notify (G_OBJECT (self), "query");
+        g_object_notify_by_pspec (G_OBJECT (self), properties[PROP_QUERY]);
     }
 
     self->change_frozen = FALSE;

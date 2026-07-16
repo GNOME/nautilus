@@ -1374,6 +1374,8 @@ enum
     NUM_PROPERTIES
 };
 
+static GParamSpec *properties[NUM_PROPERTIES];
+
 static void
 starred_strings_func (NautilusFileUndoInfo  *info,
                       gchar                **undo_label,
@@ -1539,21 +1541,19 @@ nautilus_file_undo_info_starred_class_init (NautilusFileUndoInfoStarredClass *kl
     iclass->redo_func = starred_redo_func;
     iclass->strings_func = starred_strings_func;
 
-    g_object_class_install_property (oclass,
-                                     PROP_FILES,
-                                     g_param_spec_pointer ("files",
-                                                           "files",
-                                                           "The files for which to undo star/unstar",
-                                                           G_PARAM_WRITABLE |
-                                                           G_PARAM_CONSTRUCT_ONLY));
-    g_object_class_install_property (oclass,
-                                     PROP_STARRED,
-                                     g_param_spec_boolean ("starred",
-                                                           "starred",
-                                                           "Whether the files were starred or unstarred",
-                                                           FALSE,
-                                                           G_PARAM_WRITABLE |
-                                                           G_PARAM_CONSTRUCT_ONLY));
+    properties[PROP_FILES] = g_param_spec_pointer ("files",
+                                                   "files",
+                                                   "The files for which to undo star/unstar",
+                                                   G_PARAM_WRITABLE |
+                                                   G_PARAM_CONSTRUCT_ONLY);
+    properties[PROP_STARRED] = g_param_spec_boolean ("starred",
+                                                     "starred",
+                                                     "Whether the files were starred or unstarred",
+                                                     FALSE,
+                                                     G_PARAM_WRITABLE |
+                                                     G_PARAM_CONSTRUCT_ONLY);
+
+    g_object_class_install_properties (oclass, G_N_ELEMENTS (properties), properties);
 }
 
 GList *

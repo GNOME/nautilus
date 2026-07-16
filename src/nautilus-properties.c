@@ -276,6 +276,8 @@ enum
     NUM_PROPERTIES
 };
 
+static GParamSpec *perm_entry_properties[NUM_PROPERTIES];
+
 struct _NautilusPermissionEntry
 {
     GObject parent;
@@ -337,11 +339,13 @@ nautilus_permission_entry_class_init (NautilusPermissionEntryClass *klass)
     gobject_class->finalize = nautilus_permission_entry_finalize;
     gobject_class->get_property = nautilus_permission_entry_get_property;
 
-    g_object_class_install_property (gobject_class,
-                                     PROP_NAME,
-                                     g_param_spec_string ("name", "", "",
-                                                          NULL,
-                                                          G_PARAM_READABLE));
+    perm_entry_properties[PROP_NAME] = g_param_spec_string ("name", "", "",
+                                                            NULL,
+                                                            G_PARAM_READABLE);
+
+    g_object_class_install_properties (gobject_class,
+                                       G_N_ELEMENTS (perm_entry_properties),
+                                       perm_entry_properties);
 }
 
 static gchar *
