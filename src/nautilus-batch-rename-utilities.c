@@ -811,7 +811,7 @@ check_metadata_for_selection (NautilusBatchRenameDialog *dialog,
     TrackerSparqlConnection *connection;
     g_autoptr (GString) query = NULL;
     GList *l;
-    GError *error;
+    g_autoptr (GError) error = NULL;
     QueryData *query_data;
     FileMetadata *file_metadata;
     g_autoptr (GHashTable) selection_metadata = NULL;
@@ -825,13 +825,11 @@ check_metadata_for_selection (NautilusBatchRenameDialog *dialog,
         if (error)
         {
             g_warning ("Error on batch rename tracker connection: %s", error->message);
-            g_error_free (error);
         }
 
         return;
     }
 
-    error = NULL;
     selection_metadata = g_hash_table_new_full (NULL, NULL,
                                                 (GDestroyNotify) nautilus_file_unref, file_metadata_free);
 
