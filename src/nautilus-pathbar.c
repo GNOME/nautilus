@@ -768,7 +768,7 @@ switch_location (ButtonData *button_data)
                                              NULL);
 }
 
-static gboolean
+static void
 switch_location_timer (gpointer user_data)
 {
     ButtonData *button_data = user_data;
@@ -776,8 +776,6 @@ switch_location_timer (gpointer user_data)
     button_data->switch_location_timer = 0;
 
     switch_location (button_data);
-
-    return G_SOURCE_REMOVE;
 }
 
 static void
@@ -788,9 +786,8 @@ check_switch_location_timer (ButtonData *button_data)
         return;
     }
 
-    button_data->switch_location_timer = g_timeout_add (HOVER_TIMEOUT,
-                                                        switch_location_timer,
-                                                        button_data);
+    button_data->switch_location_timer =
+        g_timeout_add_once (HOVER_TIMEOUT, switch_location_timer, button_data);
 }
 
 static void

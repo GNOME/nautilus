@@ -1136,7 +1136,7 @@ nautilus_sidebar_set_show_trash (NautilusSidebar *sidebar,
     update_places (sidebar);
 }
 
-static gboolean
+static void
 hover_timer (gpointer user_data)
 {
     NautilusSidebar *sidebar = user_data;
@@ -1166,8 +1166,6 @@ hover_timer (gpointer user_data)
             call_open_location (sidebar, location, NULL, 0);
         }
     }
-
-    return G_SOURCE_REMOVE;
 }
 
 static gboolean
@@ -1354,7 +1352,7 @@ drag_motion_callback (GtkDropTarget   *target,
     {
         g_clear_handle_id (&sidebar->hover_timer_id, g_source_remove);
         g_set_weak_pointer (&sidebar->hover_row, row);
-        sidebar->hover_timer_id = g_timeout_add (HOVER_TIMEOUT, hover_timer, sidebar);
+        sidebar->hover_timer_id = g_timeout_add_once (HOVER_TIMEOUT, hover_timer, sidebar);
         sidebar->hover_start_point.x = x;
         sidebar->hover_start_point.y = y;
     }

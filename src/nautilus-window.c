@@ -156,13 +156,11 @@ static const GtkPadActionEntry pad_actions[] =
 #ifdef HAVE_MALLOC_TRIM
 static guint malloc_trim_idle_id = 0;
 
-static gboolean
+static void
 malloc_trim_idle_cb (gpointer user_data)
 {
     malloc_trim (8 * 1024 * 1024);
     malloc_trim_idle_id = 0;
-
-    return FALSE;
 }
 #endif
 
@@ -698,7 +696,7 @@ window_slot_close (NautilusWindow     *window,
 #ifdef HAVE_MALLOC_TRIM
     if (malloc_trim_idle_id == 0)
     {
-        malloc_trim_idle_id = g_idle_add (malloc_trim_idle_cb, NULL);
+        malloc_trim_idle_id = g_idle_add_once (malloc_trim_idle_cb, NULL);
     }
 #endif
 }

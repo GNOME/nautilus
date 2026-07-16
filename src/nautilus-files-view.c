@@ -277,7 +277,7 @@ typedef struct
 
 /* forward declarations */
 
-static gboolean display_selection_info_idle_callback (gpointer data);
+static void     display_selection_info_idle_callback (gpointer data);
 static void     load_directory (NautilusFilesView *view,
                                 NautilusDirectory *directory);
 static void on_clipboard_owner_changed (GdkClipboard *clipboard,
@@ -370,15 +370,13 @@ real_setup_loading_floating_bar (NautilusFilesView *self)
     gtk_widget_set_visible (self->floating_bar, TRUE);
 }
 
-static gboolean
+static void
 setup_loading_floating_bar_timeout_cb (gpointer user_data)
 {
     NautilusFilesView *self = user_data;
 
     self->floating_bar_loading_timeout_id = 0;
     real_setup_loading_floating_bar (self);
-
-    return FALSE;
 }
 
 static void
@@ -398,7 +396,7 @@ setup_loading_floating_bar (NautilusFilesView *self)
     }
 
     self->floating_bar_loading_timeout_id =
-        g_timeout_add (FLOATING_BAR_LOADING_DELAY, setup_loading_floating_bar_timeout_cb, self);
+        g_timeout_add_once (FLOATING_BAR_LOADING_DELAY, setup_loading_floating_bar_timeout_cb, self);
 }
 
 static void
@@ -467,15 +465,13 @@ floating_bar_set_status_timeout_cb (gpointer data)
     return FALSE;
 }
 
-static gboolean
+static void
 remove_floating_bar_passthrough (gpointer data)
 {
     NautilusFilesView *self = data;
 
     gtk_widget_set_can_target (self->floating_bar, TRUE);
     self->floating_bar_set_passthrough_timeout_id = 0;
-
-    return G_SOURCE_REMOVE;
 }
 
 static void
@@ -511,9 +507,8 @@ set_floating_bar_status (NautilusFilesView *self,
     /* Activate passthrough on the floating bar just long enough for a
      * potential double click to happen, so to not interfere with it */
     gtk_widget_set_can_target (self->floating_bar, FALSE);
-    self->floating_bar_set_passthrough_timeout_id = g_timeout_add ((guint) double_click_time,
-                                                                   remove_floating_bar_passthrough,
-                                                                   self);
+    self->floating_bar_set_passthrough_timeout_id =
+        g_timeout_add_once ((guint) double_click_time, remove_floating_bar_passthrough, self);
 
     /* waiting for half of the double-click-time before setting
      * the status seems to be a good approximation of not setting it
@@ -4368,7 +4363,7 @@ display_pending_files (NautilusFilesView *view)
     }
 }
 
-static gboolean
+static void
 display_selection_info_idle_callback (gpointer data)
 {
     NautilusFilesView *view;
@@ -4382,8 +4377,6 @@ display_selection_info_idle_callback (gpointer data)
     nautilus_files_view_send_selection_change (view);
 
     g_object_unref (G_OBJECT (view));
-
-    return FALSE;
 }
 
 static void
@@ -4406,7 +4399,7 @@ update_context_menus_if_pending (NautilusFilesView *view)
     }
 }
 
-static gboolean
+static void
 update_context_menus_timeout_callback (gpointer data)
 {
     NautilusFilesView *view;
@@ -4419,8 +4412,6 @@ update_context_menus_timeout_callback (gpointer data)
     nautilus_files_view_update_context_menus (view);
 
     g_object_unref (G_OBJECT (view));
-
-    return FALSE;
 }
 
 static gboolean
@@ -8292,7 +8283,9 @@ schedule_update_context_menus (NautilusFilesView *self)
     if (self->update_context_menus_timeout_id == 0)
     {
         self->update_context_menus_timeout_id
-            = g_timeout_add (self->update_interval, update_context_menus_timeout_callback, self);
+            = g_timeout_add_once (self->update_interval,
+                                  update_context_menus_timeout_callback,
+                                  self);
     }
 }
 
@@ -8375,8 +8368,7 @@ nautilus_files_view_notify_selection_changed (NautilusFilesView *view)
     if (view->display_selection_idle_id == 0)
     {
         view->display_selection_idle_id
-            = g_idle_add (display_selection_info_idle_callback,
-                          view);
+            = g_idle_add_once (display_selection_info_idle_callback, view);
     }
 
     nautilus_files_view_update_actions_state (view);

@@ -462,7 +462,7 @@ populate_completions_model (GObject      *source_object,
 }
 
 /* Update the path completions list based on the current text of the entry. */
-static gboolean
+static void
 update_completions_store (gpointer callback_data)
 {
     NautilusLocationEntry *entry = NAUTILUS_LOCATION_ENTRY (callback_data);
@@ -475,7 +475,7 @@ update_completions_store (gpointer callback_data)
      * text. */
     if (!position_and_selection_are_at_end (editable))
     {
-        return FALSE;
+        return;
     }
 
     int start_sel;
@@ -485,7 +485,7 @@ update_completions_store (gpointer callback_data)
 
     if (typed == NULL || typed[0] == '\0')
     {
-        return FALSE;
+        return;
     }
 
     g_strstrip (typed);
@@ -505,8 +505,6 @@ update_completions_store (gpointer callback_data)
     completer_get_completions_async (completer_data,
                                      priv->completions_cancellable,
                                      populate_completions_model);
-
-    return FALSE;
 }
 
 static void
@@ -681,7 +679,7 @@ after_text_change (NautilusLocationEntry *self,
      * directory is large. */
     if (priv->completion_id == 0)
     {
-        priv->completion_id = g_idle_add (update_completions_store, self);
+        priv->completion_id = g_idle_add_once (update_completions_store, self);
     }
 }
 

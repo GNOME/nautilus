@@ -324,14 +324,12 @@ nautilus_bookmark_set_exists (NautilusBookmark *bookmark,
     nautilus_bookmark_set_icon_to_default (bookmark);
 }
 
-static gboolean
+static void
 exists_non_native_idle_cb (gpointer user_data)
 {
     NautilusBookmark *bookmark = user_data;
     bookmark->exists_id = 0;
     nautilus_bookmark_set_exists (bookmark, FALSE);
-
-    return FALSE;
 }
 
 static void
@@ -370,7 +368,7 @@ nautilus_bookmark_update_exists (NautilusBookmark *bookmark)
         bookmark->exists_id == 0)
     {
         bookmark->exists_id =
-            g_idle_add (exists_non_native_idle_cb, bookmark);
+            g_idle_add_once (exists_non_native_idle_cb, bookmark);
         return;
     }
 

@@ -39,12 +39,11 @@ struct NautilusMonitor
 
 static gboolean call_consume_changes_idle_id = 0;
 
-static gboolean
+static void
 call_consume_changes_idle_cb (gpointer not_used)
 {
     nautilus_file_changes_consume_changes ();
     call_consume_changes_idle_id = 0;
-    return FALSE;
 }
 
 static void
@@ -53,7 +52,7 @@ schedule_call_consume_changes (void)
     if (call_consume_changes_idle_id == 0)
     {
         call_consume_changes_idle_id =
-            g_idle_add (call_consume_changes_idle_cb, NULL);
+            g_idle_add_once (call_consume_changes_idle_cb, NULL);
     }
 }
 

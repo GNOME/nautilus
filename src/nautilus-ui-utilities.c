@@ -436,7 +436,7 @@ timed_wait_delayed_close_destroy_dialog_callback (AdwAlertDialog *object,
     g_source_remove (GPOINTER_TO_UINT (callback_data));
 }
 
-static gboolean
+static void
 timed_wait_delayed_close_timeout_callback (gpointer callback_data)
 {
     guint handler_id;
@@ -449,8 +449,6 @@ timed_wait_delayed_close_timeout_callback (gpointer callback_data)
                                           GUINT_TO_POINTER (handler_id));
 
     adw_dialog_close (ADW_DIALOG (callback_data));
-
-    return FALSE;
 }
 
 static void
@@ -486,9 +484,10 @@ timed_wait_free (TimedWait *wait)
 
         if (time_up < TIMED_WAIT_MIN_TIME_UP)
         {
-            delayed_close_handler_id = g_timeout_add (TIMED_WAIT_MIN_TIME_UP - time_up,
-                                                      timed_wait_delayed_close_timeout_callback,
-                                                      wait->dialog);
+            delayed_close_handler_id =
+                g_timeout_add_once (TIMED_WAIT_MIN_TIME_UP - time_up,
+                                    timed_wait_delayed_close_timeout_callback,
+                                    wait->dialog);
             g_object_set_data (G_OBJECT (wait->dialog),
                                "stock-dialogs/delayed_close_handler_timeout_id",
                                GUINT_TO_POINTER (delayed_close_handler_id));
@@ -527,7 +526,7 @@ timed_wait_dialog_destroy_callback (AdwAlertDialog *object,
     }
 }
 
-static gboolean
+static void
 timed_wait_callback (gpointer callback_data)
 {
     TimedWait *wait = callback_data;
@@ -559,8 +558,6 @@ timed_wait_callback (gpointer callback_data)
 
     wait->timeout_handler_id = 0;
     wait->dialog = dialog;
-
-    return FALSE;
 }
 
 void
@@ -588,7 +585,7 @@ nautilus_ui_timed_wait_start_full (int                      duration,
     }
 
     /* Start the timer. */
-    wait->timeout_handler_id = g_timeout_add (duration, timed_wait_callback, wait);
+    wait->timeout_handler_id = g_timeout_add_once (duration, timed_wait_callback, wait);
 
     /* Put in the hash table so we can find it later. */
     if (timed_wait_hash_table == NULL)

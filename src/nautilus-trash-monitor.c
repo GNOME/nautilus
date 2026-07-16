@@ -138,7 +138,7 @@ trash_query_info_cb (GObject      *source,
 
 static void schedule_update_info (NautilusTrashMonitor *trash_monitor);
 
-static gboolean
+static void
 schedule_update_info_cb (gpointer data)
 {
     NautilusTrashMonitor *trash_monitor = data;
@@ -149,8 +149,6 @@ schedule_update_info_cb (gpointer data)
         trash_monitor->pending = FALSE;
         schedule_update_info (trash_monitor);
     }
-
-    return G_SOURCE_REMOVE;
 }
 
 static void
@@ -174,9 +172,8 @@ schedule_update_info (NautilusTrashMonitor *trash_monitor)
                              G_PRIORITY_DEFAULT, NULL,
                              trash_query_info_cb, g_object_ref (trash_monitor));
 
-    trash_monitor->timeout_id = g_timeout_add_seconds (UPDATE_RATE_SECONDS,
-                                                       schedule_update_info_cb,
-                                                       trash_monitor);
+    trash_monitor->timeout_id =
+        g_timeout_add_seconds_once (UPDATE_RATE_SECONDS, schedule_update_info_cb, trash_monitor);
     g_object_unref (location);
 }
 

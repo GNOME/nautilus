@@ -472,7 +472,7 @@ on_item_drag_prepare (GtkDragSource *source,
     return gdk_content_provider_new_typed (GDK_TYPE_FILE_LIST, file_list);
 }
 
-static gboolean
+static void
 hover_timer (gpointer user_data)
 {
     NautilusViewCell *cell = user_data;
@@ -486,7 +486,7 @@ hover_timer (gpointer user_data)
     {
         /* If we aren't able to dropped don't change the location. This stops
          * drops onto themselves, and another unnecessary drops. */
-        return G_SOURCE_REMOVE;
+        return;
     }
 
     NautilusFile *file = nautilus_view_item_get_file (item);
@@ -496,7 +496,7 @@ hover_timer (gpointer user_data)
         !g_settings_get_boolean (nautilus_preferences,
                                  NAUTILUS_PREFERENCES_OPEN_FOLDER_ON_DND_HOVER))
     {
-        return G_SOURCE_REMOVE;
+        return;
     }
 
     NautilusViewModel *model = nautilus_list_base_get_model (self);
@@ -504,8 +504,6 @@ hover_timer (gpointer user_data)
 
     gtk_selection_model_select_item (GTK_SELECTION_MODEL (model), i, TRUE);
     nautilus_list_base_activate_selection (self, FALSE);
-
-    return G_SOURCE_REMOVE;
 }
 
 static void
@@ -565,7 +563,7 @@ on_item_drag_hover_motion (GtkDropControllerMotion *controller,
     if (gtk_drag_check_threshold (GTK_WIDGET (cell), start.x, start.y, x, y))
     {
         g_clear_handle_id (&priv->hover_timer_id, g_source_remove);
-        priv->hover_timer_id = g_timeout_add (HOVER_TIMEOUT, hover_timer, cell);
+        priv->hover_timer_id = g_timeout_add_once (HOVER_TIMEOUT, hover_timer, cell);
         priv->hover_start_point.x = x;
         priv->hover_start_point.y = y;
     }
