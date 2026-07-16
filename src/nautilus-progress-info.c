@@ -700,8 +700,7 @@ static void
 set_details (NautilusProgressInfo *info,
              const char           *details)
 {
-    g_free (info->details);
-    info->details = g_strdup (details);
+    g_set_str (&info->details, details);
 
     info->changed_at_idle = TRUE;
     queue_idle (info, FALSE);

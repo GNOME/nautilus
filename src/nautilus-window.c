@@ -807,8 +807,7 @@ update_undo_redo_menu_items (NautilusWindow               *window,
      */
     if (!undo_active || undo_label == NULL)
     {
-        g_free (undo_label);
-        undo_label = g_strdup (_("_Undo"));
+        g_set_str (&undo_label, _("_Undo"));
     }
     undo_menu_item = g_menu_item_new (undo_label, "win.undo");
     g_menu_append_item (updated_section, undo_menu_item);
@@ -817,8 +816,7 @@ update_undo_redo_menu_items (NautilusWindow               *window,
 
     if (!redo_active || redo_label == NULL)
     {
-        g_free (redo_label);
-        redo_label = g_strdup (_("_Redo"));
+        g_set_str (&redo_label, _("_Redo"));
     }
     redo_menu_item = g_menu_item_new (redo_label, "win.redo");
     g_menu_append_item (updated_section, redo_menu_item);

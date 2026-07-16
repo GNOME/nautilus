@@ -71,8 +71,7 @@ void
 nautilus_filename_validator_set_original_name (NautilusFilenameValidator *self,
                                                const char                *original_name)
 {
-    g_free (self->original_name);
-    self->original_name = g_strdup (original_name);
+    g_set_str (&self->original_name, original_name);
 }
 
 void

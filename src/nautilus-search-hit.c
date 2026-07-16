@@ -170,8 +170,7 @@ static void
 nautilus_search_hit_set_uri (NautilusSearchHit *hit,
                              const char        *uri)
 {
-    g_free (hit->uri);
-    hit->uri = g_strdup (uri);
+    g_set_str (&hit->uri, uri);
 }
 
 void
@@ -239,9 +238,7 @@ void
 nautilus_search_hit_set_fts_snippet (NautilusSearchHit *hit,
                                      const gchar       *snippet)
 {
-    g_free (hit->fts_snippet);
-
-    hit->fts_snippet = g_strdup (snippet);
+    g_set_str (&hit->fts_snippet, snippet);
 }
 
 static void
@@ -294,8 +291,7 @@ nautilus_search_hit_set_property (GObject      *object,
 
         case PROP_FTS_SNIPPET:
         {
-            g_free (hit->fts_snippet);
-            hit->fts_snippet = g_strdup (g_value_get_string (value));
+            g_set_str (&hit->fts_snippet, g_value_get_string (value));
         }
         break;
 
