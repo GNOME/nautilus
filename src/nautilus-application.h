@@ -54,7 +54,7 @@ NautilusWindow *
 nautilus_application_open_location_full (NautilusApplication *application,
                                          GFile               *location,
                                          NautilusOpenFlags    flags,
-                                         GList               *selection,
+                                         NautilusFileList    *selection,
                                          const char          *startup_id);
 
 NautilusApplication *nautilus_application_get_default (void);
