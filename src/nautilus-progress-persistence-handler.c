@@ -249,7 +249,7 @@ new_op_started_timeout (TimeoutData *data)
 
     if (nautilus_progress_info_get_is_paused (info))
     {
-        return TRUE;
+        return G_SOURCE_CONTINUE;
     }
 
     if (!nautilus_progress_info_get_is_finished (info))
@@ -259,7 +259,7 @@ new_op_started_timeout (TimeoutData *data)
 
     timeout_data_free (data);
 
-    return FALSE;
+    return G_SOURCE_REMOVE;
 }
 
 static void

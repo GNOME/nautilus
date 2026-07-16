@@ -73,7 +73,7 @@ search_finished (NautilusSearchEngineModel *model)
 
     nautilus_search_provider_finished (NAUTILUS_SEARCH_PROVIDER (model));
 
-    return FALSE;
+    return G_SOURCE_REMOVE;
 }
 
 static void

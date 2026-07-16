@@ -143,7 +143,7 @@ save_in_idle_cb (const gchar *keyfile_filename)
         g_error_free (error);
     }
 
-    return FALSE;
+    return G_SOURCE_REMOVE;
 }
 
 static void

@@ -462,7 +462,7 @@ floating_bar_set_status_timeout_cb (gpointer data)
                                         status_data->primary_status,
                                         status_data->detail_status);
 
-    return FALSE;
+    return G_SOURCE_REMOVE;
 }
 
 static void
@@ -4427,7 +4427,7 @@ display_pending_callback (gpointer data)
 
     g_object_unref (G_OBJECT (view));
 
-    return FALSE;
+    return G_SOURCE_REMOVE;
 }
 
 static void
@@ -8307,7 +8307,7 @@ update_status_idle_callback (gpointer data)
     nautilus_files_view_display_selection_info (self);
     self->update_status_idle_id = 0;
 
-    return FALSE;
+    return G_SOURCE_REMOVE;
 }
 
 static void

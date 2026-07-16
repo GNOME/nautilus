@@ -833,7 +833,7 @@ dequeue_pending_idle_callback (gpointer callback_data)
     {
         nautilus_directory_async_state_changed (directory);
 
-        return FALSE;
+        return G_SOURCE_REMOVE;
     }
 
     added_files = NULL;
@@ -950,7 +950,7 @@ dequeue_pending_idle_callback (gpointer callback_data)
     /* Get the state machine running again. */
     nautilus_directory_async_state_changed (directory);
 
-    return FALSE;
+    return G_SOURCE_REMOVE;
 }
 
 void
@@ -3869,7 +3869,7 @@ info_provider_idle_callback (gpointer user_data)
         finish_info_provider (directory, file, response->provider);
     }
 
-    return FALSE;
+    return G_SOURCE_REMOVE;
 }
 
 static void
