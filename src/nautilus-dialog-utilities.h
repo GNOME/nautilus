@@ -34,7 +34,7 @@ typedef enum
     RESPONSE_SKIP_ALL    = 1 << 10,
     RESPONSE_SKIP_FILES  = 1 << 11,
     RESPONSE_TRASHLESS_DELETE = 1 << 12,
-} NautilusDialogResponse;
+} G_GNUC_FLAG_ENUM NautilusDialogResponse;
 
 NautilusDialogResponse
 nautilus_dialog_response_from_string (const char *response);

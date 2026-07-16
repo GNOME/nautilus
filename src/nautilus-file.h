@@ -81,7 +81,7 @@ typedef enum {
 	NAUTILUS_FILE_ICON_FLAGS_USE_THUMBNAILS = (1<<0),
 	/* uses the icon of the mount if present */
 	NAUTILUS_FILE_ICON_FLAGS_USE_MOUNT_ICON = (1<<1),
-} NautilusFileIconFlags;
+} G_GNUC_FLAG_ENUM NautilusFileIconFlags;
 
 #define NAUTILUS_THUMBNAIL_MINIMUM_ICON_SIZE 32
 

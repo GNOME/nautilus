@@ -44,7 +44,7 @@ typedef enum
     SEARCH_FEATURE_MTIME = 1 << 5,
     SEARCH_FEATURE_CTIME = 1 << 6,
     SEARCH_FEATURE_LOCATION = 1 << 7,
-} SearchFeatures;
+} G_GNUC_FLAG_ENUM SearchFeatures;
 
 struct _NautilusSearchEngineLocalsearch
 {
