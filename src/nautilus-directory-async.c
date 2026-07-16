@@ -3859,9 +3859,7 @@ info_provider_idle_callback (gpointer user_data)
         NautilusFile *file;
         async_job_end (directory, "extension info");
 
-        file = directory->details->extension_info_file;
-
-        directory->details->extension_info_file = NULL;
+        file = g_steal_pointer (&directory->details->extension_info_file);
         directory->details->extension_info_provider = NULL;
         directory->details->extension_info_in_progress = NULL;
         directory->details->extension_info_idle = 0;
