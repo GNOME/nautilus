@@ -8604,14 +8604,14 @@ nautilus_file_class_init (NautilusFileClass *class)
 
     properties[PROP_DIRECTORY] = g_param_spec_object ("directory", NULL, NULL,
                                                       NAUTILUS_TYPE_DIRECTORY,
-                                                      (G_PARAM_CONSTRUCT_ONLY | G_PARAM_READWRITE |
+                                                      (G_PARAM_CONSTRUCT_ONLY | G_PARAM_WRITABLE |
                                                        G_PARAM_EXPLICIT_NOTIFY | G_PARAM_STATIC_STRINGS));
     properties[PROP_DISPLAY_NAME] = g_param_spec_string ("display-name", NULL, NULL,
                                                          "",
                                                          G_PARAM_READABLE | G_PARAM_STATIC_STRINGS);
     properties[PROP_A11Y_NAME] = g_param_spec_string ("a11y-name", NULL, NULL,
                                                       "",
-                                                      G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS);
+                                                      G_PARAM_READABLE | G_PARAM_STATIC_STRINGS);
     g_object_class_install_properties (G_OBJECT_CLASS (class), N_PROPS, properties);
 }
 

@@ -2789,7 +2789,7 @@ nautilus_window_slot_class_init (NautilusWindowSlotClass *klass)
                              "Tooltip that represents the slot",
                              "The tooltip that represents the slot",
                              NULL,
-                             G_PARAM_READWRITE);
+                             G_PARAM_READABLE);
 
     properties[PROP_ALLOW_STOP] =
         g_param_spec_boolean ("allow-stop", "", "",
