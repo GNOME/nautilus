@@ -1679,9 +1679,9 @@ nautilus_batch_rename_dialog_init (NautilusBatchRenameDialog *self)
     self->row_height = -1;
 
     g_signal_connect_object (gtk_editable_get_delegate (GTK_EDITABLE (self->name_entry)),
-                             "delete-text", G_CALLBACK (on_delete_text), self, 0);
+                             "delete-text", G_CALLBACK (on_delete_text), self, G_CONNECT_DEFAULT);
     g_signal_connect_object (gtk_editable_get_delegate (GTK_EDITABLE (self->name_entry)),
-                             "insert-text", G_CALLBACK (on_insert_text), self, 0);
+                             "insert-text", G_CALLBACK (on_insert_text), self, G_CONNECT_DEFAULT);
 
     self->metadata_cancellable = g_cancellable_new ();
 }

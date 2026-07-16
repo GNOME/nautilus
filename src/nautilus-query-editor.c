@@ -475,7 +475,7 @@ nautilus_query_editor_class_init (NautilusQueryEditorClass *class)
     gtk_widget_class_add_shortcut (widget_class, shortcut);
 
     gtk_widget_class_add_binding_signal (widget_class,
-                                         GDK_KEY_Escape, 0, "cancel",
+                                         GDK_KEY_Escape, GDK_NO_MODIFIER_MASK, "cancel",
                                          NULL);
 
     /**

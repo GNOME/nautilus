@@ -376,7 +376,7 @@ nautilus_find_existing_uri_in_hierarchy (GFile *location)
 
         info = g_file_query_info (location,
                                   G_FILE_ATTRIBUTE_STANDARD_NAME,
-                                  0, NULL, NULL);
+                                  G_FILE_QUERY_INFO_NONE, NULL, NULL);
         if (info != NULL)
         {
             return location;

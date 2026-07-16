@@ -1525,7 +1525,7 @@ choose_program (NautilusFilesView *view,
 
     g_signal_connect_object (dialog, "app-selected",
                              G_CALLBACK (app_choosen),
-                             parent_window, 0);
+                             parent_window, G_CONNECT_DEFAULT);
 }
 
 static void
@@ -2976,9 +2976,9 @@ add_directory_to_directory_list (NautilusFilesView  *view,
                                              (NautilusDirectoryCallback) changed_callback, view);
 
         g_signal_connect_object (directory, "files-added",
-                                 G_CALLBACK (changed_callback), view, 0);
+                                 G_CALLBACK (changed_callback), view, G_CONNECT_DEFAULT);
         g_signal_connect_object (directory, "files-changed",
-                                 G_CALLBACK (changed_callback), view, 0);
+                                 G_CALLBACK (changed_callback), view, G_CONNECT_DEFAULT);
 
         *directory_list = g_list_append (*directory_list, directory);
     }
@@ -4742,7 +4742,7 @@ nautilus_files_view_add_subdirectory (NautilusFilesView *self,
         G_CALLBACK (files_changed_callback), self);
     g_signal_connect_object (directory, "done-loading",
                              G_CALLBACK (subdirectory_done_loading),
-                             self, 0);
+                             self, G_CONNECT_DEFAULT);
 
     self->subdirectory_list = g_list_prepend (self->subdirectory_list, directory);
     self->subdirectories_loading = g_list_prepend (self->subdirectories_loading, directory);
@@ -4904,7 +4904,7 @@ add_extension_action (NautilusFilesView *self,
     g_signal_connect_data (action, "activate",
                            G_CALLBACK (extension_action_callback),
                            g_object_ref (item),
-                           (GClosureNotify) g_object_unref, 0);
+                           (GClosureNotify) g_object_unref, G_CONNECT_DEFAULT);
 
     g_action_map_add_action (G_ACTION_MAP (self->view_action_group),
                              G_ACTION (action));
@@ -5236,7 +5236,7 @@ add_script_to_scripts_menus (NautilusFilesView *self,
     g_signal_connect_data (action, "activate",
                            G_CALLBACK (run_script),
                            launch_parameters,
-                           (GClosureNotify) script_launch_parameters_free, 0);
+                           (GClosureNotify) script_launch_parameters_free, G_CONNECT_DEFAULT);
 
     g_action_map_add_action (G_ACTION_MAP (self->view_action_group), action);
 
@@ -5473,7 +5473,7 @@ add_template_to_templates_menus (NautilusFilesView *self,
     g_signal_connect_data (action, "activate",
                            G_CALLBACK (create_template),
                            parameters,
-                           (GClosureNotify) create_templates_parameters_free, 0);
+                           (GClosureNotify) create_templates_parameters_free, G_CONNECT_DEFAULT);
 
     g_action_map_add_action (G_ACTION_MAP (self->view_action_group), action);
 
@@ -9414,25 +9414,25 @@ nautilus_files_view_class_init (NautilusFilesViewClass *klass)
     gtk_widget_class_add_binding_action (widget_class, GDK_KEY_Delete, GDK_SHIFT_MASK, "view.delete-permanently-shortcut", NULL);
     gtk_widget_class_add_binding_action (widget_class, GDK_KEY_KP_Delete, GDK_SHIFT_MASK, "view.permanent-delete-permanently-menu-item", NULL);
     gtk_widget_class_add_binding_action (widget_class, GDK_KEY_Delete, GDK_SHIFT_MASK, "view.permanent-delete-permanently-menu-item", NULL);
-    gtk_widget_class_add_binding_action (widget_class, GDK_KEY_KP_Delete, 0, "view.move-to-trash", NULL);
-    gtk_widget_class_add_binding_action (widget_class, GDK_KEY_Delete, 0, "view.move-to-trash", NULL);
-    gtk_widget_class_add_binding_action (widget_class, GDK_KEY_KP_Delete, 0, "view.delete-from-trash", NULL);
-    gtk_widget_class_add_binding_action (widget_class, GDK_KEY_Delete, 0, "view.delete-from-trash", NULL);
+    gtk_widget_class_add_binding_action (widget_class, GDK_KEY_KP_Delete, GDK_NO_MODIFIER_MASK, "view.move-to-trash", NULL);
+    gtk_widget_class_add_binding_action (widget_class, GDK_KEY_Delete, GDK_NO_MODIFIER_MASK, "view.move-to-trash", NULL);
+    gtk_widget_class_add_binding_action (widget_class, GDK_KEY_KP_Delete, GDK_NO_MODIFIER_MASK, "view.delete-from-trash", NULL);
+    gtk_widget_class_add_binding_action (widget_class, GDK_KEY_Delete, GDK_NO_MODIFIER_MASK, "view.delete-from-trash", NULL);
     /* When trash is not available, allow the "Delete" keys to delete permanently, that is, when
      * the menu item is available, since we never make both the trash and delete-permanently-menu-item
      * actions active.
      */
-    gtk_widget_class_add_binding_action (widget_class, GDK_KEY_KP_Delete, 0, "view.delete-permanently-menu-item", NULL);
-    gtk_widget_class_add_binding_action (widget_class, GDK_KEY_Delete, 0, "view.delete-permanently-menu-item", NULL);
+    gtk_widget_class_add_binding_action (widget_class, GDK_KEY_KP_Delete, GDK_NO_MODIFIER_MASK, "view.delete-permanently-menu-item", NULL);
+    gtk_widget_class_add_binding_action (widget_class, GDK_KEY_Delete, GDK_NO_MODIFIER_MASK, "view.delete-permanently-menu-item", NULL);
 
-    gtk_widget_class_add_binding_action (widget_class, GDK_KEY_F2, 0, "view.rename", NULL);
-    gtk_widget_class_add_binding_action (widget_class, GDK_KEY_Menu, 0, "view.popup-menu", NULL);
+    gtk_widget_class_add_binding_action (widget_class, GDK_KEY_F2, GDK_NO_MODIFIER_MASK, "view.rename", NULL);
+    gtk_widget_class_add_binding_action (widget_class, GDK_KEY_Menu, GDK_NO_MODIFIER_MASK, "view.popup-menu", NULL);
     gtk_widget_class_add_binding_action (widget_class, GDK_KEY_F10, GDK_SHIFT_MASK, "view.popup-menu", NULL);
     gtk_widget_class_add_binding_action (widget_class, GDK_KEY_o, GDK_CONTROL_MASK, "view.open-with-default-application", NULL);
     /* This is not necessary per-se, because it's the default activation
      * keybinding. But in order for it to appear in the context menu as a
      * keyboard shortcut, we need to bind it to the menu item action here. */
-    gtk_widget_class_add_binding_action (widget_class, GDK_KEY_Return, 0, "view.open-with-default-application", NULL);
+    gtk_widget_class_add_binding_action (widget_class, GDK_KEY_Return, GDK_NO_MODIFIER_MASK, "view.open-with-default-application", NULL);
     gtk_widget_class_add_binding_action (widget_class, GDK_KEY_i, GDK_CONTROL_MASK, "view.properties", NULL);
     gtk_widget_class_add_binding_action (widget_class, GDK_KEY_Return, GDK_ALT_MASK, "view.properties", NULL);
     gtk_widget_class_add_binding_action (widget_class, GDK_KEY_a, GDK_CONTROL_MASK, "view.select-all", NULL);
@@ -9513,7 +9513,8 @@ nautilus_files_view_init (NautilusFilesView *self)
         g_settings_get_boolean (gtk_filechooser_preferences, NAUTILUS_PREFERENCES_SHOW_HIDDEN_FILES);
 
     g_signal_connect_object (nautilus_trash_monitor_get (), "trash-state-changed",
-                             G_CALLBACK (nautilus_files_view_trash_state_changed_callback), self, 0);
+                             G_CALLBACK (nautilus_files_view_trash_state_changed_callback), self,
+                             G_CONNECT_DEFAULT);
 
     /* React to clipboard changes */
     clipboard = gdk_display_get_clipboard (gdk_display_get_default ());
@@ -9552,7 +9553,7 @@ nautilus_files_view_init (NautilusFilesView *self)
                                     "view",
                                     G_ACTION_GROUP (self->view_action_group));
     g_signal_connect_object (self->view_action_group, "action-state-changed::sort",
-                             G_CALLBACK (on_sort_action_state_changed), self, 0);
+                             G_CALLBACK (on_sort_action_state_changed), self, G_CONNECT_DEFAULT);
 
     /* NOTE: Please do not add any key here that could interfere with
      * the rest of the app's use of those keys. Some example of keys set here

@@ -213,7 +213,7 @@ nautilus_app_chooser_constructed (GObject *object)
     }
 
     g_signal_connect_object (self->app_chooser_widget, "application-selected",
-                             G_CALLBACK (on_application_selected), self, 0);
+                             G_CALLBACK (on_application_selected), self, G_CONNECT_DEFAULT);
     g_signal_connect_object (self->app_chooser_widget, "application-activated",
                              G_CALLBACK (on_application_activated), self, G_CONNECT_SWAPPED);
 

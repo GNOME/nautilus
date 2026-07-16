@@ -793,7 +793,7 @@ setup_star_button (NautilusPropertiesWidget *self)
         gtk_widget_set_visible (self->star_button, TRUE);
         update_star (self, tag_manager);
         g_signal_connect_object (tag_manager, "starred-changed",
-                                 G_CALLBACK (on_starred_changed), self, 0);
+                                 G_CALLBACK (on_starred_changed), self, G_CONNECT_DEFAULT);
     }
 }
 
@@ -3624,7 +3624,7 @@ setup_properties_widget (NautilusPropertiesWidget *self)
                                  "changed",
                                  G_CALLBACK (file_changed_callback),
                                  G_OBJECT (self),
-                                 0);
+                                 G_CONNECT_DEFAULT);
     }
 
     /* Create the pages. */

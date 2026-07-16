@@ -882,7 +882,7 @@ nautilus_location_entry_init (NautilusLocationEntry *entry)
     g_signal_connect_object (entry, "activate",
                              G_CALLBACK (editable_activate_callback), entry, G_CONNECT_AFTER);
     g_signal_connect_object (entry, "changed",
-                             G_CALLBACK (editable_changed_callback), entry, 0);
+                             G_CALLBACK (editable_changed_callback), entry, G_CONNECT_DEFAULT);
 
     controller = gtk_event_controller_key_new ();
     gtk_widget_add_controller (GTK_WIDGET (entry), controller);

@@ -1721,7 +1721,8 @@ nautilus_window_slot_set_viewed_file (NautilusWindowSlot *self,
         self->viewed_file = nautilus_file_ref (file);
         nautilus_file_monitor_add (self->viewed_file, self, NAUTILUS_ATTRIBUTE_INFO);
         g_signal_connect_object (self->viewed_file, "changed",
-                                 G_CALLBACK (viewed_file_changed_callback), self, 0);
+                                 G_CALLBACK (viewed_file_changed_callback),
+                                 self, G_CONNECT_DEFAULT);
     }
 }
 

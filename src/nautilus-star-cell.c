@@ -135,7 +135,7 @@ nautilus_star_cell_init (NautilusStarCell *self)
 
     /* Update on tag changes */
     g_signal_connect_object (nautilus_tag_manager_get (), "starred-changed",
-                             G_CALLBACK (on_starred_changed), self, 0);
+                             G_CALLBACK (on_starred_changed), self, G_CONNECT_DEFAULT);
 
     /* Connect automatically to an item. */
     self->item_signal_group = g_signal_group_new (NAUTILUS_TYPE_VIEW_ITEM);

@@ -455,7 +455,7 @@ get_basename (GFile *file)
     {
         info = g_file_query_info (file,
                                   G_FILE_ATTRIBUTE_STANDARD_DISPLAY_NAME,
-                                  0,
+                                  G_FILE_QUERY_INFO_NONE,
                                   g_cancellable_get_current (),
                                   NULL);
         name = NULL;
@@ -3614,7 +3614,7 @@ get_unique_target_file (GFile        *src,
     info = g_file_query_info (src,
                               G_FILE_ATTRIBUTE_STANDARD_EDIT_NAME ","
                               G_FILE_ATTRIBUTE_STANDARD_TYPE,
-                              0, cancellable, NULL);
+                              G_FILE_QUERY_INFO_NONE, cancellable, NULL);
     if (info != NULL)
     {
         ignore_extension = (g_file_info_get_file_type (info) == G_FILE_TYPE_DIRECTORY);
@@ -3680,7 +3680,7 @@ get_target_file_for_link (GFile      *src,
     dest = NULL;
     info = g_file_query_info (src,
                               G_FILE_ATTRIBUTE_STANDARD_EDIT_NAME,
-                              0, NULL, NULL);
+                              G_FILE_QUERY_INFO_NONE, NULL, NULL);
     if (info != NULL)
     {
         editname = g_file_info_get_attribute_string (info, G_FILE_ATTRIBUTE_STANDARD_EDIT_NAME);
@@ -3759,7 +3759,7 @@ get_target_file_with_custom_name (GFile       *src,
                                   G_FILE_ATTRIBUTE_STANDARD_NAME ","
                                   G_FILE_ATTRIBUTE_STANDARD_COPY_NAME ","
                                   G_FILE_ATTRIBUTE_TRASH_ORIG_PATH,
-                                  0, NULL, NULL);
+                                  G_FILE_QUERY_INFO_NONE, NULL, NULL);
 
         if (info)
         {
@@ -4537,7 +4537,10 @@ get_target_file_from_source_display_name (CopyMoveJob *copy_job,
 
     job = (CommonJob *) copy_job;
 
-    info = g_file_query_info (src, G_FILE_ATTRIBUTE_STANDARD_DISPLAY_NAME, 0, NULL, &error);
+    info = g_file_query_info (src,
+                              G_FILE_ATTRIBUTE_STANDARD_DISPLAY_NAME,
+                              G_FILE_QUERY_INFO_NONE,
+                              NULL, &error);
     if (info == NULL)
     {
         const char *heading = copy_job->is_move ?

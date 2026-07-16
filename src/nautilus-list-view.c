@@ -880,7 +880,7 @@ on_row_children_changed (GObject    *gobject,
 
     g_signal_connect_object (model, "notify::n-items",
                              G_CALLBACK (on_n_items_notify), expander,
-                             0);
+                             G_CONNECT_DEFAULT);
 }
 
 static void
@@ -909,11 +909,11 @@ bind_name_cell (GtkSignalListItemFactory *factory,
         g_signal_connect_object (row,
                                  "notify::expanded",
                                  G_CALLBACK (on_row_expanded_changed),
-                                 self, 0);
+                                 self, G_CONNECT_DEFAULT);
         g_signal_connect_object (row,
                                  "notify::children",
                                  G_CALLBACK (on_row_children_changed),
-                                 expander, 0);
+                                 expander, G_CONNECT_DEFAULT);
     }
     else
     {

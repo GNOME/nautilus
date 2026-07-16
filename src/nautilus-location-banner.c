@@ -236,7 +236,7 @@ set_mode (AdwBanner                  *banner,
             g_signal_connect_object (gnome_user_share_preferences,
                                      "changed::" USER_SHARE_CONNECTIONS,
                                      G_CALLBACK (on_user_share_setting_changed),
-                                     banner, 0);
+                                     banner, G_CONNECT_DEFAULT);
 
             if (connections != NULL && connections[0] != NULL)
             {
@@ -279,7 +279,7 @@ set_mode (AdwBanner                  *banner,
             g_signal_connect_object (gnome_privacy_preferences,
                                      "changed::remove-old-trash-files",
                                      G_CALLBACK (on_remove_old_trash_files_changed),
-                                     banner, 0);
+                                     banner, G_CONNECT_DEFAULT);
         }
         break;
 
@@ -296,7 +296,7 @@ set_mode (AdwBanner                  *banner,
             g_signal_connect_object (gnome_privacy_preferences,
                                      "changed::remove-old-trash-files",
                                      G_CALLBACK (on_remove_old_trash_files_changed),
-                                     banner, 0);
+                                     banner, G_CONNECT_DEFAULT);
         }
         break;
 

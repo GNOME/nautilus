@@ -707,7 +707,9 @@ nautilus_search_popover_init (NautilusSearchPopover *self)
     g_autoptr (GSimpleAction) action = g_simple_action_new_stateful (
         "time-type-changed", G_VARIANT_TYPE_STRING, g_variant_new_string (time_type_str));
     g_simple_action_set_enabled (action, TRUE);
-    g_signal_connect_object (action, "change-state", G_CALLBACK (time_type_changed), self, 0);
+    g_signal_connect_object (action, "change-state",
+                             G_CALLBACK (time_type_changed), self,
+                             G_CONNECT_DEFAULT);
 
     GSimpleActionGroup *action_group = g_simple_action_group_new ();
     g_action_map_add_action (G_ACTION_MAP (action_group), G_ACTION (action));

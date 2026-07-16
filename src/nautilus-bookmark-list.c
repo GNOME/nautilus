@@ -266,7 +266,8 @@ insert_bookmark_internal (NautilusBookmarkList *bookmarks,
     bookmarks->list = g_list_insert (bookmarks->list, bookmark, index);
 
     g_signal_connect_object (bookmark, "contents-changed",
-                             G_CALLBACK (bookmark_in_list_changed_callback), bookmarks, 0);
+                             G_CALLBACK (bookmark_in_list_changed_callback), bookmarks,
+                             G_CONNECT_DEFAULT);
     g_signal_connect_object (bookmark, "notify::name",
                              G_CALLBACK (bookmark_in_list_name_changed), bookmarks, G_CONNECT_SWAPPED);
 

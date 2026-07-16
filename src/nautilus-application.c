@@ -1067,7 +1067,7 @@ nautilus_application_startup (GApplication *app)
     g_signal_connect_object (gtk_icon_theme_get_for_display (gdk_display_get_default ()),
                              "changed",
                              G_CALLBACK (icon_theme_changed_callback),
-                             NULL, 0);
+                             NULL, G_CONNECT_DEFAULT);
 }
 
 static gboolean

@@ -295,8 +295,10 @@ lookup_themed_icon (GIcon *icon,
     }
 
     const gchar *generic_app_icon_name = "application-x-generic";
-    g_autoptr (GtkIconPaintable) icon_paintable = gtk_icon_theme_lookup_by_gicon (theme, icon, size, scale,
-                                                                                  GTK_TEXT_DIR_NONE, 0);
+    g_autoptr (GtkIconPaintable) icon_paintable
+        = gtk_icon_theme_lookup_by_gicon (theme, icon, size, scale,
+                                          GTK_TEXT_DIR_NONE,
+                                          GTK_ICON_LOOKUP_NONE);
     const gchar *icon_name = gtk_icon_paintable_get_icon_name (icon_paintable);
 
     if (G_IS_THEMED_ICON (icon) &&
@@ -311,7 +313,7 @@ lookup_themed_icon (GIcon *icon,
             gtk_icon_theme_has_icon (theme, names[0]))
         {
             return gtk_icon_theme_lookup_icon (theme, names[0], NULL, size, scale,
-                                               GTK_TEXT_DIR_NONE, 0);
+                                               GTK_TEXT_DIR_NONE, GTK_ICON_LOOKUP_NONE);
         }
     }
 

@@ -238,7 +238,7 @@ search_thread_func (NautilusSearchEngineSimple *self)
     /* Insert id for toplevel directory into visited */
     g_autoptr (GFile) toplevel = nautilus_query_get_location (query);
     g_autoptr (GFileInfo) info = g_file_query_info (
-        toplevel, G_FILE_ATTRIBUTE_ID_FILE, 0, cancellable, NULL);
+        toplevel, G_FILE_ATTRIBUTE_ID_FILE, G_FILE_QUERY_INFO_NONE, cancellable, NULL);
 
     if (info != NULL)
     {

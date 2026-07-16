@@ -142,7 +142,7 @@ set_metadata_callback (GObject      *source_object,
     {
         g_file_query_info_async (G_FILE (source_object),
                                  NAUTILUS_FILE_DEFAULT_ATTRIBUTES,
-                                 0,
+                                 G_FILE_QUERY_INFO_NONE,
                                  G_PRIORITY_DEFAULT,
                                  NULL,
                                  set_metadata_get_info_callback, file);

@@ -1746,7 +1746,7 @@ rename_callback (GObject      *source_object,
         }
         g_file_query_info_async (new_file,
                                  NAUTILUS_FILE_DEFAULT_ATTRIBUTES,
-                                 0,
+                                 G_FILE_QUERY_INFO_NONE,
                                  G_PRIORITY_DEFAULT,
                                  op->cancellable,
                                  rename_get_info_callback, op);
@@ -5161,7 +5161,7 @@ set_attributes_callback (GObject      *source_object,
     {
         g_file_query_info_async (G_FILE (source_object),
                                  NAUTILUS_FILE_DEFAULT_ATTRIBUTES,
-                                 0,
+                                 G_FILE_QUERY_INFO_NONE,
                                  G_PRIORITY_DEFAULT,
                                  op->cancellable,
                                  set_attributes_get_info_callback, op);
@@ -6987,7 +6987,7 @@ nautilus_file_set_mount (NautilusFile *file,
     {
         file->details->mount = g_object_ref (mount);
         g_signal_connect_object (mount, "unmounted",
-                                 G_CALLBACK (file_mount_unmounted), file, 0);
+                                 G_CALLBACK (file_mount_unmounted), file, G_CONNECT_DEFAULT);
     }
 }
 

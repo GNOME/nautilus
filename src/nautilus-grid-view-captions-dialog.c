@@ -170,7 +170,7 @@ nautilus_preferences_dialog_setup_icon_caption_page (GPtrArray *combo_rows)
 
         g_signal_connect_data (combo_row, "notify::selected",
                                G_CALLBACK (captions_changed_callback), g_ptr_array_ref (combo_rows),
-                               (GClosureNotify) g_ptr_array_unref, 0);
+                               (GClosureNotify) g_ptr_array_unref, G_CONNECT_DEFAULT);
     }
 
     nautilus_column_list_free (columns);

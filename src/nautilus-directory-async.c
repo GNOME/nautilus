@@ -715,7 +715,8 @@ nautilus_directory_monitor_add_internal (NautilusDirectory         *directory,
         directory->details->mime_db_monitor =
             g_signal_connect_object (nautilus_signaller_get_current (),
                                      "mime-data-changed",
-                                     G_CALLBACK (mime_db_changed_callback), directory, 0);
+                                     G_CALLBACK (mime_db_changed_callback), directory,
+                                     G_CONNECT_DEFAULT);
     }
 
     /* Put the monitor file or all the files on the work queue. */
@@ -1478,7 +1479,7 @@ nautilus_directory_get_info_for_new_files (NautilusDirectory *directory,
 
         g_file_query_info_async (location,
                                  NAUTILUS_FILE_DEFAULT_ATTRIBUTES,
-                                 0,
+                                 G_FILE_QUERY_INFO_NONE,
                                  G_PRIORITY_DEFAULT,
                                  state->cancellable,
                                  new_files_callback, state);
@@ -3064,7 +3065,7 @@ file_info_start (NautilusDirectory *directory,
     location = nautilus_file_get_location (file);
     g_file_query_info_async (location,
                              NAUTILUS_FILE_DEFAULT_ATTRIBUTES,
-                             0,
+                             G_FILE_QUERY_INFO_NONE,
                              G_PRIORITY_DEFAULT,
                              state->cancellable, query_info_callback, state);
     g_object_unref (location);

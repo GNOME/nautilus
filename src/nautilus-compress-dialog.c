@@ -275,11 +275,11 @@ extension_combo_row_setup (NautilusCompressDialog *self)
 
     list_factory = gtk_signal_list_item_factory_new ();
     g_signal_connect_object (list_factory, "setup",
-                             G_CALLBACK (extension_combo_row_setup_item_full), self, 0);
+                             G_CALLBACK (extension_combo_row_setup_item_full), self, G_CONNECT_DEFAULT);
     g_signal_connect_object (list_factory, "bind",
-                             G_CALLBACK (extension_combo_row_bind), self, 0);
+                             G_CALLBACK (extension_combo_row_bind), self, G_CONNECT_DEFAULT);
     g_signal_connect_object (list_factory, "unbind",
-                             G_CALLBACK (extension_combo_row_unbind), self, 0);
+                             G_CALLBACK (extension_combo_row_unbind), self, G_CONNECT_DEFAULT);
 
     expression = gtk_cclosure_expression_new (G_TYPE_STRING, NULL, 0, 0,
                                               G_CALLBACK (nautilus_compress_item_dup_title),

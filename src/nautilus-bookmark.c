@@ -285,7 +285,8 @@ nautilus_bookmark_connect_file (NautilusBookmark *bookmark)
         else
         {
             g_signal_connect_object (bookmark->file, "changed",
-                                     G_CALLBACK (bookmark_file_changed_callback), bookmark, 0);
+                                     G_CALLBACK (bookmark_file_changed_callback), bookmark,
+                                     G_CONNECT_DEFAULT);
         }
     }
 
@@ -382,7 +383,7 @@ nautilus_bookmark_update_exists (NautilusBookmark *bookmark)
     bookmark->cancellable = g_cancellable_new ();
     g_file_query_info_async (bookmark->location,
                              G_FILE_ATTRIBUTE_STANDARD_TYPE,
-                             0, G_PRIORITY_DEFAULT,
+                             G_FILE_QUERY_INFO_NONE, G_PRIORITY_DEFAULT,
                              bookmark->cancellable,
                              exists_query_info_ready_cb, bookmark);
 }
