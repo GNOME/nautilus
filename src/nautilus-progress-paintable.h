@@ -22,6 +22,8 @@
 
 #include <gtk/gtk.h>
 
+G_BEGIN_DECLS
+
 #define NAUTILUS_TYPE_PROGRESS_PAINTABLE (nautilus_progress_paintable_get_type())
 
 G_DECLARE_FINAL_TYPE (NautilusProgressPaintable, nautilus_progress_paintable, NAUTILUS, PROGRESS_PAINTABLE, GObject)

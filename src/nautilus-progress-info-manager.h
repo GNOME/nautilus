@@ -26,6 +26,8 @@
 
 #include <glib-object.h>
 
+G_BEGIN_DECLS
+
 #define NAUTILUS_TYPE_PROGRESS_INFO_MANAGER nautilus_progress_info_manager_get_type()
 G_DECLARE_FINAL_TYPE (NautilusProgressInfoManager, nautilus_progress_info_manager, NAUTILUS, PROGRESS_INFO_MANAGER, GObject)
 
