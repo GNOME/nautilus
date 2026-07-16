@@ -2660,10 +2660,7 @@ nautilus_window_slot_dispose (GObject *object)
     g_cancellable_cancel (self->find_mount_cancellable);
     g_clear_object (&self->find_mount_cancellable);
 
-    if (self->query_editor)
-    {
-        g_clear_object (&self->query_editor);
-    }
+    g_clear_object (&self->query_editor);
 
     free_location_change (self);
 
