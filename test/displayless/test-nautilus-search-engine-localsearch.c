@@ -43,11 +43,11 @@ localsearch_await_file_data_free (LocalsearchAwaitFileData *data)
     g_slice_free (LocalsearchAwaitFileData, data);
 }
 
-static gboolean timeout_cb (gpointer user_data)
+static void
+timeout_cb (gpointer user_data)
 {
     LocalsearchAwaitFileData *data = user_data;
     g_error ("Timeout waiting for %s to be indexed by Tracker.", data->uri);
-    return G_SOURCE_REMOVE;
 }
 
 static void
@@ -96,7 +96,7 @@ create_test_data (TrackerSparqlConnection *connection,
     notifier = tracker_sparql_connection_create_notifier (connection);
 
     signal_id = g_signal_connect (notifier, "events", G_CALLBACK (localsearch_events_cb), await_data);
-    timeout_id = g_timeout_add_seconds (LOCALSEARCH_MINERS_AWAIT_TIMEOUT, timeout_cb, await_data);
+    timeout_id = g_timeout_add_seconds_once (LOCALSEARCH_MINERS_AWAIT_TIMEOUT, timeout_cb, await_data);
 
     g_file_set_contents (g_file_peek_path (test_file), "Please show me in the search results", -1, &error);
     g_assert_no_error (error);
