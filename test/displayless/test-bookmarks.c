@@ -63,10 +63,7 @@ test_bookmark_list_basic (void)
 {
     const char *tmp_dir = test_get_tmp_dir ();
     g_autoptr (GFile) bookmarks_list_file =
-        bookmarks_list_file = g_file_new_build_filename (tmp_dir,
-                                                         "gtk-3.0",
-                                                         "bookmarks",
-                                                         NULL);
+        g_file_new_build_filename (tmp_dir, "gtk-3.0", "bookmarks", NULL);
     g_autoptr (NautilusBookmarkList) list = NULL;
     g_autoptr (GFile) bookmark1 = g_file_new_build_filename (tmp_dir, "one", NULL);
     g_autoptr (GFile) bookmark2 = g_file_new_build_filename (tmp_dir, "two", NULL);
