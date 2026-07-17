@@ -1235,11 +1235,7 @@ nautilus_window_finalize (GObject *object)
 
     window = NAUTILUS_WINDOW (object);
 
-    if (window->sidebar_width_handler_id != 0)
-    {
-        g_source_remove (window->sidebar_width_handler_id);
-        window->sidebar_width_handler_id = 0;
-    }
+    g_clear_handle_id (&window->sidebar_width_handler_id, g_source_remove);
 
     g_clear_object (&window->selected_file);
     g_clear_object (&window->selected_volume);

@@ -298,11 +298,10 @@ vfs_file_unmount_callback (GObject      *source_object,
 {
     NautilusFileOperation *op;
     gboolean unmounted;
-    GError *error;
+    g_autoptr (GError) error = NULL;
 
     op = callback_data;
 
-    error = NULL;
     unmounted = g_file_unmount_mountable_with_operation_finish (G_FILE (source_object),
                                                                 res, &error);
 
@@ -311,15 +310,10 @@ vfs_file_unmount_callback (GObject      *source_object,
         (error->code == G_IO_ERROR_FAILED_HANDLED ||
          error->code == G_IO_ERROR_CANCELLED))
     {
-        g_error_free (error);
-        error = NULL;
+        g_clear_error (&error);
     }
 
     nautilus_file_operation_complete (op, G_FILE (source_object), error);
-    if (error)
-    {
-        g_error_free (error);
-    }
 }
 
 static void
@@ -368,8 +362,7 @@ vfs_file_eject_callback (GObject      *source_object,
         (error->code == G_IO_ERROR_FAILED_HANDLED ||
          error->code == G_IO_ERROR_CANCELLED))
     {
-        g_error_free (error);
-        error = NULL;
+        g_clear_error (&error);
     }
 
     nautilus_file_operation_complete (op, G_FILE (source_object), error);
@@ -412,11 +405,10 @@ vfs_file_start_callback (GObject      *source_object,
 {
     NautilusFileOperation *op;
     gboolean started;
-    GError *error;
+    g_autoptr (GError) error = NULL;
 
     op = callback_data;
 
-    error = NULL;
     started = g_file_start_mountable_finish (G_FILE (source_object),
                                              res, &error);
 
@@ -425,15 +417,10 @@ vfs_file_start_callback (GObject      *source_object,
         (error->code == G_IO_ERROR_FAILED_HANDLED ||
          error->code == G_IO_ERROR_CANCELLED))
     {
-        g_error_free (error);
-        error = NULL;
+        g_clear_error (&error);
     }
 
     nautilus_file_operation_complete (op, G_FILE (source_object), error);
-    if (error)
-    {
-        g_error_free (error);
-    }
 }
 
 
@@ -486,11 +473,10 @@ vfs_file_stop_callback (GObject      *source_object,
 {
     NautilusFileOperation *op;
     gboolean stopped;
-    GError *error;
+    g_autoptr (GError) error = NULL;
 
     op = callback_data;
 
-    error = NULL;
     stopped = g_file_stop_mountable_finish (G_FILE (source_object),
                                             res, &error);
 
@@ -499,15 +485,10 @@ vfs_file_stop_callback (GObject      *source_object,
         (error->code == G_IO_ERROR_FAILED_HANDLED ||
          error->code == G_IO_ERROR_CANCELLED))
     {
-        g_error_free (error);
-        error = NULL;
+        g_clear_error (&error);
     }
 
     nautilus_file_operation_complete (op, G_FILE (source_object), error);
-    if (error)
-    {
-        g_error_free (error);
-    }
 }
 
 static void
@@ -543,11 +524,10 @@ vfs_file_poll_callback (GObject      *source_object,
 {
     NautilusFileOperation *op;
     gboolean stopped;
-    GError *error;
+    g_autoptr (GError) error = NULL;
 
     op = callback_data;
 
-    error = NULL;
     stopped = g_file_poll_mountable_finish (G_FILE (source_object),
                                             res, &error);
 
@@ -556,15 +536,10 @@ vfs_file_poll_callback (GObject      *source_object,
         (error->code == G_IO_ERROR_FAILED_HANDLED ||
          error->code == G_IO_ERROR_CANCELLED))
     {
-        g_error_free (error);
-        error = NULL;
+        g_clear_error (&error);
     }
 
     nautilus_file_operation_complete (op, G_FILE (source_object), error);
-    if (error)
-    {
-        g_error_free (error);
-    }
 }
 
 static void
