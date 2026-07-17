@@ -68,7 +68,7 @@ struct _NautilusShellSearchProvider
     GHashTable *metas_cache;
 };
 
-G_DEFINE_TYPE (NautilusShellSearchProvider, nautilus_shell_search_provider, G_TYPE_OBJECT)
+G_DEFINE_FINAL_TYPE (NautilusShellSearchProvider, nautilus_shell_search_provider, G_TYPE_OBJECT)
 
 static void
 pending_search_free (PendingSearch *search)

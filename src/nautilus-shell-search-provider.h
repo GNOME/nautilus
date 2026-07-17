@@ -24,11 +24,8 @@
 #pragma once
 
 #define NAUTILUS_TYPE_SHELL_SEARCH_PROVIDER nautilus_shell_search_provider_get_type()
-#define NAUTILUS_SHELL_SEARCH_PROVIDER(obj) \
-  (G_TYPE_CHECK_INSTANCE_CAST ((obj), NAUTILUS_TYPE_SHELL_SEARCH_PROVIDER, NautilusShellSearchProvider))
 
-typedef struct _NautilusShellSearchProvider NautilusShellSearchProvider;
-typedef GObjectClass NautilusShellSearchProviderClass;
+G_DECLARE_FINAL_TYPE (NautilusShellSearchProvider, nautilus_shell_search_provider, NAUTILUS, SHELL_SEARCH_PROVIDER, GObject)
 
 GType nautilus_shell_search_provider_get_type (void);
 NautilusShellSearchProvider * nautilus_shell_search_provider_new (void);
