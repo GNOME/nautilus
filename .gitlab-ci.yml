@@ -169,6 +169,18 @@ style check:
     rules:
         - if: $CI_COMMIT_BRANCH !~ /^gnome-.*$/
 
+gobject-linter:
+    stage: review
+    image:
+        name: "ghcr.io/bilelmoussaoui/gobject-linter:latest"
+        entrypoint: [""]
+    script:
+        - gobject-linter -c build-aux/gobject-linter.toml --format gitlab-codequality src/ > gobject-linter-codequality.json
+    artifacts:
+        expire_in: 14 days
+        reports:
+            codequality: gobject-linter-codequality.json
+
 
 fedora_rawhide@x86_64:
     extends:
