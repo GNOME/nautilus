@@ -947,6 +947,14 @@ real_set_templates_menu (NautilusFilesView *self,
 {
     g_return_if_fail (NAUTILUS_IS_FILES_VIEW (self));
 
+    if (menu == NULL)
+    {
+        GMenu *empty_template_menu = g_menu_new ();
+
+        g_menu_append (empty_template_menu, _("Empty Text File"), "view.template-empty");
+        menu = G_MENU_MODEL (empty_template_menu);
+    }
+
     if (g_set_object (&self->templates_menu, menu))
     {
         g_object_notify_by_pspec (G_OBJECT (self), properties[PROP_TEMPLATES_MENU]);
@@ -6849,6 +6857,16 @@ action_remove_recent_server (GSimpleAction *action,
     }
 }
 
+static void
+action_template_empty (GSimpleAction *action,
+                       GVariant      *state,
+                       gpointer       user_data)
+{
+    NautilusFilesView *self = NAUTILUS_FILES_VIEW (user_data);
+
+    nautilus_files_view_new_file (self, NULL, NULL);
+}
+
 const GActionEntry view_entries[] =
 {
     /* Toolbar menu */
@@ -6931,6 +6949,7 @@ const GActionEntry view_entries[] =
     { .name = "invert-selection", .activate = action_invert_selection },
     { .name = "preview-selection", .activate = action_preview_selection },
     { .name = "popup-menu", .activate = action_popup_menu },
+    { .name = "template-empty", .activate = action_template_empty },
 };
 
 static gboolean
