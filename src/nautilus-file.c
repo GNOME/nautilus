@@ -3884,15 +3884,10 @@ gboolean
 nautilus_file_should_show (NautilusFile *file,
                            gboolean      show_hidden)
 {
-    /* Never hide any files in trash. */
-    if (nautilus_file_is_in_trash (file))
-    {
-        return TRUE;
-    }
-
     if (!show_hidden &&
         file->details->file_info_is_up_to_date &&
-        nautilus_file_is_hidden_file (file))
+        nautilus_file_is_hidden_file (file) &&
+        !nautilus_file_is_in_trash (file))
     {
         return FALSE;
     }
