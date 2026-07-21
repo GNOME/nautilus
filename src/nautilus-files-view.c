@@ -9404,20 +9404,20 @@ nautilus_files_view_class_init (NautilusFilesViewClass *klass)
      * delete or trash actions with the same shortcut without worrying: only the
      * enabled one will be activated.
      */
-    gtk_widget_class_add_binding_action (widget_class, GDK_KEY_KP_Delete, GDK_SHIFT_MASK, "view.delete-permanently-shortcut", NULL);
     gtk_widget_class_add_binding_action (widget_class, GDK_KEY_Delete, GDK_SHIFT_MASK, "view.delete-permanently-shortcut", NULL);
-    gtk_widget_class_add_binding_action (widget_class, GDK_KEY_KP_Delete, GDK_SHIFT_MASK, "view.permanent-delete-permanently-menu-item", NULL);
+    gtk_widget_class_add_binding_action (widget_class, GDK_KEY_KP_Delete, GDK_SHIFT_MASK, "view.delete-permanently-shortcut", NULL);
     gtk_widget_class_add_binding_action (widget_class, GDK_KEY_Delete, GDK_SHIFT_MASK, "view.permanent-delete-permanently-menu-item", NULL);
-    gtk_widget_class_add_binding_action (widget_class, GDK_KEY_KP_Delete, GDK_NO_MODIFIER_MASK, "view.move-to-trash", NULL);
+    gtk_widget_class_add_binding_action (widget_class, GDK_KEY_KP_Delete, GDK_SHIFT_MASK, "view.permanent-delete-permanently-menu-item", NULL);
     gtk_widget_class_add_binding_action (widget_class, GDK_KEY_Delete, GDK_NO_MODIFIER_MASK, "view.move-to-trash", NULL);
-    gtk_widget_class_add_binding_action (widget_class, GDK_KEY_KP_Delete, GDK_NO_MODIFIER_MASK, "view.delete-from-trash", NULL);
+    gtk_widget_class_add_binding_action (widget_class, GDK_KEY_KP_Delete, GDK_NO_MODIFIER_MASK, "view.move-to-trash", NULL);
     gtk_widget_class_add_binding_action (widget_class, GDK_KEY_Delete, GDK_NO_MODIFIER_MASK, "view.delete-from-trash", NULL);
+    gtk_widget_class_add_binding_action (widget_class, GDK_KEY_KP_Delete, GDK_NO_MODIFIER_MASK, "view.delete-from-trash", NULL);
     /* When trash is not available, allow the "Delete" keys to delete permanently, that is, when
      * the menu item is available, since we never make both the trash and delete-permanently-menu-item
      * actions active.
      */
-    gtk_widget_class_add_binding_action (widget_class, GDK_KEY_KP_Delete, GDK_NO_MODIFIER_MASK, "view.delete-permanently-menu-item", NULL);
     gtk_widget_class_add_binding_action (widget_class, GDK_KEY_Delete, GDK_NO_MODIFIER_MASK, "view.delete-permanently-menu-item", NULL);
+    gtk_widget_class_add_binding_action (widget_class, GDK_KEY_KP_Delete, GDK_NO_MODIFIER_MASK, "view.delete-permanently-menu-item", NULL);
 
     gtk_widget_class_add_binding_action (widget_class, GDK_KEY_F2, GDK_NO_MODIFIER_MASK, "view.rename", NULL);
     gtk_widget_class_add_binding_action (widget_class, GDK_KEY_Menu, GDK_NO_MODIFIER_MASK, "view.popup-menu", NULL);
