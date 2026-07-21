@@ -175,11 +175,13 @@
 
 /* Setup padding on the list. Horizontal padding must be set on the columnview
  * for it to calculate column widths correctly. */
+.nautilus-narrow-view listview,
 .nautilus-network-view listview,
 .nautilus-list-view columnview {
   padding-left: 24px;
   padding-right: 24px;
 }
+.nautilus-narrow-view listview,
 .nautilus-network-view listview,
 .nautilus-list-view columnview > listview {
   padding-top: 16px;
@@ -187,6 +189,7 @@
   border-spacing: 8px;
 }
 
+.nautilus-narrow-view.compact listview,
 .nautilus-list-view.compact columnview > listview {
   border-spacing: 4px;
 }
@@ -202,17 +205,20 @@
   margin-right: 24px;
 }
 
+.nautilus-narrow-view listview > row,
 .nautilus-network-view listview > row,
 .nautilus-list-view columnview > listview > row {
   border-radius: 9px;
 }
 
 @media (prefers-contrast: more) {
+  .nautilus-narrow-view listview > row.activatable:hover,
   .nautilus-list-view columnview > listview > row.activatable:hover,
   .nautilus-grid-view gridview > child.activatable:hover {
     box-shadow: inset 0 0 0 1px var(--border-color);
   }
 
+  .nautilus-narrow-view listview > row:selected,
   .nautilus-list-view columnview > listview > row:selected,
   .nautilus-grid-view gridview > child:selected {
     box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--accent-color) 60%, transparent);
@@ -227,6 +233,7 @@
 }
 
 
+.nautilus-narrow-view .nautilus-view-cell,
 .nautilus-network-view .nautilus-view-cell,
 .nautilus-list-view .nautilus-view-cell {
   padding: 6px;
@@ -237,17 +244,20 @@
   box-shadow: none;
 }
 
+.nautilus-narrow-view.compact .nautilus-view-cell,
 .nautilus-list-view.compact .nautilus-view-cell {
   padding-top: 3px;
   padding-bottom: 3px;
 }
 
 /* Star button needs to extend beyond its cell, into the padding of the row. */
+.nautilus-narrow-view button.star,
 .nautilus-list-view button.star {
   margin-top: -3px;
   margin-bottom: -3px;
 }
 
+.nautilus-narrow-view.compact button.star,
 .nautilus-list-view.compact button.star {
   min-height: 24px;
   min-width: 24px;
@@ -264,6 +274,7 @@
 }
 
 /* Both views */
+.nautilus-narrow-view:drop(active),
 .nautilus-network-view:drop(active),
 .nautilus-list-view:drop(active),
 .nautilus-grid-view:drop(active) {
@@ -273,6 +284,7 @@
 /* Remove the default background of the various view widgets
  * since we already apply a background to the entire content
  * pane with the .view class. Doing this will avoid overdraw. */
+.nautilus-narrow-view listview,
 .nautilus-network-view listview,
 .nautilus-grid-view gridview,
 .nautilus-list-view columnview,
@@ -349,6 +361,7 @@ rubberband {
   border-radius: 6px;
 }
 
+.nautilus-narrow-view listview,
 .nautilus-list-view listview,
 .nautilus-grid-view gridview,
 .nautilus-network-view listview {

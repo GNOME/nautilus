@@ -1,0 +1,66 @@
+using Gtk 4.0;
+
+template $NautilusNarrowCell: $NautilusViewCell {
+  Box top_child {
+    orientation: horizontal;
+    halign: fill;
+    spacing: 6;
+
+    $NautilusImage icon {
+      halign: center;
+      valign: center;
+    }
+
+    Box {
+      orientation: vertical;
+      hexpand: true;
+      valign: center;
+      spacing: 3;
+
+      Box {
+        orientation: horizontal;
+
+        Label label {
+          has-tooltip: true;
+          ellipsize: middle;
+          halign: start;
+          justify: left;
+          lines: 2;
+          wrap: true;
+          wrap-mode: word_char;
+          attributes: "0 -1 insert-hyphens false";
+          query-tooltip => $on_label_query_tooltip();
+          label: bind template.item as <$NautilusViewItem>.file as <$NautilusFile>.display-name;
+        }
+
+        Box emblems_box {
+          orientation: horizontal;
+          halign: start;
+          spacing: 6;
+          margin-start: 2;
+
+          styles [
+            "dim-label",
+          ]
+        }
+      }
+
+      CenterBox captions_box {
+        [start]
+        Label date_label {
+          styles ["subtitle"]
+        }
+
+        [end]
+        Label size_label {
+          styles ["subtitle"]
+        }
+      }
+    }
+
+    $NautilusStarCell star {
+      halign: end;
+      item: bind template.item;
+    }
+  }
+}

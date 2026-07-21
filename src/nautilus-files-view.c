@@ -59,6 +59,7 @@
 #include "nautilus-list-view.h"
 #include "nautilus-metadata.h"
 #include "nautilus-mime-actions.h"
+#include "nautilus-narrow-view.h"
 #include "nautilus-network-view.h"
 #include "nautilus-module.h"
 #include "nautilus-new-folder-dialog.h"
@@ -9629,7 +9630,7 @@ create_inner_view (NautilusFilesView *self,
 
         case NAUTILUS_VIEW_LIST_ID:
         {
-            self->list_base = NAUTILUS_LIST_BASE (nautilus_list_view_new ());
+            self->list_base = NAUTILUS_LIST_BASE (nautilus_narrow_view_new ());
         }
         break;
 
@@ -9642,7 +9643,7 @@ create_inner_view (NautilusFilesView *self,
         default:
         {
             g_critical ("Unknown view type ID: %d. Falling back to list.", id);
-            self->list_base = NAUTILUS_LIST_BASE (nautilus_list_view_new ());
+            self->list_base = NAUTILUS_LIST_BASE (nautilus_narrow_view_new ());
         }
     }
 
