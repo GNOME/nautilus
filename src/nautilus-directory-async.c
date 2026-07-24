@@ -3172,7 +3172,9 @@ thumbnail_info_start (NautilusDirectory *directory,
     directory->details->thumbnail_info_state = state;
 
     g_file_query_info_async (location,
-                             "thumbnail::*",
+                             G_FILE_ATTRIBUTE_THUMBNAIL_IS_VALID ","
+                             G_FILE_ATTRIBUTE_THUMBNAILING_FAILED ","
+                             G_FILE_ATTRIBUTE_THUMBNAIL_PATH,
                              G_FILE_QUERY_INFO_NONE,
                              G_PRIORITY_DEFAULT, state->cancellable,
                              thumbnail_info_query_callback,
