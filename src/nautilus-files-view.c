@@ -3762,7 +3762,9 @@ done_loading (NautilusFilesView *self,
         reset_update_interval (self);
 
         if (nautilus_files_view_is_searching (self) &&
-            all_files_seen && no_selection && self->pending_selection == NULL)
+            all_files_seen &&
+            (no_selection || !selection_source_is_intentional (self->selection_source)) &&
+            self->pending_selection == NULL)
         {
             nautilus_files_view_select_first (self, NAUTILUS_SELECTION_SOURCE_IN_SEARCH);
         }
@@ -4349,7 +4351,7 @@ display_pending_files (NautilusFilesView *view)
 
     process_pending_files (view);
 
-    if (no_selection &&
+    if ((no_selection || !selection_source_is_intentional (view->selection_source)) &&
         !view->pending_selection &&
         nautilus_files_view_is_searching (view))
     {
