@@ -91,6 +91,8 @@ libnautilus_sources = [
   'nautilus-directory.c',
   'nautilus-directory.h',
   'nautilus-directory-async.c',
+  'nautilus-recursive-directory-iterator.c',
+  'nautilus-recursive-directory-iterator.h',
   'nautilus-directory-notify.h',
   'nautilus-directory-private.h',
   'nautilus-dnd.c',
