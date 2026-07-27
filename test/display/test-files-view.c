@@ -1042,6 +1042,13 @@ main (int   argc,
 
     gtk_test_init (&argc, &argv, NULL);
 
+    if (nautilus_application_is_sandboxed ())
+    {
+        g_message ("files-view tests don't work inside a sandbox.");
+
+        return 77;
+    }
+
     nautilus_register_resource ();
     nautilus_ensure_extension_points ();
     nautilus_global_preferences_init ();
