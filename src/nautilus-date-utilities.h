@@ -24,8 +24,9 @@ char *
 nautilus_date_preview_detailed_format (GDateTime *timestamp,
                                        gboolean   use_detailed);
 
-/* These are meant to be upstreamed to GLib, but live in-tree for now */
-
+/* TODO Upstreamed to GLib in 2.89.3. Remove once the minimum required glib
+   version is higher. */
+#if !GLIB_CHECK_VERSION (2, 89, 3)
 /**
  * g_set_date_time: (skip)
  * @date_time_pointer: (inout) (not optional) (nullable): a pointer to either
@@ -74,6 +75,9 @@ g_set_date_time (GDateTime **date_time_pointer,
 
     return TRUE;
 }
+#endif
+
+/* This is meant to be upstreamed to GLib, but live in-tree for now */
 
 /**
  * g_set_ptr_array: (skip)
