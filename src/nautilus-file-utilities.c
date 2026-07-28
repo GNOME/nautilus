@@ -1329,6 +1329,9 @@ recursive_directory_iterator_thread (GTask        *task,
 }
 
 /**
+ * Asynchronously iterates a directory recursively, calling @file_callback
+ * for each encountered file. Calls @done_callback when iterating finished.
+ *
  * Set G_FILE_ATTRIBUTE_FILESYSTEM_REMOTE attribute when using `local_only`.
  */
 gboolean
