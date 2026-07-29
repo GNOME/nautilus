@@ -227,6 +227,12 @@ template $NautilusWindow: Adw.ApplicationWindow {
               $NautilusViewControls {
                 window-slot: bind template.active-slot;
               }
+
+              [end]
+              Adw.TabButton {
+                view: tab_view;
+                action-name: "win.open-tab-overview";
+              }
             }
           };
         };
