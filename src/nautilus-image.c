@@ -543,11 +543,11 @@ nautilus_image_set_texture (NautilusImage *self,
 
         if (texture != NULL)
         {
-            gtk_widget_add_css_class (GTK_WIDGET (self), "thumbnail");
+            gtk_widget_add_css_class (GTK_WIDGET (self), "file-thumbnail");
         }
         else
         {
-            gtk_widget_remove_css_class (GTK_WIDGET (self), "thumbnail");
+            gtk_widget_remove_css_class (GTK_WIDGET (self), "file-thumbnail");
         }
     }
 }
