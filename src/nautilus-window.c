@@ -90,6 +90,7 @@ struct _NautilusWindow
 
     GMenuModel *undo_redo_section;
 
+    AdwTabOverview *tab_overview;
     AdwTabView *tab_view;
     AdwTabBar *tab_bar;
     AdwTabPage *menu_page;
@@ -170,6 +171,16 @@ get_current_page (NautilusWindow *window)
     }
 
     return adw_tab_view_get_selected_page (window->tab_view);
+}
+
+static void
+action_open_tab_overview (GSimpleAction *action,
+                          GVariant      *state,
+                          gpointer       user_data)
+{
+    NautilusWindow *window = user_data;
+
+    adw_tab_overview_set_open (window->tab_overview, TRUE);
 }
 
 static void
@@ -310,6 +321,14 @@ on_slot_location_changed (NautilusWindowSlot *slot,
     }
 
     g_signal_emit (window, signals[LOCATIONS_CHANGED], 0);
+}
+
+static AdwTabPage *
+create_tab_cb (NautilusWindow *window)
+{
+    gtk_widget_activate_action (GTK_WIDGET (window), "win.new-tab", NULL);
+
+    return adw_tab_view_get_selected_page (window->tab_view);
 }
 
 static void
@@ -1056,6 +1075,7 @@ const GActionEntry win_entries[] =
     { .name = "new-tab", .activate = action_new_tab },
     { .name = "undo", .activate = action_undo },
     { .name = "redo", .activate = action_redo },
+    { .name = "open-tab-overview", .activate = action_open_tab_overview },
     /* Only accessible by shortcuts */
     { .name = "close-current-view", .activate = action_close_current_view },
     { .name = "close-other-tabs", .activate = action_close_other_tabs },
@@ -1085,6 +1105,7 @@ nautilus_window_initialize_actions (NautilusWindow *window)
 
     app = g_application_get_default ();
     nautilus_application_set_accelerator (app, "win.new-tab", "<control>t");
+    nautilus_application_set_accelerator (app, "win.open-tab-overview", "<shift><control>o");
     nautilus_application_set_accelerator (app, "win.close-current-view", "<control>w");
 
     nautilus_application_set_accelerator (app, "win.undo", "<control>z");
@@ -1111,6 +1132,9 @@ nautilus_window_initialize_actions (NautilusWindow *window)
     action = g_action_map_lookup_action (G_ACTION_MAP (window), "toggle-sidebar");
     g_object_bind_property (window->split_view, "collapsed",
                             action, "enabled", G_BINDING_SYNC_CREATE);
+
+    action = g_action_map_lookup_action (G_ACTION_MAP (window), "restore-tab");
+    g_simple_action_set_enabled (G_SIMPLE_ACTION (action), FALSE);
 }
 
 static gboolean
@@ -1633,9 +1657,12 @@ nautilus_window_class_init (NautilusWindowClass *class)
     gtk_widget_class_bind_template_child (wclass, NautilusWindow, split_view);
     gtk_widget_class_bind_template_child (wclass, NautilusWindow, places_sidebar);
     gtk_widget_class_bind_template_child (wclass, NautilusWindow, toast_overlay);
+    gtk_widget_class_bind_template_child (wclass, NautilusWindow, tab_overview);
     gtk_widget_class_bind_template_child (wclass, NautilusWindow, tab_view);
     gtk_widget_class_bind_template_child (wclass, NautilusWindow, tab_bar);
     gtk_widget_class_bind_template_child (wclass, NautilusWindow, network_address_bar);
+
+    gtk_widget_class_bind_template_callback (wclass, create_tab_cb);
 
     gtk_widget_class_bind_template_callback (wclass, tab_view_close_page_cb);
     gtk_widget_class_bind_template_callback (wclass, tab_view_setup_menu_cb);

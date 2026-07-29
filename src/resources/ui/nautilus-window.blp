@@ -14,6 +14,11 @@ menu app_menu {
       action: "win.new-tab";
       verb-icon: "tab-new-symbolic";
     }
+
+    item {
+      label: _("Show All Ta_bs");
+      action: "win.open-tab-overview";
+    }
   }
 
   section undo_redo_section {
@@ -100,6 +105,20 @@ menu tab_menu_model {
   }
 }
 
+menu tab_overview_menu_model {
+  section {
+    item {
+      label: _("New _Window");
+      action: "app.clone-window";
+    }
+
+    item {
+      label: _("Re_store Closed Tab");
+      action: "win.restore-tab";
+    }
+  }
+}
+
 template $NautilusWindow: Adw.ApplicationWindow {
   default-height: 550;
   default-width: 890;
@@ -114,95 +133,102 @@ template $NautilusWindow: Adw.ApplicationWindow {
 
   $NautilusShortcutManager {
     child: Adw.ToastOverlay toast_overlay {
-      child: Adw.OverlaySplitView split_view {
-        enable-show-gesture: false;
-        enable-hide-gesture: false;
-        max-sidebar-width: 240;
-        sidebar-width-unit: px;
-        sidebar-width-fraction: 0.2;
+      child: Adw.TabOverview tab_overview {
+        view: tab_view;
+        enable-new-tab: true;
+        secondary-menu: tab_overview_menu_model;
+        create-tab => $create_tab_cb() swapped;
 
-        sidebar: Adw.ToolbarView {
-          reveal-bottom-bars: bind progress_indicator.reveal;
+        child: Adw.OverlaySplitView split_view {
+          enable-show-gesture: false;
+          enable-hide-gesture: false;
+          max-sidebar-width: 240;
+          sidebar-width-unit: px;
+          sidebar-width-fraction: 0.2;
 
-          [top]
-          Adw.HeaderBar {
-            [start]
-            ToggleButton {
-              tooltip-text: _("Search Everywhere");
-              action-name: "slot.search-global";
-              icon-name: "edit-find-symbolic";
+          sidebar: Adw.ToolbarView {
+            reveal-bottom-bars: bind progress_indicator.reveal;
+
+            [top]
+            Adw.HeaderBar {
+              [start]
+              ToggleButton {
+                tooltip-text: _("Search Everywhere");
+                action-name: "slot.search-global";
+                icon-name: "edit-find-symbolic";
+              }
+
+              title-widget: Adw.WindowTitle {
+                title: _("Files");
+              };
+
+              [end]
+              MenuButton {
+                tooltip-text: _("Main Menu");
+                icon-name: "open-menu-symbolic";
+                menu-model: app_menu;
+              }
             }
 
-            title-widget: Adw.WindowTitle {
-              title: _("Files");
+            [bottom]
+            Box {
+              styles [
+                "toolbar",
+              ]
+
+              $NautilusProgressIndicator progress_indicator {}
+            }
+
+            content: $NautilusSidebar places_sidebar {
+              vexpand: true;
+              window-slot: bind template.active-slot;
+            };
+          };
+
+          content: Adw.ToolbarView {
+            [top]
+            $NautilusToolbar toolbar {
+              show-view-controls: true;
+              show-history-controls: true;
+              sidebar-button-active: bind split_view.show-sidebar bidirectional;
+              window-slot: bind template.active-slot;
+            }
+
+            [top]
+            Adw.TabBar tab_bar {
+              view: tab_view;
+            }
+
+            content: Adw.TabView tab_view {
+              menu-model: tab_menu_model;
+              close-page => $tab_view_close_page_cb();
+              setup-menu => $tab_view_setup_menu_cb();
+              notify::selected-page => $tab_view_notify_selected_page_cb();
+              create-window => $tab_view_create_window_cb();
+              page-attached => $tab_view_page_attached_cb();
+              page-detached => $tab_view_page_detached_cb();
             };
 
-            [end]
-            MenuButton {
-              tooltip-text: _("Main Menu");
-              icon-name: "open-menu-symbolic";
-              menu-model: app_menu;
+            [bottom]
+            $NautilusNetworkAddressBar network_address_bar {
+              visible: false;
             }
-          }
 
-          [bottom]
-          Box {
-            styles [
-              "toolbar",
-            ]
+            [bottom]
+            ActionBar action_bar {
+              revealed: false;
 
-            $NautilusProgressIndicator progress_indicator {}
-          }
+              [start]
+              $NautilusHistoryControls {
+                window-slot: bind template.active-slot;
+              }
 
-          content: $NautilusSidebar places_sidebar {
-            vexpand: true;
-            window-slot: bind template.active-slot;
+              [end]
+              $NautilusViewControls {
+                window-slot: bind template.active-slot;
+              }
+            }
           };
-        };
-
-        content: Adw.ToolbarView {
-          [top]
-          $NautilusToolbar toolbar {
-            show-view-controls: true;
-            show-history-controls: true;
-            sidebar-button-active: bind split_view.show-sidebar bidirectional;
-            window-slot: bind template.active-slot;
-          }
-
-          [top]
-          Adw.TabBar tab_bar {
-            view: tab_view;
-          }
-
-          content: Adw.TabView tab_view {
-            menu-model: tab_menu_model;
-            close-page => $tab_view_close_page_cb();
-            setup-menu => $tab_view_setup_menu_cb();
-            notify::selected-page => $tab_view_notify_selected_page_cb();
-            create-window => $tab_view_create_window_cb();
-            page-attached => $tab_view_page_attached_cb();
-            page-detached => $tab_view_page_detached_cb();
-          };
-
-          [bottom]
-          $NautilusNetworkAddressBar network_address_bar {
-            visible: false;
-          }
-
-          [bottom]
-          ActionBar action_bar {
-            revealed: false;
-
-            [start]
-            $NautilusHistoryControls {
-              window-slot: bind template.active-slot;
-            }
-
-            [end]
-            $NautilusViewControls {
-              window-slot: bind template.active-slot;
-            }
-          }
         };
       };
     };
