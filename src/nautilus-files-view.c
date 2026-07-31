@@ -2477,16 +2477,21 @@ action_properties (GSimpleAction *action,
     {
         if (self->directory_as_file != NULL)
         {
+            g_autoptr (GFile) location = nautilus_file_get_location (self->directory_as_file);
+
             files = g_list_append (NULL, nautilus_file_ref (self->directory_as_file));
 
-            nautilus_properties_present_dialog (files, GTK_WIDGET (self));
+            nautilus_properties_present_dialog (files, GTK_WIDGET (self), location);
 
             nautilus_file_list_free (files);
         }
     }
     else
     {
-        nautilus_properties_present_dialog (selection, GTK_WIDGET (self));
+        g_autoptr (GFile) location = self->directory_as_file != NULL
+                                     ? nautilus_file_get_location (self->directory_as_file)
+                                     : NULL;
+        nautilus_properties_present_dialog (selection, GTK_WIDGET (self), location);
     }
 }
 
@@ -2503,9 +2508,11 @@ action_current_dir_properties (GSimpleAction *action,
 
     if (self->directory_as_file != NULL)
     {
+        g_autoptr (GFile) location = nautilus_file_get_location (self->directory_as_file);
+
         files = g_list_append (NULL, nautilus_file_ref (self->directory_as_file));
 
-        nautilus_properties_present_dialog (files, GTK_WIDGET (self));
+        nautilus_properties_present_dialog (files, GTK_WIDGET (self), location);
 
         nautilus_file_list_free (files);
     }

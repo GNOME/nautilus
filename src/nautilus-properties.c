@@ -194,6 +194,8 @@ struct _NautilusPropertiesWidget
 
     GList *changed_files;
     GListStore *extensions_list;
+
+    GFile *current_view_location;
 };
 
 enum
@@ -2299,6 +2301,12 @@ should_show_location_info (NautilusPropertiesWidget *self)
         return FALSE;
     }
 
+    if (self->current_view_location != NULL &&
+        g_file_equal (first_parent, self->current_view_location))
+    {
+        return FALSE;
+    }
+
     g_autoptr (GFile) location = nautilus_file_get_location (file);
     g_autoptr (GMount) mount = g_file_find_enclosing_mount (location, NULL, NULL);
 
@@ -3731,10 +3739,16 @@ file_list_ready_callback (GList    *file_list,
 }
 
 static NautilusPropertiesWidget *
-properties_widget_new (NautilusFileList *files)
+properties_widget_new (NautilusFileList *files,
+                       GFile            *current_view_location)
 {
     NautilusPropertiesWidget *self =
         NAUTILUS_PROPERTIES_WIDGET (g_object_new (NAUTILUS_TYPE_PROPERTIES_WIDGET, NULL));
+
+    if (current_view_location != NULL)
+    {
+        self->current_view_location = g_object_ref (current_view_location);
+    }
 
     for (GList *l = files; l != NULL; l = l->next)
     {
@@ -3782,7 +3796,7 @@ nautilus_properties_present_window (NautilusFileList *files,
 {
     g_return_val_if_fail (files != NULL, NULL);
 
-    NautilusPropertiesWidget *self = properties_widget_new (files);
+    NautilusPropertiesWidget *self = properties_widget_new (files, NULL);
     GtkWindow *window = create_properties_window (GTK_WIDGET (self));
 
     g_signal_connect_swapped (self, "hide-properties", G_CALLBACK (gtk_window_close), window);
@@ -3799,12 +3813,13 @@ nautilus_properties_present_window (NautilusFileList *files,
 
 void
 nautilus_properties_present_dialog (NautilusFileList *files,
-                                    GtkWidget        *parent_widget)
+                                    GtkWidget        *parent_widget,
+                                    GFile            *current_view_location)
 {
     g_return_if_fail (files != NULL);
     g_return_if_fail (GTK_IS_WIDGET (parent_widget));
 
-    NautilusPropertiesWidget *self = properties_widget_new (files);
+    NautilusPropertiesWidget *self = properties_widget_new (files, current_view_location);
     AdwDialog *dialog = adw_dialog_new ();
 
     adw_dialog_set_content_width (dialog, DEFAULT_PROPERTIES_WIDTH);
@@ -3888,6 +3903,7 @@ real_dispose (GObject *object)
 
     g_clear_object (&self->icon_cancellable);
     g_clear_object (&self->icon_pending_location);
+    g_clear_object (&self->current_view_location);
     g_clear_pointer (&self->custom_icon_for_undo, g_free);
     g_clear_pointer (&self->handle, nautilus_file_list_cancel_call_when_ready);
     if (self->volume_fs_info_cancellable)

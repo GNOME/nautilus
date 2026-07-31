@@ -215,14 +215,16 @@ action_pathbar_properties (GSimpleAction *action,
 {
     NautilusPathBar *self;
     GList *files;
+    g_autoptr (GFile) location = NULL;
 
     self = NAUTILUS_PATH_BAR (user_data);
 
     g_return_if_fail (NAUTILUS_IS_FILE (self->context_menu_file));
 
     files = g_list_append (NULL, nautilus_file_ref (self->context_menu_file));
+    location = nautilus_file_get_location (self->context_menu_file);
 
-    nautilus_properties_present_dialog (files, GTK_WIDGET (self));
+    nautilus_properties_present_dialog (files, GTK_WIDGET (self), location);
 
     nautilus_file_list_free (files);
 }

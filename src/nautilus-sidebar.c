@@ -2165,11 +2165,13 @@ properties_cb (GSimpleAction *action,
     GList *list;
     NautilusFile *file;
     g_autofree gchar *uri = NULL;
+    g_autoptr (GFile) location = NULL;
 
     g_object_get (sidebar->context_row, "uri", &uri, NULL);
     file = nautilus_file_get_by_uri (uri);
     list = g_list_append (NULL, file);
-    nautilus_properties_present_dialog (list, GTK_WIDGET (sidebar));
+    location = nautilus_file_get_location (file);
+    nautilus_properties_present_dialog (list, GTK_WIDGET (sidebar), location);
 
     nautilus_file_list_free (list);
 }
