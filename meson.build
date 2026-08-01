@@ -6,7 +6,7 @@ project('nautilus', 'c',
 
   # Do not forget when releasing:
   #  * Set release date in data/org.gnome.Nautilus.metainfo.xml.in.in
-  version: '51.beta',
+  version: '51.rc',
 
   meson_version: '>= 0.60.0',
   license: 'GPL-3.0-or-later'
