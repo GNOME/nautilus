@@ -1,3 +1,31 @@
+Major Changes in 51.beta
+========================
+* Enhancements:
+- Use AdwTabOverview in narrow mode (Automeris naranja)
+- Open locations from other apps in new tabs (Corey Berla)
+- Add an empty document menu entry in case of empty templates directory (Khalid Abu Shawarib)
+- Ignore most duplicate app entries in the app chooser (Khalid Abu Shawarib)
+- Add gobject-linter CI job (Khalid Abu Shawarib)
+- Move search focus to higher relevency result (pagarao)
+- Use AdwComboRow for open action preference (Khalid Abu Shawarib)
+- Hide redundant 'Open Parent Folder' properties row (Hanzala Sohrab)
+- Use dedicated symbolic for Projects bookmark icon (Lorenzo Ubaldi)
+- Adjust sidebar width limit (Programejt)
+- Don't duplicate loading locations (Peter Eisenmann)
+
+* Bugfixes:
+- Show non-keypad shortcuts in menus (Peter Eisenmann)
+- Handle timed dialogs being destroyed before their timeout (Khalid Abu Shawarib)
+- Put g_set_date_time behind a guard (Maximiliano Sandoval)
+- Fix memory leak in action_create_links_in_place (Programejt)
+- Correctly position related apps in the app chooser (Peter Eisenmann)
+
+* Cleanups:
+- Apply gobject-linter fixes (Khalid Abu Shawarib)
+- Cleanup NautilusWindowSlot internals (Peter Eisenmann)
+
+* Translation updates (GNOME Translation Project contributors)
+
 Major Changes in 51.alpha
 =========================
 * Enhancements:
