@@ -8,8 +8,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: nautilus.master\n"
 "Report-Msgid-Bugs-To: https://gitlab.gnome.org/GNOME/nautilus/issues\n"
-"POT-Creation-Date: 2026-08-01 13:22+0000\n"
-"PO-Revision-Date: 2026-08-01 16:22+0200\n"
+"POT-Creation-Date: 2026-08-01 15:02+0000\n"
+"PO-Revision-Date: 2026-08-01 18:55+0200\n"
 "Last-Translator: Quentin PAGÈS\n"
 "Language-Team: Tot En Òc\n"
 "Language: oc\n"
@@ -449,11 +449,11 @@ msgstr ""
 msgid "The GNOME Project"
 msgstr "Lo projècte GNOME"
 
-#: data/org.gnome.Nautilus.metainfo.xml.in.in:59 src/nautilus-files-view.c:9715
+#: data/org.gnome.Nautilus.metainfo.xml.in.in:59 src/nautilus-files-view.c:9734
 msgid "Grid View"
 msgstr "Vista en grasilha"
 
-#: data/org.gnome.Nautilus.metainfo.xml.in.in:63 src/nautilus-files-view.c:9726
+#: data/org.gnome.Nautilus.metainfo.xml.in.in:63 src/nautilus-files-view.c:9745
 msgid "List View"
 msgstr "Vista en lista"
 
@@ -1883,7 +1883,7 @@ msgid "Deleting Files"
 msgstr "Supression dels fichièrs"
 
 #. Translators: %s is a file name formatted for display
-#: src/nautilus-file-operations.c:2138 src/nautilus-files-view.c:6605
+#: src/nautilus-file-operations.c:2138 src/nautilus-files-view.c:6613
 #: src/nautilus-sidebar.c:2364 src/nautilus-sidebar.c:2393
 #, c-format
 msgid "Unable to eject “%s”"
@@ -1918,7 +1918,7 @@ msgid "_Empty"
 msgstr "_Voidar"
 
 #. Translators: %s is a file name formatted for display
-#: src/nautilus-file-operations.c:2423 src/nautilus-files-view.c:6558
+#: src/nautilus-file-operations.c:2423 src/nautilus-files-view.c:6566
 #: src/nautilus-sidebar.c:1777
 #, c-format
 msgid "Unable to access “%s”"
@@ -3174,45 +3174,49 @@ msgstr "Recèrca en cors…"
 msgid "Loading…"
 msgstr "Cargament…"
 
-#: src/nautilus-files-view.c:1804
-msgid "Examples: "
-msgstr "Exemples : "
+#: src/nautilus-files-view.c:954
+msgid "Empty Text File"
+msgstr "Fichièr tèxt void"
 
-#: src/nautilus-files-view.c:2851 src/nautilus-files-view.c:2857
-#: src/nautilus-files-view.c:2863 src/nautilus-files-view.c:2869
+#: src/nautilus-files-view.c:1812
+msgid "Examples: "
+msgstr "Exemples : "
+
+#: src/nautilus-files-view.c:2859 src/nautilus-files-view.c:2865
+#: src/nautilus-files-view.c:2871 src/nautilus-files-view.c:2877
 msgid "Could not paste files"
 msgstr "Impossible de pegar los fichièrs"
 
-#: src/nautilus-files-view.c:2852
+#: src/nautilus-files-view.c:2860
 msgid "Cannot paste files into Starred"
 msgstr "Impossible de pegar los fichièrs als Favorits"
 
-#: src/nautilus-files-view.c:2858
+#: src/nautilus-files-view.c:2866
 msgid "Cannot paste files into Recent"
 msgstr "Impossible de pegar los fichièrs als Recents"
 
-#: src/nautilus-files-view.c:2864
+#: src/nautilus-files-view.c:2872
 msgid "Cannot paste files into Trash"
 msgstr "Impossible de pegar los fichièrs a l’escobilhièr"
 
-#: src/nautilus-files-view.c:2870
+#: src/nautilus-files-view.c:2878
 msgid "Permissions do not allow pasting files in this directory"
 msgstr ""
 "Las permissions permeton pas de pegar de fichièrs dins aqueste repertòri"
 
-#: src/nautilus-files-view.c:3450 src/nautilus-files-view.c:3497
+#: src/nautilus-files-view.c:3458 src/nautilus-files-view.c:3505
 #, c-format
 msgid "“%s” selected"
 msgstr "« %s » seleccionat"
 
-#: src/nautilus-files-view.c:3454
+#: src/nautilus-files-view.c:3462
 #, c-format
 msgid "%'d folder selected"
 msgid_plural "%'d folders selected"
 msgstr[0] "%'d dorsièr seleccionat"
 msgstr[1] "%'d dorsièrs seleccionats"
 
-#: src/nautilus-files-view.c:3468
+#: src/nautilus-files-view.c:3476
 #, c-format
 msgid "(containing %'d item)"
 msgid_plural "(containing %'d items)"
@@ -3220,14 +3224,14 @@ msgstr[0] "(que conten %'d element)"
 msgstr[1] "(que conten %'d elements)"
 
 #. translators: this is preceded with a string of form 'N folders' (N more than 1)
-#: src/nautilus-files-view.c:3483
+#: src/nautilus-files-view.c:3491
 #, c-format
 msgid "(containing a total of %'d item)"
 msgid_plural "(containing a total of %'d items)"
 msgstr[0] "(que conten %'d element al total)"
 msgstr[1] "(que conten %'d elements al total)"
 
-#: src/nautilus-files-view.c:3502
+#: src/nautilus-files-view.c:3510
 #, c-format
 msgid "%'d item selected"
 msgid_plural "%'d items selected"
@@ -3235,7 +3239,7 @@ msgstr[0] "%'d element seleccionat"
 msgstr[1] "%'d elements seleccionats"
 
 #. Folders selected also, use "other" terminology
-#: src/nautilus-files-view.c:3511
+#: src/nautilus-files-view.c:3519
 #, c-format
 msgid "%'d other item selected"
 msgid_plural "%'d other items selected"
@@ -3246,7 +3250,7 @@ msgstr[1] "%'d autres elements seleccionats"
 #. * needs to use something other than parentheses. The
 #. * the message in parentheses is the size of the selected items.
 #.
-#: src/nautilus-files-view.c:3526
+#: src/nautilus-files-view.c:3534
 #, c-format
 msgid "(%s)"
 msgstr "(%s)"
@@ -3258,170 +3262,170 @@ msgstr "(%s)"
 #. * message about the number of other items and the
 #. * total size of those items.
 #.
-#: src/nautilus-files-view.c:3576
+#: src/nautilus-files-view.c:3584
 #, c-format
 msgid "%s, %s"
 msgstr "%s, %s"
 
-#: src/nautilus-files-view.c:3652
+#: src/nautilus-files-view.c:3660
 msgid "Search _Settings"
 msgstr "Paramètres de _recèrca"
 
-#: src/nautilus-files-view.c:3664
+#: src/nautilus-files-view.c:3672
 msgid "Search _Everywhere"
 msgstr "Cercar _pertot"
 
-#: src/nautilus-files-view.c:3694
+#: src/nautilus-files-view.c:3702
 msgid "More locations can be added to search in the settings"
 msgstr "Als paramètres se pòt apondre mai d’emplaçament a la recèrca"
 
 #. Translators: %s is the name of the search location formatted for display
-#: src/nautilus-files-view.c:3702
+#: src/nautilus-files-view.c:3710
 #, c-format
 msgid "No matches in “%s”"
 msgstr "Cap de correspondéncia dins « %s »"
 
-#: src/nautilus-files-view.c:3710
+#: src/nautilus-files-view.c:3718
 #: src/resources/ui/nautilus-search-types-dialog.blp:66
 msgid "No Results Found"
 msgstr "Cap de resultat pas trobat"
 
-#: src/nautilus-files-view.c:3715
+#: src/nautilus-files-view.c:3723
 msgid "Trash is Empty"
 msgstr "L'escobilhièr es void"
 
-#: src/nautilus-files-view.c:3721
+#: src/nautilus-files-view.c:3729
 msgid "No Starred Files"
 msgstr "Cap de fichièrs en favorit"
 
-#: src/nautilus-files-view.c:3727
+#: src/nautilus-files-view.c:3735
 msgid "No Recent Files"
 msgstr "Cap de fichièrs recents"
 
-#: src/nautilus-files-view.c:3733
+#: src/nautilus-files-view.c:3741
 msgid "No Known Connections"
 msgstr "Cap de connexion coneguda"
 
-#: src/nautilus-files-view.c:3734
+#: src/nautilus-files-view.c:3742
 msgid "Enter an address to connect to a network location."
 msgstr "Picatz una adreça per vos connectar a un emplaçament ret."
 
-#: src/nautilus-files-view.c:3739
+#: src/nautilus-files-view.c:3747
 msgid "Folder is Empty"
 msgstr "Lo dorsièr es void"
 
-#: src/nautilus-files-view.c:5826
+#: src/nautilus-files-view.c:5834
 msgid "Select Move Destination"
 msgstr "Seleccionar una destinacion pel desplaçament"
 
-#: src/nautilus-files-view.c:5830
+#: src/nautilus-files-view.c:5838
 msgid "Select Copy Destination"
 msgstr "Seleccionar una destinacion per la còpia"
 
-#: src/nautilus-files-view.c:5841 src/nautilus-files-view.c:6209
+#: src/nautilus-files-view.c:5849 src/nautilus-files-view.c:6217
 #: src/nautilus-portal.c:478 src/nautilus-properties.c:3988
 #: src/resources/ui/nautilus-files-view-select-items.blp:24
 msgid "_Select"
 msgstr "_Seleccionar"
 
-#: src/nautilus-files-view.c:6208
+#: src/nautilus-files-view.c:6216
 msgid "Select Extract Destination"
 msgstr "Seleccionar una destinacion per l'extraccion"
 
-#: src/nautilus-files-view.c:6284
+#: src/nautilus-files-view.c:6292
 msgid "Error sending email."
 msgstr "Error en enviant l’email."
 
 #. Translators: %s is a file name formatted for display
-#: src/nautilus-files-view.c:6583
+#: src/nautilus-files-view.c:6591
 #, c-format
 msgid "Unable to remove “%s”"
 msgstr "Impossible de levar « %s »"
 
-#: src/nautilus-files-view.c:6626
+#: src/nautilus-files-view.c:6634
 msgid "Unable to stop drive"
 msgstr "Impossible d'arrestar lo volum"
 
 #. Translators: %s is a file name formatted for display
-#: src/nautilus-files-view.c:6736 src/nautilus-sidebar.c:1728
+#: src/nautilus-files-view.c:6744 src/nautilus-sidebar.c:1728
 #: src/nautilus-sidebar.c:2608
 #, c-format
 msgid "Unable to start “%s”"
 msgstr "Impossible d'aviar « %s »"
 
-#: src/nautilus-files-view.c:7833
+#: src/nautilus-files-view.c:7852
 #, c-format
 msgid "New Folder with Selection (%'d Item)"
 msgid_plural "New Folder with Selection (%'d Items)"
 msgstr[0] "Dorsièr novèl que conten la seleccion (%'d element)"
 msgstr[1] "Dorsièr novèl que conten la seleccion (%'d elements)"
 
-#: src/nautilus-files-view.c:7888
+#: src/nautilus-files-view.c:7907
 #, c-format
 msgid "Open With %s"
 msgstr "Dobrir amb %s"
 
-#: src/nautilus-files-view.c:7899
+#: src/nautilus-files-view.c:7918
 msgid "Run"
 msgstr "Aviar"
 
-#: src/nautilus-files-view.c:7904
+#: src/nautilus-files-view.c:7923
 #: src/resources/ui/nautilus-operations-ui-manager-request-passphrase.blp:17
 msgid "Extract"
 msgstr "Extraire"
 
-#: src/nautilus-files-view.c:7905
+#: src/nautilus-files-view.c:7924
 msgid "Extract to…"
 msgstr "Extraire cap a…"
 
-#: src/nautilus-files-view.c:7909
+#: src/nautilus-files-view.c:7928
 #: src/resources/menu/nautilus-files-view-context-menus.ui:98
 msgid "Open"
 msgstr "Dobrir"
 
 #
-#: src/nautilus-files-view.c:7985 src/nautilus-sidebar.c:3054
+#: src/nautilus-files-view.c:8004 src/nautilus-sidebar.c:3054
 #: src/resources/menu/nautilus-files-view-context-menus.ui:164
 msgid "_Start"
 msgstr "_Aviar"
 
-#: src/nautilus-files-view.c:7991
+#: src/nautilus-files-view.c:8010
 msgid "_Connect"
 msgstr "Se _connectar"
 
-#: src/nautilus-files-view.c:7997
+#: src/nautilus-files-view.c:8016
 msgid "_Start Multi-disk Drive"
 msgstr "_Aviar lo volum multidisc"
 
-#: src/nautilus-files-view.c:8003
+#: src/nautilus-files-view.c:8022
 msgid "U_nlock Drive"
 msgstr "_Desverrolhar lo volum"
 
-#: src/nautilus-files-view.c:8021
+#: src/nautilus-files-view.c:8040
 msgid "Stop Drive"
 msgstr "Arrestar lo volum"
 
-#: src/nautilus-files-view.c:8027 src/nautilus-sidebar.c:3085
+#: src/nautilus-files-view.c:8046 src/nautilus-sidebar.c:3085
 msgid "_Safely Remove Drive"
 msgstr "Levar lo volum d'un biais _segur"
 
-#: src/nautilus-files-view.c:8033
+#: src/nautilus-files-view.c:8052
 msgid "_Disconnect"
 msgstr "Se _desconnectar"
 
-#: src/nautilus-files-view.c:8039
+#: src/nautilus-files-view.c:8058
 msgid "_Stop Multi-disk Drive"
 msgstr "_Arrestar lo volum multidisc"
 
-#: src/nautilus-files-view.c:8045
+#: src/nautilus-files-view.c:8064
 msgid "_Lock Drive"
 msgstr "_Verrolhar lo volum"
 
-#: src/nautilus-files-view.c:9713
+#: src/nautilus-files-view.c:9732
 msgid "View items as a grid of icons"
 msgstr "Veire los elements jos la forma d'una grasilha d'icònas"
 
-#: src/nautilus-files-view.c:9724
+#: src/nautilus-files-view.c:9743
 msgid "View items as a list"
 msgstr "Veire los elements jos la forma d'una lista"
 
