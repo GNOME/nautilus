@@ -8,8 +8,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: nautilus\n"
 "Report-Msgid-Bugs-To: https://gitlab.gnome.org/GNOME/nautilus/issues\n"
-"POT-Creation-Date: 2026-08-01 13:22+0000\n"
-"PO-Revision-Date: 2026-08-01 17:12+0300\n"
+"POT-Creation-Date: 2026-08-01 15:02+0000\n"
+"PO-Revision-Date: 2026-08-02 21:48+0300\n"
 "Last-Translator: Yuri Chornoivan <yurchor@ukr.net>\n"
 "Language-Team: Ukrainian <trans-uk@lists.fedoraproject.org>\n"
 "Language: uk\n"
@@ -433,11 +433,11 @@ msgstr ""
 msgid "The GNOME Project"
 msgstr "Проєкт GNOME"
 
-#: data/org.gnome.Nautilus.metainfo.xml.in.in:59 src/nautilus-files-view.c:9715
+#: data/org.gnome.Nautilus.metainfo.xml.in.in:59 src/nautilus-files-view.c:9734
 msgid "Grid View"
 msgstr "Перегляд ґраткою"
 
-#: data/org.gnome.Nautilus.metainfo.xml.in.in:63 src/nautilus-files-view.c:9726
+#: data/org.gnome.Nautilus.metainfo.xml.in.in:63 src/nautilus-files-view.c:9745
 msgid "List View"
 msgstr "Перегляд списком"
 
@@ -1896,7 +1896,7 @@ msgid "Deleting Files"
 msgstr "Вилучення файлів"
 
 #. Translators: %s is a file name formatted for display
-#: src/nautilus-file-operations.c:2138 src/nautilus-files-view.c:6605
+#: src/nautilus-file-operations.c:2138 src/nautilus-files-view.c:6613
 #: src/nautilus-sidebar.c:2364 src/nautilus-sidebar.c:2393
 #, c-format
 msgid "Unable to eject “%s”"
@@ -1931,7 +1931,7 @@ msgid "_Empty"
 msgstr "Споро_жнити"
 
 #. Translators: %s is a file name formatted for display
-#: src/nautilus-file-operations.c:2423 src/nautilus-files-view.c:6558
+#: src/nautilus-file-operations.c:2423 src/nautilus-files-view.c:6566
 #: src/nautilus-sidebar.c:1777
 #, c-format
 msgid "Unable to access “%s”"
@@ -3278,37 +3278,42 @@ msgstr "Пошук…"
 msgid "Loading…"
 msgstr "Завантаження…"
 
-#: src/nautilus-files-view.c:1804
+#: src/nautilus-files-view.c:954
+#| msgid "Text File"
+msgid "Empty Text File"
+msgstr "Порожній текстовий файл"
+
+#: src/nautilus-files-view.c:1812
 msgid "Examples: "
 msgstr "Приклади: "
 
-#: src/nautilus-files-view.c:2851 src/nautilus-files-view.c:2857
-#: src/nautilus-files-view.c:2863 src/nautilus-files-view.c:2869
+#: src/nautilus-files-view.c:2859 src/nautilus-files-view.c:2865
+#: src/nautilus-files-view.c:2871 src/nautilus-files-view.c:2877
 msgid "Could not paste files"
 msgstr "Не вдалося вставити файли"
 
-#: src/nautilus-files-view.c:2852
+#: src/nautilus-files-view.c:2860
 msgid "Cannot paste files into Starred"
 msgstr "Не можна вставляти файли до «Із зірочками»"
 
-#: src/nautilus-files-view.c:2858
+#: src/nautilus-files-view.c:2866
 msgid "Cannot paste files into Recent"
 msgstr "Не можна вставляти файли до «Нещодавніх»"
 
-#: src/nautilus-files-view.c:2864
+#: src/nautilus-files-view.c:2872
 msgid "Cannot paste files into Trash"
 msgstr "Не можна вставляти файли до «Смітника»"
 
-#: src/nautilus-files-view.c:2870
+#: src/nautilus-files-view.c:2878
 msgid "Permissions do not allow pasting files in this directory"
 msgstr "Права доступу забороняють вставлення файлів до цього каталогу"
 
-#: src/nautilus-files-view.c:3450 src/nautilus-files-view.c:3497
+#: src/nautilus-files-view.c:3458 src/nautilus-files-view.c:3505
 #, c-format
 msgid "“%s” selected"
 msgstr "Вибрано «%s»"
 
-#: src/nautilus-files-view.c:3454
+#: src/nautilus-files-view.c:3462
 #, c-format
 msgid "%'d folder selected"
 msgid_plural "%'d folders selected"
@@ -3317,7 +3322,7 @@ msgstr[1] "Вибрано %'d теки"
 msgstr[2] "Вибрано %'d тек"
 msgstr[3] "Вибрано %'d тека"
 
-#: src/nautilus-files-view.c:3468
+#: src/nautilus-files-view.c:3476
 #, c-format
 msgid "(containing %'d item)"
 msgid_plural "(containing %'d items)"
@@ -3327,7 +3332,7 @@ msgstr[2] "(містить %'d об'єктів)"
 msgstr[3] "(містить %'d об'єкт)"
 
 #. translators: this is preceded with a string of form 'N folders' (N more than 1)
-#: src/nautilus-files-view.c:3483
+#: src/nautilus-files-view.c:3491
 #, c-format
 msgid "(containing a total of %'d item)"
 msgid_plural "(containing a total of %'d items)"
@@ -3336,7 +3341,7 @@ msgstr[1] "(загалом містить %'d об'єкти)"
 msgstr[2] "(загалом містить %'d об'єктів)"
 msgstr[3] "(загалом містить %'d об'єкт)"
 
-#: src/nautilus-files-view.c:3502
+#: src/nautilus-files-view.c:3510
 #, c-format
 msgid "%'d item selected"
 msgid_plural "%'d items selected"
@@ -3346,7 +3351,7 @@ msgstr[2] "Вибрано %'d об'єктів"
 msgstr[3] "Вибрано %'d об'єкт"
 
 #. Folders selected also, use "other" terminology
-#: src/nautilus-files-view.c:3511
+#: src/nautilus-files-view.c:3519
 #, c-format
 msgid "%'d other item selected"
 msgid_plural "%'d other items selected"
@@ -3359,7 +3364,7 @@ msgstr[3] "Вибрано %'d інший об'єкт"
 #. * needs to use something other than parentheses. The
 #. * the message in parentheses is the size of the selected items.
 #.
-#: src/nautilus-files-view.c:3526
+#: src/nautilus-files-view.c:3534
 #, c-format
 msgid "(%s)"
 msgstr "(%s)"
@@ -3371,98 +3376,98 @@ msgstr "(%s)"
 #. * message about the number of other items and the
 #. * total size of those items.
 #.
-#: src/nautilus-files-view.c:3576
+#: src/nautilus-files-view.c:3584
 #, c-format
 msgid "%s, %s"
 msgstr "%s, %s"
 
-#: src/nautilus-files-view.c:3652
+#: src/nautilus-files-view.c:3660
 msgid "Search _Settings"
 msgstr "П_араметри пошуку"
 
-#: src/nautilus-files-view.c:3664
+#: src/nautilus-files-view.c:3672
 msgid "Search _Everywhere"
 msgstr "Шукати вс_юди"
 
-#: src/nautilus-files-view.c:3694
+#: src/nautilus-files-view.c:3702
 msgid "More locations can be added to search in the settings"
 msgstr "Додаткові місця для пошуку можна додати у «Параметрах»"
 
 #. Translators: %s is the name of the search location formatted for display
-#: src/nautilus-files-view.c:3702
+#: src/nautilus-files-view.c:3710
 #, c-format
 msgid "No matches in “%s”"
 msgstr "Немає відповідників у «%s»"
 
-#: src/nautilus-files-view.c:3710
+#: src/nautilus-files-view.c:3718
 #: src/resources/ui/nautilus-search-types-dialog.blp:66
 msgid "No Results Found"
 msgstr "Не знайдено жодного результату"
 
-#: src/nautilus-files-view.c:3715
+#: src/nautilus-files-view.c:3723
 msgid "Trash is Empty"
 msgstr "Смітник порожній"
 
-#: src/nautilus-files-view.c:3721
+#: src/nautilus-files-view.c:3729
 msgid "No Starred Files"
 msgstr "Немає файлів із зірочками"
 
-#: src/nautilus-files-view.c:3727
+#: src/nautilus-files-view.c:3735
 msgid "No Recent Files"
 msgstr "Немає нещодавніх файлів"
 
-#: src/nautilus-files-view.c:3733
+#: src/nautilus-files-view.c:3741
 msgid "No Known Connections"
 msgstr "Немає відомих з'єднань"
 
-#: src/nautilus-files-view.c:3734
+#: src/nautilus-files-view.c:3742
 msgid "Enter an address to connect to a network location."
 msgstr "Введіть адресу для з'єднання з місцем у мережі."
 
-#: src/nautilus-files-view.c:3739
+#: src/nautilus-files-view.c:3747
 msgid "Folder is Empty"
 msgstr "Тека порожня"
 
-#: src/nautilus-files-view.c:5826
+#: src/nautilus-files-view.c:5834
 msgid "Select Move Destination"
 msgstr "Виберіть ціль для перенесення"
 
-#: src/nautilus-files-view.c:5830
+#: src/nautilus-files-view.c:5838
 msgid "Select Copy Destination"
 msgstr "Виберіть ціль для копіювання"
 
-#: src/nautilus-files-view.c:5841 src/nautilus-files-view.c:6209
+#: src/nautilus-files-view.c:5849 src/nautilus-files-view.c:6217
 #: src/nautilus-portal.c:478 src/nautilus-properties.c:3988
 #: src/resources/ui/nautilus-files-view-select-items.blp:24
 msgid "_Select"
 msgstr "_Вибрати"
 
-#: src/nautilus-files-view.c:6208
+#: src/nautilus-files-view.c:6216
 msgid "Select Extract Destination"
 msgstr "Виберіть ціль для розпакування"
 
-#: src/nautilus-files-view.c:6284
+#: src/nautilus-files-view.c:6292
 msgid "Error sending email."
 msgstr "Помилка надсилання пошти."
 
 #. Translators: %s is a file name formatted for display
-#: src/nautilus-files-view.c:6583
+#: src/nautilus-files-view.c:6591
 #, c-format
 msgid "Unable to remove “%s”"
 msgstr "Не вдалося вилучити «%s»"
 
-#: src/nautilus-files-view.c:6626
+#: src/nautilus-files-view.c:6634
 msgid "Unable to stop drive"
 msgstr "Не вдалося зупинити пристрій"
 
 #. Translators: %s is a file name formatted for display
-#: src/nautilus-files-view.c:6736 src/nautilus-sidebar.c:1728
+#: src/nautilus-files-view.c:6744 src/nautilus-sidebar.c:1728
 #: src/nautilus-sidebar.c:2608
 #, c-format
 msgid "Unable to start “%s”"
 msgstr "Не вдалося запустити «%s»"
 
-#: src/nautilus-files-view.c:7833
+#: src/nautilus-files-view.c:7852
 #, c-format
 msgid "New Folder with Selection (%'d Item)"
 msgid_plural "New Folder with Selection (%'d Items)"
@@ -3471,71 +3476,71 @@ msgstr[1] "Створити теку з вибраним (%'d об'єкти)"
 msgstr[2] "Створити теку з вибраним (%'d об'єктів)"
 msgstr[3] "Створити теку з вибраним (%'d об'єкт)"
 
-#: src/nautilus-files-view.c:7888
+#: src/nautilus-files-view.c:7907
 #, c-format
 msgid "Open With %s"
 msgstr "Відкрити за допомогою %s"
 
-#: src/nautilus-files-view.c:7899
+#: src/nautilus-files-view.c:7918
 msgid "Run"
 msgstr "Запустити"
 
-#: src/nautilus-files-view.c:7904
+#: src/nautilus-files-view.c:7923
 #: src/resources/ui/nautilus-operations-ui-manager-request-passphrase.blp:17
 msgid "Extract"
 msgstr "Видобути"
 
-#: src/nautilus-files-view.c:7905
+#: src/nautilus-files-view.c:7924
 msgid "Extract to…"
 msgstr "Розпакувати в…"
 
-#: src/nautilus-files-view.c:7909
+#: src/nautilus-files-view.c:7928
 #: src/resources/menu/nautilus-files-view-context-menus.ui:98
 msgid "Open"
 msgstr "Відкрити"
 
-#: src/nautilus-files-view.c:7985 src/nautilus-sidebar.c:3054
+#: src/nautilus-files-view.c:8004 src/nautilus-sidebar.c:3054
 #: src/resources/menu/nautilus-files-view-context-menus.ui:164
 msgid "_Start"
 msgstr "З_апустити"
 
-#: src/nautilus-files-view.c:7991
+#: src/nautilus-files-view.c:8010
 msgid "_Connect"
 msgstr "_З'єднатися"
 
-#: src/nautilus-files-view.c:7997
+#: src/nautilus-files-view.c:8016
 msgid "_Start Multi-disk Drive"
 msgstr "З_апустити багатодисковий пристрій"
 
-#: src/nautilus-files-view.c:8003
+#: src/nautilus-files-view.c:8022
 msgid "U_nlock Drive"
 msgstr "_Розблокувати пристрій"
 
-#: src/nautilus-files-view.c:8021
+#: src/nautilus-files-view.c:8040
 msgid "Stop Drive"
 msgstr "Зупинити пристрій"
 
-#: src/nautilus-files-view.c:8027 src/nautilus-sidebar.c:3085
+#: src/nautilus-files-view.c:8046 src/nautilus-sidebar.c:3085
 msgid "_Safely Remove Drive"
 msgstr "_Безпечне вилучення пристрою"
 
-#: src/nautilus-files-view.c:8033
+#: src/nautilus-files-view.c:8052
 msgid "_Disconnect"
 msgstr "_Від'єднатися"
 
-#: src/nautilus-files-view.c:8039
+#: src/nautilus-files-view.c:8058
 msgid "_Stop Multi-disk Drive"
 msgstr "З_упинити багатодисковий пристрій"
 
-#: src/nautilus-files-view.c:8045
+#: src/nautilus-files-view.c:8064
 msgid "_Lock Drive"
 msgstr "За_блокувати пристрій"
 
-#: src/nautilus-files-view.c:9713
+#: src/nautilus-files-view.c:9732
 msgid "View items as a grid of icons"
 msgstr "Переглянути об'єкти як сітку піктограм"
 
-#: src/nautilus-files-view.c:9724
+#: src/nautilus-files-view.c:9743
 msgid "View items as a list"
 msgstr "Переглянути об'єкти як список"
 
@@ -5679,7 +5684,6 @@ msgid "New _Tab"
 msgstr "Нова _вкладка"
 
 #: src/resources/ui/nautilus-window.blp:19
-#| msgid "Show list"
 msgid "Show All Ta_bs"
 msgstr "Показати усі в_кладки"
 
@@ -6004,7 +6008,6 @@ msgid "Close Window or Tab"
 msgstr "Закрити вікно або вкладку"
 
 #: src/resources/ui/shortcuts-dialog.blp:316
-#| msgid "Show list"
 msgctxt "shortcuts dialog"
 msgid "Show All Tabs"
 msgstr "Показати усі вкладки"
