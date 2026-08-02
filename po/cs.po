@@ -25,8 +25,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: nautilus\n"
 "Report-Msgid-Bugs-To: https://gitlab.gnome.org/GNOME/nautilus/issues\n"
-"POT-Creation-Date: 2026-07-20 18:49+0000\n"
-"PO-Revision-Date: 2026-07-23 13:28+0200\n"
+"POT-Creation-Date: 2026-08-01 15:02+0000\n"
+"PO-Revision-Date: 2026-08-02 12:58+0200\n"
 "Last-Translator: Daniel Rusek <mail@asciiwolf.com>\n"
 "Language-Team: Czech\n"
 "Language: cs\n"
@@ -49,7 +49,7 @@ msgstr "Spustit software"
 
 #: data/org.gnome.Nautilus.desktop.in.in:2
 #: data/org.gnome.Nautilus.metainfo.xml.in.in:5 src/nautilus-mime-actions.c:101
-#: src/nautilus-portal.c:582 src/resources/ui/nautilus-window.blp:137
+#: src/nautilus-portal.c:582 src/resources/ui/nautilus-window.blp:162
 msgid "Files"
 msgstr "Soubory"
 
@@ -449,16 +449,16 @@ msgstr ""
 "stromové zobrazení. Funkčnost je možné rozšiřovat pomocí zásuvných modulů a "
 "skriptů."
 
-#: data/org.gnome.Nautilus.metainfo.xml.in.in:45 src/nautilus-window.c:1698
-#: src/nautilus-window.c:1703 src/nautilus-window.c:1708
+#: data/org.gnome.Nautilus.metainfo.xml.in.in:45 src/nautilus-window.c:1709
+#: src/nautilus-window.c:1714 src/nautilus-window.c:1719
 msgid "The GNOME Project"
 msgstr "Projekt GNOME"
 
-#: data/org.gnome.Nautilus.metainfo.xml.in.in:59 src/nautilus-files-view.c:9713
+#: data/org.gnome.Nautilus.metainfo.xml.in.in:59 src/nautilus-files-view.c:9734
 msgid "Grid View"
 msgstr "Zobrazit v mřížce"
 
-#: data/org.gnome.Nautilus.metainfo.xml.in.in:63 src/nautilus-files-view.c:9724
+#: data/org.gnome.Nautilus.metainfo.xml.in.in:63 src/nautilus-files-view.c:9745
 msgid "List View"
 msgstr "Seznamové zobrazení"
 
@@ -603,7 +603,7 @@ msgstr "Kanály"
 
 #: extensions/audio-video-properties/totem-properties-view.c:338
 #: extensions/image-properties/nautilus-image-properties-model.c:299
-#: src/nautilus-window-slot.c:1766
+#: src/nautilus-window-slot.c:1718
 msgid "Oops! Something went wrong."
 msgstr "Jejda! Někde došlo k chybě."
 
@@ -748,66 +748,66 @@ msgstr "Nelze načíst informace o obrázku"
 msgid "Image Properties"
 msgstr "Vlastnosti obrázku"
 
-#: src/nautilus-app-chooser.c:81
+#: src/nautilus-app-chooser.c:83
 msgid "Could not set as default"
 msgstr "Nelze nastavit jako výchozí"
 
-#: src/nautilus-app-chooser.c:83
+#: src/nautilus-app-chooser.c:85
 #, c-format
 msgid "Error while setting “%s” as default app: %s"
 msgstr "Chyba při nastavování „%s“ jako výchozí aplikace: %s"
 
-#: src/nautilus-app-chooser.c:85 src/nautilus-application.c:601
+#: src/nautilus-app-chooser.c:87 src/nautilus-application.c:601
 #: src/nautilus-autorun-software.c:157 src/nautilus-mime-actions.c:1291
-#: src/nautilus-ui-utilities.c:357
+#: src/nautilus-ui-utilities.c:360
 msgid "_OK"
 msgstr "_Budiž"
 
 #. Translators: %s is the filename.  i.e. "Choose an app to open test.jpg"
-#: src/nautilus-app-chooser.c:221
+#: src/nautilus-app-chooser.c:223
 #, c-format
 msgid "Choose an app to open <b>%s</b>"
 msgstr "Vyberte aplikaci pro otevření <b>%s</b>."
 
-#: src/nautilus-app-chooser.c:227
+#: src/nautilus-app-chooser.c:229
 msgid "Open Items"
 msgstr "Otevření položek"
 
-#: src/nautilus-app-chooser.c:231 src/nautilus-window.c:936
+#: src/nautilus-app-chooser.c:233 src/nautilus-window.c:956
 msgid "Open Folder"
 msgstr "Otevření složky"
 
-#: src/nautilus-app-chooser.c:235 src/resources/ui/nautilus-app-chooser.blp:5
+#: src/nautilus-app-chooser.c:237 src/resources/ui/nautilus-app-chooser.blp:5
 msgid "Open File"
 msgstr "Otevření souboru"
 
-#: src/nautilus-app-chooser-widget.c:222
+#: src/nautilus-app-chooser-widget.c:279
 #, c-format
 msgid "No apps found for “%s”"
 msgstr "Nebyla nalezena aplikace s názvem „%s“"
 
-#: src/nautilus-app-chooser-widget.c:228
+#: src/nautilus-app-chooser-widget.c:285
 msgid "No apps found"
 msgstr "Nenalezeny žádné aplikace"
 
 #. translators: This is an accessible label for a shown icon.
-#: src/nautilus-app-chooser-widget.c:537
+#: src/nautilus-app-chooser-widget.c:596
 msgid "App icon"
 msgstr "Ikona aplikace"
 
-#: src/nautilus-app-chooser-widget.c:585
+#: src/nautilus-app-chooser-widget.c:644
 msgid "Default App"
 msgstr "Výchozí aplikace"
 
-#: src/nautilus-app-chooser-widget.c:589
+#: src/nautilus-app-chooser-widget.c:648
 msgid "Recommended Apps"
 msgstr "Doporučené aplikace"
 
-#: src/nautilus-app-chooser-widget.c:593
+#: src/nautilus-app-chooser-widget.c:652
 msgid "Related Apps"
 msgstr "Přidružené aplikace"
 
-#: src/nautilus-app-chooser-widget.c:597
+#: src/nautilus-app-chooser-widget.c:656
 msgid "Other Apps"
 msgstr "Ostatní aplikace"
 
@@ -898,7 +898,7 @@ msgstr ""
 #: src/nautilus-autorun-software.c:219 src/nautilus-dialog-utilities.c:96
 #: src/nautilus-file-chooser.c:242 src/nautilus-mime-actions.c:674
 #: src/nautilus-mime-actions.c:1124 src/nautilus-mime-actions.c:1431
-#: src/nautilus-ui-utilities.c:537 src/resources/ui/nautilus-app-chooser.blp:19
+#: src/nautilus-ui-utilities.c:539 src/resources/ui/nautilus-app-chooser.blp:19
 #: src/resources/ui/nautilus-batch-rename-dialog.blp:140
 #: src/resources/ui/nautilus-compress-dialog.blp:19
 #: src/resources/ui/nautilus-file-conflict-dialog.blp:16
@@ -1039,8 +1039,8 @@ msgid "001, 002, 003"
 msgstr "001, 002, 003"
 
 #: src/nautilus-bookmark.c:99 src/nautilus-file-utilities.c:66
-#: src/nautilus-pathbar.c:418 src/nautilus-shell-search-provider.c:277
-#: src/nautilus-sidebar.c:698 src/nautilus-window.c:150
+#: src/nautilus-pathbar.c:420 src/nautilus-shell-search-provider.c:277
+#: src/nautilus-sidebar.c:698 src/nautilus-window.c:148
 msgid "Home"
 msgstr "Domů"
 
@@ -1060,11 +1060,11 @@ msgstr "Schránka Nautilu musí začínat příkazem „cut“ nebo „copy“."
 msgid "Nautilus Clipboard must not have empty lines."
 msgstr "Schránka Nautilu nesmí mít prázdné řádky."
 
-#: src/nautilus-column-chooser.c:368
+#: src/nautilus-column-chooser.c:370
 msgid "View More"
 msgstr "Zobrazit více"
 
-#: src/nautilus-column-utilities.c:69 src/nautilus-sidebar.c:2004
+#: src/nautilus-column-utilities.c:69 src/nautilus-sidebar.c:2002
 msgid "Name"
 msgstr "Název"
 
@@ -1438,61 +1438,61 @@ msgstr "Tento soubor nelze odpojit"
 msgid "This file cannot be ejected"
 msgstr "Tento soubor nelze vysunout"
 
-#: src/nautilus-file.c:1342 src/nautilus-vfs-file.c:462
+#: src/nautilus-file.c:1342 src/nautilus-vfs-file.c:446
 msgid "This file cannot be started"
 msgstr "Tento soubor nelze spustit"
 
-#: src/nautilus-file.c:1401 src/nautilus-file.c:1440
+#: src/nautilus-file.c:1401 src/nautilus-file.c:1439
 msgid "This file cannot be stopped"
 msgstr "Tento soubor nelze zastavit"
 
-#: src/nautilus-file.c:1781
+#: src/nautilus-file.c:1780
 #, c-format
 msgid "Slashes are not allowed in filenames"
 msgstr "Lomítka nejsou v názvech souborů povolena"
 
-#: src/nautilus-file.c:1824
+#: src/nautilus-file.c:1823
 #, c-format
 msgid "Toplevel files cannot be renamed"
 msgstr "Soubory v nejvyšší úrovni nelze přejmenovat"
 
-#: src/nautilus-file.c:1904
+#: src/nautilus-file.c:1903
 #, c-format
 msgid "File not found"
 msgstr "Soubor nenalezen"
 
-#: src/nautilus-file.c:5310
+#: src/nautilus-file.c:5327
 #, c-format
 msgid "Not allowed to set permissions"
 msgstr "Není dovoleno nastavit oprávnění"
 
-#: src/nautilus-file.c:5656
+#: src/nautilus-file.c:5673
 #, c-format
 msgid "Not allowed to set owner"
 msgstr "Nedostatečná oprávnění pro nastavení vlastníka"
 
-#: src/nautilus-file.c:5675
+#: src/nautilus-file.c:5692
 #, c-format
 msgid "Specified owner “%s” doesn’t exist"
 msgstr "Uvedený vlastník „%s“ neexistuje"
 
-#: src/nautilus-file.c:5965
+#: src/nautilus-file.c:5982
 #, c-format
 msgid "Not allowed to set group"
 msgstr "Nedostatečná oprávnění pro nastavení skupiny"
 
-#: src/nautilus-file.c:5984
+#: src/nautilus-file.c:6001
 #, c-format
 msgid "Specified group “%s” doesn’t exist"
 msgstr "Vybraná skupina „%s“ neexistuje"
 
 #. Translators: This is a username followed by "(You)" to indicate the file is owned by the current user
-#: src/nautilus-file.c:6124
+#: src/nautilus-file.c:6141
 #, c-format
 msgid "%s (You)"
 msgstr "%s (vy)"
 
-#: src/nautilus-file.c:6156
+#: src/nautilus-file.c:6173
 #, c-format
 msgid "%'u item"
 msgid_plural "%'u items"
@@ -1500,7 +1500,7 @@ msgstr[0] "%'u položka"
 msgstr[1] "%'u položky"
 msgstr[2] "%'u položek"
 
-#: src/nautilus-file.c:6157
+#: src/nautilus-file.c:6174
 #, c-format
 msgid "%'u folder"
 msgid_plural "%'u folders"
@@ -1508,7 +1508,7 @@ msgstr[0] "%'u složka"
 msgstr[1] "%'u složky"
 msgstr[2] "%'u složek"
 
-#: src/nautilus-file.c:6158
+#: src/nautilus-file.c:6175
 #, c-format
 msgid "%'u file"
 msgid_plural "%'u files"
@@ -1516,7 +1516,7 @@ msgstr[0] "%'u soubor"
 msgstr[1] "%'u soubory"
 msgstr[2] "%'u souborů"
 
-#: src/nautilus-file.c:6242 src/nautilus-properties.c:2107
+#: src/nautilus-file.c:6259 src/nautilus-properties.c:2113
 #, c-format
 msgid "%s byte"
 msgid_plural "%s bytes"
@@ -1525,93 +1525,93 @@ msgstr[1] "%s bajty"
 msgstr[2] "%s bajtů"
 
 #. This means no contents at all were readable
-#: src/nautilus-file.c:6635
+#: src/nautilus-file.c:6652
 msgid "? bytes"
 msgstr "? bajtů"
 
 #. This means no contents at all were readable
-#: src/nautilus-file.c:6647
+#: src/nautilus-file.c:6664
 msgid "? items"
 msgstr "? položek"
 
 #. Translators: This about a file type.
-#: src/nautilus-file.c:6656
+#: src/nautilus-file.c:6673
 msgid "Unknown type"
 msgstr "Neznámý typ"
 
 #. Fallback, use for both unknown attributes and attributes
 #. * for which we have no more appropriate default.
 #.
-#: src/nautilus-file.c:6687
+#: src/nautilus-file.c:6704
 msgid "Unknown"
 msgstr "Neznámý"
 
-#: src/nautilus-file.c:6737 src/nautilus-file.c:6745 src/nautilus-file.c:6804
+#: src/nautilus-file.c:6754 src/nautilus-file.c:6762 src/nautilus-file.c:6821
 msgid "Program"
 msgstr "Program"
 
-#: src/nautilus-file.c:6738
+#: src/nautilus-file.c:6755
 msgid "Audio"
 msgstr "Zvuk"
 
-#: src/nautilus-file.c:6739
+#: src/nautilus-file.c:6756
 msgid "Font"
 msgstr "Font"
 
-#: src/nautilus-file.c:6740
+#: src/nautilus-file.c:6757
 msgid "Image"
 msgstr "Obrázek"
 
-#: src/nautilus-file.c:6741
+#: src/nautilus-file.c:6758
 msgid "Archive"
 msgstr "Archiv"
 
-#: src/nautilus-file.c:6742
+#: src/nautilus-file.c:6759
 msgid "Markup"
 msgstr "Formátovaný text"
 
-#: src/nautilus-file.c:6743 src/nautilus-file.c:6744
+#: src/nautilus-file.c:6760 src/nautilus-file.c:6761
 msgid "Text"
 msgstr "Text"
 
-#: src/nautilus-file.c:6746 src/nautilus-mime-actions.c:283
+#: src/nautilus-file.c:6763 src/nautilus-mime-actions.c:283
 msgid "Video"
 msgstr "Video"
 
-#: src/nautilus-file.c:6747
+#: src/nautilus-file.c:6764
 msgid "Contacts"
 msgstr "Kontakty"
 
-#: src/nautilus-file.c:6748
+#: src/nautilus-file.c:6765
 msgid "Calendar"
 msgstr "Kalendář"
 
-#: src/nautilus-file.c:6749
+#: src/nautilus-file.c:6766
 msgid "Document"
 msgstr "Dokument"
 
-#: src/nautilus-file.c:6750 src/nautilus-mime-actions.c:244
+#: src/nautilus-file.c:6767 src/nautilus-mime-actions.c:244
 msgid "Presentation"
 msgstr "Prezentace"
 
-#: src/nautilus-file.c:6751 src/nautilus-mime-actions.c:256
+#: src/nautilus-file.c:6768 src/nautilus-mime-actions.c:256
 msgid "Spreadsheet"
 msgstr "Tabulky"
 
 #. Refers to a file type which is known but not one of the basic types
-#: src/nautilus-file.c:6784
+#: src/nautilus-file.c:6801
 msgid "Other"
 msgstr "Jiný"
 
-#: src/nautilus-file.c:6806
+#: src/nautilus-file.c:6823
 msgid "Binary"
 msgstr "Binární"
 
-#: src/nautilus-file.c:6811
+#: src/nautilus-file.c:6828
 msgid "Folder"
 msgstr "Složka"
 
-#: src/nautilus-file.c:6869
+#: src/nautilus-file.c:6886
 msgid "Link"
 msgstr "Odkaz"
 
@@ -1620,31 +1620,31 @@ msgstr "Odkaz"
 #. * to that kind of file (e.g. "link to folder").
 #.
 #. Translators: File name for new symlink. %s is target's name
-#: src/nautilus-file.c:6875 src/nautilus-filename-utilities.c:253
+#: src/nautilus-file.c:6892 src/nautilus-filename-utilities.c:253
 #, c-format
 msgid "Link to %s"
 msgstr "Odkaz na %s"
 
-#: src/nautilus-file.c:6891 src/nautilus-file.c:6907 src/nautilus-file.c:6923
+#: src/nautilus-file.c:6908 src/nautilus-file.c:6924 src/nautilus-file.c:6940
 msgid "Link (broken)"
 msgstr "Odkaz (neplatný)"
 
 #. Translators: This refers to available space in a folder; e.g.: 100 MB Free
-#: src/nautilus-file.c:7084
+#: src/nautilus-file.c:7101
 #, c-format
 msgid "%s Free"
 msgstr "%s volných"
 
 #. Translators: This is the role for a folder icon when a screen reader is
 #. * used. If a folder is selected, it will say "XXXXXX. Folder"
-#: src/nautilus-file.c:8421
+#: src/nautilus-file.c:8438
 msgctxt "Role"
 msgid "Folder"
 msgstr "Složka"
 
 #. Translators: This is the role for a file icon when a screen reader is
 #. * used. If a file is selected, it will say "XXXXXX. File"
-#: src/nautilus-file.c:8424
+#: src/nautilus-file.c:8441
 msgctxt "Role"
 msgid "File"
 msgstr "Soubor"
@@ -1654,7 +1654,7 @@ msgstr "Soubor"
 #. * screen reader, after the role
 #. * (e.g. "My documents. Folder. Starred")
 #.
-#: src/nautilus-file.c:8443
+#: src/nautilus-file.c:8460
 msgctxt "Role"
 msgid "Starred"
 msgstr "Oblíbené"
@@ -1695,7 +1695,7 @@ msgstr[0] "%'d hodina"
 msgstr[1] "%'d hodiny"
 msgstr[2] "%'d hodin"
 
-#: src/nautilus-file-operations.c:474 src/nautilus-properties.c:942
+#: src/nautilus-file-operations.c:474 src/nautilus-properties.c:948
 msgid "unknown"
 msgstr "neznámý"
 
@@ -1786,8 +1786,8 @@ msgstr[2] "Maže se %'d souborů"
 #: src/nautilus-file-operations.c:1221 src/nautilus-file-operations.c:1558
 #: src/nautilus-file-operations.c:1566 src/nautilus-file-operations.c:1606
 #: src/nautilus-file-operations.c:3432 src/nautilus-file-operations.c:3440
-#: src/nautilus-file-operations.c:3511 src/nautilus-file-operations.c:8105
-#: src/nautilus-file-operations.c:8173
+#: src/nautilus-file-operations.c:3511 src/nautilus-file-operations.c:8108
+#: src/nautilus-file-operations.c:8176
 #, c-format
 msgid "%'d / %'d"
 msgstr "%'d / %'d"
@@ -1887,7 +1887,7 @@ msgid "Deleting Files"
 msgstr "Soubory se odstraňují"
 
 #. Translators: %s is a file name formatted for display
-#: src/nautilus-file-operations.c:2138 src/nautilus-files-view.c:6605
+#: src/nautilus-file-operations.c:2138 src/nautilus-files-view.c:6613
 #: src/nautilus-sidebar.c:2364 src/nautilus-sidebar.c:2393
 #, c-format
 msgid "Unable to eject “%s”"
@@ -1922,8 +1922,8 @@ msgid "_Empty"
 msgstr "_Vyprázdnit"
 
 #. Translators: %s is a file name formatted for display
-#: src/nautilus-file-operations.c:2423 src/nautilus-files-view.c:6558
-#: src/nautilus-sidebar.c:1779
+#: src/nautilus-file-operations.c:2423 src/nautilus-files-view.c:6566
+#: src/nautilus-sidebar.c:1777
 #, c-format
 msgid "Unable to access “%s”"
 msgstr "Nelze přistupovat k „%s“"
@@ -1970,12 +1970,12 @@ msgstr[2] "Připravuje se komprimace %'d souborů"
 
 #: src/nautilus-file-operations.c:2586 src/nautilus-file-operations.c:4040
 #: src/nautilus-file-operations.c:4210 src/nautilus-file-operations.c:4284
-#: src/nautilus-file-operations.c:4545
+#: src/nautilus-file-operations.c:4548
 msgid "Error while copying."
 msgstr "Chyba při kopírování."
 
 #: src/nautilus-file-operations.c:2591 src/nautilus-file-operations.c:4206
-#: src/nautilus-file-operations.c:4280 src/nautilus-file-operations.c:4544
+#: src/nautilus-file-operations.c:4280 src/nautilus-file-operations.c:4547
 msgid "Error while moving."
 msgstr "Chyba při přesunu."
 
@@ -2221,8 +2221,8 @@ msgstr[2] "Zduplikováno %'d souborů v „%s“"
 #. To translators: %s will expand to a size like "2 bytes" or "3 MB", so something like "4 kB / 4 MB"
 #. To translators: %s will expand to a size like "2 bytes" or "3 MB".
 #: src/nautilus-file-operations.c:3422 src/nautilus-file-operations.c:3482
-#: src/nautilus-file-operations.c:7606 src/nautilus-file-operations.c:7833
-#: src/nautilus-file-operations.c:8100 src/nautilus-file-operations.c:8143
+#: src/nautilus-file-operations.c:7609 src/nautilus-file-operations.c:7836
+#: src/nautilus-file-operations.c:8103 src/nautilus-file-operations.c:8146
 #, c-format
 msgid "%s / %s"
 msgstr "%s / %s"
@@ -2245,8 +2245,8 @@ msgstr "%s / %s"
 #. *
 #. * The singular/plural form will be used depending on the remaining time (i.e. the %s argument).
 #.
-#: src/nautilus-file-operations.c:3466 src/nautilus-file-operations.c:7624
-#: src/nautilus-file-operations.c:8132
+#: src/nautilus-file-operations.c:3466 src/nautilus-file-operations.c:7627
+#: src/nautilus-file-operations.c:8135
 #, c-format
 msgid "%s / %s — %s left (%s/s)"
 msgid_plural "%s / %s — %s left (%s/s)"
@@ -2259,7 +2259,7 @@ msgstr[2] "%s / %s – zbývá %s (%s/s)"
 #. *
 #. * The singular/plural form will be used depending on the remaining time (i.e. the %s argument).
 #.
-#: src/nautilus-file-operations.c:3500 src/nautilus-file-operations.c:8162
+#: src/nautilus-file-operations.c:3500 src/nautilus-file-operations.c:8165
 #, c-format
 msgid "%'d / %'d — %s left (%s/s)"
 msgid_plural "%'d / %'d — %s left (%s/s)"
@@ -2296,8 +2296,8 @@ msgid ""
 "it."
 msgstr "Složku „%s“ nelze zkopírovat, protože nemáte oprávnění k jejímu čtení."
 
-#: src/nautilus-file-operations.c:4355 src/nautilus-file-operations.c:4910
-#: src/nautilus-file-operations.c:5564
+#: src/nautilus-file-operations.c:4355 src/nautilus-file-operations.c:4913
+#: src/nautilus-file-operations.c:5567
 #, c-format
 msgid "Error while moving “%s”."
 msgstr "Chyba při přesunu „%s“."
@@ -2306,59 +2306,59 @@ msgstr "Chyba při přesunu „%s“."
 msgid "Could not remove the source folder."
 msgstr "Nelze odstranit zdrojovou složku."
 
-#: src/nautilus-file-operations.c:4637 src/nautilus-file-operations.c:5372
+#: src/nautilus-file-operations.c:4640 src/nautilus-file-operations.c:5375
 msgid "You cannot move a folder into itself."
 msgstr "Nelze přesunout složku samu do sebe."
 
-#: src/nautilus-file-operations.c:4638 src/nautilus-file-operations.c:5373
+#: src/nautilus-file-operations.c:4641 src/nautilus-file-operations.c:5376
 msgid "You cannot copy a folder into itself."
 msgstr "Nelze kopírovat složku samu do sebe."
 
-#: src/nautilus-file-operations.c:4639 src/nautilus-file-operations.c:5374
+#: src/nautilus-file-operations.c:4642 src/nautilus-file-operations.c:5377
 msgid "The destination folder is inside the source folder."
 msgstr "Cílové umístění je uvnitř zdrojové složky."
 
-#: src/nautilus-file-operations.c:4661 src/nautilus-file-operations.c:5396
+#: src/nautilus-file-operations.c:4664 src/nautilus-file-operations.c:5399
 msgid "You cannot move a file over itself."
 msgstr "Nelze přesunout soubor sám na sebe."
 
-#: src/nautilus-file-operations.c:4662 src/nautilus-file-operations.c:5397
+#: src/nautilus-file-operations.c:4665 src/nautilus-file-operations.c:5400
 msgid "You cannot copy a file over itself."
 msgstr "Nelze kopírovat soubor sám na sebe."
 
-#: src/nautilus-file-operations.c:4663 src/nautilus-file-operations.c:5398
+#: src/nautilus-file-operations.c:4666 src/nautilus-file-operations.c:5401
 msgid "The source file would be overwritten by the destination."
 msgstr "Zdrojový soubor by byl přepsán cílovým."
 
-#: src/nautilus-file-operations.c:4914 src/nautilus-file-operations.c:4973
+#: src/nautilus-file-operations.c:4917 src/nautilus-file-operations.c:4976
 #, c-format
 msgid "Error while copying “%s”."
 msgstr "Chyba při kopírování „%s“."
 
-#: src/nautilus-file-operations.c:4917
+#: src/nautilus-file-operations.c:4920
 #, c-format
 msgid "Could not remove the already existing file with the same name in %s."
 msgstr "Nelze odstranit již existující soubor stejného názvu v %s."
 
-#: src/nautilus-file-operations.c:4974
+#: src/nautilus-file-operations.c:4977
 #, c-format
 msgid "There was an error copying the file into %s."
 msgstr "Při kopírování souboru do %s došlo k chybě."
 
-#: src/nautilus-file-operations.c:5141
+#: src/nautilus-file-operations.c:5144
 msgid "Copying Files"
 msgstr "Soubory se kopírují"
 
-#: src/nautilus-file-operations.c:5259
+#: src/nautilus-file-operations.c:5262
 #, c-format
 msgid "Preparing to move to “%s”"
 msgstr "Připravuje se přesun do „%s“"
 
-#: src/nautilus-file-operations.c:5261
+#: src/nautilus-file-operations.c:5264
 msgid "Preparing to move"
 msgstr "Připravuje se přesun"
 
-#: src/nautilus-file-operations.c:5264
+#: src/nautilus-file-operations.c:5267
 #, c-format
 msgid "Preparing to move %'d file"
 msgid_plural "Preparing to move %'d files"
@@ -2366,25 +2366,25 @@ msgstr[0] "Připravuje se přesun %'d souboru"
 msgstr[1] "Připravuje se přesun %'d souborů"
 msgstr[2] "Připravuje se přesun %'d souborů"
 
-#: src/nautilus-file-operations.c:5565
+#: src/nautilus-file-operations.c:5568
 #, c-format
 msgid "There was an error moving the file into %s."
 msgstr "Při přesunu souboru do %s došlo k chybě."
 
-#: src/nautilus-file-operations.c:5775
+#: src/nautilus-file-operations.c:5778
 msgid "Moving Files"
 msgstr "Soubory se přesunují"
 
-#: src/nautilus-file-operations.c:5877
+#: src/nautilus-file-operations.c:5880
 #, c-format
 msgid "Creating links in “%s”"
 msgstr "Vytváří se odkazy v „%s“"
 
-#: src/nautilus-file-operations.c:5879
+#: src/nautilus-file-operations.c:5882
 msgid "Creating links"
 msgstr "Vytváří se odkazy"
 
-#: src/nautilus-file-operations.c:5882
+#: src/nautilus-file-operations.c:5885
 #, c-format
 msgid "Making link to %'d file"
 msgid_plural "Making links to %'d files"
@@ -2392,124 +2392,124 @@ msgstr[0] "Vytváří se odkaz k %'d souboru"
 msgstr[1] "Vytváří se odkazy k %'d souborům"
 msgstr[2] "Vytváří se odkazy k %'d souborům"
 
-#: src/nautilus-file-operations.c:6022
+#: src/nautilus-file-operations.c:6025
 #, c-format
 msgid "Error while creating link to %s."
 msgstr "Chyba při vytváření odkazu na %s."
 
-#: src/nautilus-file-operations.c:6029
+#: src/nautilus-file-operations.c:6032
 msgid "Symbolic links only supported for local files"
 msgstr "Symbolické odkazy jsou podporovány pouze pro místní soubory"
 
-#: src/nautilus-file-operations.c:6033
+#: src/nautilus-file-operations.c:6036
 msgid "The target doesn’t support symbolic links."
 msgstr "Tento cíl nepodporuje symbolické odkazy."
 
-#: src/nautilus-file-operations.c:6040
+#: src/nautilus-file-operations.c:6043
 #, c-format
 msgid "There was an error creating the symlink in %s."
 msgstr "Při vytváření symbolického odkazu v %s došlo k chybě."
 
-#: src/nautilus-file-operations.c:6348
+#: src/nautilus-file-operations.c:6351
 msgid "Setting permissions"
 msgstr "Oprávnění se nastavuje"
 
 #. localizers: the initial name of a new folder
-#: src/nautilus-file-operations.c:6637
+#: src/nautilus-file-operations.c:6640
 msgid "Untitled Folder"
 msgstr "Nepojmenovaná složka"
 
 #. localizers: the initial name of a new empty document
-#: src/nautilus-file-operations.c:6652
+#: src/nautilus-file-operations.c:6655
 msgid "Untitled Document"
 msgstr "Nepojmenovaný dokument"
 
-#: src/nautilus-file-operations.c:6881
+#: src/nautilus-file-operations.c:6884
 #, c-format
 msgid "Error while creating directory “%s”."
 msgstr "Chyba při vytváření složky „%s“."
 
-#: src/nautilus-file-operations.c:6886
+#: src/nautilus-file-operations.c:6889
 #, c-format
 msgid "Error while creating file “%s”."
 msgstr "Chyba při vytváření souboru „%s“."
 
-#: src/nautilus-file-operations.c:6890
+#: src/nautilus-file-operations.c:6893
 #, c-format
 msgid "There was an error creating the directory in %s."
 msgstr "Při vytváření složky v %s došlo k chybě."
 
-#: src/nautilus-file-operations.c:6979
+#: src/nautilus-file-operations.c:6982
 msgid "Saving image"
 msgstr "Ukládání obrázku"
 
-#: src/nautilus-file-operations.c:6994
+#: src/nautilus-file-operations.c:6997
 msgid "Saved image"
 msgstr "Obrázek byl uložen"
 
-#: src/nautilus-file-operations.c:7024
+#: src/nautilus-file-operations.c:7027
 msgid "Failed to save image"
 msgstr "Selhalo uložení obrázku"
 
 #. Start the timed wait to cancel the rename.
-#: src/nautilus-file-operations.c:7177
+#: src/nautilus-file-operations.c:7180
 #, c-format
 msgid "Renaming “%s” to “%s”."
 msgstr "Přejmenovává se „%s“ na „%s“."
 
 #. Translators: This is used to auto-generate a file name for pasted images from
 #. * the clipboard i.e. "Pasted image.png", "Pasted image 1.png", ...
-#: src/nautilus-file-operations.c:7209
+#: src/nautilus-file-operations.c:7212
 msgid "Pasted image"
 msgstr "Vložený obrázek"
 
-#: src/nautilus-file-operations.c:7216
+#: src/nautilus-file-operations.c:7219
 msgid "Retrieving clipboard data"
 msgstr "Získávají se data ze schránky"
 
-#: src/nautilus-file-operations.c:7248
+#: src/nautilus-file-operations.c:7251
 msgid "Retrieving image data"
 msgstr "Získávají se data obrázku"
 
-#: src/nautilus-file-operations.c:7466
+#: src/nautilus-file-operations.c:7469
 msgid "Emptying Trash"
 msgstr "Vysypává se koš"
 
-#: src/nautilus-file-operations.c:7509
+#: src/nautilus-file-operations.c:7512
 msgid "Verifying destination"
 msgstr "Ověřuje se cíl"
 
-#: src/nautilus-file-operations.c:7563
+#: src/nautilus-file-operations.c:7566
 #, c-format
 msgid "Extracting “%s”"
 msgstr "Rozbaluje se „%s“"
 
-#: src/nautilus-file-operations.c:7690 src/nautilus-file-operations.c:7778
+#: src/nautilus-file-operations.c:7693 src/nautilus-file-operations.c:7781
 #, c-format
 msgid "Error extracting “%s”"
 msgstr "Chyba při rozbalování „%s“"
 
-#: src/nautilus-file-operations.c:7698
+#: src/nautilus-file-operations.c:7701
 #, c-format
 msgid "There was an error while extracting “%s”."
 msgstr "Při rozbalování archivu „%s“ došlo k chybě."
 
-#: src/nautilus-file-operations.c:7773
+#: src/nautilus-file-operations.c:7776
 #, c-format
 msgid "Not enough free space to extract “%s”"
 msgstr "K rozbalení „%s“ není dostatek místa"
 
-#: src/nautilus-file-operations.c:7810
+#: src/nautilus-file-operations.c:7813
 #, c-format
 msgid "Extracted “%s”"
 msgstr "Archiv „%s“ byl rozbalen"
 
-#: src/nautilus-file-operations.c:7812
+#: src/nautilus-file-operations.c:7815
 #, c-format
 msgid "Extracted “%s” to “%s”"
 msgstr "Archiv „%s“ byl rozbalen do „%s“"
 
-#: src/nautilus-file-operations.c:7818
+#: src/nautilus-file-operations.c:7821
 #, c-format
 msgid "Extracted %'d file"
 msgid_plural "Extracted %'d files"
@@ -2517,7 +2517,7 @@ msgstr[0] "Rozbalil se %'d soubor"
 msgstr[1] "Rozbalily se %'d soubory"
 msgstr[2] "Rozbalilo se %'d souborů"
 
-#: src/nautilus-file-operations.c:7822
+#: src/nautilus-file-operations.c:7825
 #, c-format
 msgid "Extracted %'d file to “%s”"
 msgid_plural "Extracted %'d files to “%s”"
@@ -2525,25 +2525,25 @@ msgstr[0] "%'d soubor byl rozbalen do „%s“"
 msgstr[1] "%'d soubory byly rozbaleny do „%s“"
 msgstr[2] "%'d souborů bylo rozbaleno do „%s“"
 
-#: src/nautilus-file-operations.c:7856
+#: src/nautilus-file-operations.c:7859
 msgid "Preparing to extract"
 msgstr "Připravuje se rozbalení"
 
-#: src/nautilus-file-operations.c:7984
+#: src/nautilus-file-operations.c:7987
 msgid "Extracting Files"
 msgstr "Rozbalují se soubory"
 
-#: src/nautilus-file-operations.c:8050
+#: src/nautilus-file-operations.c:8053
 #, c-format
 msgid "Compressing “%s”"
 msgstr "Komprimuje se „%s“"
 
-#: src/nautilus-file-operations.c:8052
+#: src/nautilus-file-operations.c:8055
 #, c-format
 msgid "Compressing “%s” into “%s”"
 msgstr "Komprimuje se „%s“ do „%s“"
 
-#: src/nautilus-file-operations.c:8058
+#: src/nautilus-file-operations.c:8061
 #, c-format
 msgid "Compressing %'d file"
 msgid_plural "Compressing %'d files"
@@ -2551,7 +2551,7 @@ msgstr[0] "Komprimuje se %'d soubor"
 msgstr[1] "Komprimují se %'d soubory"
 msgstr[2] "Komprimuje se %'d souborů"
 
-#: src/nautilus-file-operations.c:8062
+#: src/nautilus-file-operations.c:8065
 #, c-format
 msgid "Compressing %'d file into “%s”"
 msgid_plural "Compressing %'d files into “%s”"
@@ -2559,17 +2559,17 @@ msgstr[0] "Komprimuje se %'d soubor do „%s“"
 msgstr[1] "Komprimují se %'d soubory do „%s“"
 msgstr[2] "Komprimuje se %'d souborů do „%s“"
 
-#: src/nautilus-file-operations.c:8213
+#: src/nautilus-file-operations.c:8216
 #, c-format
 msgid "Error compressing “%s”"
 msgstr "Chyba při komprimaci „%s“"
 
-#: src/nautilus-file-operations.c:8215
+#: src/nautilus-file-operations.c:8218
 #, c-format
 msgid "Error compressing “%s” into “%s”"
 msgstr "Chyba při komprimaci „%s“ do „%s“"
 
-#: src/nautilus-file-operations.c:8221
+#: src/nautilus-file-operations.c:8224
 #, c-format
 msgid "Error compressing %'d file"
 msgid_plural "Error compressing %'d files"
@@ -2577,7 +2577,7 @@ msgstr[0] "Chyba při komprimaci %'d souboru"
 msgstr[1] "Chyba při komprimaci %'d souborů"
 msgstr[2] "Chyba při komprimaci %'d souborů"
 
-#: src/nautilus-file-operations.c:8225
+#: src/nautilus-file-operations.c:8228
 #, c-format
 msgid "Error compressing %'d file into “%s”"
 msgid_plural "Error compressing %'d files into “%s”"
@@ -2585,21 +2585,21 @@ msgstr[0] "Chyba při komprimaci %'d souboru do „%s“"
 msgstr[1] "Chyba při komprimaci %'d souborů do „%s“"
 msgstr[2] "Chyba při komprimaci %'d souborů do „%s“"
 
-#: src/nautilus-file-operations.c:8234
+#: src/nautilus-file-operations.c:8237
 msgid "There was an error while compressing files."
 msgstr "Při komprimaci souboru došlo k chybě."
 
-#: src/nautilus-file-operations.c:8257
+#: src/nautilus-file-operations.c:8260
 #, c-format
 msgid "Compressed “%s”"
 msgstr "„%s“ zkomprimováno"
 
-#: src/nautilus-file-operations.c:8259
+#: src/nautilus-file-operations.c:8262
 #, c-format
 msgid "Compressed “%s” into “%s”"
 msgstr "„%s“ zkomprimováno do „%s“"
 
-#: src/nautilus-file-operations.c:8265
+#: src/nautilus-file-operations.c:8268
 #, c-format
 msgid "Compressed %'d file"
 msgid_plural "Compressed %'d files"
@@ -2607,7 +2607,7 @@ msgstr[0] "%'d soubor byl zkomprimován"
 msgstr[1] "%'d soubory byly zkomprimovány"
 msgstr[2] "%'d souborů bylo zkomprimováno"
 
-#: src/nautilus-file-operations.c:8269
+#: src/nautilus-file-operations.c:8272
 #, c-format
 msgid "Compressed %'d file into “%s”"
 msgid_plural "Compressed %'d files into “%s”"
@@ -2615,11 +2615,11 @@ msgstr[0] "%'d soubor byl zkomprimován do „%s“"
 msgstr[1] "%'d soubory byly zkomprimovány do „%s“"
 msgstr[2] "%'d souborů bylo zkomprimováno do „%s“"
 
-#: src/nautilus-file-operations.c:8386
+#: src/nautilus-file-operations.c:8389
 msgid "Compressing Files"
 msgstr "Komprimují se soubory"
 
-#: src/nautilus-file-undo-operations.c:176 src/nautilus-window.c:895
+#: src/nautilus-file-undo-operations.c:176 src/nautilus-window.c:915
 msgid "Undo"
 msgstr "Zpět"
 
@@ -2923,8 +2923,8 @@ msgstr "Vrátit _zpět dávkové přejmenování"
 msgid "_Redo Batch Rename"
 msgstr "Zn_ovu dávkově přejmenovat"
 
-#: src/nautilus-file-undo-operations.c:1389
-#: src/nautilus-file-undo-operations.c:1406
+#: src/nautilus-file-undo-operations.c:1391
+#: src/nautilus-file-undo-operations.c:1408
 #, c-format
 msgid "Unstar %d file"
 msgid_plural "Unstar %d files"
@@ -2932,8 +2932,8 @@ msgstr[0] "Odebrat %d soubor z oblíbených"
 msgstr[1] "Odebrat %d soubory z oblíbených"
 msgstr[2] "Odebrat %d souborů z oblíbených"
 
-#: src/nautilus-file-undo-operations.c:1393
-#: src/nautilus-file-undo-operations.c:1402
+#: src/nautilus-file-undo-operations.c:1395
+#: src/nautilus-file-undo-operations.c:1404
 #, c-format
 msgid "Star %d file"
 msgid_plural "Star %d files"
@@ -2941,19 +2941,19 @@ msgstr[0] "Označit %d soubor jako oblíbený"
 msgstr[1] "Označit %d soubory jako oblíbené"
 msgstr[2] "Označit %d souborů jako oblíbené"
 
-#: src/nautilus-file-undo-operations.c:1397
+#: src/nautilus-file-undo-operations.c:1399
 msgid "_Undo Starring"
 msgstr "_Vrátit zpět označení jako oblíbený"
 
-#: src/nautilus-file-undo-operations.c:1398
+#: src/nautilus-file-undo-operations.c:1400
 msgid "_Redo Starring"
 msgstr "Z_novu označit jako oblíbený"
 
-#: src/nautilus-file-undo-operations.c:1410
+#: src/nautilus-file-undo-operations.c:1412
 msgid "_Undo Unstarring"
 msgstr "_Vrátit zpět odebrání z oblíbených"
 
-#: src/nautilus-file-undo-operations.c:1411
+#: src/nautilus-file-undo-operations.c:1413
 msgid "_Redo Unstarring"
 msgstr "Z_novu odebrat z oblíbených"
 
@@ -3163,44 +3163,44 @@ msgstr "Kopie %zu"
 msgid "Link to %s (%zu)"
 msgstr "Odkaz na %s (%zu)"
 
-#: src/nautilus-filename-validator.c:136
+#: src/nautilus-filename-validator.c:135
 msgid "Folder names cannot contain “/”"
 msgstr "Název složky nemůže obsahovat „/“"
 
-#: src/nautilus-filename-validator.c:137
+#: src/nautilus-filename-validator.c:136
 msgid "File names cannot contain “/”"
 msgstr "Název souboru nemůže obsahovat „/“"
 
-#: src/nautilus-filename-validator.c:142
+#: src/nautilus-filename-validator.c:141
 msgid "A folder cannot be called “.” or “..”"
 msgstr "Složka se nemůže nazývat „.“ nebo „..“"
 
-#: src/nautilus-filename-validator.c:143
+#: src/nautilus-filename-validator.c:142
 msgid "A file cannot be called “.” or “..”"
 msgstr "Soubor se nemůže nazývat „.“ nebo „..“"
 
-#: src/nautilus-filename-validator.c:148
+#: src/nautilus-filename-validator.c:147
 msgid "Folder name is too long"
 msgstr "Název složky je příliš dlouhý"
 
-#: src/nautilus-filename-validator.c:149
+#: src/nautilus-filename-validator.c:148
 msgid "File name is too long"
 msgstr "Název souboru je příliš dlouhý"
 
 #. We must warn about the side effect
-#: src/nautilus-filename-validator.c:155
+#: src/nautilus-filename-validator.c:154
 msgid "Folders with “.” at the beginning of their name are hidden"
 msgstr "Složka s „.“ na začátku svého názvu je skrytá"
 
-#: src/nautilus-filename-validator.c:156
+#: src/nautilus-filename-validator.c:155
 msgid "Files with “.” at the beginning of their name are hidden"
 msgstr "Soubor s „.“ na začátku svého názvu je skrytý"
 
-#: src/nautilus-filename-validator.c:165
+#: src/nautilus-filename-validator.c:164
 msgid "A folder with that name already exists"
 msgstr "Složka se stejným názvem již existuje"
 
-#: src/nautilus-filename-validator.c:166
+#: src/nautilus-filename-validator.c:165
 msgid "A file with that name already exists"
 msgstr "Soubor s tímto názvem již existuje"
 
@@ -3208,42 +3208,46 @@ msgstr "Soubor s tímto názvem již existuje"
 msgid "Searching…"
 msgstr "Hledá se…"
 
-#: src/nautilus-files-view.c:366 src/nautilus-window-slot.c:903
+#: src/nautilus-files-view.c:366 src/nautilus-window-slot.c:900
 #: src/resources/ui/nautilus-properties-widget.blp:12
 msgid "Loading…"
 msgstr "Načítá se…"
 
-#: src/nautilus-files-view.c:1809
+#: src/nautilus-files-view.c:954
+msgid "Empty Text File"
+msgstr "Prázdný textový soubor"
+
+#: src/nautilus-files-view.c:1812
 msgid "Examples: "
 msgstr "Příklady: "
 
-#: src/nautilus-files-view.c:2849 src/nautilus-files-view.c:2855
-#: src/nautilus-files-view.c:2861 src/nautilus-files-view.c:2867
+#: src/nautilus-files-view.c:2859 src/nautilus-files-view.c:2865
+#: src/nautilus-files-view.c:2871 src/nautilus-files-view.c:2877
 msgid "Could not paste files"
 msgstr "Nelze vložit soubory"
 
-#: src/nautilus-files-view.c:2850
+#: src/nautilus-files-view.c:2860
 msgid "Cannot paste files into Starred"
 msgstr "Nelze vložit soubory do Oblíbených"
 
-#: src/nautilus-files-view.c:2856
+#: src/nautilus-files-view.c:2866
 msgid "Cannot paste files into Recent"
 msgstr "Nelze vložit soubory do Nedávných"
 
-#: src/nautilus-files-view.c:2862
+#: src/nautilus-files-view.c:2872
 msgid "Cannot paste files into Trash"
 msgstr "Nelze vložit soubory do Koše"
 
-#: src/nautilus-files-view.c:2868
+#: src/nautilus-files-view.c:2878
 msgid "Permissions do not allow pasting files in this directory"
 msgstr "Oprávnění neumožňují vkládání souborů do tohoto adresáře"
 
-#: src/nautilus-files-view.c:3448 src/nautilus-files-view.c:3495
+#: src/nautilus-files-view.c:3458 src/nautilus-files-view.c:3505
 #, c-format
 msgid "“%s” selected"
 msgstr "„%s“ vybráno"
 
-#: src/nautilus-files-view.c:3452
+#: src/nautilus-files-view.c:3462
 #, c-format
 msgid "%'d folder selected"
 msgid_plural "%'d folders selected"
@@ -3251,7 +3255,7 @@ msgstr[0] "Vybrána %'d složka"
 msgstr[1] "Vybrány %'d složky"
 msgstr[2] "Vybráno %'d složek"
 
-#: src/nautilus-files-view.c:3466
+#: src/nautilus-files-view.c:3476
 #, c-format
 msgid "(containing %'d item)"
 msgid_plural "(containing %'d items)"
@@ -3260,7 +3264,7 @@ msgstr[1] "(obsahuje %'d položky)"
 msgstr[2] "(obsahuje %'d položek)"
 
 #. translators: this is preceded with a string of form 'N folders' (N more than 1)
-#: src/nautilus-files-view.c:3481
+#: src/nautilus-files-view.c:3491
 #, c-format
 msgid "(containing a total of %'d item)"
 msgid_plural "(containing a total of %'d items)"
@@ -3268,7 +3272,7 @@ msgstr[0] "(obsahují celkem %'d položku)"
 msgstr[1] "(obsahují celkem %'d položky)"
 msgstr[2] "(obsahují celkem %'d položek)"
 
-#: src/nautilus-files-view.c:3500
+#: src/nautilus-files-view.c:3510
 #, c-format
 msgid "%'d item selected"
 msgid_plural "%'d items selected"
@@ -3277,7 +3281,7 @@ msgstr[1] "Vybrány %'d položky"
 msgstr[2] "Vybráno %'d položek"
 
 #. Folders selected also, use "other" terminology
-#: src/nautilus-files-view.c:3509
+#: src/nautilus-files-view.c:3519
 #, c-format
 msgid "%'d other item selected"
 msgid_plural "%'d other items selected"
@@ -3289,7 +3293,7 @@ msgstr[2] "vybráno %'d dalších položek"
 #. * needs to use something other than parentheses. The
 #. * the message in parentheses is the size of the selected items.
 #.
-#: src/nautilus-files-view.c:3524
+#: src/nautilus-files-view.c:3534
 #, c-format
 msgid "(%s)"
 msgstr "(%s)"
@@ -3301,98 +3305,98 @@ msgstr "(%s)"
 #. * message about the number of other items and the
 #. * total size of those items.
 #.
-#: src/nautilus-files-view.c:3574
+#: src/nautilus-files-view.c:3584
 #, c-format
 msgid "%s, %s"
 msgstr "%s, %s"
 
-#: src/nautilus-files-view.c:3650
+#: src/nautilus-files-view.c:3660
 msgid "Search _Settings"
 msgstr "Na_stavení vyhledávání"
 
-#: src/nautilus-files-view.c:3662
+#: src/nautilus-files-view.c:3672
 msgid "Search _Everywhere"
 msgstr "Hledat všud_e"
 
-#: src/nautilus-files-view.c:3692
+#: src/nautilus-files-view.c:3702
 msgid "More locations can be added to search in the settings"
 msgstr "Další místa k vyhledávání lze přidat v nastavení"
 
 #. Translators: %s is the name of the search location formatted for display
-#: src/nautilus-files-view.c:3700
+#: src/nautilus-files-view.c:3710
 #, c-format
 msgid "No matches in “%s”"
 msgstr "Žádné shody v „%s“"
 
-#: src/nautilus-files-view.c:3708
+#: src/nautilus-files-view.c:3718
 #: src/resources/ui/nautilus-search-types-dialog.blp:66
 msgid "No Results Found"
 msgstr "Nenalezeny žádné výsledky"
 
-#: src/nautilus-files-view.c:3713
+#: src/nautilus-files-view.c:3723
 msgid "Trash is Empty"
 msgstr "Koš je prázdný"
 
-#: src/nautilus-files-view.c:3719
+#: src/nautilus-files-view.c:3729
 msgid "No Starred Files"
 msgstr "Žádné oblíbené soubory"
 
-#: src/nautilus-files-view.c:3725
+#: src/nautilus-files-view.c:3735
 msgid "No Recent Files"
 msgstr "Žádné nedávné soubory"
 
-#: src/nautilus-files-view.c:3731
+#: src/nautilus-files-view.c:3741
 msgid "No Known Connections"
 msgstr "Žádná známá připojení"
 
-#: src/nautilus-files-view.c:3732
+#: src/nautilus-files-view.c:3742
 msgid "Enter an address to connect to a network location."
 msgstr "Chcete-li se připojit k síťovému umístění, zadejte jeho adresu."
 
-#: src/nautilus-files-view.c:3737
+#: src/nautilus-files-view.c:3747
 msgid "Folder is Empty"
 msgstr "Složka je prázdná"
 
-#: src/nautilus-files-view.c:5826
+#: src/nautilus-files-view.c:5834
 msgid "Select Move Destination"
 msgstr "Vyberte cíl pro přesun"
 
-#: src/nautilus-files-view.c:5830
+#: src/nautilus-files-view.c:5838
 msgid "Select Copy Destination"
 msgstr "Vyberte cíl pro kopii"
 
-#: src/nautilus-files-view.c:5841 src/nautilus-files-view.c:6209
-#: src/nautilus-portal.c:478 src/nautilus-properties.c:3968
+#: src/nautilus-files-view.c:5849 src/nautilus-files-view.c:6217
+#: src/nautilus-portal.c:478 src/nautilus-properties.c:3988
 #: src/resources/ui/nautilus-files-view-select-items.blp:24
 msgid "_Select"
 msgstr "_Vybrat"
 
-#: src/nautilus-files-view.c:6208
+#: src/nautilus-files-view.c:6216
 msgid "Select Extract Destination"
 msgstr "Vyberte cíl pro rozbalení"
 
-#: src/nautilus-files-view.c:6284
+#: src/nautilus-files-view.c:6292
 msgid "Error sending email."
 msgstr "Chyba při odesílání e-mailu."
 
 #. Translators: %s is a file name formatted for display
-#: src/nautilus-files-view.c:6583
+#: src/nautilus-files-view.c:6591
 #, c-format
 msgid "Unable to remove “%s”"
 msgstr "Nelze odstranit „%s“"
 
-#: src/nautilus-files-view.c:6626
+#: src/nautilus-files-view.c:6634
 msgid "Unable to stop drive"
 msgstr "Zařízení nelze deaktivovat"
 
 #. Translators: %s is a file name formatted for display
-#: src/nautilus-files-view.c:6736 src/nautilus-sidebar.c:1730
+#: src/nautilus-files-view.c:6744 src/nautilus-sidebar.c:1728
 #: src/nautilus-sidebar.c:2608
 #, c-format
 msgid "Unable to start “%s”"
 msgstr "Nelze aktivovat „%s“"
 
-#: src/nautilus-files-view.c:7833
+#: src/nautilus-files-view.c:7852
 #, c-format
 msgid "New Folder with Selection (%'d Item)"
 msgid_plural "New Folder with Selection (%'d Items)"
@@ -3400,71 +3404,71 @@ msgstr[0] "Nová složka s vybranou %'d položkou"
 msgstr[1] "Nová složka s vybranými %'d položkami"
 msgstr[2] "Nová složka s vybranými %'d položkami"
 
-#: src/nautilus-files-view.c:7888
+#: src/nautilus-files-view.c:7907
 #, c-format
 msgid "Open With %s"
 msgstr "Otevřít pomocí %s"
 
-#: src/nautilus-files-view.c:7899
+#: src/nautilus-files-view.c:7918
 msgid "Run"
 msgstr "Spustit"
 
-#: src/nautilus-files-view.c:7904
+#: src/nautilus-files-view.c:7923
 #: src/resources/ui/nautilus-operations-ui-manager-request-passphrase.blp:17
 msgid "Extract"
 msgstr "Rozbalit"
 
-#: src/nautilus-files-view.c:7905
+#: src/nautilus-files-view.c:7924
 msgid "Extract to…"
 msgstr "Rozbalit do…"
 
-#: src/nautilus-files-view.c:7909
+#: src/nautilus-files-view.c:7928
 #: src/resources/menu/nautilus-files-view-context-menus.ui:98
 msgid "Open"
 msgstr "Otevřít"
 
-#: src/nautilus-files-view.c:7985 src/nautilus-sidebar.c:3054
+#: src/nautilus-files-view.c:8004 src/nautilus-sidebar.c:3054
 #: src/resources/menu/nautilus-files-view-context-menus.ui:164
 msgid "_Start"
 msgstr "_Aktivovat"
 
-#: src/nautilus-files-view.c:7991
+#: src/nautilus-files-view.c:8010
 msgid "_Connect"
 msgstr "_Připojit"
 
-#: src/nautilus-files-view.c:7997
+#: src/nautilus-files-view.c:8016
 msgid "_Start Multi-disk Drive"
 msgstr "_Aktivovat vícediskovou jednotku"
 
-#: src/nautilus-files-view.c:8003
+#: src/nautilus-files-view.c:8022
 msgid "U_nlock Drive"
 msgstr "Odemk_nout zařízení"
 
-#: src/nautilus-files-view.c:8021
+#: src/nautilus-files-view.c:8040
 msgid "Stop Drive"
 msgstr "Deaktivovat zařízení"
 
-#: src/nautilus-files-view.c:8027 src/nautilus-sidebar.c:3085
+#: src/nautilus-files-view.c:8046 src/nautilus-sidebar.c:3085
 msgid "_Safely Remove Drive"
 msgstr "_Bezpečně odebrat zařízení"
 
-#: src/nautilus-files-view.c:8033
+#: src/nautilus-files-view.c:8052
 msgid "_Disconnect"
 msgstr "O_dpojit"
 
-#: src/nautilus-files-view.c:8039
+#: src/nautilus-files-view.c:8058
 msgid "_Stop Multi-disk Drive"
 msgstr "_Deaktivovat vícediskovou jednotku"
 
-#: src/nautilus-files-view.c:8045
+#: src/nautilus-files-view.c:8064
 msgid "_Lock Drive"
 msgstr "_Uzamknout zařízení"
 
-#: src/nautilus-files-view.c:9711
+#: src/nautilus-files-view.c:9732
 msgid "View items as a grid of icons"
 msgstr "Zobrazit položky jako mřížku ikon"
 
-#: src/nautilus-files-view.c:9722
+#: src/nautilus-files-view.c:9743
 msgid "View items as a list"
 msgstr "Zobrazit položky jako seznam"
 
@@ -3481,7 +3485,7 @@ msgstr "Přetažení objektů není podporováno."
 msgid "An invalid drag type was used."
 msgstr "Byl použit neplatný typ přetažení."
 
-#: src/nautilus-floating-bar.c:391
+#: src/nautilus-floating-bar.c:390
 msgctxt "Stop an ongoing operation"
 msgid "Stop"
 msgstr "Zastavit"
@@ -3498,7 +3502,7 @@ msgstr "Zobrazení aktuálního umístění"
 
 #. Translators: this refers to captions under icons.
 #. Translators: this is referred to the permissions the user has in a directory.
-#: src/nautilus-grid-view-captions-dialog.c:36 src/nautilus-properties.c:410
+#: src/nautilus-grid-view-captions-dialog.c:36 src/nautilus-properties.c:416
 msgid "None"
 msgstr "Nic"
 
@@ -3556,11 +3560,11 @@ msgstr "_Vyprázdnit koš…"
 msgid "_Trash Settings"
 msgstr "Nas_tavení koše"
 
-#: src/nautilus-location-entry.c:811 src/nautilus-query-editor.c:680
+#: src/nautilus-location-entry.c:808 src/nautilus-query-editor.c:680
 msgid "Clear Entry"
 msgstr "Vymazat vstup"
 
-#: src/nautilus-location-entry.c:820
+#: src/nautilus-location-entry.c:817
 msgid "Go to Location"
 msgstr "Jít na umístění"
 
@@ -3949,19 +3953,19 @@ msgstr ""
 msgid "“%s” is password-protected."
 msgstr "Archiv „%s“ je chráněn heslem."
 
-#: src/nautilus-pathbar.c:314
+#: src/nautilus-pathbar.c:316
 msgid "Current Folder Menu"
 msgstr "Nabídka aktuální složky"
 
 #. Translators: This is the label used in the pathbar when seeing
 #. * the root directory (also known as /)
-#: src/nautilus-pathbar.c:406 src/nautilus-properties.c:889
+#: src/nautilus-pathbar.c:408 src/nautilus-properties.c:895
 msgid "Operating System"
 msgstr "Operační systém"
 
 #. Translators: This is the filesystem root directory (also known
 #. * as /) when seen as administrator
-#: src/nautilus-pathbar.c:413
+#: src/nautilus-pathbar.c:415
 msgid "Administrator Root"
 msgstr "Správcovský kořen"
 
@@ -4022,16 +4026,16 @@ msgstr "Připravuje se"
 msgid "Operation Completed"
 msgstr "Operace dokončena"
 
-#: src/nautilus-progress-persistence-handler.c:106
-#: src/nautilus-progress-persistence-handler.c:147
+#: src/nautilus-progress-persistence-handler.c:108
+#: src/nautilus-progress-persistence-handler.c:149
 msgid "File Operations"
 msgstr "Operace se soubory"
 
-#: src/nautilus-progress-persistence-handler.c:108
+#: src/nautilus-progress-persistence-handler.c:110
 msgid "Show Details"
 msgstr "Zobrazit podrobnosti"
 
-#: src/nautilus-progress-persistence-handler.c:111
+#: src/nautilus-progress-persistence-handler.c:113
 #, c-format
 msgid "%'d file operation active"
 msgid_plural "%'d file operations active"
@@ -4039,87 +4043,87 @@ msgstr[0] "%'d aktivní operace se soubory"
 msgstr[1] "%'d aktivní operace se soubory"
 msgstr[2] "%'d aktivních operací se soubory"
 
-#: src/nautilus-progress-persistence-handler.c:149
+#: src/nautilus-progress-persistence-handler.c:151
 msgid "All file operations have been completed"
 msgstr "Všechny operace se soubory byly dokončeny"
 
-#: src/nautilus-properties.c:361
+#: src/nautilus-properties.c:367
 msgid "Read and Write"
 msgstr "Čtení a zápis"
 
-#: src/nautilus-properties.c:365
+#: src/nautilus-properties.c:371
 msgid "Create and Delete Files"
 msgstr "Vytváření a mazání souborů"
 
-#: src/nautilus-properties.c:369
+#: src/nautilus-properties.c:375
 msgid "Read and Write, No Access"
 msgstr "Čtení a zápis, bez přístupu"
 
-#: src/nautilus-properties.c:376
+#: src/nautilus-properties.c:382
 msgid "Read-Only"
 msgstr "Pouze čtení"
 
-#: src/nautilus-properties.c:380
+#: src/nautilus-properties.c:386
 msgid "Access Files"
 msgstr "Přístup k souborům"
 
-#: src/nautilus-properties.c:384
+#: src/nautilus-properties.c:390
 msgid "List Files Only"
 msgstr "Pouze výpis souborů"
 
-#: src/nautilus-properties.c:394
+#: src/nautilus-properties.c:400
 msgid "Write-Only"
 msgstr "Pouze zápis"
 
-#: src/nautilus-properties.c:398
+#: src/nautilus-properties.c:404
 msgid "Write-Only, No Access"
 msgstr "Pouze zápis, bez přístupu"
 
-#: src/nautilus-properties.c:405
+#: src/nautilus-properties.c:411
 msgid "Access-Only"
 msgstr "Pouze přístup"
 
-#: src/nautilus-properties.c:603
+#: src/nautilus-properties.c:609
 msgid "Custom icon removed"
 msgstr "Vlastní ikona byla odebrána"
 
-#: src/nautilus-properties.c:604 src/nautilus-window.c:811
-#: src/resources/ui/nautilus-window.blp:25
+#: src/nautilus-properties.c:610 src/nautilus-window.c:832
+#: src/resources/ui/nautilus-window.blp:30
 msgid "_Undo"
 msgstr "_Zpět"
 
-#: src/nautilus-properties.c:625
+#: src/nautilus-properties.c:631
 msgid "Cannot Use This File"
 msgstr "Nelze použít tento soubor"
 
-#: src/nautilus-properties.c:626 src/nautilus-properties.c:711
+#: src/nautilus-properties.c:632 src/nautilus-properties.c:717
 msgid "You can only use local images as custom icons."
 msgstr "Jako vlastní ikony můžete použít jen místní obrázky."
 
-#: src/nautilus-properties.c:696
+#: src/nautilus-properties.c:702
 msgid "You cannot assign more than one custom icon at a time!"
 msgstr "Nemůžete najednou přiřadit více než jednu vlastní ikonu!"
 
-#: src/nautilus-properties.c:697
+#: src/nautilus-properties.c:703
 msgid "Please drop just one image to set a custom icon."
 msgstr "Vlastní ikonu prosím nastavte upuštěním jen jednoho obrázku."
 
-#: src/nautilus-properties.c:710
+#: src/nautilus-properties.c:716
 msgid "The file that you dropped is not local."
 msgstr "Soubor který, jste pustili, není místní."
 
 #. Unmarks a file as starred (starred)
-#: src/nautilus-properties.c:758 src/nautilus-star-cell.c:72
+#: src/nautilus-properties.c:764 src/nautilus-star-cell.c:72
 #: src/resources/menu/nautilus-files-view-context-menus.ui:261
 msgid "Unstar"
 msgstr "Odebrat z oblíbených"
 
-#: src/nautilus-properties.c:758 src/nautilus-star-cell.c:72
+#: src/nautilus-properties.c:764 src/nautilus-star-cell.c:72
 msgctxt "Verb"
 msgid "Star"
 msgstr "Přidělit hvězdičku"
 
-#: src/nautilus-properties.c:854
+#: src/nautilus-properties.c:860
 #, c-format
 msgid "%d Selected Item"
 msgid_plural "%d Selected Items"
@@ -4127,27 +4131,27 @@ msgstr[0] "%d vybraná položka"
 msgstr[1] "%d vybrané položky"
 msgstr[2] "%d vybraných položek"
 
-#: src/nautilus-properties.c:1600
+#: src/nautilus-properties.c:1606
 msgid "Cancel Group Change?"
 msgstr "Zrušit změnu skupiny?"
 
-#: src/nautilus-properties.c:1745
+#: src/nautilus-properties.c:1751
 msgid "Cancel Owner Change?"
 msgstr "Zrušit změnu vlastníka?"
 
-#: src/nautilus-properties.c:1893 src/nautilus-properties.c:1940
+#: src/nautilus-properties.c:1899 src/nautilus-properties.c:1946
 msgid "Multiple"
 msgstr "Více"
 
-#: src/nautilus-properties.c:2074
+#: src/nautilus-properties.c:2080
 msgid "Empty folder"
 msgstr "Prázdná složka"
 
-#: src/nautilus-properties.c:2078
+#: src/nautilus-properties.c:2084
 msgid "Contents unreadable"
 msgstr "Obsah nečitelný"
 
-#: src/nautilus-properties.c:2090
+#: src/nautilus-properties.c:2096
 #, c-format
 msgid "%'d item, with size %s"
 msgid_plural "%'d items, totalling %s"
@@ -4155,54 +4159,54 @@ msgstr[0] "%'d položka s velikostí %s"
 msgstr[1] "%'d položky s celkovou velikostí %s"
 msgstr[2] "%'d položek s celkovou velikostí %s"
 
-#: src/nautilus-properties.c:2100
+#: src/nautilus-properties.c:2106
 msgid "(some contents unreadable)"
 msgstr "(některý obsah nečitelný)"
 
 #. Translators: %s will be filled with a filesystem type, such as 'ext4' or 'msdos'.
-#: src/nautilus-properties.c:2423
+#: src/nautilus-properties.c:2435
 #, c-format
 msgid "%s Filesystem"
 msgstr "Souborový systém %s"
 
-#: src/nautilus-properties.c:3525
+#: src/nautilus-properties.c:3537
 #, c-format
 msgid "The permissions of “%s” could not be determined."
 msgstr "Oprávnění „%s“ nebylo možné zjistit."
 
-#: src/nautilus-properties.c:3967
+#: src/nautilus-properties.c:3987
 msgid "Select Custom Icon"
 msgstr "Vybrat vlastní ikonu"
 
-#: src/nautilus-query-editor.c:138
+#: src/nautilus-query-editor.c:140
 msgid "Search may be slow and will not include subfolders or file contents"
 msgstr "Vyhledávání může být pomalé a nezahrne podsložky ani obsah souborů"
 
-#: src/nautilus-query-editor.c:145
+#: src/nautilus-query-editor.c:147
 msgid "Search may be slow and will not include file contents"
 msgstr "Vyhledávání může být pomalé a nezahrne obsah souborů"
 
-#: src/nautilus-query-editor.c:153
+#: src/nautilus-query-editor.c:155
 msgid "Remote Location"
 msgstr "Vzdálené umístění"
 
-#: src/nautilus-query-editor.c:159
+#: src/nautilus-query-editor.c:161
 msgid "External Drive"
 msgstr "Externí disk"
 
-#: src/nautilus-query-editor.c:165
+#: src/nautilus-query-editor.c:167
 msgid "Folder Not in Search Locations"
 msgstr "Složka není v prohledávaných umístěních"
 
-#: src/nautilus-query-editor.c:172
+#: src/nautilus-query-editor.c:174
 msgid "Limited Search in this Folder"
 msgstr "V aktuální složce je prohledávání omezeno"
 
-#: src/nautilus-query-editor.c:181
+#: src/nautilus-query-editor.c:183
 msgid "Some subfolders will not be included in search results"
 msgstr "Některé podsložky nebudou zahrnuty ve výsledcích vyhledávání"
 
-#: src/nautilus-query-editor.c:188
+#: src/nautilus-query-editor.c:190
 msgid ""
 "Search will be slower and will not include file contents for some folders"
 msgstr ""
@@ -4326,16 +4330,16 @@ msgstr "Přidat novou záložku"
 #. Translators: This means that unlocking an encrypted storage
 #. * device failed. %s is the name of the device.
 #.
-#: src/nautilus-sidebar.c:1775
+#: src/nautilus-sidebar.c:1773
 #, c-format
 msgid "Error unlocking “%s”"
 msgstr "Chyba při odemykání „%s“"
 
-#: src/nautilus-sidebar.c:1929
+#: src/nautilus-sidebar.c:1927
 msgid "This name is already taken"
 msgstr "Tento název je již zabraný"
 
-#: src/nautilus-sidebar.c:2010 src/nautilus-sidebar.c:2983
+#: src/nautilus-sidebar.c:2008 src/nautilus-sidebar.c:2983
 #: src/resources/ui/nautilus-batch-rename-dialog.blp:147
 #: src/resources/ui/nautilus-file-conflict-dialog.blp:31
 #: src/resources/ui/nautilus-rename-file-popover.blp:44
@@ -4450,15 +4454,15 @@ msgstr "Postranní panel"
 msgid "List of common shortcuts, mountpoints, and bookmarks."
 msgstr "Seznam častých zkratek, bodů připojení a záložek."
 
-#: src/nautilus-tag-manager.c:218
+#: src/nautilus-tag-manager.c:216
 msgid "starred"
 msgstr "přidáno do oblíbených"
 
-#: src/nautilus-tag-manager.c:228
+#: src/nautilus-tag-manager.c:226
 msgid "unstarred"
 msgstr "odebráno z oblíbených"
 
-#: src/nautilus-ui-utilities.c:535
+#: src/nautilus-ui-utilities.c:537
 msgid "You can stop this operation by clicking cancel."
 msgstr "Tuto operaci můžete zastavit kliknutím na Zrušit."
 
@@ -4469,23 +4473,23 @@ msgctxt "badge_count"
 msgid "%u+"
 msgstr "%u+"
 
-#: src/nautilus-window.c:151
+#: src/nautilus-window.c:149
 msgid "New tab"
 msgstr "Nová karta"
 
-#: src/nautilus-window.c:152
+#: src/nautilus-window.c:150
 msgid "Close current view"
 msgstr "Zavřít aktuální zobrazení"
 
 #. Translators: only one item has been moved to trash and %s is its name.
-#: src/nautilus-window.c:734
+#: src/nautilus-window.c:756
 #, c-format
 msgid "“%s” moved to trash"
 msgstr "„%s“ byl přesunut do koše"
 
 #. Translators: one or more items might have been moved to trash, and %d
 #. * is the count.
-#: src/nautilus-window.c:741
+#: src/nautilus-window.c:763
 #, c-format
 msgid "%d file moved to trash"
 msgid_plural "%d files moved to trash"
@@ -4494,14 +4498,14 @@ msgstr[1] "%d soubory byly přesunuty do koše"
 msgstr[2] "%d souborů bylo přesunuto do koše"
 
 #. Translators: one item has been unstarred and %s is its name.
-#: src/nautilus-window.c:760
+#: src/nautilus-window.c:782
 #, c-format
 msgid "“%s” unstarred"
 msgstr "„%s“ byl odebrán z oblíbených"
 
 #. Translators: one or more items have been unstarred, and %d
 #. * is the count.
-#: src/nautilus-window.c:766
+#: src/nautilus-window.c:788
 #, c-format
 msgid "%d file unstarred"
 msgid_plural "%d files unstarred"
@@ -4509,25 +4513,25 @@ msgstr[0] "Z oblíbených byl odebrán %d soubor"
 msgstr[1] "Z oblíbených byly odebrány %d soubory"
 msgstr[2] "Z oblíbených bylo odebráno %d souborů"
 
-#: src/nautilus-window.c:821 src/resources/ui/nautilus-window.blp:30
+#: src/nautilus-window.c:841 src/resources/ui/nautilus-window.blp:35
 msgid "_Redo"
 msgstr "Zno_vu"
 
-#: src/nautilus-window.c:1715
+#: src/nautilus-window.c:1726
 msgid "No plugins currently installed."
 msgstr "Aktuálně nejsou nainstalovány žádné zásuvné moduly."
 
-#: src/nautilus-window.c:1719
+#: src/nautilus-window.c:1730
 msgid "Currently installed plugins:"
 msgstr "Aktuálně nainstalované zásuvné moduly:"
 
-#: src/nautilus-window.c:1721
+#: src/nautilus-window.c:1732
 msgid "For bug testing only, the following command can be used:"
 msgstr "Pokud chcete pouze testovat chyby, lze použít následující příkaz:"
 
 #. Translators should localize the following string which will be displayed at the bottom of
 #. * the about box to give credit to the translator(s).
-#: src/nautilus-window.c:1736
+#: src/nautilus-window.c:1747
 msgid "translator-credits"
 msgstr ""
 "Michal Bukovjan <bukm@centrum.cz>\n"
@@ -4546,68 +4550,68 @@ msgstr ""
 "Dagobert Janota <janotadag@gmail.com>\n"
 "Patrik Sivek <sivekpatrik@gmail.com>"
 
-#: src/nautilus-window-slot.c:165
+#: src/nautilus-window-slot.c:164
 msgid "Parent folder"
 msgstr "Rodičovská složka"
 
-#: src/nautilus-window-slot.c:166
+#: src/nautilus-window-slot.c:165
 #: src/resources/ui/nautilus-history-controls.blp:13
 msgid "Back"
 msgstr "Zpět"
 
-#: src/nautilus-window-slot.c:167
+#: src/nautilus-window-slot.c:166
 #: src/resources/ui/nautilus-history-controls.blp:20
 msgid "Forward"
 msgstr "Vpřed"
 
-#: src/nautilus-window-slot.c:889 src/resources/ui/nautilus-file-chooser.blp:25
-#: src/resources/ui/nautilus-window.blp:131
+#: src/nautilus-window-slot.c:886 src/resources/ui/nautilus-file-chooser.blp:25
+#: src/resources/ui/nautilus-window.blp:156
 msgid "Search Everywhere"
 msgstr "Hledat všude"
 
-#: src/nautilus-window-slot.c:890
+#: src/nautilus-window-slot.c:887
 msgid "Find files and folders in all search locations"
 msgstr "Najít soubory a složky ve všech prohledávaných umístěních"
 
-#: src/nautilus-window-slot.c:893
+#: src/nautilus-window-slot.c:890
 msgid "Search Settings"
 msgstr "Nastavení vyhledávání"
 
-#: src/nautilus-window-slot.c:1775
+#: src/nautilus-window-slot.c:1727
 msgid "Unable to display the contents of this folder."
 msgstr "Nelze zobrazit obsah této složky."
 
-#: src/nautilus-window-slot.c:1779
+#: src/nautilus-window-slot.c:1731
 msgid "This location doesn’t appear to be a folder."
 msgstr "Toto umístění se nezdá být složkou."
 
-#: src/nautilus-window-slot.c:1792
+#: src/nautilus-window-slot.c:1744
 #, c-format
 msgid "Unable to find “%s”. Please check the spelling and try again."
 msgstr ""
 "„%s“ se nezdařilo najít. Zkontrolujte si prosím překlepy a zkuste to znovu."
 
-#: src/nautilus-window-slot.c:1797
+#: src/nautilus-window-slot.c:1749
 msgid ""
 "Unable to find the requested file. Please check the spelling and try again."
 msgstr ""
 "Požadovaný soubor se nezdařilo najít. Zkontrolujte si prosím překlepy a "
 "zkuste to znovu."
 
-#: src/nautilus-window-slot.c:1808
+#: src/nautilus-window-slot.c:1760
 #, c-format
 msgid "“%s” locations are not supported."
 msgstr "Umístění typu „%s“ není podporováno."
 
-#: src/nautilus-window-slot.c:1813
+#: src/nautilus-window-slot.c:1765
 msgid "Unable to handle this kind of location."
 msgstr "Nelze obsloužit tento druh umístění."
 
-#: src/nautilus-window-slot.c:1820
+#: src/nautilus-window-slot.c:1772
 msgid "Unable to access the requested location."
 msgstr "Nelze přistupovat k požadovanému místění."
 
-#: src/nautilus-window-slot.c:1826
+#: src/nautilus-window-slot.c:1778
 msgid "Don’t have permission to access the requested location."
 msgstr "Nemáte oprávnění přistupovat k požadovanému místění."
 
@@ -4616,7 +4620,7 @@ msgstr "Nemáte oprávnění přistupovat k požadovanému místění."
 #. * But this case is also hit for legitimate web addresses when
 #. * the proxy is set up wrong.
 #.
-#: src/nautilus-window-slot.c:1837
+#: src/nautilus-window-slot.c:1789
 msgid ""
 "Unable to find the requested location. Please check the spelling or the "
 "network settings."
@@ -4627,7 +4631,7 @@ msgstr ""
 #. This case can be hit when server application is not installed
 #. * or is inactive in the system user is trying to connect to.
 #.
-#: src/nautilus-window-slot.c:1846
+#: src/nautilus-window-slot.c:1798
 msgid ""
 "The server has refused the connection. Typically this means that the "
 "firewall is blocking access or that the remote service is not running."
@@ -4635,12 +4639,12 @@ msgstr ""
 "Server odmítl připojení. Obvykle to znamená, že přístup blokuje firewall, "
 "nebo že vzdálený server neběží."
 
-#: src/nautilus-window-slot.c:1858 src/nautilus-window-slot.c:1866
+#: src/nautilus-window-slot.c:1810 src/nautilus-window-slot.c:1818
 #, c-format
 msgid "Unhandled error message: %s"
 msgstr "Neobsloužené chybové hlášení: %s"
 
-#: src/nautilus-x-content-bar.c:141
+#: src/nautilus-x-content-bar.c:144
 msgid "Open with:"
 msgstr "Otevřít pomocí:"
 
@@ -5601,6 +5605,7 @@ msgid "Zoom In"
 msgstr "Přiblížit"
 
 #: src/resources/ui/nautilus-window.blp:7
+#: src/resources/ui/nautilus-window.blp:111
 msgid "New _Window"
 msgstr "Nové o_kno"
 
@@ -5608,53 +5613,58 @@ msgstr "Nové o_kno"
 msgid "New _Tab"
 msgstr "Nová kar_ta"
 
-#: src/resources/ui/nautilus-window.blp:37
+#: src/resources/ui/nautilus-window.blp:19
+msgid "Show All Ta_bs"
+msgstr "Zobrazit vše_chny karty"
+
+#: src/resources/ui/nautilus-window.blp:42
 msgid "_Preferences"
 msgstr "_Předvolby"
 
-#: src/resources/ui/nautilus-window.blp:42
+#: src/resources/ui/nautilus-window.blp:47
 msgid "_Keyboard Shortcuts"
 msgstr "_Klávesové zkratky"
 
-#: src/resources/ui/nautilus-window.blp:47
+#: src/resources/ui/nautilus-window.blp:52
 msgid "_Help"
 msgstr "_Nápověda"
 
-#: src/resources/ui/nautilus-window.blp:52
+#: src/resources/ui/nautilus-window.blp:57
 msgid "_About Files"
 msgstr "O _aplikaci Soubory"
 
-#: src/resources/ui/nautilus-window.blp:61
+#: src/resources/ui/nautilus-window.blp:66
 msgid "_New Tab"
 msgstr "_Nová karta"
 
-#: src/resources/ui/nautilus-window.blp:66
+#: src/resources/ui/nautilus-window.blp:71
+#: src/resources/ui/nautilus-window.blp:116
 msgid "Re_store Closed Tab"
 msgstr "O_bnovit zavřenou kartu"
 
-#: src/resources/ui/nautilus-window.blp:73
+#: src/resources/ui/nautilus-window.blp:78
 msgid "Move Tab to New _Window"
 msgstr "Přesunout kartu _do nového okna"
 
 #. Translators: use “Move Tab _Right” for RTL languages
-#: src/resources/ui/nautilus-window.blp:79
+#: src/resources/ui/nautilus-window.blp:84
 msgid "Move Tab _Left"
 msgstr "Přesunout kartu v_levo"
 
 #. Translators: use “Move Tab _Left” for RTL languages
-#: src/resources/ui/nautilus-window.blp:85
+#: src/resources/ui/nautilus-window.blp:90
 msgid "Move Tab _Right"
 msgstr "Přesunout kartu vp_ravo"
 
-#: src/resources/ui/nautilus-window.blp:92
+#: src/resources/ui/nautilus-window.blp:97
 msgid "_Close Tab"
 msgstr "_Zavřít kartu"
 
-#: src/resources/ui/nautilus-window.blp:97
+#: src/resources/ui/nautilus-window.blp:102
 msgid "Close _Other Tabs"
 msgstr "Zavřít _ostatní karty"
 
-#: src/resources/ui/nautilus-window.blp:142
+#: src/resources/ui/nautilus-window.blp:167
 msgid "Main Menu"
 msgstr "Hlavní nabídka"
 
@@ -5929,55 +5939,60 @@ msgstr "Zavřít okno či kartu"
 
 #: src/resources/ui/shortcuts-dialog.blp:316
 msgctxt "shortcuts dialog"
+msgid "Show All Tabs"
+msgstr "Zobrazit všechny karty"
+
+#: src/resources/ui/shortcuts-dialog.blp:321
+msgctxt "shortcuts dialog"
 msgid "Restore Closed Tab"
 msgstr "Obnovit zavřenou kartu"
 
-#: src/resources/ui/shortcuts-dialog.blp:323
+#: src/resources/ui/shortcuts-dialog.blp:328
 msgctxt "shortcuts dialog"
 msgid "Go to Previous Tab"
 msgstr "Přejít na předchozí kartu"
 
-#: src/resources/ui/shortcuts-dialog.blp:328
+#: src/resources/ui/shortcuts-dialog.blp:333
 msgctxt "shortcuts dialog"
 msgid "Go to Next Tab"
 msgstr "Přejít na následující kartu"
 
-#: src/resources/ui/shortcuts-dialog.blp:333
+#: src/resources/ui/shortcuts-dialog.blp:338
 msgctxt "shortcuts dialog"
 msgid "Open Tab"
 msgstr "Otevřít kartu"
 
-#: src/resources/ui/shortcuts-dialog.blp:340
+#: src/resources/ui/shortcuts-dialog.blp:345
 msgctxt "shortcuts dialog"
 msgid "Move Tab Left"
 msgstr "Přesunout kartu vlevo"
 
-#: src/resources/ui/shortcuts-dialog.blp:345
+#: src/resources/ui/shortcuts-dialog.blp:350
 msgctxt "shortcuts dialog"
 msgid "Move Tab Right"
 msgstr "Přesunout kartu vpravo"
 
-#: src/resources/ui/shortcuts-dialog.blp:351
+#: src/resources/ui/shortcuts-dialog.blp:356
 msgctxt "shortcuts dialog"
 msgid "App"
 msgstr "Aplikace"
 
-#: src/resources/ui/shortcuts-dialog.blp:354
+#: src/resources/ui/shortcuts-dialog.blp:359
 msgctxt "shortcuts dialog"
 msgid "Show Preferences"
 msgstr "Zobrazit předvolby"
 
-#: src/resources/ui/shortcuts-dialog.blp:359
+#: src/resources/ui/shortcuts-dialog.blp:364
 msgctxt "shortcuts dialog"
 msgid "Shortcuts"
 msgstr "Klávesové zkratky"
 
-#: src/resources/ui/shortcuts-dialog.blp:364
+#: src/resources/ui/shortcuts-dialog.blp:369
 msgctxt "shortcuts dialog"
 msgid "Show Help"
 msgstr "Zobrazit nápovědu"
 
-#: src/resources/ui/shortcuts-dialog.blp:369
+#: src/resources/ui/shortcuts-dialog.blp:374
 msgctxt "shortcuts dialog"
 msgid "Quit"
 msgstr "Ukončit"
