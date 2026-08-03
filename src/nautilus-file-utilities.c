@@ -415,6 +415,7 @@ special_directory_get_icon (GUserDirectory directory,
     ICON_CASE (DOWNLOAD);
     ICON_CASE (MUSIC);
     ICON_CASE (PICTURES);
+    ICON_CASE (PROJECTS);
     ICON_CASE (PUBLIC_SHARE);
     ICON_CASE (TEMPLATES);
     ICON_CASE (VIDEOS);

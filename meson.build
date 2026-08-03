@@ -99,7 +99,7 @@ pkgconfig = import('pkgconfig')
 ################
 # Dependencies #
 ################
-glib_ver = '>= 2.84.0'
+glib_ver = '>= 2.89.0'
 
 libm = cc.find_library('m')
 
