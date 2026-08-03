@@ -49,7 +49,14 @@ static gboolean tried_alternative_previewer_dbus_name = FALSE;
 static gboolean previewer_ready = FALSE;
 static gboolean fetching_bus = FALSE;
 static GDBusProxy *previewer_proxy = NULL;
-static guint subscription_id = 0;
+
+enum
+{
+    DBUS_SUBSCRIPTION_SELECTION,
+    NUM_DBUS_SUBSCRIPTIONS
+};
+
+static guint dbus_subscriptions[NUM_DBUS_SUBSCRIPTIONS];
 
 static GCancellable *cancellable = NULL;
 
@@ -62,13 +69,6 @@ static void real_call_show_file (const gchar *uri,
                                  gboolean     close_if_already_visible,
                                  const char  *activation_token);
 static void create_new_bus (void);
-static void previewer_selection_event (GDBusConnection *connection,
-                                       const gchar     *sender_name,
-                                       const gchar     *object_path,
-                                       const gchar     *interface_name,
-                                       const gchar     *signal_name,
-                                       GVariant        *parameters,
-                                       gpointer         user_data);
 
 #ifdef GDK_WINDOWING_WAYLAND
 typedef struct
@@ -127,6 +127,57 @@ clear_exported_window_handle (void)
     exported_window_handle = NULL;
 }
 
+typedef void (*PreviewerEventCallback) (NautilusFilesView *files_view,
+                                        GVariant          *parameters);
+
+static void
+previewer_selection_event (NautilusFilesView *files_view,
+                           GVariant          *parameters)
+{
+    GtkDirectionType direction;
+
+    g_variant_get (parameters, "(u)", &direction);
+    nautilus_files_view_preview_selection_event (files_view, direction);
+}
+
+static void
+handle_previewer_event (GDBusConnection *connection,
+                        const gchar     *sender_name,
+                        const gchar     *object_path,
+                        const gchar     *interface_name,
+                        const gchar     *signal_name,
+                        GVariant        *parameters,
+                        gpointer         user_data)
+{
+    PreviewerEventCallback callback = user_data;
+    NautilusFilesView *files_view = (current_slot != NULL) ?
+                                    nautilus_window_slot_get_current_view (current_slot) : NULL;
+
+    if (files_view == NULL)
+    {
+        return;
+    }
+
+    callback (files_view, parameters);
+}
+
+static guint
+setup_dbus_connection (GDBusConnection        *connection,
+                       const char             *event_name,
+                       PreviewerEventCallback  callback)
+{
+    return g_dbus_connection_signal_subscribe (connection,
+                                               previewer_dbus_name,
+                                               PREVIEWER2_DBUS_IFACE,
+                                               event_name,
+                                               previewer_dbus_path,
+                                               NULL,
+                                               G_DBUS_SIGNAL_FLAGS_NONE,
+                                               handle_previewer_event,
+                                               callback,
+                                               NULL);
+}
+
 static void
 switch_to_alternative_previewer_dbus_name (void)
 {
@@ -158,16 +209,9 @@ on_ping_finished (GObject      *object,
 
         previewer_ready = TRUE;
         fetching_bus = FALSE;
-        subscription_id = g_dbus_connection_signal_subscribe (connection,
-                                                              previewer_dbus_name,
-                                                              PREVIEWER2_DBUS_IFACE,
-                                                              "SelectionEvent",
-                                                              previewer_dbus_path,
-                                                              NULL,
-                                                              G_DBUS_SIGNAL_FLAGS_NONE,
-                                                              previewer_selection_event,
-                                                              NULL,
-                                                              NULL);
+
+        dbus_subscriptions[DBUS_SUBSCRIPTION_SELECTION] =
+            setup_dbus_connection (connection, "SelectionEvent", previewer_selection_event);
     }
     else if (!tried_alternative_previewer_dbus_name)
     {
@@ -374,32 +418,6 @@ nautilus_previewer_call_close (void)
                        NULL);
 }
 
-static void
-previewer_selection_event (GDBusConnection *connection,
-                           const gchar     *sender_name,
-                           const gchar     *object_path,
-                           const gchar     *interface_name,
-                           const gchar     *signal_name,
-                           GVariant        *parameters,
-                           gpointer         user_data)
-{
-    if (current_slot == NULL)
-    {
-        return;
-    }
-
-    NautilusFilesView *view = nautilus_window_slot_get_current_view (current_slot);
-    GtkDirectionType direction;
-
-    if (view == NULL)
-    {
-        return;
-    }
-
-    g_variant_get (parameters, "(u)", &direction);
-    nautilus_files_view_preview_selection_event (view, direction);
-}
-
 void
 nautilus_previewer_setup (void)
 {
@@ -409,9 +427,12 @@ nautilus_previewer_setup (void)
 void
 nautilus_previewer_teardown (GDBusConnection *connection)
 {
-    if (subscription_id != 0)
+    for (guint i = 0; i < NUM_DBUS_SUBSCRIPTIONS; i += 1)
     {
-        g_dbus_connection_signal_unsubscribe (connection, subscription_id);
+        if (dbus_subscriptions[i] != 0)
+        {
+            g_dbus_connection_signal_unsubscribe (connection, dbus_subscriptions[i]);
+        }
     }
 
     g_cancellable_cancel (cancellable);
