@@ -54,7 +54,9 @@ static GDBusProxy *previewer_proxy = NULL;
 enum
 {
     DBUS_SUBSCRIPTION_NAVIGATE_TO,
+    DBUS_SUBSCRIPTION_RENAME,
     DBUS_SUBSCRIPTION_SELECTION,
+    DBUS_SUBSCRIPTION_TRASH,
     NUM_DBUS_SUBSCRIPTIONS
 };
 
@@ -168,6 +170,23 @@ previewer_navigate_to_event (NautilusFilesView *files_view,
 }
 
 static void
+previewer_rename_event (NautilusFilesView *files_view,
+                        GVariant          *parameters)
+{
+    const char *uri;
+
+    g_variant_get (parameters, "(s)", &uri);
+
+    if (!is_uri_selected (files_view, uri))
+    {
+        g_warning ("Ignoring previewer Rename request for uri %s", uri);
+        return;
+    }
+
+    gtk_widget_activate_action (GTK_WIDGET (files_view), "view.rename", NULL);
+}
+
+static void
 previewer_selection_event (NautilusFilesView *files_view,
                            GVariant          *parameters)
 {
@@ -175,6 +194,23 @@ previewer_selection_event (NautilusFilesView *files_view,
 
     g_variant_get (parameters, "(u)", &direction);
     nautilus_files_view_preview_selection_event (files_view, direction);
+}
+
+static void
+previewer_trash_event (NautilusFilesView *files_view,
+                       GVariant          *parameters)
+{
+    const char *uri;
+
+    g_variant_get (parameters, "(s)", &uri);
+
+    if (!is_uri_selected (files_view, uri))
+    {
+        g_warning ("Ignoring previewer Trash request for uri %s", uri);
+        return;
+    }
+
+    gtk_widget_activate_action (GTK_WIDGET (files_view), "view.move-to-trash", NULL);
 }
 
 static void
@@ -249,8 +285,12 @@ on_ping_finished (GObject      *object,
 
         dbus_subscriptions[DBUS_SUBSCRIPTION_NAVIGATE_TO] =
             setup_dbus_connection (connection, "NavigateTo", previewer_navigate_to_event);
+        dbus_subscriptions[DBUS_SUBSCRIPTION_RENAME] =
+            setup_dbus_connection (connection, "Rename", previewer_rename_event);
         dbus_subscriptions[DBUS_SUBSCRIPTION_SELECTION] =
             setup_dbus_connection (connection, "SelectionEvent", previewer_selection_event);
+        dbus_subscriptions[DBUS_SUBSCRIPTION_TRASH] =
+            setup_dbus_connection (connection, "Trash", previewer_trash_event);
     }
     else if (!tried_alternative_previewer_dbus_name)
     {
