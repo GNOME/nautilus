@@ -25,6 +25,7 @@
 
 #include "nautilus-previewer.h"
 
+#include "nautilus-file.h"
 #include "nautilus-files-view.h"
 #include "nautilus-window.h"
 #include "nautilus-window-slot.h"
@@ -49,6 +50,7 @@ static GDBusProxy *previewer_proxy = NULL;
 
 enum
 {
+    DBUS_SUBSCRIPTION_NAVIGATE_TO,
     DBUS_SUBSCRIPTION_SELECTION,
     NUM_DBUS_SUBSCRIPTIONS
 };
@@ -124,8 +126,43 @@ clear_exported_window_handle (void)
     exported_window_handle = NULL;
 }
 
+static gboolean
+is_uri_selected (NautilusFilesView *files_view,
+                 const char        *uri)
+{
+    g_autolist (NautilusFile) selection = nautilus_files_view_get_selection (files_view);
+
+    if (g_list_length (selection) != 1)
+    {
+        return FALSE;
+    }
+
+    g_autoptr (NautilusFile) file = nautilus_file_get_by_uri (uri);
+
+    return file == selection->data;
+}
+
 typedef void (*PreviewerEventCallback) (NautilusFilesView *files_view,
                                         GVariant          *parameters);
+
+static void
+previewer_navigate_to_event (NautilusFilesView *files_view,
+                             GVariant          *parameters)
+{
+    const char *uri;
+
+    g_variant_get (parameters, "(s)", &uri);
+
+    g_autoptr (NautilusFile) file = nautilus_file_get_by_uri (uri);
+
+    if (!nautilus_file_is_directory (file) || !is_uri_selected (files_view, uri))
+    {
+        g_warning ("Ignoring previewer NavigateTo request for uri %s", uri);
+        return;
+    }
+
+    nautilus_files_view_activate_file (files_view, file, NAUTILUS_OPEN_FLAG_NORMAL);
+}
 
 static void
 previewer_selection_event (NautilusFilesView *files_view,
@@ -190,6 +227,8 @@ on_ping_finished (GObject      *object,
         previewer_ready = TRUE;
         fetching_bus = FALSE;
 
+        dbus_subscriptions[DBUS_SUBSCRIPTION_NAVIGATE_TO] =
+            setup_dbus_connection (connection, "NavigateTo", previewer_navigate_to_event);
         dbus_subscriptions[DBUS_SUBSCRIPTION_SELECTION] =
             setup_dbus_connection (connection, "SelectionEvent", previewer_selection_event);
     }
