@@ -904,11 +904,11 @@ compare_section (gconstpointer a,
 
     if (item1->is_fallback && !item2->is_fallback)
     {
-        return 1;
+        return -1;
     }
     else if (!item1->is_fallback && item2->is_fallback)
     {
-        return -1;
+        return 1;
     }
 
     return 0;
