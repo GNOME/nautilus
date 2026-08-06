@@ -3879,6 +3879,17 @@ popout_window_clicked (NautilusPropertiesWidget *self)
     gtk_widget_set_visible (self->popout_button, FALSE);
     g_application_hold (g_application_get_default ());
 
+    g_clear_object (&self->current_view_location);
+
+    if (!gtk_widget_get_visible (self->parent_folder_row) &&
+        should_show_location_info (self))
+    {
+        add_updatable_row (self, self->parent_folder_row, "where");
+        value_row_update (ADW_ACTION_ROW (self->parent_folder_row), self);
+        gtk_widget_set_visible (self->parent_folder_row, TRUE);
+        gtk_widget_set_visible (self->locations_group, TRUE);
+    }
+
     /* Cleanup previous container, then connect new one */
     g_signal_emit (self, signals[HIDE], 0);
     g_signal_connect_swapped (self, "hide-properties",
