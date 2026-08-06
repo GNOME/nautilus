@@ -39,9 +39,12 @@
 #endif
 
 #define PREVIEWER2_DBUS_IFACE "org.gnome.NautilusPreviewer2"
+#define PREVIEWER_DBUS_NAME "org.gnome.NautilusPreviewer"
+#define PREVIEWER_DBUS_PATH "/org/gnome/NautilusPreviewer"
 
-static const char *previewer_dbus_name = "org.gnome.NautilusPreviewer" PROFILE;
-static const char *previewer_dbus_path = "/org/gnome/NautilusPreviewer" PROFILE;
+static const char *previewer_dbus_name = PREVIEWER_DBUS_NAME PROFILE;
+static const char *previewer_dbus_path = PREVIEWER_DBUS_PATH PROFILE;
+static gboolean tried_alternative_previewer_dbus_name = FALSE;
 
 static gboolean previewer_ready = FALSE;
 static gboolean fetching_bus = FALSE;
@@ -125,6 +128,23 @@ clear_exported_window_handle (void)
 }
 
 static void
+switch_to_alternative_previewer_dbus_name (void)
+{
+    tried_alternative_previewer_dbus_name = TRUE;
+
+    if (g_str_has_suffix (previewer_dbus_name, "Devel"))
+    {
+        previewer_dbus_name = PREVIEWER_DBUS_NAME;
+        previewer_dbus_path = PREVIEWER_DBUS_PATH;
+    }
+    else
+    {
+        previewer_dbus_name = PREVIEWER_DBUS_NAME "Devel";
+        previewer_dbus_path = PREVIEWER_DBUS_PATH "Devel";
+    }
+}
+
+static void
 on_ping_finished (GObject      *object,
                   GAsyncResult *res,
                   gpointer      user_data)
@@ -149,10 +169,9 @@ on_ping_finished (GObject      *object,
                                                               NULL,
                                                               NULL);
     }
-    else if (g_strcmp0 (previewer_dbus_name, "org.gnome.NautilusPreviewerDevel") == 0)
+    else if (!tried_alternative_previewer_dbus_name)
     {
-        previewer_dbus_name = "org.gnome.NautilusPreviewer";
-        previewer_dbus_path = "/org/gnome/NautilusPreviewer";
+        switch_to_alternative_previewer_dbus_name ();
         create_new_bus ();
     }
     else
@@ -179,10 +198,9 @@ on_bus_ready (GObject      *object,
                            G_DBUS_CALL_FLAGS_NONE, G_MAXINT,
                            cancellable, on_ping_finished, NULL);
     }
-    else if (g_strcmp0 (previewer_dbus_name, "org.gnome.NautilusPreviewerDevel") == 0)
+    else if (!tried_alternative_previewer_dbus_name)
     {
-        previewer_dbus_name = "org.gnome.NautilusPreviewer";
-        previewer_dbus_path = "/org/gnome/NautilusPreviewer";
+        switch_to_alternative_previewer_dbus_name ();
         create_new_bus ();
     }
     else
