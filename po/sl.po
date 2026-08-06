@@ -11,8 +11,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: nautilus master\n"
 "Report-Msgid-Bugs-To: https://gitlab.gnome.org/GNOME/nautilus/issues\n"
-"POT-Creation-Date: 2026-08-01 15:02+0000\n"
-"PO-Revision-Date: 2026-08-01 17:30+0200\n"
+"POT-Creation-Date: 2026-08-05 22:41+0000\n"
+"PO-Revision-Date: 2026-08-06 10:25+0200\n"
 "Last-Translator: Martin Srebotnjak <miles@filmsi.net>\n"
 "Language-Team: Slovenian GNOME Translation Team <gnome-si@googlegroups.com>\n"
 "Language: sl_SI\n"
@@ -30,7 +30,7 @@ msgstr "Zaženi programsko opremo"
 
 #: data/org.gnome.Nautilus.desktop.in.in:2
 #: data/org.gnome.Nautilus.metainfo.xml.in.in:5 src/nautilus-mime-actions.c:101
-#: src/nautilus-portal.c:582 src/resources/ui/nautilus-window.blp:162
+#: src/nautilus-portal.c:582 src/resources/ui/nautilus-window.blp:160
 msgid "Files"
 msgstr "Datoteke"
 
@@ -426,26 +426,26 @@ msgstr ""
 "programov. Podpira tri poglede; ikonski, seznamski in drevesni. Vse funkcije "
 "je mogoče razširiti s vstavki in skripti."
 
-#: data/org.gnome.Nautilus.metainfo.xml.in.in:45 src/nautilus-window.c:1709
+#: data/org.gnome.Nautilus.metainfo.xml.in.in:46 src/nautilus-window.c:1709
 #: src/nautilus-window.c:1714 src/nautilus-window.c:1719
 msgid "The GNOME Project"
 msgstr "Projekt GNOME"
 
-#: data/org.gnome.Nautilus.metainfo.xml.in.in:59 src/nautilus-files-view.c:9734
+#: data/org.gnome.Nautilus.metainfo.xml.in.in:60 src/nautilus-files-view.c:9734
 msgid "Grid View"
 msgstr "Mrežni pogled"
 
-#: data/org.gnome.Nautilus.metainfo.xml.in.in:63 src/nautilus-files-view.c:9745
+#: data/org.gnome.Nautilus.metainfo.xml.in.in:64 src/nautilus-files-view.c:9745
 msgid "List View"
 msgstr "Seznamski pogled"
 
-#: data/org.gnome.Nautilus.metainfo.xml.in.in:67
+#: data/org.gnome.Nautilus.metainfo.xml.in.in:68
 #: src/nautilus-search-directory-file.c:230
 #: src/nautilus-search-directory-file.c:269
 msgid "Search"
 msgstr "Iskanje"
 
-#: data/org.gnome.Nautilus.metainfo.xml.in.in:71
+#: data/org.gnome.Nautilus.metainfo.xml.in.in:72
 msgid "Selection of Multiple Files"
 msgstr "Izbor več datotek"
 
@@ -739,7 +739,7 @@ msgstr "Možnosti ni mogoče nastaviti kot privzete"
 msgid "Error while setting “%s” as default app: %s"
 msgstr "Prišlo je do napake med nastavljanjem »%s« kot privzeti program: %s"
 
-#: src/nautilus-app-chooser.c:87 src/nautilus-application.c:601
+#: src/nautilus-app-chooser.c:87 src/nautilus-application.c:629
 #: src/nautilus-autorun-software.c:157 src/nautilus-mime-actions.c:1291
 #: src/nautilus-ui-utilities.c:360
 msgid "_OK"
@@ -793,28 +793,28 @@ msgstr "Sorodni programi"
 msgid "Other Apps"
 msgstr "Dodatni programi"
 
-#: src/nautilus-application.c:163
+#: src/nautilus-application.c:178
 msgid "No Home Directory"
 msgstr "Ni domače mape"
 
-#: src/nautilus-application.c:164
+#: src/nautilus-application.c:179
 msgid "Make sure the directory exists and has correct access permissions set."
 msgstr ""
 "Zagotovite, da mapa obstaja in da ima pravilno nastavljene pravice dostopa."
 
-#: src/nautilus-application.c:470
+#: src/nautilus-application.c:498
 msgid "--quit cannot be used with URIs."
 msgstr "možnosti --quit ni mogoče uporabiti naslovi URI."
 
-#: src/nautilus-application.c:479
+#: src/nautilus-application.c:507
 msgid "--select must be used with at least an URI."
 msgstr "--select mora biti uporabljen vsaj z enim naslovom URI."
 
-#: src/nautilus-application.c:600
+#: src/nautilus-application.c:628
 msgid "There was an error displaying help"
 msgstr "Prišlo je do napake pri prikazovanju pomoči"
 
-#: src/nautilus-application.c:725
+#: src/nautilus-application.c:753
 #, c-format
 msgid ""
 "“%s” is an internal protocol. Opening this location directly is not "
@@ -823,23 +823,23 @@ msgstr ""
 "Protokol »%s« je notranji protokol. Neposredno odpiranje tega mesta ni "
 "podprto."
 
-#: src/nautilus-application.c:807
+#: src/nautilus-application.c:835
 msgid "Show the version of the program."
 msgstr "Pokaži različico programa."
 
-#: src/nautilus-application.c:811
+#: src/nautilus-application.c:839
 msgid "Always open a new window for browsing specified URIs"
 msgstr "Vedno odpri novo okno za pregledovanje navedenih naslovov URI"
 
-#: src/nautilus-application.c:815
+#: src/nautilus-application.c:843
 msgid "Quit Nautilus."
 msgstr "Končaj Nautilus."
 
-#: src/nautilus-application.c:819
+#: src/nautilus-application.c:847
 msgid "Select specified URI in parent folder."
 msgstr "Izberite določen naslov URI v nadrejeni mapi."
 
-#: src/nautilus-application.c:821
+#: src/nautilus-application.c:849
 msgid "[URI…]"
 msgstr "[URI …]"
 
@@ -3161,47 +3161,47 @@ msgstr "_Razveljavi stiskanje"
 msgid "_Redo Compress"
 msgstr "_Ponovno stisni"
 
-#: src/nautilus-file-utilities.c:642
+#: src/nautilus-file-utilities.c:643
 #, c-format
 msgid "Could not determine original location of “%s” "
 msgstr "Izvornega mesta »%s« ni mogoče določiti."
 
-#: src/nautilus-file-utilities.c:646
+#: src/nautilus-file-utilities.c:647
 msgid "The item cannot be restored from trash"
 msgstr "Predmeta ni mogoče obnoviti iz smeti."
 
 #. translators: these describe the contents of removable media
-#: src/nautilus-file-utilities.c:768
+#: src/nautilus-file-utilities.c:769
 msgid "Photo CD"
 msgstr "Slikovni CD"
 
-#: src/nautilus-file-utilities.c:772 src/nautilus-file-utilities.c:819
+#: src/nautilus-file-utilities.c:773 src/nautilus-file-utilities.c:820
 msgid "Contains digital photos"
 msgstr "Nosilec vsebuje digitalne fotografije."
 
-#: src/nautilus-file-utilities.c:776
+#: src/nautilus-file-utilities.c:777
 msgid "Contains music"
 msgstr "Nosilec vsebuje glasbene datoteke"
 
-#: src/nautilus-file-utilities.c:780
+#: src/nautilus-file-utilities.c:781
 msgid "Contains software to run"
 msgstr "Vsebuje programsko opremo za zagon"
 
-#: src/nautilus-file-utilities.c:784
+#: src/nautilus-file-utilities.c:785
 msgid "Contains software to install"
 msgstr "Vsebuje programsko opremo za namestitev"
 
-#: src/nautilus-file-utilities.c:790
+#: src/nautilus-file-utilities.c:791
 #, c-format
 msgid "Detected as “%s”"
 msgstr "Zaznano kot »%s«"
 
 #. translators: these describe the contents of removable media
-#: src/nautilus-file-utilities.c:811
+#: src/nautilus-file-utilities.c:812
 msgid "Contains music and photos"
 msgstr "Nosilec vsebuje glasbo in slike"
 
-#: src/nautilus-file-utilities.c:815
+#: src/nautilus-file-utilities.c:816
 msgid "Contains photos and music"
 msgstr "Nosilec vsebuje slike in glasbo"
 
@@ -4628,8 +4628,8 @@ msgstr "Nazaj"
 msgid "Forward"
 msgstr "Naprej"
 
-#: src/nautilus-window-slot.c:886 src/resources/ui/nautilus-file-chooser.blp:25
-#: src/resources/ui/nautilus-window.blp:156
+#: src/nautilus-window-slot.c:886 src/resources/ui/nautilus-file-chooser.blp:23
+#: src/resources/ui/nautilus-window.blp:154
 msgid "Search Everywhere"
 msgstr "Poišči povsod"
 
@@ -4938,8 +4938,8 @@ msgid "Always use for this file type"
 msgstr "Vedno uporabi za to vrsto datoteke"
 
 #: src/resources/ui/nautilus-app-chooser-widget.blp:37
-msgid "No applications found."
-msgstr "Ni najdenih programov."
+msgid "No applications found"
+msgstr "Ni najdenih programov"
 
 #: src/resources/ui/nautilus-batch-rename-dialog.blp:7
 msgid "Automatic Numbers"
@@ -5143,36 +5143,36 @@ msgstr "_Do"
 msgid "_Filter"
 msgstr "_Filter"
 
-#: src/resources/ui/nautilus-file-chooser.blp:126
+#: src/resources/ui/nautilus-file-chooser.blp:124
 #: src/resources/ui/nautilus-toolbar.blp:72
 msgid "Show Sidebar"
 msgstr "Pokaži stransko vrstico"
 
-#: src/resources/ui/nautilus-file-chooser.blp:161
+#: src/resources/ui/nautilus-file-chooser.blp:159
 #: src/resources/ui/nautilus-new-folder-dialog.blp:5
 #: src/resources/ui/nautilus-toolbar.blp:99
 msgid "New Folder"
 msgstr "Nova mapa"
 
-#: src/resources/ui/nautilus-file-chooser.blp:185
+#: src/resources/ui/nautilus-file-chooser.blp:183
 msgid "Edit File Name"
 msgstr "Uredi ime datoteke"
 
-#: src/resources/ui/nautilus-file-chooser.blp:217
+#: src/resources/ui/nautilus-file-chooser.blp:215
 msgid "Reset File Name"
 msgstr "Ponastavi ime datoteke"
 
-#: src/resources/ui/nautilus-file-chooser.blp:230
+#: src/resources/ui/nautilus-file-chooser.blp:228
 msgid "File Name"
 msgstr "Ime datoteke"
 
 #. Translators: 'Show' is a verb
-#: src/resources/ui/nautilus-file-chooser.blp:263
+#: src/resources/ui/nautilus-file-chooser.blp:261
 msgctxt "File Chooser tooltips"
 msgid "Show Options"
 msgstr "Pokaži možnosti"
 
-#: src/resources/ui/nautilus-file-chooser.blp:269
+#: src/resources/ui/nautilus-file-chooser.blp:267
 msgid "Visible Files Filter"
 msgstr "Filter »Vidne datoteke«"
 
@@ -5726,7 +5726,7 @@ msgstr "_Zapri zavihek"
 msgid "Close _Other Tabs"
 msgstr "Zapri _druge zavihke"
 
-#: src/resources/ui/nautilus-window.blp:167
+#: src/resources/ui/nautilus-window.blp:165
 msgid "Main Menu"
 msgstr "Glavni meni"
 
