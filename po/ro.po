@@ -12,8 +12,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: nautilus.HEAD.ro\n"
 "Report-Msgid-Bugs-To: https://gitlab.gnome.org/GNOME/nautilus/issues\n"
-"POT-Creation-Date: 2026-08-01 15:02+0000\n"
-"PO-Revision-Date: 2026-08-03 14:05+0200\n"
+"POT-Creation-Date: 2026-08-05 22:41+0000\n"
+"PO-Revision-Date: 2026-08-06 12:00+0200\n"
 "Last-Translator: Antonio Marin <gnmer.6qxyg@slmail.me>\n"
 "Language-Team: Romanian <gnomero-list@lists.sourceforge.net>\n"
 "Language: ro\n"
@@ -38,7 +38,7 @@ msgstr "Pornește programul"
 
 #: data/org.gnome.Nautilus.desktop.in.in:2
 #: data/org.gnome.Nautilus.metainfo.xml.in.in:5 src/nautilus-mime-actions.c:101
-#: src/nautilus-portal.c:582 src/resources/ui/nautilus-window.blp:162
+#: src/nautilus-portal.c:582 src/resources/ui/nautilus-window.blp:160
 msgid "Files"
 msgstr "Fișiere"
 
@@ -447,26 +447,26 @@ msgstr ""
 "ramificată. Funcționalitatea sa poate fi extinsă cu ajutorul modulelor și a "
 "scripturilor."
 
-#: data/org.gnome.Nautilus.metainfo.xml.in.in:45 src/nautilus-window.c:1709
+#: data/org.gnome.Nautilus.metainfo.xml.in.in:46 src/nautilus-window.c:1709
 #: src/nautilus-window.c:1714 src/nautilus-window.c:1719
 msgid "The GNOME Project"
 msgstr "Proiectul GNOME"
 
-#: data/org.gnome.Nautilus.metainfo.xml.in.in:59 src/nautilus-files-view.c:9734
+#: data/org.gnome.Nautilus.metainfo.xml.in.in:60 src/nautilus-files-view.c:9734
 msgid "Grid View"
 msgstr "Afișare tip grilă"
 
-#: data/org.gnome.Nautilus.metainfo.xml.in.in:63 src/nautilus-files-view.c:9745
+#: data/org.gnome.Nautilus.metainfo.xml.in.in:64 src/nautilus-files-view.c:9745
 msgid "List View"
 msgstr "Afișare tip listă"
 
-#: data/org.gnome.Nautilus.metainfo.xml.in.in:67
+#: data/org.gnome.Nautilus.metainfo.xml.in.in:68
 #: src/nautilus-search-directory-file.c:230
 #: src/nautilus-search-directory-file.c:269
 msgid "Search"
 msgstr "Caută"
 
-#: data/org.gnome.Nautilus.metainfo.xml.in.in:71
+#: data/org.gnome.Nautilus.metainfo.xml.in.in:72
 msgid "Selection of Multiple Files"
 msgstr "Selecția mai multor fișiere"
 
@@ -755,7 +755,7 @@ msgstr "Nu s-a putut defini ca prestabilită"
 msgid "Error while setting “%s” as default app: %s"
 msgstr "Eroare la definirea „%s” ca aplicație prestabilită: %s"
 
-#: src/nautilus-app-chooser.c:87 src/nautilus-application.c:601
+#: src/nautilus-app-chooser.c:87 src/nautilus-application.c:629
 #: src/nautilus-autorun-software.c:157 src/nautilus-mime-actions.c:1291
 #: src/nautilus-ui-utilities.c:360
 msgid "_OK"
@@ -809,28 +809,28 @@ msgstr "Aplicații asemănătoare"
 msgid "Other Apps"
 msgstr "Alte aplicații"
 
-#: src/nautilus-application.c:163
+#: src/nautilus-application.c:178
 msgid "No Home Directory"
 msgstr "Niciun dosar personal"
 
-#: src/nautilus-application.c:164
+#: src/nautilus-application.c:179
 msgid "Make sure the directory exists and has correct access permissions set."
 msgstr ""
 "Trebuie verificat dacă există dosarul și dacă este permisă accesarea lui."
 
-#: src/nautilus-application.c:470
+#: src/nautilus-application.c:498
 msgid "--quit cannot be used with URIs."
 msgstr "--quit nu poate fi folosită cu URI-uri."
 
-#: src/nautilus-application.c:479
+#: src/nautilus-application.c:507
 msgid "--select must be used with at least an URI."
 msgstr "--select trebuie să fie folosită cu cel puțin un URI."
 
-#: src/nautilus-application.c:600
+#: src/nautilus-application.c:628
 msgid "There was an error displaying help"
 msgstr "A apărut o eroare la afișarea ajutorului"
 
-#: src/nautilus-application.c:725
+#: src/nautilus-application.c:753
 #, c-format
 msgid ""
 "“%s” is an internal protocol. Opening this location directly is not "
@@ -839,23 +839,23 @@ msgstr ""
 "„%s” este un protocol intern. Deschiderea directă a acestui loc nu este "
 "implementată."
 
-#: src/nautilus-application.c:807
+#: src/nautilus-application.c:835
 msgid "Show the version of the program."
 msgstr "Arată versiunea programului."
 
-#: src/nautilus-application.c:811
+#: src/nautilus-application.c:839
 msgid "Always open a new window for browsing specified URIs"
 msgstr "Deschide totdeauna o fereastră pentru a explora URI-urile specificate"
 
-#: src/nautilus-application.c:815
+#: src/nautilus-application.c:843
 msgid "Quit Nautilus."
 msgstr "Închide Nautilus."
 
-#: src/nautilus-application.c:819
+#: src/nautilus-application.c:847
 msgid "Select specified URI in parent folder."
 msgstr "Selecționează URI-ul specificat în dosarul părinte."
 
-#: src/nautilus-application.c:821
+#: src/nautilus-application.c:849
 msgid "[URI…]"
 msgstr "[URI…]"
 
@@ -3110,47 +3110,47 @@ msgstr "An_ulează comprimarea"
 msgid "_Redo Compress"
 msgstr "_Refă comprimarea"
 
-#: src/nautilus-file-utilities.c:642
+#: src/nautilus-file-utilities.c:643
 #, c-format
 msgid "Could not determine original location of “%s” "
 msgstr "Nu s-a putut stabili locul original pentru „%s” "
 
-#: src/nautilus-file-utilities.c:646
+#: src/nautilus-file-utilities.c:647
 msgid "The item cannot be restored from trash"
 msgstr "Elementul nu a putut fi recuperat din coșul de gunoi"
 
 #. translators: these describe the contents of removable media
-#: src/nautilus-file-utilities.c:768
+#: src/nautilus-file-utilities.c:769
 msgid "Photo CD"
 msgstr "CD foto"
 
-#: src/nautilus-file-utilities.c:772 src/nautilus-file-utilities.c:819
+#: src/nautilus-file-utilities.c:773 src/nautilus-file-utilities.c:820
 msgid "Contains digital photos"
 msgstr "Conține fotografii digitale"
 
-#: src/nautilus-file-utilities.c:776
+#: src/nautilus-file-utilities.c:777
 msgid "Contains music"
 msgstr "Conține muzică"
 
-#: src/nautilus-file-utilities.c:780
+#: src/nautilus-file-utilities.c:781
 msgid "Contains software to run"
 msgstr "Conține programe de pornit"
 
-#: src/nautilus-file-utilities.c:784
+#: src/nautilus-file-utilities.c:785
 msgid "Contains software to install"
 msgstr "Conține programe de instalat"
 
-#: src/nautilus-file-utilities.c:790
+#: src/nautilus-file-utilities.c:791
 #, c-format
 msgid "Detected as “%s”"
 msgstr "Detectat ca „%s”"
 
 #. translators: these describe the contents of removable media
-#: src/nautilus-file-utilities.c:811
+#: src/nautilus-file-utilities.c:812
 msgid "Contains music and photos"
 msgstr "Conține muzică și fotografii"
 
-#: src/nautilus-file-utilities.c:815
+#: src/nautilus-file-utilities.c:816
 msgid "Contains photos and music"
 msgstr "Conține fotografii și muzică"
 
@@ -3654,25 +3654,25 @@ msgstr "Se dorește deschiderea tuturor fișierelor?"
 #, c-format
 msgid "This will open %d separate tab and window."
 msgid_plural "This will open %d separate tabs and windows."
-msgstr[0] "Aceasta va deschide o filă și o fereastră separate."
-msgstr[1] "Aceasta va deschide %d file și ferestre separate."
-msgstr[2] "Aceasta va deschide %d de file și ferestre separate."
+msgstr[0] "Aceasta va deschide separat o filă și o fereastră."
+msgstr[1] "Aceasta va deschide separat %d file și ferestre."
+msgstr[2] "Aceasta va deschide separat %d de file și de ferestre."
 
 #: src/nautilus-mime-actions.c:1113
 #, c-format
 msgid "This will open %d separate tab."
 msgid_plural "This will open %d separate tabs."
-msgstr[0] "Aceasta va deschide o filă separată."
-msgstr[1] "Aceasta va deschide %d file separate."
-msgstr[2] "Aceasta va deschide %d de file separate."
+msgstr[0] "Aceasta va deschide separat o filă."
+msgstr[1] "Aceasta va deschide separat %d file."
+msgstr[2] "Aceasta va deschide separat %d de file."
 
 #: src/nautilus-mime-actions.c:1118
 #, c-format
 msgid "This will open %d separate window."
 msgid_plural "This will open %d separate windows."
-msgstr[0] "Aceasta va deschide o fereastră separată."
-msgstr[1] "Aceasta va deschide %d ferestre separate."
-msgstr[2] "Aceasta va deschide %d de ferestre separate."
+msgstr[0] "Aceasta va deschide separat o fereastră."
+msgstr[1] "Aceasta va deschide separat %d ferestre."
+msgstr[2] "Aceasta va deschide separat %d de ferestre."
 
 #: src/nautilus-mime-actions.c:1125
 msgid "_Open All"
@@ -4576,8 +4576,8 @@ msgstr "Înapoi"
 msgid "Forward"
 msgstr "Înainte"
 
-#: src/nautilus-window-slot.c:886 src/resources/ui/nautilus-file-chooser.blp:25
-#: src/resources/ui/nautilus-window.blp:156
+#: src/nautilus-window-slot.c:886 src/resources/ui/nautilus-file-chooser.blp:23
+#: src/resources/ui/nautilus-window.blp:154
 msgid "Search Everywhere"
 msgstr "Caută peste tot"
 
@@ -4840,6 +4840,7 @@ msgstr "_Elimină steaua dosarului"
 msgid "_Copy Location"
 msgstr "_Copiază locul"
 
+# Asta face. E mai clar așa.
 #: src/resources/menu/nautilus-pathbar-context-menu.ui:76
 msgid "_Open in File Manager"
 msgstr "_Deschide în altă fereastră"
@@ -4889,8 +4890,8 @@ msgid "Always use for this file type"
 msgstr "Folosește mereu pentru acest tip de fișiere"
 
 #: src/resources/ui/nautilus-app-chooser-widget.blp:37
-msgid "No applications found."
-msgstr "Nu s-au găsit aplicații."
+msgid "No applications found"
+msgstr "Nu s-au găsit aplicații"
 
 #: src/resources/ui/nautilus-batch-rename-dialog.blp:7
 msgid "Automatic Numbers"
@@ -5094,36 +5095,36 @@ msgstr "_Până la"
 msgid "_Filter"
 msgstr "_Filtrează"
 
-#: src/resources/ui/nautilus-file-chooser.blp:126
+#: src/resources/ui/nautilus-file-chooser.blp:124
 #: src/resources/ui/nautilus-toolbar.blp:72
 msgid "Show Sidebar"
 msgstr "Arată panoul lateral"
 
-#: src/resources/ui/nautilus-file-chooser.blp:161
+#: src/resources/ui/nautilus-file-chooser.blp:159
 #: src/resources/ui/nautilus-new-folder-dialog.blp:5
 #: src/resources/ui/nautilus-toolbar.blp:99
 msgid "New Folder"
 msgstr "Dosar nou"
 
-#: src/resources/ui/nautilus-file-chooser.blp:185
+#: src/resources/ui/nautilus-file-chooser.blp:183
 msgid "Edit File Name"
 msgstr "Modifică numele fișierului"
 
-#: src/resources/ui/nautilus-file-chooser.blp:217
+#: src/resources/ui/nautilus-file-chooser.blp:215
 msgid "Reset File Name"
 msgstr "Restabilește numele fișierului"
 
-#: src/resources/ui/nautilus-file-chooser.blp:230
+#: src/resources/ui/nautilus-file-chooser.blp:228
 msgid "File Name"
 msgstr "Numele fișierului"
 
 #. Translators: 'Show' is a verb
-#: src/resources/ui/nautilus-file-chooser.blp:263
+#: src/resources/ui/nautilus-file-chooser.blp:261
 msgctxt "File Chooser tooltips"
 msgid "Show Options"
 msgstr "Arată opțiunile"
 
-#: src/resources/ui/nautilus-file-chooser.blp:269
+#: src/resources/ui/nautilus-file-chooser.blp:267
 msgid "Visible Files Filter"
 msgstr "Filtru de fișiere vizibile"
 
@@ -5678,7 +5679,7 @@ msgstr "În_chide fila"
 msgid "Close _Other Tabs"
 msgstr "Închide c_elelalte file"
 
-#: src/resources/ui/nautilus-window.blp:167
+#: src/resources/ui/nautilus-window.blp:165
 msgid "Main Menu"
 msgstr "Opțiuni"
 
@@ -5695,12 +5696,12 @@ msgstr "Deschide"
 #: src/resources/ui/shortcuts-dialog.blp:14
 msgctxt "shortcuts dialog"
 msgid "Open in New Tab"
-msgstr "Deschide într-o filă nouă"
+msgstr "Deschide în altă filă"
 
 #: src/resources/ui/shortcuts-dialog.blp:19
 msgctxt "shortcuts dialog"
 msgid "Open in New Window"
-msgstr "Deschide într-o fereastră nouă"
+msgstr "Deschide în altă fereastră"
 
 #: src/resources/ui/shortcuts-dialog.blp:24
 msgctxt "shortcuts dialog"
