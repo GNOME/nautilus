@@ -30,6 +30,9 @@ nautilus_app_chooser_widget_new (const char  *content_type,
 
 GAppInfo *    nautilus_app_chooser_widget_get_app_info (NautilusAppChooserWidget *self);
 void          nautilus_app_chooser_widget_refresh (NautilusAppChooserWidget *self);
+void
+nautilus_app_chooser_widget_set_show_all (NautilusAppChooserWidget *self,
+                                          gboolean                  show_all);
 
 void
 nautilus_app_chooser_widget_set_show_all (NautilusAppChooserWidget *self,

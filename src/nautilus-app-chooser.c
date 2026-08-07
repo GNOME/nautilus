@@ -19,12 +19,10 @@ struct _NautilusAppChooser
 
     gchar *content_type;
     char *type_description;
-    gchar *file_name;
+    char *target_description;
     gboolean single_content_type;
 
-    GtkWidget *ok_button;
-    GtkWidget *content_box;
-    GtkWidget *label_description;
+    AdwToolbarView *toolbar_view;
     GtkWidget *set_default_list_box;
     GtkWidget *set_default_row;
     GtkWidget *search_entry;
@@ -39,7 +37,7 @@ enum
     PROP_0,
     PROP_CONTENT_TYPE,
     PROP_SINGLE_CONTENT_TYPE,
-    PROP_FILE_NAME,
+    PROP_TARGET_DESCRIPTION,
     PROP_TYPE_DESCRIPTION,
     LAST_PROP
 };
@@ -93,24 +91,6 @@ on_app_chosen (NautilusAppChooser *self)
     g_signal_emit (self, signals[SIGNAL_APP_CHOSEN], 0, info);
 }
 
-static void
-on_application_selected (NautilusAppChooserWidget *widget,
-                         GAppInfo                 *info,
-                         gpointer                  user_data)
-{
-    NautilusAppChooser *self = NAUTILUS_APP_CHOOSER (user_data);
-    g_autoptr (GAppInfo) default_app = NULL;
-    gboolean is_default;
-
-    gtk_widget_set_sensitive (self->ok_button, info != NULL);
-
-    default_app = g_app_info_get_default_for_type (self->content_type, FALSE);
-    is_default = default_app != NULL && info != NULL && g_app_info_equal (info, default_app);
-
-    adw_switch_row_set_active (ADW_SWITCH_ROW (self->set_default_row), is_default);
-    gtk_widget_set_sensitive (GTK_WIDGET (self->set_default_row), !is_default);
-}
-
 static gboolean
 on_search_entry_key_pressed (NautilusAppChooser *self,
                              guint               keyval)
@@ -125,6 +105,15 @@ on_search_entry_key_pressed (NautilusAppChooser *self,
 }
 
 static void
+on_search_changed (NautilusAppChooser *self)
+{
+    const char *search_text = gtk_editable_get_text (GTK_EDITABLE (self->search_entry));
+    gboolean show_all = search_text != NULL && g_strcmp0 (search_text, "") != 0;
+
+    nautilus_app_chooser_widget_set_show_all (self->app_chooser_widget, show_all);
+}
+
+static void
 app_chooser_get_property (GObject    *object,
                           guint       prop_id,
                           GValue     *value,
@@ -134,6 +123,12 @@ app_chooser_get_property (GObject    *object,
 
     switch (prop_id)
     {
+        case PROP_TARGET_DESCRIPTION:
+        {
+            g_value_set_string (value, self->target_description);
+            break;
+        }
+
         case PROP_TYPE_DESCRIPTION:
         {
             g_value_set_string (value, self->type_description);
@@ -148,6 +143,24 @@ app_chooser_get_property (GObject    *object,
 }
 
 static void
+update_content_type (NautilusAppChooser *self,
+                     const char         *content_type)
+{
+    g_set_str (&self->content_type, content_type);
+
+    if (self->single_content_type)
+    {
+        self->type_description = g_content_type_get_description (self->content_type);
+    }
+    else
+    {
+        g_set_str (&self->type_description, _("Multiple Types"));
+    }
+
+    g_object_notify_by_pspec (G_OBJECT (self), properties[PROP_TYPE_DESCRIPTION]);
+}
+
+static void
 nautilus_app_chooser_set_property (GObject      *object,
                                    guint         param_id,
                                    const GValue *value,
@@ -159,22 +172,20 @@ nautilus_app_chooser_set_property (GObject      *object,
     {
         case PROP_CONTENT_TYPE:
         {
-            self->content_type = g_value_dup_string (value);
-            self->type_description = g_content_type_get_description (self->content_type);
-
-            g_object_notify_by_pspec (G_OBJECT (self), properties[PROP_TYPE_DESCRIPTION]);
+            update_content_type (self, g_value_get_string (value));
         }
         break;
 
         case PROP_SINGLE_CONTENT_TYPE:
         {
             self->single_content_type = g_value_get_boolean (value);
+            update_content_type (self, self->content_type);
         }
         break;
 
-        case PROP_FILE_NAME:
+        case PROP_TARGET_DESCRIPTION:
         {
-            self->file_name = g_value_dup_string (value);
+            self->target_description = g_value_dup_string (value);
         }
         break;
 
@@ -198,6 +209,8 @@ nautilus_app_chooser_init (NautilusAppChooser *self)
     gtk_widget_add_controller (self->search_entry, controller);
     g_signal_connect_swapped (controller, "key-pressed",
                               G_CALLBACK (on_search_entry_key_pressed), self);
+    g_signal_connect_swapped (self->search_entry, "search-changed",
+                              G_CALLBACK (on_search_changed), self);
 
     gtk_search_entry_set_key_capture_widget (GTK_SEARCH_ENTRY (self->search_entry),
                                              GTK_WIDGET (self));
@@ -213,52 +226,16 @@ static void
 nautilus_app_chooser_constructed (GObject *object)
 {
     NautilusAppChooser *self = NAUTILUS_APP_CHOOSER (object);
-    g_autoptr (GAppInfo) info = NULL;
-    g_autofree gchar *description = NULL;
-    const char *title;
 
     G_OBJECT_CLASS (nautilus_app_chooser_parent_class)->constructed (object);
 
-    self->app_chooser_widget = nautilus_app_chooser_widget_new (self->content_type,
-                                                                GTK_EDITABLE (self->search_entry));
-    gtk_widget_set_vexpand (GTK_WIDGET (self->app_chooser_widget), TRUE);
-    gtk_widget_add_css_class (GTK_WIDGET (self->app_chooser_widget), "lowres-icon");
-    gtk_box_append (GTK_BOX (self->content_box), GTK_WIDGET (self->app_chooser_widget));
+    self->app_chooser_widget =
+        nautilus_app_chooser_widget_new (self->content_type, GTK_EDITABLE (self->search_entry));
 
-    /* initialize sensitivity */
-    info = nautilus_app_chooser_get_app_info (self);
-    if (info != NULL)
-    {
-        on_application_selected (self->app_chooser_widget,
-                                 info, self);
-    }
+    adw_toolbar_view_set_content (self->toolbar_view, GTK_WIDGET (self->app_chooser_widget));
 
-    g_signal_connect_object (self->app_chooser_widget, "application-selected",
-                             G_CALLBACK (on_application_selected), self, G_CONNECT_DEFAULT);
     g_signal_connect_object (self->app_chooser_widget, "app-chosen",
                              G_CALLBACK (on_app_chosen), self, G_CONNECT_SWAPPED);
-
-    if (self->file_name != NULL)
-    {
-        /* Translators: %s is the filename.  i.e. "Choose an app to open test.jpg" */
-        description = g_strdup_printf (_("Choose an app to open <b>%s</b>"), self->file_name);
-        gtk_label_set_markup (GTK_LABEL (self->label_description), description);
-    }
-
-    if (!self->single_content_type)
-    {
-        title = _("Open Items");
-    }
-    else if (content_type_is_folder (self))
-    {
-        title = C_("dialog title", "Open Folder");
-    }
-    else
-    {
-        title = _("Open File");
-    }
-
-    adw_dialog_set_title (ADW_DIALOG (self), title);
 
     gtk_widget_set_visible (self->set_default_list_box,
                             self->single_content_type && !content_type_is_folder (self));
@@ -281,7 +258,7 @@ nautilus_app_chooser_finalize (GObject *object)
 
     g_free (self->content_type);
     g_free (self->type_description);
-    g_free (self->file_name);
+    g_free (self->target_description);
 
     G_OBJECT_CLASS (nautilus_app_chooser_parent_class)->finalize (object);
 }
@@ -306,24 +283,20 @@ nautilus_app_chooser_class_init (NautilusAppChooserClass *klass)
                                                NULL,
                                                G_TYPE_NONE, 1, G_TYPE_APP_INFO);
 
-    gtk_widget_class_bind_template_child (widget_class, NautilusAppChooser, ok_button);
-    gtk_widget_class_bind_template_child (widget_class, NautilusAppChooser, content_box);
-    gtk_widget_class_bind_template_child (widget_class, NautilusAppChooser, label_description);
+    gtk_widget_class_bind_template_child (widget_class, NautilusAppChooser, toolbar_view);
     gtk_widget_class_bind_template_child (widget_class, NautilusAppChooser, set_default_list_box);
     gtk_widget_class_bind_template_child (widget_class, NautilusAppChooser, set_default_row);
     gtk_widget_class_bind_template_child (widget_class, NautilusAppChooser, search_entry);
-
-    gtk_widget_class_bind_template_callback (widget_class, on_app_chosen);
 
     properties[PROP_CONTENT_TYPE] =
         g_param_spec_string ("content-type", "", "",
                              NULL,
                              G_PARAM_CONSTRUCT_ONLY | G_PARAM_WRITABLE);
 
-    properties[PROP_FILE_NAME] =
-        g_param_spec_string ("file-name", "", "",
+    properties[PROP_TARGET_DESCRIPTION] =
+        g_param_spec_string ("target-description", "", "",
                              NULL,
-                             G_PARAM_CONSTRUCT_ONLY | G_PARAM_WRITABLE);
+                             G_PARAM_CONSTRUCT_ONLY | G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS);
 
     properties[PROP_SINGLE_CONTENT_TYPE] =
         g_param_spec_boolean ("single-content-type", "", "",
@@ -343,7 +316,10 @@ nautilus_app_chooser_new (GList *files)
 {
     gboolean single_content_type = TRUE;
     const char *content_type = nautilus_file_get_mime_type (files->data);
-    const char *file_name = files->next ? NULL : nautilus_file_get_display_name (files->data);
+    guint num_files = g_list_length (files);
+    g_autofree char *target_description = num_files == 1
+        ? g_strdup (nautilus_file_get_display_name (files->data))
+        : g_strdup_printf (ngettext ("%u Item", "%u Items", num_files), num_files);
 
     for (GList *l = files; l != NULL; l = l->next)
     {
@@ -356,7 +332,7 @@ nautilus_app_chooser_new (GList *files)
 
     return NAUTILUS_APP_CHOOSER (g_object_new (NAUTILUS_TYPE_APP_CHOOSER,
                                                "content-type", content_type,
-                                               "file-name", file_name,
+                                               "target-description", target_description,
                                                "single-content-type", single_content_type,
                                                NULL));
 }

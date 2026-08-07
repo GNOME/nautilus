@@ -27,9 +27,8 @@
  * Most applications only need to use the latter; but you can use
  * this widget as part of a larger widget if you have special needs.
  *
- * To keep track of the selected application, use the
- * [signal@Nautilus.AppChooserWidget::application-selected] and
- * [signal@Nautilus.AppChooserWidget::app-chosen] signals.
+ * When an application is chosen, [signal@Nautilus.AppChooserWidget::app-chosen]
+ * is emitted.
  *
  * ## CSS nodes
  *
@@ -177,10 +176,10 @@ struct _NautilusAppChooserWidget
     gboolean show_all;
 
     GListStore *app_info_store;
-    GtkListItemFactory *header_factory;
+    GListModel *selection_model;
     GtkStringFilter *name_filter;
     GtkCustomSorter *section_sorter;
-    GtkWidget *program_list;
+    GtkGridView *program_list;
     AdwStatusPage *no_apps_page;
 
     GAppInfoMonitor *monitor;
@@ -198,7 +197,6 @@ static GParamSpec *widget_properties[N_PROPERTIES];
 
 enum
 {
-    SIGNAL_APPLICATION_SELECTED,
     SIGNAL_APP_CHOSEN,
     N_SIGNALS
 };
@@ -209,9 +207,9 @@ static guint signals[N_SIGNALS];
 G_DEFINE_FINAL_TYPE (NautilusAppChooserWidget, nautilus_app_chooser_widget, ADW_TYPE_BIN);
 
 static void
-selection_changed_cb (GListModel               *model,
-                      GParamSpec               *pspec,
-                      NautilusAppChooserWidget *self);
+on_app_chosen (GtkGridView              *grid,
+               guint                     position,
+               NautilusAppChooserWidget *self);
 static void
 changed_cb (GtkEditable              *editable,
             NautilusAppChooserWidget *self);
@@ -295,19 +293,11 @@ nautilus_app_chooser_widget_add_section (NautilusAppChooserWidget *self,
     }
 }
 
-static void
-nautilus_app_chooser_widget_add_default (NautilusAppChooserWidget *self,
-                                         GAppInfo                 *app)
+static gboolean
+display_app_check (NautilusAppChooserWidget *self,
+                   NautilusAppItem          *item)
 {
-    g_autoptr (NautilusAppItem) item = nautilus_app_item_new (app, TRUE, FALSE, FALSE);
-
-    g_list_store_append (self->app_info_store, item);
-}
-
-static void
-nautilus_app_chooser_widget_select_first (NautilusAppChooserWidget *self)
-{
-    gtk_single_selection_set_selected (GTK_SINGLE_SELECTION (gtk_list_view_get_model (GTK_LIST_VIEW (self->program_list))), 0);
+    return self->show_all || item->is_default || item->is_recommended || item->is_fallback;
 }
 
 static void
@@ -315,21 +305,10 @@ nautilus_app_chooser_widget_real_add_items (NautilusAppChooserWidget *self)
 {
     g_autolist (GAppInfo) recommended_apps = NULL;
     g_autolist (GAppInfo) fallback_apps = NULL;
-    g_autoptr (GAppInfo) default_app = NULL;
     g_autoptr (GHashTable) seen_apps = g_hash_table_new (app_info_hash, app_info_equal);
-
-    gtk_list_view_set_header_factory (GTK_LIST_VIEW (self->program_list),
-                                      self->header_factory);
 
     if (self->content_type != NULL)
     {
-        default_app = g_app_info_get_default_for_type (self->content_type, FALSE);
-
-        if (default_app != NULL)
-        {
-            nautilus_app_chooser_widget_add_default (self, default_app);
-        }
-
         recommended_apps = g_app_info_get_recommended_for_type (self->content_type);
 
         nautilus_app_chooser_widget_add_section (self,
@@ -364,8 +343,6 @@ nautilus_app_chooser_widget_real_add_items (NautilusAppChooserWidget *self)
 
         adw_status_page_set_title (self->no_apps_page, text);
     }
-
-    nautilus_app_chooser_widget_select_first (self);
 }
 
 static void
@@ -424,6 +401,9 @@ nautilus_app_chooser_widget_constructed (GObject *object)
     G_OBJECT_CLASS (nautilus_app_chooser_widget_parent_class)->constructed (object);
 
     nautilus_app_chooser_widget_refresh (self);
+
+    /* Assure first item is scrolled into view */
+    gtk_grid_view_scroll_to (self->program_list, 0, GTK_LIST_SCROLL_FOCUS, NULL);
 }
 
 static void
@@ -433,7 +413,6 @@ nautilus_app_chooser_widget_finalize (GObject *object)
 
     g_free (self->content_type);
     g_object_unref (self->monitor);
-    g_object_unref (self->header_factory);
 
     G_OBJECT_CLASS (nautilus_app_chooser_widget_parent_class)->finalize (object);
 }
@@ -479,32 +458,11 @@ nautilus_app_chooser_widget_class_init (NautilusAppChooserWidgetClass *klass)
                                        widget_properties);
 
     /**
-     * NautilusAppChooserWidget::application-selected:
-     * @self: the object which received the signal
-     * @application: the selected `GAppInfo`
-     *
-     * Emitted when an application item is selected from the widget's list.
-     */
-    signals[SIGNAL_APPLICATION_SELECTED] =
-        g_signal_new ("application-selected",
-                      NAUTILUS_TYPE_APP_CHOOSER_WIDGET,
-                      G_SIGNAL_RUN_FIRST,
-                      0,
-                      NULL, NULL,
-                      NULL,
-                      G_TYPE_NONE,
-                      1, G_TYPE_APP_INFO);
-
-    /**
      * NautilusAppChooserWidget::app-chosen:
      * @self: the object which received the signal
-     * @application: the activated `GAppInfo`
+     * @application: the chosen `GAppInfo`
      *
-     * Emitted when an application item is activated from the widget's list.
-     *
-     * This usually happens when the user double clicks an item, or an item
-     * is selected and the user presses one of the keys Space, Shift+Space,
-     * Return or Enter.
+     * Emitted when an application item is chosen.
      */
     signals[SIGNAL_APP_CHOSEN] =
         g_signal_new ("app-chosen",
@@ -521,92 +479,30 @@ nautilus_app_chooser_widget_class_init (NautilusAppChooserWidgetClass *klass)
     gtk_widget_class_set_template_from_resource (widget_class,
                                                  "/org/gnome/nautilus/ui/nautilus-app-chooser-widget.ui");
     gtk_widget_class_bind_template_child (widget_class, NautilusAppChooserWidget, program_list);
+    gtk_widget_class_bind_template_child (widget_class, NautilusAppChooserWidget, selection_model);
     gtk_widget_class_bind_template_child (widget_class, NautilusAppChooserWidget, no_apps_page);
     gtk_widget_class_bind_template_child (widget_class, NautilusAppChooserWidget, list_stack);
     gtk_widget_class_bind_template_child (widget_class, NautilusAppChooserWidget, app_info_store);
     gtk_widget_class_bind_template_child (widget_class, NautilusAppChooserWidget, name_filter);
     gtk_widget_class_bind_template_child (widget_class, NautilusAppChooserWidget, section_sorter);
 
-    gtk_widget_class_bind_template_callback (widget_class, selection_changed_cb);
+    gtk_widget_class_bind_template_callback (widget_class, display_app_check);
+    gtk_widget_class_bind_template_callback (widget_class, on_app_chosen);
 
     gtk_widget_class_set_css_name (widget_class, "appchooser");
 }
 
 static void
-setup_header_cb (GtkListItemFactory *factory,
-                 GtkListItem        *list_item)
-{
-    GtkListHeader *header = GTK_LIST_HEADER (list_item);
-    GtkWidget *label = gtk_label_new ("");
-
-    gtk_label_set_xalign (GTK_LABEL (label), 0);
-    gtk_widget_add_css_class (label, "heading");
-    gtk_widget_set_margin_start (label, 20);
-    gtk_widget_set_margin_end (label, 20);
-    gtk_widget_set_margin_top (label, 10);
-    gtk_widget_set_margin_bottom (label, 10);
-
-    gtk_list_header_set_child (header, label);
-}
-
-static void
-bind_header_cb (GtkListItemFactory *factory,
-                GtkListItem        *list_item)
-{
-    GtkListHeader *header = GTK_LIST_HEADER (list_item);
-    GtkWidget *label = gtk_list_header_get_child (header);
-    NautilusAppItem *app_item = gtk_list_header_get_item (header);
-
-    if (app_item->is_default)
-    {
-        gtk_label_set_label (GTK_LABEL (label), _("Default App"));
-    }
-    else if (app_item->is_recommended)
-    {
-        gtk_label_set_label (GTK_LABEL (label), _("Recommended Apps"));
-    }
-    else if (app_item->is_fallback)
-    {
-        gtk_label_set_label (GTK_LABEL (label), _("Related Apps"));
-    }
-    else
-    {
-        gtk_label_set_label (GTK_LABEL (label), _("Other Apps"));
-    }
-}
-
-static void
-activate_cb (GtkListView              *list,
-             guint                     position,
-             NautilusAppChooserWidget *self)
+on_app_chosen (GtkGridView              *grid,
+               guint                     position,
+               NautilusAppChooserWidget *self)
 {
     g_autoptr (NautilusAppItem) app_item =
-        g_list_model_get_item (G_LIST_MODEL (gtk_list_view_get_model (list)), position);
+        g_list_model_get_item (G_LIST_MODEL (gtk_grid_view_get_model (grid)), position);
 
     g_set_object (&self->selected_app_info, app_item->app_info);
 
     g_signal_emit (self, signals[SIGNAL_APP_CHOSEN], 0, self->selected_app_info);
-}
-
-static void
-selection_changed_cb (GListModel               *model,
-                      GParamSpec               *pspec,
-                      NautilusAppChooserWidget *self)
-{
-    guint position = gtk_single_selection_get_selected (GTK_SINGLE_SELECTION (model));
-
-    if (position == GTK_INVALID_LIST_POSITION)
-    {
-        g_clear_object (&self->selected_app_info);
-    }
-    else
-    {
-        g_autoptr (NautilusAppItem) app_item = g_list_model_get_item (model, position);
-
-        g_set_object (&self->selected_app_info, app_item->app_info);
-    }
-
-    g_signal_emit (self, signals[SIGNAL_APPLICATION_SELECTED], 0, self->selected_app_info);
 }
 
 static int
@@ -636,21 +532,9 @@ compare_section (gconstpointer a,
 static void
 nautilus_app_chooser_widget_init (NautilusAppChooserWidget *self)
 {
-    GtkListItemFactory *factory;
-
     gtk_widget_init_template (GTK_WIDGET (self));
 
     gtk_custom_sorter_set_sort_func (self->section_sorter, compare_section, NULL, NULL);
-
-    factory = gtk_signal_list_item_factory_new ();
-    g_signal_connect (factory, "setup", G_CALLBACK (setup_header_cb), NULL);
-    g_signal_connect (factory, "bind", G_CALLBACK (bind_header_cb), NULL);
-
-    gtk_list_view_set_header_factory (GTK_LIST_VIEW (self->program_list), factory);
-    self->header_factory = factory;
-
-    g_signal_connect (self->program_list, "activate",
-                      G_CALLBACK (activate_cb), self);
 
     self->monitor = g_app_info_monitor_get ();
     g_signal_connect_object (self->monitor, "changed",
@@ -704,12 +588,10 @@ static void
 changed_cb (GtkEditable              *editable,
             NautilusAppChooserWidget *self)
 {
-    GtkListView *list_view = GTK_LIST_VIEW (self->program_list);
-    GtkSingleSelection *selection_model = GTK_SINGLE_SELECTION (gtk_list_view_get_model (list_view));
-
     gtk_string_filter_set_search (self->name_filter, gtk_editable_get_text (editable));
 
-    if (g_list_model_get_n_items (G_LIST_MODEL (selection_model)) > 0)
+
+    if (g_list_model_get_n_items (self->selection_model) > 0)
     {
         gtk_stack_set_visible_child_name (self->list_stack, "list");
     }
@@ -717,9 +599,6 @@ changed_cb (GtkEditable              *editable,
     {
         gtk_stack_set_visible_child_name (self->list_stack, "no-apps");
     }
-
-    /* Force selection change signal emission */
-    selection_changed_cb (G_LIST_MODEL (selection_model), NULL, self);
 }
 
 void
