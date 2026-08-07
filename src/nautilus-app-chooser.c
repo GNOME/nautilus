@@ -18,6 +18,7 @@ struct _NautilusAppChooser
     AdwDialog parent_instance;
 
     gchar *content_type;
+    char *type_description;
     gchar *file_name;
     gboolean single_content_type;
 
@@ -39,6 +40,7 @@ enum
     PROP_CONTENT_TYPE,
     PROP_SINGLE_CONTENT_TYPE,
     PROP_FILE_NAME,
+    PROP_TYPE_DESCRIPTION,
     LAST_PROP
 };
 
@@ -131,6 +133,29 @@ on_search_entry_key_pressed (NautilusAppChooser *self,
 }
 
 static void
+app_chooser_get_property (GObject    *object,
+                          guint       prop_id,
+                          GValue     *value,
+                          GParamSpec *pspec)
+{
+    NautilusAppChooser *self = NAUTILUS_APP_CHOOSER (object);
+
+    switch (prop_id)
+    {
+        case PROP_TYPE_DESCRIPTION:
+        {
+            g_value_set_string (value, self->type_description);
+            break;
+        }
+
+        default:
+        {
+            G_OBJECT_WARN_INVALID_PROPERTY_ID (object, prop_id, pspec);
+        }
+    }
+}
+
+static void
 nautilus_app_chooser_set_property (GObject      *object,
                                    guint         param_id,
                                    const GValue *value,
@@ -143,6 +168,9 @@ nautilus_app_chooser_set_property (GObject      *object,
         case PROP_CONTENT_TYPE:
         {
             self->content_type = g_value_dup_string (value);
+            self->type_description = g_content_type_get_description (self->content_type);
+
+            g_object_notify_by_pspec (G_OBJECT (self), properties[PROP_TYPE_DESCRIPTION]);
         }
         break;
 
@@ -242,15 +270,8 @@ nautilus_app_chooser_constructed (GObject *object)
 
     adw_dialog_set_title (ADW_DIALOG (self), title);
 
-    if (self->single_content_type && !content_type_is_folder (self))
-    {
-        g_autofree gchar *type_description = g_content_type_get_description (self->content_type);
-        adw_action_row_set_subtitle (ADW_ACTION_ROW (self->set_default_row), type_description);
-    }
-    else
-    {
-        gtk_widget_set_visible (self->set_default_list_box, FALSE);
-    }
+    gtk_widget_set_visible (self->set_default_list_box,
+                            self->single_content_type && !content_type_is_folder (self));
 }
 
 static void
@@ -269,6 +290,7 @@ nautilus_app_chooser_finalize (GObject *object)
     NautilusAppChooser *self = (NautilusAppChooser *) object;
 
     g_free (self->content_type);
+    g_free (self->type_description);
     g_free (self->file_name);
 
     G_OBJECT_CLASS (nautilus_app_chooser_parent_class)->finalize (object);
@@ -283,6 +305,7 @@ nautilus_app_chooser_class_init (NautilusAppChooserClass *klass)
     object_class->dispose = nautilus_app_chooser_dispose;
     object_class->finalize = nautilus_app_chooser_finalize;
     object_class->constructed = nautilus_app_chooser_constructed;
+    object_class->get_property = app_chooser_get_property;
     object_class->set_property = nautilus_app_chooser_set_property;
 
     gtk_widget_class_set_template_from_resource (widget_class, "/org/gnome/nautilus/ui/nautilus-app-chooser.ui");
@@ -318,6 +341,11 @@ nautilus_app_chooser_class_init (NautilusAppChooserClass *klass)
         g_param_spec_boolean ("single-content-type", "", "",
                               TRUE,
                               G_PARAM_CONSTRUCT_ONLY | G_PARAM_WRITABLE);
+
+    properties[PROP_TYPE_DESCRIPTION] =
+        g_param_spec_string ("type-description", NULL, "",
+                             NULL,
+                             G_PARAM_READABLE | G_PARAM_STATIC_STRINGS);
 
     g_object_class_install_properties (object_class, G_N_ELEMENTS (properties), properties);
 }

@@ -74,6 +74,7 @@ template $NautilusAppChooser: Adw.Dialog {
 
       Adw.SwitchRow set_default_row {
         title: _("Always use for this file type");
+        subtitle: bind template.type-description;
       }
 
       styles [
