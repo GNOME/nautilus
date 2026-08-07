@@ -45,14 +45,71 @@ template $NautilusAppChooser: Adw.Dialog {
         "toolbar",
       ]
 
-      child: SearchEntry search_entry {
-        activates-default: true;
-        placeholder-text: _("Search Apps");
-        search-changed => $gtk_widget_grab_focus();
+      child: Box {
+        margin-top: 6;
+        orientation: vertical;
+        spacing: 12;
 
-        styles [
-          "rounded-entry",
-        ]
+        Box {
+          halign: center;
+          spacing: 12;
+
+          Adw.Bin {
+            styles [
+              "circled-icon",
+            ]
+
+            Image icon {
+              icon-name: bind template.generic-icon;
+              icon-size: large;
+              margin-bottom: 12;
+              margin-top: 12;
+              margin-start: 12;
+              margin-end: 12;
+              halign: center;
+              valign: center;
+            }
+          }
+
+          Box {
+            orientation: vertical;
+            valign: center;
+
+            Label {
+              label: bind template.target-description;
+              lines: 2;
+              ellipsize: middle;
+              width-chars: 15;
+              wrap: true;
+              wrap-mode: word_char;
+              xalign: 0.0;
+
+              styles [
+                "heading",
+              ]
+            }
+
+            Label type_label {
+              label: bind template.type-description;
+              xalign: 0.0;
+
+              styles [
+                "dimmed",
+                "caption",
+              ]
+            }
+          }
+        }
+
+        SearchEntry search_entry {
+          activates-default: true;
+          placeholder-text: _("Search Apps");
+          search-changed => $gtk_widget_grab_focus();
+
+          styles [
+            "rounded-entry",
+          ]
+        }
       };
     }
 
@@ -65,13 +122,6 @@ template $NautilusAppChooser: Adw.Dialog {
       child: Box content_box {
         orientation: vertical;
         spacing: 12;
-
-        Label label_description {
-          wrap: true;
-          wrap-mode: word_char;
-          justify: center;
-          label: _("Choose an app to open the selected files");
-        }
       };
     };
 
