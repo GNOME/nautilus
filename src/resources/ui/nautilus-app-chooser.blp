@@ -38,14 +38,21 @@ template $NautilusAppChooser: Adw.Dialog {
     }
 
     [top]
-    Adw.Bin {
+    Adw.Clamp {
+      maximum-size: 360;
+
       styles [
         "toolbar",
       ]
 
       child: SearchEntry search_entry {
         activates-default: true;
+        placeholder-text: _("Search Apps");
         search-changed => $gtk_widget_grab_focus();
+
+        styles [
+          "rounded-entry",
+        ]
       };
     }
 
