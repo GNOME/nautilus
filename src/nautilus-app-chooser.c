@@ -268,8 +268,8 @@ nautilus_app_chooser_finalize (GObject *object)
 {
     NautilusAppChooser *self = (NautilusAppChooser *) object;
 
-    g_clear_pointer (&self->content_type, g_free);
-    g_clear_pointer (&self->file_name, g_free);
+    g_free (self->content_type);
+    g_free (self->file_name);
 
     G_OBJECT_CLASS (nautilus_app_chooser_parent_class)->finalize (object);
 }
