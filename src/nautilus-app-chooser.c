@@ -19,12 +19,12 @@ struct _NautilusAppChooser
 
     gchar *content_type;
     char *type_description;
-    gchar *file_name;
+    char *generic_icon;
+    char *target_description;
     gboolean single_content_type;
 
     GtkWidget *ok_button;
     GtkWidget *content_box;
-    GtkWidget *label_description;
     GtkWidget *set_default_list_box;
     GtkWidget *set_default_row;
     GtkWidget *search_entry;
@@ -39,7 +39,8 @@ enum
     PROP_0,
     PROP_CONTENT_TYPE,
     PROP_SINGLE_CONTENT_TYPE,
-    PROP_FILE_NAME,
+    PROP_GENERIC_ICON,
+    PROP_TARGET_DESCRIPTION,
     PROP_TYPE_DESCRIPTION,
     LAST_PROP
 };
@@ -142,6 +143,18 @@ app_chooser_get_property (GObject    *object,
 
     switch (prop_id)
     {
+        case PROP_GENERIC_ICON:
+        {
+            g_value_set_string (value, self->generic_icon);
+            break;
+        }
+
+        case PROP_TARGET_DESCRIPTION:
+        {
+            g_value_set_string (value, self->target_description);
+            break;
+        }
+
         case PROP_TYPE_DESCRIPTION:
         {
             g_value_set_string (value, self->type_description);
@@ -153,6 +166,37 @@ app_chooser_get_property (GObject    *object,
             G_OBJECT_WARN_INVALID_PROPERTY_ID (object, prop_id, pspec);
         }
     }
+}
+
+static char *
+get_generic_symbolic_icon (const char *content_type)
+{
+    g_autofree char *generic_icon = g_content_type_get_generic_icon_name (content_type);
+
+    return g_str_has_suffix (generic_icon, "-symbolic")
+           ? g_steal_pointer (&generic_icon)
+           : g_strconcat (generic_icon, "-symbolic", NULL);
+}
+
+static void
+update_content_type (NautilusAppChooser *self,
+                     const char         *content_type)
+{
+    g_set_str (&self->content_type, content_type);
+
+    if (self->single_content_type)
+    {
+        self->type_description = g_content_type_get_description (self->content_type);
+        self->generic_icon = get_generic_symbolic_icon (self->content_type);
+    }
+    else
+    {
+        g_set_str (&self->type_description, _("Multiple Types"));
+        g_set_str (&self->generic_icon, g_strdup ("paper-symbolic"));
+    }
+
+    g_object_notify_by_pspec (G_OBJECT (self), properties[PROP_GENERIC_ICON]);
+    g_object_notify_by_pspec (G_OBJECT (self), properties[PROP_TYPE_DESCRIPTION]);
 }
 
 static void
@@ -167,22 +211,20 @@ nautilus_app_chooser_set_property (GObject      *object,
     {
         case PROP_CONTENT_TYPE:
         {
-            self->content_type = g_value_dup_string (value);
-            self->type_description = g_content_type_get_description (self->content_type);
-
-            g_object_notify_by_pspec (G_OBJECT (self), properties[PROP_TYPE_DESCRIPTION]);
+            update_content_type (self, g_value_get_string (value));
         }
         break;
 
         case PROP_SINGLE_CONTENT_TYPE:
         {
             self->single_content_type = g_value_get_boolean (value);
+            update_content_type (self, self->content_type);
         }
         break;
 
-        case PROP_FILE_NAME:
+        case PROP_TARGET_DESCRIPTION:
         {
-            self->file_name = g_value_dup_string (value);
+            self->target_description = g_value_dup_string (value);
         }
         break;
 
@@ -248,13 +290,6 @@ nautilus_app_chooser_constructed (GObject *object)
     g_signal_connect_object (self->app_chooser_widget, "application-activated",
                              G_CALLBACK (on_application_activated), self, G_CONNECT_SWAPPED);
 
-    if (self->file_name != NULL)
-    {
-        /* Translators: %s is the filename.  i.e. "Choose an app to open test.jpg" */
-        description = g_strdup_printf (_("Choose an app to open <b>%s</b>"), self->file_name);
-        gtk_label_set_markup (GTK_LABEL (self->label_description), description);
-    }
-
     if (!self->single_content_type)
     {
         title = _("Open Items");
@@ -291,7 +326,7 @@ nautilus_app_chooser_finalize (GObject *object)
 
     g_free (self->content_type);
     g_free (self->type_description);
-    g_free (self->file_name);
+    g_free (self->target_description);
 
     G_OBJECT_CLASS (nautilus_app_chooser_parent_class)->finalize (object);
 }
@@ -318,7 +353,6 @@ nautilus_app_chooser_class_init (NautilusAppChooserClass *klass)
 
     gtk_widget_class_bind_template_child (widget_class, NautilusAppChooser, ok_button);
     gtk_widget_class_bind_template_child (widget_class, NautilusAppChooser, content_box);
-    gtk_widget_class_bind_template_child (widget_class, NautilusAppChooser, label_description);
     gtk_widget_class_bind_template_child (widget_class, NautilusAppChooser, set_default_list_box);
     gtk_widget_class_bind_template_child (widget_class, NautilusAppChooser, set_default_row);
     gtk_widget_class_bind_template_child (widget_class, NautilusAppChooser, search_entry);
@@ -330,10 +364,15 @@ nautilus_app_chooser_class_init (NautilusAppChooserClass *klass)
                              NULL,
                              G_PARAM_CONSTRUCT_ONLY | G_PARAM_WRITABLE);
 
-    properties[PROP_FILE_NAME] =
-        g_param_spec_string ("file-name", "", "",
+    properties[PROP_TARGET_DESCRIPTION] =
+        g_param_spec_string ("target-description", "", "",
                              NULL,
-                             G_PARAM_CONSTRUCT_ONLY | G_PARAM_WRITABLE);
+                             G_PARAM_CONSTRUCT_ONLY | G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS);
+
+    properties[PROP_GENERIC_ICON] =
+        g_param_spec_string ("generic-icon", "", "",
+                             NULL,
+                             G_PARAM_READABLE | G_PARAM_STATIC_STRINGS);
 
     properties[PROP_SINGLE_CONTENT_TYPE] =
         g_param_spec_boolean ("single-content-type", "", "",
@@ -353,7 +392,10 @@ nautilus_app_chooser_new (GList *files)
 {
     gboolean single_content_type = TRUE;
     const char *content_type = nautilus_file_get_mime_type (files->data);
-    const char *file_name = files->next ? NULL : nautilus_file_get_display_name (files->data);
+    guint num_files = g_list_length (files);
+    g_autofree char *target_description = num_files == 1
+        ? g_strdup (nautilus_file_get_display_name (files->data))
+        : g_strdup_printf (ngettext ("%u Item", "%u Items", num_files), num_files);
 
     for (GList *l = files; l != NULL; l = l->next)
     {
@@ -366,7 +408,7 @@ nautilus_app_chooser_new (GList *files)
 
     return NAUTILUS_APP_CHOOSER (g_object_new (NAUTILUS_TYPE_APP_CHOOSER,
                                                "content-type", content_type,
-                                               "file-name", file_name,
+                                               "target-description", target_description,
                                                "single-content-type", single_content_type,
                                                NULL));
 }
