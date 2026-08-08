@@ -438,6 +438,7 @@ static void select_image_button_callback (GtkWidget                *widget,
 static void refresh_extension_model_pages (NautilusPropertiesWidget *self);
 static gboolean is_root_directory (NautilusFile *file);
 static gboolean is_volume_properties (NautilusPropertiesWidget *self);
+static void properties_update_size (NautilusPropertiesWidget *self);
 
 G_DEFINE_FINAL_TYPE (NautilusPropertiesWidget, nautilus_properties_widget, ADW_TYPE_BIN)
 
@@ -2100,6 +2101,8 @@ directory_contents_value_field_update (NautilusPropertiesWidget *self)
         self->deep_count_finished = TRUE;
         stop_spinner (self);
     }
+
+    properties_update_size (self);
 }
 
 static void
@@ -3632,14 +3635,8 @@ setup_properties_widget (NautilusPropertiesWidget *self)
 #define DEFAULT_PROPERTIES_WIDTH 480
 
 static void
-properties_files_are_ready (NautilusPropertiesWidget *self)
+properties_update_size (NautilusPropertiesWidget *self)
 {
-    const char * const main_tag[] = {"main"};
-
-    setup_properties_widget (self);
-    /* Show main page */
-    adw_navigation_view_replace_with_tags (self->nav_view, main_tag, 1);
-
     if (!self->presented)
     {
         return;
@@ -3663,6 +3660,17 @@ properties_files_are_ready (NautilusPropertiesWidget *self)
                                      DEFAULT_PROPERTIES_WIDTH,
                                      natural_height);
     }
+}
+
+static void
+properties_files_are_ready (NautilusPropertiesWidget *self)
+{
+    const char * const main_tag[] = {"main"};
+
+    setup_properties_widget (self);
+    /* Show main page */
+    adw_navigation_view_replace_with_tags (self->nav_view, main_tag, 1);
+    properties_update_size (self);
 }
 
 static void
