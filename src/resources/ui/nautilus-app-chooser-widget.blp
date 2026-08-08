@@ -67,35 +67,13 @@ template $NautilusAppChooserWidget: Adw.Bin {
     StackPage {
       name: "no-apps";
 
-      child: Box {
-        orientation: vertical;
-        halign: center;
-        valign: center;
+      child: Adw.StatusPage no_apps_page {
+        icon-name: "application-x-executable-symbolic";
+        title: _("No applications found");
 
-        Image {
-          icon-name: "application-x-executable-symbolic";
-          pixel-size: 48;
-          margin-start: 12;
-          margin-end: 12;
-          margin-top: 12;
-          margin-bottom: 12;
-
-          styles [
-            "dim-label",
-          ]
-        }
-
-        Label no_apps_label {
-          label: _("No applications found");
-          halign: center;
-          valign: center;
-          wrap: true;
-          attributes: "0 -1 scale 1.2";
-
-          styles [
-            "dim-label",
-          ]
-        }
+        styles [
+          "compact",
+        ]
       };
     }
   };

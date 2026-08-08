@@ -156,7 +156,7 @@ struct _NautilusAppChooserWidget
     GtkStringFilter *filter;
     GtkCustomSorter *section_sorter;
     GtkWidget *program_list;
-    GtkWidget *no_apps_label;
+    AdwStatusPage *no_apps_page;
 
     GAppInfoMonitor *monitor;
 
@@ -277,22 +277,6 @@ nautilus_app_chooser_widget_add_default (NautilusAppChooserWidget *self,
 }
 
 static void
-update_no_applications_label (NautilusAppChooserWidget *self)
-{
-    if (self->content_type != NULL)
-    {
-        g_autofree char *desc = g_content_type_get_description (self->content_type);
-        g_autofree char *text = g_strdup_printf (_("No apps found for “%s”"), desc);
-
-        gtk_label_set_text (GTK_LABEL (self->no_apps_label), text);
-    }
-    else
-    {
-        gtk_label_set_text (GTK_LABEL (self->no_apps_label), _("No apps found"));
-    }
-}
-
-static void
 nautilus_app_chooser_widget_select_first (NautilusAppChooserWidget *self)
 {
     gtk_single_selection_set_selected (GTK_SINGLE_SELECTION (gtk_list_view_get_model (GTK_LIST_VIEW (self->program_list))), 0);
@@ -343,9 +327,12 @@ nautilus_app_chooser_widget_real_add_items (NautilusAppChooserWidget *self)
 
     gboolean apps_added = g_hash_table_size (seen_apps) > 0;
 
-    if (!apps_added)
+    if (!apps_added && self->content_type != NULL)
     {
-        update_no_applications_label (self);
+        g_autofree char *desc = g_content_type_get_description (self->content_type);
+        g_autofree char *text = g_strdup_printf (_("No Apps Found For “%s”"), desc);
+
+        adw_status_page_set_title (self->no_apps_page, text);
     }
 
     nautilus_app_chooser_widget_select_first (self);
@@ -504,7 +491,7 @@ nautilus_app_chooser_widget_class_init (NautilusAppChooserWidgetClass *klass)
     gtk_widget_class_set_template_from_resource (widget_class,
                                                  "/org/gnome/nautilus/ui/nautilus-app-chooser-widget.ui");
     gtk_widget_class_bind_template_child (widget_class, NautilusAppChooserWidget, program_list);
-    gtk_widget_class_bind_template_child (widget_class, NautilusAppChooserWidget, no_apps_label);
+    gtk_widget_class_bind_template_child (widget_class, NautilusAppChooserWidget, no_apps_page);
     gtk_widget_class_bind_template_child (widget_class, NautilusAppChooserWidget, list_stack);
     gtk_widget_class_bind_template_child (widget_class, NautilusAppChooserWidget, app_info_store);
     gtk_widget_class_bind_template_child (widget_class, NautilusAppChooserWidget, filter);
