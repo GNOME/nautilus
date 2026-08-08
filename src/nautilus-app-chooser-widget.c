@@ -130,11 +130,11 @@ nautilus_app_item_new (GAppInfo *app_info,
 
 struct _NautilusAppChooserWidget
 {
-    GtkWidget parent_instance;
+    AdwBin parent_instance;
 
     GAppInfo *selected_app_info;
 
-    GtkWidget *overlay;
+    GtkStack *list_stack;
 
     char *content_type;
 
@@ -144,7 +144,6 @@ struct _NautilusAppChooserWidget
     GtkStringSorter *sorter;
     GtkWidget *program_list;
     GtkWidget *no_apps_label;
-    GtkWidget *no_apps;
 
     GAppInfoMonitor *monitor;
 
@@ -169,7 +168,7 @@ enum
 static guint signals[N_SIGNALS];
 
 
-G_DEFINE_FINAL_TYPE (NautilusAppChooserWidget, nautilus_app_chooser_widget, GTK_TYPE_WIDGET);
+G_DEFINE_FINAL_TYPE (NautilusAppChooserWidget, nautilus_app_chooser_widget, ADW_TYPE_BIN);
 
 static guint
 app_info_hash (gconstpointer key)
@@ -331,8 +330,6 @@ nautilus_app_chooser_widget_real_add_items (NautilusAppChooserWidget *self)
         update_no_applications_label (self);
     }
 
-    gtk_widget_set_visible (self->no_apps, !apps_added);
-
     nautilus_app_chooser_widget_select_first (self);
 }
 
@@ -416,57 +413,7 @@ nautilus_app_chooser_widget_dispose (GObject *object)
 
     g_clear_object (&self->selected_app_info);
 
-    if (self->overlay)
-    {
-        gtk_widget_unparent (self->overlay);
-        self->overlay = NULL;
-    }
-
     G_OBJECT_CLASS (nautilus_app_chooser_widget_parent_class)->dispose (object);
-}
-
-static void
-nautilus_app_chooser_widget_measure (GtkWidget      *widget,
-                                     GtkOrientation  orientation,
-                                     int             for_size,
-                                     int            *minimum,
-                                     int            *natural,
-                                     int            *minimum_baseline,
-                                     int            *natural_baseline)
-{
-    NautilusAppChooserWidget *self = NAUTILUS_APP_CHOOSER_WIDGET (widget);
-
-    gtk_widget_measure (self->overlay, orientation, for_size,
-                        minimum, natural,
-                        minimum_baseline, natural_baseline);
-}
-
-static void
-nautilus_app_chooser_widget_snapshot (GtkWidget   *widget,
-                                      GtkSnapshot *snapshot)
-{
-    NautilusAppChooserWidget *self = NAUTILUS_APP_CHOOSER_WIDGET (widget);
-
-    gtk_widget_snapshot_child (widget, self->overlay, snapshot);
-}
-
-static void
-nautilus_app_chooser_widget_size_allocate (GtkWidget *widget,
-                                           int        width,
-                                           int        height,
-                                           int        baseline)
-{
-    NautilusAppChooserWidget *self = NAUTILUS_APP_CHOOSER_WIDGET (widget);
-    GtkAllocation allocation;
-
-    GTK_WIDGET_CLASS (nautilus_app_chooser_widget_parent_class)->size_allocate (widget, width, height, baseline);
-
-    allocation = (GtkAllocation)
-    {
-        0, 0,
-        width, height
-    };
-    gtk_widget_size_allocate (self->overlay, &allocation, baseline);
 }
 
 static void
@@ -480,10 +427,6 @@ nautilus_app_chooser_widget_class_init (NautilusAppChooserWidgetClass *klass)
     gobject_class->set_property = nautilus_app_chooser_widget_set_property;
     gobject_class->get_property = nautilus_app_chooser_widget_get_property;
     gobject_class->constructed = nautilus_app_chooser_widget_constructed;
-
-    widget_class->measure = nautilus_app_chooser_widget_measure;
-    widget_class->size_allocate = nautilus_app_chooser_widget_size_allocate;
-    widget_class->snapshot = nautilus_app_chooser_widget_snapshot;
 
     /**
      * NautilusAppChooserWidget:content-type:
@@ -545,8 +488,7 @@ nautilus_app_chooser_widget_class_init (NautilusAppChooserWidgetClass *klass)
                                                  "/org/gnome/nautilus/ui/nautilus-app-chooser-widget.ui");
     gtk_widget_class_bind_template_child (widget_class, NautilusAppChooserWidget, program_list);
     gtk_widget_class_bind_template_child (widget_class, NautilusAppChooserWidget, no_apps_label);
-    gtk_widget_class_bind_template_child (widget_class, NautilusAppChooserWidget, no_apps);
-    gtk_widget_class_bind_template_child (widget_class, NautilusAppChooserWidget, overlay);
+    gtk_widget_class_bind_template_child (widget_class, NautilusAppChooserWidget, list_stack);
 
     gtk_widget_class_set_css_name (widget_class, "appchooser");
 }
@@ -796,6 +738,15 @@ changed_cb (GtkEditable              *editable,
 
     gtk_string_filter_set_search (self->filter, gtk_editable_get_text (editable));
 
+    if (g_list_model_get_n_items (G_LIST_MODEL (selection_model)) > 0)
+    {
+        gtk_stack_set_visible_child_name (self->list_stack, "list");
+    }
+    else
+    {
+        gtk_stack_set_visible_child_name (self->list_stack, "no-apps");
+    }
+
     /* Force selection change signal emission */
     selection_changed_cb (G_LIST_MODEL (selection_model), NULL, self);
 }
@@ -804,9 +755,5 @@ void
 nautilus_app_chooser_widget_set_search_entry (NautilusAppChooserWidget *self,
                                               GtkEditable              *entry)
 {
-    g_object_bind_property (self->no_apps, "visible",
-                            entry, "sensitive",
-                            G_BINDING_SYNC_CREATE | G_BINDING_INVERT_BOOLEAN);
-
     g_signal_connect (entry, "changed", G_CALLBACK (changed_cb), self);
 }

@@ -13,6 +13,7 @@
 
 #pragma once
 
+#include <adwaita.h>
 #include <gtk/gtk.h>
 #include <gio/gio.h>
 
@@ -20,7 +21,8 @@ G_BEGIN_DECLS
 
 #define NAUTILUS_TYPE_APP_CHOOSER_WIDGET (nautilus_app_chooser_widget_get_type())
 
-G_DECLARE_FINAL_TYPE (NautilusAppChooserWidget, nautilus_app_chooser_widget, NAUTILUS, APP_CHOOSER_WIDGET, GtkWidget)
+G_DECLARE_FINAL_TYPE (NautilusAppChooserWidget, nautilus_app_chooser_widget,
+                      NAUTILUS, APP_CHOOSER_WIDGET, AdwBin)
 
 NautilusAppChooserWidget *nautilus_app_chooser_widget_new      (const char          *content_type);
 
