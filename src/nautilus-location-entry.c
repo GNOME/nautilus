@@ -41,6 +41,8 @@
 #include <stdio.h>
 #include <string.h>
 
+#define MAX_N_COMPLETIONS 20
+
 typedef struct
 {
     GFile *location;
@@ -443,7 +445,7 @@ populate_completions_model (GObject      *source_object,
 
     g_autoptr (GPtrArray) completions = g_task_propagate_pointer (task, &error);
 
-    for (guint i = 0; i < completions->len; i++)
+    for (guint i = 0; i < MIN (completions->len, MAX_N_COMPLETIONS); i++)
     {
         char *completion = g_ptr_array_index (completions, i);
 
