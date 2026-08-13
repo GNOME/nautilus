@@ -1,5 +1,6 @@
 using Gtk 4.0;
 using Adw 1;
+using Gio 2.0;
 
 template $NautilusAppChooserWidget: Adw.Bin {
   child: Stack list_stack {
@@ -14,6 +15,28 @@ template $NautilusAppChooserWidget: Adw.Bin {
 
         child: ListView program_list {
           tab-behavior: item;
+
+          model: SingleSelection {
+            notify::selected => $selection_changed_cb();
+
+            model: SortListModel {
+              model: FilterListModel {
+                model: Gio.ListStore app_info_store {
+                  item-type: typeof<$NautilusAppItem>;
+                };
+
+                filter: StringFilter filter {
+                  expression: expr item as <$NautilusAppItem>.name;
+                };
+              };
+
+              section-sorter: CustomSorter section_sorter {};
+
+              sorter: StringSorter {
+                expression: bind filter.expression;
+              };
+            };
+          };
         };
       };
     }
