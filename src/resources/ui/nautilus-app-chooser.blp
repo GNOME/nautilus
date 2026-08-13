@@ -45,7 +45,7 @@ template $NautilusAppChooser: Adw.Dialog {
 
       child: SearchEntry search_entry {
         activates-default: true;
-
+        search-changed => $gtk_widget_grab_focus();
       };
     }
 
