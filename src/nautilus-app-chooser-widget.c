@@ -317,7 +317,6 @@ nautilus_app_chooser_widget_real_add_items (NautilusAppChooserWidget *self)
         }
     }
 
-#ifndef G_OS_WIN32
     if (self->content_type)
     {
         if (self->content_type)
@@ -348,7 +347,6 @@ nautilus_app_chooser_widget_real_add_items (NautilusAppChooserWidget *self)
         exclude_apps = g_list_concat (exclude_apps,
                                       g_list_copy (fallback_apps));
     }
-#endif
 
     all_applications = g_app_info_get_all ();
 
