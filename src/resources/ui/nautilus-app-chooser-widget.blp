@@ -16,6 +16,29 @@ template $NautilusAppChooserWidget: Adw.Bin {
         child: ListView program_list {
           tab-behavior: item;
 
+          factory: BuilderListItemFactory {
+            template ListItem {
+              accessible-label: bind app_name.label;
+
+              child: Box {
+                spacing: 12;
+
+                Image {
+                  gicon: bind template.item as <$NautilusAppItem>.icon;
+                  icon-size: large;
+                  // Translators: This is an accessible label for a shown icon.
+                  accessibility {
+                    label: _("App icon");
+                  }
+                }
+
+                Label app_name {
+                  label: bind template.item as <$NautilusAppItem>.name;
+                }
+              };
+            }
+          };
+
           model: SingleSelection {
             notify::selected => $selection_changed_cb();
 
