@@ -51,6 +51,7 @@ struct _NautilusAppItem
 enum
 {
     ITEM_PROP_NAME = 1,
+    ITEM_PROP_ICON,
     NUM_ITEM_PROPS,
 };
 
@@ -76,6 +77,12 @@ nautilus_app_item_get_property (GObject    *object,
         case ITEM_PROP_NAME:
         {
             g_value_set_string (value, g_app_info_get_display_name (item->app_info));
+            break;
+        }
+
+        case ITEM_PROP_ICON:
+        {
+            g_value_set_object (value, g_app_info_get_icon (item->app_info));
             break;
         }
 
@@ -107,7 +114,13 @@ nautilus_app_item_class_init (NautilusAppItemClass *class)
 
     item_properties[ITEM_PROP_NAME] = g_param_spec_string ("name", NULL, NULL,
                                                            NULL,
-                                                           G_PARAM_READABLE);
+                                                           G_PARAM_READABLE |
+                                                           G_PARAM_STATIC_STRINGS);
+
+    item_properties[ITEM_PROP_ICON] = g_param_spec_object ("icon", NULL, NULL,
+                                                           G_TYPE_ICON,
+                                                           G_PARAM_READABLE |
+                                                           G_PARAM_STATIC_STRINGS);
 
     g_object_class_install_properties (object_class, NUM_ITEM_PROPS, item_properties);
 }
@@ -503,38 +516,6 @@ nautilus_app_chooser_widget_class_init (NautilusAppChooserWidgetClass *klass)
 }
 
 static void
-setup_listitem_cb (GtkListItemFactory *factory,
-                   GtkListItem        *list_item)
-{
-    GtkWidget *box = gtk_box_new (GTK_ORIENTATION_HORIZONTAL, 12);
-    GtkWidget *image = gtk_image_new ();
-    GtkWidget *label = gtk_label_new ("");
-
-    gtk_accessible_update_property (GTK_ACCESSIBLE (image),
-                                    GTK_ACCESSIBLE_PROPERTY_LABEL,
-                                    /* translators: This is an accessible label for a shown icon. */
-                                    _("App icon"),
-                                    -1);
-    gtk_image_set_icon_size (GTK_IMAGE (image), GTK_ICON_SIZE_LARGE);
-    gtk_box_append (GTK_BOX (box), image);
-    gtk_box_append (GTK_BOX (box), label);
-    gtk_list_item_set_child (list_item, box);
-}
-
-static void
-bind_listitem_cb (GtkListItemFactory *factory,
-                  GtkListItem        *list_item)
-{
-    GtkWidget *image = gtk_widget_get_first_child (gtk_list_item_get_child (list_item));
-    GtkWidget *label = gtk_widget_get_next_sibling (image);
-    NautilusAppItem *app_item = gtk_list_item_get_item (list_item);
-
-    gtk_image_set_from_gicon (GTK_IMAGE (image), g_app_info_get_icon (app_item->app_info));
-    gtk_label_set_label (GTK_LABEL (label), g_app_info_get_display_name (app_item->app_info));
-    gtk_list_item_set_accessible_label (list_item, g_app_info_get_display_name (app_item->app_info));
-}
-
-static void
 setup_header_cb (GtkListItemFactory *factory,
                  GtkListItem        *list_item)
 {
@@ -657,13 +638,6 @@ nautilus_app_chooser_widget_init (NautilusAppChooserWidget *self)
     gtk_widget_init_template (GTK_WIDGET (self));
 
     gtk_custom_sorter_set_sort_func (self->section_sorter, compare_section, NULL, NULL);
-
-    factory = gtk_signal_list_item_factory_new ();
-    g_signal_connect (factory, "setup", G_CALLBACK (setup_listitem_cb), NULL);
-    g_signal_connect (factory, "bind", G_CALLBACK (bind_listitem_cb), NULL);
-
-    gtk_list_view_set_factory (GTK_LIST_VIEW (self->program_list), factory);
-    g_object_unref (factory);
 
     factory = gtk_signal_list_item_factory_new ();
     g_signal_connect (factory, "setup", G_CALLBACK (setup_header_cb), NULL);
