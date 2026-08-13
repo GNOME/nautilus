@@ -224,10 +224,9 @@ nautilus_app_chooser_widget_add_section (NautilusAppChooserWidget *self,
                                          gboolean                  recommended,
                                          gboolean                  fallback,
                                          GList                    *applications,
-                                         GList                    *exclude_apps)
+                                         GHashTable               *seen_apps)
 {
     gboolean retval = FALSE;
-    g_autoptr (GHashTable) seen_apps = g_hash_table_new (app_info_hash, app_info_equal);
 
     for (GList *l = applications; l != NULL; l = l->next)
     {
@@ -236,11 +235,6 @@ nautilus_app_chooser_widget_add_section (NautilusAppChooserWidget *self,
         if (self->content_type != NULL &&
             !g_app_info_supports_uris (app) &&
             !g_app_info_supports_files (app))
-        {
-            continue;
-        }
-
-        if (g_list_find (exclude_apps, app))
         {
             continue;
         }
@@ -298,9 +292,9 @@ nautilus_app_chooser_widget_real_add_items (NautilusAppChooserWidget *self)
     g_autolist (GAppInfo) all_applications = NULL;
     g_autolist (GAppInfo) recommended_apps = NULL;
     g_autolist (GAppInfo) fallback_apps = NULL;
-    g_autoptr (GList) exclude_apps = NULL;
     g_autoptr (GAppInfo) default_app = NULL;
     gboolean apps_added = FALSE;
+    g_autoptr (GHashTable) seen_apps = g_hash_table_new (app_info_hash, app_info_equal);
 
     gtk_list_view_set_header_factory (GTK_LIST_VIEW (self->program_list),
                                       self->header_factory);
@@ -313,7 +307,6 @@ nautilus_app_chooser_widget_real_add_items (NautilusAppChooserWidget *self)
         {
             nautilus_app_chooser_widget_add_default (self, default_app);
             apps_added = TRUE;
-            exclude_apps = g_list_prepend (exclude_apps, default_app);
         }
 
         recommended_apps = g_app_info_get_recommended_for_type (self->content_type);
@@ -321,19 +314,14 @@ nautilus_app_chooser_widget_real_add_items (NautilusAppChooserWidget *self)
         apps_added |= nautilus_app_chooser_widget_add_section (self,
                                                                TRUE, /* mark as recommended */
                                                                FALSE, /* mark as fallback */
-                                                               recommended_apps, exclude_apps);
-
-        exclude_apps = g_list_concat (exclude_apps,
-                                      g_list_copy (recommended_apps));
+                                                               recommended_apps, seen_apps);
 
         fallback_apps = g_app_info_get_fallback_for_type (self->content_type);
 
         apps_added |= nautilus_app_chooser_widget_add_section (self,
                                                                FALSE, /* mark as recommended */
                                                                TRUE, /* mark as fallback */
-                                                               fallback_apps, exclude_apps);
-        exclude_apps = g_list_concat (exclude_apps,
-                                      g_list_copy (fallback_apps));
+                                                               fallback_apps, seen_apps);
     }
 
     all_applications = g_app_info_get_all ();
@@ -341,7 +329,7 @@ nautilus_app_chooser_widget_real_add_items (NautilusAppChooserWidget *self)
     apps_added |= nautilus_app_chooser_widget_add_section (self,
                                                            FALSE,
                                                            FALSE,
-                                                           all_applications, exclude_apps);
+                                                           all_applications, seen_apps);
 
     if (!apps_added)
     {
