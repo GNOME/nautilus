@@ -178,6 +178,9 @@ nautilus_app_chooser_init (NautilusAppChooser *self)
     gtk_widget_add_controller (self->search_entry, controller);
     g_signal_connect_swapped (controller, "key-pressed",
                               G_CALLBACK (on_search_entry_key_pressed), self);
+
+    gtk_search_entry_set_key_capture_widget (GTK_SEARCH_ENTRY (self->search_entry),
+                                             GTK_WIDGET (self));
 }
 
 static gboolean
