@@ -305,7 +305,7 @@ nautilus_app_chooser_widget_real_add_items (NautilusAppChooserWidget *self)
     gtk_list_view_set_header_factory (GTK_LIST_VIEW (self->program_list),
                                       self->header_factory);
 
-    if (self->content_type)
+    if (self->content_type != NULL)
     {
         default_app = g_app_info_get_default_for_type (self->content_type, FALSE);
 
@@ -315,14 +315,8 @@ nautilus_app_chooser_widget_real_add_items (NautilusAppChooserWidget *self)
             apps_added = TRUE;
             exclude_apps = g_list_prepend (exclude_apps, default_app);
         }
-    }
 
-    if (self->content_type)
-    {
-        if (self->content_type)
-        {
-            recommended_apps = g_app_info_get_recommended_for_type (self->content_type);
-        }
+        recommended_apps = g_app_info_get_recommended_for_type (self->content_type);
 
         apps_added |= nautilus_app_chooser_widget_add_section (self,
                                                                TRUE, /* mark as recommended */
@@ -331,14 +325,8 @@ nautilus_app_chooser_widget_real_add_items (NautilusAppChooserWidget *self)
 
         exclude_apps = g_list_concat (exclude_apps,
                                       g_list_copy (recommended_apps));
-    }
 
-    if (self->content_type)
-    {
-        if (self->content_type)
-        {
-            fallback_apps = g_app_info_get_fallback_for_type (self->content_type);
-        }
+        fallback_apps = g_app_info_get_fallback_for_type (self->content_type);
 
         apps_added |= nautilus_app_chooser_widget_add_section (self,
                                                                FALSE, /* mark as recommended */
