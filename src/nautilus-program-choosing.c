@@ -77,30 +77,30 @@ add_file_to_recent (NautilusFile *file,
 void
 nautilus_launch_application_for_mount (GAppInfo  *app_info,
                                        GMount    *mount,
-                                       GtkWindow *parent_window)
+                                       GtkWidget *widget)
 {
     g_autoptr (GFile) root = g_mount_get_root (mount);
     g_autoptr (NautilusFile) file = nautilus_file_get (root);
 
     nautilus_launch_application (app_info,
                                  &(NautilusFileList){ .data = file },
-                                 parent_window);
+                                 widget);
 }
 
 /**
  * nautilus_launch_application:
  *
  * Fork off a process to launch an application with a given file as a
- * parameter. Provide a parent window for error dialogs.
+ * parameter. Provide a widget for error dialogs.
  *
  * @application: The application to be launched.
  * @uris: The files whose locations should be passed as a parameter to the application.
- * @parent_window: A window to use as the parent for any error dialogs.
+ * @widget: Widget to determine where to anchor error dialogs to.
  */
 void
 nautilus_launch_application (GAppInfo         *application,
                              NautilusFileList *files,
-                             GtkWindow        *parent_window)
+                             GtkWidget        *widget)
 {
     GList *uris, *l;
 
@@ -110,20 +110,19 @@ nautilus_launch_application (GAppInfo         *application,
         uris = g_list_prepend (uris, nautilus_file_get_activation_uri (l->data));
     }
     uris = g_list_reverse (uris);
-    nautilus_launch_application_by_uri (application, uris,
-                                        parent_window);
+    nautilus_launch_application_by_uri (application, uris, widget);
     g_list_free_full (uris, g_free);
 }
 
 static GdkAppLaunchContext *
-get_launch_context (GtkWindow *parent_window)
+get_launch_context (GtkWidget *widget)
 {
     GdkDisplay *display;
     GdkAppLaunchContext *launch_context;
 
-    if (parent_window != NULL)
+    if (widget != NULL)
     {
-        display = gtk_widget_get_display (GTK_WIDGET (parent_window));
+        display = gtk_widget_get_display (widget);
     }
     else
     {
@@ -138,7 +137,7 @@ get_launch_context (GtkWindow *parent_window)
 void
 nautilus_launch_application_by_uri (GAppInfo  *application,
                                     GList     *uris,
-                                    GtkWindow *parent_window)
+                                    GtkWidget *widget)
 {
     char *uri;
     GList *locations, *l;
@@ -146,7 +145,6 @@ nautilus_launch_application_by_uri (GAppInfo  *application,
     NautilusFile *file;
     gboolean result;
     GError *error;
-    g_autoptr (GdkAppLaunchContext) launch_context = NULL;
     GIcon *icon;
     gboolean all_uris_local = TRUE;
 
@@ -166,7 +164,7 @@ nautilus_launch_application_by_uri (GAppInfo  *application,
     }
     locations = g_list_reverse (locations);
 
-    launch_context = get_launch_context (parent_window);
+    g_autoptr (GdkAppLaunchContext) launch_context = get_launch_context (widget);
 
     file = nautilus_file_get_by_uri (uris->data);
     icon = nautilus_file_get_gicon (file, NAUTILUS_FILE_ICON_FLAGS_NONE);
