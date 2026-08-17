@@ -237,13 +237,11 @@ nautilus_app_chooser_constructed (GObject *object)
 
     G_OBJECT_CLASS (nautilus_app_chooser_parent_class)->constructed (object);
 
-    self->app_chooser_widget = nautilus_app_chooser_widget_new (self->content_type);
+    self->app_chooser_widget = nautilus_app_chooser_widget_new (self->content_type,
+                                                                GTK_EDITABLE (self->search_entry));
     gtk_widget_set_vexpand (GTK_WIDGET (self->app_chooser_widget), TRUE);
     gtk_widget_add_css_class (GTK_WIDGET (self->app_chooser_widget), "lowres-icon");
     gtk_box_append (GTK_BOX (self->content_box), GTK_WIDGET (self->app_chooser_widget));
-
-    nautilus_app_chooser_widget_set_search_entry (self->app_chooser_widget,
-                                                  GTK_EDITABLE (self->search_entry));
 
     /* initialize sensitivity */
     info = nautilus_app_chooser_get_app_info (self);

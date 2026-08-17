@@ -24,10 +24,9 @@ G_BEGIN_DECLS
 G_DECLARE_FINAL_TYPE (NautilusAppChooserWidget, nautilus_app_chooser_widget,
                       NAUTILUS, APP_CHOOSER_WIDGET, AdwBin)
 
-NautilusAppChooserWidget *nautilus_app_chooser_widget_new      (const char          *content_type);
-
-void          nautilus_app_chooser_widget_set_search_entry     (NautilusAppChooserWidget *self,
-                                                                GtkEditable         *editable);
+NautilusAppChooserWidget *
+nautilus_app_chooser_widget_new (const char  *content_type,
+                                 GtkEditable *search_entry);
 
 GAppInfo *    nautilus_app_chooser_widget_get_app_info (NautilusAppChooserWidget *self);
 void          nautilus_app_chooser_widget_refresh (NautilusAppChooserWidget *self);
