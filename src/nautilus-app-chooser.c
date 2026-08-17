@@ -55,13 +55,11 @@ enum
 static guint signals[SIGNAL_LAST] = { 0, };
 
 static void
-open_cb (NautilusAppChooser *self)
+app_chosen (NautilusAppChooser *self,
+            GAppInfo           *info)
 {
     gboolean set_new_default = FALSE;
-    g_autoptr (GAppInfo) info = NULL;
     g_autoptr (GError) error = NULL;
-
-    info = nautilus_app_chooser_get_app_info (self);
 
     if (self->single_content_type)
     {
@@ -96,9 +94,21 @@ open_cb (NautilusAppChooser *self)
 }
 
 static void
-on_application_activated (NautilusAppChooser *self)
+open_cb (NautilusAppChooser *self)
 {
-    open_cb (self);
+    g_autoptr (GAppInfo) info = nautilus_app_chooser_get_app_info (self);
+
+    app_chosen (self, info);
+}
+
+static void
+on_application_activated (NautilusAppChooserWidget *widget,
+                          GAppInfo                 *info,
+                          gpointer                  user_data)
+{
+    NautilusAppChooser *self = user_data;
+
+    app_chosen (self, info);
 }
 
 static void
