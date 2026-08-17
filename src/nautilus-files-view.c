@@ -1484,19 +1484,15 @@ sandboxed_choose_program (GList     *files,
 
 static void
 app_choosen (AdwDialog *dialog,
+             GAppInfo  *info,
              gpointer   user_data)
 {
     NautilusFilesView *self = user_data;
     NautilusFileList *files;
-    GAppInfo *info;
 
     files = g_object_get_data (G_OBJECT (dialog), "directory-view:files");
 
-    info = nautilus_app_chooser_get_app_info (NAUTILUS_APP_CHOOSER (dialog));
-
     nautilus_launch_application (info, files, GTK_WIDGET (self));
-
-    g_object_unref (info);
 
     adw_dialog_close (ADW_DIALOG (dialog));
 }
