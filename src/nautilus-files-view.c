@@ -1488,9 +1488,7 @@ app_choosen (AdwDialog *dialog,
              gpointer   user_data)
 {
     NautilusFilesView *self = user_data;
-    NautilusFileList *files;
-
-    files = g_object_get_data (G_OBJECT (dialog), "directory-view:files");
+    NautilusFileList *files = g_object_get_data (G_OBJECT (dialog), "directory-view:files");
 
     nautilus_launch_application (info, files, GTK_WIDGET (self));
 
@@ -1501,26 +1499,22 @@ static void
 choose_program (NautilusFilesView *view,
                 GList             *files)
 {
-    NautilusAppChooser *dialog;
-    GtkWindow *parent_window;
-
-    g_assert (NAUTILUS_IS_FILES_VIEW (view));
-
-    parent_window = nautilus_files_view_get_containing_window (view);
-
     if (nautilus_application_is_sandboxed ())
     {
+        GtkWindow *parent_window = nautilus_files_view_get_containing_window (view);
+
         sandboxed_choose_program (g_steal_pointer (&files), parent_window);
         return;
     }
 
-    dialog = nautilus_app_chooser_new (files);
+    NautilusAppChooser *dialog = nautilus_app_chooser_new (files);
+
     g_object_set_data_full (G_OBJECT (dialog),
                             "directory-view:files",
                             files,
                             (GDestroyNotify) nautilus_file_list_free);
 
-    adw_dialog_present (ADW_DIALOG (dialog), GTK_WIDGET (parent_window));
+    adw_dialog_present (ADW_DIALOG (dialog), GTK_WIDGET (view));
 
     g_signal_connect_object (dialog, "app-selected",
                              G_CALLBACK (app_choosen),
@@ -1528,24 +1522,16 @@ choose_program (NautilusFilesView *view,
 }
 
 static void
-open_with_other_program (NautilusFilesView *view)
-{
-    g_autolist (NautilusFile) selection = NULL;
-
-    g_assert (NAUTILUS_IS_FILES_VIEW (view));
-
-    selection = nautilus_files_view_get_selection (view);
-    choose_program (view, g_steal_pointer (&selection));
-}
-
-static void
 action_open_with_other_application (GSimpleAction *action,
                                     GVariant      *state,
                                     gpointer       user_data)
 {
-    g_assert (NAUTILUS_IS_FILES_VIEW (user_data));
+    g_return_if_fail (NAUTILUS_IS_FILES_VIEW (user_data));
 
-    open_with_other_program (NAUTILUS_FILES_VIEW (user_data));
+    NautilusFilesView *self = user_data;
+    g_autolist (NautilusFile) selection = nautilus_files_view_get_selection (self);
+
+    choose_program (self, g_steal_pointer (&selection));
 }
 
 static void
