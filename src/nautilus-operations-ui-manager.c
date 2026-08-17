@@ -540,7 +540,7 @@ on_app_chooser_response (GtkDialog *dialog,
     {
         nautilus_launch_application (application,
                                      &(NautilusFileList){ .data = data->file },
-                                     data->parent_window);
+                                     GTK_WIDGET (data->parent_window));
     }
 
     invoke_main_context_completed (user_data);

@@ -1486,16 +1486,15 @@ static void
 app_choosen (AdwDialog *dialog,
              gpointer   user_data)
 {
-    GtkWindow *parent_window;
+    NautilusFilesView *self = user_data;
     NautilusFileList *files;
     GAppInfo *info;
 
-    parent_window = user_data;
     files = g_object_get_data (G_OBJECT (dialog), "directory-view:files");
 
     info = nautilus_app_chooser_get_app_info (NAUTILUS_APP_CHOOSER (dialog));
 
-    nautilus_launch_application (info, files, parent_window);
+    nautilus_launch_application (info, files, GTK_WIDGET (self));
 
     g_object_unref (info);
 
@@ -1529,7 +1528,7 @@ choose_program (NautilusFilesView *view,
 
     g_signal_connect_object (dialog, "app-selected",
                              G_CALLBACK (app_choosen),
-                             parent_window, G_CONNECT_DEFAULT);
+                             view, G_CONNECT_DEFAULT);
 }
 
 static void
