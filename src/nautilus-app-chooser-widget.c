@@ -150,6 +150,7 @@ struct _NautilusAppChooserWidget
     GtkStack *list_stack;
 
     char *content_type;
+    gboolean show_all;
 
     GListStore *app_info_store;
     GtkListItemFactory *header_factory;
@@ -166,6 +167,7 @@ struct _NautilusAppChooserWidget
 enum
 {
     PROP_CONTENT_TYPE = 1,
+    PROP_SHOW_ALL,
     N_PROPERTIES
 };
 
@@ -304,7 +306,6 @@ nautilus_app_chooser_widget_select_first (NautilusAppChooserWidget *self)
 static void
 nautilus_app_chooser_widget_real_add_items (NautilusAppChooserWidget *self)
 {
-    g_autolist (GAppInfo) all_applications = NULL;
     g_autolist (GAppInfo) recommended_apps = NULL;
     g_autolist (GAppInfo) fallback_apps = NULL;
     g_autoptr (GAppInfo) default_app = NULL;
@@ -337,12 +338,15 @@ nautilus_app_chooser_widget_real_add_items (NautilusAppChooserWidget *self)
                                                  fallback_apps, seen_apps);
     }
 
-    all_applications = g_app_info_get_all ();
+    if (self->show_all)
+    {
+        g_autolist (GAppInfo) all_applications = g_app_info_get_all ();
 
-    nautilus_app_chooser_widget_add_section (self,
-                                             FALSE,
-                                             FALSE,
-                                             all_applications, seen_apps);
+        nautilus_app_chooser_widget_add_section (self,
+                                                 FALSE,
+                                                 FALSE,
+                                                 all_applications, seen_apps);
+    }
 
     gboolean apps_added = g_hash_table_size (seen_apps) > 0;
 
@@ -367,6 +371,12 @@ nautilus_app_chooser_widget_set_property (GObject      *object,
         case PROP_CONTENT_TYPE:
         {
             self->content_type = g_value_dup_string (value);
+            break;
+        }
+
+        case PROP_SHOW_ALL:
+        {
+            self->show_all = g_value_get_boolean (value);
             break;
         }
 
@@ -459,6 +469,11 @@ nautilus_app_chooser_widget_class_init (NautilusAppChooserWidgetClass *klass)
         g_param_spec_string ("content-type", NULL, NULL,
                              NULL,
                              G_PARAM_CONSTRUCT_ONLY | G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS);
+
+    widget_properties[PROP_SHOW_ALL] =
+        g_param_spec_boolean ("show-all", NULL, NULL,
+                              FALSE,
+                              G_PARAM_CONSTRUCT_ONLY | G_PARAM_WRITABLE | G_PARAM_STATIC_STRINGS);
 
     g_object_class_install_properties (gobject_class,
                                        G_N_ELEMENTS (widget_properties),
@@ -691,6 +706,7 @@ nautilus_app_chooser_widget_new (const char  *content_type,
 {
     NautilusAppChooserWidget *self = g_object_new (NAUTILUS_TYPE_APP_CHOOSER_WIDGET,
                                                    "content-type", content_type,
+                                                   "show-all", search_entry != NULL,
                                                    NULL);
 
     if (search_entry != NULL)
