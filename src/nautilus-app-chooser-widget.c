@@ -174,6 +174,7 @@ struct _NautilusAppChooserWidget
     GtkStack *list_stack;
 
     char *content_type;
+    gboolean show_all;
 
     GListStore *app_info_store;
     GtkListItemFactory *header_factory;
@@ -312,7 +313,6 @@ nautilus_app_chooser_widget_select_first (NautilusAppChooserWidget *self)
 static void
 nautilus_app_chooser_widget_real_add_items (NautilusAppChooserWidget *self)
 {
-    g_autolist (GAppInfo) all_applications = NULL;
     g_autolist (GAppInfo) recommended_apps = NULL;
     g_autolist (GAppInfo) fallback_apps = NULL;
     g_autoptr (GAppInfo) default_app = NULL;
@@ -345,12 +345,15 @@ nautilus_app_chooser_widget_real_add_items (NautilusAppChooserWidget *self)
                                                  fallback_apps, seen_apps);
     }
 
-    all_applications = g_app_info_get_all ();
+    if (self->show_all)
+    {
+        g_autolist (GAppInfo) all_applications = g_app_info_get_all ();
 
-    nautilus_app_chooser_widget_add_section (self,
-                                             FALSE,
-                                             FALSE,
-                                             all_applications, seen_apps);
+        nautilus_app_chooser_widget_add_section (self,
+                                                 FALSE,
+                                                 FALSE,
+                                                 all_applications, seen_apps);
+    }
 
     gboolean apps_added = g_hash_table_size (seen_apps) > 0;
 
@@ -717,4 +720,15 @@ changed_cb (GtkEditable              *editable,
 
     /* Force selection change signal emission */
     selection_changed_cb (G_LIST_MODEL (selection_model), NULL, self);
+}
+
+void
+nautilus_app_chooser_widget_set_show_all (NautilusAppChooserWidget *self,
+                                          gboolean                  show_all)
+{
+    if (self->show_all != show_all)
+    {
+        self->show_all = show_all;
+        nautilus_app_chooser_widget_refresh (self);
+    }
 }
