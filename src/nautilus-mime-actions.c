@@ -1194,7 +1194,6 @@ open_with_response_cb (GtkDialog *dialog,
                        gint       response_id,
                        gpointer   user_data)
 {
-    GtkWindow *parent_window;
     NautilusFile *file;
     GAppInfo *info;
     ActivateParametersInstall *parameters = user_data;
@@ -1205,7 +1204,6 @@ open_with_response_cb (GtkDialog *dialog,
         return;
     }
 
-    parent_window = parameters->parent_window;
     file = g_object_get_data (G_OBJECT (dialog), "mime-action:file");
     info = gtk_app_chooser_get_app_info (GTK_APP_CHOOSER (dialog));
 
@@ -1213,7 +1211,8 @@ open_with_response_cb (GtkDialog *dialog,
 
     g_signal_emit_by_name (nautilus_signaller_get_current (), "mime-data-changed");
 
-    nautilus_launch_application (info, &(NautilusFileList){ .data = file }, parent_window);
+    nautilus_launch_application (info, &(NautilusFileList){ .data = file },
+                                 GTK_WIDGET (parameters->parent_window));
 
     g_object_unref (info);
 
@@ -1771,7 +1770,7 @@ activate_files_internal (ActivateParameters *parameters)
 
             nautilus_launch_application_by_uri (one_parameters->application,
                                                 one_parameters->uris,
-                                                parameters->parent_window);
+                                                GTK_WIDGET (parameters->parent_window));
             application_launch_parameters_free (one_parameters);
         }
 

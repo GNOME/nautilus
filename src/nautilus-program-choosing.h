@@ -33,13 +33,13 @@ typedef void (*NautilusApplicationChoiceCallback)   (GAppInfo                   
 
 void nautilus_launch_application                    (GAppInfo                          *application,
                                                      NautilusFileList                  *files,
-                                                     GtkWindow                         *parent_window);
+                                                     GtkWidget                         *widget);
 void nautilus_launch_application_by_uri             (GAppInfo                          *application,
                                                      GList                             *uris,
-                                                     GtkWindow                         *parent_window);
+                                                     GtkWidget                         *widget);
 void nautilus_launch_application_for_mount          (GAppInfo                          *app_info,
                                                      GMount                            *mount,
-                                                     GtkWindow                         *parent_window);
+                                                     GtkWidget                         *widget);
 void nautilus_launch_application_from_command       (GdkDisplay                        *display,
                                                      const char                        *command_string,
                                                      gboolean                           use_terminal,
