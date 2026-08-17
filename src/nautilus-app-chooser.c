@@ -312,11 +312,9 @@ nautilus_app_chooser_class_init (NautilusAppChooserClass *klass)
 
     signals[SIGNAL_APP_SELECTED] = g_signal_new ("app-selected",
                                                  NAUTILUS_TYPE_APP_CHOOSER,
-                                                 G_SIGNAL_RUN_LAST,
-                                                 0, NULL, NULL, NULL,
-                                                 G_TYPE_NONE,
-                                                 0,
-                                                 NULL);
+                                                 G_SIGNAL_RUN_LAST, 0, NULL, NULL,
+                                                 g_cclosure_marshal_VOID__POINTER,
+                                                 G_TYPE_NONE, 1, G_TYPE_POINTER);
 
     gtk_widget_class_bind_template_child (widget_class, NautilusAppChooser, ok_button);
     gtk_widget_class_bind_template_child (widget_class, NautilusAppChooser, content_box);
