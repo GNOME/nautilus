@@ -199,6 +199,9 @@ static void
 selection_changed_cb (GListModel               *model,
                       GParamSpec               *pspec,
                       NautilusAppChooserWidget *self);
+static void
+changed_cb (GtkEditable              *editable,
+            NautilusAppChooserWidget *self);
 
 static guint
 app_info_hash (gconstpointer key)
@@ -673,6 +676,7 @@ nautilus_app_chooser_widget_refresh (NautilusAppChooserWidget *self)
 /**
  * nautilus_app_chooser_widget_new:
  * @content_type: the content type to show applications for
+ * @search_entry: (nullable): the search entry to use for filtering applications
  *
  * Creates a new `NautilusAppChooserWidget` for applications
  * that can handle content of the given type.
@@ -680,11 +684,18 @@ nautilus_app_chooser_widget_refresh (NautilusAppChooserWidget *self)
  * Returns: a newly created `NautilusAppChooserWidget`
  */
 NautilusAppChooserWidget *
-nautilus_app_chooser_widget_new (const char *content_type)
+nautilus_app_chooser_widget_new (const char  *content_type,
+                                 GtkEditable *search_entry)
 {
-    return g_object_new (NAUTILUS_TYPE_APP_CHOOSER_WIDGET,
-                         "content-type", content_type,
-                         NULL);
+    g_return_val_if_fail (search_entry != NULL, NULL);
+
+    NautilusAppChooserWidget *self = g_object_new (NAUTILUS_TYPE_APP_CHOOSER_WIDGET,
+                                                   "content-type", content_type,
+                                                   NULL);
+
+    g_signal_connect_object (search_entry, "changed", G_CALLBACK (changed_cb), self, G_CONNECT_DEFAULT);
+
+    return self;
 }
 
 static void
@@ -707,11 +718,4 @@ changed_cb (GtkEditable              *editable,
 
     /* Force selection change signal emission */
     selection_changed_cb (G_LIST_MODEL (selection_model), NULL, self);
-}
-
-void
-nautilus_app_chooser_widget_set_search_entry (NautilusAppChooserWidget *self,
-                                              GtkEditable              *entry)
-{
-    g_signal_connect (entry, "changed", G_CALLBACK (changed_cb), self);
 }
