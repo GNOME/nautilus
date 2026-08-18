@@ -48,7 +48,7 @@ static GParamSpec *properties[LAST_PROP];
 
 enum
 {
-    SIGNAL_APP_SELECTED,
+    SIGNAL_APP_CHOSEN,
     SIGNAL_LAST
 };
 
@@ -90,7 +90,7 @@ app_chosen (NautilusAppChooser *self,
         }
     }
 
-    g_signal_emit (self, signals[SIGNAL_APP_SELECTED], 0, info);
+    g_signal_emit (self, signals[SIGNAL_APP_CHOSEN], 0, info);
 }
 
 static void
@@ -102,9 +102,9 @@ open_cb (NautilusAppChooser *self)
 }
 
 static void
-on_application_activated (NautilusAppChooserWidget *widget,
-                          GAppInfo                 *info,
-                          gpointer                  user_data)
+on_app_chosen (NautilusAppChooserWidget *widget,
+               GAppInfo                 *info,
+               gpointer                  user_data)
 {
     NautilusAppChooser *self = user_data;
 
@@ -255,8 +255,8 @@ nautilus_app_chooser_constructed (GObject *object)
 
     g_signal_connect_object (self->app_chooser_widget, "application-selected",
                              G_CALLBACK (on_application_selected), self, G_CONNECT_DEFAULT);
-    g_signal_connect_object (self->app_chooser_widget, "application-activated",
-                             G_CALLBACK (on_application_activated), self, G_CONNECT_SWAPPED);
+    g_signal_connect_object (self->app_chooser_widget, "app-chosen",
+                             G_CALLBACK (on_app_chosen), self, G_CONNECT_SWAPPED);
 
     if (self->file_name != NULL)
     {
@@ -320,11 +320,11 @@ nautilus_app_chooser_class_init (NautilusAppChooserClass *klass)
 
     gtk_widget_class_set_template_from_resource (widget_class, "/org/gnome/nautilus/ui/nautilus-app-chooser.ui");
 
-    signals[SIGNAL_APP_SELECTED] = g_signal_new ("app-selected",
-                                                 NAUTILUS_TYPE_APP_CHOOSER,
-                                                 G_SIGNAL_RUN_LAST, 0, NULL, NULL,
-                                                 g_cclosure_marshal_VOID__POINTER,
-                                                 G_TYPE_NONE, 1, G_TYPE_POINTER);
+    signals[SIGNAL_APP_CHOSEN] = g_signal_new ("app-chosen",
+                                               NAUTILUS_TYPE_APP_CHOOSER,
+                                               G_SIGNAL_RUN_LAST, 0, NULL, NULL,
+                                               g_cclosure_marshal_VOID__POINTER,
+                                               G_TYPE_NONE, 1, G_TYPE_POINTER);
 
     gtk_widget_class_bind_template_child (widget_class, NautilusAppChooser, ok_button);
     gtk_widget_class_bind_template_child (widget_class, NautilusAppChooser, content_box);
