@@ -1482,9 +1482,9 @@ sandboxed_choose_program (GList     *files,
 }
 
 static void
-app_choosen (AdwDialog *dialog,
-             GAppInfo  *info,
-             gpointer   user_data)
+app_chosen (AdwDialog *dialog,
+            GAppInfo  *info,
+            gpointer   user_data)
 {
     NautilusFilesView *self = user_data;
     NautilusFileList *files = g_object_get_data (G_OBJECT (dialog), "directory-view:files");
@@ -1515,8 +1515,8 @@ choose_program (NautilusFilesView *view,
 
     adw_dialog_present (ADW_DIALOG (dialog), GTK_WIDGET (view));
 
-    g_signal_connect_object (dialog, "app-selected",
-                             G_CALLBACK (app_choosen),
+    g_signal_connect_object (dialog, "app-chosen",
+                             G_CALLBACK (app_chosen),
                              view, G_CONNECT_DEFAULT);
 }
 

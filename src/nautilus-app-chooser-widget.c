@@ -29,7 +29,7 @@
  *
  * To keep track of the selected application, use the
  * [signal@Nautilus.AppChooserWidget::application-selected] and
- * [signal@Nautilus.AppChooserWidget::application-activated] signals.
+ * [signal@Nautilus.AppChooserWidget::app-chosen] signals.
  *
  * ## CSS nodes
  *
@@ -176,7 +176,7 @@ static GParamSpec *widget_properties[N_PROPERTIES];
 enum
 {
     SIGNAL_APPLICATION_SELECTED,
-    SIGNAL_APPLICATION_ACTIVATED,
+    SIGNAL_APP_CHOSEN,
     N_SIGNALS
 };
 
@@ -497,7 +497,7 @@ nautilus_app_chooser_widget_class_init (NautilusAppChooserWidgetClass *klass)
                       1, G_TYPE_APP_INFO);
 
     /**
-     * NautilusAppChooserWidget::application-activated:
+     * NautilusAppChooserWidget::app-chosen:
      * @self: the object which received the signal
      * @application: the activated `GAppInfo`
      *
@@ -507,8 +507,8 @@ nautilus_app_chooser_widget_class_init (NautilusAppChooserWidgetClass *klass)
      * is selected and the user presses one of the keys Space, Shift+Space,
      * Return or Enter.
      */
-    signals[SIGNAL_APPLICATION_ACTIVATED] =
-        g_signal_new ("application-activated",
+    signals[SIGNAL_APP_CHOSEN] =
+        g_signal_new ("app-chosen",
                       NAUTILUS_TYPE_APP_CHOOSER_WIDGET,
                       G_SIGNAL_RUN_FIRST,
                       0,
@@ -586,7 +586,7 @@ activate_cb (GtkListView              *list,
 
     g_set_object (&self->selected_app_info, app_item->app_info);
 
-    g_signal_emit (self, signals[SIGNAL_APPLICATION_ACTIVATED], 0, self->selected_app_info);
+    g_signal_emit (self, signals[SIGNAL_APP_CHOSEN], 0, self->selected_app_info);
 }
 
 static void
