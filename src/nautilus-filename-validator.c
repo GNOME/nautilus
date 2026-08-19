@@ -12,6 +12,7 @@
 #include "nautilus-filename-utilities.h"
 
 #include <glib/gi18n.h>
+#include <gtk/gtk.h>
 
 #define FILE_NAME_DUPLICATED_LABEL_TIMEOUT 500
 
@@ -158,18 +159,47 @@ nautilus_filename_validator_name_is_valid (NautilusFilenameValidator  *self,
     return is_valid;
 }
 
+static void
+set_feedback_text (NautilusFilenameValidator *self,
+                   const char                *text)
+{
+    GtkWindow *window;
+
+    if (self->feedback_text == text)
+    {
+        return;
+    }
+
+    self->feedback_text = text;
+    g_object_notify_by_pspec (G_OBJECT (self), properties[PROP_FEEDBACK_TEXT]);
+    g_object_notify_by_pspec (G_OBJECT (self), properties[PROP_HAS_FEEDBACK]);
+
+    if (self->feedback_text == NULL)
+    {
+        return;
+    }
+
+    window = gtk_application_get_active_window (GTK_APPLICATION (g_application_get_default ()));
+    if (window == NULL)
+    {
+        return;
+    }
+
+    /* FIXME: Screen readers skip reading "/" at default punctuation verbosity.
+     * In the future, we should replace occurrences of "/" with "slash" spelled out. */
+
+    gtk_accessible_announce (GTK_ACCESSIBLE (window),
+                             self->feedback_text,
+                             GTK_ACCESSIBLE_ANNOUNCEMENT_PRIORITY_MEDIUM);
+}
+
 static gboolean
 duplicated_file_label_show (NautilusFilenameValidator *self)
 {
     const char *text = self->duplicated_is_folder ? _("A folder with that name already exists") :
                                                     _("A file with that name already exists");
 
-    if (self->feedback_text != text)
-    {
-        self->feedback_text = text;
-        g_object_notify_by_pspec (G_OBJECT (self), properties[PROP_FEEDBACK_TEXT]);
-        g_object_notify_by_pspec (G_OBJECT (self), properties[PROP_HAS_FEEDBACK]);
-    }
+    set_feedback_text (self, text);
 
     self->duplicated_label_timeout_id = 0;
 
@@ -191,13 +221,7 @@ filename_validator_process_new_name (NautilusFilenameValidator *self)
                                                                   name,
                                                                   &error_message);
 
-    if (self->feedback_text != error_message)
-    {
-        self->feedback_text = error_message;
-        g_object_notify_by_pspec (G_OBJECT (self), properties[PROP_FEEDBACK_TEXT]);
-        g_object_notify_by_pspec (G_OBJECT (self), properties[PROP_HAS_FEEDBACK]);
-    }
-
+    set_feedback_text (self, error_message);
     existing_file = nautilus_directory_get_file_by_name (self->containing_directory, name);
     self->duplicated_name = existing_file != NULL &&
                             !nautilus_filename_validator_ignore_existing_file (self,
