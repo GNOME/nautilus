@@ -12,6 +12,7 @@
 #include "nautilus-filename-utilities.h"
 
 #include <glib/gi18n.h>
+#include <gtk/gtk.h>
 
 #define FILE_NAME_DUPLICATED_LABEL_TIMEOUT 500
 
@@ -333,8 +334,37 @@ nautilus_filename_validator_get_has_feedback (NautilusFilenameValidator *self)
 }
 
 static void
+on_feedback_text_changed (NautilusFilenameValidator *self)
+{
+    GtkWindow *window;
+    g_autoptr (GString) text = NULL;
+
+    if (self->feedback_text == NULL)
+    {
+        return;
+    }
+
+    window = gtk_application_get_active_window (GTK_APPLICATION (g_application_get_default ()));
+    if (window == NULL)
+    {
+        return;
+    }
+
+    text = g_string_new (self->feedback_text);
+
+    /* Screen readers skip "/" at default punctuation verbosity */
+    g_string_replace (text, "/", _("slash"), 0);
+
+    gtk_accessible_announce (GTK_ACCESSIBLE (window),
+                             text->str,
+                             GTK_ACCESSIBLE_ANNOUNCEMENT_PRIORITY_MEDIUM);
+}
+
+static void
 nautilus_filename_validator_init (NautilusFilenameValidator *self)
 {
+    g_signal_connect (self, "notify::feedback-text",
+                      G_CALLBACK (on_feedback_text_changed), NULL);
 }
 
 static void
