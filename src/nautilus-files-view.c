@@ -8504,14 +8504,9 @@ load_directory (NautilusFilesView *self,
                                                  self->subdirectory_list->data);
     }
 
-    /* Avoid freeing it and won't be able to ref it */
-    if (self->directory != directory)
-    {
-        nautilus_directory_unref (self->directory);
-        self->directory = nautilus_directory_ref (directory);
-    }
+    g_set_object (&self->directory, directory);
 
-    nautilus_file_unref (self->directory_as_file);
+    g_clear_object (&self->directory_as_file);
     self->directory_as_file = nautilus_directory_get_corresponding_file (directory);
 
     g_clear_object (&self->location);
