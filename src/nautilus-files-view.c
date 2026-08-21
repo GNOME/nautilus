@@ -8423,18 +8423,6 @@ files_view_clear (NautilusFilesView *self)
 }
 
 static void
-emit_clear (NautilusFilesView *self)
-{
-    if (self->transition_timeout_id != 0)
-    {
-        /* Scheduled to be emitted later. */
-        return;
-    }
-
-    g_signal_emit (self, signals[CLEAR], 0);
-}
-
-static void
 emit_begin_loading (NautilusFilesView *self)
 {
     if (self->transition_timeout_id != 0)
@@ -8456,7 +8444,7 @@ transition_emit_delayed_signals (NautilusFilesView *self)
 {
     self->transition_timeout_id = 0;
 
-    emit_clear (self);
+    g_signal_emit (self, signals[CLEAR], 0);
 
     if (self->begin_loading_delayed)
     {
