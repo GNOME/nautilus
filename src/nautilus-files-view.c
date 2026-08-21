@@ -9757,20 +9757,11 @@ NautilusFilesView *
 nautilus_files_view_new (guint               id,
                          NautilusWindowSlot *slot)
 {
-    NautilusFilesView *view = NULL;
+    NautilusFilesView *view = g_object_new (NAUTILUS_TYPE_FILES_VIEW,
+                                            "window-slot", slot,
+                                            NULL);
 
-    view = NAUTILUS_FILES_VIEW (g_object_new (NAUTILUS_TYPE_FILES_VIEW,
-                                              "window-slot", slot,
-                                              NULL));
-
-    if (view == NULL)
-    {
-        g_assert_not_reached ();
-    }
-    else if (g_object_is_floating (view))
-    {
-        g_object_ref_sink (view);
-    }
+    g_object_ref_sink (view);
 
     create_inner_view (view, id);
     connect_inner_view (view);
