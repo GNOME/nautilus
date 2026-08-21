@@ -100,8 +100,9 @@
 /* Delay to show the Loading... floating bar */
 #define FLOATING_BAR_LOADING_DELAY 200 /* ms */
 
-/* Delay to clear search results (avoid while flashing while typing) */
-#define SEARCH_TRANSITION_TIMEOUT 200 /* ms */
+/* Delay loading to avoid flashing of blank page fore each folder load.
+ * Especially useful during frequent changes such as typing during a search. */
+#define TRANSITION_TIMEOUT 200 /* ms */
 
 #define MIN_COMMON_FILENAME_PREFIX_LENGTH 4
 
@@ -169,7 +170,7 @@ struct _NautilusFilesView
     guint update_context_menus_timeout_id;
     guint update_status_idle_id;
 
-    guint search_transition_timeout_id;
+    guint transition_timeout_id;
     gboolean begin_loading_delayed;
 
     guint display_pending_source_id;
@@ -314,7 +315,7 @@ static void copy_move_done_callback (GHashTable *debuting_files,
                                      gboolean    success,
                                      gpointer    data);
 static CopyMoveDoneData * pre_copy_move (NautilusFilesView *directory_view);
-static void search_transition_emit_delayed_signals_if_pending (NautilusFilesView *view);
+static void transition_emit_delayed_signals_if_pending (NautilusFilesView *view);
 
 static void     nautilus_files_view_display_selection_info (NautilusFilesView *view);
 static char *   nautilus_files_view_get_uri (NautilusFilesView *view);
@@ -3281,7 +3282,7 @@ nautilus_files_view_dispose (GObject *object)
     remove_update_context_menus_timeout_callback (self);
     remove_update_status_idle_callback (self);
 
-    g_clear_handle_id (&self->search_transition_timeout_id, g_source_remove);
+    g_clear_handle_id (&self->transition_timeout_id, g_source_remove);
 
     if (self->display_selection_idle_id != 0)
     {
@@ -3808,7 +3809,7 @@ done_loading (NautilusFilesView *self,
     }
 
     self->loading = FALSE;
-    g_clear_handle_id (&self->search_transition_timeout_id, g_source_remove);
+    g_clear_handle_id (&self->transition_timeout_id, g_source_remove);
     g_signal_emit (self, signals[END_LOADING], 0, all_files_seen);
     g_object_notify_by_pspec (G_OBJECT (self), properties[PROP_LOADING]);
 
@@ -4358,7 +4359,7 @@ process_pending_files (NautilusFilesView *self)
 static void
 display_pending_files (NautilusFilesView *view)
 {
-    search_transition_emit_delayed_signals_if_pending (view);
+    transition_emit_delayed_signals_if_pending (view);
 
     /* Get selection after delayed signals are emitted. */
     g_autoptr (GtkBitset) selection = gtk_selection_model_get_selection (GTK_SELECTION_MODEL (view->model));
@@ -8424,7 +8425,7 @@ files_view_clear (NautilusFilesView *self)
 static void
 emit_clear (NautilusFilesView *self)
 {
-    if (self->search_transition_timeout_id != 0)
+    if (self->transition_timeout_id != 0)
     {
         /* Scheduled to be emitted later. */
         return;
@@ -8436,7 +8437,7 @@ emit_clear (NautilusFilesView *self)
 static void
 emit_begin_loading (NautilusFilesView *self)
 {
-    if (self->search_transition_timeout_id != 0)
+    if (self->transition_timeout_id != 0)
     {
         /* Mark it to be emitted later, as we haven't cleared old contents yet. */
         self->begin_loading_delayed = TRUE;
@@ -8451,10 +8452,9 @@ emit_begin_loading (NautilusFilesView *self)
 }
 
 static void
-search_transition_emit_delayed_signals (gpointer user_data)
+transition_emit_delayed_signals (NautilusFilesView *self)
 {
-    NautilusFilesView *self = NAUTILUS_FILES_VIEW (user_data);
-    self->search_transition_timeout_id = 0;
+    self->transition_timeout_id = 0;
 
     emit_clear (self);
 
@@ -8465,25 +8465,12 @@ search_transition_emit_delayed_signals (gpointer user_data)
 }
 
 static void
-search_transition_emit_delayed_signals_if_pending (NautilusFilesView *self)
+transition_emit_delayed_signals_if_pending (NautilusFilesView *self)
 {
-    if (self->search_transition_timeout_id != 0)
+    if (self->transition_timeout_id != 0)
     {
-        g_clear_handle_id (&self->search_transition_timeout_id, g_source_remove);
-        search_transition_emit_delayed_signals (self);
-    }
-}
-
-static void
-search_transition_schedule_delayed_signals (NautilusFilesView *self)
-{
-    if (self->search_transition_timeout_id == 0)
-    {
-        guint id = g_timeout_add_once (SEARCH_TRANSITION_TIMEOUT,
-                                       search_transition_emit_delayed_signals,
-                                       self);
-
-        self->search_transition_timeout_id = id;
+        g_clear_handle_id (&self->transition_timeout_id, g_source_remove);
+        transition_emit_delayed_signals (self);
     }
 }
 
@@ -8507,19 +8494,16 @@ load_directory (NautilusFilesView *self,
 
     nautilus_files_view_stop_loading (self);
 
-    /* To make search feel fast and smooth as if it were filtering the current
-     * view, avoid blanking the view temporarily in the following cases:
-     * 1- Going from a search to a search
-     * 2- Going from a location to local search
+    /* To make navigation feel fast and smooth, avoid blanking the view temporarily.
+     * This especially helps when transitioning to search results.
      */
-    if (NAUTILUS_IS_SEARCH_DIRECTORY (directory) &&
-        (NAUTILUS_IS_SEARCH_DIRECTORY (self->directory) ||
-         (self->search_query != NULL && !nautilus_query_is_global (self->search_query))))
+    if (self->transition_timeout_id == 0)
     {
-        search_transition_schedule_delayed_signals (self);
+        self->transition_timeout_id =
+            g_timeout_add_once (TRANSITION_TIMEOUT,
+                                (GSourceOnceFunc) transition_emit_delayed_signals,
+                                self);
     }
-
-    emit_clear (self);
 
     self->loading = TRUE;
 
