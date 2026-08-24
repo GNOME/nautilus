@@ -224,8 +224,6 @@ check_providers_status (NautilusSearchEngine *self)
 static void
 search_provider_finished (NautilusSearchEngine *self)
 {
-    g_debug ("Search provider finished");
-
     self->providers_finished++;
 
     check_providers_status (self);
