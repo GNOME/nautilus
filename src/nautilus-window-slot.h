@@ -99,7 +99,6 @@ NautilusNavigationState* nautilus_window_slot_get_navigation_state (NautilusWind
 
 NautilusQueryEditor *nautilus_window_slot_get_query_editor (NautilusWindowSlot *self);
 
-/* Only used by slot-dnd */
 NautilusFilesView*  nautilus_window_slot_get_current_view  (NautilusWindowSlot *slot);
 
 void
