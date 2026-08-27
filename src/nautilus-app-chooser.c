@@ -23,8 +23,9 @@ struct _NautilusAppChooser
     char *target_description;
     gboolean single_content_type;
 
-    GtkWidget *ok_button;
-    GtkWidget *content_box;
+    AdwNavigationView *navigation_view;
+    AdwToolbarView *toolbar_view_limited;
+    AdwToolbarView *toolbar_view_all;
     GtkWidget *set_default_list_box;
     GtkWidget *set_default_row;
     GtkWidget *search_entry;
@@ -54,6 +55,15 @@ enum
 };
 
 static guint signals[SIGNAL_LAST] = { 0, };
+
+static void
+switch_to_search (NautilusAppChooser *self)
+{
+    if (g_strcmp0 (adw_navigation_view_get_visible_page_tag (self->navigation_view), "all") != 0)
+    {
+        adw_navigation_view_push_by_tag (self->navigation_view, "all");
+    }
+}
 
 static void
 on_app_chosen (NautilusAppChooser *self)
@@ -94,24 +104,6 @@ on_app_chosen (NautilusAppChooser *self)
     g_signal_emit (self, signals[SIGNAL_APP_CHOSEN], 0, info);
 }
 
-static void
-on_application_selected (NautilusAppChooserWidget *widget,
-                         GAppInfo                 *info,
-                         gpointer                  user_data)
-{
-    NautilusAppChooser *self = NAUTILUS_APP_CHOOSER (user_data);
-    g_autoptr (GAppInfo) default_app = NULL;
-    gboolean is_default;
-
-    gtk_widget_set_sensitive (self->ok_button, info != NULL);
-
-    default_app = g_app_info_get_default_for_type (self->content_type, FALSE);
-    is_default = default_app != NULL && info != NULL && g_app_info_equal (info, default_app);
-
-    adw_switch_row_set_active (ADW_SWITCH_ROW (self->set_default_row), is_default);
-    gtk_widget_set_sensitive (GTK_WIDGET (self->set_default_row), !is_default);
-}
-
 static gboolean
 on_search_entry_key_pressed (NautilusAppChooser *self,
                              guint               keyval)
@@ -123,6 +115,12 @@ on_search_entry_key_pressed (NautilusAppChooser *self,
     }
 
     return GDK_EVENT_PROPAGATE;
+}
+
+static void
+on_search_changed (NautilusAppChooser *self)
+{
+    switch_to_search (self);
 }
 
 static void
@@ -240,6 +238,8 @@ nautilus_app_chooser_init (NautilusAppChooser *self)
     gtk_widget_add_controller (self->search_entry, controller);
     g_signal_connect_swapped (controller, "key-pressed",
                               G_CALLBACK (on_search_entry_key_pressed), self);
+    g_signal_connect_swapped (self->search_entry, "search-changed",
+                              G_CALLBACK (on_search_changed), self);
 
     gtk_search_entry_set_key_capture_widget (GTK_SEARCH_ENTRY (self->search_entry),
                                              GTK_WIDGET (self));
@@ -257,43 +257,22 @@ nautilus_app_chooser_constructed (GObject *object)
     NautilusAppChooser *self = NAUTILUS_APP_CHOOSER (object);
     g_autoptr (GAppInfo) info = NULL;
     g_autofree gchar *description = NULL;
-    const char *title;
 
     G_OBJECT_CLASS (nautilus_app_chooser_parent_class)->constructed (object);
 
-    self->app_chooser_widget = nautilus_app_chooser_widget_new (self->content_type,
-                                                                GTK_EDITABLE (self->search_entry));
-    gtk_widget_set_vexpand (GTK_WIDGET (self->app_chooser_widget), TRUE);
-    gtk_widget_add_css_class (GTK_WIDGET (self->app_chooser_widget), "lowres-icon");
-    gtk_box_append (GTK_BOX (self->content_box), GTK_WIDGET (self->app_chooser_widget));
 
-    /* initialize sensitivity */
-    info = nautilus_app_chooser_get_app_info (self);
-    if (info != NULL)
-    {
-        on_application_selected (self->app_chooser_widget,
-                                 info, self);
-    }
+    NautilusAppChooserWidget *limited_widget =
+        nautilus_app_chooser_widget_new (self->content_type, NULL);
+    NautilusAppChooserWidget *all_widget =
+        nautilus_app_chooser_widget_new (self->content_type, GTK_EDITABLE (self->search_entry));
 
-    g_signal_connect_object (self->app_chooser_widget, "application-selected",
-                             G_CALLBACK (on_application_selected), self, G_CONNECT_DEFAULT);
-    g_signal_connect_object (self->app_chooser_widget, "app-chosen",
+    adw_toolbar_view_set_content (self->toolbar_view_limited, GTK_WIDGET (limited_widget));
+    adw_toolbar_view_set_content (self->toolbar_view_all, GTK_WIDGET (all_widget));
+
+    g_signal_connect_object (limited_widget, "app-chosen",
                              G_CALLBACK (on_app_chosen), self, G_CONNECT_SWAPPED);
-
-    if (!self->single_content_type)
-    {
-        title = _("Open Items");
-    }
-    else if (content_type_is_folder (self))
-    {
-        title = C_("dialog title", "Open Folder");
-    }
-    else
-    {
-        title = _("Open File");
-    }
-
-    adw_dialog_set_title (ADW_DIALOG (self), title);
+    g_signal_connect_object (all_widget, "app-chosen",
+                             G_CALLBACK (on_app_chosen), self, G_CONNECT_SWAPPED);
 
     gtk_widget_set_visible (self->set_default_list_box,
                             self->single_content_type && !content_type_is_folder (self));
@@ -341,13 +320,15 @@ nautilus_app_chooser_class_init (NautilusAppChooserClass *klass)
                                                NULL,
                                                G_TYPE_NONE, 1, G_TYPE_APP_INFO);
 
-    gtk_widget_class_bind_template_child (widget_class, NautilusAppChooser, ok_button);
-    gtk_widget_class_bind_template_child (widget_class, NautilusAppChooser, content_box);
+    gtk_widget_class_bind_template_child (widget_class, NautilusAppChooser, navigation_view);
+    gtk_widget_class_bind_template_child (widget_class, NautilusAppChooser, toolbar_view_limited);
+    gtk_widget_class_bind_template_child (widget_class, NautilusAppChooser, toolbar_view_all);
     gtk_widget_class_bind_template_child (widget_class, NautilusAppChooser, set_default_list_box);
     gtk_widget_class_bind_template_child (widget_class, NautilusAppChooser, set_default_row);
     gtk_widget_class_bind_template_child (widget_class, NautilusAppChooser, search_entry);
 
     gtk_widget_class_bind_template_callback (widget_class, on_app_chosen);
+    gtk_widget_class_bind_template_callback (widget_class, switch_to_search);
 
     properties[PROP_CONTENT_TYPE] =
         g_param_spec_string ("content-type", "", "",
