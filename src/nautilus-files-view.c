@@ -947,11 +947,11 @@ real_set_templates_menu (NautilusFilesView *self,
                          GMenuModel        *menu)
 {
     g_return_if_fail (NAUTILUS_IS_FILES_VIEW (self));
+    g_autoptr (GMenu) empty_template_menu = NULL;
 
     if (menu == NULL)
     {
-        GMenu *empty_template_menu = g_menu_new ();
-
+        empty_template_menu = g_menu_new ();
         g_menu_append (empty_template_menu, _("Empty Text File"), "view.template-empty");
         menu = G_MENU_MODEL (empty_template_menu);
     }
