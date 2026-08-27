@@ -8,24 +8,34 @@ template $NautilusAppChooserWidget: Adw.Bin {
       name: "list";
 
       child: ScrolledWindow scrolled_window {
-        max-content-width: 400;
-        max-content-height: 300;
         hscrollbar-policy: never;
-        has-frame: true;
 
-        child: ListView program_list {
+        child: GridView program_list {
           tab-behavior: item;
+          max-columns: 3;
+          margin-start: 12;
+          margin-end: 12;
+          single-click-activate: true;
+          activate => $on_app_chosen();
 
           factory: BuilderListItemFactory {
             template ListItem {
               accessible-label: bind app_name.label;
 
               child: Box {
+                orientation: vertical;
                 spacing: 12;
+                margin-bottom: 6;
+                margin-top: 6;
+                margin-start: 0;
+                margin-end: 0;
 
                 Image {
                   gicon: bind template.item as <$NautilusAppItem>.icon;
-                  icon-size: large;
+                  pixel-size: 64;
+                  height-request: 64;
+                  width-request: 64;
+                  styles ["icon-dropshadow"]
                   // Translators: This is an accessible label for a shown icon.
                   accessibility {
                     label: _("App icon");
@@ -34,29 +44,39 @@ template $NautilusAppChooserWidget: Adw.Bin {
 
                 Label app_name {
                   label: bind template.item as <$NautilusAppItem>.name;
+                  ellipsize: end;
+                  max-width-chars: 12;
+                  lines: 2;
+                  justify: center;
+                  wrap-mode: word_char;
+                  yalign: 0;
                 }
               };
             }
           };
 
-          model: SingleSelection {
-            notify::selected => $selection_changed_cb();
-
+          model: NoSelection selection_model {
             model: SortListModel {
               model: FilterListModel {
                 model: Gio.ListStore app_info_store {
                   item-type: typeof<$NautilusAppItem>;
                 };
 
-                filter: StringFilter filter {
-                  expression: expr item as <$NautilusAppItem>.name;
+                filter: EveryFilter {
+                  StringFilter name_filter {
+                    expression: expr item as <$NautilusAppItem>.name;
+                  }
+
+                  BoolFilter {
+                    expression: expr $display_app_check(template, item as <$NautilusAppItem>.self) as <bool>;
+                  }
                 };
               };
 
               section-sorter: CustomSorter section_sorter {};
 
               sorter: StringSorter {
-                expression: bind filter.expression;
+                expression: bind name_filter.expression;
               };
             };
           };
