@@ -3,140 +3,138 @@ using Adw 1;
 
 template $NautilusAppChooser: Adw.Dialog {
   title: _("Open File");
-  content-width: 420;
-  content-height: 560;
-  default-widget: ok_button;
-  focus-widget: search_entry;
+  content-width: 400;
+  content-height: 570;
 
-  child: Adw.ToolbarView {
-    [top]
-    Adw.HeaderBar {
-      show-start-title-buttons: false;
-      show-end-title-buttons: false;
+  styles [
+    "view",
+  ]
 
-      [start]
-      Button cancel_button {
-        label: _("_Cancel");
-        use-underline: true;
-        can-shrink: true;
-        clicked => $adw_dialog_close(template);
-      }
+  child: Adw.NavigationView navigation_view {
+    Adw.NavigationPage {
+      title: _("Open With");
 
-      [end]
-      Button ok_button {
-        label: _("_Open");
-        use-underline: true;
-        can-shrink: true;
-        sensitive: false;
-        activate => $open_cb(template);
-        clicked => $open_cb(template);
-
-        styles [
-          "suggested-action",
-        ]
-      }
-    }
-
-    [top]
-    Adw.Clamp {
-      maximum-size: 360;
-
-      styles [
-        "toolbar",
-      ]
-
-      child: Box {
-        margin-top: 6;
-        orientation: vertical;
-        spacing: 12;
-
-        Box {
-          halign: center;
-          spacing: 12;
-
-          Adw.Bin {
-            styles [
-              "circled-icon",
-            ]
-
-            Image icon {
-              icon-name: bind template.generic-icon;
-              icon-size: large;
-              margin-bottom: 12;
-              margin-top: 12;
-              margin-start: 12;
-              margin-end: 12;
-              halign: center;
-              valign: center;
-            }
-          }
-
-          Box {
-            orientation: vertical;
-            valign: center;
-
-            Label {
-              label: bind template.target-description;
-              lines: 2;
-              ellipsize: middle;
-              width-chars: 15;
-              wrap: true;
-              wrap-mode: word_char;
-              xalign: 0.0;
-
-              styles [
-                "heading",
-              ]
-            }
-
-            Label type_label {
-              label: bind template.type-description;
-              xalign: 0.0;
-
-              styles [
-                "dimmed",
-                "caption",
-              ]
-            }
+      child: Adw.ToolbarView toolbar_view_limited {
+        [top]
+        Adw.HeaderBar {
+          Button {
+            icon-name: "edit-find-symbolic";
+            clicked => $switch_to_search() swapped;
           }
         }
 
-        SearchEntry search_entry {
-          activates-default: true;
-          placeholder-text: _("Search Apps");
-          search-changed => $gtk_widget_grab_focus();
+        [top]
+        Adw.Clamp {
+          maximum-size: 360;
+          margin-bottom: 12;
 
           styles [
-            "rounded-entry",
+            "toolbar",
           ]
+
+          child: Box {
+            halign: center;
+            spacing: 12;
+
+            Adw.Bin {
+              styles [
+                "circled-icon",
+              ]
+
+              Image icon {
+                icon-name: bind template.generic-icon;
+                icon-size: large;
+                margin-bottom: 12;
+                margin-top: 12;
+                margin-start: 12;
+                margin-end: 12;
+                halign: center;
+                valign: center;
+              }
+            }
+
+            Box {
+              orientation: vertical;
+              valign: center;
+
+              Label {
+                label: bind template.target-description;
+                lines: 2;
+                ellipsize: middle;
+                width-chars: 15;
+                wrap: true;
+                wrap-mode: word_char;
+                xalign: 0.0;
+
+                styles [
+                  "heading",
+                ]
+              }
+
+              Label type_label {
+                label: bind template.type-description;
+                xalign: 0.0;
+
+                styles [
+                  "dimmed",
+                  "caption",
+                ]
+              }
+            }
+          };
+        }
+
+        [bottom]
+        ListBox set_default_list_box {
+          selection-mode: none;
+
+          Adw.SwitchRow set_default_row {
+            title: _("Always use for this file type");
+            subtitle: bind template.type-description;
+          }
         }
       };
     }
 
-    content: Adw.Clamp {
-      margin-top: 18;
-      margin-bottom: 18;
-      margin-start: 18;
-      margin-end: 18;
+    Adw.NavigationPage {
+      title: _("All Apps");
+      tag: "all";
 
-      child: Box content_box {
-        orientation: vertical;
-        spacing: 12;
+      child: Adw.ToolbarView toolbar_view_all {
+        [top]
+        Adw.HeaderBar {}
+
+        [top]
+        Adw.Clamp {
+          maximum-size: 360;
+          margin-bottom: 12;
+
+          styles [
+            "toolbar",
+          ]
+
+          SearchEntry search_entry {
+            activates-default: true;
+            placeholder-text: _("Search Apps");
+            search-changed => $gtk_widget_grab_focus();
+
+            styles [
+              "rounded-entry",
+            ]
+          }
+        }
+
+        [bottom]
+        ListBox {
+          selection-mode: bind set_default_list_box.selection-mode;
+          visible: bind set_default_list_box.visible;
+
+          Adw.SwitchRow {
+            title: bind set_default_row.title;
+            subtitle: bind set_default_row.subtitle;
+          }
+        }
       };
-    };
-
-    [bottom]
-    ListBox set_default_list_box {
-      selection-mode: none;
-
-      Adw.SwitchRow set_default_row {
-        title: _("Always use for this file type");
-        subtitle: bind template.type-description;
-      }
-
-      styles [
-        "background",
-      ]
     }
   };
 }
