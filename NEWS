@@ -1,3 +1,32 @@
+Major Changes in 51.rc
+======================
+* Enhancements:
+- Add Santali translation (Prasanta Hembram)
+- Add tests for image, files-view, properties (Khalid Abu Shawarib)
+- Add shortcut to focus file chooser filename entry (Peter Eisenmann)
+- Delay clearing of the view for smoother navigation (Peter Eisenmann)
+- Add rename, trash and folder opening functionality to previewer (Peter Eisenmann)
+- Use type-to-search pattern in app-chooser (Peter Eisenmann)
+- Mark network address entry invalid on the a11y layer when appropriate (Lukáš Tyrychtr)
+- Announce feedback text to screen readers in filename entries (Felipe Borges)
+
+* Bugfixes:
+- Fix tab overview behavior with single tab (Khalid Abu Shawarib)
+- Fix empty list state in app-chooser (Peter Eisenmann)
+- Only show apps in one section in app-chooser (Peter Eisenmann)
+- Show parent folder row when properties dialog is detached (Hanzala Sohrab)
+- Fix memory trimming on window closure (Peter Eisenmann)
+- Correctly fix non-keypad shortcuts in menus (Peter Eisenmann)
+- Close app when only property windows are left (Peter Eisenmann)
+- Restore focus and selection if a file gets removed (Lukáš Tyrychtr)
+
+* Cleanups:
+- Drop view-related context menu entries (Peter Eisenmann)
+- Add and use recursive directory iterator helper (Peter Eisenmann)
+- Attempt using any sushi version (Peter Eisenmann)
+
+* Translation updates (GNOME Translation Project contributors)
+
 Major Changes in 51.beta
 ========================
 * Enhancements:
