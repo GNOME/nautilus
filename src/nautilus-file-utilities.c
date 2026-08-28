@@ -1261,7 +1261,7 @@ recursive_directory_iterator_thread (GTask        *task,
                                      GCancellable *cancellable)
 {
     NautilusRecursiveDirectoryIterator *self = task_data;
-    g_autoptr (GQueue) pending_directories = g_queue_new ();
+    g_autoqueue (GFile) pending_directories = g_queue_new ();
 
     g_queue_push_tail (pending_directories, g_object_ref (self->directory));
 
@@ -1270,7 +1270,7 @@ recursive_directory_iterator_thread (GTask        *task,
          depth++)
     {
         /* Breadth-first iteration, all stored directories are for next depth level */
-        g_autoptr (GQueue) directories_at_depth = g_steal_pointer (&pending_directories);
+        g_autoqueue (GFile) directories_at_depth = g_steal_pointer (&pending_directories);
 
         pending_directories = g_queue_new ();
 
