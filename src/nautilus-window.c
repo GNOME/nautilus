@@ -160,6 +160,16 @@ malloc_trim_idle_cb (gpointer user_data)
     malloc_trim (8 * 1024 * 1024);
     malloc_trim_idle_id = 0;
 }
+
+static void
+schedule_trim (void)
+{
+    if (malloc_trim_idle_id == 0)
+    {
+        malloc_trim_idle_id = g_idle_add_once (malloc_trim_idle_cb, NULL);
+    }
+}
+
 #endif
 
 static AdwTabPage *
@@ -727,10 +737,7 @@ window_slot_close (NautilusWindow     *window,
     }
 
 #ifdef HAVE_MALLOC_TRIM
-    if (malloc_trim_idle_id == 0)
-    {
-        malloc_trim_idle_id = g_idle_add_once (malloc_trim_idle_cb, NULL);
-    }
+    schedule_trim ();
 #endif
 }
 
@@ -1325,6 +1332,10 @@ nautilus_window_close (NautilusWindow *window)
     }
 
     gtk_window_destroy (GTK_WINDOW (window));
+
+#ifdef HAVE_MALLOC_TRIM
+    schedule_trim ();
+#endif
 }
 
 void
