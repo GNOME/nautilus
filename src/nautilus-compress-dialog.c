@@ -266,12 +266,6 @@ extension_combo_row_setup (NautilusCompressDialog *self)
                                        _("Smaller archives but Linux and Mac only."));
     g_list_store_append (store, item);
     g_object_unref (item);
-    item = nautilus_compress_item_new (NAUTILUS_COMPRESSION_7ZIP,
-                                       ".7z",
-                                       _("7Z (.7z)"),
-                                       _("Smaller archives but must be installed on Windows and Mac."));
-    g_list_store_append (store, item);
-    g_object_unref (item);
 
     list_factory = gtk_signal_list_item_factory_new ();
     g_signal_connect_object (list_factory, "setup",
@@ -290,6 +284,11 @@ extension_combo_row_setup (NautilusCompressDialog *self)
 
     format = g_settings_get_enum (nautilus_compression_preferences,
                                   NAUTILUS_PREFERENCES_DEFAULT_COMPRESSION_FORMAT);
+    /* Ignore 7ZIP */
+    if (format == NAUTILUS_COMPRESSION_7ZIP)
+    {
+        format = NAUTILUS_COMPRESSION_ZIP;
+    }
     for (guint i = 0; i < g_list_model_get_n_items (G_LIST_MODEL (store)); i++)
     {
         item = g_list_model_get_item (G_LIST_MODEL (store), i);
