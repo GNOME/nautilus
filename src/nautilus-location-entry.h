@@ -37,15 +37,8 @@ typedef struct _NautilusLocationEntryClass {
 	void         (* cancel)           (NautilusLocationEntry *entry);
 } NautilusLocationEntryClass;
 
-typedef enum {
-	NAUTILUS_LOCATION_ENTRY_ACTION_GOTO,
-	NAUTILUS_LOCATION_ENTRY_ACTION_CLEAR
-} NautilusLocationEntryAction;
-
 GtkWidget* nautilus_location_entry_new          	(void);
 void       nautilus_location_entry_set_special_text     (NautilusLocationEntry *entry,
 							 const char            *special_text);
-void       nautilus_location_entry_set_secondary_action (NautilusLocationEntry *entry,
-							 NautilusLocationEntryAction secondary_action);
 void       nautilus_location_entry_set_location         (NautilusLocationEntry *entry,
 							 GFile                 *location);
