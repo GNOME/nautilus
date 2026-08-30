@@ -41,6 +41,12 @@
 #include <stdio.h>
 #include <string.h>
 
+typedef enum
+{
+    NAUTILUS_LOCATION_ENTRY_ACTION_GOTO,
+    NAUTILUS_LOCATION_ENTRY_ACTION_CLEAR
+} NautilusLocationEntryAction;
+
 typedef struct
 {
     GFile *location;
@@ -90,6 +96,9 @@ static void on_after_delete_text (GtkEditable *editable,
                                   gint         start_pos,
                                   gint         end_pos,
                                   gpointer     data);
+static void
+nautilus_location_entry_set_secondary_action (NautilusLocationEntry       *entry,
+                                              NautilusLocationEntryAction  secondary_action);
 
 static GFile *
 nautilus_location_entry_get_location (NautilusLocationEntry *entry)
@@ -785,7 +794,7 @@ nautilus_location_entry_class_init (NautilusLocationEntryClass *class)
     gtk_widget_class_add_shortcut (GTK_WIDGET_CLASS (class), shortcut);
 }
 
-void
+static void
 nautilus_location_entry_set_secondary_action (NautilusLocationEntry       *entry,
                                               NautilusLocationEntryAction  secondary_action)
 {
