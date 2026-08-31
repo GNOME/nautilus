@@ -101,10 +101,10 @@ nautilus_location_entry_set_secondary_action (NautilusLocationEntry      *self,
                                               NautilusLocationEntryAction secondary_action);
 
 static GFile *
-location_entry_get_typed_location (NautilusLocationEntry *self)
+text_to_location (const char *text,
+                  GFile      *current_location)
 {
-    const char *entry_text = gtk_editable_get_text (GTK_EDITABLE (self));
-    g_autofree char *path = g_strstrip (g_strdup (entry_text));
+    g_autofree char *path = g_strstrip (g_strdup (text));
 
     if (path == NULL || *path == '\0')
     {
@@ -122,10 +122,40 @@ location_entry_get_typed_location (NautilusLocationEntry *self)
     if (!g_path_is_absolute (path) && g_uri_peek_scheme (path) == NULL)
     {
         /* Fix non absolute paths */
-        return g_file_resolve_relative_path (self->current_location, path);
+        return g_file_resolve_relative_path (current_location, path);
     }
 
     return g_file_parse_name (path);
+}
+
+static char *
+split_basename_from_path (const char  *entry_text,
+                          char       **basename)
+{
+    g_autofree char *path = g_strstrip (g_strdup (entry_text));
+
+    if (path == NULL || *path == '\0')
+    {
+        *basename = g_strdup ("");
+
+        return g_strdup ("");
+    }
+
+    char *last_separator = g_utf8_strrchr (path, -1, G_DIR_SEPARATOR);
+
+    if (last_separator != NULL)
+    {
+        char *post_separator = last_separator + 1;
+
+        *basename = g_utf8_casefold (post_separator, -1);
+        post_separator[0] = '\0';
+    }
+    else
+    {
+        *basename = g_strdup ("");
+    }
+
+    return g_steal_pointer (&path);
 }
 
 static void
@@ -248,54 +278,6 @@ set_prefix_dimming (GtkCellRenderer *completion_cell,
 
     g_object_set (completion_cell, "attributes", attrs, NULL);
     pango_attr_list_unref (attrs);
-}
-
-static CompleterData *
-completer_data_new (const char *typed,
-                    GFile      *location)
-{
-    CompleterData *data = g_new0 (CompleterData, 1);
-    const char *last_separator = strrchr (typed, G_DIR_SEPARATOR);
-    const char *post_separator = (last_separator != NULL) ? last_separator + 1 : typed;
-    g_autofree gchar *uri_scheme = g_uri_parse_scheme (typed);
-
-    if (last_separator != NULL)
-    {
-        data->typed_path = g_strndup (typed, post_separator - typed);
-    }
-    data->prefix = g_utf8_casefold (post_separator, -1);
-
-    if (uri_scheme != NULL && last_separator != NULL)
-    {
-        /* Parse scheme with GFile */
-        data->location = g_file_parse_name (data->typed_path);
-    }
-    else if (data->typed_path == NULL)
-    {
-        data->location = g_object_ref (location);
-    }
-    else if (typed[0] == '~' && typed[1] == '/')
-    {
-        /* "~/" is not handled by g_file_resolve_relative_path */
-
-        if (typed + 1 == last_separator)
-        {
-            data->location = g_file_new_for_path (g_get_home_dir ());
-        }
-        else
-        {
-            const char *subdir_path = typed + 2;
-            g_autofree char *concat_path = g_strndup (subdir_path, post_separator - subdir_path);
-
-            data->location = g_file_new_build_filename (g_get_home_dir (), concat_path, NULL);
-        }
-    }
-    else
-    {
-        data->location = g_file_resolve_relative_path (location, data->typed_path);
-    }
-
-    return data;
 }
 
 static void
@@ -437,18 +419,25 @@ update_completions_store (gpointer callback_data)
         return;
     }
 
-    const char *typed = gtk_editable_get_text (editable);
+    const char *entry_text = gtk_editable_get_text (editable);
+    g_autofree char *basename = NULL;
+    g_autofree char *typed_path = split_basename_from_path (entry_text, &basename);
+    g_autoptr (GFile) typed_location = text_to_location (typed_path, self->current_location);
 
-    if (typed == NULL || typed[0] == '\0')
+    if (typed_location == NULL)
     {
-        return;
+        typed_location = self->current_location != NULL
+                         ? g_object_ref (self->current_location)
+                         : g_file_new_for_path (g_get_home_dir ());
     }
 
-    g_autofree char *stripped = g_strstrip (g_strdup (typed));
+    CompleterData *completer_data = g_new0 (CompleterData, 1);
 
-    CompleterData *completer_data = completer_data_new (stripped, self->current_location);
-
+    completer_data->typed_path = g_steal_pointer (&typed_path);
+    completer_data->prefix = g_steal_pointer (&basename);
+    completer_data->location = g_steal_pointer (&typed_location);
     completer_data->entry = self;
+
     set_prefix_dimming (self->completion_cell, completer_data->typed_path);
 
     if (self->completions_cancellable != NULL)
@@ -640,7 +629,8 @@ static void
 nautilus_location_entry_activate (GtkEntry *entry)
 {
     NautilusLocationEntry *self = NAUTILUS_LOCATION_ENTRY (entry);
-    g_autoptr (GFile) location = location_entry_get_typed_location (self);
+    const char *entry_text = gtk_editable_get_text (GTK_EDITABLE (self));
+    g_autoptr (GFile) location = text_to_location (entry_text, self->current_location);
 
     if (location != NULL)
     {
