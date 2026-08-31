@@ -668,26 +668,23 @@ static void
 nautilus_location_entry_activate (GtkEntry *entry)
 {
     NautilusLocationEntry *self = NAUTILUS_LOCATION_ENTRY (entry);
-    const gchar *entry_text;
-    g_autofree char *path = NULL;
+    const char *entry_text = gtk_editable_get_text (GTK_EDITABLE (entry));
+    g_autofree char *path = g_strstrip (g_strdup (entry_text));
 
-    entry_text = gtk_editable_get_text (GTK_EDITABLE (entry));
-    path = g_strdup (entry_text);
-    path = g_strchug (path);
-    path = g_strchomp (path);
-
-    if (path != NULL && *path != '\0')
+    if (path == NULL || *path == '\0')
     {
-        g_autofree gchar *uri_scheme = g_uri_parse_scheme (path);
+        return;
+    }
 
-        if (!g_path_is_absolute (path) && uri_scheme == NULL && path[0] != '~')
-        {
-            /* Fix non absolute paths */
-            g_autoptr (GFile) file = g_file_resolve_relative_path (self->current_location, path);
-            g_autofree char *full_path = g_file_get_parse_name (file);
+    if (!g_path_is_absolute (path) &&
+        g_uri_peek_scheme (path) == NULL &&
+        (path[0] != '~' || path[1] != '/'))
+    {
+        /* Fix non absolute paths */
+        g_autoptr (GFile) file = g_file_resolve_relative_path (self->current_location, path);
+        g_autofree char *full_path = g_file_get_parse_name (file);
 
-            nautilus_location_entry_set_text (self, full_path);
-        }
+        nautilus_location_entry_set_text (self, full_path);
     }
 }
 
