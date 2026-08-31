@@ -141,19 +141,14 @@ nautilus_location_entry_insert_prefix (NautilusLocationEntry *entry,
 static void
 emit_location_changed (NautilusLocationEntry *entry)
 {
-    GFile *location;
+    g_autoptr (GFile) location = nautilus_location_entry_get_location (entry);
 
-    location = nautilus_location_entry_get_location (entry);
     g_signal_emit (entry, signals[LOCATION_CHANGED], 0, location);
-    g_object_unref (location);
 }
 
 static void
 nautilus_location_entry_update_action (NautilusLocationEntry *self)
 {
-    const char *current_text;
-    GFile *location;
-
     if (self->last_location == NULL)
     {
         nautilus_location_entry_set_secondary_action (self,
@@ -161,8 +156,8 @@ nautilus_location_entry_update_action (NautilusLocationEntry *self)
         return;
     }
 
-    current_text = gtk_editable_get_text (GTK_EDITABLE (self));
-    location = g_file_parse_name (current_text);
+    const char *current_text = gtk_editable_get_text (GTK_EDITABLE (self));
+    g_autoptr (GFile) location = g_file_parse_name (current_text);
 
     if (g_file_equal (self->last_location, location))
     {
@@ -174,8 +169,6 @@ nautilus_location_entry_update_action (NautilusLocationEntry *self)
         nautilus_location_entry_set_secondary_action (self,
                                                       NAUTILUS_LOCATION_ENTRY_ACTION_GOTO);
     }
-
-    g_object_unref (location);
 }
 
 static int
