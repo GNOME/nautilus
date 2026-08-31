@@ -105,14 +105,7 @@ nautilus_location_entry_set_secondary_action (NautilusLocationEntry      *self,
 static GFile *
 nautilus_location_entry_get_location (NautilusLocationEntry *entry)
 {
-    char *user_location;
-    GFile *location;
-
-    user_location = gtk_editable_get_chars (GTK_EDITABLE (entry), 0, -1);
-    location = g_file_parse_name (user_location);
-    g_free (user_location);
-
-    return location;
+    return g_file_parse_name (gtk_editable_get_text (GTK_EDITABLE (entry)));
 }
 
 static void
@@ -188,13 +181,7 @@ nautilus_location_entry_update_action (NautilusLocationEntry *self)
 static int
 get_editable_number_of_chars (GtkEditable *editable)
 {
-    char *text;
-    int length;
-
-    text = gtk_editable_get_chars (editable, 0, -1);
-    length = g_utf8_strlen (text, -1);
-    g_free (text);
-    return length;
+    return g_utf8_strlen (gtk_editable_get_text (editable), -1);
 }
 
 static void
