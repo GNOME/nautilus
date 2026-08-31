@@ -103,9 +103,31 @@ nautilus_location_entry_set_secondary_action (NautilusLocationEntry      *self,
                                               NautilusLocationEntryAction secondary_action);
 
 static GFile *
-nautilus_location_entry_get_location (NautilusLocationEntry *entry)
+location_entry_get_typed_location (NautilusLocationEntry *self)
 {
-    return g_file_parse_name (gtk_editable_get_text (GTK_EDITABLE (entry)));
+    const char *entry_text = gtk_editable_get_text (GTK_EDITABLE (self));
+    g_autofree char *path = g_strstrip (g_strdup (entry_text));
+
+    if (path == NULL || *path == '\0')
+    {
+        return NULL;
+    }
+
+    /* "~/" is not handled by g_file_resolve_relative_path / g_file_parse_name */
+    if (path[0] == '~' && path[1] == '/')
+    {
+        g_autoptr (GFile) home = g_file_new_for_path (g_get_home_dir ());
+
+        return g_file_resolve_relative_path (home, path + 2);
+    }
+
+    if (!g_path_is_absolute (path) && g_uri_peek_scheme (path) == NULL)
+    {
+        /* Fix non absolute paths */
+        return g_file_resolve_relative_path (self->current_location, path);
+    }
+
+    return g_file_parse_name (path);
 }
 
 static void
@@ -136,14 +158,6 @@ nautilus_location_entry_insert_prefix (NautilusLocationEntry *entry,
     gtk_entry_completion_insert_prefix (completion);
 
     g_signal_handlers_unblock_by_func (delegate, G_CALLBACK (on_after_insert_text), entry);
-}
-
-static void
-emit_location_changed (NautilusLocationEntry *entry)
-{
-    g_autoptr (GFile) location = nautilus_location_entry_get_location (entry);
-
-    g_signal_emit (entry, signals[LOCATION_CHANGED], 0, location);
 }
 
 static void
@@ -668,23 +682,12 @@ static void
 nautilus_location_entry_activate (GtkEntry *entry)
 {
     NautilusLocationEntry *self = NAUTILUS_LOCATION_ENTRY (entry);
-    const char *entry_text = gtk_editable_get_text (GTK_EDITABLE (entry));
-    g_autofree char *path = g_strstrip (g_strdup (entry_text));
+    g_autoptr (GFile) location = location_entry_get_typed_location (self);
 
-    if (path == NULL || *path == '\0')
+    if (location != NULL)
     {
-        return;
-    }
-
-    if (!g_path_is_absolute (path) &&
-        g_uri_peek_scheme (path) == NULL &&
-        (path[0] != '~' || path[1] != '/'))
-    {
-        /* Fix non absolute paths */
-        g_autoptr (GFile) file = g_file_resolve_relative_path (self->current_location, path);
-        g_autofree char *full_path = g_file_get_parse_name (file);
-
-        nautilus_location_entry_set_text (self, full_path);
+        /* Announce the new location. Leave checks to other components. */
+        g_signal_emit (entry, signals[LOCATION_CHANGED], 0, location);
     }
 }
 
@@ -768,26 +771,6 @@ nautilus_location_entry_set_secondary_action (NautilusLocationEntry       *self,
 }
 
 static void
-editable_activate_callback (GtkEntry *entry,
-                            gpointer  user_data)
-{
-    NautilusLocationEntry *self = user_data;
-    const char *entry_text;
-    g_autofree gchar *path = NULL;
-
-    entry_text = gtk_editable_get_text (GTK_EDITABLE (entry));
-    path = g_strdup (entry_text);
-    path = g_strchug (path);
-    path = g_strchomp (path);
-
-    if (path != NULL && *path != '\0')
-    {
-        nautilus_location_entry_set_text (self, path);
-        emit_location_changed (self);
-    }
-}
-
-static void
 editable_changed_callback (GtkEntry *entry,
                            gpointer  user_data)
 {
@@ -814,8 +797,6 @@ nautilus_location_entry_init (NautilusLocationEntry *self)
     g_signal_connect (self, "icon-release",
                       G_CALLBACK (nautilus_location_entry_icon_release), NULL);
 
-    g_signal_connect_object (self, "activate",
-                             G_CALLBACK (editable_activate_callback), self, G_CONNECT_AFTER);
     g_signal_connect_object (self, "changed",
                              G_CALLBACK (editable_changed_callback), self, G_CONNECT_DEFAULT);
 
