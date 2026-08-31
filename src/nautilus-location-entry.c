@@ -63,8 +63,6 @@ struct _NautilusLocationEntry
 
     gboolean idle_insert_completion;
 
-    GFile *last_location;
-
     gboolean has_special_text;
     NautilusLocationEntryAction secondary_action;
 
@@ -163,26 +161,15 @@ nautilus_location_entry_insert_prefix (NautilusLocationEntry *entry,
 static void
 nautilus_location_entry_update_action (NautilusLocationEntry *self)
 {
-    if (self->last_location == NULL)
-    {
-        nautilus_location_entry_set_secondary_action (self,
-                                                      NAUTILUS_LOCATION_ENTRY_ACTION_GOTO);
-        return;
-    }
-
     const char *current_text = gtk_editable_get_text (GTK_EDITABLE (self));
     g_autoptr (GFile) location = g_file_parse_name (current_text);
 
-    if (g_file_equal (self->last_location, location))
-    {
-        nautilus_location_entry_set_secondary_action (self,
-                                                      NAUTILUS_LOCATION_ENTRY_ACTION_CLEAR);
-    }
-    else
-    {
-        nautilus_location_entry_set_secondary_action (self,
-                                                      NAUTILUS_LOCATION_ENTRY_ACTION_GOTO);
-    }
+    gboolean location_changed = self->current_location == NULL ||
+                                !g_file_equal (self->current_location, location);
+
+    nautilus_location_entry_set_secondary_action (self, location_changed
+                                                        ? NAUTILUS_LOCATION_ENTRY_ACTION_GOTO
+                                                        : NAUTILUS_LOCATION_ENTRY_ACTION_CLEAR);
 }
 
 static int
@@ -224,13 +211,6 @@ nautilus_location_entry_set_location (NautilusLocationEntry *self,
 
         nautilus_location_entry_set_text (self, formatted_uri);
         set_position_and_selection_to_end (GTK_EDITABLE (self));
-    }
-
-    /* remember the original location for later comparison */
-    if (!self->last_location ||
-        !g_file_equal (self->last_location, location))
-    {
-        g_set_object (&self->last_location, location);
     }
 
     nautilus_location_entry_update_action (self);
@@ -512,7 +492,6 @@ finalize (GObject *object)
     g_cancellable_cancel (self->completions_cancellable);
     g_clear_object (&self->completions_cancellable);
 
-    g_clear_object (&self->last_location);
     g_clear_object (&self->completion);
     g_clear_object (&self->completions_store);
     g_clear_object (&self->current_location);
@@ -694,7 +673,8 @@ nautilus_location_entry_activate (GtkEntry *entry)
 static void
 nautilus_location_entry_cancel (NautilusLocationEntry *self)
 {
-    nautilus_location_entry_set_location (self, self->last_location);
+    /* Reset state by re-setting current location */
+    nautilus_location_entry_set_location (self, self->current_location);
 }
 
 static void
