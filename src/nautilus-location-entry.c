@@ -250,23 +250,6 @@ set_prefix_dimming (GtkCellRenderer *completion_cell,
     pango_attr_list_unref (attrs);
 }
 
-static gboolean
-position_and_selection_are_at_end (GtkEditable *editable)
-{
-    int end;
-    int start_sel, end_sel;
-
-    end = get_editable_number_of_chars (editable);
-    if (gtk_editable_get_selection_bounds (editable, &start_sel, &end_sel))
-    {
-        if (start_sel != end || end_sel != end)
-        {
-            return FALSE;
-        }
-    }
-    return gtk_editable_get_position (editable) == end;
-}
-
 static CompleterData *
 completer_data_new (const char *typed,
                     GFile      *location)
@@ -448,26 +431,22 @@ update_completions_store (gpointer callback_data)
 
     self->completion_id = 0;
 
-    /* Only do completions when we are typing at the end of the
-     * text. */
-    if (!position_and_selection_are_at_end (editable))
+    /* Don't complete when already viewing a completion */
+    if (gtk_editable_get_selection_bounds (editable, NULL, NULL))
     {
         return;
     }
 
-    int start_sel;
-    g_autofree char *typed = gtk_editable_get_selection_bounds (editable, &start_sel, NULL)
-                             ? gtk_editable_get_chars (editable, 0, start_sel)
-                             : gtk_editable_get_chars (editable, 0, -1);
+    const char *typed = gtk_editable_get_text (editable);
 
     if (typed == NULL || typed[0] == '\0')
     {
         return;
     }
 
-    g_strstrip (typed);
+    g_autofree char *stripped = g_strstrip (g_strdup (typed));
 
-    CompleterData *completer_data = completer_data_new (typed, self->current_location);
+    CompleterData *completer_data = completer_data_new (stripped, self->current_location);
 
     completer_data->entry = self;
     set_prefix_dimming (self->completion_cell, completer_data->typed_path);
