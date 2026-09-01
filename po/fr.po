@@ -33,21 +33,22 @@
 # Guillaume Bernard <associations@guillaume-bernard.fr>, 2026
 # Lucien Ouoba <luiz01luciano04@gmail.com>, 2026.
 # Jean-Marc Tissières <jmetissieres@gmail.com>, 2026.
+# Alice Biseuil <alice.biseuil@protonmail.com>, 2026.
 #
 msgid ""
 msgstr ""
 "Project-Id-Version: nautilus.master\n"
 "Report-Msgid-Bugs-To: https://gitlab.gnome.org/GNOME/nautilus/issues\n"
-"POT-Creation-Date: 2026-08-27 21:51+0000\n"
-"PO-Revision-Date: 2026-08-25 20:37+0000\n"
-"Last-Translator: Guillaume Bernard <associations@guillaume-bernard.fr>\n"
-"Language-Team: French <gnomefr@traduc.org>\n"
+"POT-Creation-Date: 2026-08-31 10:42+0000\n"
+"PO-Revision-Date: 2026-09-01 10:02+0200\n"
+"Last-Translator: Alice Biseuil <alice.biseuil@protonmail.com>\n"
+"Language-Team: French <international-french@discourse.gnome.org>\n"
 "Language: fr\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n > 1);\n"
-"X-Generator: Poedit 3.9\n"
+"X-Generator: Gtranslator 46.0\n"
 "X-DamnedLies-Scope: partial\n"
 "X-DL-Team: fr\n"
 "X-DL-Module: nautilus\n"
@@ -104,8 +105,8 @@ msgid ""
 "“local-only”, “always”, “never”."
 msgstr ""
 "Indique où Fichiers doit chercher les sous-dossiers. Les valeurs possibles "
-"sont « local-only » (uniquement en local), « always » (toujours), « never » "
-"(jamais)."
+"sont « local-only » (uniquement en local), « always » (toujours), "
+"« never » (jamais)."
 
 #: data/org.gnome.nautilus.gschema.xml:92
 msgid "Filter the search dates using either last used or last modified"
@@ -162,8 +163,8 @@ msgid ""
 msgstr ""
 "Compromis de rapidité pour l’affichage du nombre d’éléments dans un dossier. "
 "Défini à « always » (toujours), le nombre d’éléments est toujours affiché, "
-"même si le dossier est sur un serveur distant. Défini à « local-only » "
-"(seulement en local), le nombre d’éléments n’est affiché que pour les "
+"même si le dossier est sur un serveur distant. Défini à « local-"
+"only » (seulement en local), le nombre d’éléments n’est affiché que pour les "
 "systèmes de fichiers locaux. Défini à « never » (jamais), le système ne se "
 "soucie pas de compter les éléments."
 
@@ -310,8 +311,8 @@ msgstr "Indique s’il faut afficher les fichiers cachés"
 
 #: data/org.gnome.nautilus.gschema.xml:169
 msgid ""
-"This key is deprecated and ignored. The “show-hidden” key from "
-"“org.gtk.Settings.FileChooser” is now used instead."
+"This key is deprecated and ignored. The “show-hidden” key from “org.gtk."
+"Settings.FileChooser” is now used instead."
 msgstr ""
 "Cette clé est abandonnée et ignorée. Maintenant, la clé « show-hidden » de "
 "« org.gtk.Settings.FileChooser » est utilisée à la place."
@@ -481,26 +482,26 @@ msgstr ""
 "trois vues : grille d’icônes, liste d’icônes, et liste arborescente. Ses "
 "fonctionnalités peuvent être étendues avec des greffons et des scripts."
 
-#: data/org.gnome.Nautilus.metainfo.xml.in.in:46 src/nautilus-window.c:1718
-#: src/nautilus-window.c:1723 src/nautilus-window.c:1728
+#: data/org.gnome.Nautilus.metainfo.xml.in.in:47 src/nautilus-window.c:1729
+#: src/nautilus-window.c:1734 src/nautilus-window.c:1739
 msgid "The GNOME Project"
 msgstr "Le projet GNOME"
 
-#: data/org.gnome.Nautilus.metainfo.xml.in.in:60 src/nautilus-files-view.c:9703
+#: data/org.gnome.Nautilus.metainfo.xml.in.in:61 src/nautilus-files-view.c:9723
 msgid "Grid View"
 msgstr "Vue en grille"
 
-#: data/org.gnome.Nautilus.metainfo.xml.in.in:64 src/nautilus-files-view.c:9714
+#: data/org.gnome.Nautilus.metainfo.xml.in.in:65 src/nautilus-files-view.c:9734
 msgid "List View"
 msgstr "Vue en liste"
 
-#: data/org.gnome.Nautilus.metainfo.xml.in.in:68
+#: data/org.gnome.Nautilus.metainfo.xml.in.in:69
 #: src/nautilus-search-directory-file.c:230
 #: src/nautilus-search-directory-file.c:269
 msgid "Search"
 msgstr "Recherche"
 
-#: data/org.gnome.Nautilus.metainfo.xml.in.in:72
+#: data/org.gnome.Nautilus.metainfo.xml.in.in:73
 msgid "Selection of Multiple Files"
 msgstr "Sélection de plusieurs fichiers"
 
@@ -729,7 +730,7 @@ msgstr "Mots-clés"
 
 #: extensions/image-properties/nautilus-image-properties-model.c:227
 msgid "Creator"
-msgstr "Auteur"
+msgstr "Créé par"
 
 #: extensions/image-properties/nautilus-image-properties-model.c:228
 msgid "Created On"
@@ -785,7 +786,7 @@ msgid "Error while setting “%s” as default app: %s"
 msgstr ""
 "Erreur lors de la définition de « %s » en tant qu’application par défaut : %s"
 
-#: src/nautilus-app-chooser.c:87 src/nautilus-application.c:629
+#: src/nautilus-app-chooser.c:87 src/nautilus-application.c:637
 #: src/nautilus-autorun-software.c:157 src/nautilus-mime-actions.c:1291
 #: src/nautilus-ui-utilities.c:360
 msgid "_OK"
@@ -801,7 +802,7 @@ msgstr "Choisir une application pour ouvrir <b>%s</b>"
 msgid "Open Items"
 msgstr "Ouvrir les éléments"
 
-#: src/nautilus-app-chooser.c:236 src/nautilus-window.c:965
+#: src/nautilus-app-chooser.c:236 src/nautilus-window.c:972
 msgid "Open Folder"
 msgstr "Ouvrir le dossier"
 
@@ -839,29 +840,29 @@ msgstr "Applications associées"
 msgid "Other Apps"
 msgstr "Autres applications"
 
-#: src/nautilus-application.c:178
+#: src/nautilus-application.c:186
 msgid "No Home Directory"
 msgstr "Aucun répertoire personnel"
 
-#: src/nautilus-application.c:179
+#: src/nautilus-application.c:187
 msgid "Make sure the directory exists and has correct access permissions set."
 msgstr ""
 "Vérifiez que le répertoire existe et que les permissions d’accès sont "
 "correctes."
 
-#: src/nautilus-application.c:498
+#: src/nautilus-application.c:506
 msgid "--quit cannot be used with URIs."
 msgstr "--quit ne peut pas être utilisée avec des URI."
 
-#: src/nautilus-application.c:507
+#: src/nautilus-application.c:515
 msgid "--select must be used with at least an URI."
 msgstr "--select doit être utilisé avec au moins une URI."
 
-#: src/nautilus-application.c:628
+#: src/nautilus-application.c:636
 msgid "There was an error displaying help"
 msgstr "Il y a eu une erreur lors de l’affichage de l’aide"
 
-#: src/nautilus-application.c:753
+#: src/nautilus-application.c:761
 #, c-format
 msgid ""
 "“%s” is an internal protocol. Opening this location directly is not "
@@ -870,24 +871,24 @@ msgstr ""
 "« %s » est un protocole interne. L’ouverture directe de cet emplacement "
 "n’est pas prise en charge."
 
-#: src/nautilus-application.c:835
+#: src/nautilus-application.c:843
 msgid "Show the version of the program."
 msgstr "Affiche la version du programme."
 
-#: src/nautilus-application.c:839
+#: src/nautilus-application.c:847
 msgid "Always open a new window for browsing specified URIs"
 msgstr ""
 "Toujours créer de nouvelles fenêtres pour la navigation des URI précisées"
 
-#: src/nautilus-application.c:843
+#: src/nautilus-application.c:851
 msgid "Quit Nautilus."
 msgstr "Quitte Nautilus."
 
-#: src/nautilus-application.c:847
+#: src/nautilus-application.c:855
 msgid "Select specified URI in parent folder."
 msgstr "Sélectionne l’URI spécifiée dans le dossier parent."
 
-#: src/nautilus-application.c:849
+#: src/nautilus-application.c:857
 msgid "[URI…]"
 msgstr "[URI…]"
 
@@ -1919,7 +1920,7 @@ msgid "Deleting Files"
 msgstr "Suppression des fichiers"
 
 #. Translators: %s is a file name formatted for display
-#: src/nautilus-file-operations.c:2137 src/nautilus-files-view.c:6614
+#: src/nautilus-file-operations.c:2137 src/nautilus-files-view.c:6640
 #: src/nautilus-sidebar.c:2364 src/nautilus-sidebar.c:2393
 #, c-format
 msgid "Unable to eject “%s”"
@@ -1954,7 +1955,7 @@ msgid "_Empty"
 msgstr "_Vider"
 
 #. Translators: %s is a file name formatted for display
-#: src/nautilus-file-operations.c:2422 src/nautilus-files-view.c:6567
+#: src/nautilus-file-operations.c:2422 src/nautilus-files-view.c:6593
 #: src/nautilus-sidebar.c:1777
 #, c-format
 msgid "Unable to access “%s”"
@@ -2637,7 +2638,7 @@ msgstr[1] "%'d fichiers ont été compressés dans « %s »"
 msgid "Compressing Files"
 msgstr "Compression des fichiers"
 
-#: src/nautilus-file-undo-operations.c:176 src/nautilus-window.c:924
+#: src/nautilus-file-undo-operations.c:176 src/nautilus-window.c:931
 msgid "Undo"
 msgstr "Annuler"
 
@@ -3158,44 +3159,44 @@ msgstr "Copie %zu"
 msgid "Link to %s (%zu)"
 msgstr "Lien vers %s (%zu)"
 
-#: src/nautilus-filename-validator.c:135
+#: src/nautilus-filename-validator.c:136
 msgid "Folder names cannot contain “/”"
 msgstr "Les noms de dossiers ne peuvent pas contenir « / »"
 
-#: src/nautilus-filename-validator.c:136
+#: src/nautilus-filename-validator.c:137
 msgid "File names cannot contain “/”"
 msgstr "Les noms de fichiers ne peuvent pas contenir « / »"
 
-#: src/nautilus-filename-validator.c:141
+#: src/nautilus-filename-validator.c:142
 msgid "A folder cannot be called “.” or “..”"
 msgstr "Impossible de nommer un dossier « . » ou « .. »"
 
-#: src/nautilus-filename-validator.c:142
+#: src/nautilus-filename-validator.c:143
 msgid "A file cannot be called “.” or “..”"
 msgstr "Impossible de nommer un fichier « . » ou « .. »"
 
-#: src/nautilus-filename-validator.c:147
+#: src/nautilus-filename-validator.c:148
 msgid "Folder name is too long"
 msgstr "Le nom du dossier est trop long"
 
-#: src/nautilus-filename-validator.c:148
+#: src/nautilus-filename-validator.c:149
 msgid "File name is too long"
 msgstr "Le nom du fichier est trop long"
 
 #. We must warn about the side effect
-#: src/nautilus-filename-validator.c:154
+#: src/nautilus-filename-validator.c:155
 msgid "Folders with “.” at the beginning of their name are hidden"
 msgstr "Les dossiers dont le nom débute par « . » sont masqués"
 
-#: src/nautilus-filename-validator.c:155
+#: src/nautilus-filename-validator.c:156
 msgid "Files with “.” at the beginning of their name are hidden"
 msgstr "Les fichiers dont le nom débute par « . » sont masqués"
 
-#: src/nautilus-filename-validator.c:164
+#: src/nautilus-filename-validator.c:199
 msgid "A folder with that name already exists"
 msgstr "Un dossier portant ce nom existe déjà"
 
-#: src/nautilus-filename-validator.c:165
+#: src/nautilus-filename-validator.c:200
 msgid "A file with that name already exists"
 msgstr "Un fichier portant ce nom existe déjà"
 
@@ -3349,117 +3350,117 @@ msgstr "Saisir une adresse pour se connecter à un emplacement réseau."
 msgid "Folder is Empty"
 msgstr "Le dossier est vide"
 
-#: src/nautilus-files-view.c:5835
+#: src/nautilus-files-view.c:5861
 msgid "Select Move Destination"
 msgstr "Sélectionner une destination pour le déplacement"
 
-#: src/nautilus-files-view.c:5839
+#: src/nautilus-files-view.c:5865
 msgid "Select Copy Destination"
 msgstr "Sélectionner une destination pour la copie"
 
-#: src/nautilus-files-view.c:5850 src/nautilus-files-view.c:6218
-#: src/nautilus-portal.c:478 src/nautilus-properties.c:3999
+#: src/nautilus-files-view.c:5876 src/nautilus-files-view.c:6244
+#: src/nautilus-portal.c:478 src/nautilus-properties.c:3991
 #: src/resources/ui/nautilus-files-view-select-items.blp:24
 msgid "_Select"
 msgstr "_Sélectionner"
 
-#: src/nautilus-files-view.c:6217
+#: src/nautilus-files-view.c:6243
 msgid "Select Extract Destination"
 msgstr "Sélectionner une destination pour l’extraction"
 
-#: src/nautilus-files-view.c:6293
+#: src/nautilus-files-view.c:6319
 msgid "Error sending email."
 msgstr "Erreur d’envoi de courriel."
 
 #. Translators: %s is a file name formatted for display
-#: src/nautilus-files-view.c:6592
+#: src/nautilus-files-view.c:6618
 #, c-format
 msgid "Unable to remove “%s”"
 msgstr "Impossible de retirer « %s »"
 
-#: src/nautilus-files-view.c:6635
+#: src/nautilus-files-view.c:6661
 msgid "Unable to stop drive"
 msgstr "Impossible d’arrêter le lecteur"
 
 #. Translators: %s is a file name formatted for display
-#: src/nautilus-files-view.c:6745 src/nautilus-sidebar.c:1728
+#: src/nautilus-files-view.c:6771 src/nautilus-sidebar.c:1728
 #: src/nautilus-sidebar.c:2608
 #, c-format
 msgid "Unable to start “%s”"
 msgstr "Impossible de démarrer « %s »"
 
-#: src/nautilus-files-view.c:7853
+#: src/nautilus-files-view.c:7879
 #, c-format
 msgid "New Folder with Selection (%'d Item)"
 msgid_plural "New Folder with Selection (%'d Items)"
 msgstr[0] "Nouveau dossier contenant la sélection (%'d élément)"
 msgstr[1] "Nouveau dossier contenant la sélection (%'d éléments)"
 
-#: src/nautilus-files-view.c:7908
+#: src/nautilus-files-view.c:7934
 #, c-format
 msgid "Open With %s"
 msgstr "Ouvrir avec %s"
 
-#: src/nautilus-files-view.c:7919
+#: src/nautilus-files-view.c:7945
 msgid "Run"
 msgstr "Lancer"
 
-#: src/nautilus-files-view.c:7924
+#: src/nautilus-files-view.c:7950
 #: src/resources/ui/nautilus-operations-ui-manager-request-passphrase.blp:17
 msgid "Extract"
 msgstr "Extraire"
 
-#: src/nautilus-files-view.c:7925
+#: src/nautilus-files-view.c:7951
 msgid "Extract to…"
 msgstr "Extraire vers…"
 
-#: src/nautilus-files-view.c:7929
+#: src/nautilus-files-view.c:7955
 #: src/resources/menu/nautilus-files-view-context-menus.ui:88
 msgid "Open"
 msgstr "Ouvrir"
 
-#: src/nautilus-files-view.c:8005 src/nautilus-sidebar.c:3054
+#: src/nautilus-files-view.c:8031 src/nautilus-sidebar.c:3054
 #: src/resources/menu/nautilus-files-view-context-menus.ui:154
 msgid "_Start"
 msgstr "_Démarrer"
 
-#: src/nautilus-files-view.c:8011
+#: src/nautilus-files-view.c:8037
 msgid "_Connect"
 msgstr "C_onnecter"
 
-#: src/nautilus-files-view.c:8017
+#: src/nautilus-files-view.c:8043
 msgid "_Start Multi-disk Drive"
 msgstr "_Démarrer l’unité multidisque"
 
-#: src/nautilus-files-view.c:8023
+#: src/nautilus-files-view.c:8049
 msgid "U_nlock Drive"
 msgstr "Dé_verrouiller le volume"
 
-#: src/nautilus-files-view.c:8041
+#: src/nautilus-files-view.c:8067
 msgid "Stop Drive"
 msgstr "Arrêter le volume"
 
-#: src/nautilus-files-view.c:8047 src/nautilus-sidebar.c:3085
+#: src/nautilus-files-view.c:8073 src/nautilus-sidebar.c:3085
 msgid "_Safely Remove Drive"
 msgstr "_Retirer le volume sans risque"
 
-#: src/nautilus-files-view.c:8053
+#: src/nautilus-files-view.c:8079
 msgid "_Disconnect"
 msgstr "_Déconnecter"
 
-#: src/nautilus-files-view.c:8059
+#: src/nautilus-files-view.c:8085
 msgid "_Stop Multi-disk Drive"
 msgstr "_Arrêter l’unité multidisque"
 
-#: src/nautilus-files-view.c:8065
+#: src/nautilus-files-view.c:8091
 msgid "_Lock Drive"
 msgstr "Verroui_ller le volume"
 
-#: src/nautilus-files-view.c:9701
+#: src/nautilus-files-view.c:9721
 msgid "View items as a grid of icons"
 msgstr "Afficher les éléments sous forme de grille d’icônes"
 
-#: src/nautilus-files-view.c:9712
+#: src/nautilus-files-view.c:9732
 msgid "View items as a list"
 msgstr "Afficher les éléments sous forme de liste"
 
@@ -4024,7 +4025,7 @@ msgid "Operation Completed"
 msgstr "Opération terminée"
 
 #: src/nautilus-progress-persistence-handler.c:108
-#: src/nautilus-progress-persistence-handler.c:149
+#: src/nautilus-progress-persistence-handler.c:146
 msgid "File Operations"
 msgstr "Opérations sur les fichiers"
 
@@ -4039,7 +4040,7 @@ msgid_plural "%'d file operations active"
 msgstr[0] "%'d opération sur fichier active"
 msgstr[1] "%'d opérations sur fichier actives"
 
-#: src/nautilus-progress-persistence-handler.c:151
+#: src/nautilus-progress-persistence-handler.c:148
 msgid "All file operations have been completed"
 msgstr "Toutes les opérations sur les fichiers ont été complétées"
 
@@ -4083,7 +4084,7 @@ msgstr "Accès seul"
 msgid "Custom icon removed"
 msgstr "Icône personnalisée retirée"
 
-#: src/nautilus-properties.c:610 src/nautilus-window.c:841
+#: src/nautilus-properties.c:610 src/nautilus-window.c:848
 #: src/resources/ui/nautilus-window.blp:30
 msgid "_Undo"
 msgstr "Ann_uler"
@@ -4170,7 +4171,7 @@ msgstr "Système de fichiers %s"
 msgid "The permissions of “%s” could not be determined."
 msgstr "Les permissions de « %s » ne peuvent pas être déterminées."
 
-#: src/nautilus-properties.c:3998
+#: src/nautilus-properties.c:3990
 msgid "Select Custom Icon"
 msgstr "Sélectionnez une icône personnalisée"
 
@@ -4483,14 +4484,14 @@ msgid "Close current view"
 msgstr "Fermer la vue actuelle"
 
 #. Translators: only one item has been moved to trash and %s is its name.
-#: src/nautilus-window.c:765
+#: src/nautilus-window.c:772
 #, c-format
 msgid "“%s” moved to trash"
 msgstr "« %s » placé dans la corbeille"
 
 #. Translators: one or more items might have been moved to trash, and %d
 #. * is the count.
-#: src/nautilus-window.c:772
+#: src/nautilus-window.c:779
 #, c-format
 msgid "%d file moved to trash"
 msgid_plural "%d files moved to trash"
@@ -4498,40 +4499,40 @@ msgstr[0] "%d fichier placé dans la corbeille"
 msgstr[1] "%d fichiers placés dans la corbeille"
 
 #. Translators: one item has been unstarred and %s is its name.
-#: src/nautilus-window.c:791
+#: src/nautilus-window.c:798
 #, c-format
 msgid "“%s” unstarred"
 msgstr "« %s » est démarqué"
 
 #. Translators: one or more items have been unstarred, and %d
 #. * is the count.
-#: src/nautilus-window.c:797
+#: src/nautilus-window.c:804
 #, c-format
 msgid "%d file unstarred"
 msgid_plural "%d files unstarred"
 msgstr[0] "%d fichier démarqué"
 msgstr[1] "%d fichiers démarqués"
 
-#: src/nautilus-window.c:850 src/resources/ui/nautilus-window.blp:35
+#: src/nautilus-window.c:857 src/resources/ui/nautilus-window.blp:35
 msgid "_Redo"
 msgstr "Ré_tablir"
 
-#: src/nautilus-window.c:1735
+#: src/nautilus-window.c:1746
 msgid "No plugins currently installed."
 msgstr "Aucun greffon n’est actuellement installé."
 
-#: src/nautilus-window.c:1739
+#: src/nautilus-window.c:1750
 msgid "Currently installed plugins:"
 msgstr "Greffons actuellement installés :"
 
-#: src/nautilus-window.c:1741
+#: src/nautilus-window.c:1752
 msgid "For bug testing only, the following command can be used:"
 msgstr ""
 "Dans le seul but de tester les anomalies, cette commande peut être utilisée :"
 
 #. Translators should localize the following string which will be displayed at the bottom of
 #. * the about box to give credit to the translator(s).
-#: src/nautilus-window.c:1756
+#: src/nautilus-window.c:1767
 msgid "translator-credits"
 msgstr ""
 "Stéphane Raimbault <stephane.raimbault@gmail.com>\n"
@@ -4554,7 +4555,8 @@ msgstr ""
 "Vincent Chatelain <vinchatl_gnome@proton.me>\n"
 "Julien Humbert <julroy67@gmail.com>\n"
 "Guillaume Bernard <associations@guillaume-bernard.fr>\n"
-"Lucien Ouoba <luiz01luciano04@gmail.com>"
+"Lucien Ouoba <luiz01luciano04@gmail.com>\n"
+"Alice Biseuil <alice.biseuil@protonmail.com>"
 
 #: src/nautilus-window-slot.c:164
 msgid "Parent folder"
@@ -6005,4 +6007,3 @@ msgstr "Afficher l’aide"
 msgctxt "shortcuts dialog"
 msgid "Quit"
 msgstr "Quitter"
-
