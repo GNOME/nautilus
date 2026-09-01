@@ -964,8 +964,8 @@ nautilus_app_chooser_widget_init (NautilusAppChooserWidget *self)
                       G_CALLBACK (activate_cb), self);
 
     self->monitor = g_app_info_monitor_get ();
-    g_signal_connect_swapped (self->monitor, "changed",
-                              G_CALLBACK (nautilus_app_chooser_widget_refresh), self);
+    g_signal_connect_object (self->monitor, "changed",
+                             G_CALLBACK (nautilus_app_chooser_widget_refresh), self, G_CONNECT_SWAPPED);
 }
 
 GAppInfo *
