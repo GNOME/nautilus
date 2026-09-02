@@ -347,7 +347,7 @@ completer_get_completions_thread (GTask        *task,
 
         if (g_str_has_prefix (name, ".") && !searched_prefix_has_dot)
         {
-            /* skip hidden files until the user type "." */
+            /* skip dotfiles/hidden files unless search starts with "." */
             continue;
         }
 
