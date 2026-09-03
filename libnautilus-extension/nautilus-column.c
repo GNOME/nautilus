@@ -46,8 +46,10 @@ enum
     PROP_XALIGN,
     PROP_DEFAULT_SORT_ORDER,
     PROP_VISIBLE,
-    LAST_PROP
+    NUM_PROPERTIES
 };
+
+static GParamSpec *props[NUM_PROPERTIES];
 
 struct _NautilusColumn
 {
@@ -261,89 +263,85 @@ nautilus_column_init (NautilusColumn *column)
 static void
 nautilus_column_class_init (NautilusColumnClass *class)
 {
-    G_OBJECT_CLASS (class)->finalize = nautilus_column_finalize;
-    G_OBJECT_CLASS (class)->get_property = nautilus_column_get_property;
-    G_OBJECT_CLASS (class)->set_property = nautilus_column_set_property;
+    GObjectClass *oclass = G_OBJECT_CLASS (class);
+
+    oclass->finalize = nautilus_column_finalize;
+    oclass->get_property = nautilus_column_get_property;
+    oclass->set_property = nautilus_column_set_property;
 
     /**
      * NautilusColumn:name:
      *
      * The identifier for the column.
      */
-    g_object_class_install_property (G_OBJECT_CLASS (class),
-                                     PROP_NAME,
-                                     g_param_spec_string ("name",
-                                                          "Name",
-                                                          "Name of the column",
-                                                          NULL,
-                                                          G_PARAM_CONSTRUCT_ONLY | G_PARAM_WRITABLE | G_PARAM_READABLE));
+    props[PROP_NAME] =
+        g_param_spec_string ("name",
+                             "Name",
+                             "Name of the column",
+                             NULL,
+                             G_PARAM_CONSTRUCT_ONLY | G_PARAM_WRITABLE | G_PARAM_READABLE);
 
     /**
      * NautilusColumn:attribute:
      *
      * The file attribute to be displayed in the column.
      */
-    g_object_class_install_property (G_OBJECT_CLASS (class),
-                                     PROP_ATTRIBUTE,
-                                     g_param_spec_string ("attribute",
-                                                          "Attribute",
-                                                          "The attribute name to display",
-                                                          NULL,
-                                                          G_PARAM_READWRITE));
+    props[PROP_ATTRIBUTE] =
+        g_param_spec_string ("attribute",
+                             "Attribute",
+                             "The attribute name to display",
+                             NULL,
+                             G_PARAM_READWRITE);
 
     /**
      * NautilusColumn:attribute_q:
      *
      * The name of the attribute to display, in quark form.
      */
-    g_object_class_install_property (G_OBJECT_CLASS (class),
-                                     PROP_ATTRIBUTE_Q,
-                                     g_param_spec_uint ("attribute_q",
-                                                        "Attribute quark",
-                                                        "The attribute name to display, in quark form",
-                                                        0, G_MAXUINT, 0,
-                                                        G_PARAM_READABLE));
+    props[PROP_ATTRIBUTE_Q] =
+        g_param_spec_uint ("attribute_q",
+                           "Attribute quark",
+                           "The attribute name to display, in quark form",
+                           0, G_MAXUINT, 0,
+                           G_PARAM_READABLE);
 
     /**
      * NautilusColumn:label:
      *
      * The label to display in the column.
      */
-    g_object_class_install_property (G_OBJECT_CLASS (class),
-                                     PROP_LABEL,
-                                     g_param_spec_string ("label",
-                                                          "Label",
-                                                          "Label to display in the column",
-                                                          NULL,
-                                                          G_PARAM_READWRITE));
+    props[PROP_LABEL] =
+        g_param_spec_string ("label",
+                             "Label",
+                             "Label to display in the column",
+                             NULL,
+                             G_PARAM_READWRITE);
 
     /**
      * NautilusColumn:description:
      *
      * The user-visible description of the column.
      */
-    g_object_class_install_property (G_OBJECT_CLASS (class),
-                                     PROP_DESCRIPTION,
-                                     g_param_spec_string ("description",
-                                                          "Description",
-                                                          "A user-visible description of the column",
-                                                          NULL,
-                                                          G_PARAM_READWRITE));
+    props[PROP_DESCRIPTION] =
+        g_param_spec_string ("description",
+                             "Description",
+                             "A user-visible description of the column",
+                             NULL,
+                             G_PARAM_READWRITE);
 
     /**
      * NautilusColumn:xalign:
      *
      * The x-alignment of the column.
      */
-    g_object_class_install_property (G_OBJECT_CLASS (class),
-                                     PROP_XALIGN,
-                                     g_param_spec_float ("xalign",
-                                                         "xalign",
-                                                         "The x-alignment of the column",
-                                                         0.0,
-                                                         1.0,
-                                                         0.0,
-                                                         G_PARAM_READWRITE));
+    props[PROP_XALIGN] =
+        g_param_spec_float ("xalign",
+                            "xalign",
+                            "The x-alignment of the column",
+                            0.0,
+                            1.0,
+                            0.0,
+                            G_PARAM_READWRITE);
     /**
      * NautilusColumn:default-sort-order: (type gboolean)
      *
@@ -354,13 +352,12 @@ nautilus_column_class_init (NautilusColumnClass *class)
      *
      * Stability: Private: Internal to the application.
      */
-    g_object_class_install_property (G_OBJECT_CLASS (class),
-                                     PROP_DEFAULT_SORT_ORDER,
-                                     g_param_spec_int ("default-sort-order",
-                                                       "Default sort order",
-                                                       "Default sort order",
-                                                       G_MININT, G_MAXINT, 0,
-                                                       G_PARAM_READWRITE));
+    props[PROP_DEFAULT_SORT_ORDER] =
+        g_param_spec_int ("default-sort-order",
+                          "Default sort order",
+                          "Default sort order",
+                          G_MININT, G_MAXINT, 0,
+                          G_PARAM_READWRITE);
 
     /**
      * NautilusColumn:visible: (type gboolean)
@@ -372,10 +369,11 @@ nautilus_column_class_init (NautilusColumnClass *class)
      *
      * Stability: Private: Internal to the application.
      */
-    g_object_class_install_property (G_OBJECT_CLASS (class),
-                                     PROP_VISIBLE,
-                                     g_param_spec_boolean ("visible",
-                                                           NULL, NULL,
-                                                           FALSE,
-                                                           G_PARAM_READWRITE));
+    props[PROP_VISIBLE] =
+        g_param_spec_boolean ("visible",
+                              NULL, NULL,
+                              FALSE,
+                              G_PARAM_READWRITE | G_PARAM_STATIC_NAME);
+
+    g_object_class_install_properties (oclass, NUM_PROPERTIES, props);
 }
