@@ -52,7 +52,6 @@ typedef struct
     GFile *location;
     char *prefix;
     char *typed_path;
-    NautilusLocationEntry *entry;
 } CompleterData;
 
 struct _NautilusLocationEntry
@@ -361,13 +360,13 @@ populate_completions_model (GObject      *source_object,
 {
     GtkTreeIter iter;
     GTask *task = G_TASK (res);
+    NautilusLocationEntry *self = NAUTILUS_LOCATION_ENTRY (source_object);
 
     if (g_task_had_error (task))
     {
         return;
     }
     CompleterData *completer_data = user_data;
-    NautilusLocationEntry *self = completer_data->entry;
 
     /* populate the completions model */
     gtk_list_store_clear (self->completions_store);
@@ -412,7 +411,6 @@ start_completions_async (NautilusLocationEntry *self,
     completer_data->typed_path = g_steal_pointer (&typed_path);
     completer_data->prefix = g_steal_pointer (&basename);
     completer_data->location = g_steal_pointer (&typed_location);
-    completer_data->entry = self;
 
     set_prefix_dimming (self->completion_cell, completer_data->typed_path);
 
@@ -420,7 +418,7 @@ start_completions_async (NautilusLocationEntry *self,
     g_clear_object (&self->completions_cancellable);
     self->completions_cancellable = g_cancellable_new ();
 
-    g_autoptr (GTask) task = g_task_new (NULL, self->completions_cancellable,
+    g_autoptr (GTask) task = g_task_new (self, self->completions_cancellable,
                                          populate_completions_model, completer_data);
 
     g_task_set_task_data (task, completer_data, (GDestroyNotify) completer_data_free);
