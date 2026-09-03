@@ -161,9 +161,8 @@ apply_columns_settings (NautilusListView  *self,
     /* always show name column */
     g_hash_table_insert (visible_columns_hash, g_strdup ("name"), g_strdup ("name"));
 
-    /* always show star column if supported */
-    if (nautilus_tag_manager_can_star_contents (nautilus_tag_manager_get (), location) ||
-        g_file_has_uri_scheme (location, SCHEME_STARRED))
+    /* always show star column for Starred */
+    if (g_file_has_uri_scheme (location, SCHEME_STARRED))
     {
         g_hash_table_insert (visible_columns_hash, g_strdup ("starred"), g_strdup ("starred"));
     }

@@ -32,6 +32,7 @@
 #include "nautilus-file.h"
 #include "nautilus-global-preferences.h"
 #include "nautilus-metadata.h"
+#include "nautilus-tag-manager.h"
 
 #include "nautilus-column-utilities.h"
 
@@ -47,6 +48,7 @@ struct _NautilusColumnChooser
     GtkWidget *use_custom_row;
 
     GMenuModel *row_button_menu;
+    GtkSizeGroup *suffix_size_group;
     GActionGroup *action_group;
 
     NautilusColumn *drag_column;
@@ -54,6 +56,8 @@ struct _NautilusColumnChooser
 
     NautilusFile *file;
     GtkListBoxRow *row_with_open_menu;
+
+    gboolean has_star_column;
 };
 
 enum
@@ -323,8 +327,10 @@ on_create_row_menu_cb (GtkMenuButton *menu_button,
         /* "Name" is always the first column */
         g_simple_action_set_enabled (G_SIMPLE_ACTION (action_up), FALSE);
     }
+    guint last_movable_index =
+        g_list_model_get_n_items (chooser->model) - (chooser->has_star_column ? 2 : 1);
 
-    if (row_index == g_list_model_get_n_items (chooser->model) - 1)
+    if (row_index == last_movable_index)
     {
         g_simple_action_set_enabled (G_SIMPLE_ACTION (action_down), FALSE);
     }
@@ -364,6 +370,18 @@ add_list_box_row (GObject  *item,
                       G_CALLBACK (notify_row_switch_cb),
                       chooser);
 
+    if (g_strcmp0 (name, "starred") == 0)
+    {
+        /* Add dummy prefix and suffix for alignment */
+        GtkWidget *dummy_suffix = adw_bin_new ();
+
+        adw_action_row_add_prefix (ADW_ACTION_ROW (row), gtk_image_new ());
+        adw_action_row_add_suffix (ADW_ACTION_ROW (row), dummy_suffix);
+        gtk_size_group_add_widget (chooser->suffix_size_group, dummy_suffix);
+
+        return row;
+    }
+
     /* Add move up/down operation menu */
     menu_button = gtk_menu_button_new ();
     gtk_menu_button_set_icon_name (GTK_MENU_BUTTON (menu_button), "view-more-symbolic");
@@ -374,6 +392,7 @@ add_list_box_row (GObject  *item,
     gtk_widget_set_valign (menu_button, GTK_ALIGN_CENTER);
     gtk_widget_add_css_class (menu_button, "flat");
     adw_action_row_add_suffix (ADW_ACTION_ROW (row), menu_button);
+    gtk_size_group_add_widget (chooser->suffix_size_group, menu_button);
 
     drag_image = gtk_image_new_from_icon_name ("list-drag-handle-symbolic");
     adw_action_row_add_prefix (ADW_ACTION_ROW (row), drag_image);
@@ -502,12 +521,20 @@ use_default_clicked_callback (GtkWidget *button,
     list_changed (chooser);
 }
 
+static gboolean
+can_star_contents (NautilusFile *file)
+{
+    return nautilus_tag_manager_can_star_contents (nautilus_tag_manager_get (),
+                                                   nautilus_file_get_location (file));
+}
+
 static void
 populate_list (NautilusColumnChooser *chooser)
 {
     GList *columns = nautilus_get_columns_for_file (chooser->file);
     g_auto (GStrv) visible_columns = nautilus_column_get_visible_columns (chooser->file);
     g_auto (GStrv) column_order = nautilus_column_get_column_order (chooser->file);
+    NautilusColumn *star_column = FALSE;
 
     g_list_store_remove_all (G_LIST_STORE (chooser->model));
 
@@ -519,10 +546,21 @@ populate_list (NautilusColumnChooser *chooser)
 
         if (strcmp (name, "starred") == 0)
         {
+            star_column = l->data;
             continue;
         }
 
         g_list_store_append (G_LIST_STORE (chooser->model), l->data);
+    }
+
+    /* Assure star column is always shown last */
+    if (star_column != NULL && can_star_contents (chooser->file))
+    {
+        /* Translators: Shown in the column chooser dialog, but not in
+         *              the actual column header */
+        g_object_set (star_column, "label", _("Starred"), NULL);
+        g_list_store_append (G_LIST_STORE (chooser->model), star_column);
+        chooser->has_star_column = TRUE;
     }
 
     set_visible_columns (chooser, visible_columns);
@@ -607,6 +645,7 @@ nautilus_column_chooser_class_init (NautilusColumnChooserClass *chooser_class)
     gtk_widget_class_bind_template_child (widget_class, NautilusColumnChooser, use_custom_row);
     gtk_widget_class_bind_template_callback (widget_class, use_default_clicked_callback);
     gtk_widget_class_bind_template_child (widget_class, NautilusColumnChooser, row_button_menu);
+    gtk_widget_class_bind_template_child (widget_class, NautilusColumnChooser, suffix_size_group);
 
     signals[CHANGED] = g_signal_new
                            ("changed",
