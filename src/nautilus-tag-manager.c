@@ -23,6 +23,7 @@
 #include "nautilus-file-undo-operations.h"
 #include "nautilus-file-undo-manager.h"
 #include "nautilus-localsearch-utilities.h"
+#include "nautilus-scheme.h"
 
 #include <glib/gi18n.h>
 #include <tinysparql.h>
@@ -755,7 +756,10 @@ nautilus_tag_manager_can_star_contents (NautilusTagManager *self,
      * This avoids the starred files database growing too big.
      * See https://gitlab.gnome.org/GNOME/nautilus/-/merge_requests/553#note_903108
      */
-    return g_file_has_prefix (directory, self->home) || g_file_equal (directory, self->home);
+    return g_file_has_prefix (directory, self->home) ||
+           g_file_equal (directory, self->home) ||
+           g_file_has_uri_scheme (directory, SCHEME_RECENT) ||
+           g_file_has_uri_scheme (directory, SCHEME_SEARCH);
 }
 
 gboolean

@@ -49,7 +49,7 @@ static const char *default_column_order[] =
 
 static const char *default_columns_for_recent[] =
 {
-    "name", "size", "recency", NULL
+    "name", "size", "recency", "starred", NULL
 };
 
 static const char *default_columns_for_trash[] =
