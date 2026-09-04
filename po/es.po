@@ -18,23 +18,22 @@
 # Francisco Javier F. Serrador <serrador@cvs.gnome.org>, 2004, 2005, 2006.
 # Juanje Ojeda Croissier <jojeda@emergya.es>, 2009.
 # Jorge González <jorgegonz@svn.gnome.org>, 2007, 2008, 2010, 2011, 2012.
-# Daniel Mustieles <daniel.mustieles@gmail.com>, 2022-2024.
-# Daniel Mustieles García <daniel.mustieles@gmail.com>, 2024-2026.
+# Daniel Mustieles <daniel.mustieles@gmail.com>, 2024-2026.
 #
 msgid ""
 msgstr ""
 "Project-Id-Version: nautilus.master.es\n"
 "Report-Msgid-Bugs-To: https://gitlab.gnome.org/GNOME/nautilus/issues\n"
-"POT-Creation-Date: 2026-02-09 23:31+0000\n"
-"PO-Revision-Date: 2026-02-23 15:54+0100\n"
-"Last-Translator: Daniel Mustieles García <daniel.mustieles@gmail.com>\n"
-"Language-Team: Spanish - Spain <gnome-es-list@gnome.org>\n"
-"Language: es_ES\n"
+"POT-Creation-Date: 2026-08-31 10:42+0000\n"
+"PO-Revision-Date: 2026-09-04 13:11+0200\n"
+"Last-Translator: Daniel Mustieles <daniel.mustieles@gmail.com>\n"
+"Language-Team: Spanish <l10n-es@gnome.org>\n"
+"Language: es\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Plural-Forms: nplurals=2; plural=(n != 1)\n"
-"X-Generator: Gtranslator 49.0\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"X-Generator: Gtranslator 50.0\n"
 
 #: data/nautilus-autorun-software.desktop.in:2
 msgid "Run Software"
@@ -43,8 +42,8 @@ msgstr "Ejecutar programa"
 # #-#-#-#-#  nautilus-es.po (Nautilus)  #-#-#-#-#
 # components/music/nautilus-music-view.c:198
 #: data/org.gnome.Nautilus.desktop.in.in:2
-#: data/org.gnome.Nautilus.metainfo.xml.in.in:5 src/nautilus-mime-actions.c:102
-#: src/nautilus-portal.c:535 src/resources/ui/nautilus-window.blp:134
+#: data/org.gnome.Nautilus.metainfo.xml.in.in:5 src/nautilus-mime-actions.c:101
+#: src/nautilus-portal.c:582 src/resources/ui/nautilus-window.blp:160
 msgid "Files"
 msgstr "Archivos"
 
@@ -464,50 +463,33 @@ msgstr ""
 "iconos, lista de iconos y árbol. Se puede ampliar su funcionalidad con "
 "scripts y complementos."
 
+#: data/org.gnome.Nautilus.metainfo.xml.in.in:47 src/nautilus-window.c:1729
+#: src/nautilus-window.c:1734 src/nautilus-window.c:1739
+msgid "The GNOME Project"
+msgstr "El Proyecto GNOME"
+
 # #-#-#-#-#  nautilus-es.po (Nautilus)  #-#-#-#-#
 # components/music/nautilus-music-view.c:1122
-#: data/org.gnome.Nautilus.metainfo.xml.in.in:59 src/nautilus-files-view.c:9672
+#: data/org.gnome.Nautilus.metainfo.xml.in.in:61 src/nautilus-files-view.c:9723
 msgid "Grid View"
 msgstr "Vista de rejilla"
 
 # src/file-manager/fm-directory-view.c:2403
 # src/file-manager/fm-directory-view.c:2646
-#: data/org.gnome.Nautilus.metainfo.xml.in.in:63 src/nautilus-files-view.c:9679
+#: data/org.gnome.Nautilus.metainfo.xml.in.in:65 src/nautilus-files-view.c:9734
 msgid "List View"
 msgstr "Vista de lista"
 
-#: data/org.gnome.Nautilus.metainfo.xml.in.in:67
+#: data/org.gnome.Nautilus.metainfo.xml.in.in:69
 #: src/nautilus-search-directory-file.c:230
 #: src/nautilus-search-directory-file.c:269
 msgid "Search"
 msgstr "Buscar"
 
 # src/file-manager/fm-properties-window.c:1641
-#: data/org.gnome.Nautilus.metainfo.xml.in.in:71
+#: data/org.gnome.Nautilus.metainfo.xml.in.in:73
 msgid "Selection of Multiple Files"
 msgstr "Selección de varios archivos"
-
-#: eel/eel-stock-dialogs.c:194
-msgid "You can stop this operation by clicking cancel."
-msgstr "Puede parar esta operación pulsando cancelar."
-
-# #-#-#-#-#  nautilus-es.po (Nautilus)  #-#-#-#-#
-# libnautilus-private/nautilus-program-chooser.c:1262
-#. Cancel response is always available and the default response
-#: eel/eel-stock-dialogs.c:196 src/nautilus-autorun-software.c:219
-#: src/nautilus-dialog-utilities.c:96 src/nautilus-file-chooser.c:239
-#: src/nautilus-mime-actions.c:675 src/nautilus-mime-actions.c:1126
-#: src/nautilus-mime-actions.c:1433
-#: src/resources/ui/nautilus-app-chooser.blp:17
-#: src/resources/ui/nautilus-batch-rename-dialog.blp:140
-#: src/resources/ui/nautilus-compress-dialog.blp:18
-#: src/resources/ui/nautilus-file-conflict-dialog.blp:16
-#: src/resources/ui/nautilus-file-properties-change-permissions.blp:15
-#: src/resources/ui/nautilus-files-view-select-items.blp:16
-#: src/resources/ui/nautilus-operations-ui-manager-request-passphrase.blp:16
-#: src/resources/ui/nautilus-search-types-dialog.blp:19
-msgid "_Cancel"
-msgstr "Cancelar"
 
 #: extensions/audio-video-properties/totem-properties-view.c:85
 #, c-format
@@ -552,7 +534,7 @@ msgid "0 seconds"
 msgstr "0 segundos"
 
 #: extensions/audio-video-properties/totem-properties-view.c:131
-#: extensions/image-properties/nautilus-image-properties-model.c:200
+#: extensions/image-properties/nautilus-image-properties-model.c:224
 #: src/nautilus-batch-rename-dialog.h:165
 #: src/resources/ui/nautilus-batch-rename-dialog.blp:65
 msgid "Title"
@@ -639,8 +621,8 @@ msgid "Channels"
 msgstr "Canales"
 
 #: extensions/audio-video-properties/totem-properties-view.c:338
-#: extensions/image-properties/nautilus-image-properties-model.c:265
-#: src/nautilus-window-slot.c:1818
+#: extensions/image-properties/nautilus-image-properties-model.c:299
+#: src/nautilus-window-slot.c:1718
 msgid "Oops! Something went wrong."
 msgstr "Algo salió mal."
 
@@ -671,23 +653,22 @@ msgstr "Contenedor"
 msgid "Audio/Video Properties"
 msgstr "Propiedades de sonido/vídeo"
 
-#: extensions/image-properties/nautilus-image-properties-model.c:91
-msgid "Image Type"
-msgstr "Tipo de imagen"
-
-#: extensions/image-properties/nautilus-image-properties-model.c:110
-#: extensions/image-properties/nautilus-image-properties-model.c:118
+#: extensions/image-properties/nautilus-image-properties-model.c:86
 #, c-format
 msgid "%d pixel"
 msgid_plural "%d pixels"
 msgstr[0] "%d píxel"
 msgstr[1] "%d píxeles"
 
-#: extensions/image-properties/nautilus-image-properties-model.c:115
+#: extensions/image-properties/nautilus-image-properties-model.c:103
+msgid "Image Type"
+msgstr "Tipo de imagen"
+
+#: extensions/image-properties/nautilus-image-properties-model.c:104
 msgid "Width"
 msgstr "Anchura"
 
-#: extensions/image-properties/nautilus-image-properties-model.c:123
+#: extensions/image-properties/nautilus-image-properties-model.c:105
 msgid "Height"
 msgstr "Altura"
 
@@ -697,7 +678,7 @@ msgstr "Altura"
 # src/file-manager/fm-list-view.c:1581
 # src/file-manager/fm-search-list-view.c:140
 # src/nautilus-bookmarks-window.c:172
-#: extensions/image-properties/nautilus-image-properties-model.c:190
+#: extensions/image-properties/nautilus-image-properties-model.c:214
 msgid "Camera Brand"
 msgstr "Marca de la cámara"
 
@@ -707,104 +688,104 @@ msgstr "Marca de la cámara"
 # src/file-manager/fm-list-view.c:1581
 # src/file-manager/fm-search-list-view.c:140
 # src/nautilus-bookmarks-window.c:172
-#: extensions/image-properties/nautilus-image-properties-model.c:191
+#: extensions/image-properties/nautilus-image-properties-model.c:215
 #: src/resources/ui/nautilus-batch-rename-dialog.blp:35
 msgid "Camera Model"
 msgstr "Modelo de la cámara"
 
-#: extensions/image-properties/nautilus-image-properties-model.c:192
+#: extensions/image-properties/nautilus-image-properties-model.c:216
 msgid "Exposure Time"
 msgstr "Tiempo de exposición"
 
 # libnautilus-private/nautilus-file.c:2965
-#: extensions/image-properties/nautilus-image-properties-model.c:193
+#: extensions/image-properties/nautilus-image-properties-model.c:217
 msgid "Exposure Program"
 msgstr "Programa de exposición"
 
-#: extensions/image-properties/nautilus-image-properties-model.c:194
+#: extensions/image-properties/nautilus-image-properties-model.c:218
 msgid "Aperture Value"
 msgstr "Valor de apertura"
 
-#: extensions/image-properties/nautilus-image-properties-model.c:195
+#: extensions/image-properties/nautilus-image-properties-model.c:219
 msgid "ISO Speed Rating"
 msgstr "Tasa de velocidad ISO"
 
-#: extensions/image-properties/nautilus-image-properties-model.c:196
+#: extensions/image-properties/nautilus-image-properties-model.c:220
 msgid "Flash Fired"
 msgstr "Con flash"
 
-#: extensions/image-properties/nautilus-image-properties-model.c:197
+#: extensions/image-properties/nautilus-image-properties-model.c:221
 msgid "Metering Mode"
 msgstr "Modo de medida"
 
-#: extensions/image-properties/nautilus-image-properties-model.c:198
+#: extensions/image-properties/nautilus-image-properties-model.c:222
 msgid "Focal Length"
 msgstr "Longitud focal"
 
-#: extensions/image-properties/nautilus-image-properties-model.c:199
+#: extensions/image-properties/nautilus-image-properties-model.c:223
 msgid "Software"
 msgstr "Software"
 
-#: extensions/image-properties/nautilus-image-properties-model.c:201
+#: extensions/image-properties/nautilus-image-properties-model.c:225
 msgid "Description"
 msgstr "Descripción"
 
 # src/nautilus-property-browser.c:858
-#: extensions/image-properties/nautilus-image-properties-model.c:202
+#: extensions/image-properties/nautilus-image-properties-model.c:226
 msgid "Keywords"
 msgstr "Palabras clave"
 
 # src/file-manager/fm-directory-view.c:2140
 # src/file-manager/fm-directory-view.c:2257
-#: extensions/image-properties/nautilus-image-properties-model.c:203
+#: extensions/image-properties/nautilus-image-properties-model.c:227
 msgid "Creator"
 msgstr "Creador"
 
-#: extensions/image-properties/nautilus-image-properties-model.c:204
+#: extensions/image-properties/nautilus-image-properties-model.c:228
 msgid "Created On"
 msgstr "Creado el"
 
 # #-#-#-#-#  nautilus-es.po (Nautilus)  #-#-#-#-#
 # src/file-manager/dfos-xfer.c:725
-#: extensions/image-properties/nautilus-image-properties-model.c:205
+#: extensions/image-properties/nautilus-image-properties-model.c:229
 msgid "Copyright"
 msgstr "Copyright"
 
 # src/file-manager/fm-properties-window.c:844
-#: extensions/image-properties/nautilus-image-properties-model.c:206
+#: extensions/image-properties/nautilus-image-properties-model.c:230
 msgid "Rating"
 msgstr "Puntuación"
 
 #. Translators: "N" and "S" stand for
 #. * north and south in GPS coordinates.
-#: extensions/image-properties/nautilus-image-properties-model.c:219
+#: extensions/image-properties/nautilus-image-properties-model.c:243
 msgid "N"
 msgstr "N"
 
-#: extensions/image-properties/nautilus-image-properties-model.c:219
+#: extensions/image-properties/nautilus-image-properties-model.c:243
 msgid "S"
 msgstr "S"
 
 #. Translators: "E" and "W" stand for
 #. * east and west in GPS coordinates.
-#: extensions/image-properties/nautilus-image-properties-model.c:223
+#: extensions/image-properties/nautilus-image-properties-model.c:247
 msgid "E"
 msgstr "E"
 
-#: extensions/image-properties/nautilus-image-properties-model.c:223
+#: extensions/image-properties/nautilus-image-properties-model.c:247
 msgid "W"
 msgstr "O"
 
-#: extensions/image-properties/nautilus-image-properties-model.c:230
+#: extensions/image-properties/nautilus-image-properties-model.c:254
 msgid "Coordinates"
 msgstr "Coordenadas"
 
-#: extensions/image-properties/nautilus-image-properties-model.c:265
+#: extensions/image-properties/nautilus-image-properties-model.c:299
 msgid "Failed to load image information"
 msgstr "Falló al cargar la información de la imagen"
 
 # src/file-manager/fm-directory-view.c:2151
-#: extensions/image-properties/nautilus-image-properties-model.c:280
+#: extensions/image-properties/nautilus-image-properties-model.c:314
 msgid "Image Properties"
 msgstr "Propiedades de la imagen"
 
@@ -817,59 +798,94 @@ msgstr "No se pudo establecer como predeterminada"
 msgid "Error while setting “%s” as default app: %s"
 msgstr "Error al establecer «%s» como la aplicación predeterminada: %s"
 
-#: src/nautilus-app-chooser.c:87 src/nautilus-application.c:558
-#: src/nautilus-autorun-software.c:157 src/nautilus-mime-actions.c:1293
-#: src/nautilus-ui-utilities.c:358
+#: src/nautilus-app-chooser.c:87 src/nautilus-application.c:637
+#: src/nautilus-autorun-software.c:157 src/nautilus-mime-actions.c:1291
+#: src/nautilus-ui-utilities.c:360
 msgid "_OK"
 msgstr "_Aceptar"
 
 #. Translators: %s is the filename.  i.e. "Choose an app to open test.jpg"
-#: src/nautilus-app-chooser.c:233
+#: src/nautilus-app-chooser.c:226
 #, c-format
 msgid "Choose an app to open <b>%s</b>"
 msgstr "Elija una aplicación para abrir <b>%s</b>."
 
 # src/nautilus-sidebar.c:1145
-#: src/nautilus-app-chooser.c:239
+#: src/nautilus-app-chooser.c:232
 msgid "Open Items"
 msgstr "Abrir elementos"
 
 # src/file-manager/fm-directory-view.c:2140
 # src/file-manager/fm-directory-view.c:2257
-#: src/nautilus-app-chooser.c:243 src/nautilus-window.c:939
+#: src/nautilus-app-chooser.c:236 src/nautilus-window.c:972
 msgid "Open Folder"
 msgstr "Abrir carpeta"
 
 # src/file-manager/fm-directory-view.c:2140
 # src/file-manager/fm-directory-view.c:2257
-#: src/nautilus-app-chooser.c:247 src/resources/ui/nautilus-app-chooser.blp:5
+#: src/nautilus-app-chooser.c:240 src/resources/ui/nautilus-app-chooser.blp:5
 msgid "Open File"
 msgstr "Abrir archivo"
 
-#: src/nautilus-application.c:150
+# src/file-manager/fm-icon-view.c:1277
+#: src/nautilus-app-chooser-widget.c:267
+#, c-format
+msgid "No apps found for “%s”"
+msgstr "No se encontraron aplicaciones para «%s»"
+
+#: src/nautilus-app-chooser-widget.c:273
+msgid "No apps found"
+msgstr "No se encontraron aplicaciones"
+
+#. translators: This is an accessible label for a shown icon.
+#: src/nautilus-app-chooser-widget.c:507
+msgid "App icon"
+msgstr "Icono de la aplicación"
+
+# src/nautilus-sidebar.c:424
+#: src/nautilus-app-chooser-widget.c:555
+msgid "Default App"
+msgstr "Aplicación predeterminada"
+
+#: src/nautilus-app-chooser-widget.c:559
+msgid "Recommended Apps"
+msgstr "Aplicaciones recomendadas"
+
+# #-#-#-#-#  nautilus-es.po (Nautilus)  #-#-#-#-#
+# src/file-manager/fm-directory-view.c:1865
+#: src/nautilus-app-chooser-widget.c:563
+msgid "Related Apps"
+msgstr "Aplicaciones relacionadas"
+
+# src/file-manager/fm-properties-window.c:1560
+#: src/nautilus-app-chooser-widget.c:567
+msgid "Other Apps"
+msgstr "Otras aplicaciones"
+
+#: src/nautilus-application.c:186
 msgid "No Home Directory"
 msgstr "Sin carpeta personal"
 
-#: src/nautilus-application.c:151
+#: src/nautilus-application.c:187
 msgid "Make sure the directory exists and has correct access permissions set."
 msgstr ""
 "Asegúrese de que la carpeta existe y tenga los permisos de acceso correctos."
 
 # src/nautilus-main.c:117
-#: src/nautilus-application.c:427
+#: src/nautilus-application.c:506
 msgid "--quit cannot be used with URIs."
 msgstr "--quit no se puede usar con URI."
 
 # src/nautilus-main.c:117
-#: src/nautilus-application.c:436
+#: src/nautilus-application.c:515
 msgid "--select must be used with at least an URI."
 msgstr "--select se debe usar con al menos un URI."
 
-#: src/nautilus-application.c:557
+#: src/nautilus-application.c:636
 msgid "There was an error displaying help"
 msgstr "Hubo un error al mostrar la ayuda"
 
-#: src/nautilus-application.c:677
+#: src/nautilus-application.c:761
 #, c-format
 msgid ""
 "“%s” is an internal protocol. Opening this location directly is not "
@@ -879,24 +895,24 @@ msgstr ""
 "ubicación."
 
 # src/file-manager/fm-properties-window.c:1641
-#: src/nautilus-application.c:759
+#: src/nautilus-application.c:843
 msgid "Show the version of the program."
 msgstr "Mostrar la versión del programa."
 
-#: src/nautilus-application.c:763
+#: src/nautilus-application.c:847
 msgid "Always open a new window for browsing specified URIs"
 msgstr "Abrir siempre una ventana nueva para explorar las URI especificadas"
 
 # src/nautilus-main.c:65
-#: src/nautilus-application.c:767
+#: src/nautilus-application.c:851
 msgid "Quit Nautilus."
 msgstr "Salir de Nautilus."
 
-#: src/nautilus-application.c:771
+#: src/nautilus-application.c:855
 msgid "Select specified URI in parent folder."
 msgstr "Seleccionar el URI especificado en la carpeta padre."
 
-#: src/nautilus-application.c:773
+#: src/nautilus-application.c:857
 msgid "[URI…]"
 msgstr "[URI…]"
 
@@ -935,6 +951,23 @@ msgstr ""
 "«%s» contiene software pensado para iniciarse automáticamente. ¿Quiere "
 "ejecutarlo?"
 
+# #-#-#-#-#  nautilus-es.po (Nautilus)  #-#-#-#-#
+# libnautilus-private/nautilus-program-chooser.c:1262
+#. Cancel response is always available and the default response
+#: src/nautilus-autorun-software.c:219 src/nautilus-dialog-utilities.c:96
+#: src/nautilus-file-chooser.c:248 src/nautilus-mime-actions.c:674
+#: src/nautilus-mime-actions.c:1124 src/nautilus-mime-actions.c:1431
+#: src/nautilus-ui-utilities.c:539 src/resources/ui/nautilus-app-chooser.blp:19
+#: src/resources/ui/nautilus-batch-rename-dialog.blp:140
+#: src/resources/ui/nautilus-compress-dialog.blp:19
+#: src/resources/ui/nautilus-file-conflict-dialog.blp:16
+#: src/resources/ui/nautilus-file-properties-change-permissions.blp:15
+#: src/resources/ui/nautilus-files-view-select-items.blp:16
+#: src/resources/ui/nautilus-operations-ui-manager-request-passphrase.blp:16
+#: src/resources/ui/nautilus-search-types-dialog.blp:19
+msgid "_Cancel"
+msgstr "Cancelar"
+
 #: src/nautilus-autorun-software.c:220
 msgid "_Run"
 msgstr "E_jecutar"
@@ -949,24 +982,24 @@ msgstr "«%s» no debe ser un nombre nuevo único."
 msgid "“%s” would conflict with an existing file."
 msgstr "«%s» puede causar conflicto con un archivo existente."
 
-#: src/nautilus-batch-rename-dialog.c:967
+#: src/nautilus-batch-rename-dialog.c:966
 msgid "Name cannot be empty."
 msgstr "El nombre no puede estar vacío."
 
-#: src/nautilus-batch-rename-dialog.c:973
+#: src/nautilus-batch-rename-dialog.c:972
 msgid "Name cannot contain “/”."
 msgstr "Los nombres no pueden contener «/»."
 
-#: src/nautilus-batch-rename-dialog.c:979
+#: src/nautilus-batch-rename-dialog.c:978
 msgid "“.” is not a valid name."
 msgstr "«.» no es un nombre válido."
 
-#: src/nautilus-batch-rename-dialog.c:985
+#: src/nautilus-batch-rename-dialog.c:984
 msgid "“..” is not a valid name."
 msgstr "«..» no es un nombre válido."
 
 # src/nautilus-property-browser.c:2014
-#: src/nautilus-batch-rename-dialog.c:1587
+#: src/nautilus-batch-rename-dialog.c:1586
 #, c-format
 msgid "Rename %d Folder"
 msgid_plural "Rename %d Folders"
@@ -974,7 +1007,7 @@ msgstr[0] "Renombrar %d carpeta"
 msgstr[1] "Renombrar %d carpetas"
 
 # src/nautilus-property-browser.c:2014
-#: src/nautilus-batch-rename-dialog.c:1595
+#: src/nautilus-batch-rename-dialog.c:1594
 #, c-format
 msgid "Rename %d File"
 msgid_plural "Rename %d Files"
@@ -984,7 +1017,7 @@ msgstr[1] "Renombrar %d archivos"
 # src/nautilus-property-browser.c:2014
 #. To translators: %d is the total number of files and folders.
 #. * Singular case of the string is never used
-#: src/nautilus-batch-rename-dialog.c:1605
+#: src/nautilus-batch-rename-dialog.c:1604
 #, c-format
 msgid "Rename %d File and Folder"
 msgid_plural "Rename %d Files and Folders"
@@ -1083,8 +1116,8 @@ msgid "001, 002, 003"
 msgstr "001, 002, 003"
 
 #: src/nautilus-bookmark.c:99 src/nautilus-file-utilities.c:66
-#: src/nautilus-pathbar.c:418 src/nautilus-shell-search-provider.c:277
-#: src/nautilus-sidebar.c:698 src/nautilus-window.c:151
+#: src/nautilus-pathbar.c:420 src/nautilus-shell-search-provider.c:277
+#: src/nautilus-sidebar.c:698 src/nautilus-window.c:148
 msgid "Home"
 msgstr "Carpeta personal"
 
@@ -1104,7 +1137,7 @@ msgstr "El portapapeles de Nautilus debe comenzar con «cut» o «copy»."
 msgid "Nautilus Clipboard must not have empty lines."
 msgstr "El portapapeles de Nautilus no debe tener líneas vacías."
 
-#: src/nautilus-column-chooser.c:368
+#: src/nautilus-column-chooser.c:370
 msgid "View More"
 msgstr "Ver más"
 
@@ -1114,7 +1147,7 @@ msgstr "Ver más"
 # src/file-manager/fm-list-view.c:1581
 # src/file-manager/fm-search-list-view.c:140
 # src/nautilus-bookmarks-window.c:172
-#: src/nautilus-column-utilities.c:69 src/nautilus-sidebar.c:2004
+#: src/nautilus-column-utilities.c:69 src/nautilus-sidebar.c:2002
 msgid "Name"
 msgstr "Nombre"
 
@@ -1149,8 +1182,8 @@ msgstr "El tipo de archivo."
 # src/file-manager/fm-properties-window.c:1103
 #. Translators: This refers to a date time
 #: src/nautilus-column-utilities.c:90
-#: src/resources/ui/nautilus-properties-widget.blp:446
-#: src/resources/ui/nautilus-search-popover.blp:184
+#: src/resources/ui/nautilus-properties-widget.blp:457
+#: src/resources/ui/nautilus-search-popover.blp:190
 msgid "Modified"
 msgstr "Modificado"
 
@@ -1169,7 +1202,7 @@ msgstr "El tipo detallado del archivo."
 
 # src/file-manager/fm-properties-window.c:1105
 #: src/nautilus-column-utilities.c:106
-#: src/resources/ui/nautilus-properties-widget.blp:432
+#: src/resources/ui/nautilus-properties-widget.blp:443
 msgid "Accessed"
 msgstr "Accedido"
 
@@ -1181,8 +1214,8 @@ msgstr "La fecha en que el archivo fue accedido."
 # src/file-manager/fm-directory-view.c:2257
 #. Translators: This refers to a date time
 #: src/nautilus-column-utilities.c:115
-#: src/resources/ui/nautilus-properties-widget.blp:460
-#: src/resources/ui/nautilus-search-popover.blp:186
+#: src/resources/ui/nautilus-properties-widget.blp:471
+#: src/resources/ui/nautilus-search-popover.blp:197
 msgid "Created"
 msgstr "Creado"
 
@@ -1236,7 +1269,7 @@ msgid "Shows if file is starred."
 msgstr "Muestra si el archivo es favorito."
 
 #: src/nautilus-column-utilities.c:205
-#: src/resources/ui/nautilus-properties-widget.blp:415
+#: src/resources/ui/nautilus-properties-widget.blp:426
 msgid "Trashed On"
 msgstr "Movido a la papelera en"
 
@@ -1326,26 +1359,26 @@ msgid "Empty _Trash"
 msgstr "Vaciar la _papelera"
 
 # libnautilus-private/nautilus-program-chooser.c:1344
-#: src/nautilus-dialog-utilities.c:116 src/nautilus-operations-ui-manager.c:369
+#: src/nautilus-dialog-utilities.c:117 src/nautilus-operations-ui-manager.c:351
 msgid "_Merge"
 msgstr "_Mezclar"
 
 # #-#-#-#-#  nautilus-es.po (Nautilus)  #-#-#-#-#
 # src/file-manager/dfos-xfer.c:419 src/file-manager/dfos-xfer.c:430
-#: src/nautilus-dialog-utilities.c:120 src/nautilus-file-chooser.c:240
-#: src/nautilus-file-chooser.c:332
+#: src/nautilus-dialog-utilities.c:121 src/nautilus-file-chooser.c:249
+#: src/nautilus-file-chooser.c:358
 #: src/resources/ui/nautilus-file-conflict-dialog.blp:42
 msgid "_Replace"
 msgstr "_Reemplazar"
 
-#: src/nautilus-dialog-utilities.c:124
+#: src/nautilus-dialog-utilities.c:125
 msgid "S_kip All"
 msgstr "Omitir to_do"
 
 # #-#-#-#-#  nautilus-es.po (Nautilus)  #-#-#-#-#
 # src/file-manager/dfos-xfer.c:352 src/file-manager/dfos-xfer.c:372
 # src/file-manager/dfos-xfer.c:419 src/file-manager/dfos-xfer.c:430
-#: src/nautilus-dialog-utilities.c:128
+#: src/nautilus-dialog-utilities.c:130
 #: src/resources/ui/nautilus-file-conflict-dialog.blp:23
 msgid "_Skip"
 msgstr "_Omitir"
@@ -1353,25 +1386,25 @@ msgstr "_Omitir"
 # #-#-#-#-#  nautilus-es.po (Nautilus)  #-#-#-#-#
 # src/file-manager/dfos-xfer.c:352 src/file-manager/dfos-xfer.c:372
 # src/file-manager/dfos-xfer.c:419 src/file-manager/dfos-xfer.c:430
-#: src/nautilus-dialog-utilities.c:132
+#: src/nautilus-dialog-utilities.c:135
 msgid "_Skip Files"
 msgstr "_Omitir archivos"
 
 # #-#-#-#-#  nautilus-es.po (Nautilus)  #-#-#-#-#
 # src/file-manager/fm-directory-view.c:2157 src/nautilus-window-menus.c:1153
-#: src/nautilus-dialog-utilities.c:136
+#: src/nautilus-dialog-utilities.c:140
 msgid "Delete _All"
 msgstr "Eliminar _todo"
 
 # #-#-#-#-#  nautilus-es.po (Nautilus)  #-#-#-#-#
 # src/file-manager/fm-directory-view.c:1865
-#: src/nautilus-dialog-utilities.c:141
+#: src/nautilus-dialog-utilities.c:145
 msgid "_Delete"
 msgstr "_Eliminar"
 
 # #-#-#-#-#  nautilus-es.po (Nautilus)  #-#-#-#-#
 # src/file-manager/dfos-xfer.c:372
-#: src/nautilus-dialog-utilities.c:146
+#: src/nautilus-dialog-utilities.c:155
 msgid "_Retry"
 msgstr "_Reintentar"
 
@@ -1397,8 +1430,8 @@ msgstr "En_lazar aquí"
 
 # #-#-#-#-#  nautilus-es.po (Nautilus)  #-#-#-#-#
 # libnautilus-private/nautilus-program-chooser.c:1262
-#: src/nautilus-dnd.c:128 src/nautilus-file-operations.c:2314
-#: src/nautilus-mime-actions.c:686
+#: src/nautilus-dnd.c:128 src/nautilus-file-operations.c:2257
+#: src/nautilus-mime-actions.c:685
 #: src/resources/ui/nautilus-progress-info-widget.blp:38
 #: src/resources/ui/nautilus-toolbar.blp:36
 msgid "Cancel"
@@ -1533,78 +1566,78 @@ msgstr "No se ha podido renombrar «%s» a «%s»: %s"
 msgid "The item could not be renamed."
 msgstr "El elemento no se pudo renombrar."
 
-#: src/nautilus-file.c:1210 src/nautilus-vfs-file.c:271
+#: src/nautilus-file.c:1196 src/nautilus-vfs-file.c:271
 msgid "This file cannot be mounted"
 msgstr "Este archivo no se puede montar"
 
-#: src/nautilus-file.c:1264
+#: src/nautilus-file.c:1250
 msgid "This file cannot be unmounted"
 msgstr "Este archivo no se puede desmontar"
 
-#: src/nautilus-file.c:1311
+#: src/nautilus-file.c:1297
 msgid "This file cannot be ejected"
 msgstr "Este archivo no se puede expulsar"
 
-#: src/nautilus-file.c:1356 src/nautilus-vfs-file.c:462
+#: src/nautilus-file.c:1342 src/nautilus-vfs-file.c:446
 msgid "This file cannot be started"
 msgstr "Este archivo no se puede iniciar"
 
-#: src/nautilus-file.c:1415 src/nautilus-file.c:1454
+#: src/nautilus-file.c:1401 src/nautilus-file.c:1439
 msgid "This file cannot be stopped"
 msgstr "Este archivo no se puede parar"
 
-#: src/nautilus-file.c:1795
+#: src/nautilus-file.c:1780
 #, c-format
 msgid "Slashes are not allowed in filenames"
 msgstr "No se permiten barras en los nombres de archivo"
 
 # src/file-manager/fm-properties-window.c:1641
-#: src/nautilus-file.c:1838
+#: src/nautilus-file.c:1823
 #, c-format
 msgid "Toplevel files cannot be renamed"
 msgstr "Los archivos de nivel superior no se pueden renombrar"
 
-#: src/nautilus-file.c:1918
+#: src/nautilus-file.c:1903
 #, c-format
 msgid "File not found"
 msgstr "No se encontró el archivo"
 
 # src/file-manager/fm-properties-window.c:1493
-#: src/nautilus-file.c:5489
+#: src/nautilus-file.c:5327
 #, c-format
 msgid "Not allowed to set permissions"
 msgstr "No se le permite establecer permisos"
 
-#: src/nautilus-file.c:5835
+#: src/nautilus-file.c:5673
 #, c-format
 msgid "Not allowed to set owner"
 msgstr "No se le permite establecer el propietario"
 
 # src/nautilus-window-menus.c:602
-#: src/nautilus-file.c:5854
+#: src/nautilus-file.c:5692
 #, c-format
 msgid "Specified owner “%s” doesn’t exist"
 msgstr "El propietario «%s» especificado no existe"
 
-#: src/nautilus-file.c:6144
+#: src/nautilus-file.c:5982
 #, c-format
 msgid "Not allowed to set group"
 msgstr "No se le permite establecer el grupo"
 
-#: src/nautilus-file.c:6163
+#: src/nautilus-file.c:6001
 #, c-format
 msgid "Specified group “%s” doesn’t exist"
 msgstr "El grupo «%s» especificado no existe"
 
 #. Translators: This is a username followed by "(You)" to indicate the file is
 #. owned by the current user
-#: src/nautilus-file.c:6303
+#: src/nautilus-file.c:6141
 #, c-format
 msgid "%s (You)"
 msgstr "%s (usted)"
 
 # libnautilus-private/nautilus-file.c:2594
-#: src/nautilus-file.c:6335
+#: src/nautilus-file.c:6173
 #, c-format
 msgid "%'u item"
 msgid_plural "%'u items"
@@ -1612,7 +1645,7 @@ msgstr[0] "%u elemento"
 msgstr[1] "%u elementos"
 
 # libnautilus-private/nautilus-file.c:2595
-#: src/nautilus-file.c:6336
+#: src/nautilus-file.c:6174
 #, c-format
 msgid "%'u folder"
 msgid_plural "%'u folders"
@@ -1620,7 +1653,7 @@ msgstr[0] "%u carpeta"
 msgstr[1] "%u carpetas"
 
 # libnautilus-private/nautilus-file.c:2595
-#: src/nautilus-file.c:6337
+#: src/nautilus-file.c:6175
 #, c-format
 msgid "%'u file"
 msgid_plural "%'u files"
@@ -1628,7 +1661,7 @@ msgstr[0] "%u archivo"
 msgstr[1] "%u archivos"
 
 # libnautilus-private/nautilus-file.c:2585
-#: src/nautilus-file.c:6421 src/nautilus-properties.c:2110
+#: src/nautilus-file.c:6259 src/nautilus-properties.c:2113
 #, c-format
 msgid "%s byte"
 msgid_plural "%s bytes"
@@ -1637,101 +1670,101 @@ msgstr[1] "%s bytes"
 
 # libnautilus-private/nautilus-file.c:2585
 #. This means no contents at all were readable
-#: src/nautilus-file.c:6825
+#: src/nautilus-file.c:6652
 msgid "? bytes"
 msgstr "? bytes "
 
 # libnautilus-private/nautilus-file.c:2585
 #. This means no contents at all were readable
-#: src/nautilus-file.c:6837
+#: src/nautilus-file.c:6664
 msgid "? items"
 msgstr "? elementos"
 
 # libnautilus-private/nautilus-file.c:2929
 #. Translators: This about a file type.
-#: src/nautilus-file.c:6846
+#: src/nautilus-file.c:6673
 msgid "Unknown type"
 msgstr "Tipo desconocido"
 
 # libnautilus-private/nautilus-file.c:2936
 #. Fallback, use for both unknown attributes and attributes
 #. * for which we have no more appropriate default.
-#: src/nautilus-file.c:6877
+#: src/nautilus-file.c:6704
 msgid "Unknown"
 msgstr "Desconocido"
 
 # libnautilus-private/nautilus-file.c:2965
-#: src/nautilus-file.c:6927 src/nautilus-file.c:6935 src/nautilus-file.c:6994
+#: src/nautilus-file.c:6754 src/nautilus-file.c:6762 src/nautilus-file.c:6821
 msgid "Program"
 msgstr "Programa"
 
-#: src/nautilus-file.c:6928
+#: src/nautilus-file.c:6755
 msgid "Audio"
 msgstr "Sonido"
 
-#: src/nautilus-file.c:6929
+#: src/nautilus-file.c:6756
 msgid "Font"
 msgstr "Tipografía"
 
-#: src/nautilus-file.c:6930
+#: src/nautilus-file.c:6757
 msgid "Image"
 msgstr "Imagen"
 
-#: src/nautilus-file.c:6931
+#: src/nautilus-file.c:6758
 msgid "Archive"
 msgstr "Archivador"
 
-#: src/nautilus-file.c:6932
+#: src/nautilus-file.c:6759
 msgid "Markup"
 msgstr "Marcado"
 
-#: src/nautilus-file.c:6933 src/nautilus-file.c:6934
+#: src/nautilus-file.c:6760 src/nautilus-file.c:6761
 msgid "Text"
 msgstr "Texto"
 
-#: src/nautilus-file.c:6936 src/nautilus-mime-actions.c:284
+#: src/nautilus-file.c:6763 src/nautilus-mime-actions.c:283
 msgid "Video"
 msgstr "Vídeo"
 
 # src/file-manager/fm-properties-window.c:878
-#: src/nautilus-file.c:6937
+#: src/nautilus-file.c:6764
 msgid "Contacts"
 msgstr "Contactos"
 
-#: src/nautilus-file.c:6938
+#: src/nautilus-file.c:6765
 msgid "Calendar"
 msgstr "Calendario"
 
 # src/file-manager/fm-directory-view.c:1865
-#: src/nautilus-file.c:6939
+#: src/nautilus-file.c:6766
 msgid "Document"
 msgstr "Documento"
 
-#: src/nautilus-file.c:6940 src/nautilus-mime-actions.c:245
+#: src/nautilus-file.c:6767 src/nautilus-mime-actions.c:244
 msgid "Presentation"
 msgstr "Presentación"
 
-#: src/nautilus-file.c:6941 src/nautilus-mime-actions.c:257
+#: src/nautilus-file.c:6768 src/nautilus-mime-actions.c:256
 msgid "Spreadsheet"
 msgstr "Hoja de cálculo"
 
 # src/file-manager/fm-properties-window.c:1560
 #. Refers to a file type which is known but not one of the basic types
-#: src/nautilus-file.c:6974
+#: src/nautilus-file.c:6801
 msgid "Other"
 msgstr "Otro"
 
-#: src/nautilus-file.c:6996
+#: src/nautilus-file.c:6823
 msgid "Binary"
 msgstr "Binario"
 
 # src/file-manager/fm-directory-view.c:2140
 # src/file-manager/fm-directory-view.c:2257
-#: src/nautilus-file.c:7001
+#: src/nautilus-file.c:6828
 msgid "Folder"
 msgstr "Carpeta"
 
-#: src/nautilus-file.c:7059
+#: src/nautilus-file.c:6886
 msgid "Link"
 msgstr "Enlace"
 
@@ -1740,17 +1773,17 @@ msgstr "Enlace"
 #. * (e.g. "folder", "plain text") to file type for symbolic link
 #. * to that kind of file (e.g. "link to folder").
 #. Translators: File name for new symlink. %s is target's name
-#: src/nautilus-file.c:7065 src/nautilus-filename-utilities.c:253
+#: src/nautilus-file.c:6892 src/nautilus-filename-utilities.c:253
 #, c-format
 msgid "Link to %s"
 msgstr "Enlace hacia %s"
 
-#: src/nautilus-file.c:7081 src/nautilus-file.c:7097 src/nautilus-file.c:7113
+#: src/nautilus-file.c:6908 src/nautilus-file.c:6924 src/nautilus-file.c:6940
 msgid "Link (broken)"
 msgstr "Enlace (roto)"
 
 #. Translators: This refers to available space in a folder; e.g.: 100 MB Free
-#: src/nautilus-file.c:7274
+#: src/nautilus-file.c:7101
 #, c-format
 msgid "%s Free"
 msgstr "%s libre"
@@ -1759,7 +1792,7 @@ msgstr "%s libre"
 # src/file-manager/fm-directory-view.c:2257
 #. Translators: This is the role for a folder icon when a screen reader is
 #. * used. If a folder is selected, it will say "XXXXXX. Folder"
-#: src/nautilus-file.c:8642
+#: src/nautilus-file.c:8438
 msgctxt "Role"
 msgid "Folder"
 msgstr "Carpeta"
@@ -1768,7 +1801,7 @@ msgstr "Carpeta"
 # components/music/nautilus-music-view.c:198
 #. Translators: This is the role for a file icon when a screen reader is
 #. * used. If a file is selected, it will say "XXXXXX. File"
-#: src/nautilus-file.c:8645
+#: src/nautilus-file.c:8441
 msgctxt "Role"
 msgid "File"
 msgstr "Archivo"
@@ -1777,25 +1810,25 @@ msgstr "Archivo"
 #. * is added at the end of the name when prononunced by a
 #. * screen reader, after the role
 #. * (e.g. "My documents. Folder. Starred")
-#: src/nautilus-file.c:8664
+#: src/nautilus-file.c:8460
 msgctxt "Role"
 msgid "Starred"
 msgstr "Favorito"
 
 # #-#-#-#-#  nautilus-es.po (Nautilus)  #-#-#-#-#
 # src/file-manager/dfos-xfer.c:419 src/file-manager/dfos-xfer.c:430
-#: src/nautilus-file-chooser.c:229
+#: src/nautilus-file-chooser.c:238
 msgid "Replace When Saving?"
 msgstr "¿Reemplazar al guardar?"
 
-#: src/nautilus-file-chooser.c:235
+#: src/nautilus-file-chooser.c:244
 #, c-format
 msgid ""
 "“%s” already exists in “%s”. Saving will replace or overwrite its contents."
 msgstr ""
 "«%s» ya existe en «%s». Guardar reemplazará o sobrescribirá su contenido."
 
-#: src/nautilus-file-operations.c:390
+#: src/nautilus-file-operations.c:388
 #, c-format
 msgid "%'d second"
 msgid_plural "%'d seconds"
@@ -1803,14 +1836,14 @@ msgstr[0] "%'d segundo"
 msgstr[1] "%'d segundos"
 
 # libnautilus-private/nautilus-file.c:2594
-#: src/nautilus-file-operations.c:396 src/nautilus-file-operations.c:408
+#: src/nautilus-file-operations.c:394 src/nautilus-file-operations.c:406
 #, c-format
 msgid "%'d minute"
 msgid_plural "%'d minutes"
 msgstr[0] "%'d minuto"
 msgstr[1] "%'d minutos"
 
-#: src/nautilus-file-operations.c:407 src/nautilus-file-operations.c:415
+#: src/nautilus-file-operations.c:405 src/nautilus-file-operations.c:413
 #, c-format
 msgid "%'d hour"
 msgid_plural "%'d hours"
@@ -1818,69 +1851,69 @@ msgstr[0] "%'d hora"
 msgstr[1] "%'d horas"
 
 # libnautilus-private/nautilus-file.c:2936
-#: src/nautilus-file-operations.c:475 src/nautilus-properties.c:915
+#: src/nautilus-file-operations.c:473 src/nautilus-properties.c:948
 msgid "unknown"
 msgstr "desconocido"
 
 # #-#-#-#-#  nautilus-es.po (Nautilus)  #-#-#-#-#
 # src/file-manager/fm-directory-view.c:1865
-#: src/nautilus-file-operations.c:967 src/nautilus-file-operations.c:1019
+#: src/nautilus-file-operations.c:965 src/nautilus-file-operations.c:1017
 #, c-format
 msgid "Permanently Delete “%s”?"
 msgstr "¿Eliminar «%s» permanentemente?"
 
 # src/file-manager/fm-directory-view.c:1860
-#: src/nautilus-file-operations.c:971 src/nautilus-file-operations.c:1024
+#: src/nautilus-file-operations.c:969 src/nautilus-file-operations.c:1022
 #, c-format
 msgid "Permanently Delete %'d Selected Item?"
 msgid_plural "Permanently Delete %'d Selected Items?"
 msgstr[0] "¿Quiere eliminar permanentemente %'d elemento seleccionado?"
 msgstr[1] "¿Quiere eliminar permanentemente %'d elementos seleccionados?"
 
-#: src/nautilus-file-operations.c:979 src/nautilus-file-operations.c:1032
+#: src/nautilus-file-operations.c:977 src/nautilus-file-operations.c:1030
 msgid "Permanently deleted items can not be restored"
 msgstr "Los elementos eliminados permanentemente no se pueden restaurar"
 
 # src/file-manager/fm-directory-view.c:2154
-#: src/nautilus-file-operations.c:990
+#: src/nautilus-file-operations.c:988
 msgid "Empty Trash?"
 msgstr "¿Vaciar la papelera?"
 
-#: src/nautilus-file-operations.c:991
+#: src/nautilus-file-operations.c:989
 msgid "All items in the Trash will be permanently deleted"
 msgstr "Todos los elementos en la papelera se eliminarán permanentemente"
 
 # #-#-#-#-#  nautilus-es.po (Nautilus)  #-#-#-#-#
 # src/file-manager/fm-directory-view.c:1865
 #. Translators: This action removes a file from Recent
-#: src/nautilus-file-operations.c:1090
+#: src/nautilus-file-operations.c:1088
 #, c-format
 msgid "Cleared “%s”"
 msgstr "«%s» limpiado"
 
 # #-#-#-#-#  nautilus-es.po (Nautilus)  #-#-#-#-#
 # src/file-manager/fm-directory-view.c:1865
-#: src/nautilus-file-operations.c:1094
+#: src/nautilus-file-operations.c:1092
 #, c-format
 msgid "Deleted “%s”"
 msgstr "Eliminado «%s»"
 
 # src/file-manager/fm-icon-view.c:1277
 #. Translators: This action removes a file from Recent
-#: src/nautilus-file-operations.c:1102
+#: src/nautilus-file-operations.c:1100
 #, c-format
 msgid "Clearing “%s”"
 msgstr "Limpiando «%s»"
 
 # src/file-manager/fm-icon-view.c:1277
-#: src/nautilus-file-operations.c:1106
+#: src/nautilus-file-operations.c:1104
 #, c-format
 msgid "Deleting “%s”"
 msgstr "Eliminando «%s»"
 
 # src/file-manager/dfos-xfer.c:1008 src/file-manager/dfos-xfer.c:1058
 #. Translators: This action removes file(s) from Recent
-#: src/nautilus-file-operations.c:1122
+#: src/nautilus-file-operations.c:1120
 #, c-format
 msgid "Cleared %'d file"
 msgid_plural "Cleared %'d files"
@@ -1888,7 +1921,7 @@ msgstr[0] "%'d archivo limpiado"
 msgstr[1] "%'d archivos limpiados"
 
 # src/file-manager/dfos-xfer.c:1008 src/file-manager/dfos-xfer.c:1058
-#: src/nautilus-file-operations.c:1128
+#: src/nautilus-file-operations.c:1126
 #, c-format
 msgid "Deleted %'d file"
 msgid_plural "Deleted %'d files"
@@ -1897,7 +1930,7 @@ msgstr[1] "Eliminados %'d archivos"
 
 # src/file-manager/dfos-xfer.c:1008 src/file-manager/dfos-xfer.c:1058
 #. Translators: This action removes file(s) from Recent
-#: src/nautilus-file-operations.c:1138
+#: src/nautilus-file-operations.c:1136
 #, c-format
 msgid "Clearing %'d file"
 msgid_plural "Clearing %'d files"
@@ -1905,7 +1938,7 @@ msgstr[0] "Limpiando %'d archivo"
 msgstr[1] "Limpiando %'d archivos"
 
 # src/file-manager/dfos-xfer.c:1008 src/file-manager/dfos-xfer.c:1058
-#: src/nautilus-file-operations.c:1144
+#: src/nautilus-file-operations.c:1142
 #, c-format
 msgid "Deleting %'d file"
 msgid_plural "Deleting %'d files"
@@ -1914,12 +1947,12 @@ msgstr[1] "Eliminando %'d archivos"
 
 #. To translators: %'d is the number of files completed for the operation,
 #. * so it will be something like 2/14.
-#: src/nautilus-file-operations.c:1174 src/nautilus-file-operations.c:1182
-#: src/nautilus-file-operations.c:1222 src/nautilus-file-operations.c:1559
-#: src/nautilus-file-operations.c:1567 src/nautilus-file-operations.c:1607
-#: src/nautilus-file-operations.c:3476 src/nautilus-file-operations.c:3484
-#: src/nautilus-file-operations.c:3555 src/nautilus-file-operations.c:8111
-#: src/nautilus-file-operations.c:8179
+#: src/nautilus-file-operations.c:1172 src/nautilus-file-operations.c:1180
+#: src/nautilus-file-operations.c:1220 src/nautilus-file-operations.c:1557
+#: src/nautilus-file-operations.c:1565 src/nautilus-file-operations.c:1605
+#: src/nautilus-file-operations.c:3431 src/nautilus-file-operations.c:3439
+#: src/nautilus-file-operations.c:3510 src/nautilus-file-operations.c:8026
+#: src/nautilus-file-operations.c:8094
 #, c-format
 msgid "%'d / %'d"
 msgstr "%'d / %'d"
@@ -1930,7 +1963,7 @@ msgstr "%'d / %'d"
 #. *
 #. * The singular/plural form will be used depending on the remaining time
 #. (i.e. the %s argument).
-#: src/nautilus-file-operations.c:1201 src/nautilus-file-operations.c:1586
+#: src/nautilus-file-operations.c:1199 src/nautilus-file-operations.c:1584
 #, c-format
 msgid "%'d / %'d — %s left"
 msgid_plural "%'d / %'d — %s left"
@@ -1938,7 +1971,7 @@ msgstr[0] "%'d / %'d — queda %s"
 msgstr[1] "%'d / %'d — quedan %s"
 
 # libnautilus-private/nautilus-file.c:2595
-#: src/nautilus-file-operations.c:1205 src/nautilus-file-operations.c:1589
+#: src/nautilus-file-operations.c:1203 src/nautilus-file-operations.c:1587
 #, c-format
 msgid "(%d file/s)"
 msgid_plural "(%d files/s)"
@@ -1946,57 +1979,57 @@ msgstr[0] "(%d archivo/s)"
 msgstr[1] "(%d archivos/s)"
 
 # src/file-manager/dfos-xfer.c:1009
-#: src/nautilus-file-operations.c:1318
+#: src/nautilus-file-operations.c:1316
 #, c-format
 msgid "Failed to delete all child files"
 msgstr "Falló al eliminar los archivos hijos"
 
 # src/file-manager/dfos-xfer.c:745
-#: src/nautilus-file-operations.c:1370 src/nautilus-file-operations.c:2640
+#: src/nautilus-file-operations.c:1368 src/nautilus-file-operations.c:2595
 msgid "Error while deleting."
 msgstr "Error al eliminar."
 
 # src/nautilus-window-manage-views.c:648
-#: src/nautilus-file-operations.c:1377
+#: src/nautilus-file-operations.c:1375
 #, c-format
 msgid "You do not have sufficient permissions to delete the folder “%s”."
 msgstr "No tiene los permisos suficientes para eliminar la carpeta «%s»."
 
-#: src/nautilus-file-operations.c:1380
+#: src/nautilus-file-operations.c:1378
 #, c-format
 msgid "There was an error deleting the folder “%s”."
 msgstr "Hubo un error al eliminar la carpeta «%s»."
 
 # src/nautilus-window-manage-views.c:648
-#: src/nautilus-file-operations.c:1387
+#: src/nautilus-file-operations.c:1385
 #, c-format
 msgid "You do not have sufficient permissions to delete the file “%s”."
 msgstr "No tiene los permisos suficientes para eliminar el archivo «%s»."
 
-#: src/nautilus-file-operations.c:1390
+#: src/nautilus-file-operations.c:1388
 #, c-format
 msgid "There was an error deleting the file “%s”."
 msgstr "Hubo un error al eliminar el archivo «%s»."
 
 # src/file-manager/fm-icon-view.c:1277
-#: src/nautilus-file-operations.c:1507
+#: src/nautilus-file-operations.c:1505
 #, c-format
 msgid "Trashing “%s”"
 msgstr "Enviando «%s» a la papelera"
 
-#: src/nautilus-file-operations.c:1511
+#: src/nautilus-file-operations.c:1509
 #, c-format
 msgid "Trashed “%s”"
 msgstr "«%s» movido a la papelera"
 
-#: src/nautilus-file-operations.c:1523
+#: src/nautilus-file-operations.c:1521
 #, c-format
 msgid "Trashing %'d file"
 msgid_plural "Trashing %'d files"
 msgstr[0] "Moviendo %'d archivo a la papelera"
 msgstr[1] "Moviendo %'d archivos a la papelera"
 
-#: src/nautilus-file-operations.c:1529
+#: src/nautilus-file-operations.c:1527
 #, c-format
 msgid "Trashed %'d file"
 msgid_plural "Trashed %'d files"
@@ -2004,26 +2037,26 @@ msgstr[0] "Movido %'d archivo a la papelera"
 msgstr[1] "Movidos %'d archivos a la papelera"
 
 #. Translators: %s is a file name
-#: src/nautilus-file-operations.c:1676
+#: src/nautilus-file-operations.c:1674
 #, c-format
 msgid "“%s” can’t be put in the trash. Do you want to delete it immediately?"
 msgstr "No puede mover «%s» a la papelera. ¿Quiere eliminarlo inmediatamente?"
 
-#: src/nautilus-file-operations.c:1686
+#: src/nautilus-file-operations.c:1684
 msgid "This remote location does not support sending items to the trash."
 msgstr "Este lugar remoto no soporta el envío de elementos a la papelera."
 
-#: src/nautilus-file-operations.c:1978
+#: src/nautilus-file-operations.c:1976
 msgid "Trashing Files"
 msgstr "Moviendo archivos a la papelera"
 
 # src/file-manager/dfos-xfer.c:1008 src/file-manager/dfos-xfer.c:1058
-#: src/nautilus-file-operations.c:1982
+#: src/nautilus-file-operations.c:1980
 msgid "Deleting Files"
 msgstr "Eliminando archivos"
 
 #. Translators: %s is a file name formatted for display
-#: src/nautilus-file-operations.c:2137 src/nautilus-files-view.c:6538
+#: src/nautilus-file-operations.c:2137 src/nautilus-files-view.c:6640
 #: src/nautilus-sidebar.c:2364 src/nautilus-sidebar.c:2393
 #, c-format
 msgid "Unable to eject “%s”"
@@ -2035,11 +2068,11 @@ msgid "Unable to unmount “%s”"
 msgstr "No se pudo desmontar «%s»"
 
 # src/file-manager/fm-directory-view.c:2154
-#: src/nautilus-file-operations.c:2307
+#: src/nautilus-file-operations.c:2250
 msgid "Empty Trash Before Ejecting?"
 msgstr "¿Vaciar la papelera antes de expulsar?"
 
-#: src/nautilus-file-operations.c:2310
+#: src/nautilus-file-operations.c:2253
 #, c-format
 msgid ""
 "Empty the trash to free up space on “%s”. All trashed items will be "
@@ -2049,25 +2082,25 @@ msgstr ""
 "papelera se eliminarán de manera permanente."
 
 # src/file-manager/fm-directory-view.c:2154
-#: src/nautilus-file-operations.c:2315
+#: src/nautilus-file-operations.c:2258
 msgid "Do _Not Empty"
 msgstr "_No vaciar"
 
 #. Translators: This is an action in a dialog to
 #. * clear trashed items.
-#: src/nautilus-file-operations.c:2318
+#: src/nautilus-file-operations.c:2261
 msgid "_Empty"
 msgstr "_Vaciar"
 
 #. Translators: %s is a file name formatted for display
-#: src/nautilus-file-operations.c:2458 src/nautilus-files-view.c:6491
-#: src/nautilus-sidebar.c:1779
+#: src/nautilus-file-operations.c:2422 src/nautilus-files-view.c:6593
+#: src/nautilus-sidebar.c:1777
 #, c-format
 msgid "Unable to access “%s”"
 msgstr "No se pudo acceder a «%s»"
 
 # src/file-manager/dfos-xfer.c:1009
-#: src/nautilus-file-operations.c:2541
+#: src/nautilus-file-operations.c:2496
 #, c-format
 msgid "Preparing to copy %'d file (%s)"
 msgid_plural "Preparing to copy %'d files (%s)"
@@ -2075,7 +2108,7 @@ msgstr[0] "Preparándose para copiar %'d archivo (%s)"
 msgstr[1] "Preparándose para copiar %'d archivos (%s)"
 
 # src/file-manager/dfos-xfer.c:1009
-#: src/nautilus-file-operations.c:2554
+#: src/nautilus-file-operations.c:2509
 #, c-format
 msgid "Preparing to move %'d file (%s)"
 msgid_plural "Preparing to move %'d files (%s)"
@@ -2083,7 +2116,7 @@ msgstr[0] "Preparándose para mover %'d archivo (%s)"
 msgstr[1] "Preparándose para mover %'d archivos (%s)"
 
 # src/file-manager/dfos-xfer.c:1009
-#: src/nautilus-file-operations.c:2567
+#: src/nautilus-file-operations.c:2522
 #, c-format
 msgid "Preparing to delete %'d file (%s)"
 msgid_plural "Preparing to delete %'d files (%s)"
@@ -2091,7 +2124,7 @@ msgstr[0] "Preparándose para eliminar %'d archivo (%s)"
 msgstr[1] "Preparándose para eliminar %'d archivos (%s)"
 
 # src/file-manager/dfos-xfer.c:1009
-#: src/nautilus-file-operations.c:2577
+#: src/nautilus-file-operations.c:2532
 #, c-format
 msgid "Preparing to trash %'d file"
 msgid_plural "Preparing to trash %'d files"
@@ -2099,7 +2132,7 @@ msgstr[0] "Preparándose para mover a la papelera %'d archivo"
 msgstr[1] "Preparándose para mover a la papelera %'d archivos"
 
 # src/file-manager/dfos-xfer.c:1009
-#: src/nautilus-file-operations.c:2586
+#: src/nautilus-file-operations.c:2541
 #, c-format
 msgid "Preparing to compress %'d file"
 msgid_plural "Preparing to compress %'d files"
@@ -2107,29 +2140,29 @@ msgstr[0] "Preparándose para comprimir %'d archivo"
 msgstr[1] "Preparándose para comprimir %'d archivos"
 
 # src/file-manager/dfos-xfer.c:745
-#: src/nautilus-file-operations.c:2630 src/nautilus-file-operations.c:4077
-#: src/nautilus-file-operations.c:4246 src/nautilus-file-operations.c:4320
-#: src/nautilus-file-operations.c:4581
+#: src/nautilus-file-operations.c:2585 src/nautilus-file-operations.c:4039
+#: src/nautilus-file-operations.c:4209 src/nautilus-file-operations.c:4283
+#: src/nautilus-file-operations.c:4547
 msgid "Error while copying."
 msgstr "Error al copiar."
 
 # src/file-manager/dfos-xfer.c:745
-#: src/nautilus-file-operations.c:2635 src/nautilus-file-operations.c:4242
-#: src/nautilus-file-operations.c:4316 src/nautilus-file-operations.c:4580
+#: src/nautilus-file-operations.c:2590 src/nautilus-file-operations.c:4205
+#: src/nautilus-file-operations.c:4279 src/nautilus-file-operations.c:4546
 msgid "Error while moving."
 msgstr "Error al mover."
 
 # src/file-manager/dfos-xfer.c:745
-#: src/nautilus-file-operations.c:2645
+#: src/nautilus-file-operations.c:2600
 msgid "Error while moving files to trash."
 msgstr "Error al mover los archivos a la papelera."
 
 # src/file-manager/dfos-xfer.c:745
-#: src/nautilus-file-operations.c:2650
+#: src/nautilus-file-operations.c:2605
 msgid "Error while compressing files."
 msgstr "Error al comprimir archivos."
 
-#: src/nautilus-file-operations.c:2737
+#: src/nautilus-file-operations.c:2692
 #, c-format
 msgid ""
 "Files in the folder “%s” cannot be handled because you do not have "
@@ -2138,7 +2171,7 @@ msgstr ""
 "Los archivos en la carpeta «%s» no se pueden gestionar porque no tiene "
 "permisos para verlos."
 
-#: src/nautilus-file-operations.c:2743 src/nautilus-file-operations.c:4257
+#: src/nautilus-file-operations.c:2698 src/nautilus-file-operations.c:4220
 #, c-format
 msgid ""
 "There was an error getting information about the files in the folder “%s”."
@@ -2146,7 +2179,7 @@ msgstr ""
 "Hubo un error al obtener la información acerca de los archivos en la carpeta "
 "«%s»."
 
-#: src/nautilus-file-operations.c:2790
+#: src/nautilus-file-operations.c:2745
 #, c-format
 msgid ""
 "The folder “%s” cannot be handled because you do not have permissions to "
@@ -2154,12 +2187,12 @@ msgid ""
 msgstr ""
 "La carpeta «%s» no se puede gestionar porque no tiene permisos para leerla."
 
-#: src/nautilus-file-operations.c:2796 src/nautilus-file-operations.c:4331
+#: src/nautilus-file-operations.c:2751 src/nautilus-file-operations.c:4294
 #, c-format
 msgid "There was an error reading the folder “%s”."
 msgstr "Hubo un error al leer la carpeta «%s»."
 
-#: src/nautilus-file-operations.c:2899
+#: src/nautilus-file-operations.c:2854
 #, c-format
 msgid ""
 "The file “%s” cannot be handled because you do not have permissions to read "
@@ -2168,32 +2201,32 @@ msgstr ""
 "El archivo «%s» no se puede gestionar porque usted no tiene permisos para "
 "leerlo."
 
-#: src/nautilus-file-operations.c:2904
+#: src/nautilus-file-operations.c:2859
 #, c-format
 msgid "There was an error getting information about “%s”."
 msgstr "Hubo un error al obtener la información acerca de «%s»."
 
 # src/file-manager/dfos-xfer.c:745
-#: src/nautilus-file-operations.c:3023 src/nautilus-file-operations.c:3080
-#: src/nautilus-file-operations.c:3126 src/nautilus-file-operations.c:3186
+#: src/nautilus-file-operations.c:2978 src/nautilus-file-operations.c:3035
+#: src/nautilus-file-operations.c:3081 src/nautilus-file-operations.c:3141
 #, c-format
 msgid "Error while copying to “%s”."
 msgstr "Error al copiar a «%s»."
 
-#: src/nautilus-file-operations.c:3029
+#: src/nautilus-file-operations.c:2984
 msgid "You do not have permissions to access the destination folder."
 msgstr "No tiene permiso para acceder a la carpeta de destino."
 
-#: src/nautilus-file-operations.c:3033
+#: src/nautilus-file-operations.c:2988
 msgid "There was an error getting information about the destination."
 msgstr "Hubo un error al obtener la información acerca del destino."
 
 # src/nautilus-window-menus.c:602
-#: src/nautilus-file-operations.c:3081
+#: src/nautilus-file-operations.c:3036
 msgid "The destination is not a folder."
 msgstr "El destino no es una carpeta."
 
-#: src/nautilus-file-operations.c:3131
+#: src/nautilus-file-operations.c:3086
 msgid ""
 "There is not enough space on the destination. Try to remove files to make "
 "space."
@@ -2201,86 +2234,86 @@ msgstr ""
 "No hay suficiente espacio en el destino. Pruebe a eliminar archivos para "
 "hacer espacio."
 
-#: src/nautilus-file-operations.c:3134
+#: src/nautilus-file-operations.c:3089
 #, c-format
 msgid "%s more space is required to copy to the destination."
 msgstr "Se requiere %s espacio disponible adicional para copiar al destino."
 
-#: src/nautilus-file-operations.c:3170
+#: src/nautilus-file-operations.c:3125
 msgid "File too Large for Destination"
 msgstr "Archivo demasiado grande para el destino"
 
-#: src/nautilus-file-operations.c:3171
+#: src/nautilus-file-operations.c:3126
 msgid "Files bigger than 4.3 GB cannot be copied onto a FAT filesystem."
 msgstr ""
 "Los archivos de más de 4,3 GB no se pueden copiar a un sistema de archivos "
 "FAT."
 
-#: src/nautilus-file-operations.c:3187
+#: src/nautilus-file-operations.c:3142
 msgid "The destination is read-only."
 msgstr "El destino es de sólo lectura."
 
 # src/file-manager/fm-icon-view.c:1277
-#: src/nautilus-file-operations.c:3258
+#: src/nautilus-file-operations.c:3213
 #, c-format
 msgid "Moving “%s”"
 msgstr "Moviendo «%s»"
 
 # src/file-manager/fm-error-reporting.c:214
-#: src/nautilus-file-operations.c:3259
+#: src/nautilus-file-operations.c:3214
 #, c-format
 msgid "Moving “%s” to “%s”"
 msgstr "Moviendo «%s» a «%s»"
 
 # src/file-manager/dfos-xfer.c:700
-#: src/nautilus-file-operations.c:3263
+#: src/nautilus-file-operations.c:3218
 #, c-format
 msgid "Moved “%s”"
 msgstr "«%s» movido"
 
 # src/file-manager/fm-error-reporting.c:214
-#: src/nautilus-file-operations.c:3264
+#: src/nautilus-file-operations.c:3219
 #, c-format
 msgid "Moved “%s” to “%s”"
 msgstr "Movido «%s» a «%s»"
 
 # src/file-manager/fm-icon-view.c:1277
-#: src/nautilus-file-operations.c:3271
+#: src/nautilus-file-operations.c:3226
 #, c-format
 msgid "Copying “%s”"
 msgstr "Copiando «%s»"
 
 # src/file-manager/fm-error-reporting.c:214
-#: src/nautilus-file-operations.c:3272
+#: src/nautilus-file-operations.c:3227
 #, c-format
 msgid "Copying “%s” to “%s”"
 msgstr "Copiando «%s» a «%s»"
 
-#: src/nautilus-file-operations.c:3276
+#: src/nautilus-file-operations.c:3231
 #, c-format
 msgid "Copied “%s”"
 msgstr "«%s» copiado"
 
 # src/file-manager/fm-error-reporting.c:214
-#: src/nautilus-file-operations.c:3277
+#: src/nautilus-file-operations.c:3232
 #, c-format
 msgid "Copied “%s” to “%s”"
 msgstr "Copiado «%s» a «%s»"
 
 # src/file-manager/fm-icon-view.c:1277
-#: src/nautilus-file-operations.c:3314
+#: src/nautilus-file-operations.c:3269
 #, c-format
 msgid "Duplicating “%s”"
 msgstr "Duplicando «%s»"
 
 # src/file-manager/fm-icon-view.c:1277
-#: src/nautilus-file-operations.c:3318
+#: src/nautilus-file-operations.c:3273
 #, c-format
 msgid "Duplicated “%s”"
 msgstr "Duplicado «%s»"
 
 # src/file-manager/dfos-xfer.c:1008 src/file-manager/dfos-xfer.c:1058
-#: src/nautilus-file-operations.c:3337
+#: src/nautilus-file-operations.c:3292
 #, c-format
 msgid "Moving %'d file"
 msgid_plural "Moving %'d files"
@@ -2288,7 +2321,7 @@ msgstr[0] "Moviendo %'d archivo"
 msgstr[1] "Moviendo %'d archivos"
 
 # src/file-manager/dfos-xfer.c:700
-#: src/nautilus-file-operations.c:3340
+#: src/nautilus-file-operations.c:3295
 #, c-format
 msgid "Moving %'d file to “%s”"
 msgid_plural "Moving %'d files to “%s”"
@@ -2296,7 +2329,7 @@ msgstr[0] "Moviendo %'d archivo a «%s»"
 msgstr[1] "Moviendo %'d archivos a «%s»"
 
 # src/file-manager/dfos-xfer.c:1008 src/file-manager/dfos-xfer.c:1058
-#: src/nautilus-file-operations.c:3346
+#: src/nautilus-file-operations.c:3301
 #, c-format
 msgid "Copying %'d file"
 msgid_plural "Copying %'d files"
@@ -2304,7 +2337,7 @@ msgstr[0] "Copiando %'d archivo"
 msgstr[1] "Copiando %'d archivos"
 
 # src/file-manager/dfos-xfer.c:723
-#: src/nautilus-file-operations.c:3349
+#: src/nautilus-file-operations.c:3304
 #, c-format
 msgid "Copying %'d file to “%s”"
 msgid_plural "Copying %'d files to “%s”"
@@ -2312,7 +2345,7 @@ msgstr[0] "Copiando %'d archivo a «%s»"
 msgstr[1] "Copiando %'d archivos a «%s»"
 
 # src/file-manager/dfos-xfer.c:1008 src/file-manager/dfos-xfer.c:1058
-#: src/nautilus-file-operations.c:3370
+#: src/nautilus-file-operations.c:3325
 #, c-format
 msgid "Moved %'d file"
 msgid_plural "Moved %'d files"
@@ -2320,7 +2353,7 @@ msgstr[0] "%'d archivo movido"
 msgstr[1] "%'d archivos movidos"
 
 # src/file-manager/dfos-xfer.c:700
-#: src/nautilus-file-operations.c:3373
+#: src/nautilus-file-operations.c:3328
 #, c-format
 msgid "Moved %'d file to “%s”"
 msgid_plural "Moved %'d files to “%s”"
@@ -2328,7 +2361,7 @@ msgstr[0] "Movido %'d archivo a «%s»"
 msgstr[1] "Movidos %'d archivos a «%s»"
 
 # src/file-manager/dfos-xfer.c:1008 src/file-manager/dfos-xfer.c:1058
-#: src/nautilus-file-operations.c:3379
+#: src/nautilus-file-operations.c:3334
 #, c-format
 msgid "Copied %'d file"
 msgid_plural "Copied %'d files"
@@ -2336,7 +2369,7 @@ msgstr[0] "%'d archivo copiado"
 msgstr[1] "%'d archivo copiados"
 
 # src/file-manager/dfos-xfer.c:723
-#: src/nautilus-file-operations.c:3382
+#: src/nautilus-file-operations.c:3337
 #, c-format
 msgid "Copied %'d file to “%s”"
 msgid_plural "Copied %'d files to “%s”"
@@ -2344,14 +2377,14 @@ msgstr[0] "Copiado %'d archivo a «%s»"
 msgstr[1] "Copiados %'d archivos a «%s»"
 
 # src/file-manager/dfos-xfer.c:1008 src/file-manager/dfos-xfer.c:1058
-#: src/nautilus-file-operations.c:3407
+#: src/nautilus-file-operations.c:3362
 #, c-format
 msgid "Duplicating %'d file"
 msgid_plural "Duplicating %'d files"
 msgstr[0] "Duplicando %'d archivo"
 msgstr[1] "Duplicar %'d archivos"
 
-#: src/nautilus-file-operations.c:3410
+#: src/nautilus-file-operations.c:3365
 #, c-format
 msgid "Duplicating %'d file in “%s”"
 msgid_plural "Duplicating %'d files in “%s”"
@@ -2359,14 +2392,14 @@ msgstr[0] "Duplicando %'d archivo en «%s»"
 msgstr[1] "Duplicando %'d archivos en «%s»"
 
 # src/file-manager/dfos-xfer.c:1008 src/file-manager/dfos-xfer.c:1058
-#: src/nautilus-file-operations.c:3422
+#: src/nautilus-file-operations.c:3377
 #, c-format
 msgid "Duplicated %'d file"
 msgid_plural "Duplicated %'d files"
 msgstr[0] "%'d archivo duplicado"
 msgstr[1] "%'d archivos duplicados"
 
-#: src/nautilus-file-operations.c:3425
+#: src/nautilus-file-operations.c:3380
 #, c-format
 msgid "Duplicated %'d file in “%s”"
 msgid_plural "Duplicated %'d files in “%s”"
@@ -2381,9 +2414,9 @@ msgstr[1] "Duplicados %'d archivos en «%s»"
 #. To translators: %s will expand to a size like "2 bytes" or "3 MB", so
 #. something like "4 kB / 4 MB"
 #. To translators: %s will expand to a size like "2 bytes" or "3 MB".
-#: src/nautilus-file-operations.c:3466 src/nautilus-file-operations.c:3526
-#: src/nautilus-file-operations.c:7617 src/nautilus-file-operations.c:7844
-#: src/nautilus-file-operations.c:8106 src/nautilus-file-operations.c:8149
+#: src/nautilus-file-operations.c:3421 src/nautilus-file-operations.c:3481
+#: src/nautilus-file-operations.c:7527 src/nautilus-file-operations.c:7754
+#: src/nautilus-file-operations.c:8021 src/nautilus-file-operations.c:8064
 #, c-format
 msgid "%s / %s"
 msgstr "%s / %s"
@@ -2409,8 +2442,8 @@ msgstr "%s / %s"
 #. *
 #. * The singular/plural form will be used depending on the remaining time
 #. (i.e. the %s argument).
-#: src/nautilus-file-operations.c:3510 src/nautilus-file-operations.c:7635
-#: src/nautilus-file-operations.c:8138
+#: src/nautilus-file-operations.c:3465 src/nautilus-file-operations.c:7545
+#: src/nautilus-file-operations.c:8053
 #, c-format
 msgid "%s / %s — %s left (%s/s)"
 msgid_plural "%s / %s — %s left (%s/s)"
@@ -2423,14 +2456,14 @@ msgstr[1] "%s / %s — quedan %s (%s/s)"
 #. *
 #. * The singular/plural form will be used depending on the remaining time
 #. (i.e. the %s argument).
-#: src/nautilus-file-operations.c:3544 src/nautilus-file-operations.c:8168
+#: src/nautilus-file-operations.c:3499 src/nautilus-file-operations.c:8083
 #, c-format
 msgid "%'d / %'d — %s left (%s/s)"
 msgid_plural "%'d / %'d — %s left (%s/s)"
 msgstr[0] "%'d / %'d — queda %s (%s/s)"
 msgstr[1] "%'d / %'d — quedan %s (%s/s)"
 
-#: src/nautilus-file-operations.c:4065
+#: src/nautilus-file-operations.c:4027
 #, c-format
 msgid ""
 "The folder “%s” cannot be copied because you do not have permissions to "
@@ -2439,12 +2472,12 @@ msgstr ""
 "La carpeta «%s» no se puede copiar porque no tiene permisos para crearla en "
 "el destino."
 
-#: src/nautilus-file-operations.c:4071
+#: src/nautilus-file-operations.c:4033
 #, c-format
 msgid "There was an error creating the folder “%s”."
 msgstr "Hubo un error al crear la carpeta «%s»."
 
-#: src/nautilus-file-operations.c:4252
+#: src/nautilus-file-operations.c:4215
 #, c-format
 msgid ""
 "Files in the folder “%s” cannot be copied because you do not have "
@@ -2453,7 +2486,7 @@ msgstr ""
 "Los archivos en la carpeta «%s» no se pueden copiar porque no tiene permisos "
 "para verlos."
 
-#: src/nautilus-file-operations.c:4326
+#: src/nautilus-file-operations.c:4289
 #, c-format
 msgid ""
 "The folder “%s” cannot be copied because you do not have permissions to read "
@@ -2462,109 +2495,109 @@ msgstr ""
 "La carpeta «%s» no se puede copiar porque no tiene permisos para leerla."
 
 # src/file-manager/dfos-xfer.c:745
-#: src/nautilus-file-operations.c:4391 src/nautilus-file-operations.c:4943
-#: src/nautilus-file-operations.c:5582
+#: src/nautilus-file-operations.c:4354 src/nautilus-file-operations.c:4912
+#: src/nautilus-file-operations.c:5566
 #, c-format
 msgid "Error while moving “%s”."
 msgstr "Error al mover «%s»."
 
 # src/file-manager/dfos-xfer.c:778
-#: src/nautilus-file-operations.c:4392
+#: src/nautilus-file-operations.c:4355
 msgid "Could not remove the source folder."
 msgstr "No se pudo eliminar la carpeta origen."
 
 # src/file-manager/dfos-xfer.c:744
-#: src/nautilus-file-operations.c:4670 src/nautilus-file-operations.c:5391
+#: src/nautilus-file-operations.c:4639 src/nautilus-file-operations.c:5374
 msgid "You cannot move a folder into itself."
 msgstr "No puede mover una carpeta dentro de ella misma."
 
 # src/file-manager/dfos-xfer.c:778
-#: src/nautilus-file-operations.c:4671 src/nautilus-file-operations.c:5392
+#: src/nautilus-file-operations.c:4640 src/nautilus-file-operations.c:5375
 msgid "You cannot copy a folder into itself."
 msgstr "No puede copiar una carpeta dentro de ella misma."
 
 # src/nautilus-window-menus.c:602
-#: src/nautilus-file-operations.c:4672 src/nautilus-file-operations.c:5393
+#: src/nautilus-file-operations.c:4641 src/nautilus-file-operations.c:5376
 msgid "The destination folder is inside the source folder."
 msgstr "La carpeta de destino está dentro de la carpeta de origen."
 
 # src/file-manager/dfos-xfer.c:744
-#: src/nautilus-file-operations.c:4694 src/nautilus-file-operations.c:5415
+#: src/nautilus-file-operations.c:4663 src/nautilus-file-operations.c:5398
 msgid "You cannot move a file over itself."
 msgstr "No puede mover un archivo sobre sí mismo."
 
 # src/file-manager/dfos-xfer.c:778
-#: src/nautilus-file-operations.c:4695 src/nautilus-file-operations.c:5416
+#: src/nautilus-file-operations.c:4664 src/nautilus-file-operations.c:5399
 msgid "You cannot copy a file over itself."
 msgstr "No puede copiar un archivo sobre sí mismo."
 
-#: src/nautilus-file-operations.c:4696 src/nautilus-file-operations.c:5417
+#: src/nautilus-file-operations.c:4665 src/nautilus-file-operations.c:5400
 msgid "The source file would be overwritten by the destination."
 msgstr "El archivo de origen se sobrescribirá por el de destino."
 
 # src/file-manager/dfos-xfer.c:745
-#: src/nautilus-file-operations.c:4947 src/nautilus-file-operations.c:5006
+#: src/nautilus-file-operations.c:4916 src/nautilus-file-operations.c:4975
 #, c-format
 msgid "Error while copying “%s”."
 msgstr "Error al copiar «%s»."
 
 # components/services/install/lib/eazel-install-protocols.c:116
-#: src/nautilus-file-operations.c:4950
+#: src/nautilus-file-operations.c:4919
 #, c-format
 msgid "Could not remove the already existing file with the same name in %s."
 msgstr "No se pudo eliminar el archivo ya existente con el mismo nombre en %s."
 
-#: src/nautilus-file-operations.c:5007
+#: src/nautilus-file-operations.c:4976
 #, c-format
 msgid "There was an error copying the file into %s."
 msgstr "Hubo un error al copiar el archivo en %s."
 
-#: src/nautilus-file-operations.c:5174
+#: src/nautilus-file-operations.c:5143
 msgid "Copying Files"
 msgstr "Copiando archivos"
 
 # src/file-manager/dfos-xfer.c:964
-#: src/nautilus-file-operations.c:5292
+#: src/nautilus-file-operations.c:5261
 #, c-format
 msgid "Preparing to move to “%s”"
 msgstr "Preparándose para mover a «%s»"
 
 # src/file-manager/dfos-xfer.c:1009
-#: src/nautilus-file-operations.c:5294
+#: src/nautilus-file-operations.c:5263
 msgid "Preparing to move"
 msgstr "Preparándose para mover"
 
 # src/file-manager/dfos-xfer.c:1009
-#: src/nautilus-file-operations.c:5297
+#: src/nautilus-file-operations.c:5266
 #, c-format
 msgid "Preparing to move %'d file"
 msgid_plural "Preparing to move %'d files"
 msgstr[0] "Preparándose para mover %'d archivo"
 msgstr[1] "Preparándose para mover %'d archivos"
 
-#: src/nautilus-file-operations.c:5583
+#: src/nautilus-file-operations.c:5567
 #, c-format
 msgid "There was an error moving the file into %s."
 msgstr "Hubo un error al mover el archivo a %s."
 
 # src/file-manager/dfos-xfer.c:961
-#: src/nautilus-file-operations.c:5791
+#: src/nautilus-file-operations.c:5777
 msgid "Moving Files"
 msgstr "Moviendo archivos"
 
 # src/file-manager/dfos-xfer.c:713
-#: src/nautilus-file-operations.c:5893
+#: src/nautilus-file-operations.c:5879
 #, c-format
 msgid "Creating links in “%s”"
 msgstr "Creando enlaces en «%s»"
 
 # src/file-manager/dfos-xfer.c:713
-#: src/nautilus-file-operations.c:5895
+#: src/nautilus-file-operations.c:5881
 msgid "Creating links"
 msgstr "Creando enlaces"
 
 # src/file-manager/dfos-xfer.c:713
-#: src/nautilus-file-operations.c:5898
+#: src/nautilus-file-operations.c:5884
 #, c-format
 msgid "Making link to %'d file"
 msgid_plural "Making links to %'d files"
@@ -2572,74 +2605,74 @@ msgstr[0] "Creando enlace hacia %'d archivo"
 msgstr[1] "Creando enlaces hacia %'d archivos"
 
 # src/file-manager/dfos-xfer.c:745
-#: src/nautilus-file-operations.c:6038
+#: src/nautilus-file-operations.c:6024
 #, c-format
 msgid "Error while creating link to %s."
 msgstr "Error al crear el enlace a %s."
 
-#: src/nautilus-file-operations.c:6045
+#: src/nautilus-file-operations.c:6031
 msgid "Symbolic links only supported for local files"
 msgstr "Los enlaces simbólicos sólo están soportados para archivos locales"
 
-#: src/nautilus-file-operations.c:6049
+#: src/nautilus-file-operations.c:6035
 msgid "The target doesn’t support symbolic links."
 msgstr "El destino no soporta enlaces simbólicos."
 
-#: src/nautilus-file-operations.c:6056
+#: src/nautilus-file-operations.c:6042
 #, c-format
 msgid "There was an error creating the symlink in %s."
 msgstr "Hubo un error al crear el enlace simbólico en %s."
 
 # src/file-manager/fm-properties-window.c:1493
-#: src/nautilus-file-operations.c:6364
+#: src/nautilus-file-operations.c:6300
 msgid "Setting permissions"
 msgstr "Establecido permisos"
 
 # src/nautilus-window-manage-views.c:173
 #. localizers: the initial name of a new folder
-#: src/nautilus-file-operations.c:6653
+#: src/nautilus-file-operations.c:6558
 msgid "Untitled Folder"
 msgstr "Carpeta sin título"
 
 # src/file-manager/fm-directory-view.c:2140
 # src/file-manager/fm-directory-view.c:2257
 #. localizers: the initial name of a new empty document
-#: src/nautilus-file-operations.c:6668
+#: src/nautilus-file-operations.c:6573
 msgid "Untitled Document"
 msgstr "Documento sin título"
 
 # src/file-manager/dfos-xfer.c:745
-#: src/nautilus-file-operations.c:6892
+#: src/nautilus-file-operations.c:6802
 #, c-format
 msgid "Error while creating directory “%s”."
 msgstr "Error al crear la carpeta «%s»."
 
 # src/file-manager/dfos-xfer.c:745
-#: src/nautilus-file-operations.c:6897
+#: src/nautilus-file-operations.c:6807
 #, c-format
 msgid "Error while creating file “%s”."
 msgstr "Error al crear el archivo «%s»."
 
-#: src/nautilus-file-operations.c:6901
+#: src/nautilus-file-operations.c:6811
 #, c-format
 msgid "There was an error creating the directory in %s."
 msgstr "Hubo un error al crear la carpeta en %s."
 
-#: src/nautilus-file-operations.c:6990
+#: src/nautilus-file-operations.c:6900
 msgid "Saving image"
 msgstr "Guardando imagen"
 
-#: src/nautilus-file-operations.c:7005
+#: src/nautilus-file-operations.c:6915
 msgid "Saved image"
 msgstr "Imagen guardada"
 
-#: src/nautilus-file-operations.c:7035
+#: src/nautilus-file-operations.c:6945
 msgid "Failed to save image"
 msgstr "Falló al guardar la imagen"
 
 # src/file-manager/fm-error-reporting.c:214
 #. Start the timed wait to cancel the rename.
-#: src/nautilus-file-operations.c:7188
+#: src/nautilus-file-operations.c:7098
 #, c-format
 msgid "Renaming “%s” to “%s”."
 msgstr "Renombrando  «%s» a «%s»."
@@ -2647,62 +2680,62 @@ msgstr "Renombrando  «%s» a «%s»."
 #. Translators: This is used to auto-generate a file name for pasted images
 #. from
 #. * the clipboard i.e. "Pasted image.png", "Pasted image 1.png", ...
-#: src/nautilus-file-operations.c:7220
+#: src/nautilus-file-operations.c:7130
 msgid "Pasted image"
 msgstr "Imagen pegada"
 
-#: src/nautilus-file-operations.c:7227
+#: src/nautilus-file-operations.c:7137
 msgid "Retrieving clipboard data"
 msgstr "Obteniendo datos del portapapeles"
 
-#: src/nautilus-file-operations.c:7259
+#: src/nautilus-file-operations.c:7169
 msgid "Retrieving image data"
 msgstr "Obteniendo datos de la imagen"
 
 # src/file-manager/fm-directory-view.c:2154
-#: src/nautilus-file-operations.c:7477
+#: src/nautilus-file-operations.c:7387
 msgid "Emptying Trash"
 msgstr "Vaciando la papelera"
 
-#: src/nautilus-file-operations.c:7520
+#: src/nautilus-file-operations.c:7430
 msgid "Verifying destination"
 msgstr "Verificando destino"
 
 # src/file-manager/fm-icon-view.c:1277
-#: src/nautilus-file-operations.c:7574
+#: src/nautilus-file-operations.c:7484
 #, c-format
 msgid "Extracting “%s”"
 msgstr "Extrayendo «%s»"
 
 # src/file-manager/dfos-xfer.c:745
-#: src/nautilus-file-operations.c:7701 src/nautilus-file-operations.c:7789
+#: src/nautilus-file-operations.c:7611 src/nautilus-file-operations.c:7699
 #, c-format
 msgid "Error extracting “%s”"
 msgstr "Error al extraer «%s»"
 
-#: src/nautilus-file-operations.c:7709
+#: src/nautilus-file-operations.c:7619
 #, c-format
 msgid "There was an error while extracting “%s”."
 msgstr "Hubo un error al extraer «%s»."
 
-#: src/nautilus-file-operations.c:7784
+#: src/nautilus-file-operations.c:7694
 #, c-format
 msgid "Not enough free space to extract “%s”"
 msgstr "No hay espacio libre disponible para extraer «%s»"
 
 # src/file-manager/fm-icon-view.c:1277
-#: src/nautilus-file-operations.c:7821
+#: src/nautilus-file-operations.c:7731
 #, c-format
 msgid "Extracted “%s”"
 msgstr "«%s» extraído"
 
 # src/file-manager/fm-error-reporting.c:214
-#: src/nautilus-file-operations.c:7823
+#: src/nautilus-file-operations.c:7733
 #, c-format
 msgid "Extracted “%s” to “%s”"
 msgstr "Extraído «%s» a «%s»"
 
-#: src/nautilus-file-operations.c:7829
+#: src/nautilus-file-operations.c:7739
 #, c-format
 msgid "Extracted %'d file"
 msgid_plural "Extracted %'d files"
@@ -2710,7 +2743,7 @@ msgstr[0] "%'d archivo extraído"
 msgstr[1] "%'d archivos extraídos"
 
 # src/file-manager/dfos-xfer.c:700
-#: src/nautilus-file-operations.c:7833
+#: src/nautilus-file-operations.c:7743
 #, c-format
 msgid "Extracted %'d file to “%s”"
 msgid_plural "Extracted %'d files to “%s”"
@@ -2718,26 +2751,26 @@ msgstr[0] "Extraído %'d archivo a «%s»"
 msgstr[1] "Extraídos %'d archivos a «%s»"
 
 # src/file-manager/dfos-xfer.c:1009
-#: src/nautilus-file-operations.c:7867
+#: src/nautilus-file-operations.c:7777
 msgid "Preparing to extract"
 msgstr "Preparándose para extraer"
 
-#: src/nautilus-file-operations.c:7995
+#: src/nautilus-file-operations.c:7905
 msgid "Extracting Files"
 msgstr "Extrayendo archivos"
 
-#: src/nautilus-file-operations.c:8056
+#: src/nautilus-file-operations.c:7971
 #, c-format
 msgid "Compressing “%s”"
 msgstr "Comprimiendo «%s»"
 
 # src/file-manager/fm-error-reporting.c:214
-#: src/nautilus-file-operations.c:8058
+#: src/nautilus-file-operations.c:7973
 #, c-format
 msgid "Compressing “%s” into “%s”"
 msgstr "Comprimiendo «%s» en «%s»"
 
-#: src/nautilus-file-operations.c:8064
+#: src/nautilus-file-operations.c:7979
 #, c-format
 msgid "Compressing %'d file"
 msgid_plural "Compressing %'d files"
@@ -2745,7 +2778,7 @@ msgstr[0] "Comprimiendo %'d archivo"
 msgstr[1] "Comprimiendo %'d archivos"
 
 # src/file-manager/dfos-xfer.c:723
-#: src/nautilus-file-operations.c:8068
+#: src/nautilus-file-operations.c:7983
 #, c-format
 msgid "Compressing %'d file into “%s”"
 msgid_plural "Compressing %'d files into “%s”"
@@ -2753,19 +2786,19 @@ msgstr[0] "Comprimiendo %'d archivo en «%s»"
 msgstr[1] "Comprimiendo %'d archivos en «%s»"
 
 # src/file-manager/fm-error-reporting.c:214
-#: src/nautilus-file-operations.c:8217
+#: src/nautilus-file-operations.c:8134
 #, c-format
 msgid "Error compressing “%s”"
 msgstr "Error al comprimir «%s»"
 
 # src/file-manager/fm-error-reporting.c:214
-#: src/nautilus-file-operations.c:8219
+#: src/nautilus-file-operations.c:8136
 #, c-format
 msgid "Error compressing “%s” into “%s”"
 msgstr "Error al comprimir «%s» en «%s»"
 
 # src/file-manager/dfos-xfer.c:723
-#: src/nautilus-file-operations.c:8225
+#: src/nautilus-file-operations.c:8142
 #, c-format
 msgid "Error compressing %'d file"
 msgid_plural "Error compressing %'d files"
@@ -2773,29 +2806,29 @@ msgstr[0] "Error al comprimir %'d archivo"
 msgstr[1] "Error al comprimir %'d archivos"
 
 # src/file-manager/dfos-xfer.c:723
-#: src/nautilus-file-operations.c:8229
+#: src/nautilus-file-operations.c:8146
 #, c-format
 msgid "Error compressing %'d file into “%s”"
 msgid_plural "Error compressing %'d files into “%s”"
 msgstr[0] "Error al comprimir %'d archivo en «%s»"
 msgstr[1] "Error al comprimir %'d archivos en «%s»"
 
-#: src/nautilus-file-operations.c:8238
+#: src/nautilus-file-operations.c:8155
 msgid "There was an error while compressing files."
 msgstr "Hubo un error al comprimir los archivos."
 
-#: src/nautilus-file-operations.c:8261
+#: src/nautilus-file-operations.c:8178
 #, c-format
 msgid "Compressed “%s”"
 msgstr "«%s» comprimido"
 
 # src/file-manager/fm-error-reporting.c:214
-#: src/nautilus-file-operations.c:8263
+#: src/nautilus-file-operations.c:8180
 #, c-format
 msgid "Compressed “%s” into “%s”"
 msgstr "Comprimido «%s» en «%s»"
 
-#: src/nautilus-file-operations.c:8269
+#: src/nautilus-file-operations.c:8186
 #, c-format
 msgid "Compressed %'d file"
 msgid_plural "Compressed %'d files"
@@ -2803,19 +2836,19 @@ msgstr[0] "%'d archivo comprimido"
 msgstr[1] "%'d archivos comprimidos"
 
 # src/file-manager/dfos-xfer.c:723
-#: src/nautilus-file-operations.c:8273
+#: src/nautilus-file-operations.c:8190
 #, c-format
 msgid "Compressed %'d file into “%s”"
 msgid_plural "Compressed %'d files into “%s”"
 msgstr[0] "Comprimido %'d archivo en «%s»"
 msgstr[1] "Comprimidos %'d archivos en «%s»"
 
-#: src/nautilus-file-operations.c:8392
+#: src/nautilus-file-operations.c:8307
 msgid "Compressing Files"
 msgstr "Comprimiendo archivos"
 
 # src/nautilus-first-time-druid.c:290
-#: src/nautilus-file-undo-operations.c:176 src/nautilus-window.c:898
+#: src/nautilus-file-undo-operations.c:176 src/nautilus-window.c:931
 msgid "Undo"
 msgstr "Deshacer"
 
@@ -2954,8 +2987,8 @@ msgstr[1] "_Rehacer copiar %d elementos"
 #: src/nautilus-file-undo-operations.c:514
 #: src/nautilus-file-undo-operations.c:541
 #: src/nautilus-file-undo-operations.c:825
-#: src/nautilus-file-undo-operations.c:2352
-#: src/nautilus-file-undo-operations.c:2515
+#: src/nautilus-file-undo-operations.c:2343
+#: src/nautilus-file-undo-operations.c:2506
 #, c-format
 msgid "Delete “%s”"
 msgstr "Eliminar «%s»"
@@ -3144,35 +3177,35 @@ msgstr "_Deshacer renombrar en masa"
 msgid "_Redo Batch Rename"
 msgstr "_Rehacer renombrar en amsa"
 
-#: src/nautilus-file-undo-operations.c:1389
-#: src/nautilus-file-undo-operations.c:1406
+#: src/nautilus-file-undo-operations.c:1391
+#: src/nautilus-file-undo-operations.c:1408
 #, c-format
 msgid "Unstar %d file"
 msgid_plural "Unstar %d files"
 msgstr[0] "Quitar destaque de %d archivo"
 msgstr[1] "Quitar destaque de %d archivos"
 
-#: src/nautilus-file-undo-operations.c:1393
-#: src/nautilus-file-undo-operations.c:1402
+#: src/nautilus-file-undo-operations.c:1395
+#: src/nautilus-file-undo-operations.c:1404
 #, c-format
 msgid "Star %d file"
 msgid_plural "Star %d files"
 msgstr[0] "Destacar %d archivo"
 msgstr[1] "Destacar %d archivos"
 
-#: src/nautilus-file-undo-operations.c:1397
+#: src/nautilus-file-undo-operations.c:1399
 msgid "_Undo Starring"
 msgstr "_Deshacer destacar"
 
-#: src/nautilus-file-undo-operations.c:1398
+#: src/nautilus-file-undo-operations.c:1400
 msgid "_Redo Starring"
 msgstr "_Rehacer destaque"
 
-#: src/nautilus-file-undo-operations.c:1410
+#: src/nautilus-file-undo-operations.c:1412
 msgid "_Undo Unstarring"
 msgstr "_Deshacer quitar destaque"
 
-#: src/nautilus-file-undo-operations.c:1411
+#: src/nautilus-file-undo-operations.c:1413
 msgid "_Redo Unstarring"
 msgstr "_Rehacer quitar destaque"
 
@@ -3205,88 +3238,88 @@ msgstr "_Deshacer mover a la papelera"
 msgid "_Redo Trash"
 msgstr "_Rehacer mover a la papelera"
 
-#: src/nautilus-file-undo-operations.c:1922
+#: src/nautilus-file-undo-operations.c:1889
 #, c-format
 msgid "Restore original permissions of items enclosed in “%s”"
 msgstr "Restaurar los permisos originales de los elementos contenidos en «%s»"
 
 # src/file-manager/fm-properties-window.c:1641
-#: src/nautilus-file-undo-operations.c:1923
+#: src/nautilus-file-undo-operations.c:1890
 #, c-format
 msgid "Set permissions of items enclosed in “%s”"
 msgstr "Establecer los permisos de los elementos contenidos en «%s»"
 
 # src/file-manager/fm-properties-window.c:1493
-#: src/nautilus-file-undo-operations.c:1925
-#: src/nautilus-file-undo-operations.c:2076
+#: src/nautilus-file-undo-operations.c:1892
+#: src/nautilus-file-undo-operations.c:2067
 msgid "_Undo Change Permissions"
 msgstr "_Deshacer cambiar permisos"
 
 # src/file-manager/fm-properties-window.c:1493
-#: src/nautilus-file-undo-operations.c:1926
-#: src/nautilus-file-undo-operations.c:2077
+#: src/nautilus-file-undo-operations.c:1893
+#: src/nautilus-file-undo-operations.c:2068
 msgid "_Redo Change Permissions"
 msgstr "_Rehacer cambiar permisos"
 
-#: src/nautilus-file-undo-operations.c:2073
+#: src/nautilus-file-undo-operations.c:2064
 #, c-format
 msgid "Restore original permissions of “%s”"
 msgstr "Restaurar los permisos originales de «%s»"
 
 # src/file-manager/fm-properties-window.c:1493
-#: src/nautilus-file-undo-operations.c:2074
+#: src/nautilus-file-undo-operations.c:2065
 #, c-format
 msgid "Set permissions of “%s”"
 msgstr "Establecer los permisos de «%s»"
 
-#: src/nautilus-file-undo-operations.c:2186
+#: src/nautilus-file-undo-operations.c:2177
 #, c-format
 msgid "Restore group of “%s” to “%s”"
 msgstr "Restaurar el grupo de «%s» a «%s»"
 
 # src/file-manager/fm-error-reporting.c:214
-#: src/nautilus-file-undo-operations.c:2188
+#: src/nautilus-file-undo-operations.c:2179
 #, c-format
 msgid "Set group of “%s” to “%s”"
 msgstr "Establecer el grupo de «%s» a «%s»"
 
-#: src/nautilus-file-undo-operations.c:2191
+#: src/nautilus-file-undo-operations.c:2182
 msgid "_Undo Change Group"
 msgstr "_Deshacer cambiar grupo"
 
-#: src/nautilus-file-undo-operations.c:2192
+#: src/nautilus-file-undo-operations.c:2183
 msgid "_Redo Change Group"
 msgstr "_Rehacer cambiar grupo"
 
-#: src/nautilus-file-undo-operations.c:2196
+#: src/nautilus-file-undo-operations.c:2187
 #, c-format
 msgid "Restore owner of “%s” to “%s”"
 msgstr "Restaurar el propietario de «%s» a «%s»"
 
 # src/file-manager/fm-error-reporting.c:214
-#: src/nautilus-file-undo-operations.c:2198
+#: src/nautilus-file-undo-operations.c:2189
 #, c-format
 msgid "Set owner of “%s” to “%s”"
 msgstr "Establecer el propietario de «%s» a «%s»"
 
-#: src/nautilus-file-undo-operations.c:2201
+#: src/nautilus-file-undo-operations.c:2192
 msgid "_Undo Change Owner"
 msgstr "_Deshacer cambiar propietario"
 
-#: src/nautilus-file-undo-operations.c:2202
+#: src/nautilus-file-undo-operations.c:2193
 msgid "_Redo Change Owner"
 msgstr "_Rehacer cambiar propietario"
 
-#: src/nautilus-file-undo-operations.c:2338
+#: src/nautilus-file-undo-operations.c:2329
 msgid "_Undo Extract"
 msgstr "_Deshacer extraer"
 
 # src/file-manager/fm-directory-view.c:2145
-#: src/nautilus-file-undo-operations.c:2339
+#: src/nautilus-file-undo-operations.c:2330
 msgid "_Redo Extract"
 msgstr "_Rehacer extraer"
 
-#: src/nautilus-file-undo-operations.c:2356
+#: src/nautilus-file-undo-operations.c:2347
 #, c-format
 msgid "Delete %d extracted file"
 msgid_plural "Delete %d extracted files"
@@ -3294,82 +3327,82 @@ msgstr[0] "Eliminar %d elemento extraído"
 msgstr[1] "Eliminar %d elementos extraídos"
 
 # src/file-manager/fm-icon-view.c:1277
-#: src/nautilus-file-undo-operations.c:2370
+#: src/nautilus-file-undo-operations.c:2361
 #, c-format
 msgid "Extract “%s”"
 msgstr "Extraer «%s»"
 
-#: src/nautilus-file-undo-operations.c:2374
+#: src/nautilus-file-undo-operations.c:2365
 #, c-format
 msgid "Extract %d file"
 msgid_plural "Extract %d files"
 msgstr[0] "Extraer %d archivo"
 msgstr[1] "Extraer %d archivos"
 
-#: src/nautilus-file-undo-operations.c:2526
+#: src/nautilus-file-undo-operations.c:2517
 #, c-format
 msgid "Compress “%s”"
 msgstr "Comprimir «%s»"
 
-#: src/nautilus-file-undo-operations.c:2530
+#: src/nautilus-file-undo-operations.c:2521
 #, c-format
 msgid "Compress %d file"
 msgid_plural "Compress %d files"
 msgstr[0] "Comprimir %d archivo"
 msgstr[1] "Comprimir %d archivos"
 
-#: src/nautilus-file-undo-operations.c:2536
+#: src/nautilus-file-undo-operations.c:2527
 msgid "_Undo Compress"
 msgstr "_Deshacer comprimir"
 
 # src/file-manager/fm-properties-window.c:1573
-#: src/nautilus-file-undo-operations.c:2537
+#: src/nautilus-file-undo-operations.c:2528
 msgid "_Redo Compress"
 msgstr "_Rehacer comprimir"
 
-#: src/nautilus-file-utilities.c:579
+#: src/nautilus-file-utilities.c:643
 #, c-format
 msgid "Could not determine original location of “%s” "
 msgstr "No se pudo determinar el lugar original de «%s» "
 
-#: src/nautilus-file-utilities.c:583
+#: src/nautilus-file-utilities.c:647
 msgid "The item cannot be restored from trash"
 msgstr "No se pudo restaurar el elemento desde la papelera"
 
 #. translators: these describe the contents of removable media
-#: src/nautilus-file-utilities.c:705
+#: src/nautilus-file-utilities.c:769
 msgid "Photo CD"
 msgstr "CD de Fotos"
 
-#: src/nautilus-file-utilities.c:709 src/nautilus-file-utilities.c:756
+#: src/nautilus-file-utilities.c:773 src/nautilus-file-utilities.c:820
 msgid "Contains digital photos"
 msgstr "Contiene fotos digitales."
 
-#: src/nautilus-file-utilities.c:713
+#: src/nautilus-file-utilities.c:777
 msgid "Contains music"
 msgstr "Contiene música"
 
-#: src/nautilus-file-utilities.c:717
+#: src/nautilus-file-utilities.c:781
 msgid "Contains software to run"
 msgstr "Contiene software que ejecutar"
 
-#: src/nautilus-file-utilities.c:721
+#: src/nautilus-file-utilities.c:785
 msgid "Contains software to install"
 msgstr "Contiene software que instalar"
 
 # #-#-#-#-#  nautilus-es.po (Nautilus)  #-#-#-#-#
 # src/file-manager/fm-directory-view.c:1865
-#: src/nautilus-file-utilities.c:727
+#: src/nautilus-file-utilities.c:791
 #, c-format
 msgid "Detected as “%s”"
 msgstr "Detectado como «%s»"
 
 #. translators: these describe the contents of removable media
-#: src/nautilus-file-utilities.c:748
+#: src/nautilus-file-utilities.c:812
 msgid "Contains music and photos"
 msgstr "Contiene música y fotos"
 
-#: src/nautilus-file-utilities.c:752
+#: src/nautilus-file-utilities.c:816
 msgid "Contains photos and music"
 msgstr "Contiene fotos y música"
 
@@ -3407,91 +3440,88 @@ msgid "File names cannot contain “/”"
 msgstr "Los nombres de archivos no pueden contener «/»"
 
 #: src/nautilus-filename-validator.c:142
-msgid "A folder cannot be called “.”"
-msgstr "Una carpeta no se puede llamar «.»"
+msgid "A folder cannot be called “.” or “..”"
+msgstr "Una carpeta no puede llamarse «.» o «..»"
 
 #: src/nautilus-filename-validator.c:143
-msgid "A file cannot be called “.”"
-msgstr "Un archivo no se puede llamar «.»"
-
-#: src/nautilus-filename-validator.c:148
-msgid "A folder cannot be called “..”"
-msgstr "Una carpeta no se puede llamar «..»"
-
-#: src/nautilus-filename-validator.c:149
-msgid "A file cannot be called “..”"
-msgstr "Un archivo no se puede llamar «..»"
+msgid "A file cannot be called “.” or “..”"
+msgstr "Un archivo no puede llamarse «.» o «..»"
 
 # src/file-manager/fm-directory-view.c:2140
 # src/file-manager/fm-directory-view.c:2257
-#: src/nautilus-filename-validator.c:154
+#: src/nautilus-filename-validator.c:148
 msgid "Folder name is too long"
 msgstr "El nombre de la carpeta demasiado largo."
 
-#: src/nautilus-filename-validator.c:155
+#: src/nautilus-filename-validator.c:149
 msgid "File name is too long"
 msgstr "El nombre de archivo demasiado largo."
 
 #. We must warn about the side effect
-#: src/nautilus-filename-validator.c:161
+#: src/nautilus-filename-validator.c:155
 msgid "Folders with “.” at the beginning of their name are hidden"
 msgstr "Las carpetas con un «.» al principio del nombre están ocultos"
 
-#: src/nautilus-filename-validator.c:162
+#: src/nautilus-filename-validator.c:156
 msgid "Files with “.” at the beginning of their name are hidden"
 msgstr "Los archivos con un «.» al principio del nombre están ocultos"
 
-#: src/nautilus-filename-validator.c:171
+#: src/nautilus-filename-validator.c:199
 msgid "A folder with that name already exists"
 msgstr "Ya existe una carpeta con el mismo nombre"
 
-#: src/nautilus-filename-validator.c:172
+#: src/nautilus-filename-validator.c:200
 msgid "A file with that name already exists"
 msgstr "Ya existe un archivo con el mismo nombre"
 
-#: src/nautilus-files-view.c:365
+#: src/nautilus-files-view.c:367
 msgid "Searching…"
 msgstr "Buscando…"
 
-#: src/nautilus-files-view.c:365 src/nautilus-window-slot.c:907
+#: src/nautilus-files-view.c:367 src/nautilus-window-slot.c:900
 #: src/resources/ui/nautilus-properties-widget.blp:12
 msgid "Loading…"
 msgstr "Cargando…"
 
+# src/file-manager/fm-properties-window.c:1563
+#: src/nautilus-files-view.c:955
+msgid "Empty Text File"
+msgstr "Archivo de texto vacío"
+
 # src/file-manager/fm-properties-window.c:1237
-#: src/nautilus-files-view.c:1793
+#: src/nautilus-files-view.c:1813
 msgid "Examples: "
 msgstr "Ejemplos: "
 
-#: src/nautilus-files-view.c:2817 src/nautilus-files-view.c:2823
-#: src/nautilus-files-view.c:2829 src/nautilus-files-view.c:2835
+#: src/nautilus-files-view.c:2860 src/nautilus-files-view.c:2866
+#: src/nautilus-files-view.c:2872 src/nautilus-files-view.c:2878
 msgid "Could not paste files"
 msgstr "No se ha podido pegar los archivos"
 
-#: src/nautilus-files-view.c:2818
+#: src/nautilus-files-view.c:2861
 msgid "Cannot paste files into Starred"
 msgstr "No se ha podido pegar los archivos en Favoritos"
 
-#: src/nautilus-files-view.c:2824
+#: src/nautilus-files-view.c:2867
 msgid "Cannot paste files into Recent"
 msgstr "No se ha podido pegar los archivos en Recientes"
 
-#: src/nautilus-files-view.c:2830
+#: src/nautilus-files-view.c:2873
 msgid "Cannot paste files into Trash"
 msgstr "No se ha podido pegar los archivos en la papelera"
 
-#: src/nautilus-files-view.c:2836
+#: src/nautilus-files-view.c:2879
 msgid "Permissions do not allow pasting files in this directory"
 msgstr "Los permisos no permiten pegar archivos en esta carpeta"
 
 # src/file-manager/fm-directory-view.c:1015
-#: src/nautilus-files-view.c:3427 src/nautilus-files-view.c:3474
+#: src/nautilus-files-view.c:3459 src/nautilus-files-view.c:3506
 #, c-format
 msgid "“%s” selected"
 msgstr "«%s» seleccionado"
 
 # src/file-manager/fm-directory-view.c:1020
-#: src/nautilus-files-view.c:3431
+#: src/nautilus-files-view.c:3463
 #, c-format
 msgid "%'d folder selected"
 msgid_plural "%'d folders selected"
@@ -3499,7 +3529,7 @@ msgstr[0] "%'d carpeta seleccionada"
 msgstr[1] "%'d carpetas seleccionadas"
 
 # src/file-manager/fm-directory-view.c:1030
-#: src/nautilus-files-view.c:3445
+#: src/nautilus-files-view.c:3477
 #, c-format
 msgid "(containing %'d item)"
 msgid_plural "(containing %'d items)"
@@ -3509,7 +3539,7 @@ msgstr[1] "(contiene %'d elementos)"
 # src/file-manager/fm-directory-view.c:1030
 #. translators: this is preceded with a string of form 'N folders' (N more
 #. than 1)
-#: src/nautilus-files-view.c:3460
+#: src/nautilus-files-view.c:3492
 #, c-format
 msgid "(containing a total of %'d item)"
 msgid_plural "(containing a total of %'d items)"
@@ -3517,7 +3547,7 @@ msgstr[0] "(contiene un total de %'d elemento)"
 msgstr[1] "(contiene un total de %'d elementos)"
 
 # src/file-manager/fm-directory-view.c:1045
-#: src/nautilus-files-view.c:3479
+#: src/nautilus-files-view.c:3511
 #, c-format
 msgid "%'d item selected"
 msgid_plural "%'d items selected"
@@ -3526,7 +3556,7 @@ msgstr[1] "%'d elementos seleccionados"
 
 # src/file-manager/fm-directory-view.c:1055
 #. Folders selected also, use "other" terminology
-#: src/nautilus-files-view.c:3488
+#: src/nautilus-files-view.c:3520
 #, c-format
 msgid "%'d other item selected"
 msgid_plural "%'d other items selected"
@@ -3536,7 +3566,7 @@ msgstr[1] "otros %'d elementos seleccionados"
 #. This is marked for translation in case a localiser
 #. * needs to use something other than parentheses. The
 #. * the message in parentheses is the size of the selected items.
-#: src/nautilus-files-view.c:3503
+#: src/nautilus-files-view.c:3535
 #, c-format
 msgid "(%s)"
 msgstr "(%s)"
@@ -3548,109 +3578,109 @@ msgstr "(%s)"
 #. * and the number of items in those folders and the
 #. * message about the number of other items and the
 #. * total size of those items.
-#: src/nautilus-files-view.c:3553
+#: src/nautilus-files-view.c:3585
 #, c-format
 msgid "%s, %s"
 msgstr "%s, %s"
 
-#: src/nautilus-files-view.c:3629
+#: src/nautilus-files-view.c:3661
 msgid "Search _Settings"
 msgstr "Configuración de la _búsqueda"
 
-#: src/nautilus-files-view.c:3641
+#: src/nautilus-files-view.c:3673
 msgid "Search _Everywhere"
 msgstr "Buscar en _todos los sitios"
 
-#: src/nautilus-files-view.c:3671
+#: src/nautilus-files-view.c:3703
 msgid "More locations can be added to search in the settings"
 msgstr "Se pueden añadir más ubicaciones a la búsqueda en la configuración"
 
 # src/file-manager/fm-icon-view.c:1277
 #. Translators: %s is the name of the search location formatted for display
-#: src/nautilus-files-view.c:3679
+#: src/nautilus-files-view.c:3711
 #, c-format
 msgid "No matches in “%s”"
 msgstr "No hay coincidencias en «%s»"
 
-#: src/nautilus-files-view.c:3687
+#: src/nautilus-files-view.c:3719
 #: src/resources/ui/nautilus-search-types-dialog.blp:66
 msgid "No Results Found"
 msgstr "No se encontraron resultados"
 
 # src/file-manager/fm-directory-view.c:2140
 # src/file-manager/fm-directory-view.c:2257
-#: src/nautilus-files-view.c:3692
+#: src/nautilus-files-view.c:3724
 msgid "Trash is Empty"
 msgstr "La papelera está vacía"
 
-#: src/nautilus-files-view.c:3698
+#: src/nautilus-files-view.c:3730
 msgid "No Starred Files"
 msgstr "No hay archivos destacados"
 
 # src/file-manager/dfos-xfer.c:1008 src/file-manager/dfos-xfer.c:1058
-#: src/nautilus-files-view.c:3704
+#: src/nautilus-files-view.c:3736
 msgid "No Recent Files"
 msgstr "No hay archivos recientes"
 
-#: src/nautilus-files-view.c:3710
+#: src/nautilus-files-view.c:3742
 msgid "No Known Connections"
 msgstr "Sin conexiones conocidas"
 
-#: src/nautilus-files-view.c:3711
+#: src/nautilus-files-view.c:3743
 msgid "Enter an address to connect to a network location."
 msgstr "Introduzca una dirección para conectase a una ubicación de red."
 
 # src/file-manager/fm-directory-view.c:2140
 # src/file-manager/fm-directory-view.c:2257
-#: src/nautilus-files-view.c:3716
+#: src/nautilus-files-view.c:3748
 msgid "Folder is Empty"
 msgstr "La carpeta está vacía"
 
 # src/nautilus-property-browser.c:263 src/nautilus-property-browser.c:1977
-#: src/nautilus-files-view.c:5762
+#: src/nautilus-files-view.c:5861
 msgid "Select Move Destination"
 msgstr "Seleccionar el destino para mover"
 
 # src/nautilus-property-browser.c:263 src/nautilus-property-browser.c:1977
-#: src/nautilus-files-view.c:5766
+#: src/nautilus-files-view.c:5865
 msgid "Select Copy Destination"
 msgstr "Seleccionar el destino para copiar"
 
 # #-#-#-#-#  nautilus-es.po (Nautilus)  #-#-#-#-#
 # src/file-manager/fm-directory-view.c:1865
-#: src/nautilus-files-view.c:5777 src/nautilus-files-view.c:6142
-#: src/nautilus-portal.c:431 src/nautilus-properties.c:3931
+#: src/nautilus-files-view.c:5876 src/nautilus-files-view.c:6244
+#: src/nautilus-portal.c:478 src/nautilus-properties.c:3991
 #: src/resources/ui/nautilus-files-view-select-items.blp:24
 msgid "_Select"
 msgstr "_Seleccionar"
 
 # src/nautilus-property-browser.c:263 src/nautilus-property-browser.c:1977
-#: src/nautilus-files-view.c:6141
+#: src/nautilus-files-view.c:6243
 msgid "Select Extract Destination"
 msgstr "Seleccionar el destino para extraer"
 
-#: src/nautilus-files-view.c:6217
+#: src/nautilus-files-view.c:6319
 msgid "Error sending email."
 msgstr "Error al enviar el correo."
 
 #. Translators: %s is a file name formatted for display
-#: src/nautilus-files-view.c:6516
+#: src/nautilus-files-view.c:6618
 #, c-format
 msgid "Unable to remove “%s”"
 msgstr "No se pudo quitar «%s»"
 
-#: src/nautilus-files-view.c:6559
+#: src/nautilus-files-view.c:6661
 msgid "Unable to stop drive"
 msgstr "No se pudo parar la unidad"
 
 #. Translators: %s is a file name formatted for display
-#: src/nautilus-files-view.c:6669 src/nautilus-sidebar.c:1730
+#: src/nautilus-files-view.c:6771 src/nautilus-sidebar.c:1728
 #: src/nautilus-sidebar.c:2608
 #, c-format
 msgid "Unable to start “%s”"
 msgstr "No se pudo iniciar «%s»"
 
-#: src/nautilus-files-view.c:7770
+#: src/nautilus-files-view.c:7879
 #, c-format
 msgid "New Folder with Selection (%'d Item)"
 msgid_plural "New Folder with Selection (%'d Items)"
@@ -3658,68 +3688,76 @@ msgstr[0] "Carpeta nueva con la selección (%'d elemento)"
 msgstr[1] "Carpeta nueva con la selección (%'d elementos)"
 
 # src/nautilus-sidebar.c:1145
-#: src/nautilus-files-view.c:7825
+#: src/nautilus-files-view.c:7934
 #, c-format
 msgid "Open With %s"
 msgstr "Abrir con %s"
 
-#: src/nautilus-files-view.c:7836
+#: src/nautilus-files-view.c:7945
 msgid "Run"
 msgstr "Ejecutar"
 
-#: src/nautilus-files-view.c:7841
+#: src/nautilus-files-view.c:7950
 #: src/resources/ui/nautilus-operations-ui-manager-request-passphrase.blp:17
 msgid "Extract"
 msgstr "Extraer"
 
-#: src/nautilus-files-view.c:7842
+#: src/nautilus-files-view.c:7951
 msgid "Extract to…"
 msgstr "Extraer a…"
 
 # #-#-#-#-#  nautilus-es.po (Nautilus)  #-#-#-#-#
 # src/file-manager/fm-directory-view.c:2114
-#: src/nautilus-files-view.c:7846
-#: src/resources/menu/nautilus-files-view-context-menus.ui:98
+#: src/nautilus-files-view.c:7955
+#: src/resources/menu/nautilus-files-view-context-menus.ui:88
 msgid "Open"
 msgstr "Abrir"
 
-#: src/nautilus-files-view.c:7925 src/nautilus-sidebar.c:3054
-#: src/resources/menu/nautilus-files-view-context-menus.ui:164
+#: src/nautilus-files-view.c:8031 src/nautilus-sidebar.c:3054
+#: src/resources/menu/nautilus-files-view-context-menus.ui:154
 msgid "_Start"
 msgstr "_Iniciar"
 
-#: src/nautilus-files-view.c:7931
+#: src/nautilus-files-view.c:8037
 msgid "_Connect"
 msgstr "_Conectar"
 
-#: src/nautilus-files-view.c:7937
+#: src/nautilus-files-view.c:8043
 msgid "_Start Multi-disk Drive"
 msgstr "_Iniciar unidad multidisco"
 
-#: src/nautilus-files-view.c:7943
+#: src/nautilus-files-view.c:8049
 msgid "U_nlock Drive"
 msgstr "D_esbloquear unidad"
 
-#: src/nautilus-files-view.c:7961
+#: src/nautilus-files-view.c:8067
 msgid "Stop Drive"
 msgstr "Detener unidad"
 
 # src/nautilus-property-browser.c:1985
-#: src/nautilus-files-view.c:7967 src/nautilus-sidebar.c:3085
+#: src/nautilus-files-view.c:8073 src/nautilus-sidebar.c:3085
 msgid "_Safely Remove Drive"
 msgstr "Expulsar unidad de forma _segura"
 
-#: src/nautilus-files-view.c:7973
+#: src/nautilus-files-view.c:8079
 msgid "_Disconnect"
 msgstr "_Desconectar"
 
-#: src/nautilus-files-view.c:7979
+#: src/nautilus-files-view.c:8085
 msgid "_Stop Multi-disk Drive"
 msgstr "_Parar unidad multidisco"
 
-#: src/nautilus-files-view.c:7985
+#: src/nautilus-files-view.c:8091
 msgid "_Lock Drive"
 msgstr "_Bloquear unidad"
+
+#: src/nautilus-files-view.c:9721
+msgid "View items as a grid of icons"
+msgstr "Ver elementos como una cuadrícula de iconos"
+
+#: src/nautilus-files-view.c:9732
+msgid "View items as a list"
+msgstr "Ver elementos como una lista"
 
 #. Translator: This is the filename used for when you dnd text to a directory
 #: src/nautilus-files-view-dnd.c:100
@@ -3738,19 +3776,19 @@ msgstr "Se ha utilizado un tipo de arrastre no válido."
 # components/music/nautilus-music-view.c:1158
 # src/file-manager/dfos-xfer.c:352 src/file-manager/dfos-xfer.c:372
 # src/nautilus-window-toolbars.c:156
-#: src/nautilus-floating-bar.c:391
+#: src/nautilus-floating-bar.c:390
 msgctxt "Stop an ongoing operation"
 msgid "Stop"
 msgstr "Detener"
 
 # src/file-manager/fm-properties-window.c:878
-#: src/nautilus-grid-view.c:521 src/nautilus-list-view.c:385
-#: src/nautilus-network-view.c:350
+#: src/nautilus-grid-view.c:514 src/nautilus-list-view.c:385
+#: src/nautilus-network-view.c:349
 msgid "Content View"
 msgstr "Vista del contenido"
 
-#: src/nautilus-grid-view.c:523 src/nautilus-list-view.c:387
-#: src/nautilus-network-view.c:352
+#: src/nautilus-grid-view.c:516 src/nautilus-list-view.c:387
+#: src/nautilus-network-view.c:351
 msgid "View of the current location"
 msgstr "Vista de la ubicación actual"
 
@@ -3758,16 +3796,16 @@ msgstr "Vista de la ubicación actual"
 #. Translators: this refers to captions under icons.
 #. Translators: this is referred to the permissions the user has in a
 #. directory.
-#: src/nautilus-grid-view-captions-dialog.c:36 src/nautilus-properties.c:404
+#: src/nautilus-grid-view-captions-dialog.c:36 src/nautilus-properties.c:416
 msgid "None"
 msgstr "Ninguno"
 
 # libnautilus-private/nautilus-undo-signal-handlers.c:177
-#: src/nautilus-internal-place-file.c:165 src/nautilus-sidebar.c:744
+#: src/nautilus-internal-place-file.c:166 src/nautilus-sidebar.c:744
 msgid "Network"
 msgstr "Red"
 
-#: src/nautilus-internal-place-file.c:169 src/nautilus-sidebar.c:718
+#: src/nautilus-internal-place-file.c:170 src/nautilus-sidebar.c:718
 msgid "Starred"
 msgstr "Destacados"
 
@@ -3826,12 +3864,12 @@ msgstr "_Vaciar la papelera…"
 msgid "_Trash Settings"
 msgstr "C_onfiguración de la papelera"
 
-#: src/nautilus-location-entry.c:818 src/nautilus-query-editor.c:613
+#: src/nautilus-location-entry.c:808 src/nautilus-query-editor.c:680
 msgid "Clear Entry"
 msgstr "Limpiar entrada"
 
 # src/nautilus-location-bar.c:401
-#: src/nautilus-location-entry.c:827
+#: src/nautilus-location-entry.c:817
 msgid "Go to Location"
 msgstr "Ir a la ubicación"
 
@@ -3844,87 +3882,87 @@ msgstr ""
 "admin:///» en su lugar."
 
 # src/file-manager/fm-properties-window.c:844
-#: src/nautilus-mime-actions.c:98
+#: src/nautilus-mime-actions.c:97
 msgid "Anything"
 msgstr "Cualquier cosa"
 
 # src/file-manager/fm-directory-view.c:2140
 # src/file-manager/fm-directory-view.c:2257
-#: src/nautilus-mime-actions.c:111
+#: src/nautilus-mime-actions.c:110
 msgid "Folders"
 msgstr "Carpetas"
 
 # src/file-manager/fm-directory-view.c:1865
-#: src/nautilus-mime-actions.c:118
+#: src/nautilus-mime-actions.c:117
 msgid "Documents"
 msgstr "Documentos"
 
-#: src/nautilus-mime-actions.c:140
+#: src/nautilus-mime-actions.c:139
 msgid "Illustration"
 msgstr "Ilustración"
 
-#: src/nautilus-mime-actions.c:156
+#: src/nautilus-mime-actions.c:155
 msgid "Music"
 msgstr "Música"
 
-#: src/nautilus-mime-actions.c:212
+#: src/nautilus-mime-actions.c:211
 msgid "PDF / PostScript"
 msgstr "PDF / PostScript"
 
-#: src/nautilus-mime-actions.c:223
+#: src/nautilus-mime-actions.c:222
 msgid "Picture"
 msgstr "Imagen"
 
 # src/file-manager/fm-properties-window.c:1563
-#: src/nautilus-mime-actions.c:276
+#: src/nautilus-mime-actions.c:275
 msgid "Text File"
 msgstr "Archivo de texto"
 
-#: src/nautilus-mime-actions.c:660
+#: src/nautilus-mime-actions.c:659
 msgid "This link cannot be used because it has no target."
 msgstr "Este enlace no se puede usar porque no tiene destino."
 
-#: src/nautilus-mime-actions.c:664
+#: src/nautilus-mime-actions.c:663
 #, c-format
 msgid "This link cannot be used because its target “%s” doesn’t exist."
 msgstr "Este enlace no se puede usar, porque su destino «%s» no existe."
 
-#: src/nautilus-mime-actions.c:672
+#: src/nautilus-mime-actions.c:671
 #, c-format
 msgid "The link “%s” is broken. Move it to Trash?"
 msgstr "El enlace «%s» está roto. ¿Quiere moverlo a la papelera?"
 
 # src/file-manager/fm-directory-view.c:2145
-#: src/nautilus-mime-actions.c:676
-#: src/resources/menu/nautilus-files-view-context-menus.ui:231
+#: src/nautilus-mime-actions.c:675
+#: src/resources/menu/nautilus-files-view-context-menus.ui:221
 msgid "Mo_ve to Trash"
 msgstr "_Mover a la papelera"
 
-#: src/nautilus-mime-actions.c:683
+#: src/nautilus-mime-actions.c:682
 #, c-format
 msgid "The link “%s” is broken."
 msgstr "El enlace «%s» está roto."
 
 # src/file-manager/fm-directory-view.c:1855
-#: src/nautilus-mime-actions.c:1106
+#: src/nautilus-mime-actions.c:1104
 msgid "Are you sure you want to open all files?"
 msgstr "¿Está seguro de que quiere abrir todos los archivos?"
 
-#: src/nautilus-mime-actions.c:1110
+#: src/nautilus-mime-actions.c:1108
 #, c-format
 msgid "This will open %d separate tab and window."
 msgid_plural "This will open %d separate tabs and windows."
 msgstr[0] "Esto abrirá %d pestaña y una ventana separada."
 msgstr[1] "Esto abrirá %d pestaña y una ventana separadas."
 
-#: src/nautilus-mime-actions.c:1115
+#: src/nautilus-mime-actions.c:1113
 #, c-format
 msgid "This will open %d separate tab."
 msgid_plural "This will open %d separate tabs."
 msgstr[0] "Esto abrirá %d pestaña separada."
 msgstr[1] "Esto abrirá %d pestañas separadas."
 
-#: src/nautilus-mime-actions.c:1120
+#: src/nautilus-mime-actions.c:1118
 #, c-format
 msgid "This will open %d separate window."
 msgid_plural "This will open %d separate windows."
@@ -3933,44 +3971,44 @@ msgstr[1] "Esto abrirá %d ventanas separadas."
 
 # #-#-#-#-#  nautilus-es.po (Nautilus)  #-#-#-#-#
 # src/file-manager/fm-directory-view.c:2114
-#: src/nautilus-mime-actions.c:1127
+#: src/nautilus-mime-actions.c:1125
 msgid "_Open All"
 msgstr "_Abrir todo"
 
 # src/nautilus-window-manage-views.c:1299
-#: src/nautilus-mime-actions.c:1188
+#: src/nautilus-mime-actions.c:1186
 #, c-format
 msgid "Could Not Display “%s”"
 msgstr "No se pudo mostrar «%s»."
 
-#: src/nautilus-mime-actions.c:1282
+#: src/nautilus-mime-actions.c:1280
 msgid "The file is of an unknown type"
 msgstr "El archivo es de un tipo desconocido"
 
-#: src/nautilus-mime-actions.c:1287
+#: src/nautilus-mime-actions.c:1285
 #, c-format
 msgid "There is no app installed for “%s” files"
 msgstr "No hay una aplicación instalada para los archivos «%s»"
 
 # #-#-#-#-#  nautilus-es.po (Nautilus)  #-#-#-#-#
 # src/file-manager/fm-directory-view.c:1865
-#: src/nautilus-mime-actions.c:1292
+#: src/nautilus-mime-actions.c:1290
 msgid "_Select App"
 msgstr "_Seleccionar aplicación"
 
-#: src/nautilus-mime-actions.c:1328
+#: src/nautilus-mime-actions.c:1326
 msgid "There was an internal error trying to search for apps:"
 msgstr "Hubo un error interno al intentar buscar aplicaciones:"
 
-#: src/nautilus-mime-actions.c:1330
+#: src/nautilus-mime-actions.c:1328
 msgid "Unable to search for app"
 msgstr "No se pudo buscar una aplicación"
 
-#: src/nautilus-mime-actions.c:1434
+#: src/nautilus-mime-actions.c:1432
 msgid "_Search in Software"
 msgstr "_Buscar en Software"
 
-#: src/nautilus-mime-actions.c:1437
+#: src/nautilus-mime-actions.c:1435
 #, c-format
 msgid ""
 "There is no app installed for “%s” files. Do you want to search for an app "
@@ -3980,22 +4018,22 @@ msgstr ""
 "aplicación para abrir este archivo?"
 
 #. if it wasn't cancelled show a dialog
-#: src/nautilus-mime-actions.c:1812 src/nautilus-mime-actions.c:2110
+#: src/nautilus-mime-actions.c:1810 src/nautilus-mime-actions.c:2108
 #: src/nautilus-network-address-bar.c:80
 msgid "Unable to access location"
 msgstr "No se pudo acceder al lugar"
 
-#: src/nautilus-mime-actions.c:2200
+#: src/nautilus-mime-actions.c:2198
 msgid "Unable to start location"
 msgstr "No se pudo iniciar el lugar"
 
-#: src/nautilus-mime-actions.c:2292
+#: src/nautilus-mime-actions.c:2290
 #, c-format
 msgid "Opening “%s”."
 msgstr "Abriendo «%s»."
 
 # src/file-manager/fm-icon-view.c:1277
-#: src/nautilus-mime-actions.c:2296
+#: src/nautilus-mime-actions.c:2294
 #, c-format
 msgid "Opening %d item."
 msgid_plural "Opening %d items."
@@ -4023,42 +4061,42 @@ msgstr "Cance_lar"
 msgid "Unable to get remote server location"
 msgstr "No se pudo obtener la ubicación del servidor remoto"
 
-#: src/nautilus-network-address-bar.c:296
+#: src/nautilus-network-address-bar.c:304
 msgid "AppleTalk"
 msgstr "AppleTalk"
 
-#: src/nautilus-network-address-bar.c:302
+#: src/nautilus-network-address-bar.c:310
 msgid "File Transfer Protocol"
 msgstr "Protocolo de transferencia de archivos"
 
 #. Translators: do not translate ftp:// and ftps://
-#: src/nautilus-network-address-bar.c:304
+#: src/nautilus-network-address-bar.c:312
 msgid "ftp:// or ftps://"
 msgstr "ftp:// o ftps://"
 
-#: src/nautilus-network-address-bar.c:310
+#: src/nautilus-network-address-bar.c:318
 msgid "Network File System"
 msgstr "Sistema de archivos en red"
 
-#: src/nautilus-network-address-bar.c:316
+#: src/nautilus-network-address-bar.c:324
 msgid "Samba"
 msgstr "Samba"
 
-#: src/nautilus-network-address-bar.c:322
+#: src/nautilus-network-address-bar.c:330
 msgid "SSH File Transfer Protocol"
 msgstr "Protocolo de transferencia de archivos por SSH"
 
 #. Translators: do not translate sftp:// and ssh://
-#: src/nautilus-network-address-bar.c:324
+#: src/nautilus-network-address-bar.c:332
 msgid "sftp:// or ssh://"
 msgstr "sftp:// o ssh://"
 
-#: src/nautilus-network-address-bar.c:330
+#: src/nautilus-network-address-bar.c:338
 msgid "WebDAV"
 msgstr "WebDAV"
 
 #. Translators: do not translate dav:// and davs://
-#: src/nautilus-network-address-bar.c:332
+#: src/nautilus-network-address-bar.c:340
 msgid "dav:// or davs://"
 msgstr "dav:// o davs://"
 
@@ -4068,17 +4106,17 @@ msgid "Online Account"
 msgstr "Cuenta en línea"
 
 #. Translators: This refers to network places which are currently mounted
-#: src/nautilus-network-view.c:264
+#: src/nautilus-network-view.c:263
 msgid "Connected"
 msgstr "Conectado"
 
 #. Translators: This refers to network servers the user has previously
 #. connected to
-#: src/nautilus-network-view.c:271
+#: src/nautilus-network-view.c:270
 msgid "Previous"
 msgstr "Anterior"
 
-#: src/nautilus-network-view.c:277
+#: src/nautilus-network-view.c:276
 msgid "Available on Current Network"
 msgstr "Disponible en la red actual"
 
@@ -4171,71 +4209,71 @@ msgstr "Existe un archivo más nuevo con el mismo nombre en «%s»."
 msgid "Another file with the same name already exists in “%s”."
 msgstr "Ya existe otro archivo con el mismo nombre en «%s»."
 
-#: src/nautilus-operations-ui-manager.c:282
-#: src/resources/ui/nautilus-properties-widget.blp:404
+#: src/nautilus-operations-ui-manager.c:264
+#: src/resources/ui/nautilus-properties-widget.blp:415
 msgid "Original Folder"
 msgstr "Carpeta original"
 
 # src/file-manager/fm-properties-window.c:878
-#: src/nautilus-operations-ui-manager.c:283
-#: src/nautilus-operations-ui-manager.c:315
+#: src/nautilus-operations-ui-manager.c:265
+#: src/nautilus-operations-ui-manager.c:297
 msgid "Contents:"
 msgstr "Contenido:"
 
-#: src/nautilus-operations-ui-manager.c:287
+#: src/nautilus-operations-ui-manager.c:269
 msgid "Original File"
 msgstr "Archivo original"
 
 # #-#-#-#-#  nautilus-es.po (Nautilus)  #-#-#-#-#
 # src/file-manager/fm-properties-window.c:1100
-#: src/nautilus-operations-ui-manager.c:288
-#: src/nautilus-operations-ui-manager.c:320
+#: src/nautilus-operations-ui-manager.c:270
+#: src/nautilus-operations-ui-manager.c:302
 msgid "Size:"
 msgstr "Tamaño:"
 
 # #-#-#-#-#  nautilus-es.po (Nautilus)  #-#-#-#-#
 # src/file-manager/fm-properties-window.c:1094
-#: src/nautilus-operations-ui-manager.c:293
-#: src/nautilus-operations-ui-manager.c:325
+#: src/nautilus-operations-ui-manager.c:275
+#: src/nautilus-operations-ui-manager.c:307
 msgid "Type:"
 msgstr "Tipo:"
 
 # src/file-manager/fm-list-view.c:1599
 # src/file-manager/fm-search-list-view.c:158
-#: src/nautilus-operations-ui-manager.c:296
-#: src/nautilus-operations-ui-manager.c:328
+#: src/nautilus-operations-ui-manager.c:278
+#: src/nautilus-operations-ui-manager.c:310
 msgid "Last modified:"
 msgstr "Última modificación:"
 
 # libnautilus-private/nautilus-program-chooser.c:1344
-#: src/nautilus-operations-ui-manager.c:314
+#: src/nautilus-operations-ui-manager.c:296
 msgid "Merge With"
 msgstr "Mezclar con"
 
 # #-#-#-#-#  nautilus-es.po (Nautilus)  #-#-#-#-#
 # src/file-manager/dfos-xfer.c:419 src/file-manager/dfos-xfer.c:430
-#: src/nautilus-operations-ui-manager.c:314
-#: src/nautilus-operations-ui-manager.c:319
+#: src/nautilus-operations-ui-manager.c:296
+#: src/nautilus-operations-ui-manager.c:301
 #: src/resources/ui/nautilus-batch-rename-dialog.blp:294
 msgid "Replace With"
 msgstr "Reemplazar con"
 
 # src/file-manager/fm-directory-view.c:2140
 # src/file-manager/fm-directory-view.c:2257
-#: src/nautilus-operations-ui-manager.c:393
+#: src/nautilus-operations-ui-manager.c:368
 msgid "Merge Folder"
 msgstr "Mezclar carpeta"
 
-#: src/nautilus-operations-ui-manager.c:394
-#: src/nautilus-operations-ui-manager.c:399
+#: src/nautilus-operations-ui-manager.c:369
+#: src/nautilus-operations-ui-manager.c:374
 msgid "File and Folder Conflict"
 msgstr "Conflicto de archivos y carpetas"
 
-#: src/nautilus-operations-ui-manager.c:400
+#: src/nautilus-operations-ui-manager.c:375
 msgid "File Conflict"
 msgstr "Conflicto de archivo"
 
-#: src/nautilus-operations-ui-manager.c:586
+#: src/nautilus-operations-ui-manager.c:562
 msgid ""
 "Password-protected archives are not yet supported. This list contains apps "
 "that can open the archive."
@@ -4244,41 +4282,41 @@ msgstr ""
 "contiene aplicaciones que pueden abrir el archivo."
 
 # src/file-manager/fm-directory-view.c:1015
-#: src/nautilus-operations-ui-manager.c:655
+#: src/nautilus-operations-ui-manager.c:631
 #, c-format
 msgid "“%s” is password-protected."
 msgstr "«%s» está protegido con contraseña."
 
-#: src/nautilus-pathbar.c:314
+#: src/nautilus-pathbar.c:316
 msgid "Current Folder Menu"
 msgstr "Menú de la carpeta actual"
 
 #. Translators: This is the label used in the pathbar when seeing
 #. * the root directory (also known as /)
-#: src/nautilus-pathbar.c:406 src/nautilus-properties.c:862
+#: src/nautilus-pathbar.c:408 src/nautilus-properties.c:895
 msgid "Operating System"
 msgstr "Sistema operativo"
 
 #. Translators: This is the filesystem root directory (also known
 #. * as /) when seen as administrator
-#: src/nautilus-pathbar.c:413
+#: src/nautilus-pathbar.c:415
 msgid "Administrator Root"
 msgstr "/"
 
 # #-#-#-#-#  nautilus-es.po (Nautilus)  #-#-#-#-#
 # src/file-manager/fm-directory-view.c:2114
-#: src/nautilus-portal.c:431 src/nautilus-sidebar.c:2836
+#: src/nautilus-portal.c:478 src/nautilus-sidebar.c:2836
 #: src/nautilus-sidebar.c:2949
-#: src/resources/menu/nautilus-files-view-context-menus.ui:92
-#: src/resources/ui/nautilus-app-chooser.blp:25
+#: src/resources/menu/nautilus-files-view-context-menus.ui:82
+#: src/resources/ui/nautilus-app-chooser.blp:27
 msgid "_Open"
 msgstr "_Abrir"
 
-#: src/nautilus-portal.c:435
+#: src/nautilus-portal.c:482
 msgid "_Save"
 msgstr "_Guardar"
 
-#: src/nautilus-portal.c:519
+#: src/nautilus-portal.c:566
 msgid "Open Read-Only"
 msgstr "Abrir en sólo lectura"
 
@@ -4289,51 +4327,43 @@ msgstr "Abrir en sólo lectura"
 msgid "Examples: “%s”, “%s”"
 msgstr "Ejemplos «%s», «%s»"
 
-#: src/nautilus-preferences-dialog.c:166
-msgid "Single-Click"
-msgstr "Un sola pulsación"
-
-#: src/nautilus-preferences-dialog.c:166
-msgid "Double-Click"
-msgstr "Doble pulsación"
-
-#: src/nautilus-preferences-dialog.c:168 src/nautilus-preferences-dialog.c:170
-#: src/nautilus-preferences-dialog.c:172
+#: src/nautilus-preferences-dialog.c:179 src/nautilus-preferences-dialog.c:181
+#: src/nautilus-preferences-dialog.c:183
 msgid "On This Device Only"
 msgstr "Mostrar sólo este dispositivo"
 
 # src/nautilus-location-bar.c:401
-#: src/nautilus-preferences-dialog.c:168
+#: src/nautilus-preferences-dialog.c:179
 msgid "All Locations"
 msgstr "Todas las ubicaciones"
 
 # libnautilus-private/nautilus-global-preferences.c:592
-#: src/nautilus-preferences-dialog.c:168 src/nautilus-preferences-dialog.c:170
-#: src/nautilus-preferences-dialog.c:172
+#: src/nautilus-preferences-dialog.c:179 src/nautilus-preferences-dialog.c:181
+#: src/nautilus-preferences-dialog.c:183
 msgid "Never"
 msgstr "Nunca"
 
 # #-#-#-#-#  nautilus-es.po (Nautilus)  #-#-#-#-#
 # components/music/nautilus-music-view.c:198
-#: src/nautilus-preferences-dialog.c:170
+#: src/nautilus-preferences-dialog.c:181
 msgid "All Files"
 msgstr "Todos los archivos"
 
 # src/file-manager/fm-directory-view.c:2140
 # src/file-manager/fm-directory-view.c:2257
-#: src/nautilus-preferences-dialog.c:172
+#: src/nautilus-preferences-dialog.c:183
 msgid "All Folders"
 msgstr "Todas las carpetas"
 
 # #-#-#-#-#  nautilus-es.po (Nautilus)  #-#-#-#-#
 # libnautilus-private/nautilus-program-chooser.c:1262
-#: src/nautilus-progress-info.c:383
+#: src/nautilus-progress-info.c:385
 msgid "Cancelled"
 msgstr "Cancelado"
 
 # src/file-manager/dfos-xfer.c:703
-#: src/nautilus-progress-info.c:424 src/nautilus-progress-info.c:445
-#: src/nautilus-progress-info.c:466
+#: src/nautilus-progress-info.c:426 src/nautilus-progress-info.c:447
+#: src/nautilus-progress-info.c:468
 msgid "Preparing"
 msgstr "Preparando"
 
@@ -4344,16 +4374,16 @@ msgid "Operation Completed"
 msgstr "Operación completada"
 
 # src/file-manager/fm-properties-window.c:1493
-#: src/nautilus-progress-persistence-handler.c:106
+#: src/nautilus-progress-persistence-handler.c:108
 #: src/nautilus-progress-persistence-handler.c:146
 msgid "File Operations"
 msgstr "Operaciones sobre archivos"
 
-#: src/nautilus-progress-persistence-handler.c:108
+#: src/nautilus-progress-persistence-handler.c:110
 msgid "Show Details"
 msgstr "Mostrar detalles"
 
-#: src/nautilus-progress-persistence-handler.c:111
+#: src/nautilus-progress-persistence-handler.c:113
 #, c-format
 msgid "%'d file operation active"
 msgid_plural "%'d file operations active"
@@ -4365,88 +4395,88 @@ msgid "All file operations have been completed"
 msgstr "Todas las operaciones sobre los archivos se han completado"
 
 # libnautilus-private/nautilus-undo-signal-handlers.c:177
-#: src/nautilus-properties.c:355
+#: src/nautilus-properties.c:367
 msgid "Read and Write"
 msgstr "Lectura y escritura"
 
 # src/file-manager/dfos-xfer.c:713
-#: src/nautilus-properties.c:359
+#: src/nautilus-properties.c:371
 msgid "Create and Delete Files"
 msgstr "Crear y eliminar archivos"
 
-#: src/nautilus-properties.c:363
+#: src/nautilus-properties.c:375
 msgid "Read and Write, No Access"
 msgstr "Lectura/escritura, sin acceso"
 
-#: src/nautilus-properties.c:370
+#: src/nautilus-properties.c:382
 msgid "Read-Only"
 msgstr "Sólo lectura"
 
 # src/file-manager/fm-properties-window.c:1105
-#: src/nautilus-properties.c:374
+#: src/nautilus-properties.c:386
 msgid "Access Files"
 msgstr "Acceder a archivos"
 
-#: src/nautilus-properties.c:378
+#: src/nautilus-properties.c:390
 msgid "List Files Only"
 msgstr "Sólo listar archivos"
 
-#: src/nautilus-properties.c:388
+#: src/nautilus-properties.c:400
 msgid "Write-Only"
 msgstr "Sólo escritura"
 
-#: src/nautilus-properties.c:392
+#: src/nautilus-properties.c:404
 msgid "Write-Only, No Access"
 msgstr "Sólo escritura, sin acceso"
 
 # src/file-manager/fm-properties-window.c:1105
-#: src/nautilus-properties.c:399
+#: src/nautilus-properties.c:411
 msgid "Access-Only"
 msgstr "Sólo acceso"
 
 # src/nautilus-sidebar.c:424
-#: src/nautilus-properties.c:629
+#: src/nautilus-properties.c:609
 msgid "Custom icon removed"
 msgstr "Icono personalizado eliminado"
 
 # src/nautilus-first-time-druid.c:290
-#: src/nautilus-properties.c:630 src/nautilus-window.c:814
-#: src/resources/ui/nautilus-window.blp:25
+#: src/nautilus-properties.c:610 src/nautilus-window.c:848
+#: src/resources/ui/nautilus-window.blp:30
 msgid "_Undo"
 msgstr "_Deshacer"
 
-#: src/nautilus-properties.c:664
-msgid "You cannot assign more than one custom icon at a time!"
-msgstr "No puede asignar más de un icono personalizado a la vez."
+#: src/nautilus-properties.c:631
+msgid "Cannot Use This File"
+msgstr "No se puede utilizar este archivo"
 
-#: src/nautilus-properties.c:665
-msgid "Please drop just one image to set a custom icon."
-msgstr "Arrastre sólo una imagen para establecerla como icono personalizado."
-
-#: src/nautilus-properties.c:680
-msgid "The file that you dropped is not local."
-msgstr "El archivo que ha soltado no es local."
-
-#: src/nautilus-properties.c:681 src/nautilus-properties.c:687
+#: src/nautilus-properties.c:632 src/nautilus-properties.c:717
 msgid "You can only use local images as custom icons."
 msgstr "Solamente puede usar imágenes locales como iconos personalizados."
 
-#: src/nautilus-properties.c:686
-msgid "The file that you dropped is not an image."
-msgstr "El archivo que ha soltado no es una imagen."
+#: src/nautilus-properties.c:702
+msgid "You cannot assign more than one custom icon at a time!"
+msgstr "No puede asignar más de un icono personalizado a la vez."
+
+#: src/nautilus-properties.c:703
+msgid "Please drop just one image to set a custom icon."
+msgstr "Arrastre sólo una imagen para establecerla como icono personalizado."
+
+#: src/nautilus-properties.c:716
+msgid "The file that you dropped is not local."
+msgstr "El archivo que ha soltado no es local."
 
 #. Unmarks a file as starred (starred)
-#: src/nautilus-properties.c:735 src/nautilus-star-cell.c:72
-#: src/resources/menu/nautilus-files-view-context-menus.ui:261
+#: src/nautilus-properties.c:764 src/nautilus-star-cell.c:72
+#: src/resources/menu/nautilus-files-view-context-menus.ui:251
 msgid "Unstar"
 msgstr "Quitar el destaque"
 
-#: src/nautilus-properties.c:735 src/nautilus-star-cell.c:72
+#: src/nautilus-properties.c:764 src/nautilus-star-cell.c:72
 msgctxt "Verb"
 msgid "Star"
 msgstr "Destacar"
 
-#: src/nautilus-properties.c:827
+#: src/nautilus-properties.c:860
 #, c-format
 msgid "%d Selected Item"
 msgid_plural "%d Selected Items"
@@ -4454,30 +4484,30 @@ msgstr[0] "%d elemento seleccionado"
 msgstr[1] "%d elementos seleccionados"
 
 # src/file-manager/fm-properties-window.c:542
-#: src/nautilus-properties.c:1598
+#: src/nautilus-properties.c:1606
 msgid "Cancel Group Change?"
 msgstr "¿Cancelar el cambio de grupo?"
 
 # src/file-manager/fm-properties-window.c:687
-#: src/nautilus-properties.c:1746
+#: src/nautilus-properties.c:1751
 msgid "Cancel Owner Change?"
 msgstr "¿Cancelar el cambio de propietario?"
 
-#: src/nautilus-properties.c:1896 src/nautilus-properties.c:1943
+#: src/nautilus-properties.c:1899 src/nautilus-properties.c:1946
 msgid "Multiple"
 msgstr "Múltiple"
 
-#: src/nautilus-properties.c:2077
+#: src/nautilus-properties.c:2080
 msgid "Empty folder"
 msgstr "Carpeta vacía"
 
 # src/file-manager/fm-properties-window.c:864
-#: src/nautilus-properties.c:2081
+#: src/nautilus-properties.c:2084
 msgid "Contents unreadable"
 msgstr "Contenido ilegible"
 
 # src/file-manager/fm-properties-window.c:856
-#: src/nautilus-properties.c:2093
+#: src/nautilus-properties.c:2096
 #, c-format
 msgid "%'d item, with size %s"
 msgid_plural "%'d items, totalling %s"
@@ -4485,7 +4515,7 @@ msgstr[0] "%'d elemento, con un tamaño de %s"
 msgstr[1] "%'d elementos, %s en total"
 
 # src/file-manager/fm-properties-window.c:864
-#: src/nautilus-properties.c:2103
+#: src/nautilus-properties.c:2106
 msgid "(some contents unreadable)"
 msgstr "(algunos contenidos son ilegibles)"
 
@@ -4497,47 +4527,47 @@ msgid "%s Filesystem"
 msgstr "Sistema de archivos %s"
 
 # src/file-manager/fm-properties-window.c:1641
-#: src/nautilus-properties.c:3541
+#: src/nautilus-properties.c:3537
 #, c-format
 msgid "The permissions of “%s” could not be determined."
 msgstr "Los permisos de «%s» no se han podido determinar."
 
-#: src/nautilus-properties.c:3930
+#: src/nautilus-properties.c:3990
 msgid "Select Custom Icon"
 msgstr "Seleccione el icono personalizado"
 
-#: src/nautilus-query-editor.c:144
+#: src/nautilus-query-editor.c:140
 msgid "Search may be slow and will not include subfolders or file contents"
 msgstr ""
 "La búsqueda puede ser lenta y no incluirá subcarpetas o el contenido de "
 "archivos"
 
-#: src/nautilus-query-editor.c:151
+#: src/nautilus-query-editor.c:147
 msgid "Search may be slow and will not include file contents"
 msgstr "La búsqueda puede ser lenta y no incluirá el contenido de archivos"
 
 # src/nautilus-location-bar.c:401
-#: src/nautilus-query-editor.c:159
+#: src/nautilus-query-editor.c:155
 msgid "Remote Location"
 msgstr "Ubicación remota"
 
-#: src/nautilus-query-editor.c:165
+#: src/nautilus-query-editor.c:161
 msgid "External Drive"
 msgstr "Unidad externa"
 
-#: src/nautilus-query-editor.c:171
+#: src/nautilus-query-editor.c:167
 msgid "Folder Not in Search Locations"
 msgstr "La carpeta no está en las ubicaciones de búsqueda"
 
-#: src/nautilus-query-editor.c:178
-msgid "Subfolders Not in Search Locations"
-msgstr "Las subcarpetas no están en las ubicaciones de búsqueda"
+#: src/nautilus-query-editor.c:174
+msgid "Limited Search in this Folder"
+msgstr "Búsqueda limitada en esta carpeta"
 
-#: src/nautilus-query-editor.c:187
+#: src/nautilus-query-editor.c:183
 msgid "Some subfolders will not be included in search results"
 msgstr "Algunas subcarpetas no se incluirán en los resultados de la búsqueda"
 
-#: src/nautilus-query-editor.c:194
+#: src/nautilus-query-editor.c:190
 msgid ""
 "Search will be slower and will not include file contents for some folders"
 msgstr ""
@@ -4545,24 +4575,24 @@ msgstr ""
 "algunas carpetas"
 
 #. translators: This opens the search panel in the Settings app.
-#: src/nautilus-query-editor.c:633
+#: src/nautilus-query-editor.c:700
 msgid "_Search Settings"
 msgstr "Configuración de la bú_squeda"
 
 # libnautilus-private/nautilus-global-preferences.c:727
-#: src/nautilus-query-editor.c:646
+#: src/nautilus-query-editor.c:713
 msgid "Filter Search Results"
 msgstr "Filtrar resultados de la búsqueda"
 
-#: src/nautilus-query-editor.c:653
+#: src/nautilus-query-editor.c:720
 msgid "Search Information"
 msgstr "Buscar información"
 
-#: src/nautilus-query-editor.c:733
+#: src/nautilus-query-editor.c:800
 msgid "Search current folder"
 msgstr "Buscar en la carpeta actual"
 
-#: src/nautilus-query-editor.c:734
+#: src/nautilus-query-editor.c:801
 msgid "Search everywhere"
 msgstr "Buscar en todos los sitios"
 
@@ -4583,18 +4613,18 @@ msgid "Search for “%s”"
 msgstr "Buscar «%s»"
 
 # src/file-manager/fm-icon-text-window.c:79
-#: src/nautilus-search-popover.c:633
+#: src/nautilus-search-popover.c:632
 msgid "Date Used"
 msgstr "%s usado"
 
 # src/file-manager/fm-directory-view.c:2154
-#: src/nautilus-search-popover.c:637
+#: src/nautilus-search-popover.c:636
 msgid "Date Created"
 msgstr "Fecha de creación"
 
 # src/file-manager/fm-list-view.c:1599
 # src/file-manager/fm-search-list-view.c:158
-#: src/nautilus-search-popover.c:641
+#: src/nautilus-search-popover.c:640
 msgid "Date Modified"
 msgstr "Fecha de modificación"
 
@@ -4681,19 +4711,19 @@ msgstr "Añadir un marcador nuevo"
 # src/file-manager/dfos-xfer.c:745
 #. Translators: This means that unlocking an encrypted storage
 #. * device failed. %s is the name of the device.
-#: src/nautilus-sidebar.c:1775
+#: src/nautilus-sidebar.c:1773
 #, c-format
 msgid "Error unlocking “%s”"
 msgstr "Error al desbloquear «%s»"
 
-#: src/nautilus-sidebar.c:1929
+#: src/nautilus-sidebar.c:1927
 msgid "This name is already taken"
 msgstr "Este nombre ya está en uso"
 
 # #-#-#-#-#  nautilus-es.po (Nautilus)  #-#-#-#-#
 # libnautilus-private/nautilus-icon-text-item.c:1487
 # src/file-manager/fm-icon-view.c:1105
-#: src/nautilus-sidebar.c:2010 src/nautilus-sidebar.c:2983
+#: src/nautilus-sidebar.c:2008 src/nautilus-sidebar.c:2983
 #: src/resources/ui/nautilus-batch-rename-dialog.blp:147
 #: src/resources/ui/nautilus-file-conflict-dialog.blp:31
 #: src/resources/ui/nautilus-rename-file-popover.blp:44
@@ -4712,14 +4742,14 @@ msgstr "No se pudo consultar a «%s» si hay cambios en el medio"
 
 # src/file-manager/fm-directory-view.c:2126
 #: src/nautilus-sidebar.c:2844 src/nautilus-sidebar.c:2957
-#: src/resources/menu/nautilus-files-view-context-menus.ui:103
+#: src/resources/menu/nautilus-files-view-context-menus.ui:93
 #: src/resources/menu/nautilus-pathbar-context-menu.ui:10
 msgid "Open in New _Tab"
 msgstr "Abrir en una pe_staña nueva"
 
 # src/file-manager/fm-directory-view.c:2126
 #: src/nautilus-sidebar.c:2851 src/nautilus-sidebar.c:2966
-#: src/resources/menu/nautilus-files-view-context-menus.ui:108
+#: src/resources/menu/nautilus-files-view-context-menus.ui:98
 #: src/resources/menu/nautilus-pathbar-context-menu.ui:6
 msgid "Open in New _Window"
 msgstr "Abrir en una _ventana nueva"
@@ -4737,27 +4767,27 @@ msgid "Trash _Settings…"
 msgstr "_Configuración de la papelera…"
 
 #: src/nautilus-sidebar.c:3019
-#: src/resources/menu/nautilus-files-view-context-menus.ui:149
+#: src/resources/menu/nautilus-files-view-context-menus.ui:139
 msgid "_Mount"
 msgstr "_Montar"
 
 # components/html/gnome-dialogs.c:234
 #: src/nautilus-sidebar.c:3028
-#: src/resources/menu/nautilus-files-view-context-menus.ui:154
+#: src/resources/menu/nautilus-files-view-context-menus.ui:144
 msgid "_Unmount"
 msgstr "_Desmontar"
 
 # #-#-#-#-#  nautilus-es.po (Nautilus)  #-#-#-#-#
 # src/file-manager/fm-properties-window.c:1581
 #: src/nautilus-sidebar.c:3035
-#: src/resources/menu/nautilus-files-view-context-menus.ui:159
+#: src/resources/menu/nautilus-files-view-context-menus.ui:149
 msgid "_Eject"
 msgstr "E_xpulsar"
 
 # #-#-#-#-#  nautilus-es.po (Nautilus)  #-#-#-#-#
 # src/file-manager/fm-directory-view.c:1865
 #: src/nautilus-sidebar.c:3045
-#: src/resources/menu/nautilus-files-view-context-menus.ui:174
+#: src/resources/menu/nautilus-files-view-context-menus.ui:164
 msgid "_Detect Media"
 msgstr "_Detectar soporte"
 
@@ -4782,7 +4812,7 @@ msgstr "_Desbloquear dispositivo"
 # src/file-manager/dfos-xfer.c:352 src/file-manager/dfos-xfer.c:372
 # src/nautilus-window-toolbars.c:156
 #: src/nautilus-sidebar.c:3081
-#: src/resources/menu/nautilus-files-view-context-menus.ui:169
+#: src/resources/menu/nautilus-files-view-context-menus.ui:159
 msgid "_Stop"
 msgstr "_Detener"
 
@@ -4804,7 +4834,7 @@ msgstr "Formatear…"
 
 # src/file-manager/fm-directory-view.c:2151
 #: src/nautilus-sidebar.c:3118
-#: src/resources/ui/nautilus-properties-widget.blp:36
+#: src/resources/ui/nautilus-properties-widget.blp:37
 msgid "Properties"
 msgstr "Propiedades"
 
@@ -4820,26 +4850,37 @@ msgstr "Barra lateral"
 msgid "List of common shortcuts, mountpoints, and bookmarks."
 msgstr "Lista de atajos, puntos de montaje y marcadores comunes."
 
-#: src/nautilus-tag-manager.c:218
+#: src/nautilus-tag-manager.c:216
 msgid "starred"
 msgstr "destacado"
 
-#: src/nautilus-tag-manager.c:228
+#: src/nautilus-tag-manager.c:226
 msgid "unstarred"
 msgstr "sin destacar"
 
-#: src/nautilus-window.c:152
+#: src/nautilus-ui-utilities.c:537
+msgid "You can stop this operation by clicking cancel."
+msgstr "Puede parar esta operación pulsando cancelar."
+
+#. Translators: This refers to a capped amount of items
+#: src/nautilus-ui-utilities.c:973
+#, c-format
+msgctxt "badge_count"
+msgid "%u+"
+msgstr "%u+"
+
+#: src/nautilus-window.c:149
 msgid "New tab"
 msgstr "Pestaña nueva"
 
 # src/file-manager/fm-properties-window.c:1563
-#: src/nautilus-window.c:153
+#: src/nautilus-window.c:150
 msgid "Close current view"
 msgstr "Cerrar la vista actual"
 
 # src/file-manager/fm-directory-view.c:2145
 #. Translators: only one item has been moved to trash and %s is its name.
-#: src/nautilus-window.c:737
+#: src/nautilus-window.c:772
 #, c-format
 msgid "“%s” moved to trash"
 msgstr "«%s» movido a la papelera"
@@ -4847,7 +4888,7 @@ msgstr "«%s» movido a la papelera"
 # src/file-manager/dfos-xfer.c:961
 #. Translators: one or more items might have been moved to trash, and %d
 #. * is the count.
-#: src/nautilus-window.c:744
+#: src/nautilus-window.c:779
 #, c-format
 msgid "%d file moved to trash"
 msgid_plural "%d files moved to trash"
@@ -4856,7 +4897,7 @@ msgstr[1] "%d archivos movidos a la papelera"
 
 # src/file-manager/fm-directory-view.c:1015
 #. Translators: one item has been unstarred and %s is its name.
-#: src/nautilus-window.c:763
+#: src/nautilus-window.c:798
 #, c-format
 msgid "“%s” unstarred"
 msgstr "«%s» desmarcado como favorito"
@@ -4864,7 +4905,7 @@ msgstr "«%s» desmarcado como favorito"
 # src/file-manager/fm-directory-view.c:1020
 #. Translators: one or more items have been unstarred, and %d
 #. * is the count.
-#: src/nautilus-window.c:769
+#: src/nautilus-window.c:804
 #, c-format
 msgid "%d file unstarred"
 msgid_plural "%d files unstarred"
@@ -4872,24 +4913,19 @@ msgstr[0] "%d archivo desmarcado como favorito"
 msgstr[1] "%d archivos desmarcados como favoritos"
 
 # src/file-manager/fm-properties-window.c:1573
-#: src/nautilus-window.c:824 src/resources/ui/nautilus-window.blp:30
+#: src/nautilus-window.c:857 src/resources/ui/nautilus-window.blp:35
 msgid "_Redo"
 msgstr "_Rehacer"
 
-#: src/nautilus-window.c:1734 src/nautilus-window.c:1739
-#: src/nautilus-window.c:1744
-msgid "The GNOME Project"
-msgstr "El Proyecto GNOME"
-
-#: src/nautilus-window.c:1751
+#: src/nautilus-window.c:1746
 msgid "No plugins currently installed."
 msgstr "No hay complementos de instalados."
 
-#: src/nautilus-window.c:1755
+#: src/nautilus-window.c:1750
 msgid "Currently installed plugins:"
 msgstr "Complementos activados actualmente:"
 
-#: src/nautilus-window.c:1757
+#: src/nautilus-window.c:1752
 msgid "For bug testing only, the following command can be used:"
 msgstr ""
 "Sólo para depuración de errores, se puede pueden usar los siguientes "
@@ -4898,7 +4934,7 @@ msgstr ""
 #. Translators should localize the following string which will be displayed at
 #. the bottom of
 #. * the about box to give credit to the translator(s).
-#: src/nautilus-window.c:1772
+#: src/nautilus-window.c:1767
 msgid "translator-credits"
 msgstr ""
 "Daniel Mustieles <daniel.musiteles@gmail.com>, 2010 - 2022\n"
@@ -4909,45 +4945,45 @@ msgstr ""
 "Ismael Olea <ismael@olea.org>, 2001\n"
 "Jorge Carrasquilla Soares <jorge@conectiva.com.br>, 2000"
 
-#: src/nautilus-window-slot.c:167
+#: src/nautilus-window-slot.c:164
 msgid "Parent folder"
 msgstr "Carpeta padre"
 
 # src/file-manager/fm-properties-window.c:1031
-#: src/nautilus-window-slot.c:168
+#: src/nautilus-window-slot.c:165
 #: src/resources/ui/nautilus-history-controls.blp:13
 msgid "Back"
 msgstr "Atrás"
 
-#: src/nautilus-window-slot.c:169
+#: src/nautilus-window-slot.c:166
 #: src/resources/ui/nautilus-history-controls.blp:20
 msgid "Forward"
 msgstr "Adelante"
 
-#: src/nautilus-window-slot.c:893 src/resources/ui/nautilus-file-chooser.blp:25
-#: src/resources/ui/nautilus-window.blp:128
+#: src/nautilus-window-slot.c:886 src/resources/ui/nautilus-file-chooser.blp:23
+#: src/resources/ui/nautilus-window.blp:154
 msgid "Search Everywhere"
 msgstr "Buscar en todos los sitios"
 
-#: src/nautilus-window-slot.c:894
+#: src/nautilus-window-slot.c:887
 msgid "Find files and folders in all search locations"
 msgstr "Buscar archivos y carpetas en todas las ubicaciones de búsqueda"
 
-#: src/nautilus-window-slot.c:897
+#: src/nautilus-window-slot.c:890
 msgid "Search Settings"
 msgstr "Configuración de la búsqueda"
 
-#: src/nautilus-window-slot.c:1827
+#: src/nautilus-window-slot.c:1727
 msgid "Unable to display the contents of this folder."
 msgstr "No se pudo mostrar el contenido de esta carpeta."
 
 # src/nautilus-window-menus.c:602
-#: src/nautilus-window-slot.c:1831
+#: src/nautilus-window-slot.c:1731
 msgid "This location doesn’t appear to be a folder."
 msgstr "Este lugar no es una carpeta."
 
 # src/nautilus-window-manage-views.c:1241
-#: src/nautilus-window-slot.c:1844
+#: src/nautilus-window-slot.c:1744
 #, c-format
 msgid "Unable to find “%s”. Please check the spelling and try again."
 msgstr ""
@@ -4955,28 +4991,28 @@ msgstr ""
 "nuevo."
 
 # src/nautilus-window-manage-views.c:1241
-#: src/nautilus-window-slot.c:1849
+#: src/nautilus-window-slot.c:1749
 msgid ""
 "Unable to find the requested file. Please check the spelling and try again."
 msgstr ""
 "No se pudo encontrar el archivo solicitado. Compruebe que lo ha escrito bien "
 "e inténtelo de nuevo."
 
-#: src/nautilus-window-slot.c:1860
+#: src/nautilus-window-slot.c:1760
 #, c-format
 msgid "“%s” locations are not supported."
 msgstr "«%s» lugares no soportados."
 
 # src/nautilus-window-manage-views.c:1281
-#: src/nautilus-window-slot.c:1865
+#: src/nautilus-window-slot.c:1765
 msgid "Unable to handle this kind of location."
 msgstr "No se pudo manejar este tipo de lugar."
 
-#: src/nautilus-window-slot.c:1872
+#: src/nautilus-window-slot.c:1772
 msgid "Unable to access the requested location."
 msgstr "No se pudo acceder al lugar solicitado."
 
-#: src/nautilus-window-slot.c:1878
+#: src/nautilus-window-slot.c:1778
 msgid "Don’t have permission to access the requested location."
 msgstr "No tiene permiso para acceder a la ubicación solicitada."
 
@@ -4984,7 +5020,7 @@ msgstr "No tiene permiso para acceder a la ubicación solicitada."
 #. * the code that guesses web addresses when there's no initial "/".
 #. * But this case is also hit for legitimate web addresses when
 #. * the proxy is set up wrong.
-#: src/nautilus-window-slot.c:1889
+#: src/nautilus-window-slot.c:1789
 msgid ""
 "Unable to find the requested location. Please check the spelling or the "
 "network settings."
@@ -4994,7 +5030,7 @@ msgstr ""
 
 #. This case can be hit when server application is not installed
 #. * or is inactive in the system user is trying to connect to.
-#: src/nautilus-window-slot.c:1898
+#: src/nautilus-window-slot.c:1798
 msgid ""
 "The server has refused the connection. Typically this means that the "
 "firewall is blocking access or that the remote service is not running."
@@ -5003,13 +5039,13 @@ msgstr ""
 "cortafuegos bloqueando el acceso o que el servicio remoto no está en "
 "ejecución."
 
-#: src/nautilus-window-slot.c:1910 src/nautilus-window-slot.c:1918
+#: src/nautilus-window-slot.c:1810 src/nautilus-window-slot.c:1818
 #, c-format
 msgid "Unhandled error message: %s"
 msgstr "Mensaje de error no manejado: %s"
 
 # src/file-manager/fm-directory-view.c:2117
-#: src/nautilus-x-content-bar.c:141
+#: src/nautilus-x-content-bar.c:144
 msgid "Open with:"
 msgstr "Abrir con:"
 
@@ -5029,15 +5065,15 @@ msgstr "_Documento nuevo"
 
 # src/file-manager/fm-directory-view.c:2117
 #: src/resources/menu/nautilus-files-view-context-menus.ui:16
-#: src/resources/menu/nautilus-files-view-context-menus.ui:81
-#: src/resources/menu/nautilus-files-view-context-menus.ui:115
+#: src/resources/menu/nautilus-files-view-context-menus.ui:71
+#: src/resources/menu/nautilus-files-view-context-menus.ui:105
 #: src/resources/menu/nautilus-pathbar-context-menu.ui:30
 msgid "Open _With…"
 msgstr "Abrir _con…"
 
 # src/file-manager/fm-directory-view.c:2126
 #: src/resources/menu/nautilus-files-view-context-menus.ui:21
-#: src/resources/menu/nautilus-files-view-context-menus.ui:120
+#: src/resources/menu/nautilus-files-view-context-menus.ui:110
 #: src/resources/menu/nautilus-pathbar-context-menu.ui:34
 msgid "Open in Consol_e"
 msgstr "Abrir en la consol_a"
@@ -5058,127 +5094,118 @@ msgstr "Pegar como _enlace"
 msgid "Select _All"
 msgstr "Seleccionar t_odo"
 
-#: src/resources/menu/nautilus-files-view-context-menus.ui:41
-#: src/resources/ui/nautilus-view-controls.blp:36
-msgid "_Visible Columns…"
-msgstr "_Columnas visibles…"
-
-#: src/resources/menu/nautilus-files-view-context-menus.ui:46
-msgid "_Captions…"
-msgstr "_Subtítulos…"
-
 # src/file-manager/fm-directory-view.c:2154
-#: src/resources/menu/nautilus-files-view-context-menus.ui:53
+#: src/resources/menu/nautilus-files-view-context-menus.ui:43
 #: src/resources/menu/nautilus-pathbar-context-menu.ui:99
 msgid "Empty _Trash…"
 msgstr "Vaciar la _papelera…"
 
 # src/file-manager/fm-directory-view.c:2151
-#: src/resources/menu/nautilus-files-view-context-menus.ui:61
-#: src/resources/menu/nautilus-files-view-context-menus.ui:281
+#: src/resources/menu/nautilus-files-view-context-menus.ui:51
+#: src/resources/menu/nautilus-files-view-context-menus.ui:271
 #: src/resources/menu/nautilus-pathbar-context-menu.ui:106
 msgid "P_roperties"
 msgstr "P_ropiedades"
 
-#: src/resources/menu/nautilus-files-view-context-menus.ui:71
+#: src/resources/menu/nautilus-files-view-context-menus.ui:61
 msgid "_Extract"
 msgstr "_Extraer"
 
-#: src/resources/menu/nautilus-files-view-context-menus.ui:76
+#: src/resources/menu/nautilus-files-view-context-menus.ui:66
 msgid "E_xtract to…"
 msgstr "E_xtraer a…"
 
-#: src/resources/menu/nautilus-files-view-context-menus.ui:87
+#: src/resources/menu/nautilus-files-view-context-menus.ui:77
 msgid "_Run as a Program"
 msgstr "_Ejecutar como un programa"
 
 # libnautilus-private/nautilus-global-preferences.c:693
-#: src/resources/menu/nautilus-files-view-context-menus.ui:128
+#: src/resources/menu/nautilus-files-view-context-menus.ui:118
 msgid "_Open Item Location"
 msgstr "Abrir la ub_icación del elemento"
 
-#: src/resources/menu/nautilus-files-view-context-menus.ui:135
+#: src/resources/menu/nautilus-files-view-context-menus.ui:125
 msgid "_Scripts"
 msgstr "_Scripts"
 
-#: src/resources/menu/nautilus-files-view-context-menus.ui:140
+#: src/resources/menu/nautilus-files-view-context-menus.ui:130
 msgid "_Open Scripts Folder"
 msgstr "Abrir la carpeta de _scripts"
 
-#: src/resources/menu/nautilus-files-view-context-menus.ui:183
+#: src/resources/menu/nautilus-files-view-context-menus.ui:173
 msgid "Cu_t"
 msgstr "C_ortar"
 
-#: src/resources/menu/nautilus-files-view-context-menus.ui:187
+#: src/resources/menu/nautilus-files-view-context-menus.ui:177
 msgid "_Copy"
 msgstr "_Copiar"
 
-#: src/resources/menu/nautilus-files-view-context-menus.ui:191
+#: src/resources/menu/nautilus-files-view-context-menus.ui:181
 msgid "Move to…"
 msgstr "Mover a…"
 
 # #-#-#-#-#  nautilus-es.po (Nautilus)  #-#-#-#-#
 # src/file-manager/dfos-xfer.c:725
-#: src/resources/menu/nautilus-files-view-context-menus.ui:195
+#: src/resources/menu/nautilus-files-view-context-menus.ui:185
 msgid "Copy to…"
 msgstr "Copiar a…"
 
 # #-#-#-#-#  nautilus-es.po (Nautilus)  #-#-#-#-#
 # libnautilus-private/nautilus-icon-text-item.c:1487
 # src/file-manager/fm-icon-view.c:1105
-#: src/resources/menu/nautilus-files-view-context-menus.ui:202
+#: src/resources/menu/nautilus-files-view-context-menus.ui:192
 msgid "Rena_me…"
 msgstr "Reno_mbrar…"
 
-#: src/resources/menu/nautilus-files-view-context-menus.ui:206
+#: src/resources/menu/nautilus-files-view-context-menus.ui:196
 msgid "_Paste Into Folder"
 msgstr "_Pegar en la carpeta"
 
-#: src/resources/menu/nautilus-files-view-context-menus.ui:211
-#: src/resources/ui/nautilus-preferences-dialog.blp:36
+#: src/resources/menu/nautilus-files-view-context-menus.ui:201
+#: src/resources/ui/nautilus-preferences-dialog.blp:51
 msgid "Create _Link"
 msgstr "Crear en_lace"
 
-#: src/resources/menu/nautilus-files-view-context-menus.ui:216
+#: src/resources/menu/nautilus-files-view-context-menus.ui:206
 msgid "C_ompress…"
 msgstr "C_omprimir…"
 
 # src/nautilus-sidebar.c:424
-#: src/resources/menu/nautilus-files-view-context-menus.ui:221
+#: src/resources/menu/nautilus-files-view-context-menus.ui:211
 msgid "Set as Background…"
 msgstr "Establecer como _fondo"
 
 #. Translators: This is the transitive verb meaning 'to send via email' (e.g.
 #. 'email this document to Angela).
-#: src/resources/menu/nautilus-files-view-context-menus.ui:226
+#: src/resources/menu/nautilus-files-view-context-menus.ui:216
 msgid "Email…"
 msgstr "Correo-e…"
 
-#: src/resources/menu/nautilus-files-view-context-menus.ui:236
+#: src/resources/menu/nautilus-files-view-context-menus.ui:226
 msgid "_Delete From Trash…"
 msgstr "_Eliminar de la papelera…"
 
 # src/file-manager/fm-directory-view.c:2678
-#: src/resources/menu/nautilus-files-view-context-menus.ui:241
-#: src/resources/menu/nautilus-files-view-context-menus.ui:246
+#: src/resources/menu/nautilus-files-view-context-menus.ui:231
+#: src/resources/menu/nautilus-files-view-context-menus.ui:236
 msgid "_Delete Permanently…"
 msgstr "_Eliminar permanentemente…"
 
-#: src/resources/menu/nautilus-files-view-context-menus.ui:251
+#: src/resources/menu/nautilus-files-view-context-menus.ui:241
 msgid "_Restore From Trash"
 msgstr "_Restaurar desde la papelera"
 
-#: src/resources/menu/nautilus-files-view-context-menus.ui:256
+#: src/resources/menu/nautilus-files-view-context-menus.ui:246
 msgid "_Remove From Recent"
 msgstr "Quita_r de elementos recientes"
 
-#: src/resources/menu/nautilus-files-view-context-menus.ui:269
+#: src/resources/menu/nautilus-files-view-context-menus.ui:259
 msgid "_Copy Address"
 msgstr "_Copiar dirección"
 
 # #-#-#-#-#  nautilus-es.po (Nautilus)  #-#-#-#-#
 # src/nautilus-bookmarks-window.c:198 src/nautilus-window-menus.c:588
-#: src/resources/menu/nautilus-files-view-context-menus.ui:273
+#: src/resources/menu/nautilus-files-view-context-menus.ui:263
 msgid "_Remove"
 msgstr "_Quitar"
 
@@ -5273,13 +5300,18 @@ msgid "Last _Trashed"
 msgstr "Último _eliminado"
 
 # libnautilus-private/nautilus-program-chooser.c:1248
-#: src/resources/ui/nautilus-app-chooser.blp:51
+#: src/resources/ui/nautilus-app-chooser.blp:66
 msgid "Choose an app to open the selected files"
 msgstr "Elija una aplicación para abrir los archivos seleccionados"
 
-#: src/resources/ui/nautilus-app-chooser.blp:61
+#: src/resources/ui/nautilus-app-chooser.blp:76
 msgid "Always use for this file type"
 msgstr "Usar siempre para este tipo de archivo"
+
+# src/file-manager/fm-directory-view.c:1045
+#: src/resources/ui/nautilus-app-chooser-widget.blp:43
+msgid "No applications found"
+msgstr "No se encontraron aplicaciones"
 
 #: src/resources/ui/nautilus-batch-rename-dialog.blp:7
 msgid "Automatic Numbers"
@@ -5366,11 +5398,11 @@ msgstr "Reemplazar"
 msgid "Existing Text"
 msgstr "Texto existente"
 
-#: src/resources/ui/nautilus-batch-rename-dialog.blp:409
+#: src/resources/ui/nautilus-batch-rename-dialog.blp:416
 msgid "Next Conflict"
 msgstr "Siguiente conflicto"
 
-#: src/resources/ui/nautilus-batch-rename-dialog.blp:419
+#: src/resources/ui/nautilus-batch-rename-dialog.blp:426
 msgid "Previous Conflict"
 msgstr "Conflicto anterior"
 
@@ -5403,23 +5435,23 @@ msgstr "_Bajar"
 msgid "Compress Files and Folders"
 msgstr "Comprimir archivos y carpetas"
 
-#: src/resources/ui/nautilus-compress-dialog.blp:25
+#: src/resources/ui/nautilus-compress-dialog.blp:26
 msgid "C_ompress"
 msgstr "C_omprimir"
 
-#: src/resources/ui/nautilus-compress-dialog.blp:44
+#: src/resources/ui/nautilus-compress-dialog.blp:45
 msgid "Archive _Name"
 msgstr "_Nombre del archivador"
 
-#: src/resources/ui/nautilus-compress-dialog.blp:68
+#: src/resources/ui/nautilus-compress-dialog.blp:69
 msgid "Co_mpression Method"
 msgstr "Método de c_ompresión"
 
-#: src/resources/ui/nautilus-compress-dialog.blp:75
+#: src/resources/ui/nautilus-compress-dialog.blp:76
 msgid "Encryption"
 msgstr "Cifrado"
 
-#: src/resources/ui/nautilus-compress-dialog.blp:77
+#: src/resources/ui/nautilus-compress-dialog.blp:78
 msgid ""
 "Encrypt contents of the archive with a password when the compression method "
 "supports password-protection."
@@ -5427,11 +5459,11 @@ msgstr ""
 "Cifrar el contenido de un archivador con contraseña cuando el método de "
 "compresión lo soporte."
 
-#: src/resources/ui/nautilus-compress-dialog.blp:81
+#: src/resources/ui/nautilus-compress-dialog.blp:82
 msgid "_Password"
 msgstr "Contrase_ña"
 
-#: src/resources/ui/nautilus-compress-dialog.blp:87
+#: src/resources/ui/nautilus-compress-dialog.blp:88
 msgid "_Confirm Password"
 msgstr "_Confirmar contraseña"
 
@@ -5495,52 +5527,52 @@ msgstr "_Para"
 msgid "_Filter"
 msgstr "_Filtrar"
 
-#: src/resources/ui/nautilus-file-chooser.blp:126
+#: src/resources/ui/nautilus-file-chooser.blp:124
 #: src/resources/ui/nautilus-toolbar.blp:72
 msgid "Show Sidebar"
 msgstr "Mostrar barra lateral"
 
 # src/file-manager/fm-directory-view.c:2140
 # src/file-manager/fm-directory-view.c:2257
-#: src/resources/ui/nautilus-file-chooser.blp:161
+#: src/resources/ui/nautilus-file-chooser.blp:159
 #: src/resources/ui/nautilus-new-folder-dialog.blp:5
 #: src/resources/ui/nautilus-toolbar.blp:99
 msgid "New Folder"
 msgstr "Carpeta nueva"
 
-#: src/resources/ui/nautilus-file-chooser.blp:185
+#: src/resources/ui/nautilus-file-chooser.blp:183
 msgid "Edit File Name"
 msgstr "Editar nombre de archivo"
 
-#: src/resources/ui/nautilus-file-chooser.blp:216
+#: src/resources/ui/nautilus-file-chooser.blp:215
 msgid "Reset File Name"
 msgstr "Restablecer nombre de archivo"
 
-#: src/resources/ui/nautilus-file-chooser.blp:229
+#: src/resources/ui/nautilus-file-chooser.blp:228
 msgid "File Name"
 msgstr "Nombre de archivo"
 
 #. Translators: 'Show' is a verb
-#: src/resources/ui/nautilus-file-chooser.blp:267
+#: src/resources/ui/nautilus-file-chooser.blp:261
 msgctxt "File Chooser tooltips"
 msgid "Show Options"
 msgstr "Mostrar opciones"
 
-#: src/resources/ui/nautilus-file-chooser.blp:273
+#: src/resources/ui/nautilus-file-chooser.blp:267
 msgid "Visible Files Filter"
 msgstr "Filtro de archivos visibles"
 
 # src/nautilus-property-browser.c:875
-#: src/resources/ui/nautilus-file-conflict-dialog.blp:102
+#: src/resources/ui/nautilus-file-conflict-dialog.blp:120
 msgid "Select a _new name for the destination"
 msgstr "_Seleccionar un nombre nuevo para el destino"
 
-#: src/resources/ui/nautilus-file-conflict-dialog.blp:120
+#: src/resources/ui/nautilus-file-conflict-dialog.blp:138
 msgid "R_eset"
 msgstr "R_establecer"
 
 # src/file-manager/fm-properties-window.c:1641
-#: src/resources/ui/nautilus-file-conflict-dialog.blp:129
+#: src/resources/ui/nautilus-file-conflict-dialog.blp:147
 msgid "_Apply this action to all files and folders"
 msgstr "_Aplicar esta acción a todos los archivos y carpetas"
 
@@ -5700,11 +5732,19 @@ msgstr "Carpetas _expansibles en la vista de lista"
 msgid "_Action to Open Items"
 msgstr "_Acción para abrir elementos"
 
-#: src/resources/ui/nautilus-preferences-dialog.blp:30
+#: src/resources/ui/nautilus-preferences-dialog.blp:32
+msgid "Single-Click"
+msgstr "Un sola pulsación"
+
+#: src/resources/ui/nautilus-preferences-dialog.blp:37
+msgid "Double-Click"
+msgstr "Doble pulsación"
+
+#: src/resources/ui/nautilus-preferences-dialog.blp:45
 msgid "Optional Context Menu Actions"
 msgstr "Acciones opcionales del menú contextual"
 
-#: src/resources/ui/nautilus-preferences-dialog.blp:32
+#: src/resources/ui/nautilus-preferences-dialog.blp:47
 msgid ""
 "Show more actions in the menus. Keyboard shortcuts can be used even if the "
 "actions are not shown."
@@ -5713,15 +5753,15 @@ msgstr ""
 "incluso cuando las acciones no se muestran."
 
 # src/file-manager/fm-directory-view.c:2678
-#: src/resources/ui/nautilus-preferences-dialog.blp:41
+#: src/resources/ui/nautilus-preferences-dialog.blp:56
 msgid "_Delete Permanently"
 msgstr "Eliminar permanentemente"
 
-#: src/resources/ui/nautilus-preferences-dialog.blp:47
+#: src/resources/ui/nautilus-preferences-dialog.blp:62
 msgid "Performance"
 msgstr "Rendimiento"
 
-#: src/resources/ui/nautilus-preferences-dialog.blp:49
+#: src/resources/ui/nautilus-preferences-dialog.blp:64
 msgid ""
 "These features may cause slowdowns and excess network usage, especially when "
 "browsing files outside this device, such as on a remote server."
@@ -5730,34 +5770,34 @@ msgstr ""
 "red, especialmente al examinar archivos fuera de este equipo, como puede ser "
 "en un servidor remoto."
 
-#: src/resources/ui/nautilus-preferences-dialog.blp:53
+#: src/resources/ui/nautilus-preferences-dialog.blp:68
 msgid "Search in Su_bfolders"
 msgstr "Buscar en su_bcarpetas"
 
 # libnautilus-private/nautilus-global-preferences.c:256
-#: src/resources/ui/nautilus-preferences-dialog.blp:58
+#: src/resources/ui/nautilus-preferences-dialog.blp:73
 msgid "Show _Thumbnails"
 msgstr "Mostrar minia_turas"
 
 # src/file-manager/dfos-xfer.c:763
-#: src/resources/ui/nautilus-preferences-dialog.blp:63
+#: src/resources/ui/nautilus-preferences-dialog.blp:78
 msgid "_Count Number of Files in Folders"
 msgstr "_Contar el número de archivos en carpetas"
 
-#: src/resources/ui/nautilus-preferences-dialog.blp:69
+#: src/resources/ui/nautilus-preferences-dialog.blp:84
 msgid "Date and Time Format"
 msgstr "Formato de fecha y hora"
 
-#: src/resources/ui/nautilus-preferences-dialog.blp:70
+#: src/resources/ui/nautilus-preferences-dialog.blp:85
 msgid "Choose how dates and times are displayed in list and grid views."
 msgstr ""
 "Elija cómo se muestran las fechas y horas en las vista de lista y de rejilla."
 
-#: src/resources/ui/nautilus-preferences-dialog.blp:73
+#: src/resources/ui/nautilus-preferences-dialog.blp:88
 msgid "_Simple"
 msgstr "_Simple"
 
-#: src/resources/ui/nautilus-preferences-dialog.blp:87
+#: src/resources/ui/nautilus-preferences-dialog.blp:102
 msgid "Deta_iled"
 msgstr "Deta_llado"
 
@@ -5766,128 +5806,133 @@ msgstr "Deta_llado"
 msgid "Show File Operations"
 msgstr "Mostrar operaciones sobre archivos"
 
-#: src/resources/ui/nautilus-properties-widget.blp:121
+# src/file-manager/fm-directory-view.c:2126
+#: src/resources/ui/nautilus-properties-widget.blp:60
+msgid "Detach Window"
+msgstr "Desacoplar ventana"
+
+#: src/resources/ui/nautilus-properties-widget.blp:132
 msgid "Set Custom Icon"
 msgstr "Establecer icono personalizado"
 
-#: src/resources/ui/nautilus-properties-widget.blp:143
+#: src/resources/ui/nautilus-properties-widget.blp:154
 msgid "Remove Custom Icon"
 msgstr "Quitar el icono personalizado"
 
-#: src/resources/ui/nautilus-properties-widget.blp:184
+#: src/resources/ui/nautilus-properties-widget.blp:195
 msgid "Unknown Filesystem"
 msgstr "Sistema de archivos desconocido"
 
-#: src/resources/ui/nautilus-properties-widget.blp:262
+#: src/resources/ui/nautilus-properties-widget.blp:273
 msgid "total"
 msgstr "total"
 
 #. Translators: Refers to the capacity of the filesystem
-#: src/resources/ui/nautilus-properties-widget.blp:291
+#: src/resources/ui/nautilus-properties-widget.blp:302
 msgid "used"
 msgstr "usado"
 
 #. Translators: Refers to the capacity of the filesystem
-#: src/resources/ui/nautilus-properties-widget.blp:321
+#: src/resources/ui/nautilus-properties-widget.blp:332
 msgid "free"
 msgstr "libre"
 
 # src/nautilus-sidebar.c:1145
 #. Translators: Disks refers to GNOME Disks.
-#: src/resources/ui/nautilus-properties-widget.blp:335
+#: src/resources/ui/nautilus-properties-widget.blp:346
 msgid "_Open in Disks"
 msgstr "_Abrir en Discos"
 
 # src/nautilus-link-set-window.c:185
-#: src/resources/ui/nautilus-properties-widget.blp:346
+#: src/resources/ui/nautilus-properties-widget.blp:357
 msgid "_Link Target"
 msgstr "Destino del en_lace"
 
 # libnautilus-private/nautilus-global-preferences.c:693
-#: src/resources/ui/nautilus-properties-widget.blp:361
+#: src/resources/ui/nautilus-properties-widget.blp:372
 msgid "Open the Target's Location"
 msgstr "Abra la ubicación del objetivo"
 
-#: src/resources/ui/nautilus-properties-widget.blp:373
+#: src/resources/ui/nautilus-properties-widget.blp:384
 msgid "Parent _Folder"
 msgstr "Carpeta _padre"
 
-#: src/resources/ui/nautilus-properties-widget.blp:388
+#: src/resources/ui/nautilus-properties-widget.blp:399
 msgid "Open Parent Folder"
 msgstr "Abrir carpeta padre"
 
 # src/file-manager/fm-properties-window.c:1493
-#: src/resources/ui/nautilus-properties-widget.blp:478
+#: src/resources/ui/nautilus-properties-widget.blp:489
 msgid "_Permissions"
 msgstr "_Permisos"
 
-#: src/resources/ui/nautilus-properties-widget.blp:498
+#: src/resources/ui/nautilus-properties-widget.blp:509
 msgid "_Executable as Program"
 msgstr "_Ejecutable como un programa"
 
 # src/file-manager/fm-properties-window.c:1493
-#: src/resources/ui/nautilus-properties-widget.blp:520
+#: src/resources/ui/nautilus-properties-widget.blp:531
 msgid "Set Custom Permissions"
 msgstr "Establecer permisos personalizados"
 
 # src/file-manager/fm-properties-window.c:1493
-#: src/resources/ui/nautilus-properties-widget.blp:532
+#: src/resources/ui/nautilus-properties-widget.blp:543
 msgid "Unknown Permissions"
 msgstr "Permisos desconocidos"
 
 # src/file-manager/fm-properties-window.c:1641
-#: src/resources/ui/nautilus-properties-widget.blp:533
+#: src/resources/ui/nautilus-properties-widget.blp:544
 msgid "The permissions of the selected files could not be determined"
 msgstr "No se han podido determinar los permisos de los archivos seleccionados"
 
 # src/file-manager/fm-properties-window.c:1499
-#: src/resources/ui/nautilus-properties-widget.blp:544
+#: src/resources/ui/nautilus-properties-widget.blp:555
 msgid "Only the owner can edit these permissions"
 msgstr "Sólo el propietario, puede cambiar esos permisos"
 
 # src/file-manager/fm-properties-window.c:1554
-#: src/resources/ui/nautilus-properties-widget.blp:551
+#: src/resources/ui/nautilus-properties-widget.blp:562
 msgid "_Owner"
 msgstr "_Propietario"
 
 # src/file-manager/fm-properties-window.c:1105
-#: src/resources/ui/nautilus-properties-widget.blp:560
-#: src/resources/ui/nautilus-properties-widget.blp:592
-#: src/resources/ui/nautilus-properties-widget.blp:617
+#: src/resources/ui/nautilus-properties-widget.blp:571
+#: src/resources/ui/nautilus-properties-widget.blp:603
+#: src/resources/ui/nautilus-properties-widget.blp:628
 msgid "Access"
 msgstr "Acceso"
 
 # src/file-manager/fm-directory-view.c:2140
 # src/file-manager/fm-directory-view.c:2257
-#: src/resources/ui/nautilus-properties-widget.blp:567
-#: src/resources/ui/nautilus-properties-widget.blp:599
-#: src/resources/ui/nautilus-properties-widget.blp:624
+#: src/resources/ui/nautilus-properties-widget.blp:578
+#: src/resources/ui/nautilus-properties-widget.blp:610
+#: src/resources/ui/nautilus-properties-widget.blp:635
 msgid "Folder Access"
 msgstr "Acceso a carpeta"
 
 # src/file-manager/fm-properties-window.c:1105
-#: src/resources/ui/nautilus-properties-widget.blp:574
-#: src/resources/ui/nautilus-properties-widget.blp:606
-#: src/resources/ui/nautilus-properties-widget.blp:631
+#: src/resources/ui/nautilus-properties-widget.blp:585
+#: src/resources/ui/nautilus-properties-widget.blp:617
+#: src/resources/ui/nautilus-properties-widget.blp:642
 msgid "File Access"
 msgstr "Acceso a archivo"
 
 # src/file-manager/fm-properties-window.c:1557
-#: src/resources/ui/nautilus-properties-widget.blp:583
+#: src/resources/ui/nautilus-properties-widget.blp:594
 msgid "_Group"
 msgstr "_Grupo"
 
 # src/file-manager/fm-properties-window.c:1560
-#: src/resources/ui/nautilus-properties-widget.blp:612
+#: src/resources/ui/nautilus-properties-widget.blp:623
 msgid "Other Users"
 msgstr "Otros usuarios"
 
-#: src/resources/ui/nautilus-properties-widget.blp:640
+#: src/resources/ui/nautilus-properties-widget.blp:651
 msgid "Security Context"
 msgstr "Contexto de seguridad"
 
 # src/file-manager/fm-properties-window.c:1641
-#: src/resources/ui/nautilus-properties-widget.blp:656
+#: src/resources/ui/nautilus-properties-widget.blp:667
 msgid "Change Permissions for _Enclosed Files…"
 msgstr "Cambiar permisos a los archivos cont_enidos…"
 
@@ -5941,62 +5986,62 @@ msgid "Specific Type"
 msgstr "Tipo específico"
 
 #. Translators: This refers to a date time
-#: src/resources/ui/nautilus-search-popover.blp:182
+#: src/resources/ui/nautilus-search-popover.blp:183
 msgid "Used"
 msgstr "Usado"
 
-#: src/resources/ui/nautilus-search-popover.blp:198
+#: src/resources/ui/nautilus-search-popover.blp:212
 msgid "_Today"
 msgstr "_Hoy"
 
 # components/services/install/command-line/eazel-alt-install-corba.c:94
 # components/services/install/command-line/eazel-revert.c:78
 # components/services/install/command-line/eazel-uninstall.c:69
-#: src/resources/ui/nautilus-search-popover.blp:204
+#: src/resources/ui/nautilus-search-popover.blp:218
 msgid "_Yesterday"
 msgstr "_Ayer"
 
 # src/file-manager/fm-properties-window.c:1569
-#: src/resources/ui/nautilus-search-popover.blp:210
+#: src/resources/ui/nautilus-search-popover.blp:224
 msgid "Past _Week"
 msgstr "Semana _pasada"
 
-#: src/resources/ui/nautilus-search-popover.blp:216
+#: src/resources/ui/nautilus-search-popover.blp:230
 msgid "Past _Month"
 msgstr "_Mes pasado"
 
 # src/file-manager/fm-directory-view.c:2154
-#: src/resources/ui/nautilus-search-popover.blp:222
+#: src/resources/ui/nautilus-search-popover.blp:236
 msgid "Past Y_ear"
 msgstr "Año pa_sado"
 
-#: src/resources/ui/nautilus-search-popover.blp:234
+#: src/resources/ui/nautilus-search-popover.blp:248
 msgid "Custom Date Range"
 msgstr "Rango de fechas personalizado"
 
-#: src/resources/ui/nautilus-search-popover.blp:251
+#: src/resources/ui/nautilus-search-popover.blp:265
 msgid "Text Matching"
 msgstr "Coincidencia de texto"
 
-#: src/resources/ui/nautilus-search-popover.blp:266
+#: src/resources/ui/nautilus-search-popover.blp:280
 msgid "_Content & Filename"
 msgstr "_contenido y nombre de archivo"
 
 # libnautilus-private/nautilus-global-preferences.c:727
-#: src/resources/ui/nautilus-search-popover.blp:267
+#: src/resources/ui/nautilus-search-popover.blp:281
 msgid "Search Inside Files"
 msgstr "Buscar dentro de los archivos"
 
-#: src/resources/ui/nautilus-search-popover.blp:274
+#: src/resources/ui/nautilus-search-popover.blp:288
 msgid "_Only Filename"
 msgstr "Sólo el no_mbre del archivo"
 
-#: src/resources/ui/nautilus-search-popover.blp:275
+#: src/resources/ui/nautilus-search-popover.blp:289
 msgid "Don't Search Inside Files"
 msgstr "No buscar dentro de los archivos"
 
 # src/file-manager/fm-properties-window.c:878
-#: src/resources/ui/nautilus-search-popover.blp:284
+#: src/resources/ui/nautilus-search-popover.blp:298
 msgid "Only Co_ntents"
 msgstr "Sólo c_ontenido"
 
@@ -6049,6 +6094,10 @@ msgstr "Ordenación"
 msgid "Show _Hidden Files"
 msgstr "Mostrar archivos _ocultos"
 
+#: src/resources/ui/nautilus-view-controls.blp:36
+msgid "_Visible Columns…"
+msgstr "_Columnas visibles…"
+
 #: src/resources/ui/nautilus-view-controls.blp:44
 msgid "Captions…"
 msgstr "Subtítulos…"
@@ -6071,6 +6120,7 @@ msgstr "Ampliar"
 
 # src/file-manager/fm-directory-view.c:2126
 #: src/resources/ui/nautilus-window.blp:7
+#: src/resources/ui/nautilus-window.blp:111
 msgid "New _Window"
 msgstr "_Ventana nueva"
 
@@ -6078,58 +6128,63 @@ msgstr "_Ventana nueva"
 msgid "New _Tab"
 msgstr "_Pestaña nueva"
 
+#: src/resources/ui/nautilus-window.blp:19
+msgid "Show All Ta_bs"
+msgstr "Mostrar todas las _pestañas"
+
 # #-#-#-#-#  nautilus-es.po (Nautilus)  #-#-#-#-#
 # src/nautilus-first-time-druid.c:272
-#: src/resources/ui/nautilus-window.blp:37
+#: src/resources/ui/nautilus-window.blp:42
 msgid "_Preferences"
 msgstr "Prefere_ncias"
 
-#: src/resources/ui/nautilus-window.blp:42
+#: src/resources/ui/nautilus-window.blp:47
 msgid "_Keyboard Shortcuts"
 msgstr "_Atajos del teclado"
 
 # #-#-#-#-#  nautilus-es.po (Nautilus)  #-#-#-#-#
 # src/nautilus-window-menus.c:1325
-#: src/resources/ui/nautilus-window.blp:47
+#: src/resources/ui/nautilus-window.blp:52
 msgid "_Help"
 msgstr "Ay_uda"
 
-#: src/resources/ui/nautilus-window.blp:52
+#: src/resources/ui/nautilus-window.blp:57
 msgid "_About Files"
 msgstr "Acerca _de Archivos"
 
-#: src/resources/ui/nautilus-window.blp:61
+#: src/resources/ui/nautilus-window.blp:66
 msgid "_New Tab"
 msgstr "_Pestaña nueva"
 
-#: src/resources/ui/nautilus-window.blp:66
+#: src/resources/ui/nautilus-window.blp:71
+#: src/resources/ui/nautilus-window.blp:116
 msgid "Re_store Closed Tab"
 msgstr "Re_staurar las pestañas cerradas"
 
 # src/file-manager/fm-directory-view.c:2126
-#: src/resources/ui/nautilus-window.blp:73
+#: src/resources/ui/nautilus-window.blp:78
 msgid "Move Tab to New _Window"
 msgstr "Mover pestaña a la nueva _ventana"
 
 #. Translators: use “Move Tab _Right” for RTL languages
-#: src/resources/ui/nautilus-window.blp:79
+#: src/resources/ui/nautilus-window.blp:84
 msgid "Move Tab _Left"
 msgstr "Mover pestaña a la _izquierda"
 
 #. Translators: use “Move Tab _Left” for RTL languages
-#: src/resources/ui/nautilus-window.blp:85
+#: src/resources/ui/nautilus-window.blp:90
 msgid "Move Tab _Right"
 msgstr "Mover pestaña a la _derecha"
 
-#: src/resources/ui/nautilus-window.blp:92
+#: src/resources/ui/nautilus-window.blp:97
 msgid "_Close Tab"
 msgstr "_Cerrar pestaña"
 
-#: src/resources/ui/nautilus-window.blp:97
+#: src/resources/ui/nautilus-window.blp:102
 msgid "Close _Other Tabs"
 msgstr "Cerrar _otras pestañas"
 
-#: src/resources/ui/nautilus-window.blp:139
+#: src/resources/ui/nautilus-window.blp:165
 msgid "Main Menu"
 msgstr "Menú principal"
 
@@ -6447,53 +6502,58 @@ msgstr "Cerrar ventana o pestaña"
 
 #: src/resources/ui/shortcuts-dialog.blp:316
 msgctxt "shortcuts dialog"
+msgid "Show All Tabs"
+msgstr "Mostrar todas las pestañas"
+
+#: src/resources/ui/shortcuts-dialog.blp:321
+msgctxt "shortcuts dialog"
 msgid "Restore Closed Tab"
 msgstr "Restaurar pestaña cerrada"
 
-#: src/resources/ui/shortcuts-dialog.blp:323
+#: src/resources/ui/shortcuts-dialog.blp:328
 msgctxt "shortcuts dialog"
 msgid "Go to Previous Tab"
 msgstr "Ir a la pestaña anterior"
 
-#: src/resources/ui/shortcuts-dialog.blp:328
+#: src/resources/ui/shortcuts-dialog.blp:333
 msgctxt "shortcuts dialog"
 msgid "Go to Next Tab"
 msgstr "Ir a la pestaña siguiente"
 
 # src/file-manager/fm-directory-view.c:2117
-#: src/resources/ui/shortcuts-dialog.blp:333
+#: src/resources/ui/shortcuts-dialog.blp:338
 msgctxt "shortcuts dialog"
 msgid "Open Tab"
 msgstr "Abrir pestaña"
 
-#: src/resources/ui/shortcuts-dialog.blp:340
+#: src/resources/ui/shortcuts-dialog.blp:345
 msgctxt "shortcuts dialog"
 msgid "Move Tab Left"
 msgstr "Mover pestaña hacia la izquierda"
 
-#: src/resources/ui/shortcuts-dialog.blp:345
+#: src/resources/ui/shortcuts-dialog.blp:350
 msgctxt "shortcuts dialog"
 msgid "Move Tab Right"
 msgstr "Mover pestaña a la derecha"
 
-#: src/resources/ui/shortcuts-dialog.blp:351
+#: src/resources/ui/shortcuts-dialog.blp:356
 msgctxt "shortcuts dialog"
 msgid "App"
 msgstr "Aplicación"
 
 # #-#-#-#-#  nautilus-es.po (Nautilus)  #-#-#-#-#
 # src/nautilus-first-time-druid.c:272
-#: src/resources/ui/shortcuts-dialog.blp:354
+#: src/resources/ui/shortcuts-dialog.blp:359
 msgctxt "shortcuts dialog"
 msgid "Show Preferences"
 msgstr "Mostrar las preferencias"
 
-#: src/resources/ui/shortcuts-dialog.blp:359
+#: src/resources/ui/shortcuts-dialog.blp:364
 msgctxt "shortcuts dialog"
 msgid "Shortcuts"
 msgstr "Atajos"
 
-#: src/resources/ui/shortcuts-dialog.blp:364
+#: src/resources/ui/shortcuts-dialog.blp:369
 msgctxt "shortcuts dialog"
 msgid "Show Help"
 msgstr "Mostrar la ayuda"
@@ -6502,10 +6562,25 @@ msgstr "Mostrar la ayuda"
 # libnautilus-private/nautilus-search-bar-criterion.c:71
 # libnautilus-private/nautilus-search-bar-criterion.c:86
 # libnautilus-private/nautilus-search-bar-criterion.c:141
-#: src/resources/ui/shortcuts-dialog.blp:369
+#: src/resources/ui/shortcuts-dialog.blp:374
 msgctxt "shortcuts dialog"
 msgid "Quit"
 msgstr "Salir"
+
+#~ msgid "A folder cannot be called “.”"
+#~ msgstr "Una carpeta no se puede llamar «.»"
+
+#~ msgid "A file cannot be called “.”"
+#~ msgstr "Un archivo no se puede llamar «.»"
+
+#~ msgid "The file that you dropped is not an image."
+#~ msgstr "El archivo que ha soltado no es una imagen."
+
+#~ msgid "Subfolders Not in Search Locations"
+#~ msgstr "Las subcarpetas no están en las ubicaciones de búsqueda"
+
+#~ msgid "_Captions…"
+#~ msgstr "_Subtítulos…"
 
 #, fuzzy
 #~ msgid "Show the package installer for unknown MIME types"
@@ -6525,18 +6600,24 @@ msgstr "Salir"
 #~ "Unable to create a required folder. Please create the following folder, "
 #~ "or set permissions such that it can be created:\n"
 #~ "%s"
-#~ msgstr "No se puede crear una carpeta requerida. "
+#~ msgstr ""
+#~ "No se puede crear una carpeta requerida. Cree la siguiente carpeta o "
+#~ "establezca permisos para que se pueda crear:\n"
+#~ "%s"
 
 #, fuzzy, c-format
 #~ msgid ""
 #~ "Unable to create required folders. Please create the following folders, "
 #~ "or set permissions such that they can be created:\n"
 #~ "%s"
-#~ msgstr "No se pueden crear las carpetas requeridas. "
+#~ msgstr ""
+#~ "No se pueden crear las carpetas requeridas. Cree las siguientes carpetas "
+#~ "o establezca permisos para que se puedan crear:\n"
+#~ "%s"
 
 #, fuzzy, c-format
 #~ msgid "%s. Starred"
-#~ msgstr "%s. "
+#~ msgstr "%s. Sembrado de estrellas"
 
 # src/file-manager/dfos-xfer.c:430
 #, fuzzy
@@ -6584,7 +6665,7 @@ msgstr "Salir"
 #~ "again. The local files you dropped have already been opened."
 #~ msgstr ""
 #~ "Para abrir archivos no locales, cópielos a una carpeta local y luego "
-#~ "suéltelos nuevamente. "
+#~ "suéltelos nuevamente. Los archivos locales que soltó ya se han abierto."
 
 #, fuzzy
 #~ msgid "Details: "
@@ -6775,7 +6856,12 @@ msgstr "Salir"
 #~ "This app cannot work correctly if run as root (not even\n"
 #~ "with sudo). Consider running `nautilus admin:/` instead.\n"
 #~ "========================================================"
-#~ msgstr "==========================================================\n"
+#~ msgstr ""
+#~ "==========================================================\n"
+#~ "Esta aplicación no puede funcionar correctamente si se ejecuta como root "
+#~ "(ni siquiera\n"
+#~ "con sudo). Considere ejecutar `nautilus admin:/` en su lugar.\n"
+#~ "=========================================================="
 
 # src/nautilus-property-browser.c:2014
 #, fuzzy
@@ -6887,7 +6973,9 @@ msgstr "Salir"
 #~ msgid ""
 #~ "There was an error displaying help: \n"
 #~ "%s"
-#~ msgstr "Hubo un error al mostrar la ayuda: \n"
+#~ msgstr ""
+#~ "Hubo un error al mostrar la ayuda: \n"
+#~ "%s"
 
 #, fuzzy
 #~ msgid "View of the current folder"
@@ -6958,7 +7046,8 @@ msgstr "Salir"
 #~ "emptied. All trashed items on the volume will be permanently lost."
 #~ msgstr ""
 #~ "Para recuperar el espacio libre en este volumen se debe vaciar la "
-#~ "papelera. "
+#~ "papelera. Todos los elementos desechados en el volumen se perderán "
+#~ "permanentemente."
 
 #, fuzzy
 #~ msgid "Audio CD"
@@ -7040,11 +7129,6 @@ msgstr "Salir"
 #, fuzzy
 #~ msgid "Searching for network locations"
 #~ msgstr "Buscando ubicaciones de red"
-
-# src/file-manager/fm-directory-view.c:1045
-#, fuzzy
-#~ msgid "No network locations found"
-#~ msgstr "No se encontraron ubicaciones de red"
 
 #, fuzzy
 #~ msgid "Unable to unmount volume"
@@ -7150,7 +7234,7 @@ msgstr "Salir"
 
 #, fuzzy
 #~ msgid "Archives with “.” at the beginning of their name are hidden."
-#~ msgstr "Archivos con \".\" "
+#~ msgstr "Archivos con \".\" al principio de su nombre están ocultos."
 
 # libnautilus-private/nautilus-file.c:1563
 #, fuzzy, no-c-format
@@ -7856,7 +7940,9 @@ msgstr "Salir"
 #~ "the tab list."
 #~ msgstr ""
 #~ "Si se establece en \"después de la pestaña actual\", las nuevas pestañas "
-#~ "se insertan después de la pestaña actual. "
+#~ "se insertan después de la pestaña actual. Si se establece en "
+#~ "\"finalizar\", las pestañas nuevas se agregan al final de la lista de "
+#~ "pestañas."
 
 #, fuzzy
 #~ msgid "Close tab"
@@ -8032,10 +8118,6 @@ msgstr "Salir"
 #~ msgid "No recent servers found"
 #~ msgstr "No se encontraron servidores recientes"
 
-#, fuzzy
-#~ msgid "No results found"
-#~ msgstr "No se encontraron resultados"
-
 # src/nautilus-sidebar.c:424
 #, fuzzy
 #~ msgid "Wallpapers"
@@ -8116,6 +8198,20 @@ msgstr "Salir"
 #~ msgstr ""
 #~ "Una cadena que especifica cómo las partes de los nombres de archivos "
 #~ "demasiado largos deben reemplazarse por elipses, según el nivel de zoom. "
+#~ "Cada una de las entradas de la lista tiene el formato \"Nivel de zoom: "
+#~ "entero\". Para cada nivel de zoom especificado, si el número entero dado "
+#~ "es mayor que 0, el nombre del archivo no excederá el número de líneas "
+#~ "dado. Si el número entero es 0 o menor, no se impone ningún límite en el "
+#~ "nivel de zoom especificado. También se permite una entrada predeterminada "
+#~ "con el formato \"Entero\" sin ningún nivel de zoom especificado. Define "
+#~ "el número máximo de líneas para todos los demás niveles de zoom. "
+#~ "Ejemplos: 0: siempre muestra nombres de archivos demasiado largos; 3: "
+#~ "acorte los nombres de los archivos si superan las tres líneas; más "
+#~ "pequeño:5,más pequeño:4,0: acorta los nombres de los archivos si superan "
+#~ "las cinco líneas para el nivel de zoom \"más pequeño\". Acorte los "
+#~ "nombres de los archivos si superan las cuatro líneas para un nivel de "
+#~ "zoom \"más pequeño\". No acorte los nombres de los archivos para otros "
+#~ "niveles de zoom. Niveles de zoom disponibles: pequeño, estándar, grande."
 
 #, fuzzy
 #~ msgid "X"
@@ -8300,7 +8396,9 @@ msgstr "Salir"
 #~ "text files."
 #~ msgstr ""
 #~ "Qué hacer con los archivos de texto ejecutables cuando se activan (simple "
-#~ "o doble clic). "
+#~ "o doble clic). Los valores posibles son \"iniciar\" para iniciarlos como "
+#~ "programas, \"preguntar\" para preguntar qué hacer a través de un cuadro "
+#~ "de diálogo y \"mostrar\" para mostrarlos como archivos de texto."
 
 #, fuzzy
 #~ msgid "Do you want to run “%s”, or display its contents?"
@@ -8323,7 +8421,7 @@ msgstr "Salir"
 
 #, fuzzy
 #~ msgid "%d MB"
-#~ msgstr "%d MB"
+#~ msgstr "%dMB"
 
 #, fuzzy
 #~ msgid "Executable Text Files"
@@ -8542,7 +8640,9 @@ msgstr "Salir"
 #~ msgid ""
 #~ "The application launcher “%s” has not been marked as trusted. If you do "
 #~ "not know the source of this file, launching it may be unsafe."
-#~ msgstr "El iniciador de aplicaciones “%s” no se ha marcado como confiable. "
+#~ msgstr ""
+#~ "El iniciador de aplicaciones “%s” no se ha marcado como confiable. Si no "
+#~ "conoce el origen de este archivo, ejecutarlo puede no ser seguro."
 
 #, fuzzy
 #~ msgid "Trust and _Launch"
@@ -8626,7 +8726,11 @@ msgstr "Salir"
 #~ msgstr ""
 #~ "Si está configurado, Nautilus agregará los URI de los archivos "
 #~ "seleccionados y tratará el resultado como una línea de comando para "
-#~ "cambiar el nombre de forma masiva. "
+#~ "cambiar el nombre de forma masiva. Las aplicaciones de cambio de nombre "
+#~ "masivo pueden registrarse en esta clave estableciendo la clave en una "
+#~ "cadena separada por espacios de su nombre ejecutable y cualquier opción "
+#~ "de línea de comando. Si el nombre del ejecutable no está configurado en "
+#~ "una ruta completa, se buscará en la ruta de búsqueda."
 
 #, fuzzy
 #~ msgid "Default Thumbnail Icon Size"
@@ -8763,7 +8867,10 @@ msgstr "Salir"
 #~ "no limit is imposed on the number of displayed lines."
 #~ msgstr ""
 #~ "Un número entero que especifica cómo se deben reemplazar partes de "
-#~ "nombres de archivos demasiado largos por elipses en el escritorio. "
+#~ "nombres de archivos demasiado largos por elipses en el escritorio. Si el "
+#~ "número es mayor que 0, el nombre del archivo no excederá el número de "
+#~ "líneas indicado. Si el número es 0 o menor, no se impone ningún límite en "
+#~ "el número de líneas mostradas."
 
 #, fuzzy
 #~ msgid "Fade the background on change"
@@ -9170,7 +9277,8 @@ msgstr "Salir"
 #~ "disabled."
 #~ msgstr ""
 #~ "Si esto se establece en verdadero, el modo de visualización cambiará a la "
-#~ "vista de lista durante la búsqueda. "
+#~ "vista de lista durante la búsqueda. Sin embargo, si el usuario cambia el "
+#~ "modo manualmente, esto se desactivará."
 
 #, fuzzy
 #~ msgid "Default View"
@@ -9473,7 +9581,10 @@ msgstr "Salir"
 #~ "The alignment of the lines in the text of the label relative to each "
 #~ "other. This does NOT affect the alignment of the label within its "
 #~ "allocation. See GtkMisc::xalign for that."
-#~ msgstr "La alineación de las líneas en el texto de la etiqueta entre sí. "
+#~ msgstr ""
+#~ "La alineación de las líneas en el texto de la etiqueta entre sí. Esto NO "
+#~ "afecta la alineación de la etiqueta dentro de su asignación. Consulte "
+#~ "GtkMisc::xalign para eso."
 
 #, fuzzy
 #~ msgid "Line wrap"
@@ -9565,7 +9676,8 @@ msgstr "Salir"
 #~ msgstr ""
 #~ "Si se establece en verdadero, Nautilus tendrá una función que le "
 #~ "permitirá eliminar un archivo inmediatamente y en el lugar, en lugar de "
-#~ "moverlo a la papelera. "
+#~ "moverlo a la papelera. Esta característica puede ser peligrosa, así que "
+#~ "tenga cuidado."
 
 #, fuzzy
 #~ msgid "I_nclude a Delete command that bypasses Trash"
@@ -10352,14 +10464,6 @@ msgstr "Salir"
 #~ msgstr "Lista"
 
 #, fuzzy
-#~ msgid "View items as a list"
-#~ msgstr "Ver elementos como una lista"
-
-#, fuzzy
-#~ msgid "View items as a grid of icons"
-#~ msgstr "Ver elementos como una cuadrícula de iconos"
-
-#, fuzzy
 #~ msgid "_Up"
 #~ msgstr "_Arriba"
 
@@ -10413,7 +10517,9 @@ msgstr "Salir"
 #~ msgid ""
 #~ "Locate files based on file name and type. Save your searches for later "
 #~ "use."
-#~ msgstr "Localice archivos según el nombre y el tipo de archivo. "
+#~ msgstr ""
+#~ "Localice archivos según el nombre y el tipo de archivo. Guarde sus "
+#~ "búsquedas para usarlas más adelante."
 
 #, fuzzy
 #~ msgid "Arrange files by name, size, type, or when they were changed."
@@ -10473,7 +10579,11 @@ msgstr "Salir"
 #~ "the terms of the GNU General Public License as published by the Free "
 #~ "Software Foundation; either version 2 of the License, or (at your option) "
 #~ "any later version."
-#~ msgstr "Archivos es software gratuito; "
+#~ msgstr ""
+#~ "Archivos es software gratuito; puede redistribuirlo y/o modificarlo según "
+#~ "los términos de la Licencia Pública General GNU publicada por la Free "
+#~ "Software Foundation; ya sea la versión 2 de la Licencia o (a su elección) "
+#~ "cualquier versión posterior."
 
 #, fuzzy
 #~ msgid ""
@@ -10483,7 +10593,9 @@ msgstr "Salir"
 #~ "details."
 #~ msgstr ""
 #~ "Files se distribuye con la esperanza de que sea útil, pero SIN NINGUNA "
-#~ "GARANTÍA; "
+#~ "GARANTÍA; sin siquiera la garantía implícita de COMERCIABILIDAD o "
+#~ "IDONEIDAD PARA UN PROPÓSITO PARTICULAR.  Consulte la Licencia pública "
+#~ "general de GNU para obtener más detalles."
 
 #, fuzzy
 #~ msgid ""
@@ -10492,7 +10604,9 @@ msgstr "Salir"
 #~ "Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA"
 #~ msgstr ""
 #~ "Deberías haber recibido una copia de la Licencia Pública General GNU "
-#~ "junto con Nautilus; "
+#~ "junto con Nautilus; en caso contrario, escriba a Free Software "
+#~ "Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 "
+#~ "EE. UU."
 
 #, fuzzy
 #~ msgid "Don't recognize this file server type."
@@ -10574,7 +10688,9 @@ msgstr "Salir"
 #~ "file or backup files ending with a tilde (~)."
 #~ msgstr ""
 #~ "Si se establece en verdadero, los archivos ocultos se muestran de forma "
-#~ "predeterminada en el administrador de archivos. "
+#~ "predeterminada en el administrador de archivos. Los archivos ocultos son "
+#~ "archivos de puntos, enumerados en el archivo .hidden de la carpeta o "
+#~ "archivos de respaldo que terminan con una tilde (~)."
 
 # #-#-#-#-#  nautilus-es.po (Nautilus)  #-#-#-#-#
 # src/file-manager/fm-icon-view.c:328
@@ -10692,7 +10808,9 @@ msgstr "Salir"
 #~ msgid ""
 #~ "Can't load the supported server method list.\n"
 #~ "Please check your gvfs installation."
-#~ msgstr "No se puede cargar la lista de métodos de servidor admitidos.\n"
+#~ msgstr ""
+#~ "No se puede cargar la lista de métodos de servidor admitidos.\n"
+#~ "Por favor verifique la instalación de su gvfs."
 
 #, fuzzy
 #~ msgid "Try Again"
@@ -10948,7 +11066,8 @@ msgstr "Salir"
 #~ "this behavior."
 #~ msgstr ""
 #~ "Si se establece en verdadero, todas las ventanas de Nautilus serán "
-#~ "ventanas del navegador. "
+#~ "ventanas del navegador. Así es como se comportaba Nautilus antes de la "
+#~ "versión 2.6, y algunas personas prefieren este comportamiento."
 
 # libnautilus-private/nautilus-global-preferences.c:249
 #, fuzzy
@@ -10964,7 +11083,12 @@ msgstr "Salir"
 #~ "read preview data."
 #~ msgstr ""
 #~ "Compensación de velocidad para cuándo mostrar una vista previa del "
-#~ "contenido del archivo de texto en el ícono del archivo. "
+#~ "contenido del archivo de texto en el ícono del archivo. Si se establece "
+#~ "en \"siempre\", siempre se mostrarán vistas previas, incluso si la "
+#~ "carpeta está en un servidor remoto. Si se establece en \"solo local\", "
+#~ "solo se mostrarán vistas previas de los sistemas de archivos locales. Si "
+#~ "se establece en \"nunca\", nunca se moleste en leer los datos de vista "
+#~ "previa."
 
 #, fuzzy
 #~ msgid "Nautilus could not create the required folder \"%s\"."
@@ -11000,7 +11124,11 @@ msgstr "Salir"
 #~ "run software that you don't trust.\n"
 #~ "\n"
 #~ "If in doubt, press Cancel."
-#~ msgstr "El software se ejecutará directamente desde el medio \"%s\". "
+#~ msgstr ""
+#~ "El software se ejecutará directamente desde el medio \"%s\". Nunca debes "
+#~ "ejecutar software en el que no confíes.\n"
+#~ "\n"
+#~ "En caso de duda, presione Cancelar."
 
 #, fuzzy
 #~ msgid "File Management Preferences"
@@ -11077,7 +11205,18 @@ msgstr "Salir"
 #~ "\n"
 #~ msgstr ""
 #~ "Todos los archivos ejecutables de esta carpeta aparecerán en el menú "
-#~ "Scripts. "
+#~ "Scripts. Al elegir una secuencia de comandos del menú, se ejecutará esa "
+#~ "secuencia de comandos. Cuando se ejecuta desde una carpeta local, los "
+#~ "scripts recibirán los nombres de los archivos seleccionados. Cuando se "
+#~ "ejecuta desde una carpeta remota (por ejemplo, una carpeta que muestra "
+#~ "contenido web o ftp), los scripts no recibirán parámetros. En todos los "
+#~ "casos, Nautilus establecerá las siguientes variables de entorno, que los "
+#~ "scripts pueden usar: NAUTILUS_SCRIPT_SELECTED_FILE_PATHS: delimitado por "
+#~ "nueva línea rutas para archivos seleccionados (solo si son locales) "
+#~ "NAUTILUS_SCRIPT_SELECTED_URIS: URI delimitados por nueva línea para "
+#~ "archivos seleccionados NAUTILUS_SCRIPT_CURRENT_URI: URI para la ubicación "
+#~ "actual NAUTILUS_SCRIPT_WINDOW_GEOMETRY: posición y tamaño de la ventana "
+#~ "actual"
 
 # #-#-#-#-#  nautilus-es.po (Nautilus)  #-#-#-#-#
 # src/file-manager/fm-icon-view.c:328
@@ -11123,7 +11262,9 @@ msgstr "Salir"
 #~ msgid ""
 #~ "Error: %s\n"
 #~ "Please select another viewer and try again."
-#~ msgstr "Error: %s\n"
+#~ msgstr ""
+#~ "Error: %s\n"
+#~ "Seleccione otro espectador e inténtelo de nuevo."
 
 # src/nautilus-bookmarks-window.c:185
 #, fuzzy
@@ -11321,7 +11462,9 @@ msgstr "Salir"
 #~ msgid ""
 #~ "The format of file dates. Possible values are \"locale\", \"iso\", and "
 #~ "\"informal\"."
-#~ msgstr "El formato de las fechas del archivo. "
+#~ msgstr ""
+#~ "El formato de las fechas del archivo. Los valores posibles son "
+#~ "\"locale\", \"iso\" e \"informal\"."
 
 #, fuzzy
 #~ msgid "Put labels beside icons"
@@ -11340,7 +11483,7 @@ msgstr "Salir"
 #~ "Otherwise it will show both folders and files."
 #~ msgstr ""
 #~ "Si se establece en verdadero, Nautilus solo mostrará carpetas en el panel "
-#~ "lateral del árbol. "
+#~ "lateral del árbol. De lo contrario, mostrará tanto carpetas como archivos."
 
 # libnautilus-private/nautilus-global-preferences.c:165
 #, fuzzy
@@ -11494,7 +11637,8 @@ msgstr "Salir"
 #~ "width. Otherwise, the width of each column is determined seperately."
 #~ msgstr ""
 #~ "Si se establece esta preferencia, todas las columnas de la vista compacta "
-#~ "tienen el mismo ancho. "
+#~ "tienen el mismo ancho. De lo contrario, el ancho de cada columna se "
+#~ "determina por separado."
 
 #, fuzzy
 #~ msgid "Computer icon visible on desktop"
@@ -11664,7 +11808,7 @@ msgstr "Salir"
 #~ "desktop. If it is false, then it will use ~/Desktop as the desktop."
 #~ msgstr ""
 #~ "Si se establece en verdadero, Nautilus utilizará la carpeta de inicio del "
-#~ "usuario como escritorio. "
+#~ "usuario como escritorio. Si es falso, utilizará ~/Desktop como escritorio."
 
 # libnautilus-private/nautilus-undo-signal-handlers.c:175
 #, fuzzy
@@ -11714,7 +11858,11 @@ msgstr "Salir"
 #~ "on local file systems. If set to \"never\" then it never previews sound."
 #~ msgstr ""
 #~ "Compensación de velocidad para cuándo obtener una vista previa de un "
-#~ "archivo de sonido al pasar el mouse sobre el ícono de un archivo. "
+#~ "archivo de sonido al pasar el mouse sobre el ícono de un archivo. Si se "
+#~ "configura en \"siempre\", siempre se reproduce el sonido, incluso si el "
+#~ "archivo está en un servidor remoto. Si se configura en \"solo local\", "
+#~ "solo reproduce vistas previas en sistemas de archivos locales. Si se "
+#~ "establece en \"nunca\", nunca se obtiene una vista previa del sonido."
 
 # libnautilus-private/nautilus-global-preferences.c:592
 #, fuzzy
@@ -11828,7 +11976,7 @@ msgstr "Salir"
 #, fuzzy
 #~ msgid "If true, icons will be laid out tighter by default in new windows."
 #~ msgstr ""
-#~ "Si es verdadero, los iconos se distribuirán de forma más ajustada de "
+#~ "Si es verdadero, los íconos se distribuirán de forma más ajustada de "
 #~ "forma predeterminada en las nuevas ventanas."
 
 # libnautilus-private/nautilus-global-preferences.c:622
@@ -12049,7 +12197,10 @@ msgstr "Salir"
 #~ "or similar tasks."
 #~ msgstr ""
 #~ "Si se establece en verdadero, Nautilus se cerrará cuando se destruyan "
-#~ "todas las ventanas. "
+#~ "todas las ventanas. Esta es la configuración predeterminada. Si se "
+#~ "establece en falso, se puede iniciar sin ninguna ventana, por lo que "
+#~ "nautilus puede servir como demonio para monitorear el montaje automático "
+#~ "de medios o tareas similares."
 
 #, fuzzy
 #~ msgid "Nautilus will exit when last window destroyed."
@@ -12058,11 +12209,6 @@ msgstr "Salir"
 #, fuzzy
 #~ msgid "Could not set application as the default: %s"
 #~ msgstr "No se pudo configurar la aplicación como predeterminada: %s"
-
-# src/nautilus-sidebar.c:424
-#, fuzzy
-#~ msgid "Default"
-#~ msgstr "Por defecto"
 
 # Lo ponemos en minusculas
 # libnautilus-private/nautilus-search-bar-criterion.c:55
@@ -12155,13 +12301,17 @@ msgstr "Salir"
 #~ msgid ""
 #~ "No other applications are available to view this file. If you copy this "
 #~ "file onto your computer, you may be able to open it."
-#~ msgstr "No hay otras aplicaciones disponibles para ver este archivo. "
+#~ msgstr ""
+#~ "No hay otras aplicaciones disponibles para ver este archivo. Si copia "
+#~ "este archivo en su computadora, es posible que pueda abrirlo."
 
 #, fuzzy
 #~ msgid ""
 #~ "No other actions are available to view this file. If you copy this file "
 #~ "onto your computer, you may be able to open it."
-#~ msgstr "No hay otras acciones disponibles para ver este archivo. "
+#~ msgstr ""
+#~ "No hay otras acciones disponibles para ver este archivo. Si copia este "
+#~ "archivo en su computadora, es posible que pueda abrirlo."
 
 #, fuzzy
 #~ msgid "History"
@@ -12180,10 +12330,6 @@ msgstr "Salir"
 #, fuzzy
 #~ msgid "Show Notes"
 #~ msgstr "Mostrar notas"
-
-#, fuzzy
-#~ msgid "Show Places"
-#~ msgstr "Mostrar lugares"
 
 # libnautilus-private/nautilus-global-preferences.c:165
 #, fuzzy
@@ -12275,7 +12421,10 @@ msgstr "Salir"
 #~ "the user configurable action will be taken instead."
 #~ msgstr ""
 #~ "Si se establece en verdadero, Nautilus abrirá automáticamente una carpeta "
-#~ "cuando el medio se monte automáticamente. "
+#~ "cuando el medio se monte automáticamente. Esto solo se aplica a medios "
+#~ "donde no se detectó ningún tipo x-content/* conocido; para los medios "
+#~ "donde se detecta un tipo de contenido x conocido, se tomará la acción "
+#~ "configurable por el usuario."
 
 #, fuzzy
 #~ msgid ""
@@ -12292,7 +12441,9 @@ msgstr "Salir"
 #~ "application be started on insertion of media matching these types."
 #~ msgstr ""
 #~ "Lista de tipos de x-content/* para los cuales el usuario ha elegido \"No "
-#~ "hacer nada\" en el capplet de preferencias. "
+#~ "hacer nada\" en el capplet de preferencias. No se mostrará ningún mensaje "
+#~ "ni se iniciará ninguna aplicación coincidente al insertar medios que "
+#~ "coincidan con estos tipos."
 
 #, fuzzy
 #~ msgid ""
@@ -12301,7 +12452,8 @@ msgstr "Salir"
 #~ "of media matching these types."
 #~ msgstr ""
 #~ "Lista de tipos de x-content/* para los cuales el usuario ha elegido "
-#~ "\"Abrir carpeta\" en el capplet de preferencias. "
+#~ "\"Abrir carpeta\" en el capplet de preferencias. Se abrirá una ventana de "
+#~ "carpeta al insertar medios que coincidan con estos tipos."
 
 #, fuzzy
 #~ msgid ""
@@ -12310,7 +12462,9 @@ msgstr "Salir"
 #~ "given type will be started on insertion on media matching these types."
 #~ msgstr ""
 #~ "Lista de tipos de x-content/* para los cuales el usuario ha elegido "
-#~ "iniciar una aplicación en el capplet de preferencias. "
+#~ "iniciar una aplicación en el capplet de preferencias. La aplicación "
+#~ "preferida para el tipo dado se iniciará al insertar medios que coincidan "
+#~ "con estos tipos."
 
 #, fuzzy
 #~ msgid "List of x-content/* types set to \"Do Nothing\""
@@ -12409,7 +12563,9 @@ msgstr "Salir"
 #~ msgid ""
 #~ "Color for the default folder background. Only used if background_set is "
 #~ "true."
-#~ msgstr "Color del fondo de la carpeta predeterminada. "
+#~ msgstr ""
+#~ "Color del fondo de la carpeta predeterminada. Solo se usa si "
+#~ "background_set es verdadero."
 
 # src/nautilus-sidebar.c:424
 #, fuzzy
@@ -12439,18 +12595,24 @@ msgstr "Salir"
 #~ msgid ""
 #~ "Filename for the default side pane background. Only used if "
 #~ "side_pane_background_set is true."
-#~ msgstr "Nombre de archivo para el fondo del panel lateral predeterminado. "
+#~ msgstr ""
+#~ "Nombre de archivo para el fondo del panel lateral predeterminado. Solo se "
+#~ "usa si side_pane_background_set es verdadero."
 
 #, fuzzy
 #~ msgid ""
 #~ "Uri of the default folder background. Only used if background_set is true."
-#~ msgstr "Uri del fondo de la carpeta predeterminada. "
+#~ msgstr ""
+#~ "Uri del fondo de la carpeta predeterminada. Solo se usa si background_set "
+#~ "es verdadero."
 
 #, fuzzy
 #~ msgid ""
 #~ "Uri of the default side pane background. Only used if "
 #~ "side_pane_background_set is true."
-#~ msgstr "Uri del fondo del panel lateral predeterminado. "
+#~ msgstr ""
+#~ "Uri del fondo del panel lateral predeterminado. Solo se usa si "
+#~ "side_pane_background_set es verdadero."
 
 # src/nautilus-sidebar.c:424
 #, fuzzy
@@ -12486,7 +12648,11 @@ msgstr "Salir"
 #~ "%s folder with the same name already exists in \"%s\".\n"
 #~ "Merging will ask for confirmation before replacing any files in the "
 #~ "folder that conflict with the files being copied."
-#~ msgstr "%s carpeta con el mismo nombre ya existe en \"%s\".\n"
+#~ msgstr ""
+#~ "%s carpeta con el mismo nombre ya existe en \"%s\".\n"
+#~ "La fusión solicitará confirmación antes de reemplazar cualquier archivo "
+#~ "en la carpeta que entre en conflicto con los archivos que se están "
+#~ "copiando."
 
 # libnautilus-private/nautilus-icon-dnd.c:710
 #, fuzzy
@@ -12500,7 +12666,9 @@ msgstr "Salir"
 
 #, fuzzy
 #~ msgid "Cannot Connect to Server. You must enter a name for the server."
-#~ msgstr "No se puede conectar al servidor. "
+#~ msgstr ""
+#~ "No se puede conectar al servidor. Debe ingresar un nombre para el "
+#~ "servidor."
 
 # src/nautilus-window-manage-views.c:1241
 #, fuzzy
@@ -12840,7 +13008,7 @@ msgstr "Salir"
 #~ "  %s"
 #~ msgstr ""
 #~ "Error de GConf:\n"
-#~ "  "
+#~ "  %s"
 
 #, fuzzy
 #~ msgid "GConf error: %s"
@@ -12862,6 +13030,9 @@ msgstr "Salir"
 #~ "search for files by file name and file properties."
 #~ msgstr ""
 #~ "Criterios a la hora de buscar archivos buscados en la barra de búsqueda. "
+#~ "Si se establece en \"search_by_text\", Nautilus buscará archivos solo por "
+#~ "nombre de archivo. Si se establece en \"search_by_text_and_properties\", "
+#~ "Nautilus buscará archivos por nombre de archivo y propiedades de archivo."
 
 #, fuzzy
 #~ msgid "Current Nautilus theme (deprecated)"
@@ -12871,7 +13042,9 @@ msgstr "Salir"
 #~ msgid ""
 #~ "Filename for the default folder background. Only used if background_set "
 #~ "is true."
-#~ msgstr "Nombre de archivo para el fondo de la carpeta predeterminada. "
+#~ msgstr ""
+#~ "Nombre de archivo para el fondo de la carpeta predeterminada. Solo se usa "
+#~ "si background_set es verdadero."
 
 #, fuzzy
 #~ msgid ""
@@ -12881,7 +13054,10 @@ msgstr "Salir"
 #~ "approximate due to the reading of folders chunk-wise."
 #~ msgstr ""
 #~ "Las carpetas que superen este tamaño se truncarán aproximadamente a este "
-#~ "tamaño. "
+#~ "tamaño. El propósito de esto es evitar volar involuntariamente el montón "
+#~ "y matar a Nautilus en carpetas masivas. Un valor negativo indica que no "
+#~ "hay límite. El límite es aproximado debido a la lectura de carpetas por "
+#~ "partes."
 
 #, fuzzy
 #~ msgid ""
@@ -12890,7 +13066,8 @@ msgstr "Salir"
 #~ "backup files."
 #~ msgstr ""
 #~ "Si se establece en verdadero, se muestran los archivos de respaldo como "
-#~ "los creados por Emacs. "
+#~ "los creados por Emacs. Actualmente, sólo los archivos que terminan en "
+#~ "tilde (~) se consideran archivos de copia de seguridad."
 
 #, fuzzy
 #~ msgid ""
@@ -12899,7 +13076,8 @@ msgstr "Salir"
 #~ "they will be sorted from \"z\" to \"a\"."
 #~ msgstr ""
 #~ "Si es verdadero, los archivos en ventanas nuevas se ordenarán en orden "
-#~ "inverso. "
+#~ "inverso. es decir, si se ordenan por nombre, en lugar de ordenar los "
+#~ "archivos de \"a\" a \"z\", se ordenarán de \"z\" a \"a\"."
 
 #, fuzzy
 #~ msgid "If true, new windows will use manual layout by default."
@@ -12915,7 +13093,9 @@ msgstr "Salir"
 #~ msgid ""
 #~ "Name of the Nautilus theme to use. This has been deprecated as of "
 #~ "Nautilus 2.2. Please use the icon theme instead."
-#~ msgstr "Nombre del tema Nautilus a utilizar. "
+#~ msgstr ""
+#~ "Nombre del tema Nautilus a utilizar. Esto ha quedado obsoleto a partir de "
+#~ "Nautilus 2.2. Utilice el tema de iconos en su lugar."
 
 #, fuzzy
 #~ msgid "Sans 10"
@@ -12927,7 +13107,8 @@ msgstr "Salir"
 #~ "\"name\", \"size\", \"type\", \"modification_date\", and \"emblems\"."
 #~ msgstr ""
 #~ "El orden de clasificación predeterminado para los elementos en la vista "
-#~ "de iconos. "
+#~ "de iconos. Los valores posibles son \"nombre\", \"tamaño\", \"tipo\", "
+#~ "\"fecha_modificación\" y \"emblemas\"."
 
 #, fuzzy
 #~ msgid "Use manual layout in new windows"
@@ -12979,7 +13160,8 @@ msgstr "Salir"
 #~ "lost. Please note that you can also delete them separately."
 #~ msgstr ""
 #~ "Si elige vaciar la papelera, todos los elementos que contenga se perderán "
-#~ "permanentemente. "
+#~ "permanentemente. Tenga en cuenta que también puede eliminarlos por "
+#~ "separado."
 
 # libnautilus-private/nautilus-global-preferences.c:582
 #, fuzzy
@@ -13133,13 +13315,17 @@ msgstr "Salir"
 #~ msgid ""
 #~ "Enter a descriptive name next to each emblem.  This name will be used in "
 #~ "other places to identify the emblem."
-#~ msgstr "Ingrese un nombre descriptivo al lado de cada emblema.  "
+#~ msgstr ""
+#~ "Ingrese un nombre descriptivo al lado de cada emblema.  Este nombre se "
+#~ "utilizará en otros lugares para identificar el emblema."
 
 #, fuzzy
 #~ msgid ""
 #~ "Enter a descriptive name next to the emblem.  This name will be used in "
 #~ "other places to identify the emblem."
-#~ msgstr "Ingrese un nombre descriptivo al lado del emblema.  "
+#~ msgstr ""
+#~ "Ingrese un nombre descriptivo al lado del emblema.  Este nombre se "
+#~ "utilizará en otros lugares para identificar el emblema."
 
 #, fuzzy
 #~ msgid "The emblems do not appear to be valid images."
@@ -13379,17 +13565,19 @@ msgstr "Salir"
 #~ msgid ""
 #~ "A folder named \"%B\" already exists.  Do you want to merge the source "
 #~ "folder?"
-#~ msgstr "Ya existe una carpeta llamada \"%B\".  "
+#~ msgstr ""
+#~ "Ya existe una carpeta llamada \"%B\".  ¿Quieres fusionar la carpeta de "
+#~ "origen?"
 
 # src/file-manager/dfos-xfer.c:407
 #, fuzzy
 #~ msgid "A folder named \"%B\" already exists.  Do you want to replace it?"
-#~ msgstr "Ya existe una carpeta llamada \"%B\".  "
+#~ msgstr "Ya existe una carpeta llamada \"%B\".  ¿Quieres reemplazarlo?"
 
 # src/file-manager/dfos-xfer.c:407
 #, fuzzy
 #~ msgid "A file named \"%B\" already exists.  Do you want to replace it?"
-#~ msgstr "Ya existe un archivo llamado \"%B\".  "
+#~ msgstr "Ya existe un archivo llamado \"%B\".  ¿Quieres reemplazarlo?"
 
 # src/file-manager/fm-properties-window.c:1560
 #, fuzzy
@@ -13540,7 +13728,10 @@ msgstr "Salir"
 #~ "Nautilus cannot be used now. Running the command \"bonobo-slay\" from the "
 #~ "console may fix the problem. If not, you can try rebooting the computer "
 #~ "or installing Nautilus again."
-#~ msgstr "Nautilus no se puede utilizar ahora. "
+#~ msgstr ""
+#~ "Nautilus no se puede utilizar ahora. Ejecutar el comando \"bonobo-slay\" "
+#~ "desde la consola puede solucionar el problema. De lo contrario, puede "
+#~ "intentar reiniciar la computadora o instalar Nautilus nuevamente."
 
 # src/nautilus-application.c:353
 #, fuzzy
@@ -13562,7 +13753,19 @@ msgstr "Salir"
 #~ "\n"
 #~ "We have also seen this error when a faulty version of bonobo-activation "
 #~ "was installed."
-#~ msgstr "Nautilus no se puede utilizar ahora. "
+#~ msgstr ""
+#~ "Nautilus no se puede utilizar ahora. Ejecutar el comando \"bonobo-slay\" "
+#~ "desde la consola puede solucionar el problema. De lo contrario, puede "
+#~ "intentar reiniciar la computadora o instalar Nautilus nuevamente. Bonobo "
+#~ "no pudo localizar el archivo Nautilus_shell.server. Una causa de esto "
+#~ "parece ser un LD_LIBRARY_PATH que no incluye el directorio de la "
+#~ "biblioteca de activación bonobo. Otra posible causa sería una mala "
+#~ "instalación en la que falta un archivo Nautilus_Shell.server. Ejecutar "
+#~ "\"bonobo-slay\" matará a todos los Bonobo Procesos de activación y GConf, "
+#~ "que pueden ser necesarios para otras aplicaciones. A veces, matar bonobo-"
+#~ "activation-server y gconfd soluciona el problema, pero no sabemos por "
+#~ "qué. También hemos visto este error cuando se instaló una versión "
+#~ "defectuosa de bonobo-activation."
 
 # src/nautilus-application.c:378 src/nautilus-application.c:396
 #, fuzzy
@@ -13587,7 +13790,8 @@ msgstr "Salir"
 #~ "restarting Nautilus may help fix the problem."
 #~ msgstr ""
 #~ "Nautilus no se puede utilizar ahora debido a un error inesperado de "
-#~ "Bonobo al intentar localizar la fábrica. "
+#~ "Bonobo al intentar localizar la fábrica. Matar bonobo-activation-server y "
+#~ "reiniciar Nautilus puede ayudar a solucionar el problema."
 
 # src/nautilus-application.c:397
 #, fuzzy
@@ -13597,7 +13801,8 @@ msgstr "Salir"
 #~ "and restarting Nautilus may help fix the problem."
 #~ msgstr ""
 #~ "Nautilus no se puede utilizar ahora debido a un error inesperado de "
-#~ "Bonobo al intentar localizar el objeto shell. "
+#~ "Bonobo al intentar localizar el objeto shell. Matar bonobo-activation-"
+#~ "server y reiniciar Nautilus puede ayudar a solucionar el problema."
 
 #, fuzzy
 #~ msgid ""
@@ -13609,7 +13814,15 @@ msgstr "Salir"
 #~ "10 MB\n"
 #~ "100 MB\n"
 #~ "1 GB"
-#~ msgstr "100 KB\n"
+#~ msgstr ""
+#~ "100 KB\n"
+#~ "500 KB\n"
+#~ "1MB\n"
+#~ "3 megas\n"
+#~ "5 megas\n"
+#~ "10 megas\n"
+#~ "100 megas\n"
+#~ "1GB"
 
 #, fuzzy
 #~ msgid ""
@@ -13620,7 +13833,14 @@ msgstr "Salir"
 #~ "150%\n"
 #~ "200%\n"
 #~ "400%"
-#~ msgstr "33%\n"
+#~ msgstr ""
+#~ "33%\n"
+#~ "50%\n"
+#~ "66%\n"
+#~ "100%\n"
+#~ "150%\n"
+#~ "200%\n"
+#~ "400%"
 
 # libnautilus-private/nautilus-global-preferences.c:587
 #, fuzzy
@@ -13628,7 +13848,10 @@ msgstr "Salir"
 #~ "Always\n"
 #~ "Local Files Only\n"
 #~ "Never"
-#~ msgstr "siempre\n"
+#~ msgstr ""
+#~ "siempre\n"
+#~ "Sólo archivos locales\n"
+#~ "nunca"
 
 #, fuzzy
 #~ msgid ""
@@ -13637,7 +13860,12 @@ msgstr "Salir"
 #~ "By Type\n"
 #~ "By Modification Date\n"
 #~ "By Emblems"
-#~ msgstr "Por nombre\n"
+#~ msgstr ""
+#~ "Por nombre\n"
+#~ "Por tamaño\n"
+#~ "Por tipo\n"
+#~ "Por fecha de modificación\n"
+#~ "Por emblemas"
 
 # src/file-manager/fm-directory-view.c:2403
 # src/file-manager/fm-directory-view.c:2646
@@ -13646,7 +13874,10 @@ msgstr "Salir"
 #~ "Icon View\n"
 #~ "List View\n"
 #~ "Compact View"
-#~ msgstr "Vista de iconos\n"
+#~ msgstr ""
+#~ "Vista de iconos\n"
+#~ "Vista de lista\n"
+#~ "Vista compacta"
 
 # src/nautilus-main.c:65
 #, fuzzy
@@ -13657,7 +13888,9 @@ msgstr "Salir"
 #~ msgid ""
 #~ "Load a saved session from the specified file. Implies \"--no-default-"
 #~ "window\"."
-#~ msgstr "Cargue una sesión guardada desde el archivo especificado. "
+#~ msgstr ""
+#~ "Cargue una sesión guardada desde el archivo especificado. Implica \"--sin-"
+#~ "ventana-predeterminada\"."
 
 # src/file-manager/fm-directory-view.c:1855
 #, fuzzy
