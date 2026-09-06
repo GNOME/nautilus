@@ -13,7 +13,7 @@
 msgid ""
 msgstr "Project-Id-Version: nautilus master\n"
 "Report-Msgid-Bugs-To: https://gitlab.gnome.org/GNOME/nautilus/issues\n"
-"POT-Creation-Date: 2026-08-30 15:37+0000\n"
+"POT-Creation-Date: 2026-08-31 10:42+0000\n"
 "PO-Revision-Date: 2026-08-30 22:53+0100\n"
 "Last-Translator: Asier Saratsua Garmendia <asiersarasua@ni.eus>\n"
 "Language-Team: Basque\n"
@@ -349,26 +349,26 @@ msgid ""
 "can be extended with plugins and scripts."
 msgstr "Fitxategiak aplikazioaren bidez, fitxategi-kudeatzaile baten funtsezko funtzio guztiak eta beste hainbat ere dauzkazu eskura. Fitxategiak eta karpetak, bai tokikoak bai sare batekoak, bilatu eta kudeatu ditzake, euskarri aldagarrietako datuak irakurri eta idatzi ditzake, script-ak exekutatu ditzake eta aplikazioak abiarazten ditu. Hiru ikuspegi ditu: ikono-sareta, ikono-zerrenda eta zuhaitz-zerrenda. Plugin eta script-en bidez funtzio gehiago eman ahala zaizkio."
 
-#: data/org.gnome.Nautilus.metainfo.xml.in.in:46 src/nautilus-window.c:1729
+#: data/org.gnome.Nautilus.metainfo.xml.in.in:47 src/nautilus-window.c:1729
 #: src/nautilus-window.c:1734 src/nautilus-window.c:1739
 msgid "The GNOME Project"
 msgstr "GNOME proiektua"
 
-#: data/org.gnome.Nautilus.metainfo.xml.in.in:60 src/nautilus-files-view.c:9703
+#: data/org.gnome.Nautilus.metainfo.xml.in.in:61 src/nautilus-files-view.c:9723
 msgid "Grid View"
 msgstr "Sareta-ikuspegia"
 
-#: data/org.gnome.Nautilus.metainfo.xml.in.in:64 src/nautilus-files-view.c:9714
+#: data/org.gnome.Nautilus.metainfo.xml.in.in:65 src/nautilus-files-view.c:9734
 msgid "List View"
 msgstr "Zerrenda-ikuspegia"
 
-#: data/org.gnome.Nautilus.metainfo.xml.in.in:68
+#: data/org.gnome.Nautilus.metainfo.xml.in.in:69
 #: src/nautilus-search-directory-file.c:230
 #: src/nautilus-search-directory-file.c:269
 msgid "Search"
 msgstr "Bilatu"
 
-#: data/org.gnome.Nautilus.metainfo.xml.in.in:72
+#: data/org.gnome.Nautilus.metainfo.xml.in.in:73
 msgid "Selection of Multiple Files"
 msgstr "Fitxategi anitzen hautapena"
 
@@ -652,7 +652,7 @@ msgstr "Ezin izan da lehenetsi gisa ezarri"
 msgid "Error while setting “%s” as default app: %s"
 msgstr "Errorea “%s” aplikazio lehenetsi gisa ezartzean: %s"
 
-#: src/nautilus-app-chooser.c:87 src/nautilus-application.c:629
+#: src/nautilus-app-chooser.c:87 src/nautilus-application.c:637
 #: src/nautilus-autorun-software.c:157 src/nautilus-mime-actions.c:1291
 #: src/nautilus-ui-utilities.c:360
 msgid "_OK"
@@ -706,50 +706,50 @@ msgstr "Erlazionatutako aplikazioak"
 msgid "Other Apps"
 msgstr "Beste aplikazio batzuk"
 
-#: src/nautilus-application.c:178
+#: src/nautilus-application.c:186
 msgid "No Home Directory"
 msgstr "Ez dago karpeta nagusirik"
 
-#: src/nautilus-application.c:179
+#: src/nautilus-application.c:187
 msgid "Make sure the directory exists and has correct access permissions set."
 msgstr "Ziurtatu direktorioa existitzen dela, eta atzitzeko baimen egokiak dituela ezarrita."
 
-#: src/nautilus-application.c:498
+#: src/nautilus-application.c:506
 msgid "--quit cannot be used with URIs."
 msgstr "--quit ezin da URIekin erabili."
 
-#: src/nautilus-application.c:507
+#: src/nautilus-application.c:515
 msgid "--select must be used with at least an URI."
 msgstr "--select gutxienez URI batekin erabili behar da."
 
-#: src/nautilus-application.c:628
+#: src/nautilus-application.c:636
 msgid "There was an error displaying help"
 msgstr "Errorea gertatu da laguntza bistaratzean"
 
-#: src/nautilus-application.c:753
+#: src/nautilus-application.c:761
 #, c-format
 msgid ""
 "“%s” is an internal protocol. Opening this location directly is not "
 "supported."
 msgstr "“%s” barneko protokoloa da. Kokaleku hori zuzenean irekitzea ez dago onartuta"
 
-#: src/nautilus-application.c:835
+#: src/nautilus-application.c:843
 msgid "Show the version of the program."
 msgstr "Erakutsi programaren bertsioa."
 
-#: src/nautilus-application.c:839
+#: src/nautilus-application.c:847
 msgid "Always open a new window for browsing specified URIs"
 msgstr "Ireki beti leiho berria zehaztutako URIak arakatzeko."
 
-#: src/nautilus-application.c:843
+#: src/nautilus-application.c:851
 msgid "Quit Nautilus."
 msgstr "Irten Nautilus-etik."
 
-#: src/nautilus-application.c:847
+#: src/nautilus-application.c:855
 msgid "Select specified URI in parent folder."
 msgstr "Hautatu zehaztutako URIa guraso karpetan."
 
-#: src/nautilus-application.c:849
+#: src/nautilus-application.c:857
 msgid "[URI…]"
 msgstr "[URIa…]"
 
@@ -1752,7 +1752,7 @@ msgid "Deleting Files"
 msgstr "Fitxategiak ezabatzen"
 
 #. Translators: %s is a file name formatted for display
-#: src/nautilus-file-operations.c:2137 src/nautilus-files-view.c:6614
+#: src/nautilus-file-operations.c:2137 src/nautilus-files-view.c:6640
 #: src/nautilus-sidebar.c:2364 src/nautilus-sidebar.c:2393
 #, c-format
 msgid "Unable to eject “%s”"
@@ -1785,7 +1785,7 @@ msgid "_Empty"
 msgstr "_Hustu"
 
 #. Translators: %s is a file name formatted for display
-#: src/nautilus-file-operations.c:2422 src/nautilus-files-view.c:6567
+#: src/nautilus-file-operations.c:2422 src/nautilus-files-view.c:6593
 #: src/nautilus-sidebar.c:1777
 #, c-format
 msgid "Unable to access “%s”"
@@ -2969,44 +2969,44 @@ msgstr "Kopiatu %zu"
 msgid "Link to %s (%zu)"
 msgstr "Esteka hona: %s (%zu)"
 
-#: src/nautilus-filename-validator.c:135
+#: src/nautilus-filename-validator.c:136
 msgid "Folder names cannot contain “/”"
 msgstr "Karpeta-izenak ezin du '/' karaktererik eduki"
 
-#: src/nautilus-filename-validator.c:136
+#: src/nautilus-filename-validator.c:137
 msgid "File names cannot contain “/”"
 msgstr "Fitxategi-izenak ezin du '/' karaktererik eduki"
 
-#: src/nautilus-filename-validator.c:141
+#: src/nautilus-filename-validator.c:142
 msgid "A folder cannot be called “.” or “..”"
 msgstr "Karpeta ezin da  “.” edo  “..” gisa izendatu"
 
-#: src/nautilus-filename-validator.c:142
+#: src/nautilus-filename-validator.c:143
 msgid "A file cannot be called “.” or “..”"
 msgstr "Fitxategia ezin da  “.” edo  “..” gisa izendatu"
 
-#: src/nautilus-filename-validator.c:147
+#: src/nautilus-filename-validator.c:148
 msgid "Folder name is too long"
 msgstr "Karpetaren izena luzeegia da"
 
-#: src/nautilus-filename-validator.c:148
+#: src/nautilus-filename-validator.c:149
 msgid "File name is too long"
 msgstr "Fitxategi-izena luzeegia da"
 
 #. We must warn about the side effect
-#: src/nautilus-filename-validator.c:154
+#: src/nautilus-filename-validator.c:155
 msgid "Folders with “.” at the beginning of their name are hidden"
 msgstr "Izenaren hasieran \".\" duten karpetak ezkutuan daude"
 
-#: src/nautilus-filename-validator.c:155
+#: src/nautilus-filename-validator.c:156
 msgid "Files with “.” at the beginning of their name are hidden"
 msgstr "Izenaren hasieran \".\" duten fitxategiak ezkutuan daude"
 
-#: src/nautilus-filename-validator.c:164
+#: src/nautilus-filename-validator.c:199
 msgid "A folder with that name already exists"
 msgstr "Direktorio hori badago lehendik ere"
 
-#: src/nautilus-filename-validator.c:165
+#: src/nautilus-filename-validator.c:200
 msgid "A file with that name already exists"
 msgstr "Izen hori duen fitxategia badago lehendik ere"
 
@@ -3158,117 +3158,117 @@ msgstr "Sartu helbide bat sareko kokaleku batekin konektatzeko."
 msgid "Folder is Empty"
 msgstr "Karpeta hutsik dago"
 
-#: src/nautilus-files-view.c:5835
+#: src/nautilus-files-view.c:5861
 msgid "Select Move Destination"
 msgstr "Hautatu helburua eramateko"
 
-#: src/nautilus-files-view.c:5839
+#: src/nautilus-files-view.c:5865
 msgid "Select Copy Destination"
 msgstr "Hautatu helburua kopiatzeko"
 
-#: src/nautilus-files-view.c:5850 src/nautilus-files-view.c:6218
-#: src/nautilus-portal.c:478 src/nautilus-properties.c:3999
+#: src/nautilus-files-view.c:5876 src/nautilus-files-view.c:6244
+#: src/nautilus-portal.c:478 src/nautilus-properties.c:3991
 #: src/resources/ui/nautilus-files-view-select-items.blp:24
 msgid "_Select"
 msgstr "_Hautatu"
 
-#: src/nautilus-files-view.c:6217
+#: src/nautilus-files-view.c:6243
 msgid "Select Extract Destination"
 msgstr "Hautatu erauzketaren helburua"
 
-#: src/nautilus-files-view.c:6293
+#: src/nautilus-files-view.c:6319
 msgid "Error sending email."
 msgstr "Errorea mezua bidaltzean"
 
 #. Translators: %s is a file name formatted for display
-#: src/nautilus-files-view.c:6592
+#: src/nautilus-files-view.c:6618
 #, c-format
 msgid "Unable to remove “%s”"
 msgstr "Ezin da “%s” kendu"
 
-#: src/nautilus-files-view.c:6635
+#: src/nautilus-files-view.c:6661
 msgid "Unable to stop drive"
 msgstr "Ezin da unitatea gelditu"
 
 #. Translators: %s is a file name formatted for display
-#: src/nautilus-files-view.c:6745 src/nautilus-sidebar.c:1728
+#: src/nautilus-files-view.c:6771 src/nautilus-sidebar.c:1728
 #: src/nautilus-sidebar.c:2608
 #, c-format
 msgid "Unable to start “%s”"
 msgstr "Ezin da “%s” abiatu"
 
-#: src/nautilus-files-view.c:7853
+#: src/nautilus-files-view.c:7879
 #, c-format
 msgid "New Folder with Selection (%'d Item)"
 msgid_plural "New Folder with Selection (%'d Items)"
 msgstr[0] "Karpeta berria hautapenarekin (elementu %'d)"
 msgstr[1] "Karpeta berria hautapenarekin (%'d elementu)"
 
-#: src/nautilus-files-view.c:7908
+#: src/nautilus-files-view.c:7934
 #, c-format
 msgid "Open With %s"
 msgstr "Ireki honekin: %s"
 
-#: src/nautilus-files-view.c:7919
+#: src/nautilus-files-view.c:7945
 msgid "Run"
 msgstr "Exekutatu"
 
-#: src/nautilus-files-view.c:7924
+#: src/nautilus-files-view.c:7950
 #: src/resources/ui/nautilus-operations-ui-manager-request-passphrase.blp:17
 msgid "Extract"
 msgstr "Erauzi"
 
-#: src/nautilus-files-view.c:7925
+#: src/nautilus-files-view.c:7951
 msgid "Extract to…"
 msgstr "Erauzi hona…"
 
-#: src/nautilus-files-view.c:7929
+#: src/nautilus-files-view.c:7955
 #: src/resources/menu/nautilus-files-view-context-menus.ui:88
 msgid "Open"
 msgstr "Ireki"
 
-#: src/nautilus-files-view.c:8005 src/nautilus-sidebar.c:3054
+#: src/nautilus-files-view.c:8031 src/nautilus-sidebar.c:3054
 #: src/resources/menu/nautilus-files-view-context-menus.ui:154
 msgid "_Start"
 msgstr "_Hasi"
 
-#: src/nautilus-files-view.c:8011
+#: src/nautilus-files-view.c:8037
 msgid "_Connect"
 msgstr "_Konektatu"
 
-#: src/nautilus-files-view.c:8017
+#: src/nautilus-files-view.c:8043
 msgid "_Start Multi-disk Drive"
 msgstr "_Abiatu disko anitzeko unitatea"
 
-#: src/nautilus-files-view.c:8023
+#: src/nautilus-files-view.c:8049
 msgid "U_nlock Drive"
 msgstr "_Desblokeatu unitatea"
 
-#: src/nautilus-files-view.c:8041
+#: src/nautilus-files-view.c:8067
 msgid "Stop Drive"
 msgstr "Gelditu unitatea"
 
-#: src/nautilus-files-view.c:8047 src/nautilus-sidebar.c:3085
+#: src/nautilus-files-view.c:8073 src/nautilus-sidebar.c:3085
 msgid "_Safely Remove Drive"
 msgstr "_Kendu unitatea modu seguruan"
 
-#: src/nautilus-files-view.c:8053
+#: src/nautilus-files-view.c:8079
 msgid "_Disconnect"
 msgstr "_Deskonektatu"
 
-#: src/nautilus-files-view.c:8059
+#: src/nautilus-files-view.c:8085
 msgid "_Stop Multi-disk Drive"
 msgstr "_Gelditu disko anitzeko unitatea"
 
-#: src/nautilus-files-view.c:8065
+#: src/nautilus-files-view.c:8091
 msgid "_Lock Drive"
 msgstr "_Blokeatu unitatea"
 
-#: src/nautilus-files-view.c:9701
+#: src/nautilus-files-view.c:9721
 msgid "View items as a grid of icons"
 msgstr "Bistaratu elementuak ikonoen sareta gisa"
 
-#: src/nautilus-files-view.c:9712
+#: src/nautilus-files-view.c:9732
 msgid "View items as a list"
 msgstr "Bistaratu elementuak zerrenda gisa"
 
@@ -3810,7 +3810,7 @@ msgid "Operation Completed"
 msgstr "Eragiketa osatu da"
 
 #: src/nautilus-progress-persistence-handler.c:108
-#: src/nautilus-progress-persistence-handler.c:149
+#: src/nautilus-progress-persistence-handler.c:146
 msgid "File Operations"
 msgstr "Fitxategiaren eragiketak"
 
@@ -3825,7 +3825,7 @@ msgid_plural "%'d file operations active"
 msgstr[0] "Fitxategien eragiketa %'d aktibo"
 msgstr[1] "Fitxategien %'d eragiketa aktibo"
 
-#: src/nautilus-progress-persistence-handler.c:151
+#: src/nautilus-progress-persistence-handler.c:148
 msgid "All file operations have been completed"
 msgstr "Fitxategien eragiketa guztiak osatu dira"
 
@@ -3954,7 +3954,7 @@ msgstr "%s fitxategi-sitema"
 msgid "The permissions of “%s” could not be determined."
 msgstr "Ezin izan dira “%s”(r)en baimenak zehaztu."
 
-#: src/nautilus-properties.c:3998
+#: src/nautilus-properties.c:3990
 msgid "Select Custom Icon"
 msgstr "Hautatu ikono pertsonalizatua"
 
@@ -4477,7 +4477,7 @@ msgstr "I_reki script-en karpeta"
 
 #: src/resources/menu/nautilus-files-view-context-menus.ui:173
 msgid "Cu_t"
-msgstr "_Moztu"
+msgstr "_Ebaki"
 
 #: src/resources/menu/nautilus-files-view-context-menus.ui:177
 msgid "_Copy"
