@@ -1,4 +1,5 @@
 libnautilus_extension_headers = [
+  'nautilus-column-private.h',
   'nautilus-column-provider.h',
   'nautilus-column.h',
   'nautilus-file-info.h',
