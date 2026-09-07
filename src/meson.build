@@ -318,6 +318,7 @@ nautilus_deps = [
 libnautilus = static_library(
   'nautilus',
   libnautilus_sources,
+  c_args: ['-DNAUTILUS_COMPILATION'],
   dependencies: nautilus_deps,
   include_directories: nautilus_include_dirs,
 )

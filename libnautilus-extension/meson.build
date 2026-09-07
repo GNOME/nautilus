@@ -46,6 +46,7 @@ libnautilus_extension = shared_library(
   'nautilus-extension',
   [
     libnautilus_extension_sources,
+    'nautilus-column-private.h',
   ],
   c_args: ['-DNAUTILUS_COMPILATION'],
   dependencies: libnautilus_extension_deps,
