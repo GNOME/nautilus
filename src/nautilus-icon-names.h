@@ -1,3 +1,9 @@
+/*
+ * SPDX-FileCopyrightText: 2016 The GNOME project contributors
+ *
+ * SPDX-License-Identifier: GPL-3.0-or-later
+ */
+
 #pragma once
 
 /* Icons for places */

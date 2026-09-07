@@ -1,3 +1,12 @@
+/*
+ * SPDX-FileCopyrightText: 2016 The GNOME project contributors
+ *
+ * SPDX-License-Identifier: GPL-3.0-or-later
+ *
+ * Authors: Carlos Soriano <csoriano@gnome.org>
+ *          António Fernandes <antoniof@gnome.org>
+ */
+
 #pragma once
 
 #include "nautilus-types.h"
