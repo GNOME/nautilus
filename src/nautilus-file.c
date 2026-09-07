@@ -14,7 +14,7 @@
 #ifndef NAUTILUS_COMPILATION
 #define NAUTILUS_COMPILATION
 #endif
-#include <libnautilus-extension/nautilus-extension-private.h>
+#include "libnautilus-extension/nautilus-extension-private.h"
 
 #include <gio/gio.h>
 #include <glib.h>
