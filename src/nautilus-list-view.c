@@ -126,7 +126,6 @@ real_get_zoom_level (NautilusListBase *list_base_view)
 
 static void
 apply_columns_settings (NautilusListView  *self,
-                        char             **column_order,
                         char             **visible_columns)
 {
     g_autolist (NautilusColumn) all_columns = NULL;
@@ -149,7 +148,6 @@ apply_columns_settings (NautilusListView  *self,
     }
 
     all_columns = nautilus_get_columns_for_file (file);
-    all_columns = nautilus_sort_columns (all_columns, column_order);
 
     /* hash table to lookup if a given column should be visible */
     visible_columns_hash = g_hash_table_new_full (g_str_hash,
@@ -301,10 +299,9 @@ static void
 update_columns_settings_from_metadata_and_preferences (NautilusListView *self)
 {
     NautilusFile *file = nautilus_list_base_get_directory_as_file (NAUTILUS_LIST_BASE (self));
-    g_auto (GStrv) column_order = nautilus_column_get_column_order (file);
     g_auto (GStrv) visible_columns = nautilus_column_get_visible_columns (file);
 
-    apply_columns_settings (self, column_order, visible_columns);
+    apply_columns_settings (self, visible_columns);
 }
 
 static GFile *
@@ -1097,11 +1094,6 @@ nautilus_list_view_init (NautilusListView *self)
 
     g_signal_connect_object (nautilus_list_view_preferences,
                              "changed::" NAUTILUS_PREFERENCES_LIST_VIEW_DEFAULT_VISIBLE_COLUMNS,
-                             G_CALLBACK (update_columns_settings_from_metadata_and_preferences),
-                             self,
-                             G_CONNECT_SWAPPED);
-    g_signal_connect_object (nautilus_list_view_preferences,
-                             "changed::" NAUTILUS_PREFERENCES_LIST_VIEW_DEFAULT_COLUMN_ORDER,
                              G_CALLBACK (update_columns_settings_from_metadata_and_preferences),
                              self,
                              G_CONNECT_SWAPPED);
