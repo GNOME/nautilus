@@ -414,13 +414,21 @@ column_sort_func (gconstpointer a,
                   gconstpointer b,
                   gpointer      user_data)
 {
+    gboolean a_visible;
+    gboolean b_visible;
     g_autofree char *a_name = NULL;
     g_autofree char *b_name = NULL;
     guint a_pos, b_pos;
     char **column_order = user_data;
 
-    g_object_get ((gpointer) a, "name", &a_name, NULL);
-    g_object_get ((gpointer) b, "name", &b_name, NULL);
+    g_object_get ((gpointer) a, "name", &a_name, "visible", &a_visible, NULL);
+    g_object_get ((gpointer) b, "name", &b_name, "visible", &b_visible, NULL);
+
+    if (a_visible != b_visible)
+    {
+        return a_visible ? -1 : 1;
+    }
+
     a_pos = strv_index (column_order, a_name);
     b_pos = strv_index (column_order, b_name);
 
