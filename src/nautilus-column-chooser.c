@@ -450,10 +450,11 @@ nautilus_column_chooser_close_attempt (NautilusColumnChooser *chooser)
 }
 
 static void
-set_column_order (NautilusColumnChooser  *chooser,
-                  char                  **column_order)
+sort_columns (NautilusColumnChooser *self)
 {
-    g_list_store_sort (G_LIST_STORE (chooser->model), column_sort_func, column_order);
+    const char **default_order = nautilus_column_get_default_column_order (self->file);
+
+    g_list_store_sort (G_LIST_STORE (self->model), column_sort_func, default_order);
 }
 
 static void
@@ -476,7 +477,6 @@ use_default_clicked_callback (GtkWidget *button,
 {
     NautilusColumnChooser *chooser = user_data;
     g_auto (GStrv) default_columns = NULL;
-    g_auto (GStrv) default_order = NULL;
 
     nautilus_column_save_metadata (chooser->file, NULL);
 
@@ -484,9 +484,8 @@ use_default_clicked_callback (GtkWidget *button,
      * updated yet.
      */
     default_columns = nautilus_column_get_default_visible_columns (chooser->file);
-    default_order = nautilus_column_get_default_column_order (chooser->file);
     set_visible_columns (chooser, default_columns);
-    set_column_order (chooser, default_order);
+    sort_columns (chooser);
 
     gtk_widget_set_visible (chooser->use_custom_box, TRUE);
     adw_switch_row_set_active (ADW_SWITCH_ROW (chooser->use_custom_row), FALSE);
@@ -500,7 +499,6 @@ populate_list (NautilusColumnChooser *chooser)
 {
     GList *columns = nautilus_get_columns_for_file (chooser->file);
     g_auto (GStrv) visible_columns = nautilus_column_get_visible_columns (chooser->file);
-    g_auto (GStrv) default_order = nautilus_column_get_default_column_order (chooser->file);
 
     g_list_store_remove_all (G_LIST_STORE (chooser->model));
 
@@ -518,7 +516,7 @@ populate_list (NautilusColumnChooser *chooser)
     }
 
     set_visible_columns (chooser, visible_columns);
-    set_column_order (chooser, default_order);
+    sort_columns (chooser);
 
     nautilus_column_list_free (columns);
 }

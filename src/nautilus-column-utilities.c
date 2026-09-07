@@ -349,18 +349,18 @@ nautilus_column_get_visible_columns (NautilusFile *file)
     return g_strdupv (visible_columns);
 }
 
-GStrv
+const char **
 nautilus_column_get_default_column_order (NautilusFile *file)
 {
     if (nautilus_file_is_in_trash (file))
     {
-        return g_strdupv ((gchar **) default_columns_for_trash);
+        return default_columns_for_trash;
     }
 
     if (nautilus_file_is_in_recent (file))
     {
-        return g_strdupv ((gchar **) default_columns_for_recent);
+        return default_columns_for_recent;
     }
 
-    return g_strdupv ((gchar **) default_column_order);
+    return default_column_order;
 }

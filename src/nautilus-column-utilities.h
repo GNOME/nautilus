@@ -37,4 +37,5 @@ void   nautilus_column_save_metadata  (NautilusFile *file,
 
 GStrv  nautilus_column_get_default_visible_columns (NautilusFile *file);
 GStrv  nautilus_column_get_visible_columns         (NautilusFile *file);
-GStrv  nautilus_column_get_default_column_order    (NautilusFile *file);
+const char **
+nautilus_column_get_default_column_order (NautilusFile *file);
