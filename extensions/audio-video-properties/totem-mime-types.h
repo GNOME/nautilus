@@ -1,3 +1,11 @@
+/*
+ * SPDX-FileCopyrightText: 2019 The GNOME project contributors
+ *
+ * SPDX-License-Identifier: GPL-3.0-or-later
+ *
+ * Authors: Bastien Nocera <hadess@hadess.net>
+ */
+
 G_GNUC_UNUSED static const gchar *mime_types[] = {
 "application/mxf",
 "application/ogg",

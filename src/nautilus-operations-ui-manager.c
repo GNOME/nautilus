@@ -1,3 +1,9 @@
+/*
+ * SPDX-FileCopyrightText: 2016 The GNOME project contributors
+ *
+ * SPDX-License-Identifier: GPL-3.0-or-later
+ */
+
 #include <glib/gi18n.h>
 
 #include "nautilus-operations-ui-manager.h"
