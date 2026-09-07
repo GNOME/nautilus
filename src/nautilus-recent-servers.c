@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2015 Georges Basile Stavracas Neto <georges.stavracas@gmail.com>
+ * SPDX-FileCopyrightText: 2015 Georges Basile Stavracas Neto <georges.stavracas@gmail.com>
  *
  * SPDX-License-Identifier: LGPL-2.1-or-later
  */

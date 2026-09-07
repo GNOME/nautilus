@@ -1,11 +1,13 @@
-/* nautilus-dnd.h - Common Drag & drop handling code
+/*
+ * nautilus-dnd.h - Common Drag & drop handling code
+ *
+ * SPDX-FileCopyrightText: 2000, 2001 Eazel, Inc.
+ * SPDX-FileCopyrightText: 2022 The GNOME project contributors
+ *
+ * SPDX-License-Identifier: GPL-3.0-or-later
  *
  * Authors: Pavel Cisler <pavel@eazel.com>,
  *          Ettore Perazzoli <ettore@gnu.org>
- * Copyright (C) 2000 Eazel, Inc.
- * Copyright (C) 2022 The GNOME project contributors
- *
- * SPDX-License-Identifier: GPL-3.0-or-later
  */
 
 #pragma once

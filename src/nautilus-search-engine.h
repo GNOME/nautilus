@@ -1,6 +1,6 @@
 /*
- * Copyright (C) 2005 Novell, Inc.
- * Copyright © 2025 The Files contributors
+ * SPDX-FileCopyrightText: 2005 Novell, Inc.
+ * SPDX-FileCopyrightText: 2025 The Files contributors
  *
  * SPDX-License-Identifier: GPL-2.0-or-later
  *

@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2022 Corey Berla <corey@berla.me>
+ * SPDX-FileCopyrightText: 2022 Corey Berla <corey@berla.me>
  *
  * SPDX-License-Identifier: GPL-3.0-or-later
  */

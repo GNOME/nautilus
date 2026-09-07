@@ -1,24 +1,9 @@
-/* nautilus-clipboard.c
+/*
+ * SPDX-FileCopyrightText: 1999, 2000 Free Software Foundaton
+ * SPDX-FileCopyrightText: 2000, 2001 Eazel, Inc.
+ * SPDX-FileCopyrightText: 2016 Carlos Soriano <csoriano@gnome.org>
  *
- * Nautilus Clipboard support.  For now, routines to support component cut
- * and paste.
- *
- * Copyright (C) 1999, 2000  Free Software Foundaton
- * Copyright (C) 2000, 2001  Eazel, Inc.
- * Copyright (C) 2016 Carlos Soriano <csoriano@gnome.org>
- *
- * This program is free software; you can redistribute it and/or
- * modify it under the terms of the GNU Library General Public License as
- * published by the Free Software Foundation; either version 2 of the
- * License, or (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
- * Library General Public License for more details.
- *
- * You should have received a copy of the GNU Library General Public
- * License along with this program; if not, see <http://www.gnu.org/licenses/>.
+ * SPDX-License-Identifier: LGPL-2.1-or-later
  *
  * Authors: Rebecca Schulman <rebecka@eazel.com>,
  *          Darin Adler <darin@bentspoon.com>

@@ -1,10 +1,10 @@
 /*
  * SPDX-FileCopyrightText: 2016 Red Hat, Inc
+ *
  * SPDX-License-Identifier: GPL-2.0-or-later
  *
- * Authors:
- *       Alexander Larsson <alexl@redhat.com>
- *       Matthias Clasen <mclasen@redhat.com>
+ * Authors: Alexander Larsson <alexl@redhat.com>
+ *          Matthias Clasen <mclasen@redhat.com>
  */
 
 #include "nautilus-portal-request.h"

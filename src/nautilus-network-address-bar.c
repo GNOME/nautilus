@@ -1,6 +1,6 @@
 /*
- * Copyright (C) 2015 Georges Basile Stavracas Neto <georges.stavracas@gmail.com>
- * Copyright (C) 2022 António Fernandes <antoniof@gnome.org>
+ * SPDX-FileCopyrightText: 2015 Georges Basile Stavracas Neto <georges.stavracas@gmail.com>
+ * SPDX-FileCopyrightText: 2022 António Fernandes <antoniof@gnome.org>
  *
  * SPDX-License-Identifier: GPL-3.0-or-later
  */
