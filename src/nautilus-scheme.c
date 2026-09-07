@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2024 Peter Eisenmann <p3732@getgoogleoff.me>
+ * SPDX-FileCopyrightText: 2024 Peter Eisenmann <p3732@getgoogleoff.me>
  *
  * SPDX-License-Identifier: GPL-3.0-or-later
  */

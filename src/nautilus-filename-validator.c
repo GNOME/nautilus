@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2016 the Nautilus developers
+ * SPDX-FileCopyrightText: 2016 the Nautilus developers
  *
  * SPDX-License-Identifier: GPL-2.0-or-later
  */

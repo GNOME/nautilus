@@ -1,5 +1,5 @@
 /*
- * Copyright © 2026 Khalid Abu Shawarib <kas@gnome.org>
+ * SPDX-FileCopyrightText: 2026 Khalid Abu Shawarib <kas@gnome.org>
  *
  * SPDX-License-Identifier: GPL-3.0-or-later
  */

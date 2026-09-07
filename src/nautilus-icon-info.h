@@ -1,5 +1,6 @@
 /*
- * SPDX-FileCopyrightText: 2016 The GNOME project contributors
+ * SPDX-FileCopyrightText: 2007 Red Hat, Inc.
+ * SPDX-FileCopyrightText: 2007 Alexander Larsson <alexl@redhat.com>
  *
  * SPDX-License-Identifier: GPL-3.0-or-later
  */
