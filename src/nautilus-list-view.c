@@ -197,11 +197,9 @@ apply_columns_settings (NautilusListView  *self,
 
     for (GList *l = all_columns; l != NULL; l = l->next)
     {
-        g_autofree char *name = NULL;
-        g_autofree char *lowercase = NULL;
-
-        g_object_get (G_OBJECT (l->data), "name", &name, NULL);
-        lowercase = g_ascii_strdown (name, -1);
+        NautilusColumn *column = l->data;
+        const char *name = nautilus_column_peek_name (column);
+        g_autofree char *lowercase = g_ascii_strdown (name, -1);
 
         if (g_hash_table_lookup (visible_columns_hash, lowercase) != NULL)
         {
@@ -991,16 +989,14 @@ setup_view_columns (NautilusListView *self)
     for (GList *l = nautilus_columns; l != NULL; l = l->next)
     {
         NautilusColumn *nautilus_column = NAUTILUS_COLUMN (l->data);
-        g_autofree gchar *name = NULL;
-        g_autofree gchar *label = NULL;
+        const char *name = nautilus_column_peek_name (nautilus_column);
+        const char *label = nautilus_column_peek_label (nautilus_column);
         GQuark attribute_q = 0;
         GtkSortType sort_order;
         g_autoptr (GtkCustomSorter) sorter = NULL;
         g_autoptr (GtkColumnViewColumn) view_column = NULL;
 
         g_object_get (nautilus_column,
-                      "name", &name,
-                      "label", &label,
                       "attribute_q", &attribute_q,
                       "default-sort-order", &sort_order,
                       NULL);

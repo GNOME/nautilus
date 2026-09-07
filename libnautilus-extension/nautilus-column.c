@@ -379,3 +379,21 @@ nautilus_column_class_init (NautilusColumnClass *class)
                                                            FALSE,
                                                            G_PARAM_READWRITE));
 }
+
+gboolean
+nautilus_column_get_visible (NautilusColumn *self)
+{
+    return self->visible;
+}
+
+const char *
+nautilus_column_peek_name (NautilusColumn *self)
+{
+    return self->name;
+}
+
+const char *
+nautilus_column_peek_label (NautilusColumn *self)
+{
+    return self->label;
+}

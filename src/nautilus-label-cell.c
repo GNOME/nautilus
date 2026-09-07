@@ -104,14 +104,13 @@ static void
 nautilus_label_cell_constructed (GObject *object)
 {
     NautilusLabelCell *self = NAUTILUS_LABEL_CELL (object);
-    g_autofree gchar *column_name = NULL;
+    const char *column_name = nautilus_column_peek_name (self->column);
     gfloat xalign;
 
     G_OBJECT_CLASS (nautilus_label_cell_parent_class)->constructed (object);
 
     g_object_get (self->column,
                   "attribute_q", &self->attribute_q,
-                  "name", &column_name,
                   "xalign", &xalign,
                   NULL);
     gtk_label_set_xalign (self->label, xalign);

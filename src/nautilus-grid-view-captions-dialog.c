@@ -45,9 +45,7 @@ create_grid_caption_combo_row_items (AdwComboRow *combo_row,
     for (GList *l = columns; l != NULL; l = l->next)
     {
         NautilusColumn *column = NAUTILUS_COLUMN (l->data);
-        g_autofree char *name = NULL;
-
-        g_object_get (G_OBJECT (column), "name", &name, NULL);
+        const char *name = nautilus_column_peek_name (column);
 
         /* Name is always shown.
          * Starred is instead shown as an emblem for the grid view.
@@ -110,9 +108,8 @@ update_caption_combo_row (GPtrArray  *combo_rows,
     for (guint i = 0; i < n_columns; ++i)
     {
         g_autoptr (NautilusColumn) column_i = g_list_model_get_item (model, i);
-        g_autofree char *name_i = NULL;
+        const char *name_i = nautilus_column_peek_name (column_i);
 
-        g_object_get (column_i, "name", &name_i, NULL);
         if (g_strcmp0 (name, name_i) == 0)
         {
             adw_combo_row_set_selected (ADW_COMBO_ROW (combo_row), i);

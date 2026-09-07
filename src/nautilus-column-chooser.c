@@ -82,10 +82,8 @@ get_column_names (NautilusColumnChooser *chooser,
     for (guint i = 0; i < g_list_model_get_n_items (chooser->model); i++)
     {
         g_autoptr (NautilusColumn) column = g_list_model_get_item (chooser->model, i);
-        g_autofree char *name = NULL;
-        gboolean visible;
-
-        g_object_get (column, "name", &name, "visible", &visible, NULL);
+        const char *name = nautilus_column_peek_name (column);
+        gboolean visible = nautilus_column_get_visible (column);
 
         if (!only_visible || visible)
         {
@@ -335,14 +333,12 @@ add_list_box_row (GObject  *item,
 {
     NautilusColumn *column = NAUTILUS_COLUMN (item);
     NautilusColumnChooser *chooser = user_data;
-    g_autofree char *label = NULL;
-    g_autofree char *name = NULL;
+    const char *label = nautilus_column_peek_label (column);
+    const char *name = nautilus_column_peek_name (column);
     GtkWidget *row;
     GtkWidget *menu_button;
     GtkWidget *drag_image;
     GtkEventController *controller;
-
-    g_object_get (column, "label", &label, "name", &name, NULL);
 
     if (g_strcmp0 (name, "name") == 0)
     {
@@ -394,8 +390,8 @@ add_list_box_row (GObject  *item,
 }
 
 static guint
-strv_index (char **column_order,
-            char  *name)
+strv_index (GStrv       column_order,
+            const char *name)
 {
     for (gint i = 0; column_order[i] != NULL; i++)
     {
@@ -413,23 +409,19 @@ column_sort_func (gconstpointer a,
                   gconstpointer b,
                   gpointer      user_data)
 {
-    gboolean a_visible;
-    gboolean b_visible;
-    g_autofree char *a_name = NULL;
-    g_autofree char *b_name = NULL;
-    guint a_pos, b_pos;
-    char **column_order = user_data;
-
-    g_object_get ((gpointer) a, "name", &a_name, "visible", &a_visible, NULL);
-    g_object_get ((gpointer) b, "name", &b_name, "visible", &b_visible, NULL);
+    NautilusColumn *col_a = (NautilusColumn *) a;
+    NautilusColumn *col_b = (NautilusColumn *) b;
+    gboolean a_visible = nautilus_column_get_visible (col_a);
+    gboolean b_visible = nautilus_column_get_visible (col_b);
 
     if (a_visible != b_visible)
     {
         return a_visible ? -1 : 1;
     }
 
-    a_pos = strv_index (column_order, a_name);
-    b_pos = strv_index (column_order, b_name);
+    GStrv column_order = user_data;
+    guint a_pos = strv_index (column_order, nautilus_column_peek_name (col_a));
+    guint b_pos = strv_index (column_order, nautilus_column_peek_name (col_b));
 
     return a_pos == b_pos ? 0 : a_pos < b_pos ? -1 : 1;
 }
@@ -471,11 +463,9 @@ set_visible_columns (NautilusColumnChooser  *chooser,
     for (guint i = 0; i < g_list_model_get_n_items (chooser->model); i++)
     {
         g_autoptr (NautilusColumn) column = g_list_model_get_item (chooser->model, i);
-        g_autofree char *name = NULL;
-        gboolean visible;
+        const char *name = nautilus_column_peek_name (column);
+        gboolean visible = g_strv_contains ((const char **) visible_columns, name);
 
-        g_object_get (column, "name", &name, NULL);
-        visible = g_strv_contains ((const char **) visible_columns, name);
         g_object_set (column, "visible", visible, NULL);
     }
 }
@@ -516,9 +506,8 @@ populate_list (NautilusColumnChooser *chooser)
 
     for (GList *l = columns; l != NULL; l = l->next)
     {
-        g_autofree char *name = NULL;
-
-        g_object_get (l->data, "name", &name, NULL);
+        NautilusColumn *column = l->data;
+        const char *name = nautilus_column_peek_name (column);
 
         if (strcmp (name, "starred") == 0)
         {

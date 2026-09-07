@@ -40,4 +40,11 @@ NautilusColumn *nautilus_column_new  (const char *name,
                                       const char *label,
                                       const char *description);
 
+gboolean
+nautilus_column_get_visible (NautilusColumn *self);
+const char *
+nautilus_column_peek_name (NautilusColumn *self);
+const char *
+nautilus_column_peek_label (NautilusColumn *self);
+
 G_END_DECLS
