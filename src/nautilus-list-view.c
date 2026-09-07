@@ -126,6 +126,19 @@ real_get_zoom_level (NautilusListBase *list_base_view)
     return self->zoom_level;
 }
 
+static NautilusFile *
+get_base_file (NautilusListView *self)
+{
+    if (self->file_path_base_location != NULL)
+    {
+        return nautilus_file_get (self->file_path_base_location);
+    }
+    else
+    {
+        return nautilus_file_ref (nautilus_list_base_get_directory_as_file (NAUTILUS_LIST_BASE (self)));
+    }
+}
+
 static void
 apply_columns_settings (NautilusListView  *self,
                         char             **column_order,
@@ -302,7 +315,7 @@ sort_directories_func (gconstpointer a,
 static void
 update_columns_settings_from_metadata_and_preferences (NautilusListView *self)
 {
-    NautilusFile *file = nautilus_list_base_get_directory_as_file (NAUTILUS_LIST_BASE (self));
+    g_autoptr (NautilusFile) file = get_base_file (self);
     g_auto (GStrv) column_order = nautilus_column_get_column_order (file);
     g_auto (GStrv) visible_columns = nautilus_column_get_visible_columns (file);
 
@@ -398,11 +411,8 @@ create_view_ui (NautilusListView *self)
 static GtkWidget *
 create_column_editor (NautilusListView *view)
 {
-    GtkWidget *column_chooser;
-    NautilusFile *file;
-
-    file = nautilus_list_base_get_directory_as_file (NAUTILUS_LIST_BASE (view));
-    column_chooser = nautilus_column_chooser_new (file);
+    g_autoptr (NautilusFile) file = get_base_file (view);
+    GtkWidget *column_chooser = nautilus_column_chooser_new (file);
 
     g_signal_connect_swapped (column_chooser, "changed",
                               G_CALLBACK (apply_columns_settings),
