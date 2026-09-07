@@ -355,17 +355,6 @@ completer_get_completions_thread (GTask        *task,
 }
 
 static void
-completer_get_completions_async (CompleterData       *completer_data,
-                                 GCancellable        *cancellable,
-                                 GAsyncReadyCallback  callback)
-{
-    g_autoptr (GTask) task = g_task_new (NULL, cancellable, callback, completer_data);
-
-    g_task_set_task_data (task, completer_data, (GDestroyNotify) completer_data_free);
-    g_task_run_in_thread (task, (GTaskThreadFunc) completer_get_completions_thread);
-}
-
-static void
 populate_completions_model (GObject      *source_object,
                             GAsyncResult *res,
                             gpointer      user_data)
@@ -404,24 +393,11 @@ populate_completions_model (GObject      *source_object,
     }
 }
 
-/* Update the path completions list based on the current text of the entry. */
 static void
-update_completions_store (gpointer callback_data)
+start_completions_async (NautilusLocationEntry *self,
+                         char                  *typed_path,
+                         char                  *basename)
 {
-    NautilusLocationEntry *self = NAUTILUS_LOCATION_ENTRY (callback_data);
-    GtkEditable *editable = GTK_EDITABLE (self);
-
-    self->completion_id = 0;
-
-    /* Don't complete when already viewing a completion */
-    if (gtk_editable_get_selection_bounds (editable, NULL, NULL))
-    {
-        return;
-    }
-
-    const char *entry_text = gtk_editable_get_text (editable);
-    g_autofree char *basename = NULL;
-    g_autofree char *typed_path = split_basename_from_path (entry_text, &basename);
     g_autoptr (GFile) typed_location = text_to_location (typed_path, self->current_location);
 
     if (typed_location == NULL)
@@ -440,16 +416,37 @@ update_completions_store (gpointer callback_data)
 
     set_prefix_dimming (self->completion_cell, completer_data->typed_path);
 
-    if (self->completions_cancellable != NULL)
+    g_cancellable_cancel (self->completions_cancellable);
+    g_clear_object (&self->completions_cancellable);
+    self->completions_cancellable = g_cancellable_new ();
+
+    g_autoptr (GTask) task = g_task_new (NULL, self->completions_cancellable,
+                                         populate_completions_model, completer_data);
+
+    g_task_set_task_data (task, completer_data, (GDestroyNotify) completer_data_free);
+    g_task_run_in_thread (task, (GTaskThreadFunc) completer_get_completions_thread);
+}
+
+/* Update the path completions list based on the current text of the entry. */
+static void
+update_completions_store (gpointer callback_data)
+{
+    NautilusLocationEntry *self = NAUTILUS_LOCATION_ENTRY (callback_data);
+    GtkEditable *editable = GTK_EDITABLE (self);
+
+    self->completion_id = 0;
+
+    /* Don't complete when already viewing a completion */
+    if (gtk_editable_get_selection_bounds (editable, NULL, NULL))
     {
-        g_cancellable_cancel (self->completions_cancellable);
-        g_clear_object (&self->completions_cancellable);
+        return;
     }
 
-    self->completions_cancellable = g_cancellable_new ();
-    completer_get_completions_async (completer_data,
-                                     self->completions_cancellable,
-                                     populate_completions_model);
+    const char *entry_text = gtk_editable_get_text (editable);
+    g_autofree char *basename = NULL;
+    g_autofree char *typed_path = split_basename_from_path (entry_text, &basename);
+
+    start_completions_async (self, g_steal_pointer (&typed_path), g_steal_pointer (&basename));
 }
 
 static void
