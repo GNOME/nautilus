@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2024 António Fernandes <antoniof@gnome.org>
+ * SPDX-FileCopyrightText: 2024 António Fernandes <antoniof@gnome.org>
  *
  * SPDX-License-Identifier: GPL-3.0-or-later
  */

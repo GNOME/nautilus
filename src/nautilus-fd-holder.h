@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2023 António Fernandes <antoniof@gnome.org>
+ * SPDX-FileCopyrightText: 2023 António Fernandes <antoniof@gnome.org>
  *
  * SPDX-License-Identifier: GPL-3.0-or-later
  */

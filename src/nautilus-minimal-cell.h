@@ -1,5 +1,5 @@
 /*
- * Copyright © 2024 The Files contributors
+ * SPDX-FileCopyrightText: 2024 The Files contributors
  *
  * SPDX-License-Identifier: GPL-3.0-or-later
  *

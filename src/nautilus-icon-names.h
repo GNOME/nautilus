@@ -1,5 +1,5 @@
 /*
- * SPDX-FileCopyrightText: 2016 The GNOME project contributors
+ * SPDX-FileCopyrightText: 2008 Luca Ferretti <elle.uca@libero.it>
  *
  * SPDX-License-Identifier: GPL-3.0-or-later
  */

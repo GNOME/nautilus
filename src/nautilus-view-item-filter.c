@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2024 GNOME Foundation Inc.
+ * SPDX-FileCopyrightText: 2024 GNOME Foundation Inc.
  *
  * SPDX-License-Identifier: GPL-3.0-or-later
  */
