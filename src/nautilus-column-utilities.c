@@ -309,116 +309,13 @@ nautilus_column_list_free (GList *columns)
     g_list_free (columns);
 }
 
-static int
-strv_index (char       **strv,
-            const char  *str)
-{
-    int i;
-
-    for (i = 0; strv[i] != NULL; ++i)
-    {
-        if (strcmp (strv[i], str) == 0)
-        {
-            return i;
-        }
-    }
-
-    return -1;
-}
-
-static int
-column_compare (NautilusColumn  *a,
-                NautilusColumn  *b,
-                char           **column_order)
-{
-    int index_a;
-    int index_b;
-    char *name_a;
-    char *name_b;
-    int ret;
-
-    g_object_get (G_OBJECT (a), "name", &name_a, NULL);
-    index_a = strv_index (column_order, name_a);
-
-    g_object_get (G_OBJECT (b), "name", &name_b, NULL);
-    index_b = strv_index (column_order, name_b);
-
-    if (index_a == index_b)
-    {
-        int pos_a;
-        int pos_b;
-
-        pos_a = strv_index ((char **) default_column_order, name_a);
-        pos_b = strv_index ((char **) default_column_order, name_b);
-
-        if (pos_a == pos_b)
-        {
-            char *label_a;
-            char *label_b;
-
-            g_object_get (G_OBJECT (a), "label", &label_a, NULL);
-            g_object_get (G_OBJECT (b), "label", &label_b, NULL);
-            ret = strcmp (label_a, label_b);
-            g_free (label_a);
-            g_free (label_b);
-        }
-        else if (pos_a == -1)
-        {
-            ret = 1;
-        }
-        else if (pos_b == -1)
-        {
-            ret = -1;
-        }
-        else
-        {
-            ret = index_a - index_b;
-        }
-    }
-    else if (index_a == -1)
-    {
-        ret = 1;
-    }
-    else if (index_b == -1)
-    {
-        ret = -1;
-    }
-    else
-    {
-        ret = index_a - index_b;
-    }
-
-    g_free (name_a);
-    g_free (name_b);
-
-    return ret;
-}
-
-GList *
-nautilus_sort_columns (GList  *columns,
-                       char  **column_order)
-{
-    if (column_order == NULL)
-    {
-        return columns;
-    }
-
-    return g_list_sort_with_data (columns,
-                                  (GCompareDataFunc) column_compare,
-                                  column_order);
-}
-
 void
 nautilus_column_save_metadata (NautilusFile *file,
-                               GStrv         column_order,
                                GStrv         visible_columns)
 {
     nautilus_file_set_metadata_list (file,
                                      NAUTILUS_METADATA_KEY_LIST_VIEW_VISIBLE_COLUMNS,
                                      visible_columns);
-    nautilus_file_set_metadata_list (file,
-                                     NAUTILUS_METADATA_KEY_LIST_VIEW_COLUMN_ORDER,
-                                     column_order);
 }
 
 GStrv
@@ -465,20 +362,5 @@ nautilus_column_get_default_column_order (NautilusFile *file)
         return g_strdupv ((gchar **) default_columns_for_recent);
     }
 
-    return g_settings_get_strv (nautilus_list_view_preferences,
-                                NAUTILUS_PREFERENCES_LIST_VIEW_DEFAULT_COLUMN_ORDER);
-}
-
-GStrv
-nautilus_column_get_column_order (NautilusFile *file)
-{
-    const GStrv column_order =
-        nautilus_file_get_metadata_list (file, NAUTILUS_METADATA_KEY_LIST_VIEW_COLUMN_ORDER);
-
-    if (column_order != NULL && column_order[0] != NULL)
-    {
-        return g_strdupv (column_order);
-    }
-
-    return nautilus_column_get_default_column_order (file);
+    return g_strdupv ((gchar **) default_column_order);
 }

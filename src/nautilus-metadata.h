@@ -36,7 +36,6 @@
 #define NAUTILUS_METADATA_KEY_LIST_VIEW_SORT_COLUMN      	"nautilus-list-view-sort-column"
 #define NAUTILUS_METADATA_KEY_LIST_VIEW_SORT_REVERSED    	"nautilus-list-view-sort-reversed"
 #define NAUTILUS_METADATA_KEY_LIST_VIEW_VISIBLE_COLUMNS    	"nautilus-list-view-visible-columns"
-#define NAUTILUS_METADATA_KEY_LIST_VIEW_COLUMN_ORDER    	"nautilus-list-view-column-order"
 
 #define NAUTILUS_METADATA_KEY_CUSTOM_ICON                	"custom-icon"
 #define NAUTILUS_METADATA_KEY_CUSTOM_ICON_NAME                	"custom-icon-name"

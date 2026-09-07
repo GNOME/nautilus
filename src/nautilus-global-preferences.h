@@ -80,7 +80,6 @@ typedef enum
 /* List View */
 #define NAUTILUS_PREFERENCES_LIST_VIEW_DEFAULT_ZOOM_LEVEL		"default-zoom-level"
 #define NAUTILUS_PREFERENCES_LIST_VIEW_DEFAULT_VISIBLE_COLUMNS		"default-visible-columns"
-#define NAUTILUS_PREFERENCES_LIST_VIEW_DEFAULT_COLUMN_ORDER		"default-column-order"
 #define NAUTILUS_PREFERENCES_LIST_VIEW_USE_TREE                         "use-tree-view"
 
 enum

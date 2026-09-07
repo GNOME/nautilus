@@ -32,13 +32,9 @@ GList *nautilus_get_columns_for_file (NautilusFile *file);
 GList *nautilus_column_list_copy      (GList       *columns);
 void   nautilus_column_list_free      (GList       *columns);
 
-GList *nautilus_sort_columns          (GList       *columns,
-				       char       **column_order);
 void   nautilus_column_save_metadata  (NautilusFile *file,
-                                       GStrv         column_order,
                                        GStrv         visible_column);
 
 GStrv  nautilus_column_get_default_visible_columns (NautilusFile *file);
 GStrv  nautilus_column_get_visible_columns         (NautilusFile *file);
 GStrv  nautilus_column_get_default_column_order    (NautilusFile *file);
-GStrv  nautilus_column_get_column_order            (NautilusFile *file);

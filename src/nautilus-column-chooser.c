@@ -99,10 +99,9 @@ get_column_names (NautilusColumnChooser *chooser,
 static void
 list_changed (NautilusColumnChooser *chooser)
 {
-    g_auto (GStrv) column_order = get_column_names (chooser, FALSE);
     g_auto (GStrv) visible_columns = get_column_names (chooser, TRUE);
 
-    g_signal_emit (chooser, signals[CHANGED], 0, column_order, visible_columns);
+    g_signal_emit (chooser, signals[CHANGED], 0, visible_columns);
 }
 
 /**
@@ -438,25 +437,21 @@ column_sort_func (gconstpointer a,
 static void
 nautilus_column_chooser_close_attempt (NautilusColumnChooser *chooser)
 {
-    g_auto (GStrv) column_order = get_column_names (chooser, FALSE);
     g_auto (GStrv) visible_columns = get_column_names (chooser, TRUE);
     gboolean has_custom;
 
     has_custom = adw_switch_row_get_active (ADW_SWITCH_ROW (chooser->use_custom_row));
     if (has_custom)
     {
-        nautilus_column_save_metadata (chooser->file, column_order, visible_columns);
+        nautilus_column_save_metadata (chooser->file, visible_columns);
     }
     else
     {
         g_settings_set_strv (nautilus_list_view_preferences,
-                             NAUTILUS_PREFERENCES_LIST_VIEW_DEFAULT_COLUMN_ORDER,
-                             (const char **) column_order);
-        g_settings_set_strv (nautilus_list_view_preferences,
                              NAUTILUS_PREFERENCES_LIST_VIEW_DEFAULT_VISIBLE_COLUMNS,
                              (const char **) visible_columns);
 
-        nautilus_column_save_metadata (chooser->file, NULL, NULL);
+        nautilus_column_save_metadata (chooser->file, NULL);
     }
 
     adw_dialog_force_close (ADW_DIALOG (chooser));
@@ -493,7 +488,7 @@ use_default_clicked_callback (GtkWidget *button,
     g_auto (GStrv) default_columns = NULL;
     g_auto (GStrv) default_order = NULL;
 
-    nautilus_column_save_metadata (chooser->file, NULL, NULL);
+    nautilus_column_save_metadata (chooser->file, NULL);
 
     /* set view values ourselves, as new metadata could not have been
      * updated yet.
@@ -515,7 +510,7 @@ populate_list (NautilusColumnChooser *chooser)
 {
     GList *columns = nautilus_get_columns_for_file (chooser->file);
     g_auto (GStrv) visible_columns = nautilus_column_get_visible_columns (chooser->file);
-    g_auto (GStrv) column_order = nautilus_column_get_column_order (chooser->file);
+    g_auto (GStrv) default_order = nautilus_column_get_default_column_order (chooser->file);
 
     g_list_store_remove_all (G_LIST_STORE (chooser->model));
 
@@ -534,7 +529,7 @@ populate_list (NautilusColumnChooser *chooser)
     }
 
     set_visible_columns (chooser, visible_columns);
-    set_column_order (chooser, column_order);
+    set_column_order (chooser, default_order);
 
     nautilus_column_list_free (columns);
 }
@@ -558,12 +553,8 @@ nautilus_column_chooser_constructed (GObject *object)
     const GStrv file_visible_columns =
         nautilus_file_get_metadata_list (chooser->file,
                                          NAUTILUS_METADATA_KEY_LIST_VIEW_VISIBLE_COLUMNS);
-    const GStrv file_column_order =
-        nautilus_file_get_metadata_list (chooser->file,
-                                         NAUTILUS_METADATA_KEY_LIST_VIEW_COLUMN_ORDER);
 
     has_custom_columns = ((file_visible_columns != NULL && file_visible_columns[0] != NULL) ||
-                          (file_column_order != NULL && file_column_order[0] != NULL) ||
                           is_special_folder (chooser));
 
     adw_switch_row_set_active (ADW_SWITCH_ROW (chooser->use_custom_row), has_custom_columns);
@@ -623,7 +614,7 @@ nautilus_column_chooser_class_init (NautilusColumnChooserClass *chooser_class)
                            0, NULL, NULL,
                            g_cclosure_marshal_generic,
                            G_TYPE_NONE,
-                           2, G_TYPE_STRV, G_TYPE_STRV);
+                           1, G_TYPE_STRV);
 
     properties[PROP_FILE] =
         g_param_spec_object ("file", NULL, NULL,
