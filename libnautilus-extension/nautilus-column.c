@@ -342,3 +342,21 @@ nautilus_column_class_init (NautilusColumnClass *class)
 
     g_object_class_install_properties (object_class, NUM_PROPS, properties);
 }
+
+gboolean
+nautilus_column_get_visible (NautilusColumn *self)
+{
+    return self->visible;
+}
+
+const char *
+nautilus_column_peek_name (NautilusColumn *self)
+{
+    return self->name;
+}
+
+const char *
+nautilus_column_peek_label (NautilusColumn *self)
+{
+    return self->label;
+}
