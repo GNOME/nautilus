@@ -174,20 +174,6 @@ nautilus_location_entry_set_text (NautilusLocationEntry *entry,
 }
 
 static void
-nautilus_location_entry_insert_prefix (NautilusLocationEntry *entry,
-                                       GtkEntryCompletion    *completion)
-{
-    GtkEditable *delegate;
-
-    delegate = gtk_editable_get_delegate (GTK_EDITABLE (entry));
-    g_signal_handlers_block_by_func (delegate, G_CALLBACK (on_after_insert_text), entry);
-
-    gtk_entry_completion_insert_prefix (completion);
-
-    g_signal_handlers_unblock_by_func (delegate, G_CALLBACK (on_after_insert_text), entry);
-}
-
-static void
 nautilus_location_entry_update_action (NautilusLocationEntry *self)
 {
     const char *current_text = gtk_editable_get_text (GTK_EDITABLE (self));
@@ -250,7 +236,7 @@ nautilus_location_entry_set_location (NautilusLocationEntry *self,
 
 static void
 set_prefix_dimming (GtkCellRenderer *completion_cell,
-                    char            *typed_path)
+                    const char      *typed_path)
 {
     if (typed_path == NULL)
     {
@@ -354,6 +340,26 @@ completer_get_completions_thread (GTask        *task,
 }
 
 static void
+show_completions (NautilusLocationEntry *self,
+                  const char            *dimmed_prefix)
+{
+    /* refilter the completions dropdown */
+    gtk_entry_completion_complete (self->completion);
+
+    if (self->idle_insert_completion)
+    {
+        /* Insert potential completion */
+        GtkEditable *delegate = gtk_editable_get_delegate (GTK_EDITABLE (self));
+
+        g_signal_handlers_block_by_func (delegate, G_CALLBACK (on_after_insert_text), self);
+        gtk_entry_completion_insert_prefix (self->completion);
+        g_signal_handlers_unblock_by_func (delegate, G_CALLBACK (on_after_insert_text), self);
+    }
+
+    set_prefix_dimming (self->completion_cell, dimmed_prefix);
+}
+
+static void
 populate_completions_model (GObject      *source_object,
                             GAsyncResult *res,
                             gpointer      user_data)
@@ -382,14 +388,7 @@ populate_completions_model (GObject      *source_object,
         gtk_list_store_set (self->completions_store, &iter, 0, completion, -1);
     }
 
-    /* refilter the completions dropdown */
-    gtk_entry_completion_complete (self->completion);
-
-    if (self->idle_insert_completion)
-    {
-        /* insert the completion */
-        nautilus_location_entry_insert_prefix (self, self->completion);
-    }
+    show_completions (self, completer_data->typed_path);
 }
 
 static void
@@ -411,8 +410,6 @@ start_completions_async (NautilusLocationEntry *self,
     completer_data->typed_path = g_steal_pointer (&typed_path);
     completer_data->prefix = g_steal_pointer (&basename);
     completer_data->location = g_steal_pointer (&typed_location);
-
-    set_prefix_dimming (self->completion_cell, completer_data->typed_path);
 
     g_cancellable_cancel (self->completions_cancellable);
     g_clear_object (&self->completions_cancellable);
