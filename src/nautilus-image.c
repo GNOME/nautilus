@@ -193,8 +193,8 @@ get_error_paintable (NautilusImage *self)
 }
 
 static void
-setup_texture_for_image (NautilusImage *self,
-                         GdkPixbuf     *pixbuf)
+setup_pixbuf_for_image (NautilusImage *self,
+                        GdkPixbuf     *pixbuf)
 {
     g_autoptr (GdkPixbuf) rotated_pixbuf = gdk_pixbuf_apply_embedded_orientation (pixbuf);
     g_autoptr (GdkTexture) texture = gdk_texture_new_for_pixbuf (rotated_pixbuf);
@@ -230,7 +230,7 @@ thumbnailing_done_cb (GObject      *source_object,
 
     if (pixbuf != NULL && self->error == NULL)
     {
-        setup_texture_for_image (self, pixbuf);
+        setup_pixbuf_for_image (self, pixbuf);
     }
     else
     {
@@ -239,84 +239,13 @@ thumbnailing_done_cb (GObject      *source_object,
 }
 
 static void
-scale_down_when_large (GdkPixbuf **pixbuf)
-{
-    gint width = gdk_pixbuf_get_width (*pixbuf), height = gdk_pixbuf_get_height (*pixbuf);
-    gint biggest_dimension = MAX (width, height);
-    gint max_size = nautilus_thumbnail_get_max_size ();
-
-    if (biggest_dimension <= max_size)
-    {
-        return;
-    }
-
-    gboolean wide = width > height;
-    double scale = (double) max_size / (double) biggest_dimension;
-    gint new_width = wide ? max_size : width * scale;
-    gint new_height = wide ? height * scale : max_size;
-
-    GdkPixbuf *new_pixbuf = gdk_pixbuf_scale_simple (*pixbuf,
-                                                     new_width,
-                                                     new_height,
-                                                     GDK_INTERP_BILINEAR);
-    g_clear_object (pixbuf);
-    *pixbuf = new_pixbuf;
-}
-
-/* Currently, GDK Pixbuf will decode the image on the main thread, even when
- * using the async variant of the function. Until that is fixed, use a GTask to
- * perform the decoding in a different thread. */
-static void
-thumbnail_from_stream_thread (GTask        *task,
-                              gpointer      source_object,
-                              gpointer      task_data,
-                              GCancellable *cancellable)
-{
-    GInputStream *self = source_object;
-    GError *error = NULL;
-    GdkPixbuf *pixbuf = gdk_pixbuf_new_from_stream (self, cancellable, &error);
-
-    if (pixbuf != NULL)
-    {
-        scale_down_when_large (&pixbuf);
-        g_task_return_pointer (task, pixbuf, g_object_unref);
-    }
-    else
-    {
-        g_task_return_error (task, error);
-    }
-}
-
-static void
-thumbnail_from_stream_async (GInputStream        *stream,
-                             GCancellable        *cancellable,
-                             GAsyncReadyCallback  callback,
-                             gpointer             user_data)
-{
-    g_autoptr (GTask) task = g_task_new (stream, cancellable, callback, user_data);
-
-    /* We're potentially starving other important threads from reaching the thread pool,
-     * so lets reduce the priority. */
-    g_task_set_priority (task, G_PRIORITY_LOW);
-
-    g_task_run_in_thread (task, thumbnail_from_stream_thread);
-}
-
-static GdkPixbuf *
-thumbnail_from_stream_finish (GAsyncResult  *result,
-                              GError       **error)
-{
-    return g_task_propagate_pointer (G_TASK (result), error);
-}
-
-static void
-thumbnail_pixbuf_ready_callback (GObject      *source_object,
-                                 GAsyncResult *res,
-                                 gpointer      user_data)
+thumbnail_texture_ready_callback (GObject      *source_object,
+                                  GAsyncResult *res,
+                                  gpointer      user_data)
 {
     g_autoptr (GError) error = NULL;
     NautilusImage *self = user_data;
-    g_autoptr (GdkPixbuf) pixbuf = thumbnail_from_stream_finish (res, &error);
+    g_autoptr (GdkTexture) texture = thumbnail_load_from_stream_finish (res, NULL, &error);
 
     if (g_error_matches (error, G_IO_ERROR, G_IO_ERROR_CANCELLED))
     {
@@ -326,9 +255,10 @@ thumbnail_pixbuf_ready_callback (GObject      *source_object,
 
     self->error = g_steal_pointer (&error);
 
-    if (pixbuf != NULL)
+    if (texture != NULL && self->error == NULL)
     {
-        setup_texture_for_image (self, pixbuf);
+        nautilus_image_set_texture (self, texture);
+        thumbnail_cache_add (self->source, self->texture, self->source_mtime);
     }
     else
     {
@@ -355,10 +285,10 @@ thumbnail_file_read_callback (GObject      *source_object,
 
     if (stream != NULL && self->error == NULL)
     {
-        thumbnail_from_stream_async (G_INPUT_STREAM (stream),
-                                     self->cancellable,
-                                     thumbnail_pixbuf_ready_callback,
-                                     self);
+        thumbnail_load_from_stream_async (G_INPUT_STREAM (stream),
+                                          self->cancellable,
+                                          thumbnail_texture_ready_callback,
+                                          self);
     }
     else
     {
