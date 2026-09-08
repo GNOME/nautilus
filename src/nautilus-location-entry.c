@@ -538,14 +538,9 @@ nautilus_location_entry_key_pressed (GtkEventControllerKey *controller,
                                      GdkModifierType        state,
                                      gpointer               user_data)
 {
-    GtkWidget *widget;
-    GtkEditable *editable;
-    gboolean selected;
-
-
-    widget = gtk_event_controller_get_widget (GTK_EVENT_CONTROLLER (controller));
-    editable = GTK_EDITABLE (widget);
-    selected = gtk_editable_get_selection_bounds (editable, NULL, NULL);
+    NautilusLocationEntry *self = user_data;
+    GtkEditable *editable = GTK_EDITABLE (self);
+    gboolean selected = gtk_editable_get_selection_bounds (editable, NULL, NULL);
 
     if (!gtk_editable_get_editable (editable))
     {
@@ -564,12 +559,12 @@ nautilus_location_entry_key_pressed (GtkEventControllerKey *controller,
         {
             int position;
 
-            position = strlen (gtk_editable_get_text (GTK_EDITABLE (editable)));
+            position = strlen (gtk_editable_get_text (editable));
             gtk_editable_select_region (editable, position, position);
         }
         else
         {
-            gtk_widget_error_bell (widget);
+            gtk_widget_error_bell (GTK_WIDGET (self));
         }
 
         return GDK_EVENT_STOP;
@@ -755,7 +750,7 @@ nautilus_location_entry_init (NautilusLocationEntry *self)
      * we need to check whether this is still correct. */
     gtk_event_controller_set_propagation_phase (controller, GTK_PHASE_CAPTURE);
     g_signal_connect (controller, "key-pressed",
-                      G_CALLBACK (nautilus_location_entry_key_pressed), NULL);
+                      G_CALLBACK (nautilus_location_entry_key_pressed), self);
 
     g_signal_connect_after (gtk_editable_get_delegate (GTK_EDITABLE (self)),
                             "insert-text",
