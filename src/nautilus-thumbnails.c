@@ -30,14 +30,10 @@
 #include "nautilus-global-preferences.h"
 #include "nautilus-file-utilities.h"
 #include "nautilus-hash-queue.h"
-#include <math.h>
+
+#include <glycin.h>
+#include <glycin-gtk4.h>
 #include <gtk/gtk.h>
-#include <errno.h>
-#include <stdio.h>
-#include <string.h>
-#include <sys/wait.h>
-#include <unistd.h>
-#include <signal.h>
 #include <libgnome-desktop/gnome-desktop-thumbnail.h>
 
 /* Should never be a reasonable actual mtime */
@@ -288,6 +284,126 @@ nautilus_can_thumbnail (const gchar *uri,
                                                           uri,
                                                           mime_type,
                                                           modified_time);
+}
+
+typedef struct
+{
+    GdkTexture *texture;
+    guint64 mtime;
+} ThumbnailResult;
+
+static void
+thumbnail_result_free (ThumbnailResult *result)
+{
+    g_clear_object (&result->texture);
+    g_free (result);
+}
+
+G_DEFINE_AUTOPTR_CLEANUP_FUNC (ThumbnailResult, thumbnail_result_free)
+
+static GdkTexture *
+scale_image_to_texture (GlyImage *image)
+{
+    g_autoptr (GlyFrameRequest) frame_request = gly_frame_request_new ();
+    g_autoptr (GlyFrame) frame = NULL;
+    gint max_size = nautilus_thumbnail_get_max_size ();
+
+    gly_frame_request_set_scale (frame_request, max_size, max_size);
+    frame = gly_image_get_specific_frame (image, frame_request, NULL);
+
+    if (frame == NULL)
+    {
+        return NULL;
+    }
+
+    double iw = gly_frame_get_width (frame);
+    double ih = gly_frame_get_height (frame);
+    gint biggest_dimension = MAX (iw, ih);
+    g_autoptr (GdkTexture) texture = gly_gtk_frame_get_texture (frame);
+
+    if (biggest_dimension <= max_size)
+    {
+        return g_steal_pointer (&texture);
+    }
+
+    double scale_factor = MIN ((double) max_size / iw, (double) max_size / ih);
+    double width = iw * scale_factor;
+    double height = ih * scale_factor;
+    g_autoptr (GtkSnapshot) snapshot = gtk_snapshot_new ();
+
+    gdk_paintable_snapshot (GDK_PAINTABLE (texture),
+                            GDK_SNAPSHOT (snapshot),
+                            width, height);
+
+    return GDK_TEXTURE (gtk_snapshot_to_paintable (snapshot, NULL));
+}
+
+#define XDG_THUMBNAIL_KEY_MTIME "Thumb::MTime"
+
+static void
+thumbnail_load_from_stream_thread (GTask        *task,
+                                   gpointer      source_object,
+                                   gpointer      task_data,
+                                   GCancellable *cancellable)
+{
+    GInputStream *self = source_object;
+    g_autoptr (GlyLoader) loader = gly_loader_new_for_stream (self);
+    g_autoptr (GlyImage) image = gly_loader_load (loader, NULL);
+    GdkTexture *texture = scale_image_to_texture (image);
+
+    if (texture != NULL)
+    {
+        ThumbnailResult *result = g_new0 (ThumbnailResult, 1);
+        g_autofree gchar *mtime_str =
+            gly_image_get_metadata_key_value (image, XDG_THUMBNAIL_KEY_MTIME);
+
+        result->texture = g_steal_pointer (&texture);
+        result->mtime = mtime_str ? (guint64) atol (mtime_str) : 0;
+
+        g_task_return_pointer (task, result, (GDestroyNotify) thumbnail_result_free);
+    }
+    else
+    {
+        g_task_return_error (task,
+                             g_error_new (G_IO_ERROR,
+                                          G_IO_ERROR_FAILED,
+                                          "Failed to load thumbnail"));
+    }
+}
+
+void
+thumbnail_load_from_stream_async (GInputStream        *stream,
+                                  GCancellable        *cancellable,
+                                  GAsyncReadyCallback  callback,
+                                  gpointer             user_data)
+{
+    g_autoptr (GTask) task = g_task_new (stream, cancellable, callback, user_data);
+
+    /* We're potentially starving other important threads from reaching the
+     *  thread pool, so lets reduce the priority. */
+    g_task_set_priority (task, G_PRIORITY_LOW);
+
+    g_task_run_in_thread (task, thumbnail_load_from_stream_thread);
+}
+
+GdkTexture *
+thumbnail_load_from_stream_finish (GAsyncResult  *result,
+                                   time_t        *mtime,
+                                   GError       **error)
+{
+    g_autoptr (ThumbnailResult) thumb_res = g_task_propagate_pointer (G_TASK (result), error);
+
+    if (thumb_res == NULL)
+    {
+        return NULL;
+    }
+
+    if (mtime != NULL)
+    {
+        *mtime = thumb_res->mtime;
+    }
+
+    return g_steal_pointer (&thumb_res->texture);
 }
 
 static void

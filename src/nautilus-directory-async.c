@@ -20,9 +20,6 @@
  */
 #define G_LOG_DOMAIN "nautilus-async-jobs"
 
-#include <stdio.h>
-#include <stdlib.h>
-
 #include "nautilus-directory-notify.h"
 #include "nautilus-directory-private.h"
 #include "nautilus-enums.h"
@@ -3195,80 +3192,12 @@ thumbnail_info_start (NautilusDirectory *directory,
 }
 
 static void
-scale_down_when_large (GdkPixbuf **pixbuf)
-{
-    gint width = gdk_pixbuf_get_width (*pixbuf), height = gdk_pixbuf_get_height (*pixbuf);
-    gint biggest_dimension = MAX (width, height);
-    gint max_size = nautilus_thumbnail_get_max_size ();
-
-    if (biggest_dimension <= max_size)
-    {
-        return;
-    }
-
-    gboolean wide = width > height;
-    double scale = (double) max_size / (double) biggest_dimension;
-    gint new_width = wide ? max_size : width * scale;
-    gint new_height = wide ? height * scale : max_size;
-    GdkPixbuf *new_pixbuf = gdk_pixbuf_scale_simple (*pixbuf,
-                                                     new_width,
-                                                     new_height,
-                                                     GDK_INTERP_BILINEAR);
-
-    g_clear_object (pixbuf);
-    *pixbuf = new_pixbuf;
-}
-
-/* Currently, GDK Pixbuf will decode the image on the main thread, even when
- * using the async variant of the function. Until that is fixed, use a GTask to
- * perform the decoding in a different thread. */
-static void
-thumbnail_from_stream_thread (GTask        *task,
-                              gpointer      source_object,
-                              gpointer      task_data,
-                              GCancellable *cancellable)
-{
-    GInputStream *self = source_object;
-    GError *error = NULL;
-    GdkPixbuf *pixbuf = gdk_pixbuf_new_from_stream (self, cancellable, &error);
-
-    if (pixbuf != NULL)
-    {
-        scale_down_when_large (&pixbuf);
-
-        g_task_return_pointer (task, pixbuf, g_object_unref);
-    }
-    else
-    {
-        g_task_return_error (task, error);
-    }
-}
-
-static void
-thumbnail_from_stream_async (GInputStream        *stream,
-                             GCancellable        *cancellable,
-                             GAsyncReadyCallback  callback,
-                             gpointer             user_data)
-{
-    g_autoptr (GTask) task = NULL;
-
-    task = g_task_new (stream, cancellable, callback, user_data);
-    g_task_run_in_thread (task, thumbnail_from_stream_thread);
-}
-
-static GdkPixbuf *
-thumbnail_from_stream_finish (GAsyncResult  *result,
-                              GError       **error)
-{
-    return g_task_propagate_pointer (G_TASK (result), error);
-}
-
-static void
 thumbnail_buf_done (NautilusDirectory *directory,
                     NautilusFile      *file,
-                    GdkPixbuf         *pixbuf)
+                    GdkTexture        *texture,
+                    time_t             mtime)
 {
-    if (!nautilus_file_set_thumbnail (file, pixbuf))
+    if (!nautilus_file_set_thumbnail (file, texture, mtime))
     {
         g_clear_pointer (&file->details->thumbnail_path, g_free);
     }
@@ -3303,21 +3232,17 @@ thumbnail_buf_stop (NautilusDirectory *directory)
 }
 
 static void
-thumbnail_got_pixbuf (NautilusDirectory *directory,
-                      NautilusFile      *file,
-                      GdkPixbuf         *pixbuf)
+thumbnail_got_texture (NautilusDirectory *directory,
+                       NautilusFile      *file,
+                       GdkTexture        *texture,
+                       time_t             mtime)
 {
     nautilus_directory_ref (directory);
 
     nautilus_file_ref (file);
-    thumbnail_buf_done (directory, file, pixbuf);
+    thumbnail_buf_done (directory, file, texture, mtime);
     nautilus_file_changed (file);
     nautilus_file_unref (file);
-
-    if (pixbuf)
-    {
-        g_object_unref (pixbuf);
-    }
 
     nautilus_directory_unref (directory);
 }
@@ -3330,12 +3255,11 @@ thumbnail_buf_state_free (ThumbnailBufState *state)
 }
 
 static void
-thumbnail_pixbuf_ready_callback (GObject      *source_object,
-                                 GAsyncResult *res,
-                                 gpointer      user_data)
+thumbnail_texture_ready_callback (GObject      *source_object,
+                                  GAsyncResult *res,
+                                  gpointer      user_data)
 {
     ThumbnailBufState *state = user_data;
-    GdkPixbuf *pixbuf = NULL, *pixbuf2;
 
     if (state->directory == NULL)
     {
@@ -3344,21 +3268,14 @@ thumbnail_pixbuf_ready_callback (GObject      *source_object,
         return;
     }
 
-    pixbuf = thumbnail_from_stream_finish (res, NULL);
-
-    if (pixbuf)
-    {
-        pixbuf2 = gdk_pixbuf_apply_embedded_orientation (pixbuf);
-        g_object_unref (pixbuf);
-        pixbuf = pixbuf2;
-    }
-
     g_autoptr (NautilusDirectory) directory = nautilus_directory_ref (state->directory);
+    time_t mtime = 0;
+    g_autoptr (GdkTexture) texture = thumbnail_load_from_stream_finish (res, &mtime, NULL);
 
     state->directory->details->thumbnail_buf_state = NULL;
     async_job_end (state->directory, "thumbnail buffer");
 
-    thumbnail_got_pixbuf (state->directory, state->file, pixbuf);
+    thumbnail_got_texture (state->directory, state->file, texture, mtime);
 
     thumbnail_buf_state_free (state);
 }
@@ -3384,10 +3301,10 @@ thumbnail_file_read_callback (GObject      *source_object,
 
     if (stream)
     {
-        thumbnail_from_stream_async (G_INPUT_STREAM (stream),
-                                     state->cancellable,
-                                     thumbnail_pixbuf_ready_callback,
-                                     state);
+        thumbnail_load_from_stream_async (G_INPUT_STREAM (stream),
+                                          state->cancellable,
+                                          thumbnail_texture_ready_callback,
+                                          state);
     }
     else
     {
@@ -3396,7 +3313,7 @@ thumbnail_file_read_callback (GObject      *source_object,
         state->directory->details->thumbnail_buf_state = NULL;
         async_job_end (state->directory, "thumbnail buffer");
 
-        thumbnail_got_pixbuf (state->directory, state->file, NULL);
+        thumbnail_got_texture (state->directory, state->file, NULL, 0);
 
         thumbnail_buf_state_free (state);
     }

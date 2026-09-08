@@ -257,7 +257,8 @@ void                   nautilus_file_invalidate_extension_info_internal (Nautilu
 
 /* Thumbnailing: */
 gboolean          nautilus_file_set_thumbnail              (NautilusFile           *file,
-                                                            GdkPixbuf              *pixbuf);
+                                                            GdkTexture             *texture,
+                                                            time_t                  mtime);
 
 NautilusFileOperation *nautilus_file_operation_new      (NautilusFile                  *file,
 							 NautilusFileOperationCallback  callback,

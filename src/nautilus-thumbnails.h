@@ -21,9 +21,18 @@
 
 #pragma once
 
-#include <gdk-pixbuf/gdk-pixbuf.h>
+#include <gdk/gdk.h>
 
 guint      nautilus_thumbnail_get_max_size          (void);
+
+void       thumbnail_load_from_stream_async         (GInputStream        *stream,
+                                                     GCancellable        *cancellable,
+                                                     GAsyncReadyCallback  callback,
+                                                     gpointer             user_data);
+
+GdkTexture *thumbnail_load_from_stream_finish       (GAsyncResult  *result,
+                                                     time_t        *mtime,
+                                                     GError       **error);
 
 /* Returns NULL if there's no thumbnail yet. */
 void       nautilus_create_thumbnail_async          (const gchar         *uri,

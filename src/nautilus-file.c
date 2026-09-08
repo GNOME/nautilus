@@ -7774,28 +7774,20 @@ nautilus_file_invalidate_attributes_internal (NautilusFile       *file,
 
 gboolean
 nautilus_file_set_thumbnail (NautilusFile *file,
-                             GdkPixbuf    *pixbuf)
+                             GdkTexture   *texture,
+                             time_t        thumb_mtime)
 {
-    const char *thumb_mtime_str;
-    time_t thumb_mtime = 0;
-
     g_return_val_if_fail (NAUTILUS_IS_FILE (file), FALSE);
 
     file->details->thumbnail_is_up_to_date = TRUE;
     g_clear_object (&file->details->thumbnail);
 
-    if (pixbuf != NULL)
+    if (texture != NULL)
     {
-        thumb_mtime_str = gdk_pixbuf_get_option (pixbuf, "tEXt::Thumb::MTime");
-        if (thumb_mtime_str)
-        {
-            thumb_mtime = atol (thumb_mtime_str);
-        }
-
         if (thumb_mtime == 0 ||
             thumb_mtime == file->details->mtime)
         {
-            file->details->thumbnail = gdk_texture_new_for_pixbuf (pixbuf);
+            file->details->thumbnail = g_object_ref (texture);
             file->details->thumbnail_mtime = thumb_mtime;
 
             if (file->details->thumbnail_path == NULL)
