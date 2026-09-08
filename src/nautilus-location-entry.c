@@ -67,6 +67,7 @@ struct _NautilusLocationEntry
 
     GtkEventController *controller;
 
+    char *completed_path;
     guint completion_id;
     GtkEntryCompletion *completion;
     GtkListStore *completions_store;
@@ -232,6 +233,7 @@ nautilus_location_entry_set_location (NautilusLocationEntry *self,
 
     /* invalidate the completions list */
     gtk_list_store_clear (self->completions_store);
+    g_clear_pointer (&self->completed_path, g_free);
 }
 
 static void
@@ -318,20 +320,15 @@ completer_get_completions_thread (GTask        *task,
             continue;
         }
 
-        g_autofree gchar *case_insenstive_name = g_utf8_casefold (name, -1);
+        gboolean separator_suffix = (g_file_info_get_file_type (info) == G_FILE_TYPE_DIRECTORY);
+        g_autofree char *name_slash = separator_suffix
+                                      ? g_strdup_printf ("%s" G_DIR_SEPARATOR_S, name)
+                                      : g_strdup (name);
+        char *completion = (data->typed_path != NULL)
+                           ? g_strconcat (data->typed_path, name_slash, NULL)
+                           : g_steal_pointer (&name_slash);
 
-        if (g_str_has_prefix (case_insenstive_name, data->prefix))
-        {
-            gboolean separator_suffix = (g_file_info_get_file_type (info) == G_FILE_TYPE_DIRECTORY);
-            g_autofree char *name_slash = separator_suffix
-                                          ? g_strdup_printf ("%s" G_DIR_SEPARATOR_S, name)
-                                          : g_strdup (name);
-            char *completion = (data->typed_path != NULL)
-                               ? g_strconcat (data->typed_path, name_slash, NULL)
-                               : g_steal_pointer (&name_slash);
-
-            g_ptr_array_add (completions, completion);
-        }
+        g_ptr_array_add (completions, completion);
     }
 
     g_task_return_pointer (task,
@@ -441,7 +438,16 @@ update_completions_store (gpointer callback_data)
     g_autofree char *basename = NULL;
     g_autofree char *typed_path = split_basename_from_path (entry_text, &basename);
 
-    start_completions_async (self, g_steal_pointer (&typed_path), g_steal_pointer (&basename));
+    if (self->completed_path != NULL && g_strcmp0 (self->completed_path, typed_path) == 0)
+    {
+        /* Completions already provided or currently completing */
+        show_completions (self, typed_path);
+    }
+    else
+    {
+        g_set_str (&self->completed_path, typed_path);
+        start_completions_async (self, g_steal_pointer (&typed_path), g_steal_pointer (&basename));
+    }
 }
 
 static void
@@ -466,6 +472,7 @@ nautilus_location_entry_dispose (GObject *object)
 
     /* cancel the pending idle call, if any */
     g_clear_handle_id (&self->completion_id, g_source_remove);
+    g_clear_pointer (&self->completed_path, g_free);
 
     G_OBJECT_CLASS (nautilus_location_entry_parent_class)->dispose (object);
 }
