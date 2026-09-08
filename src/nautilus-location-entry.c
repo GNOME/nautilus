@@ -753,7 +753,7 @@ nautilus_location_entry_init (NautilusLocationEntry *self)
     /* In GTK3, the Tab key binding (for focus change) happens in the bubble
      * phase, and we want to stop that from happening. After porting to GTK4
      * we need to check whether this is still correct. */
-    gtk_event_controller_set_propagation_phase (controller, GTK_PHASE_BUBBLE);
+    gtk_event_controller_set_propagation_phase (controller, GTK_PHASE_CAPTURE);
     g_signal_connect (controller, "key-pressed",
                       G_CALLBACK (nautilus_location_entry_key_pressed), NULL);
 
