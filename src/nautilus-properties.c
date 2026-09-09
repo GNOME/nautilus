@@ -89,6 +89,7 @@ struct _NautilusPropertiesWidget
     /* Basic page */
 
     GtkStack *icon_stack;
+    GtkWidget *icon_bin;
     GtkWidget *icon_image;
     GtkWidget *icon_overlay;
     GtkWidget *select_icon_button;
@@ -827,7 +828,7 @@ update_image_widget (NautilusPropertiesWidget *self)
 
     if (!show_select && !show_reset)
     {
-        gtk_stack_set_visible_child (self->icon_stack, self->icon_image);
+        gtk_stack_set_visible_child (self->icon_stack, self->icon_bin);
     }
     else
     {
@@ -4039,6 +4040,7 @@ nautilus_properties_widget_class_init (NautilusPropertiesWidgetClass *klass)
     gtk_widget_class_bind_template_child (widget_class, NautilusPropertiesWidget, toast_overlay);
     gtk_widget_class_bind_template_child (widget_class, NautilusPropertiesWidget, nav_view);
     gtk_widget_class_bind_template_child (widget_class, NautilusPropertiesWidget, icon_stack);
+    gtk_widget_class_bind_template_child (widget_class, NautilusPropertiesWidget, icon_bin);
     gtk_widget_class_bind_template_child (widget_class, NautilusPropertiesWidget, icon_image);
     gtk_widget_class_bind_template_child (widget_class, NautilusPropertiesWidget, icon_overlay);
     gtk_widget_class_bind_template_child (widget_class, NautilusPropertiesWidget, select_icon_button);
