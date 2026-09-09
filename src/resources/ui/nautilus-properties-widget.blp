@@ -77,18 +77,25 @@ template $NautilusPropertiesWidget: Adw.Bin {
                     vhomogeneous: false;
 
                     StackPage {
-                      child: $NautilusImage icon_image {
-                        size: 96;
+                      child: Adw.Bin icon_bin {
+                        width-request: 96;
+                        height-request: 96;
 
-                        styles [
-                          "icon-dropshadow",
-                        ]
+                        child: $NautilusImage icon_image {
+                          halign: center;
+                          valign: center;
+                          size: 96;
 
-                        accessibility {
-                          labelled-by: [
-                            name_value_label,
-                          ];
-                        }
+                          styles [
+                            "icon-dropshadow",
+                          ]
+
+                          accessibility {
+                            labelled-by: [
+                              name_value_label,
+                            ];
+                          }
+                        };
                       };
                     }
 
@@ -107,14 +114,21 @@ template $NautilusPropertiesWidget: Adw.Bin {
                             "image-frame",
                           ]
 
-                          $NautilusImage {
-                            size: 96;
-                            fallback: bind icon_image.fallback;
-                            source: bind icon_image.source;
+                          Adw.Bin {
+                            width-request: 96;
+                            height-request: 96;
 
-                            styles [
-                              "icon-dropshadow",
-                            ]
+                            child: $NautilusImage {
+                              halign: center;
+                              valign: center;
+                              size: 96;
+                              fallback: bind icon_image.fallback;
+                              source: bind icon_image.source;
+
+                              styles [
+                                "icon-dropshadow",
+                              ]
+                            };
                           }
                         }
 
