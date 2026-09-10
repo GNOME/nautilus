@@ -8142,9 +8142,12 @@ compress_job_on_error (AutoarCompressor *compressor,
     nautilus_progress_info_take_status (compress_job->common.progress,
                                         status, short_status);
 
-    nautilus_show_ok_dialog (_("There was an error while compressing files."),
-                             error->message,
-                             GTK_WIDGET (compress_job->common.parent_window));
+    if (!g_test_initialized ())
+    {
+        nautilus_show_ok_dialog (_("There was an error while compressing files."),
+                                 error->message,
+                                 GTK_WIDGET (compress_job->common.parent_window));
+    }
 
     abort_job ((CommonJob *) compress_job);
 }

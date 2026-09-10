@@ -81,6 +81,40 @@ compression_callback (GFile    *new_file,
     }
 }
 
+static void
+compression_error_callback (GFile    *new_file,
+                            gboolean  success,
+                            gpointer  callback_data)
+{
+    ArchiveCallbackData *data = callback_data;
+
+    /* A failed compression must not report an output file. */
+    g_assert_null (new_file);
+
+    data->success = success;
+
+    if (data->loop != NULL)
+    {
+        g_main_loop_quit (data->loop);
+    }
+}
+
+static void
+extraction_error_callback (GList    *outputs,
+                           gpointer  callback_data)
+{
+    ArchiveCallbackData *data = callback_data;
+
+    g_assert_null (outputs);
+
+    data->success = FALSE;
+
+    if (data->loop != NULL)
+    {
+        g_main_loop_quit (data->loop);
+    }
+}
+
 static gint
 file_compare (GFile *a,
               GFile *b)
@@ -381,6 +415,103 @@ test_compress_file_password (void)
 }
 
 static void
+test_compress_error (const GStrv compressed_files_hier)
+{
+    g_autoptr (GFile) tmp_dir = g_file_new_for_path (test_get_tmp_dir ());
+    g_autoptr (GFile) archive_file = g_file_get_child (tmp_dir, "archive.zip");
+    g_autolist (GFile) compressed_files = file_hierarchy_get_files_list (compressed_files_hier,
+                                                                         "",
+                                                                         TRUE);
+    g_autoptr (ArchiveCallbackData) data = archive_callback_data_new (NULL);
+
+    file_hierarchy_create (compressed_files_hier, "");
+
+    /* Clear to check for extract operation undo status. */
+    nautilus_file_undo_manager_set_action (NULL);
+
+    /* An existing directory at the archive path makes autoar fail to create the
+     * output file, which triggers compress_job_on_error(). */
+    g_file_make_directory (archive_file, NULL, NULL);
+    g_assert_true (g_file_query_exists (archive_file, NULL));
+
+    nautilus_file_operations_compress (compressed_files,
+                                       archive_file,
+                                       AUTOAR_FORMAT_ZIP,
+                                       AUTOAR_FILTER_NONE,
+                                       NULL,
+                                       NULL,
+                                       NULL,
+                                       compression_error_callback,
+                                       data);
+    g_main_loop_run (data->loop);
+
+    g_assert_false (data->success);
+
+    /* The failed operation must leave both the sources and the output untouched. */
+    file_hierarchy_assert_exists (compressed_files_hier, "", TRUE);
+    g_assert_true (g_file_query_exists (archive_file, NULL));
+    g_assert_cmpuint (nautilus_file_undo_manager_get_state (),
+                      ==,
+                      NAUTILUS_FILE_UNDO_MANAGER_STATE_NONE);
+
+    test_clear_tmp_dir ();
+}
+
+static void
+test_extract_error (GStrv compressed_files_hier)
+{
+    g_autoptr (GFile) tmp_dir = g_file_new_for_path (test_get_tmp_dir ());
+    g_autoptr (GFile) archive_file = g_file_get_child (tmp_dir, "archive.zip");
+    g_autoptr (GFile) bad_destination = g_file_get_child (tmp_dir, "not_a_directory");
+    g_autoptr (ArchiveCallbackData) data = archive_callback_data_new (NULL);
+    g_autoptr (GFileOutputStream) stream = NULL;
+    g_autoptr (GError) error = NULL;
+
+    file_hierarchy_create_compress (compressed_files_hier, "", archive_file,
+                                    AUTOAR_FORMAT_ZIP, AUTOAR_FILTER_NONE, NULL);
+
+    /* A regular file as the destination directory makes autoar fail */
+    stream = g_file_create (bad_destination, G_FILE_CREATE_NONE, NULL, &error);
+    g_assert_no_error (error);
+    g_assert_true (g_output_stream_close (G_OUTPUT_STREAM (stream), NULL, &error));
+    g_assert_no_error (error);
+    g_assert_true (g_file_query_exists (bad_destination, NULL));
+
+    /* Clear to check for extract operation undo status. */
+    nautilus_file_undo_manager_set_action (NULL);
+
+    nautilus_file_operations_extract_files (&(GList){ .data = archive_file },
+                                            bad_destination,
+                                            NULL,
+                                            NULL,
+                                            extraction_error_callback,
+                                            data);
+    g_main_loop_run (data->loop);
+
+    g_assert_false (data->success);
+    file_hierarchy_assert_exists (compressed_files_hier, "", TRUE);
+    g_assert_true (g_file_query_exists (archive_file, NULL));
+    g_assert_cmpuint (nautilus_file_undo_manager_get_state (),
+                      ==,
+                      NAUTILUS_FILE_UNDO_MANAGER_STATE_NONE);
+
+    test_clear_tmp_dir ();
+}
+
+static void
+test_archive_file_error (void)
+{
+    const GStrv compressed_files_hier = (char *[])
+    {
+        "my_file",
+        NULL
+    };
+
+    test_compress_error (compressed_files_hier);
+    test_extract_error (compressed_files_hier);
+}
+
+static void
 test_archive_full_dir (void)
 {
     const GStrv compressed_files_hier = (char *[])
@@ -650,6 +781,20 @@ test_archive_files (void)
 }
 
 static void
+test_archive_files_error (void)
+{
+    const GStrv compressed_files_hier = (char *[])
+    {
+        "my_file_1",
+        "my_file_2",
+        NULL
+    };
+
+    test_compress_error (compressed_files_hier);
+    test_extract_error (compressed_files_hier);
+}
+
+static void
 test_archives_files (void)
 {
     const GStrv first_compressed_hier = (char *[])
@@ -759,7 +904,6 @@ main (int   argc,
     g_autoptr (NautilusFileUndoManager) undo_manager = NULL;
 
     g_test_init (&argc, &argv, NULL);
-    g_test_set_nonfatal_assertions ();
     nautilus_ensure_extension_points ();
 
     undo_manager = nautilus_file_undo_manager_new ();
@@ -770,12 +914,16 @@ main (int   argc,
                      test_archive_file_long);
     g_test_add_func ("/single_file/password",
                      test_compress_file_password);
+    g_test_add_func ("/single_file/error",
+                     test_archive_file_error);
     g_test_add_func ("/single_folder/short",
                      test_archive_full_dir);
     g_test_add_func ("/single_folder/short/cancel",
                      test_archive_full_dir_cancel);
     g_test_add_func ("/multi_in/single_out/short",
                      test_archive_files);
+    g_test_add_func ("/multi_in/single_out/error",
+                     test_archive_files_error);
     g_test_add_func ("/multi_in/multi_out/short",
                      test_archives_files);
 
