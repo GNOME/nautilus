@@ -8,7 +8,7 @@ desktop_portal_dbus_interfaces = [
 
 desktop_portal_dbus_interfaces_files = []
 foreach intf: desktop_portal_dbus_interfaces
-  desktop_portal_dbus_interfaces_files += [meson.project_source_root() / 'data' / '@0@.xml'.format(intf)]
+  desktop_portal_dbus_interfaces_files += [meson.project_source_root() / 'data' / f'@intf@.xml']
 endforeach
 
 libnautilus_sources = [

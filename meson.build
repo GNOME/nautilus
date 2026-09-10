@@ -156,7 +156,7 @@ if get_option('profile') == 'Devel'
   name_suffix = ' (Development Snapshot)'
 endif
 
-application_id = 'org.gnome.Nautilus' + app_id_suffix
+app_id = 'org.gnome.Nautilus' + app_id_suffix
 
 if profile == ''
   # Example: 40.0
@@ -166,7 +166,7 @@ else
   version_string = '@0@-@VCS_TAG@'.format(meson.project_version())
 endif
 
-conf.set_quoted('APPLICATION_ID', application_id)
+conf.set_quoted('APPLICATION_ID', app_id)
 conf.set_quoted('GETTEXT_PACKAGE', 'nautilus')
 conf.set_quoted('LOCALEDIR', join_paths(prefix, localedir))
 conf.set_quoted('NAME_SUFFIX', name_suffix)
@@ -185,7 +185,7 @@ conf.set('HAVE_MALLOC_TRIM', cc.has_function('malloc_trim'))
 # File Configuration (for xml files) #
 ######################################
 file_conf = configuration_data()
-file_conf.set('appid', application_id)
+file_conf.set('appid', app_id)
 
 #############################################################
 # config.h dependency, add to target dependencies if needed #

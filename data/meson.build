@@ -2,7 +2,7 @@ icondir = join_paths('icons', 'hicolor', 'scalable', 'apps')
 install_data(
   join_paths(icondir, 'org.gnome.Nautilus' + profile + '.svg'),
   install_dir: join_paths(datadir, icondir),
-  rename: '@0@.svg'.format(application_id)
+  rename: f'@app_id@.svg'
 )
 
 icondir = join_paths('icons', 'hicolor', 'symbolic', 'apps')
@@ -10,14 +10,14 @@ icondir = join_paths('icons', 'hicolor', 'symbolic', 'apps')
 install_data(
   join_paths(icondir, 'org.gnome.Nautilus-symbolic.svg'),
   install_dir: join_paths(datadir, icondir),
-  rename: '@0@-symbolic.svg'.format(application_id)
+  rename: f'@app_id@-symbolic.svg'
 )
 
 po_dir = join_paths(meson.project_source_root(), 'po')
 
 desktop_conf = configuration_data()
 
-desktop_conf.set('icon', application_id)
+desktop_conf.set('icon', app_id)
 
 desktop = i18n.merge_file(
   input: configure_file(
@@ -25,7 +25,7 @@ desktop = i18n.merge_file(
     output: 'org.gnome.Nautilus.desktop.in',
     configuration: desktop_conf
   ),
-  output: '@0@.desktop'.format(application_id),
+  output: f'@app_id@.desktop',
   install: true,
   install_dir: desktopdir,
   po_dir: po_dir,
@@ -43,7 +43,7 @@ desktop_autorun_software = i18n.merge_file(
 
 appdata_conf = configuration_data()
 
-appdata_conf.set('appid', application_id)
+appdata_conf.set('appid', app_id)
 
 release_version = meson.project_version()
 python = find_program('python3', required: false)
@@ -60,19 +60,19 @@ appdata = i18n.merge_file(
     output: 'org.gnome.Nautilus.metainfo.xml.in',
     configuration: appdata_conf
   ),
-  output: '@0@.metainfo.xml'.format(application_id),
+  output: f'@app_id@.metainfo.xml',
   install: true,
   install_dir: join_paths(datadir, 'metainfo'),
   po_dir: po_dir
 )
 
 service_conf = configuration_data()
-service_conf.set('appid', application_id)
+service_conf.set('appid', app_id)
 service_conf.set('bindir', join_paths(prefix, bindir))
 
 configure_file(
   input: 'org.gnome.Nautilus.service.in',
-  output: '@0@.service'.format(application_id),
+  output: f'@app_id@.service',
   configuration: service_conf,
   install_dir: servicedir
 )
@@ -86,14 +86,14 @@ configure_file(
 
 search_provider_conf = configuration_data()
 
-search_provider_conf.set('appid', application_id)
+search_provider_conf.set('appid', app_id)
 search_provider_conf.set('profile', profile)
 
 configure_file(
   configuration: search_provider_conf,
   input: files('org.gnome.Nautilus.search-provider.ini.in'),
   install_dir: join_paths(datadir, 'gnome-shell', 'search-providers'),
-  output: '@0@.search-provider.ini'.format(application_id)
+  output: f'@app_id@.search-provider.ini'
 )
 
 gnome.compile_schemas(
