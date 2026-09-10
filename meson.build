@@ -8,7 +8,7 @@ project('nautilus', 'c',
   #  * Set release date in data/org.gnome.Nautilus.metainfo.xml.in.in
   version: '51.0',
 
-  meson_version: '>= 0.60.0',
+  meson_version: '>= 1.1',
   license: 'GPL-3.0-or-later'
 )
 
