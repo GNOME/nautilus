@@ -531,6 +531,17 @@ nautilus_location_entry_icon_release (GtkEntry             *gentry,
     }
 }
 
+static void
+schedule_completion (NautilusLocationEntry *self)
+{
+    /* Do the expand at idle time to avoid slowing down typing when the
+     * directory is large. */
+    if (self->completion_id == 0)
+    {
+        self->completion_id = g_idle_add_once (update_completions_store, self);
+    }
+}
+
 static gboolean
 nautilus_location_entry_key_pressed (GtkEventControllerKey *controller,
                                      unsigned int           keyval,
@@ -561,6 +572,7 @@ nautilus_location_entry_key_pressed (GtkEventControllerKey *controller,
 
             position = strlen (gtk_editable_get_text (editable));
             gtk_editable_select_region (editable, position, position);
+            schedule_completion (self);
         }
         else
         {
@@ -574,26 +586,12 @@ nautilus_location_entry_key_pressed (GtkEventControllerKey *controller,
         !(state & (GDK_SHIFT_MASK | GDK_CONTROL_MASK)) && selected)
     {
         set_position_and_selection_to_end (editable);
+        schedule_completion (self);
+
+        return GDK_EVENT_STOP;
     }
 
     return GDK_EVENT_PROPAGATE;
-}
-
-static void
-after_text_change (NautilusLocationEntry *self,
-                   gboolean               insert)
-{
-    /* Only insert a completion if a character was typed. Otherwise,
-     * update the completions store (i.e. in case backspace was pressed)
-     * but don't insert the completion into the entry. */
-    self->idle_insert_completion = insert;
-
-    /* Do the expand at idle time to avoid slowing down typing when the
-     * directory is large. */
-    if (self->completion_id == 0)
-    {
-        self->completion_id = g_idle_add_once (update_completions_store, self);
-    }
 }
 
 static void
@@ -605,7 +603,8 @@ on_after_insert_text (GtkEditable *editable,
 {
     NautilusLocationEntry *self = NAUTILUS_LOCATION_ENTRY (data);
 
-    after_text_change (self, TRUE);
+    self->idle_insert_completion = TRUE;
+    schedule_completion (self);
 }
 
 static void
@@ -616,7 +615,8 @@ on_after_delete_text (GtkEditable *editable,
 {
     NautilusLocationEntry *self = NAUTILUS_LOCATION_ENTRY (data);
 
-    after_text_change (self, FALSE);
+    self->idle_insert_completion = FALSE;
+    schedule_completion (self);
 }
 
 static void
