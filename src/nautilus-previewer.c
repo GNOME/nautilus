@@ -42,9 +42,13 @@
 #define PREVIEWER2_DBUS_IFACE "org.gnome.NautilusPreviewer2"
 #define PREVIEWER_DBUS_NAME "org.gnome.NautilusPreviewer"
 #define PREVIEWER_DBUS_PATH "/org/gnome/NautilusPreviewer"
+#define PREVIEWER_DBUS_NAME_DEVEL PREVIEWER_DBUS_NAME ".Devel"
+#define PREVIEWER_DBUS_PATH_DEVEL PREVIEWER_DBUS_PATH "/Devel"
 
-static const char *previewer_dbus_name = PREVIEWER_DBUS_NAME PROFILE;
-static const char *previewer_dbus_path = PREVIEWER_DBUS_PATH PROFILE;
+static const char *previewer_dbus_name = PROFILE[0] == '\0'
+                                         ? PREVIEWER_DBUS_NAME : PREVIEWER_DBUS_NAME_DEVEL;
+static const char *previewer_dbus_path = PROFILE[0] == '\0'
+                                         ? PREVIEWER_DBUS_PATH : PREVIEWER_DBUS_PATH_DEVEL;
 static gboolean tried_alternative_previewer_dbus_name = FALSE;
 
 static gboolean previewer_ready = FALSE;
@@ -264,8 +268,8 @@ switch_to_alternative_previewer_dbus_name (void)
     }
     else
     {
-        previewer_dbus_name = PREVIEWER_DBUS_NAME "Devel";
-        previewer_dbus_path = PREVIEWER_DBUS_PATH "Devel";
+        previewer_dbus_name = PREVIEWER_DBUS_NAME_DEVEL;
+        previewer_dbus_path = PREVIEWER_DBUS_PATH_DEVEL;
     }
 }
 
