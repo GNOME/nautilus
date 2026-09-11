@@ -805,6 +805,30 @@ run_dialog (CommonJob              *job,
 {
     g_timer_stop (job->time);
 
+    if (g_test_initialized ())
+    {
+        if (responses & RESPONSE_PROCEED)
+        {
+            return RESPONSE_PROCEED;
+        }
+        else if (responses & RESPONSE_SKIP)
+        {
+            return RESPONSE_SKIP;
+        }
+        else if (responses & RESPONSE_DELETE)
+        {
+            return RESPONSE_DELETE;
+        }
+        else if (responses & RESPONSE_EMPTY_TRASH)
+        {
+            return RESPONSE_EMPTY_TRASH;
+        }
+        else
+        {
+            return RESPONSE_CANCEL;
+        }
+    }
+
     gboolean delay_interactivity = is_long_job (job);
 
     if (delay_interactivity && job->last_dialog_timestamp != 0)
