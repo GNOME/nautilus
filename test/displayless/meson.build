@@ -9,6 +9,7 @@ tests = {
   'test-file-operations-copy-files': {},
   'test-file-operations-link': {},
   'test-file-operations-move-files': {},
+  'test-file-operations-permissions': {},
   'test-file-operations-rename': {},
   'test-file-operations-trash-or-delete': {},
   'test-file-utilities': {},
