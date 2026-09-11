@@ -7617,7 +7617,7 @@ extract_job_on_error (AutoarExtractor *extractor,
                                                          (GCompareFunc) g_file_equal)) - 1;
 
     heading = g_strdup_printf (_("There was an error while extracting “%s”."),
-                               basename),
+                               basename);
 
     show_skip_dialog ((CommonJob *) extract_job,
                       heading,
