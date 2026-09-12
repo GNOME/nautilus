@@ -617,9 +617,6 @@ test_archive_full_dir_cancel (void)
                                                                          TRUE);
     AutoarFormat format = AUTOAR_FORMAT_ZIP;
     AutoarFilter filter = AUTOAR_FILTER_NONE;
-    g_autoptr (NautilusProgressInfoManager) progress_manager = NULL;
-    GList *progress_infos;
-    NautilusProgressInfo *info;
     g_autoptr (ArchiveCallbackData) compress_data =
         archive_callback_data_new (&(GList) { .data = NULL });
 
@@ -627,7 +624,6 @@ test_archive_full_dir_cancel (void)
      * Compression
      */
 
-    progress_manager = nautilus_progress_info_manager_dup_singleton ();
     file_hierarchy_create (compressed_files_hier, "");
 
     nautilus_file_operations_compress (compressed_files,
@@ -640,12 +636,7 @@ test_archive_full_dir_cancel (void)
                                        compression_callback,
                                        compress_data);
 
-    /* TODO: Move progress manager management to test-utilities */
-    progress_infos = nautilus_progress_info_manager_get_all_infos (progress_manager);
-    g_assert_nonnull (progress_infos);
-
-    info = progress_infos->data;
-    nautilus_progress_info_cancel (info);
+    test_operation_cancel ();
 
     g_main_loop_run (compress_data->loop);
 
@@ -683,11 +674,8 @@ test_archive_full_dir_cancel (void)
                                             NULL,
                                             extraction_callback,
                                             cancel_extract_data);
-    progress_infos = nautilus_progress_info_manager_get_all_infos (progress_manager);
-    g_assert_nonnull (progress_infos);
 
-    info = progress_infos->data;
-    nautilus_progress_info_cancel (info);
+    test_operation_cancel ();
 
     g_main_loop_run (cancel_extract_data->loop);
 
@@ -901,11 +889,13 @@ int
 main (int   argc,
       char *argv[])
 {
+    g_autoptr (NautilusProgressInfoManager) progress_manager = NULL;
     g_autoptr (NautilusFileUndoManager) undo_manager = NULL;
 
     g_test_init (&argc, &argv, NULL);
     nautilus_ensure_extension_points ();
 
+    progress_manager = nautilus_progress_info_manager_dup_singleton ();
     undo_manager = nautilus_file_undo_manager_new ();
 
     g_test_add_func ("/single_file/short",

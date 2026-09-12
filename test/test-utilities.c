@@ -15,6 +15,8 @@
 #include <nautilus-file.h>
 #include <src/nautilus-file-undo-manager.h>
 #include <src/nautilus-file-utilities.h>
+#include <src/nautilus-progress-info.h>
+#include <src/nautilus-progress-info-manager.h>
 #include <nautilus-thumbnails.h>
 
 #include <glycin.h>
@@ -384,6 +386,23 @@ test_operation_undo_redo (void)
 
     g_signal_handler_disconnect (nautilus_file_undo_manager_get (),
                                  handler_id);
+}
+
+/* Requires the NautilusProgressInfoManager to be initialized. */
+void
+test_operation_cancel (void)
+{
+    g_autoptr (NautilusProgressInfoManager) progress_manager =
+        nautilus_progress_info_manager_dup_singleton ();
+    GList *progress_infos = nautilus_progress_info_manager_get_all_infos (progress_manager);
+    NautilusProgressInfo *info;
+
+    g_assert_nonnull (progress_infos);
+
+    /* New progress infos are prepended, so the current operation's info is
+     * always the first one. */
+    info = progress_infos->data;
+    nautilus_progress_info_cancel (info);
 }
 
 void
