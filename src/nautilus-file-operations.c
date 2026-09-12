@@ -8238,6 +8238,12 @@ compress_task_thread_func (GTask        *task,
         autoar_compressor_set_passphrase (compressor, compress_job->passphrase);
     }
 
+    if (compress_job->filter == AUTOAR_FILTER_XZ ||
+        compress_job->filter == AUTOAR_FILTER_ZSTD ||
+        compress_job->format == AUTOAR_FORMAT_7ZIP)
+    {
+        autoar_compressor_set_multithreaded (compressor, TRUE);
+    }
     autoar_compressor_set_output_is_dest (compressor, TRUE);
 
     autoar_compressor_set_notify_interval (compressor,
