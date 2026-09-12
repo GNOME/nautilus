@@ -8256,6 +8256,7 @@ compress_task_thread_func (GTask        *task,
         autoar_compressor_set_passphrase (compressor, compress_job->passphrase);
     }
 
+    autoar_compressor_set_multithreaded (compressor, TRUE);
     autoar_compressor_set_output_is_dest (compressor, TRUE);
 
     autoar_compressor_set_notify_interval (compressor,
