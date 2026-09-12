@@ -5,6 +5,40 @@
 #include <src/nautilus-file-utilities.h>
 #include <src/nautilus-tag-manager.h>
 
+
+typedef struct
+{
+    gboolean user_cancel;
+    GMainLoop *loop;
+} DeleteCallbackData;
+
+static void
+delete_callback (GHashTable *debuting_uris,
+                 gboolean    user_cancel,
+                 gpointer    callback_data)
+{
+    DeleteCallbackData *data = callback_data;
+
+    data->user_cancel = user_cancel;
+
+    g_main_loop_quit (data->loop);
+}
+
+static void
+delete_callback_data_clear (DeleteCallbackData *data)
+{
+    g_clear_pointer (&data->loop, g_main_loop_unref);
+}
+
+static void
+delete_callback_data_init (DeleteCallbackData *data)
+{
+    data->user_cancel = FALSE;
+    data->loop = g_main_loop_new (NULL, FALSE);
+}
+
+G_DEFINE_AUTO_CLEANUP_CLEAR_FUNC (DeleteCallbackData, delete_callback_data_clear)
+
 static void
 test_trash_one_file (void)
 {
@@ -444,6 +478,144 @@ test_delete_third_hierarchy (void)
     empty_directory_by_prefix (root, "trash_or_delete");
 }
 
+/* Deleting an entry always requires write permission on its parent directory.
+ * Removing that permission from the parent makes the deletion fail. */
+#define DIRECTORY_PERMISSIONS 0755
+#define DIRECTORY_PERMISSIONS_READ_ONLY 0555
+
+static void
+set_permissions (GFile   *file,
+                 guint32  permissions)
+{
+    g_assert_true (g_file_set_attribute_uint32 (file,
+                                                G_FILE_ATTRIBUTE_UNIX_MODE,
+                                                permissions,
+                                                G_FILE_QUERY_INFO_NOFOLLOW_SYMLINKS,
+                                                NULL, NULL));
+}
+
+static void
+test_delete_file_no_permission (void)
+{
+    g_autoptr (GFile) root = g_file_new_for_path (test_get_tmp_dir ());
+    g_autoptr (GFile) first_dir = g_file_get_child (root, "delete_first_dir");
+    g_autoptr (GFile) file = g_file_get_child (first_dir, "delete_first_dir_child");
+    g_auto (DeleteCallbackData) data = { 0 };
+
+    create_one_file ("delete");
+
+    g_assert_true (g_file_query_exists (file, NULL));
+
+    set_permissions (first_dir, DIRECTORY_PERMISSIONS_READ_ONLY);
+    delete_callback_data_init (&data);
+
+    nautilus_file_operations_delete_async (&(GList){ .data = file },
+                                           NULL,
+                                           NULL,
+                                           delete_callback,
+                                           &data);
+    g_main_loop_run (data.loop);
+
+    /* It is considered user cancellation due to test dialog auto response. */
+    g_assert_true (data.user_cancel);
+    g_assert_true (g_file_query_exists (file, NULL));
+
+    set_permissions (first_dir, DIRECTORY_PERMISSIONS);
+    empty_directory_by_prefix (root, "delete");
+}
+
+static void
+test_delete_directory_no_permission (void)
+{
+    g_autoptr (GFile) root = g_file_new_for_path (test_get_tmp_dir ());
+    g_autoptr (GFile) first_dir = g_file_get_child (root, "delete_first_dir");
+    g_autoptr (GFile) enclosed_dir = g_file_get_child (first_dir, "delete_first_dir_child");
+    g_auto (DeleteCallbackData) data = { 0 };
+
+    create_one_empty_directory ("delete");
+
+    g_assert_true (g_file_query_exists (enclosed_dir, NULL));
+
+    set_permissions (first_dir, DIRECTORY_PERMISSIONS_READ_ONLY);
+    delete_callback_data_init (&data);
+
+    nautilus_file_operations_delete_async (&(GList){ .data = enclosed_dir },
+                                           NULL,
+                                           NULL,
+                                           delete_callback,
+                                           &data);
+    g_main_loop_run (data.loop);
+
+    /* It is considered user cancellation due to test dialog auto response. */
+    g_assert_true (data.user_cancel);
+    g_assert_true (g_file_query_exists (enclosed_dir, NULL));
+
+    set_permissions (first_dir, DIRECTORY_PERMISSIONS);
+    empty_directory_by_prefix (root, "delete");
+}
+
+static void
+test_delete_enclosed_file_no_permission (void)
+{
+    g_autoptr (GFile) root = g_file_new_for_path (test_get_tmp_dir ());
+    g_autoptr (GFile) first_dir = g_file_get_child (root, "delete_first_dir");
+    g_autoptr (GFile) file = g_file_get_child (first_dir, "delete_first_dir_child");
+    g_auto (DeleteCallbackData) data = { 0 };
+
+    create_one_file ("delete");
+
+    g_assert_true (g_file_query_exists (file, NULL));
+
+    set_permissions (first_dir, DIRECTORY_PERMISSIONS_READ_ONLY);
+    delete_callback_data_init (&data);
+
+    nautilus_file_operations_delete_async (&(GList){ .data = first_dir },
+                                           NULL,
+                                           NULL,
+                                           delete_callback,
+                                           &data);
+    g_main_loop_run (data.loop);
+
+    /* It is considered user cancellation due to test dialog auto response. */
+    g_assert_true (data.user_cancel);
+    g_assert_true (g_file_query_exists (first_dir, NULL));
+    g_assert_true (g_file_query_exists (file, NULL));
+
+    set_permissions (first_dir, DIRECTORY_PERMISSIONS);
+    empty_directory_by_prefix (root, "delete");
+}
+
+static void
+test_delete_enclosed_directory_no_permission (void)
+{
+    g_autoptr (GFile) root = g_file_new_for_path (test_get_tmp_dir ());
+    g_autoptr (GFile) first_dir = g_file_get_child (root, "delete_first_dir");
+    g_autoptr (GFile) enclosed_dir = g_file_get_child (first_dir, "delete_first_dir_child");
+    g_auto (DeleteCallbackData) data = { 0 };
+
+    create_one_empty_directory ("delete");
+
+    g_assert_true (g_file_query_exists (enclosed_dir, NULL));
+
+    set_permissions (first_dir, DIRECTORY_PERMISSIONS_READ_ONLY);
+    delete_callback_data_init (&data);
+
+    nautilus_file_operations_delete_async (&(GList){ .data = first_dir },
+                                           NULL,
+                                           NULL,
+                                           delete_callback,
+                                           &data);
+    g_main_loop_run (data.loop);
+
+    /* It is considered user cancellation due to test dialog auto response. */
+    g_assert_true (data.user_cancel);
+    g_assert_true (g_file_query_exists (first_dir, NULL));
+    g_assert_true (g_file_query_exists (enclosed_dir, NULL));
+
+    set_permissions (first_dir, DIRECTORY_PERMISSIONS);
+    empty_directory_by_prefix (root, "delete");
+}
+
 static void
 setup_test_suite (void)
 {
@@ -476,6 +648,15 @@ setup_test_suite (void)
                      test_delete_first_hierarchy);
     g_test_add_func ("/delete/more-full-directories/1.6",
                      test_delete_third_hierarchy);
+
+    g_test_add_func ("/delete/one-file/error/no-permission",
+                     test_delete_file_no_permission);
+    g_test_add_func ("/delete/one-empty-directory/error/no-permission",
+                     test_delete_directory_no_permission);
+    g_test_add_func ("/delete/one-full-directory/error/no-permission/enclosed-file",
+                     test_delete_enclosed_file_no_permission);
+    g_test_add_func ("/delete/one-full-directory/error/no-permission/enclosed-directory",
+                     test_delete_enclosed_directory_no_permission);
 }
 
 int
