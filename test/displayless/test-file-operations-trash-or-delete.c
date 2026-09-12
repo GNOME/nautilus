@@ -3,6 +3,7 @@
 #include <src/nautilus-file-operations.h>
 #include <src/nautilus-file-undo-manager.h>
 #include <src/nautilus-file-utilities.h>
+#include <src/nautilus-progress-info-manager.h>
 #include <src/nautilus-tag-manager.h>
 
 
@@ -617,6 +618,117 @@ test_delete_enclosed_directory_no_permission (void)
 }
 
 static void
+test_delete_one_file_cancel (void)
+{
+    g_autoptr (GFile) root = NULL;
+    g_autoptr (GFile) first_dir = NULL;
+    g_autoptr (GFile) file = NULL;
+    g_auto (DeleteCallbackData) data = { 0 };
+
+    create_one_file ("delete");
+
+    root = g_file_new_for_path (test_get_tmp_dir ());
+    g_assert_true (g_file_query_exists (root, NULL));
+
+    first_dir = g_file_get_child (root, "delete_first_dir");
+    g_assert_true (g_file_query_exists (first_dir, NULL));
+
+    file = g_file_get_child (first_dir, "delete_first_dir_child");
+    g_assert_true (g_file_query_exists (file, NULL));
+
+    delete_callback_data_init (&data);
+
+    nautilus_file_operations_delete_async (&(GList){ .data = file },
+                                           NULL,
+                                           NULL,
+                                           delete_callback,
+                                           &data);
+
+    test_operation_cancel ();
+
+    g_main_loop_run (data.loop);
+
+    /* Can't assert anything since deletion is racy */
+
+    empty_directory_by_prefix (root, "delete");
+}
+
+static void
+test_delete_more_files_cancel (void)
+{
+    const guint files_to_delete = 100;
+    g_autoptr (GFile) root = NULL;
+    g_autolist (GFile) files = NULL;
+    g_auto (DeleteCallbackData) data = { 0 };
+
+    create_multiple_files ("trash_or_delete", files_to_delete);
+
+    root = g_file_new_for_path (test_get_tmp_dir ());
+    g_assert_true (g_file_query_exists (root, NULL));
+
+    for (guint i = 0; i < files_to_delete; i++)
+    {
+        g_autofree gchar *file_name = g_strdup_printf ("trash_or_delete_file_%i", i);
+        GFile *file = g_file_get_child (root, file_name);
+
+        g_assert_true (g_file_query_exists (file, NULL));
+        files = g_list_prepend (files, file);
+    }
+
+    delete_callback_data_init (&data);
+
+    nautilus_file_operations_delete_async (files,
+                                           NULL,
+                                           NULL,
+                                           delete_callback,
+                                           &data);
+
+    test_operation_cancel ();
+
+    g_main_loop_run (data.loop);
+
+    /* Can't assert anything since deletion is racy */
+
+    empty_directory_by_prefix (root, "trash_or_delete");
+}
+
+static void
+test_delete_full_directory_cancel (void)
+{
+    g_autoptr (GFile) root = NULL;
+    g_autoptr (GFile) first_dir = NULL;
+    g_autoptr (GFile) file = NULL;
+    g_auto (DeleteCallbackData) data = { 0 };
+
+    create_one_file ("delete");
+
+    root = g_file_new_for_path (test_get_tmp_dir ());
+    g_assert_true (g_file_query_exists (root, NULL));
+
+    first_dir = g_file_get_child (root, "delete_first_dir");
+    g_assert_true (g_file_query_exists (first_dir, NULL));
+
+    file = g_file_get_child (first_dir, "delete_first_dir_child");
+    g_assert_true (g_file_query_exists (file, NULL));
+
+    delete_callback_data_init (&data);
+
+    nautilus_file_operations_delete_async (&(GList){ .data = first_dir },
+                                           NULL,
+                                           NULL,
+                                           delete_callback,
+                                           &data);
+
+    test_operation_cancel ();
+
+    g_main_loop_run (data.loop);
+
+    /* Can't assert anything since deletion is racy */
+
+    empty_directory_by_prefix (root, "delete");
+}
+
+static void
 setup_test_suite (void)
 {
     g_test_add_func ("/trash/one-file/1.0",
@@ -657,12 +769,20 @@ setup_test_suite (void)
                      test_delete_enclosed_file_no_permission);
     g_test_add_func ("/delete/one-full-directory/error/no-permission/enclosed-directory",
                      test_delete_enclosed_directory_no_permission);
+
+    g_test_add_func ("/delete/one-file/cancel",
+                     test_delete_one_file_cancel);
+    g_test_add_func ("/delete/more-files/cancel",
+                     test_delete_more_files_cancel);
+    g_test_add_func ("/delete/one-full-directory/cancel",
+                     test_delete_full_directory_cancel);
 }
 
 int
 main (int   argc,
       char *argv[])
 {
+    g_autoptr (NautilusProgressInfoManager) progress_manager = NULL;
     g_autoptr (NautilusFileUndoManager) undo_manager = NULL;
     g_autoptr (NautilusTagManager) tag_manager = NULL;
     int ret;
@@ -670,6 +790,7 @@ main (int   argc,
     g_test_init (&argc, &argv, NULL);
     g_test_set_nonfatal_assertions ();
     nautilus_ensure_extension_points ();
+    progress_manager = nautilus_progress_info_manager_dup_singleton ();
     undo_manager = nautilus_file_undo_manager_new ();
     tag_manager = nautilus_tag_manager_new_dummy ();
 
