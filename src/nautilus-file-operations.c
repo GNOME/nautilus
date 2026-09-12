@@ -7436,8 +7436,6 @@ extract_job_on_decide_destination (AutoarExtractor *extractor,
                                    gpointer         user_data)
 {
     ExtractJob *extract_job = user_data;
-    GFile *decided_destination;
-    g_autofree char *basename = NULL;
     gboolean dest_is_dir;
 
     nautilus_progress_info_set_details (extract_job->common.progress,
@@ -7447,15 +7445,16 @@ extract_job_on_decide_destination (AutoarExtractor *extractor,
      * that's okay since it's a dumb archive. */
     dest_is_dir = extract_job->expected_total_files > 1;
 
-    basename = g_file_get_basename (destination);
-    decided_destination = nautilus_generate_unique_file_in_directory (extract_job->destination_directory,
-                                                                      basename, dest_is_dir);
-
     if (job_aborted ((CommonJob *) extract_job))
     {
-        g_object_unref (decided_destination);
         return NULL;
     }
+
+    g_autofree char *basename = g_file_get_basename (destination);
+    GFile *decided_destination =
+        nautilus_generate_unique_file_in_directory (extract_job->destination_directory,
+                                                    basename,
+                                                    dest_is_dir);
 
     /* The extract_job->destination_decided variable signalizes whether the
      * extract_job->output_files list already contains the final location as
