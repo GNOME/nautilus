@@ -45,6 +45,7 @@ void delete_search_file_hierarchy (gchar *search_engine);
 void test_operation_undo_redo (void);
 void test_operation_undo (void);
 void test_operation_redo (void);
+void test_operation_cancel (void);
 
 void create_one_file (gchar *prefix);
 void create_one_empty_directory (gchar *prefix);
