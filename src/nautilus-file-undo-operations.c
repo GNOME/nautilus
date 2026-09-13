@@ -151,6 +151,14 @@ nautilus_file_undo_info_warn_undo (NautilusFileUndoInfo           *self,
                 self, G_OBJECT_TYPE_NAME (self));
 }
 
+static gboolean
+nautilus_file_undo_info_is_noop_func (NautilusFileUndoInfo *self)
+{
+    /* Assume there is something to undo/redo by default, so that a subclass
+     * which forgets to implement this doesn't have its actions discarded. */
+    return FALSE;
+}
+
 static void
 nautilus_file_undo_info_strings_func (NautilusFileUndoInfo  *self,
                                       gchar                **undo_label,
@@ -202,6 +210,7 @@ nautilus_file_undo_info_class_init (NautilusFileUndoInfoClass *klass)
 
     klass->undo_func = nautilus_file_undo_info_warn_undo;
     klass->redo_func = nautilus_file_redo_info_warn_redo;
+    klass->is_noop_func = nautilus_file_undo_info_is_noop_func;
     klass->strings_func = nautilus_file_undo_info_strings_func;
 
     properties[PROP_OP_TYPE] =
@@ -311,6 +320,14 @@ nautilus_file_undo_info_apply_finish (NautilusFileUndoInfo  *self,
     }
 
     return success;
+}
+
+gboolean
+nautilus_file_undo_info_is_noop (NautilusFileUndoInfo *self)
+{
+    g_return_val_if_fail (NAUTILUS_IS_FILE_UNDO_INFO (self), FALSE);
+
+    return NAUTILUS_FILE_UNDO_INFO_CLASS (G_OBJECT_GET_CLASS (self))->is_noop_func (self);
 }
 
 void
@@ -684,6 +701,14 @@ ext_copy_duplicate_undo_func (NautilusFileUndoInfoExt        *self,
     g_list_free (files);
 }
 
+static gboolean
+ext_is_noop_func (NautilusFileUndoInfo *info)
+{
+    NautilusFileUndoInfoExt *self = NAUTILUS_FILE_UNDO_INFO_EXT (info);
+
+    return g_queue_is_empty (self->sources);
+}
+
 static void
 ext_undo_func (NautilusFileUndoInfo           *info,
                GtkWindow                      *parent_window,
@@ -748,6 +773,7 @@ nautilus_file_undo_info_ext_class_init (NautilusFileUndoInfoExtClass *klass)
 
     iclass->undo_func = ext_undo_func;
     iclass->redo_func = ext_redo_func;
+    iclass->is_noop_func = ext_is_noop_func;
     iclass->strings_func = ext_strings_func;
 }
 
@@ -956,6 +982,14 @@ create_undo_func (NautilusFileUndoInfo           *info,
     g_list_free_full (files, g_object_unref);
 }
 
+static gboolean
+create_is_noop_func (NautilusFileUndoInfo *info)
+{
+    NautilusFileUndoInfoCreate *self = NAUTILUS_FILE_UNDO_INFO_CREATE (info);
+
+    return self->target_file == NULL;
+}
+
 static void
 nautilus_file_undo_info_create_init (NautilusFileUndoInfoCreate *self)
 {
@@ -981,6 +1015,7 @@ nautilus_file_undo_info_create_class_init (NautilusFileUndoInfoCreateClass *klas
 
     iclass->undo_func = create_undo_func;
     iclass->redo_func = create_redo_func;
+    iclass->is_noop_func = create_is_noop_func;
     iclass->strings_func = create_strings_func;
 }
 
@@ -1081,6 +1116,14 @@ rename_undo_func (NautilusFileUndoInfo           *info,
     nautilus_file_unref (file);
 }
 
+static gboolean
+rename_is_noop_func (NautilusFileUndoInfo *info)
+{
+    NautilusFileUndoInfoRename *self = NAUTILUS_FILE_UNDO_INFO_RENAME (info);
+
+    return self->old_file == NULL && self->new_file == NULL;
+}
+
 static void
 nautilus_file_undo_info_rename_init (NautilusFileUndoInfoRename *self)
 {
@@ -1108,6 +1151,7 @@ nautilus_file_undo_info_rename_class_init (NautilusFileUndoInfoRenameClass *klas
 
     iclass->undo_func = rename_undo_func;
     iclass->redo_func = rename_redo_func;
+    iclass->is_noop_func = rename_is_noop_func;
     iclass->strings_func = rename_strings_func;
 }
 
@@ -1225,6 +1269,14 @@ batch_rename_undo_func (NautilusFileUndoInfo           *info,
     nautilus_file_batch_rename (files, self->old_display_names, file_undo_info_operation_callback, self);
 }
 
+static gboolean
+batch_rename_is_noop_func (NautilusFileUndoInfo *info)
+{
+    NautilusFileUndoInfoBatchRename *self = NAUTILUS_FILE_UNDO_INFO_BATCH_RENAME (info);
+
+    return self->old_files == NULL && self->new_files == NULL;
+}
+
 static void
 nautilus_file_undo_info_batch_rename_init (NautilusFileUndoInfoBatchRename *self)
 {
@@ -1284,6 +1336,7 @@ nautilus_file_undo_info_batch_rename_class_init (NautilusFileUndoInfoBatchRename
 
     iclass->undo_func = batch_rename_undo_func;
     iclass->redo_func = batch_rename_redo_func;
+    iclass->is_noop_func = batch_rename_is_noop_func;
     iclass->strings_func = batch_rename_strings_func;
 }
 
@@ -1471,6 +1524,15 @@ starred_undo_func (NautilusFileUndoInfo           *info,
     }
 }
 
+static gboolean
+starred_is_noop_func (NautilusFileUndoInfo *info)
+{
+    NautilusFileUndoInfoStarred *self = NAUTILUS_FILE_UNDO_INFO_STARRED (info);
+
+    /* FIXME: This is always false as it is set in initialization */
+    return self->files == NULL;
+}
+
 static void
 nautilus_file_undo_info_starred_set_property (GObject      *object,
                                               guint         prop_id,
@@ -1526,6 +1588,7 @@ nautilus_file_undo_info_starred_class_init (NautilusFileUndoInfoStarredClass *kl
 
     iclass->undo_func = starred_undo_func;
     iclass->redo_func = starred_redo_func;
+    iclass->is_noop_func = starred_is_noop_func;
     iclass->strings_func = starred_strings_func;
 
     properties[PROP_FILES] = g_param_spec_pointer ("files",
@@ -1793,6 +1856,14 @@ trash_undo_func (NautilusFileUndoInfo           *info,
     trash_retrieve_files_to_restore_async (self, trash_retrieve_files_ready, NULL);
 }
 
+static gboolean
+trash_is_noop_func (NautilusFileUndoInfo *info)
+{
+    NautilusFileUndoInfoTrash *self = NAUTILUS_FILE_UNDO_INFO_TRASH (info);
+
+    return g_hash_table_size (self->trashed) == 0;
+}
+
 static void
 nautilus_file_undo_info_trash_init (NautilusFileUndoInfoTrash *self)
 {
@@ -1819,6 +1890,7 @@ nautilus_file_undo_info_trash_class_init (NautilusFileUndoInfoTrashClass *klass)
 
     iclass->undo_func = trash_undo_func;
     iclass->redo_func = trash_redo_func;
+    iclass->is_noop_func = trash_is_noop_func;
     iclass->strings_func = trash_strings_func;
 }
 
@@ -1962,6 +2034,14 @@ rec_permissions_undo_func (NautilusFileUndoInfo           *info,
     g_task_run_in_thread (task, rec_permissions_undo_thread);
 }
 
+static gboolean
+rec_permissions_is_noop_func (NautilusFileUndoInfo *info)
+{
+    NautilusFileUndoInfoRecPermissions *self = NAUTILUS_FILE_UNDO_INFO_REC_PERMISSIONS (info);
+
+    return g_hash_table_size (self->original_permissions) == 0;
+}
+
 static void
 nautilus_file_undo_info_rec_permissions_init (NautilusFileUndoInfoRecPermissions *self)
 {
@@ -1990,6 +2070,7 @@ nautilus_file_undo_info_rec_permissions_class_init (NautilusFileUndoInfoRecPermi
 
     iclass->undo_func = rec_permissions_undo_func;
     iclass->redo_func = rec_permissions_redo_func;
+    iclass->is_noop_func = rec_permissions_is_noop_func;
     iclass->strings_func = rec_permissions_strings_func;
 }
 
@@ -2088,6 +2169,14 @@ permissions_undo_func (NautilusFileUndoInfo           *info,
     permissions_real_func (self, self->current_permissions);
 }
 
+static gboolean
+permissions_is_noop_func (NautilusFileUndoInfo *info)
+{
+    NautilusFileUndoInfoPermissions *self = NAUTILUS_FILE_UNDO_INFO_PERMISSIONS (info);
+
+    return self->target_file == NULL;
+}
+
 static void
 nautilus_file_undo_info_permissions_init (NautilusFileUndoInfoPermissions *self)
 {
@@ -2112,6 +2201,7 @@ nautilus_file_undo_info_permissions_class_init (NautilusFileUndoInfoPermissionsC
 
     iclass->undo_func = permissions_undo_func;
     iclass->redo_func = permissions_redo_func;
+    iclass->is_noop_func = permissions_is_noop_func;
     iclass->strings_func = permissions_strings_func;
 }
 
@@ -2226,6 +2316,14 @@ ownership_undo_func (NautilusFileUndoInfo           *info,
     ownership_real_func (self, self->original_ownership);
 }
 
+static gboolean
+ownership_is_noop_func (NautilusFileUndoInfo *info)
+{
+    NautilusFileUndoInfoOwnership *self = NAUTILUS_FILE_UNDO_INFO_OWNERSHIP (info);
+
+    return self->target_file == NULL;
+}
+
 static void
 nautilus_file_undo_info_ownership_init (NautilusFileUndoInfoOwnership *self)
 {
@@ -2253,6 +2351,7 @@ nautilus_file_undo_info_ownership_class_init (NautilusFileUndoInfoOwnershipClass
 
     iclass->undo_func = ownership_undo_func;
     iclass->redo_func = ownership_redo_func;
+    iclass->is_noop_func = ownership_is_noop_func;
     iclass->strings_func = ownership_strings_func;
 }
 
@@ -2383,6 +2482,14 @@ extract_undo_func (NautilusFileUndoInfo           *info,
                                            file_undo_info_delete_callback, self);
 }
 
+static gboolean
+extract_is_noop_func (NautilusFileUndoInfo *info)
+{
+    NautilusFileUndoInfoExtract *self = NAUTILUS_FILE_UNDO_INFO_EXTRACT (info);
+
+    return self->outputs == NULL;
+}
+
 static void
 nautilus_file_undo_info_extract_init (NautilusFileUndoInfoExtract *self)
 {
@@ -2413,6 +2520,7 @@ nautilus_file_undo_info_extract_class_init (NautilusFileUndoInfoExtractClass *kl
 
     iclass->undo_func = extract_undo_func;
     iclass->redo_func = extract_redo_func;
+    iclass->is_noop_func = extract_is_noop_func;
     iclass->strings_func = extract_strings_func;
 }
 
@@ -2550,6 +2658,15 @@ compress_undo_func (NautilusFileUndoInfo           *info,
     g_list_free (files);
 }
 
+static gboolean
+compress_is_noop_func (NautilusFileUndoInfo *info)
+{
+    NautilusFileUndoInfoCompress *self = NAUTILUS_FILE_UNDO_INFO_COMPRESS (info);
+
+    /* FIXME: Always true since it is set at initalization rather than after success */
+    return self->output == NULL;
+}
+
 static void
 nautilus_file_undo_info_compress_init (NautilusFileUndoInfoCompress *self)
 {
@@ -2577,6 +2694,7 @@ nautilus_file_undo_info_compress_class_init (NautilusFileUndoInfoCompressClass *
 
     iclass->undo_func = compress_undo_func;
     iclass->redo_func = compress_redo_func;
+    iclass->is_noop_func = compress_is_noop_func;
     iclass->strings_func = compress_strings_func;
 }
 
