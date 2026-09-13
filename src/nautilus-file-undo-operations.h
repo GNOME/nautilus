@@ -57,6 +57,8 @@ struct _NautilusFileUndoInfoClass
                         GtkWindow                      *parent_window,
                         NautilusFileOperationsDBusData *dbus_data);
 
+    gboolean (* is_noop_func) (NautilusFileUndoInfo *self);
+
     void (* strings_func) (NautilusFileUndoInfo *self,
                            gchar **undo_label,
                            gchar **undo_description,
@@ -80,6 +82,8 @@ void nautilus_file_undo_info_get_strings (NautilusFileUndoInfo *self,
                                           gchar **undo_description,
                                           gchar **redo_label,
                                           gchar **redo_description);
+
+gboolean nautilus_file_undo_info_is_noop (NautilusFileUndoInfo *self);
 
 NautilusFileUndoOp nautilus_file_undo_info_get_op_type (NautilusFileUndoInfo *self);
 
