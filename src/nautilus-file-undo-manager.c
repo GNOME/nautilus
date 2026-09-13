@@ -225,7 +225,8 @@ nautilus_file_undo_manager_set_action (NautilusFileUndoInfo *info)
 
     changed = file_undo_manager_clear (undo_singleton);
 
-    if (info != NULL)
+    if (info != NULL &&
+        !nautilus_file_undo_info_is_noop (info))
     {
         changed = TRUE;
         undo_singleton->info = g_object_ref (info);
