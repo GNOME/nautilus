@@ -58,9 +58,11 @@ nautilus_file_undo_manager_new (void)
     return undo_singleton;
 }
 
-static void
+static gboolean
 file_undo_manager_clear (NautilusFileUndoManager *self)
 {
+    gboolean ret = self->info != NULL;
+
     if (self->trash_signal_id != 0)
     {
         g_clear_signal_handler (&self->trash_signal_id, nautilus_trash_monitor_get ());
@@ -68,6 +70,8 @@ file_undo_manager_clear (NautilusFileUndoManager *self)
 
     g_clear_object (&self->info);
     self->state = NAUTILUS_FILE_UNDO_MANAGER_STATE_NONE;
+
+    return ret;
 }
 
 static void
@@ -216,12 +220,14 @@ nautilus_file_undo_manager_undo (GtkWindow                      *parent_window,
 void
 nautilus_file_undo_manager_set_action (NautilusFileUndoInfo *info)
 {
+    gboolean changed;
     g_debug ("Setting undo information %p", info);
 
-    file_undo_manager_clear (undo_singleton);
+    changed = file_undo_manager_clear (undo_singleton);
 
     if (info != NULL)
     {
+        changed = TRUE;
         undo_singleton->info = g_object_ref (info);
         undo_singleton->state = NAUTILUS_FILE_UNDO_MANAGER_STATE_UNDO;
         undo_singleton->last_state = NAUTILUS_FILE_UNDO_MANAGER_STATE_NONE;
@@ -240,7 +246,10 @@ nautilus_file_undo_manager_set_action (NautilusFileUndoInfo *info)
         }
     }
 
-    g_signal_emit (undo_singleton, signals[SIGNAL_UNDO_CHANGED], 0);
+    if (changed)
+    {
+        g_signal_emit (undo_singleton, signals[SIGNAL_UNDO_CHANGED], 0);
+    }
 }
 
 NautilusFileUndoInfo *
