@@ -27,8 +27,7 @@
   <url type="vcs-browser">https://gitlab.gnome.org/GNOME/nautilus</url>
   <launchable type="desktop-id">@appid@.desktop</launchable>
   <releases>
-    <release version="@release-version@" type="snapshot"/>
-    <release version="51.0" type="stable" date="2026-09-11">
+    <release version="51.0.1" type="stable" date="2026-09-15">
       <description>
         <ul>
           <li>Tab overview button in narrow mode</li>
@@ -36,11 +35,7 @@
           <li>Show count badge when while dragging multiple files</li>
           <li>Open locations from other apps in new tabs</li>
           <li>Add an empty document menu entry in case of empty templates directory</li>
-          <li>Selection handling improvements:<ul>
-            <li>Correctly restore focus and selection if a file gets removed</li>
-            <li>Don’t unselect when right clicking the view’s background</li>
-            <li>Don’t override manual selection with file operation results</li>
-          </ul></li>
+          <li>Selection handling improvements</li>
           <li>Correctly raise the window when other apps call “Open location”</li>
           <li>Type-to-search support in app chooser dialog</li>
           <li>Accessibility enhancement, e.g. for filename entry feedback</li>
