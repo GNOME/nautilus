@@ -728,6 +728,80 @@ test_copy_fourth_hierarchy (void)
 }
 
 static void
+test_copy_hierarchy_error_into_itself (void)
+{
+    const GStrv source_hierarchy = (char *[])
+    {
+        "copy_first_dir/",
+        "copy_first_dir/copy_first_child/",
+        "copy_first_dir/copy_first_child/copy_second_child",
+        NULL
+    };
+    g_autoptr (GFile) test_dir = g_file_new_build_filename (test_get_tmp_dir (),
+                                                            NULL);
+    g_autoptr (GFile) first_dir = g_file_new_build_filename (test_get_tmp_dir (),
+                                                             "copy_first_dir",
+                                                             NULL);
+
+    file_hierarchy_create (source_hierarchy, "");
+
+    /* Clear to check for the copy operation undo status. */
+    nautilus_file_undo_manager_set_action (NULL);
+
+    nautilus_file_operations_copy_sync (&(GList){ .data = first_dir },
+                                        test_dir);
+
+    file_hierarchy_assert_exists (source_hierarchy, "", TRUE);
+    g_assert_cmpuint (nautilus_file_undo_manager_get_state (),
+                      ==,
+                      NAUTILUS_FILE_UNDO_MANAGER_STATE_NONE);
+
+    test_clear_tmp_dir ();
+}
+
+static void
+test_copy_hierarchy_error_into_subdir (void)
+{
+    const GStrv source_hierarchy = (char *[])
+    {
+        "copy_first_dir/",
+        "copy_first_dir/copy_first_child/",
+        "copy_first_dir/copy_first_child/copy_second_child",
+        NULL
+    };
+    const GStrv unexpected_hierarchy = (char *[])
+    {
+        "copy_first_dir/copy_first_child/copy_first_dir/",
+        "copy_first_dir/copy_first_child/copy_first_dir/copy_first_child/",
+        "copy_first_dir/copy_first_child/copy_first_dir/copy_first_child/copy_second_child",
+        NULL
+    };
+    g_autoptr (GFile) first_dir = g_file_new_build_filename (test_get_tmp_dir (),
+                                                             "copy_first_dir",
+                                                             NULL);
+    g_autoptr (GFile) first_child = g_file_new_build_filename (test_get_tmp_dir (),
+                                                               "copy_first_dir",
+                                                               "copy_first_child",
+                                                               NULL);
+
+    file_hierarchy_create (source_hierarchy, "");
+
+    /* Clear to check for the copy operation undo status. */
+    nautilus_file_undo_manager_set_action (NULL);
+
+    nautilus_file_operations_copy_sync (&(GList){ .data = first_dir },
+                                        first_child);
+
+    file_hierarchy_assert_exists (source_hierarchy, "", TRUE);
+    file_hierarchy_assert_exists (unexpected_hierarchy, "", FALSE);
+    g_assert_cmpuint (nautilus_file_undo_manager_get_state (),
+                      ==,
+                      NAUTILUS_FILE_UNDO_MANAGER_STATE_NONE);
+
+    test_clear_tmp_dir ();
+}
+
+static void
 setup_test_suite (void)
 {
     g_test_add_func ("/copy/one-file",
@@ -756,6 +830,11 @@ setup_test_suite (void)
                      test_copy_third_hierarchy);
     g_test_add_func ("/copy/hierarchy/1.4",
                      test_copy_fourth_hierarchy);
+
+    g_test_add_func ("/copy/hierarchy/error/into-itself",
+                     test_copy_hierarchy_error_into_itself);
+    g_test_add_func ("/copy/hierarchy/error/into-subdirectory",
+                     test_copy_hierarchy_error_into_subdir);
 
     g_test_add_func ("/duplicate/files/1.0",
                      test_duplicate_files);
