@@ -1829,32 +1829,6 @@ setup_delete_job (GList                          *files,
 }
 
 static void
-trash_or_delete_internal_sync (GList                          *files,
-                               GtkWindow                      *parent_window,
-                               NautilusFileOperationsDBusData *dbus_data,
-                               gboolean                        try_trash)
-{
-    GTask *task;
-    DeleteJob *job;
-
-    job = setup_delete_job (files,
-                            parent_window,
-                            dbus_data,
-                            try_trash,
-                            NULL,
-                            NULL);
-
-    task = g_task_new (NULL, NULL, NULL, job);
-    g_task_set_task_data (task, job, NULL);
-    g_task_run_in_thread_sync (task, trash_or_delete_internal);
-    g_object_unref (task);
-    /* Since g_task_run_in_thread_sync doesn't work with callbacks (in this case not reaching
-     * delete_task_done) we need to set up the undo information ourselves.
-     */
-    delete_task_done (NULL, NULL, job);
-}
-
-static void
 trash_or_delete_internal_async (GList                          *files,
                                 GtkWindow                      *parent_window,
                                 NautilusFileOperationsDBusData *dbus_data,
@@ -1876,18 +1850,6 @@ trash_or_delete_internal_async (GList                          *files,
     g_task_set_task_data (task, job, NULL);
     g_task_run_in_thread (task, trash_or_delete_internal);
     g_object_unref (task);
-}
-
-void
-nautilus_file_operations_trash_or_delete_sync (GList *files)
-{
-    trash_or_delete_internal_sync (files, NULL, NULL, TRUE);
-}
-
-void
-nautilus_file_operations_delete_sync (GList *files)
-{
-    trash_or_delete_internal_sync (files, NULL, NULL, FALSE);
 }
 
 void
