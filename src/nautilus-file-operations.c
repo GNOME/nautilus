@@ -1035,9 +1035,10 @@ confirm_delete_directly (CommonJob *job,
 #pragma GCC diagnostic push
 #pragma GCC diagnostic ignored "-Wformat-nonliteral"
 static void
-report_delete_progress (CommonJob    *job,
-                        SourceInfo   *source_info,
-                        TransferInfo *transfer_info)
+report_delete_trash_progress (CommonJob    *job,
+                              SourceInfo   *source_info,
+                              TransferInfo *transfer_info,
+                              gboolean      is_trash)
 {
     int files_left;
     double elapsed, transfer_rate;
@@ -1087,7 +1088,7 @@ report_delete_progress (CommonJob    *job,
             }
             else
             {
-                status = _("Deleted “%s”");
+                status = is_trash ? _("Trashed “%s”") : _("Deleted “%s”");
             }
         }
         else
@@ -1099,7 +1100,7 @@ report_delete_progress (CommonJob    *job,
             }
             else
             {
-                status = _("Deleting “%s”");
+                status = is_trash ? _("Trashing “%s”") : _("Deleting “%s”");
             }
         }
 
@@ -1121,9 +1122,13 @@ report_delete_progress (CommonJob    *job,
             }
             else
             {
-                status = ngettext ("Deleted %'d file",
-                                   "Deleted %'d files",
-                                   source_info->num_files);
+                status = is_trash
+                         ? ngettext ("Trashed %'d file",
+                                     "Trashed %'d files",
+                                     source_info->num_files)
+                         : ngettext ("Deleted %'d file",
+                                     "Deleted %'d files",
+                                     source_info->num_files);
             }
         }
         else
@@ -1137,9 +1142,13 @@ report_delete_progress (CommonJob    *job,
             }
             else
             {
-                status = ngettext ("Deleting %'d file",
-                                   "Deleting %'d files",
-                                   source_info->num_files);
+                status = is_trash
+                         ? ngettext ("Trashing %'d file",
+                                     "Trashing %'d files",
+                                     source_info->num_files)
+                         : ngettext ("Deleting %'d file",
+                                     "Deleting %'d files",
+                                     source_info->num_files);
             }
         }
         nautilus_progress_info_take_status (job->progress,
@@ -1350,7 +1359,7 @@ file_deleted_callback (GFile    *file,
     if (error == NULL)
     {
         nautilus_file_changes_queue_file_removed (file);
-        report_delete_progress (data->job, data->source_info, data->transfer_info);
+        report_delete_trash_progress (data->job, data->source_info, data->transfer_info, FALSE);
 
         return;
     }
@@ -1425,7 +1434,7 @@ delete_files (CommonJob *job,
 
     g_timer_start (job->time);
 
-    report_delete_progress (job, &source_info, &transfer_info);
+    report_delete_trash_progress (job, &source_info, &transfer_info, FALSE);
 
     data.job = job;
     data.source_info = &source_info;
@@ -1455,171 +1464,6 @@ delete_files (CommonJob *job,
         }
     }
 }
-
-#pragma GCC diagnostic push
-#pragma GCC diagnostic ignored "-Wformat-nonliteral"
-static void
-report_trash_progress (CommonJob    *job,
-                       SourceInfo   *source_info,
-                       TransferInfo *transfer_info)
-{
-    int files_left;
-    double elapsed, transfer_rate;
-    int remaining_time;
-    gint64 now;
-    g_autofree gchar *details = NULL;
-    char *status;
-    DeleteJob *delete_job;
-
-    delete_job = (DeleteJob *) job;
-    now = g_get_monotonic_time ();
-    files_left = source_info->num_files - transfer_info->num_files;
-
-    /* Races and whatnot could cause this to be negative... */
-    if (files_left < 0)
-    {
-        files_left = 0;
-    }
-
-    /* If the number of files left is 0, we want to update the status without
-     * considering this time, since we want to change the status to completed
-     * and probably we won't get more calls to this function */
-    if (transfer_info->last_report_time != 0 &&
-        ABS ((gint64) (transfer_info->last_report_time - now)) < PROGRESS_NOTIFY_INTERVAL_USEC &&
-        files_left > 0)
-    {
-        return;
-    }
-
-    transfer_info->last_report_time = now;
-
-    if (source_info->num_files == 1)
-    {
-        g_autofree gchar *basename = NULL;
-
-        if (files_left > 0)
-        {
-            status = _("Trashing “%s”");
-        }
-        else
-        {
-            status = _("Trashed “%s”");
-        }
-
-        basename = get_basename (G_FILE (delete_job->files->data));
-        nautilus_progress_info_take_status (job->progress,
-                                            g_strdup_printf (status, basename),
-                                            NULL);
-    }
-    else
-    {
-        if (files_left > 0)
-        {
-            status = ngettext ("Trashing %'d file",
-                               "Trashing %'d files",
-                               source_info->num_files);
-        }
-        else
-        {
-            status = ngettext ("Trashed %'d file",
-                               "Trashed %'d files",
-                               source_info->num_files);
-        }
-        nautilus_progress_info_take_status (job->progress,
-                                            g_strdup_printf (status,
-                                                             source_info->num_files),
-                                            NULL);
-    }
-
-
-    elapsed = g_timer_elapsed (job->time, NULL);
-    transfer_rate = 0;
-    remaining_time = INT_MAX;
-    if (elapsed > 0)
-    {
-        transfer_rate = transfer_info->num_files / elapsed;
-        if (transfer_rate > 0)
-        {
-            remaining_time = (source_info->num_files - transfer_info->num_files) / transfer_rate;
-        }
-    }
-
-    if (elapsed < SECONDS_NEEDED_FOR_RELIABLE_TRANSFER_RATE ||
-        transfer_rate == 0)
-    {
-        if (files_left > 0)
-        {
-            /* To translators: %'d is the number of files completed for the operation,
-             * so it will be something like 2/14. */
-            details = g_strdup_printf (_("%'d / %'d"),
-                                       transfer_info->num_files + 1,
-                                       source_info->num_files);
-        }
-        else
-        {
-            /* To translators: %'d is the number of files completed for the operation,
-             * so it will be something like 2/14. */
-            details = g_strdup_printf (_("%'d / %'d"),
-                                       transfer_info->num_files,
-                                       source_info->num_files);
-        }
-    }
-    else
-    {
-        if (files_left > 0)
-        {
-            gchar *time_left_message;
-            gchar *files_per_second_message;
-            gchar *concat_detail;
-            g_autofree gchar *formatted_time = NULL;
-
-            /* To translators: %s will expand to a time duration like "2 minutes".
-             * So the whole thing will be something like "1 / 5 -- 2 hours left (4 files/s)"
-             *
-             * The singular/plural form will be used depending on the remaining time (i.e. the %s argument).
-             */
-            time_left_message = ngettext ("%'d / %'d \xE2\x80\x94 %s left",
-                                          "%'d / %'d \xE2\x80\x94 %s left",
-                                          seconds_count_format_time_units (remaining_time));
-            files_per_second_message = ngettext ("(%d file/s)",
-                                                 "(%d files/s)",
-                                                 (int) (transfer_rate + 0.5));
-            concat_detail = g_strconcat (time_left_message, " ", files_per_second_message, NULL);
-
-            formatted_time = get_formatted_time (remaining_time);
-            details = g_strdup_printf (concat_detail,
-                                       transfer_info->num_files + 1,
-                                       source_info->num_files,
-                                       formatted_time,
-                                       (int) transfer_rate + 0.5);
-
-            g_free (concat_detail);
-        }
-        else
-        {
-            /* To translators: %'d is the number of files completed for the operation,
-             * so it will be something like 2/14. */
-            details = g_strdup_printf (_("%'d / %'d"),
-                                       transfer_info->num_files,
-                                       source_info->num_files);
-        }
-    }
-    nautilus_progress_info_set_details (job->progress, details);
-
-    if (elapsed > SECONDS_NEEDED_FOR_APROXIMATE_TRANSFER_RATE)
-    {
-        nautilus_progress_info_set_remaining_time (job->progress,
-                                                   remaining_time);
-        nautilus_progress_info_set_elapsed_time (job->progress,
-                                                 elapsed);
-    }
-
-    if (source_info->num_files != 0)
-    {
-        nautilus_progress_info_set_progress (job->progress, transfer_info->num_files, source_info->num_files);
-    }
-}
-#pragma GCC diagnostic pop
 
 /** Returns: Whether file was trashed. */
 static gboolean
@@ -1651,7 +1495,7 @@ trash_file (CommonJob     *job,
             nautilus_file_undo_info_trash_add_file (NAUTILUS_FILE_UNDO_INFO_TRASH (job->undo_info), file);
         }
 
-        report_trash_progress (job, source_info, transfer_info);
+        report_delete_trash_progress (job, source_info, transfer_info, TRUE);
         return TRUE;
     }
 
@@ -1811,7 +1655,7 @@ trash_files (CommonJob *job,
 
     g_timer_start (job->time);
 
-    report_trash_progress (job, &source_info, &transfer_info);
+    report_delete_trash_progress (job, &source_info, &transfer_info, TRUE);
 
     to_delete = NULL;
     for (l = files;
@@ -1826,7 +1670,7 @@ trash_files (CommonJob *job,
         {
             (*files_skipped)++;
             source_info_remove_file_from_count (file, job, &source_info);
-            report_trash_progress (job, &source_info, &transfer_info);
+            report_delete_trash_progress (job, &source_info, &transfer_info, TRUE);
         }
     }
 
