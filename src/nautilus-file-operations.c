@@ -5214,30 +5214,6 @@ nautilus_file_operations_copy (GTask        *task,
 }
 
 void
-nautilus_file_operations_copy_sync (GList *files,
-                                    GFile *target_dir)
-{
-    GTask *task;
-    CopyMoveJob *job;
-
-    job = copy_job_setup (files,
-                          target_dir,
-                          NULL,
-                          NULL,
-                          NULL,
-                          NULL);
-
-    task = g_task_new (NULL, job->common.cancellable, NULL, job);
-    g_task_set_task_data (task, job, NULL);
-    g_task_run_in_thread_sync (task, nautilus_file_operations_copy);
-    g_object_unref (task);
-    /* Since g_task_run_in_thread_sync doesn't work with callbacks (in this case not reaching
-     * copy_task_done) we need to set up the undo information ourselves.
-     */
-    copy_task_done (NULL, NULL, job);
-}
-
-void
 nautilus_file_operations_copy_async (GList                          *files,
                                      GFile                          *target_dir,
                                      GtkWindow                      *parent_window,
