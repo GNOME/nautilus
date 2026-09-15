@@ -47,6 +47,7 @@ test_trash_one_file (void)
     g_autoptr (GFile) first_dir = NULL;
     g_autoptr (GFile) file = NULL;
     g_autolist (GFile) files = NULL;
+    g_auto (DeleteCallbackData) data = { 0 };
 
     create_one_file ("trash_or_delete");
 
@@ -60,8 +61,16 @@ test_trash_one_file (void)
     g_assert_true (g_file_query_exists (file, NULL));
     files = g_list_prepend (files, g_object_ref (file));
 
-    nautilus_file_operations_trash_or_delete_sync (files);
+    delete_callback_data_init (&data);
 
+    nautilus_file_operations_trash_or_delete_async (files,
+                                                    NULL,
+                                                    NULL,
+                                                    delete_callback,
+                                                    &data);
+    g_main_loop_run (data.loop);
+
+    g_assert_false (data.user_cancel);
     g_assert_false (g_file_query_exists (file, NULL));
 
     empty_directory_by_prefix (root, "trash_or_delete");
@@ -73,6 +82,7 @@ trash_or_delete_multiple_files (const gchar *prefix,
                                 guint        num)
 {
     g_autolist (GFile) files = NULL;
+    g_auto (DeleteCallbackData) data = { 0 };
 
     for (guint i = 0; i < num; i++)
     {
@@ -83,7 +93,16 @@ trash_or_delete_multiple_files (const gchar *prefix,
         files = g_list_prepend (files, file);
     }
 
-    nautilus_file_operations_trash_or_delete_sync (files);
+    delete_callback_data_init (&data);
+
+    nautilus_file_operations_trash_or_delete_async (files,
+                                                    NULL,
+                                                    NULL,
+                                                    delete_callback,
+                                                    &data);
+    g_main_loop_run (data.loop);
+
+    g_assert_false (data.user_cancel);
 }
 
 static void
@@ -92,6 +111,7 @@ delete_multiple_files (const gchar *prefix,
                        guint        num)
 {
     g_autolist (GFile) files = NULL;
+    g_auto (DeleteCallbackData) data = { 0 };
 
     for (guint i = 0; i < num; i++)
     {
@@ -102,7 +122,16 @@ delete_multiple_files (const gchar *prefix,
         files = g_list_prepend (files, file);
     }
 
-    nautilus_file_operations_delete_sync (files);
+    delete_callback_data_init (&data);
+
+    nautilus_file_operations_delete_async (files,
+                                           NULL,
+                                           NULL,
+                                           delete_callback,
+                                           &data);
+    g_main_loop_run (data.loop);
+
+    g_assert_false (data.user_cancel);
 }
 
 static void
@@ -157,6 +186,7 @@ test_delete_one_file (void)
     g_autoptr (GFile) first_dir = NULL;
     g_autoptr (GFile) file = NULL;
     g_autolist (GFile) files = NULL;
+    g_auto (DeleteCallbackData) data = { 0 };
 
     create_one_file ("delete");
 
@@ -170,8 +200,16 @@ test_delete_one_file (void)
     g_assert_true (g_file_query_exists (file, NULL));
     files = g_list_prepend (files, g_object_ref (file));
 
-    nautilus_file_operations_delete_sync (files);
+    delete_callback_data_init (&data);
 
+    nautilus_file_operations_delete_async (files,
+                                           NULL,
+                                           NULL,
+                                           delete_callback,
+                                           &data);
+    g_main_loop_run (data.loop);
+
+    g_assert_false (data.user_cancel);
     g_assert_false (g_file_query_exists (file, NULL));
 
     empty_directory_by_prefix (root, "delete");
@@ -207,6 +245,7 @@ test_trash_one_empty_directory (void)
     g_autoptr (GFile) first_dir = NULL;
     g_autoptr (GFile) file = NULL;
     g_autolist (GFile) files = NULL;
+    g_auto (DeleteCallbackData) data = { 0 };
 
     create_one_empty_directory ("trash_or_delete");
 
@@ -221,8 +260,16 @@ test_trash_one_empty_directory (void)
 
     files = g_list_prepend (files, g_object_ref (file));
 
-    nautilus_file_operations_trash_or_delete_sync (files);
+    delete_callback_data_init (&data);
 
+    nautilus_file_operations_trash_or_delete_async (files,
+                                                    NULL,
+                                                    NULL,
+                                                    delete_callback,
+                                                    &data);
+    g_main_loop_run (data.loop);
+
+    g_assert_false (data.user_cancel);
     g_assert_false (g_file_query_exists (file, NULL));
 
     empty_directory_by_prefix (root, "trash_or_delete");
@@ -258,6 +305,7 @@ test_delete_one_empty_directory (void)
     g_autoptr (GFile) first_dir = NULL;
     g_autoptr (GFile) file = NULL;
     g_autolist (GFile) files = NULL;
+    g_auto (DeleteCallbackData) data = { 0 };
 
     create_one_empty_directory ("delete");
 
@@ -271,8 +319,16 @@ test_delete_one_empty_directory (void)
 
     files = g_list_prepend (files, g_object_ref (file));
 
-    nautilus_file_operations_delete_sync (files);
+    delete_callback_data_init (&data);
 
+    nautilus_file_operations_delete_async (files,
+                                           NULL,
+                                           NULL,
+                                           delete_callback,
+                                           &data);
+    g_main_loop_run (data.loop);
+
+    g_assert_false (data.user_cancel);
     g_assert_false (g_file_query_exists (file, NULL));
 
     empty_directory_by_prefix (root, "delete");
@@ -312,6 +368,7 @@ test_trash_full_directory (void)
     g_autoptr (GFile) first_dir = NULL;
     g_autoptr (GFile) file = NULL;
     g_autolist (GFile) files = NULL;
+    g_auto (DeleteCallbackData) data = { 0 };
 
     create_one_file ("trash_or_delete");
 
@@ -325,8 +382,16 @@ test_trash_full_directory (void)
 
     files = g_list_prepend (files, g_object_ref (first_dir));
 
-    nautilus_file_operations_trash_or_delete_sync (files);
+    delete_callback_data_init (&data);
 
+    nautilus_file_operations_trash_or_delete_async (files,
+                                                    NULL,
+                                                    NULL,
+                                                    delete_callback,
+                                                    &data);
+    g_main_loop_run (data.loop);
+
+    g_assert_false (data.user_cancel);
     g_assert_false (g_file_query_exists (first_dir, NULL));
     g_assert_false (g_file_query_exists (file, NULL));
 
@@ -345,6 +410,7 @@ test_trash_first_hierarchy (void)
     g_autoptr (GFile) first_dir = NULL;
     g_autolist (GFile) files = NULL;
     GFile *file;
+    g_auto (DeleteCallbackData) data = { 0 };
 
     create_first_hierarchy ("trash_or_delete");
 
@@ -355,7 +421,16 @@ test_trash_first_hierarchy (void)
     files = g_list_prepend (files, g_object_ref (first_dir));
     g_assert_true (g_file_query_exists (first_dir, NULL));
 
-    nautilus_file_operations_trash_or_delete_sync (files);
+    delete_callback_data_init (&data);
+
+    nautilus_file_operations_trash_or_delete_async (files,
+                                                    NULL,
+                                                    NULL,
+                                                    delete_callback,
+                                                    &data);
+    g_main_loop_run (data.loop);
+
+    g_assert_false (data.user_cancel);
 
     file = g_file_get_child (first_dir, "trash_or_delete_first_dir_child");
     g_assert_false (g_file_query_exists (file, NULL));
@@ -401,6 +476,7 @@ test_delete_full_directory (void)
     g_autoptr (GFile) first_dir = NULL;
     g_autoptr (GFile) file = NULL;
     g_autolist (GFile) files = NULL;
+    g_auto (DeleteCallbackData) data = { 0 };
 
     create_one_file ("delete");
 
@@ -415,8 +491,16 @@ test_delete_full_directory (void)
 
     files = g_list_prepend (files, g_object_ref (first_dir));
 
-    nautilus_file_operations_delete_sync (files);
+    delete_callback_data_init (&data);
 
+    nautilus_file_operations_delete_async (files,
+                                           NULL,
+                                           NULL,
+                                           delete_callback,
+                                           &data);
+    g_main_loop_run (data.loop);
+
+    g_assert_false (data.user_cancel);
     g_assert_false (g_file_query_exists (first_dir, NULL));
     g_assert_false (g_file_query_exists (file, NULL));
 
@@ -435,6 +519,7 @@ test_delete_first_hierarchy (void)
     g_autoptr (GFile) first_dir = NULL;
     g_autoptr (GFile) file = NULL;
     g_autolist (GFile) files = NULL;
+    g_auto (DeleteCallbackData) data = { 0 };
 
     create_first_hierarchy ("delete");
 
@@ -445,7 +530,16 @@ test_delete_first_hierarchy (void)
     files = g_list_prepend (files, g_object_ref (first_dir));
     g_assert_true (g_file_query_exists (first_dir, NULL));
 
-    nautilus_file_operations_delete_sync (files);
+    delete_callback_data_init (&data);
+
+    nautilus_file_operations_delete_async (files,
+                                           NULL,
+                                           NULL,
+                                           delete_callback,
+                                           &data);
+    g_main_loop_run (data.loop);
+
+    g_assert_false (data.user_cancel);
 
     file = g_file_get_child (first_dir, "delete_first_dir_child");
     g_assert_false (g_file_query_exists (file, NULL));
