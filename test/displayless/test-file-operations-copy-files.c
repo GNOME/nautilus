@@ -5,6 +5,47 @@
 #include <src/nautilus-file-utilities.h>
 #include <src/nautilus-tag-manager.h>
 
+typedef struct
+{
+    GHashTable *debuting_uris;
+    gboolean success;
+    GMainLoop *loop;
+} CopyTestData;
+
+static void
+copy_test_data_clear (CopyTestData *data)
+{
+    g_clear_pointer (&data->debuting_uris, g_hash_table_unref);
+    data->success = FALSE;
+    g_clear_pointer (&data->loop, g_main_loop_unref);
+}
+
+static void
+copy_test_data_init (CopyTestData *data)
+{
+    data->debuting_uris = NULL;
+    data->success = FALSE;
+    data->loop = g_main_loop_new (NULL, FALSE);
+}
+
+G_DEFINE_AUTO_CLEANUP_CLEAR_FUNC (CopyTestData, copy_test_data_clear)
+
+static void
+copy_done_callback (GHashTable *debuting_uris,
+                    gboolean    success,
+                    gpointer    callback_data)
+{
+    CopyTestData *data = callback_data;
+
+    data->debuting_uris = g_hash_table_ref (debuting_uris);
+    data->success = success;
+
+    if (data->loop != NULL)
+    {
+        g_main_loop_quit (data->loop);
+    }
+}
+
 static void
 test_copy_one_file (void)
 {
@@ -19,11 +60,20 @@ test_copy_one_file (void)
                                                                "copy_second_dir",
                                                                "copy_first_dir_child",
                                                                NULL);
+    g_auto (CopyTestData) data = { 0 };
 
     create_one_file ("copy");
 
-    nautilus_file_operations_copy_sync (&(GList){ .data = file },
-                                        second_dir);
+    copy_test_data_init (&data);
+    nautilus_file_operations_copy_async (&(GList){ .data = file },
+                                         second_dir,
+                                         NULL,
+                                         NULL,
+                                         copy_done_callback,
+                                         &data);
+    g_main_loop_run (data.loop);
+
+    g_assert_true (data.success);
 
     g_assert_true (g_file_query_exists (result_file, NULL));
     g_assert_true (g_file_query_exists (file, NULL));
@@ -51,11 +101,20 @@ test_copy_one_empty_directory (void)
                                                                "copy_first_dir_child",
                                                                NULL);
     g_autolist (GFile) files = g_list_prepend (NULL, g_object_ref (file));
+    g_auto (CopyTestData) data = { 0 };
 
     create_one_empty_directory ("copy");
 
-    nautilus_file_operations_copy_sync (&(GList){ .data = file },
-                                        second_dir);
+    copy_test_data_init (&data);
+    nautilus_file_operations_copy_async (&(GList){ .data = file },
+                                         second_dir,
+                                         NULL,
+                                         NULL,
+                                         copy_done_callback,
+                                         &data);
+    g_main_loop_run (data.loop);
+
+    g_assert_true (data.success);
 
     g_assert_true (g_file_query_exists (result_file, NULL));
     g_assert_true (g_file_query_exists (file, NULL));
@@ -284,6 +343,7 @@ copy_multiple_files (const gchar *prefix,
                      guint        num)
 {
     g_autolist (GFile) files = NULL;
+    g_auto (CopyTestData) data = { 0 };
 
     for (guint i = 0; i < num; i++)
     {
@@ -294,7 +354,16 @@ copy_multiple_files (const gchar *prefix,
         files = g_list_prepend (files, file);
     }
 
-    nautilus_file_operations_copy_sync (files, dest);
+    copy_test_data_init (&data);
+    nautilus_file_operations_copy_async (files,
+                                         dest,
+                                         NULL,
+                                         NULL,
+                                         copy_done_callback,
+                                         &data);
+    g_main_loop_run (data.loop);
+
+    g_assert_true (data.success);
 }
 
 static void
@@ -511,10 +580,20 @@ test_copy_full_directory (void)
                                                               "copy_second_dir",
                                                               NULL);
 
+    g_auto (CopyTestData) data = { 0 };
+
     create_one_file ("copy");
 
-    nautilus_file_operations_copy_sync (&(GList){ .data = first_dir },
-                                        second_dir);
+    copy_test_data_init (&data);
+    nautilus_file_operations_copy_async (&(GList){ .data = first_dir },
+                                         second_dir,
+                                         NULL,
+                                         NULL,
+                                         copy_done_callback,
+                                         &data);
+    g_main_loop_run (data.loop);
+
+    g_assert_true (data.success);
 
     file_hierarchy_assert_exists (before_copy_hierarchy, "copy", TRUE);
     file_hierarchy_assert_exists (after_copy_hierarchy, "copy", TRUE);
@@ -557,10 +636,20 @@ test_copy_first_hierarchy (void)
                                                               "copy_second_dir",
                                                               NULL);
 
+    g_auto (CopyTestData) data = { 0 };
+
     create_first_hierarchy ("copy");
 
-    nautilus_file_operations_copy_sync (&(GList){ .data = first_dir },
-                                        second_dir);
+    copy_test_data_init (&data);
+    nautilus_file_operations_copy_async (&(GList){ .data = first_dir },
+                                         second_dir,
+                                         NULL,
+                                         NULL,
+                                         copy_done_callback,
+                                         &data);
+    g_main_loop_run (data.loop);
+
+    g_assert_true (data.success);
 
     file_hierarchy_assert_exists (before_copy_hierarchy, "copy", TRUE);
     file_hierarchy_assert_exists (after_copy_hierarchy, "copy", TRUE);
@@ -602,10 +691,20 @@ test_copy_second_hierarchy (void)
                                                               "copy_second_dir",
                                                               NULL);
 
+    g_auto (CopyTestData) data = { 0 };
+
     create_second_hierarchy ("copy");
 
-    nautilus_file_operations_copy_sync (&(GList){ .data = first_dir },
-                                        second_dir);
+    copy_test_data_init (&data);
+    nautilus_file_operations_copy_async (&(GList){ .data = first_dir },
+                                         second_dir,
+                                         NULL,
+                                         NULL,
+                                         copy_done_callback,
+                                         &data);
+    g_main_loop_run (data.loop);
+
+    g_assert_true (data.success);
 
     file_hierarchy_assert_exists (before_copy_hierarchy, "copy", TRUE);
     file_hierarchy_assert_exists (after_copy_hierarchy, "copy", TRUE);
@@ -654,10 +753,20 @@ test_copy_third_hierarchy (void)
                                                               "copy_second_dir",
                                                               NULL);
 
+    g_auto (CopyTestData) data = { 0 };
+
     create_third_hierarchy ("copy");
 
-    nautilus_file_operations_copy_sync (&(GList){ .data = first_dir },
-                                        second_dir);
+    copy_test_data_init (&data);
+    nautilus_file_operations_copy_async (&(GList){ .data = first_dir },
+                                         second_dir,
+                                         NULL,
+                                         NULL,
+                                         copy_done_callback,
+                                         &data);
+    g_main_loop_run (data.loop);
+
+    g_assert_true (data.success);
 
     file_hierarchy_assert_exists (before_copy_hierarchy, "copy", TRUE);
     file_hierarchy_assert_exists (after_copy_hierarchy, "copy", TRUE);
@@ -708,13 +817,23 @@ test_copy_fourth_hierarchy (void)
                                                              "copy_third_dir",
                                                              NULL);
     g_autolist (GFile) files = NULL;
+    g_auto (CopyTestData) data = { 0 };
 
     create_fourth_hierarchy ("copy");
 
     files = g_list_prepend (files, g_object_ref (first_dir));
     files = g_list_prepend (files, g_object_ref (second_dir));
 
-    nautilus_file_operations_copy_sync (files, third_dir);
+    copy_test_data_init (&data);
+    nautilus_file_operations_copy_async (files,
+                                         third_dir,
+                                         NULL,
+                                         NULL,
+                                         copy_done_callback,
+                                         &data);
+    g_main_loop_run (data.loop);
+
+    g_assert_true (data.success);
 
     file_hierarchy_assert_exists (before_copy_hierarchy, "copy", TRUE);
     file_hierarchy_assert_exists (after_copy_hierarchy, "copy", TRUE);
@@ -742,14 +861,24 @@ test_copy_hierarchy_error_into_itself (void)
     g_autoptr (GFile) first_dir = g_file_new_build_filename (test_get_tmp_dir (),
                                                              "copy_first_dir",
                                                              NULL);
+    g_auto (CopyTestData) data = { 0 };
 
     file_hierarchy_create (source_hierarchy, "");
 
     /* Clear to check for the copy operation undo status. */
     nautilus_file_undo_manager_set_action (NULL);
 
-    nautilus_file_operations_copy_sync (&(GList){ .data = first_dir },
-                                        test_dir);
+    copy_test_data_init (&data);
+    nautilus_file_operations_copy_async (&(GList){ .data = first_dir },
+                                         test_dir,
+                                         NULL,
+                                         NULL,
+                                         copy_done_callback,
+                                         &data);
+    g_main_loop_run (data.loop);
+
+    /* FIXME: Cancelling all should not result in success */
+    g_assert_true (data.success);
 
     file_hierarchy_assert_exists (source_hierarchy, "", TRUE);
     g_assert_cmpuint (nautilus_file_undo_manager_get_state (),
@@ -783,14 +912,24 @@ test_copy_hierarchy_error_into_subdir (void)
                                                                "copy_first_dir",
                                                                "copy_first_child",
                                                                NULL);
+    g_auto (CopyTestData) data = { 0 };
 
     file_hierarchy_create (source_hierarchy, "");
 
     /* Clear to check for the copy operation undo status. */
     nautilus_file_undo_manager_set_action (NULL);
 
-    nautilus_file_operations_copy_sync (&(GList){ .data = first_dir },
-                                        first_child);
+    copy_test_data_init (&data);
+    nautilus_file_operations_copy_async (&(GList){ .data = first_dir },
+                                         first_child,
+                                         NULL,
+                                         NULL,
+                                         copy_done_callback,
+                                         &data);
+    g_main_loop_run (data.loop);
+
+    /* FIXME: Cancelling all should not result in success */
+    g_assert_true (data.success);
 
     file_hierarchy_assert_exists (source_hierarchy, "", TRUE);
     file_hierarchy_assert_exists (unexpected_hierarchy, "", FALSE);
