@@ -33,9 +33,6 @@ typedef void (* NautilusOpRenameCallback)  (GFile      *renamed_file,
 typedef void (* NautilusDeleteCallback)    (GHashTable *debuting_uris,
 					    gboolean    user_cancel,
 					    gpointer    callback_data);
-typedef void (* NautilusMountCallback)     (GVolume    *volume,
-					    gboolean    success,
-					    GObject    *callback_data_object);
 typedef void (* NautilusUnmountCallback)   (gpointer    callback_data);
 typedef void (* NautilusExtractCallback)   (GList    *outputs,
                                             gpointer  callback_data);
@@ -97,10 +94,6 @@ void nautilus_file_operations_unmount_mount_full (GtkWindow                 *par
 						  gboolean                   eject,
 						  NautilusUnmountCallback    callback,
 						  gpointer                   callback_data);
-void nautilus_file_operations_mount_volume_full (GtkWindow                      *parent_window,
-						 GVolume                        *volume,
-						 NautilusMountCallback           mount_callback,
-						 GObject                        *mount_callback_data_object);
 
 void nautilus_file_operations_copy_async (GList                          *files,
                                           GFile                          *target_dir,

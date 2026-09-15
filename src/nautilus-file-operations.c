@@ -23,8 +23,6 @@
 
 #include "nautilus-file-operations.h"
 
-#include "nautilus-file-changes-queue.h"
-
 #include "nautilus-progress-info.h"
 
 #include <adwaita.h>
@@ -139,15 +137,6 @@ typedef struct
 typedef struct
 {
     CommonJob common;
-    GFile *file;
-    gboolean interactive;
-    NautilusOpCallback done_callback;
-    gpointer done_callback_data;
-} MarkTrustedJob;
-
-typedef struct
-{
-    CommonJob common;
     NautilusOpCallback done_callback;
     gpointer done_callback_data;
     guint32 file_permissions;
@@ -185,7 +174,6 @@ typedef struct
 {
     int num_files;
     goffset num_bytes;
-    OpKind op;
     guint64 last_report_time;
     int last_reported_files_left;
 
@@ -292,11 +280,6 @@ static void empty_trash_task_done (GObject      *source_object,
 
 static char *query_fs_type (GFile        *file,
                             GCancellable *cancellable);
-
-static void nautilus_file_operations_copy (GTask        *task,
-                                           gpointer      source_object,
-                                           gpointer      task_data,
-                                           GCancellable *cancellable);
 
 static void nautilus_file_operations_move (GTask        *task,
                                            gpointer      source_object,
@@ -2400,100 +2383,6 @@ nautilus_file_operations_unmount_mount_full (GtkWindow               *parent_win
 }
 
 static void
-mount_callback_data_notify (gpointer  data,
-                            GObject  *object)
-{
-    GMountOperation *mount_op;
-
-    mount_op = G_MOUNT_OPERATION (data);
-    g_object_set_data (G_OBJECT (mount_op), "mount-callback", NULL);
-    g_object_set_data (G_OBJECT (mount_op), "mount-callback-data", NULL);
-}
-
-static void
-volume_mount_cb (GObject      *source_object,
-                 GAsyncResult *res,
-                 gpointer      user_data)
-{
-    NautilusMountCallback mount_callback;
-    GObject *mount_callback_data_object;
-    GMountOperation *mount_op = user_data;
-    char *primary;
-    char *name;
-    gboolean success;
-
-    success = TRUE;
-    g_autoptr (GError) error = NULL;
-    if (!g_volume_mount_finish (G_VOLUME (source_object), res, &error))
-    {
-        if (error->code != G_IO_ERROR_FAILED_HANDLED &&
-            error->code != G_IO_ERROR_ALREADY_MOUNTED)
-        {
-            GtkWindow *parent;
-
-            parent = gtk_mount_operation_get_parent (GTK_MOUNT_OPERATION (mount_op));
-            name = g_volume_get_name (G_VOLUME (source_object));
-            primary = g_strdup_printf (_("Unable to access “%s”"), name);
-            g_free (name);
-            success = FALSE;
-            nautilus_show_ok_dialog (primary,
-                                     error->message,
-                                     GTK_WIDGET (parent));
-            g_free (primary);
-        }
-    }
-
-    mount_callback = (NautilusMountCallback)
-                     g_object_get_data (G_OBJECT (mount_op), "mount-callback");
-    mount_callback_data_object =
-        g_object_get_data (G_OBJECT (mount_op), "mount-callback-data");
-
-    if (mount_callback != NULL)
-    {
-        (*mount_callback)(G_VOLUME (source_object),
-                          success,
-                          mount_callback_data_object);
-
-        if (mount_callback_data_object != NULL)
-        {
-            g_object_weak_unref (mount_callback_data_object,
-                                 mount_callback_data_notify,
-                                 mount_op);
-        }
-    }
-
-    g_object_unref (mount_op);
-}
-
-void
-nautilus_file_operations_mount_volume_full (GtkWindow             *parent_window,
-                                            GVolume               *volume,
-                                            NautilusMountCallback  mount_callback,
-                                            GObject               *mount_callback_data_object)
-{
-    GMountOperation *mount_op;
-
-    mount_op = gtk_mount_operation_new (parent_window);
-    g_mount_operation_set_password_save (mount_op, G_PASSWORD_SAVE_FOR_SESSION);
-    g_object_set_data (G_OBJECT (mount_op),
-                       "mount-callback",
-                       mount_callback);
-
-    if (mount_callback != NULL &&
-        mount_callback_data_object != NULL)
-    {
-        g_object_weak_ref (mount_callback_data_object,
-                           mount_callback_data_notify,
-                           mount_op);
-    }
-    g_object_set_data (G_OBJECT (mount_op),
-                       "mount-callback-data",
-                       mount_callback_data_object);
-
-    g_volume_mount (volume, 0, mount_op, NULL, volume_mount_cb, mount_op);
-}
-
-static void
 report_preparing_count_progress (CommonJob  *job,
                                  SourceInfo *source_info)
 {
@@ -2501,7 +2390,6 @@ report_preparing_count_progress (CommonJob  *job,
 
     switch (source_info->op)
     {
-        default:
         case OP_KIND_COPY:
         {
             g_autofree gchar *formatted_size = NULL;
@@ -4382,12 +4270,6 @@ copy_move_directory (CopyMoveJob   *copy_job,
     return TRUE;
 }
 
-
-typedef struct
-{
-    CommonJob *job;
-    GFile *source;
-} DeleteExistingFileData;
 
 typedef struct
 {
