@@ -587,6 +587,72 @@ test_move_fourth_hierarchy (void)
 }
 
 static void
+test_move_dir_into_itself (void)
+{
+    const GStrv source_hierarchy = (char *[])
+    {
+        "move_first_dir/",
+        "move_first_dir/move_first_child/",
+        "move_first_dir/move_first_child/move_second_child",
+        NULL
+    };
+    g_autoptr (GFile) test_dir = g_file_new_build_filename (test_get_tmp_dir (),
+                                                            NULL);
+    g_autoptr (GFile) first_dir = g_file_new_build_filename (test_get_tmp_dir (),
+                                                             "move_first_dir",
+                                                             NULL);
+
+    file_hierarchy_create (source_hierarchy, "");
+
+    /* Clear to check for the move operation undo status. */
+    nautilus_file_undo_manager_set_action (NULL);
+
+    nautilus_file_operations_move_sync (&(GList){ .data = first_dir },
+                                        test_dir);
+
+    file_hierarchy_assert_exists (source_hierarchy, "", TRUE);
+    g_assert_cmpuint (nautilus_file_undo_manager_get_state (),
+                      ==,
+                      NAUTILUS_FILE_UNDO_MANAGER_STATE_NONE);
+
+    test_clear_tmp_dir ();
+}
+
+static void
+test_move_dir_into_self_subdir (void)
+{
+    const GStrv source_hierarchy = (char *[])
+    {
+        "move_first_dir/",
+        "move_first_dir/move_first_child/",
+        "move_first_dir/move_first_child/move_second_child",
+        NULL
+    };
+    g_autoptr (GFile) first_dir = g_file_new_build_filename (test_get_tmp_dir (),
+                                                             "move_first_dir",
+                                                             NULL);
+    g_autoptr (GFile) first_child = g_file_new_build_filename (test_get_tmp_dir (),
+                                                               "move_first_dir",
+                                                               "move_first_child",
+                                                               NULL);
+
+    file_hierarchy_create (source_hierarchy, "");
+
+    /* Clear to check for the move operation undo status. */
+    nautilus_file_undo_manager_set_action (NULL);
+
+    nautilus_file_operations_move_sync (&(GList){ .data = first_dir },
+                                        first_child);
+
+    file_hierarchy_assert_exists (source_hierarchy, "", TRUE);
+    g_assert_cmpuint (nautilus_file_undo_manager_get_state (),
+                      ==,
+                      NAUTILUS_FILE_UNDO_MANAGER_STATE_NONE);
+
+    test_clear_tmp_dir ();
+}
+
+static void
 setup_test_suite (void)
 {
     g_test_add_func ("/test-move-one-file/1.0",
@@ -615,6 +681,11 @@ setup_test_suite (void)
                      test_move_third_hierarchy);
     g_test_add_func ("/test-move-hierarchy/1.4",
                      test_move_fourth_hierarchy);
+
+    g_test_add_func ("/test-move-hierarchy/error/into-itself",
+                     test_move_dir_into_itself);
+    g_test_add_func ("/test-move-hierarchy/error/into-self-subdirectory",
+                     test_move_dir_into_self_subdir);
 }
 
 int
