@@ -251,6 +251,7 @@ source_info_clear (SourceInfo *source_info)
 G_DEFINE_AUTO_CLEANUP_CLEAR_FUNC (SourceInfo, source_info_clear)
 
 #define SOURCE_INFO_INIT { 0 }
+#define TRANSFER_INFO_INIT { 0 }
 #define SECONDS_NEEDED_FOR_RELIABLE_TRANSFER_RATE 8
 #define PROGRESS_NOTIFY_INTERVAL_USEC 100 * 1000
 #define LONG_JOB_THRESHOLD_IN_SECONDS 2
@@ -1405,7 +1406,7 @@ delete_files (CommonJob *job,
     GList *l;
     GFile *file;
     g_auto (SourceInfo) source_info = SOURCE_INFO_INIT;
-    TransferInfo transfer_info;
+    TransferInfo transfer_info = TRANSFER_INFO_INIT;
     DeleteData data;
 
     if (job_aborted (job))
@@ -1424,7 +1425,6 @@ delete_files (CommonJob *job,
 
     g_timer_start (job->time);
 
-    memset (&transfer_info, 0, sizeof (transfer_info));
     report_delete_progress (job, &source_info, &transfer_info);
 
     data.job = job;
@@ -1793,7 +1793,7 @@ trash_files (CommonJob *job,
     GFile *file;
     GList *to_delete;
     g_auto (SourceInfo) source_info = SOURCE_INFO_INIT;
-    TransferInfo transfer_info;
+    TransferInfo transfer_info = TRANSFER_INFO_INIT;
 
     if (job_aborted (job))
     {
@@ -1811,7 +1811,6 @@ trash_files (CommonJob *job,
 
     g_timer_start (job->time);
 
-    memset (&transfer_info, 0, sizeof (transfer_info));
     report_trash_progress (job, &source_info, &transfer_info);
 
     to_delete = NULL;
@@ -5029,7 +5028,7 @@ nautilus_file_operations_copy (GTask        *task,
     CopyMoveJob *job;
     CommonJob *common;
     g_auto (SourceInfo) source_info = SOURCE_INFO_INIT;
-    TransferInfo transfer_info;
+    TransferInfo transfer_info = TRANSFER_INFO_INIT;
     g_autofree char *dest_fs_id = NULL;
     GFile *dest;
 
@@ -5089,7 +5088,6 @@ nautilus_file_operations_copy (GTask        *task,
 
     g_timer_start (job->common.time);
 
-    memset (&transfer_info, 0, sizeof (transfer_info));
     copy_files (job,
                 dest_fs_id,
                 &source_info, &transfer_info);
@@ -5639,7 +5637,7 @@ nautilus_file_operations_move (GTask        *task,
     CopyMoveJob *job;
     CommonJob *common;
     g_auto (SourceInfo) source_info = SOURCE_INFO_INIT;
-    TransferInfo transfer_info;
+    TransferInfo transfer_info = TRANSFER_INFO_INIT;
     g_autofree char *dest_fs_id = NULL;
     g_autofree char *dest_fs_type = NULL;
     GList *fallback_files;
@@ -5696,9 +5694,7 @@ nautilus_file_operations_move (GTask        *task,
 
         total = g_list_length (job->files);
 
-        memset (&source_info, 0, sizeof (source_info));
         source_info.num_files = total;
-        memset (&transfer_info, 0, sizeof (transfer_info));
         transfer_info.num_files = total;
         report_copy_progress (job, &source_info, &transfer_info);
 
@@ -5730,7 +5726,6 @@ nautilus_file_operations_move (GTask        *task,
         return;
     }
 
-    memset (&transfer_info, 0, sizeof (transfer_info));
     move_files (job,
                 fallbacks,
                 dest_fs_id, &dest_fs_type,
