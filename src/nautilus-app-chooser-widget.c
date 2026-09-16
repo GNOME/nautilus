@@ -45,6 +45,7 @@ struct _NautilusAppItem
     gboolean is_default;
     gboolean is_recommended;
     gboolean is_fallback;
+    gboolean is_show_all;
 };
 
 enum
@@ -76,13 +77,29 @@ nautilus_app_item_get_property (GObject    *object,
     {
         case ITEM_PROP_NAME:
         {
-            g_value_set_string (value, g_app_info_get_display_name (item->app_info));
+            if (item->is_show_all)
+            {
+                g_value_set_string (value, _("Show All"));
+            }
+            else
+            {
+                g_value_set_string (value, g_app_info_get_display_name (item->app_info));
+            }
             break;
         }
 
         case ITEM_PROP_ICON:
         {
-            g_value_set_object (value, g_app_info_get_icon (item->app_info));
+            if (item->is_show_all)
+            {
+                g_autoptr (GIcon) icon = g_icon_new_for_string ("system-search-symbolic", NULL);
+
+                g_value_set_object (value, icon);
+            }
+            else
+            {
+                g_value_set_object (value, g_app_info_get_icon (item->app_info));
+            }
             break;
         }
 
@@ -105,7 +122,7 @@ nautilus_app_item_finalize (GObject *object)
 {
     NautilusAppItem *item = NAUTILUS_APP_ITEM (object);
 
-    g_object_unref (item->app_info);
+    g_clear_object (&item->app_info);
 
     G_OBJECT_CLASS (nautilus_app_item_parent_class)->finalize (object);
 }
@@ -140,14 +157,18 @@ static NautilusAppItem *
 nautilus_app_item_new (GAppInfo *app_info,
                        gboolean  is_default,
                        gboolean  is_recommended,
-                       gboolean  is_fallback)
+                       gboolean  is_fallback,
+                       gboolean  is_show_all)
 {
+    g_return_val_if_fail ((app_info != NULL) ^ is_show_all, NULL);
+
     NautilusAppItem *item = g_object_new (NAUTILUS_TYPE_APP_ITEM, NULL);
 
-    item->app_info = g_object_ref (app_info);
+    item->app_info = app_info != NULL ? g_object_ref (app_info) : NULL;
     item->is_default = is_default;
     item->is_recommended = is_recommended;
     item->is_fallback = is_fallback;
+    item->is_show_all = is_show_all;
 
     return item;
 }
@@ -277,7 +298,7 @@ nautilus_app_chooser_widget_add_section (NautilusAppChooserWidget *self,
 
         g_hash_table_add (seen_apps, app);
 
-        g_autoptr (NautilusAppItem) item = nautilus_app_item_new (app, FALSE, recommended, fallback);
+        g_autoptr (NautilusAppItem) item = nautilus_app_item_new (app, FALSE, recommended, fallback, FALSE);
 
         g_list_store_append (self->app_info_store, item);
     }
@@ -322,6 +343,12 @@ nautilus_app_chooser_widget_real_add_items (NautilusAppChooserWidget *self)
                                                  FALSE,
                                                  FALSE,
                                                  all_applications, seen_apps);
+    }
+    else
+    {
+        g_autoptr (NautilusAppItem) item = nautilus_app_item_new (NULL, FALSE, FALSE, FALSE, TRUE);
+
+        g_list_store_append (self->app_info_store, item);
     }
 
     gboolean apps_added = g_hash_table_size (seen_apps) > 0;
@@ -535,6 +562,15 @@ compare_section (gconstpointer a,
     else if (!item1->is_fallback && item2->is_fallback)
     {
         return 1;
+    }
+
+    if (item1->is_show_all)
+    {
+        return 1;
+    }
+    else if (item2->is_show_all)
+    {
+        return -1;
     }
 
     return 0;
