@@ -38,6 +38,4 @@ void               nautilus_sidebar_set_drop_targets_visible   (NautilusSidebar 
 void               nautilus_sidebar_set_show_trash             (NautilusSidebar   *sidebar,
                                                                            gboolean                    show_trash);
 
-char *nautilus_sidebar_get_location_title (NautilusSidebar *sidebar);
-
 G_END_DECLS

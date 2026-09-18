@@ -520,20 +520,6 @@ nautilus_progress_info_get_is_cancelled (NautilusProgressInfo *info)
 }
 
 gboolean
-nautilus_progress_info_get_is_started (NautilusProgressInfo *info)
-{
-    gboolean res;
-
-    G_LOCK (progress_info);
-
-    res = info->started;
-
-    G_UNLOCK (progress_info);
-
-    return res;
-}
-
-gboolean
 nautilus_progress_info_get_is_finished (NautilusProgressInfo *info)
 {
     gboolean res;
@@ -809,18 +795,6 @@ nautilus_progress_info_set_elapsed_time (NautilusProgressInfo *info,
     G_LOCK (progress_info);
     info->elapsed_time = time;
     G_UNLOCK (progress_info);
-}
-
-gdouble
-nautilus_progress_info_get_elapsed_time (NautilusProgressInfo *info)
-{
-    gint elapsed_time;
-
-    G_LOCK (progress_info);
-    elapsed_time = info->elapsed_time;
-    G_UNLOCK (progress_info);
-
-    return elapsed_time;
 }
 
 gdouble

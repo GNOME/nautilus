@@ -414,18 +414,6 @@ nautilus_recent_servers_force_reload (NautilusRecentServers *self)
     }
 }
 
-/* Returns: (transfer full): List of server infos. */
-GList *
-nautilus_recent_servers_get_infos (NautilusRecentServers *self)
-{
-    g_return_val_if_fail (NAUTILUS_IS_RECENT_SERVERS (self), FALSE);
-
-    GList *server_infos = g_hash_table_get_values (self->server_infos);
-
-    g_list_foreach (server_infos, (GFunc) g_object_ref, NULL);
-    return server_infos;
-}
-
 gboolean
 nautilus_recent_servers_get_loading (NautilusRecentServers *self)
 {

@@ -2981,22 +2981,6 @@ update_name_internal (NautilusFile *file,
 }
 
 gboolean
-nautilus_file_update_name (NautilusFile *file,
-                           const char   *name)
-{
-    gboolean ret;
-
-    ret = update_name_internal (file, name, TRUE);
-
-    if (ret)
-    {
-        update_links_if_target (file);
-    }
-
-    return ret;
-}
-
-gboolean
 nautilus_file_update_name_and_directory (NautilusFile      *file,
                                          const char        *name,
                                          NautilusDirectory *new_directory)

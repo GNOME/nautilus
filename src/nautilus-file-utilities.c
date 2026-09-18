@@ -505,23 +505,6 @@ nautilus_trashed_files_get_original_directories (GList  *files,
 }
 
 GList *
-nautilus_file_list_from_uri_list (GList *uris)
-{
-    GList *l;
-    GList *result = NULL;
-
-    for (l = uris; l != NULL; l = l->next)
-    {
-        g_autoptr (GFile) location = NULL;
-
-        location = g_file_new_for_uri (l->data);
-        result = g_list_prepend (result, nautilus_file_get (location));
-    }
-
-    return g_list_reverse (result);
-}
-
-GList *
 nautilus_location_list_from_file_list (GList *files)
 {
     GList *locations = NULL;
@@ -709,25 +692,6 @@ nautilus_get_x_content_types_for_mount_async (GMount                  *mount,
                                 cancellable,
                                 get_types_cb,
                                 data);
-}
-
-char **
-nautilus_get_cached_x_content_types_for_mount (GMount *mount)
-{
-    char **cached;
-
-    if (mount == NULL)
-    {
-        return NULL;
-    }
-
-    cached = g_object_get_data (G_OBJECT (mount), "nautilus-content-type-cache");
-    if (cached != NULL)
-    {
-        return g_strdupv (cached);
-    }
-
-    return NULL;
 }
 
 char *

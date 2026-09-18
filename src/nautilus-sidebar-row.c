@@ -512,29 +512,6 @@ nautilus_sidebar_row_set_start_icon (NautilusSidebarRow *self,
     }
 }
 
-void
-nautilus_sidebar_row_set_end_icon (NautilusSidebarRow *self,
-                                   GIcon              *icon)
-{
-    g_return_if_fail (NAUTILUS_IS_SIDEBAR_ROW (self));
-
-    if (self->end_icon != icon)
-    {
-        g_set_object (&self->end_icon, icon);
-        if (self->end_icon != NULL)
-        {
-            gtk_image_set_from_gicon (GTK_IMAGE (self->end_icon_widget), self->end_icon);
-        }
-        else
-        if (self->end_icon_widget != NULL)
-        {
-            gtk_image_clear (GTK_IMAGE (self->end_icon_widget));
-        }
-
-        g_object_notify_by_pspec (G_OBJECT (self), properties [PROP_END_ICON]);
-    }
-}
-
 static void
 nautilus_sidebar_row_dispose (GObject *object)
 {

@@ -35,7 +35,6 @@ char *        nautilus_progress_info_get_details     (NautilusProgressInfo *info
 double        nautilus_progress_info_get_progress    (NautilusProgressInfo *info);
 GCancellable *nautilus_progress_info_get_cancellable (NautilusProgressInfo *info);
 void          nautilus_progress_info_cancel          (NautilusProgressInfo *info);
-gboolean      nautilus_progress_info_get_is_started  (NautilusProgressInfo *info);
 gboolean      nautilus_progress_info_get_is_finished (NautilusProgressInfo *info);
 gboolean      nautilus_progress_info_get_is_paused   (NautilusProgressInfo *info);
 gboolean      nautilus_progress_info_get_is_cancelled (NautilusProgressInfo *info);
@@ -64,7 +63,6 @@ void          nautilus_progress_info_set_remaining_time (NautilusProgressInfo *i
 gdouble       nautilus_progress_info_get_remaining_time (NautilusProgressInfo *info);
 void          nautilus_progress_info_set_elapsed_time (NautilusProgressInfo *info,
                                                        gdouble               time);
-gdouble       nautilus_progress_info_get_elapsed_time (NautilusProgressInfo *info);
 gdouble       nautilus_progress_info_get_total_elapsed_time (NautilusProgressInfo *info);
 
 void nautilus_progress_info_set_destination (NautilusProgressInfo *info,

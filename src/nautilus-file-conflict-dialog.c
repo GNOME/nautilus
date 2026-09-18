@@ -122,12 +122,6 @@ nautilus_file_conflict_dialog_set_replace_button_label (NautilusFileConflictDial
 }
 
 void
-nautilus_file_conflict_dialog_disable_skip (NautilusFileConflictDialog *fcd)
-{
-    gtk_widget_set_visible (fcd->skip_button, FALSE);
-}
-
-void
 nautilus_file_conflict_dialog_disable_replace (NautilusFileConflictDialog *fcd)
 {
     gtk_widget_set_sensitive (fcd->replace_button, FALSE);
