@@ -7804,10 +7804,9 @@ nautilus_files_view_update_actions_state (NautilusFilesView *self)
     for (l = selection; l != NULL && can_remove_recent_server; l = l->next)
     {
         NautilusFile *file = NAUTILUS_FILE (l->data);
-        g_autoptr (GFile) location = nautilus_file_get_location (NAUTILUS_FILE (l->data));
 
         /* Only recent servers have x-network-view: scheme */
-        if (!g_file_has_uri_scheme (location, SCHEME_NETWORK_VIEW) || nautilus_file_can_unmount (file))
+        if (!nautilus_file_is_network_view (file) || nautilus_file_can_unmount (file))
         {
             can_remove_recent_server = FALSE;
         }
