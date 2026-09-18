@@ -101,6 +101,42 @@ test_create_folder (void)
 }
 
 static void
+test_create_folder_no_name (void)
+{
+    g_autofree gchar *parent_uri = g_strconcat ("file://", test_get_tmp_dir (), NULL);
+    const char *default_foldername = "Untitled Folder";
+    g_autoptr (GFile) created_file = g_file_new_build_filename (test_get_tmp_dir (),
+                                                                default_foldername,
+                                                                NULL);
+    g_auto (CreateTestData) data = { 0 };
+
+    create_test_data_init (&data);
+
+    nautilus_file_operations_new_folder (NULL,
+                                         NULL,
+                                         parent_uri,
+                                         NULL,
+                                         create_done_callback,
+                                         &data);
+
+    g_main_loop_run (data.loop);
+
+    g_assert_true (data.success);
+    g_assert_true (g_file_equal (data.file, created_file));
+    assert_is_directory (created_file);
+
+    test_operation_undo ();
+
+    g_assert_false (g_file_query_exists (created_file, NULL));
+
+    test_operation_redo ();
+
+    assert_is_directory (created_file);
+
+    test_clear_tmp_dir ();
+}
+
+static void
 assert_file_content (GFile_autoptr  location,
                      const gchar   *expected_content,
                      const gsize    content_length,
@@ -145,6 +181,46 @@ test_create_file (void)
     nautilus_file_operations_new_file (NULL,
                                        parent_uri,
                                        filename,
+                                       contents,
+                                       content_length,
+                                       create_done_callback,
+                                       &data);
+
+    g_main_loop_run (data.loop);
+
+    g_assert_true (data.success);
+    g_assert_true (g_file_equal (data.file, created_file));
+    assert_file_content (created_file, contents, content_length, mime_type);
+
+    test_operation_undo ();
+
+    g_assert_false (g_file_query_exists (created_file, NULL));
+
+    test_operation_redo ();
+
+    assert_file_content (created_file, contents, content_length, mime_type);
+
+    test_clear_tmp_dir ();
+}
+
+static void
+test_create_file_no_name (void)
+{
+    g_autofree char *parent_uri = g_strconcat ("file://", test_get_tmp_dir (), NULL);
+    const char *default_filename = "Untitled Document";
+    const char *contents = "Auto named\n";
+    const gsize content_length = strlen (contents);
+    const char *mime_type = "text/plain";
+    g_autoptr (GFile) created_file = g_file_new_build_filename (test_get_tmp_dir (),
+                                                                default_filename,
+                                                                NULL);
+    g_auto (CreateTestData) data = { 0 };
+
+    create_test_data_init (&data);
+
+    nautilus_file_operations_new_file (NULL,
+                                       parent_uri,
+                                       NULL,
                                        contents,
                                        content_length,
                                        create_done_callback,
@@ -378,10 +454,14 @@ main (int   argc,
     undo_manager = nautilus_file_undo_manager_new ();
     test_init_config_dir ();
 
-    g_test_add_func ("/create/folder",
+    g_test_add_func ("/create/folder/basic",
                      test_create_folder);
+    g_test_add_func ("/create/folder/no-name",
+                     test_create_folder_no_name);
     g_test_add_func ("/create/file/direct-content",
                      test_create_file);
+    g_test_add_func ("/create/file/no-name",
+                     test_create_file_no_name);
     g_test_add_func ("/create/file/template",
                      test_create_file_from_template);
     g_test_add_func ("/create/image/texture",
