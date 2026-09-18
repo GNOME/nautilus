@@ -1,5 +1,5 @@
 /*
- *  nautilus-file-info.h - Information about a file 
+ *  nautilus-file-info.h - Information about a file
  *
  *  Copyright (C) 2003 Novell, Inc.
  *
@@ -18,7 +18,7 @@
  *
  */
 
-/* NautilusFileInfo is an interface to the NautilusFile object.  It 
+/* NautilusFileInfo is an interface to the NautilusFile object.  It
  * provides access to the asynchronous data in the NautilusFile.
  * Extensions are passed objects of this type for operations. */
 
@@ -38,55 +38,53 @@ G_BEGIN_DECLS
 G_DECLARE_INTERFACE (NautilusFileInfo, nautilus_file_info, NAUTILUS, FILE_INFO, GObject)
 
 /**
- * SECTION:nautilus-file-info
- * @title: NautilusFileInfo
- * @short_description: File interface for nautilus extensions
+ * NautilusFileInfo:
  *
- * #NautilusFileInfo provides methods to get and modify information
- * about file objects in the file manager.
+ * An interface that provides methods to get and modify information about file
+ * objects in the file manager.
  */
 
 /**
  * NautilusFileInfoInterface:
  * @g_iface: The parent interface.
  * @is_gone: Returns whether the file info is gone.
- *           See nautilus_file_info_is_gone() for details.
+ *           See [method@Nautilus.FileInfo.is_gone] for details.
  * @get_name: Returns the file name as a string.
- *            See nautilus_file_info_get_name() for details.
+ *            See [method@Nautilus.FileInfo.get_name] for details.
  * @get_uri: Returns the file URI as a string.
- *           See nautilus_file_info_get_uri() for details.
+ *           See [method@Nautilus.FileInfo.get_uri] for details.
  * @get_parent_uri: Returns the file parent URI as a string.
- *                  See nautilus_file_info_get_parent_uri() for details.
+ *                  See [method@Nautilus.FileInfo.get_parent_uri] for details.
  * @get_uri_scheme: Returns the file URI scheme as a string.
- *                  See nautilus_file_info_get_uri_scheme() for details.
+ *                  See [method@Nautilus.FileInfo.get_uri_scheme] for details.
  * @get_mime_type: Returns the file mime type as a string.
- *                 See nautilus_file_info_get_mime_type() for details.
+ *                 See [method@Nautilus.FileInfo.get_mime_type] for details.
  * @is_mime_type: Returns whether the file is the given mime type.
- *                See nautilus_file_info_is_mime_type() for details.
+ *                See [method@Nautilus.FileInfo.is_mime_type] for details.
  * @is_directory: Returns whether the file is a directory.
- *                See nautilus_file_info_is_directory() for details.
+ *                See [method@Nautilus.FileInfo.is_directory] for details.
  * @add_emblem: Adds an emblem to this file.
- *              See nautilus_file_info_add_emblem() for details.
+ *              See [method@Nautilus.FileInfo.add_emblem] for details.
  * @get_string_attribute: Returns the specified file attribute as a string.
- *                        See nautilus_file_info_get_string_attribute() for details.
+ *                        See [method@Nautilus.FileInfo.get_string_attribute] for details.
  * @add_string_attribute: Sets the specified string file attribute value.
- *                        See nautilus_file_info_add_string_attribute() for details.
+ *                        See [method@Nautilus.FileInfo.add_string_attribute] for details.
  * @invalidate_extension_info: Invalidates information of the file provided by extensions.
- *                             See nautilus_file_info_invalidate_extension_info() for details.
+ *                             See [method@Nautilus.FileInfo.invalidate_extension_info] for details.
  * @get_activation_uri: Returns the file activation URI as a string.
- *                      See nautilus_file_info_get_activation_uri() for details.
+ *                      See [method@Nautilus.FileInfo.get_activation_uri] for details.
  * @get_file_type: Returns the file type.
- *                 See nautilus_file_info_get_file_type() for details.
+ *                 See [method@Nautilus.FileInfo.get_file_type] for details.
  * @get_location: Returns the file location as a #GFile.
- *                See nautilus_file_info_get_location() for details.
+ *                See [method@Nautilus.FileInfo.get_location] for details.
  * @get_parent_location: Returns the file parent location as a #GFile.
- *                       See nautilus_file_info_get_parent_location() for details.
+ *                       See [method@Nautilus.FileInfo.get_parent_location] for details.
  * @get_parent_info: Returns the file parent #NautilusFileInfo.
- *                   See nautilus_file_info_get_parent_info() for details.
+ *                   See [method@Nautilus.FileInfo.get_parent_info] for details.
  * @get_mount: Returns the file mount as a #GMount.
- *             See nautilus_file_info_get_mount() for details.
+ *             See [method@Nautilus.FileInfo.get_mount] for details.
  * @can_write: Returns whether the file is writable.
- *             See nautilus_file_info_can_write() for details.
+ *             See [method@Nautilus.FileInfo.can_write] for details.
  *
  * Interface for extensions to provide additional menu items.
  */

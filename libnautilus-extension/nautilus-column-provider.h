@@ -1,5 +1,5 @@
 /*
- *  nautilus-column-provider.h - Interface for Nautilus extensions that 
+ *  nautilus-column-provider.h - Interface for Nautilus extensions that
  *                               provide column descriptions.
  *
  *  Copyright (C) 2003 Novell, Inc.
@@ -16,16 +16,10 @@
  *
  *  You should have received a copy of the GNU Library General Public
  *  License along with this library; if not, see <http://www.gnu.org/licenses/>.
- * 
+ *
  *  Author:  Dave Camp <dave@ximian.com>
  *
  */
-
-/* This interface is implemented by Nautilus extensions that want to
- * add columns to the list view and details to the icon view.
- * Extensions are asked for a list of columns to display.  Each
- * returned column refers to a string attribute which can be filled in
- * by NautilusInfoProvider */
 
 #pragma once
 
@@ -44,12 +38,16 @@ G_DECLARE_INTERFACE (NautilusColumnProvider, nautilus_column_provider,
                      GObject)
 
 /**
- * SECTION:nautilus-column-provider
- * @title: NautilusColumnProvider
- * @short_description: Interface to provide additional list view columns
+ * NautilusColumnProvider:
  *
- * #NautilusColumnProvider allows extension to provide additional columns
- * in the file manager list view.
+ * An interface that extension can implement to provide additional columns in
+ * the file manager list view.
+ *
+ * This interface is implemented by Nautilus extensions that want to
+ * add columns to the list view and details to the icon view.
+ * Extensions are asked for a list of columns to display.  Each
+ * returned column refers to a string attribute which can be filled in
+ * by [iface@Nautilus.InfoProvider].
  */
 
 /**
@@ -70,6 +68,8 @@ struct _NautilusColumnProviderInterface
 /**
  * nautilus_column_provider_get_columns:
  * @provider: a #NautilusColumnProvider
+ *
+ * Generates the list of [class@Nautilus.Column]s.
  *
  * Returns: (nullable) (element-type NautilusColumn) (transfer full): the provided #NautilusColumn objects
  */

@@ -22,14 +22,13 @@ G_DECLARE_FINAL_TYPE (NautilusPropertiesModel,
                       GObject)
 
 /**
- * SECTION:nautilus-properties-model
- * @title: NautilusPropertiesModel
- * @short_description: Properties set descriptor model
+ * NautilusPropertiesModel:
  *
- * #NautilusPropertiesModel is an model that describes a set of file properties.
- * Extensions can provide #NautilusPropertiesModel objects by registering a
- * #NautilusPropertiesModelProvider and returning them from
- * nautilus_properties_model_provider_get_models(), which will be called by
+ * A model that describes a set of file properties.
+ *
+ * Extensions can provide [class@Nautilus.PropertiesModel] objects by registering a
+ * [iface@Nautilus.PropertiesModelProvider] and returning them from
+ * [method@Nautilus.PropertiesModelProvider.get_models], which will be called by
  * the main application when creating file properties.
  */
 

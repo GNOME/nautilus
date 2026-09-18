@@ -22,12 +22,10 @@ G_DECLARE_INTERFACE (NautilusPropertiesModelProvider,
                      GObject)
 
 /**
- * SECTION:nautilus-properties-model-provider
- * @title: NautilusPropertiesModelProvider
- * @short_description: Interface to provide additional properties
+ * NautilusPropertiesModelProvider:
  *
- * #NautilusPropertiesModelProvider allows extension to provide additional
- * information for the file properties.
+ * An interface that extensions can implement to provide additional information
+ * for the file properties.
  */
 
 /**
@@ -54,8 +52,8 @@ struct _NautilusPropertiesModelProviderInterface
  * This function is called by the application when it wants properties models
  * from the extension.
  *
- * This function is called in the main thread before the Properties are shown,
- * so it should return quickly. The models can be populated and updated
+ * Since this function is called in the main thread before the Properties are
+ * shown, so it should return quickly. The models can be populated and updated
  * asynchronously.
  *
  * Returns: (nullable) (element-type NautilusPropertiesModel) (transfer full): A #GList of allocated #NautilusPropertiesModel models.

@@ -7,6 +7,11 @@ nautilus_toml = configure_file(
   configuration: toml_data,
 )
 
+nautilus_content_files = [
+  'basic-structure-of-an-extension.md',
+  'example-extension-in-c.md',
+]
+
 custom_target(
   'nautilus-doc',
   input: [
@@ -26,6 +31,7 @@ custom_target(
     '@INPUT1@',
   ],
   build_by_default: true,
+  depend_files: nautilus_content_files,
   install: true,
   install_dir: docdir,
 )

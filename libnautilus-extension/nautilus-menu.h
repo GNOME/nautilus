@@ -16,7 +16,7 @@
  *
  *  You should have received a copy of the GNU Library General Public
  *  License along with this library; if not, see <http://www.gnu.org/licenses/>.
- * 
+ *
  *  Author:  Dave Camp <dave@ximian.com>
  *           Raffaele Sandrini <rasa@gmx.ch>
  *
@@ -73,6 +73,8 @@ struct _NautilusMenuItemClass
 /**
  * nautilus_menu_new:
  *
+ * Creates a new [class@Nautilus.Menu] object.
+ *
  * Returns: a new #NautilusMenu.
  */
 NautilusMenu     *nautilus_menu_new              (void);
@@ -81,12 +83,16 @@ NautilusMenu     *nautilus_menu_new              (void);
  * nautilus_menu_append_item:
  * @menu: a #NautilusMenu
  * @item: (transfer full): a #NautilusMenuItem to append
+ *
+ * Appends a new menu item to this menu.
  */
 void              nautilus_menu_append_item      (NautilusMenu     *menu,
                                                   NautilusMenuItem *item);
 /**
  * nautilus_menu_get_items:
  * @menu: a #NautilusMenu
+ *
+ * Returns the list of menu items in this menu.
  *
  * Returns: (nullable) (element-type NautilusMenuItem) (transfer full): the provided #NautilusMenuItem list
  */
@@ -118,7 +124,7 @@ NautilusMenuItem *nautilus_menu_item_new         (const char       *name,
  * nautilus_menu_item_activate:
  * @item: pointer to a #NautilusMenuItem
  *
- * Emits #NautilusMenuItem::activate.
+ * Emits [signal@Nautilus.MenuItem::activate].
  */
 void              nautilus_menu_item_activate    (NautilusMenuItem *item);
 /**
@@ -126,7 +132,7 @@ void              nautilus_menu_item_activate    (NautilusMenuItem *item);
  * @item: pointer to a #NautilusMenuItem
  * @menu: (transfer full): pointer to a #NautilusMenu to attach to the button
  *
- * Attaches a menu to the given #NautilusMenuItem.
+ * Attaches a menu to the given [class@Nautilus.MenuItem].
  */
 void              nautilus_menu_item_set_submenu (NautilusMenuItem *item,
                                                   NautilusMenu     *menu);

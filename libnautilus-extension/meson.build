@@ -78,7 +78,8 @@ if get_option('introspection')
     namespace: 'Nautilus',
     includes: [
       'Gio-2.0',
-      'GLib-2.0'
+      'GLib-2.0',
+      'GObject-2.0',
     ],
     header: 'nautilus-extension.h',
     install: true

@@ -1,5 +1,5 @@
 /*
- *  nautilus-info-provider.h - Interface for Nautilus extensions that 
+ *  nautilus-info-provider.h - Interface for Nautilus extensions that
  *                             provide info about files.
  *
  *  Copyright (C) 2003 Novell, Inc.
@@ -16,14 +16,14 @@
  *
  *  You should have received a copy of the GNU Library General Public
  *  License along with this library; if not, see <http://www.gnu.org/licenses/>.
- * 
+ *
  *  Author:  Dave Camp <dave@ximian.com>
  *
  */
 
-/* This interface is implemented by Nautilus extensions that want to 
- * provide information about files.  Extensions are called when Nautilus 
- * needs information about a file.  They are passed a NautilusFileInfo 
+/* This interface is implemented by Nautilus extensions that want to
+ * provide information about files.  Extensions are called when Nautilus
+ * needs information about a file.  They are passed a NautilusFileInfo
  * object which should be filled with relevant information */
 
 #pragma once
@@ -44,14 +44,14 @@ G_DECLARE_INTERFACE (NautilusInfoProvider, nautilus_info_provider,
                      GObject)
 
 /**
- * SECTION:nautilus-info-provider
- * @title: NautilusInfoProvider
- * @short_description: Interface to provide additional information about files
+ * NautilusInfoProvider:
  *
- * #NautilusInfoProvider allows extension to provide additional information about
- * files. When nautilus_info_provider_update_file_info() is called by the application,
+ * An interface that extensions can implement to provide additional information about
+ * files.
+ *
+ * When [method@Nautilus.InfoProvider.update_file_info] is called by the application,
  * extensions will know that it's time to add extra information to the provided
- * #NautilusFileInfo.
+ * [iface@Nautilus.FileInfo].
  */
 
 /**
@@ -73,20 +73,20 @@ typedef struct _NautilusOperationHandle NautilusOperationHandle;
  *  and call the callback closure when the operation is complete.
  *
  * Return values for asynchronous operations performed by the extension.
- * See nautilus_info_provider_update_file_info().
+ * See [method@Nautilus.InfoProvider.update_file_info].
  */
 typedef enum
 {
-    /* Returned if the call succeeded, and the extension is done 
+    /* Returned if the call succeeded, and the extension is done
      * with the request */
     NAUTILUS_OPERATION_COMPLETE,
 
     /* Returned if the call failed */
     NAUTILUS_OPERATION_FAILED,
 
-    /* Returned if the extension has begun an async operation. 
-     * If this is returned, the extension must set the handle 
-     * parameter and call the callback closure when the 
+    /* Returned if the extension has begun an async operation.
+     * If this is returned, the extension must set the handle
+     * parameter and call the callback closure when the
      * operation is complete. */
     NAUTILUS_OPERATION_IN_PROGRESS
 } NautilusOperationResult;
@@ -95,9 +95,9 @@ typedef enum
  * NautilusInfoProviderInterface:
  * @g_iface: The parent interface.
  * @update_file_info: Returns a #NautilusOperationResult.
- *                    See nautilus_info_provider_update_file_info() for details.
- * @cancel_update: Cancels a previous call to nautilus_info_provider_update_file_info().
- *                 See nautilus_info_provider_cancel_update() for details.
+ *                    See [method@Nautilus.InfoProvider.update_file_info] for details.
+ * @cancel_update: Cancels a previous call to [method@Nautilus.InfoProvider.update_file_info].
+ *                 See [method@Nautilus.InfoProvider.cancel_update] for details.
  *
  * Interface for extensions to provide additional information about files.
  */
@@ -133,7 +133,11 @@ NautilusOperationResult nautilus_info_provider_update_file_info       (NautilusI
  * nautilus_info_provider_cancel_update:
  * @provider: a #NautilusInfoProvider
  * @handle: the opaque #NautilusOperationHandle returned from a previous call to
- *          nautilus_info_provider_update_file_info().
+ *          [method@Nautilus.InfoProvider.update_file_info].
+ *
+ * Cancels a previous call to [method@Nautilus.InfoProvider.update_file_info].
+ *
+ * See [method@Nautilus.InfoProvider.cancel_update] for details.
  */
 void                    nautilus_info_provider_cancel_update          (NautilusInfoProvider     *provider,
                                                                        NautilusOperationHandle  *handle);
