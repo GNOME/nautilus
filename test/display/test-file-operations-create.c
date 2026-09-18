@@ -18,19 +18,38 @@ typedef struct
 {
     GFile *file;
     gboolean success;
+    GMainLoop *loop;
 } CreateTestData;
+
+static void
+create_test_data_clear (CreateTestData *data)
+{
+    g_clear_object (&data->file);
+    data->success = FALSE;
+    g_clear_pointer (&data->loop, g_main_loop_unref);
+}
+
+static void
+create_test_data_init (CreateTestData *data)
+{
+    data->file = NULL;
+    data->success = FALSE;
+    data->loop = g_main_loop_new (NULL, FALSE);
+}
+
+G_DEFINE_AUTO_CLEANUP_CLEAR_FUNC (CreateTestData, create_test_data_clear)
 
 static void
 create_done_callback (GFile    *created_file,
                       gboolean  success,
                       gpointer  callback_data)
 {
-    CreateTestData *test_data = callback_data;
+    CreateTestData *data = callback_data;
 
-    g_assert_true (g_file_equal (test_data->file, created_file));
-    g_assert_true (success);
+    data->file = g_object_ref (created_file);
+    data->success = success;
 
-    test_data->success = success;
+    g_main_loop_quit (data->loop);
 }
 
 static void
@@ -53,7 +72,9 @@ test_create_folder (void)
     g_autoptr (GFile) created_file = g_file_new_build_filename (test_get_tmp_dir (),
                                                                 foldername,
                                                                 NULL);
-    CreateTestData data = { created_file, FALSE };
+    g_auto (CreateTestData) data = { 0 };
+
+    create_test_data_init (&data);
 
     nautilus_file_operations_new_folder (NULL,
                                          NULL,
@@ -62,8 +83,10 @@ test_create_folder (void)
                                          create_done_callback,
                                          &data);
 
-    ITER_CONTEXT_WHILE (!data.success);
+    g_main_loop_run (data.loop);
 
+    g_assert_true (data.success);
+    g_assert_true (g_file_equal (data.file, created_file));
     assert_is_directory (created_file);
 
     test_operation_undo ();
@@ -115,7 +138,9 @@ test_create_file (void)
     g_autoptr (GFile) created_file = g_file_new_build_filename (test_get_tmp_dir (),
                                                                 filename,
                                                                 NULL);
-    CreateTestData data = { created_file, FALSE };
+    g_auto (CreateTestData) data = { 0 };
+
+    create_test_data_init (&data);
 
     nautilus_file_operations_new_file (NULL,
                                        parent_uri,
@@ -125,8 +150,10 @@ test_create_file (void)
                                        create_done_callback,
                                        &data);
 
-    ITER_CONTEXT_WHILE (!data.success);
+    g_main_loop_run (data.loop);
 
+    g_assert_true (data.success);
+    g_assert_true (g_file_equal (data.file, created_file));
     assert_file_content (created_file, contents, content_length, mime_type);
 
     test_operation_undo ();
@@ -174,8 +201,10 @@ test_create_file_from_template (void)
     g_autoptr (GFile) duplicate_created_file = g_file_new_build_filename (test_get_tmp_dir (),
                                                                           duplicate_filename,
                                                                           NULL);
-    CreateTestData data = { created_file, FALSE };
+    g_auto (CreateTestData) data = { 0 };
     const char *mime_type = "text/plain";
+
+    create_test_data_init (&data);
 
     create_file_with_content (template_location, contents, content_length);
 
@@ -186,8 +215,10 @@ test_create_file_from_template (void)
                                                      create_done_callback,
                                                      &data);
 
-    ITER_CONTEXT_WHILE (!data.success);
+    g_main_loop_run (data.loop);
 
+    g_assert_true (data.success);
+    g_assert_true (g_file_equal (data.file, created_file));
     assert_file_content (created_file, contents, content_length, mime_type);
 
     test_operation_undo ();
@@ -200,8 +231,8 @@ test_create_file_from_template (void)
 
     /* Try to create from the template with the same name to verify conflict
      * resolution. */
-    data.file = duplicate_created_file;
-    data.success = FALSE;
+    create_test_data_clear (&data);
+    create_test_data_init (&data);
     nautilus_file_operations_new_file_from_template (NULL,
                                                      parent_uri,
                                                      filename,
@@ -209,8 +240,10 @@ test_create_file_from_template (void)
                                                      create_done_callback,
                                                      &data);
 
-    ITER_CONTEXT_WHILE (!data.success);
+    g_main_loop_run (data.loop);
 
+    g_assert_true (data.success);
+    g_assert_true (g_file_equal (data.file, duplicate_created_file));
     assert_file_content (duplicate_created_file, contents, content_length, mime_type);
 
     test_operation_undo ();
@@ -224,16 +257,38 @@ test_create_file_from_template (void)
     test_clear_tmp_dir ();
 }
 
+typedef struct
+{
+    gboolean success;
+    GMainLoop *loop;
+} SaveTestData;
+
+static void
+save_callback_data_clear (SaveTestData *data)
+{
+    data->success = FALSE;
+    g_clear_pointer (&data->loop, g_main_loop_unref);
+}
+
+static void
+save_callback_data_init (SaveTestData *data)
+{
+    data->success = FALSE;
+    data->loop = g_main_loop_new (NULL, FALSE);
+}
+
+G_DEFINE_AUTO_CLEANUP_CLEAR_FUNC (SaveTestData, save_callback_data_clear)
+
 static void
 save_done_callback (GHashTable *debuting_uris,
                     gboolean    success,
                     gpointer    callback_data)
 {
-    gboolean *success_data = callback_data;
+    SaveTestData *data = callback_data;
 
-    g_assert_true (success);
+    data->success = success;
 
-    *success_data = success;
+    g_main_loop_quit (data->loop);
 }
 
 static GdkTexture *
@@ -253,7 +308,9 @@ test_save_image_from_texture (void)
     g_autofree gchar *parent_uri = g_strconcat ("file://", test_get_tmp_dir (), NULL);
     const char *image_basename = "Dropped image";
     g_autoptr (GdkTexture) texture = make_test_texture ();
-    gboolean success = FALSE;
+    g_auto (SaveTestData) data = { 0 };
+
+    save_callback_data_init (&data);
 
     nautilus_file_operations_save_image_from_texture (NULL,
                                                       NULL,
@@ -261,15 +318,16 @@ test_save_image_from_texture (void)
                                                       image_basename,
                                                       texture,
                                                       save_done_callback,
-                                                      &success);
+                                                      &data);
 
-    ITER_CONTEXT_WHILE (!success);
+    g_main_loop_run (data.loop);
 
     const char *image_name = "Dropped image.png";
     g_autoptr (GFile) saved_image = g_file_new_build_filename (test_get_tmp_dir (),
                                                                image_name,
                                                                NULL);
 
+    g_assert_true (data.success);
     g_assert_true (g_file_query_exists (saved_image, NULL));
 }
 
@@ -281,7 +339,9 @@ test_save_image_from_clipboard (void)
     GdkClipboard *clipboard = gtk_widget_get_clipboard (box);
     g_autoptr (GdkTexture) texture = make_test_texture ();
     g_autofree gchar *parent_uri = g_strconcat ("file://", test_get_tmp_dir (), NULL);
-    gboolean success = FALSE;
+    g_auto (SaveTestData) data = { 0 };
+
+    save_callback_data_init (&data);
 
     gdk_clipboard_set_texture (clipboard, texture);
 
@@ -289,13 +349,14 @@ test_save_image_from_clipboard (void)
                                                          NULL,
                                                          parent_uri,
                                                          save_done_callback,
-                                                         &success);
+                                                         &data);
 
-    ITER_CONTEXT_WHILE (!success);
+    g_main_loop_run (data.loop);
 
     const char *image_name = "Dropped image.png";
     g_autoptr (GFile) saved_image = g_file_new_build_filename (test_get_tmp_dir (), image_name, NULL);
 
+    g_assert_true (data.success);
     g_assert_true (g_file_query_exists (saved_image, NULL));
 
     test_clear_tmp_dir ();
