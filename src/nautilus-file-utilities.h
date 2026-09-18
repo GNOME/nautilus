@@ -72,7 +72,6 @@ void nautilus_restore_files_from_trash (GList *files,
 
 typedef void (*NautilusMountGetContent) (const char **content, gpointer user_data);
 
-char ** nautilus_get_cached_x_content_types_for_mount (GMount *mount);
 void nautilus_get_x_content_types_for_mount_async (GMount *mount,
 						   NautilusMountGetContent callback,
 						   GCancellable *cancellable,
@@ -123,8 +122,6 @@ void nautilus_ensure_extension_points (void);
 void nautilus_ensure_extension_builtins (void);
 
 gboolean nautilus_file_can_rename_files (GList *files);
-
-GList * nautilus_file_list_from_uri_list (GList *uris);
 
 gboolean check_schema_available (const gchar *schema_id);
 gboolean is_external_volume (GVolume *volume);

@@ -4218,25 +4218,6 @@ nautilus_sidebar_get_location (NautilusSidebar *sidebar)
     return file;
 }
 
-char *
-nautilus_sidebar_get_location_title (NautilusSidebar *sidebar)
-{
-    GtkListBoxRow *selected;
-    char *title;
-
-    g_return_val_if_fail (sidebar != NULL, NULL);
-
-    title = NULL;
-    selected = gtk_list_box_get_selected_row (GTK_LIST_BOX (sidebar->list_box));
-
-    if (selected)
-    {
-        g_object_get (selected, "label", &title, NULL);
-    }
-
-    return title;
-}
-
 /*
  * nautilus_sidebar_get_nth_bookmark:
  * @sidebar: a places sidebar

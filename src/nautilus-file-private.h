@@ -211,8 +211,6 @@ void          nautilus_file_clear_info                     (NautilusFile        
  * new state.  */
 gboolean      nautilus_file_update_info                    (NautilusFile           *file,
 							    GFileInfo              *info);
-gboolean      nautilus_file_update_name                    (NautilusFile           *file,
-							    const char             *name);
 gboolean      nautilus_file_update_thumbnail_info          (NautilusFile           *file,
                                                             GFileInfo              *info);
 gboolean      nautilus_file_update_metadata_from_info      (NautilusFile           *file,

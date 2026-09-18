@@ -22,8 +22,6 @@ struct _NautilusViewCellClass
 };
 
 NautilusListBase *nautilus_view_cell_get_view (NautilusViewCell *self);
-void nautilus_view_cell_set_item (NautilusViewCell      *self,
-                                  NautilusViewItem *item);
 NautilusViewItem *nautilus_view_cell_get_item (NautilusViewCell *self);
 guint nautilus_view_cell_get_position (NautilusViewCell *self);
 

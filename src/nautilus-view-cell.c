@@ -198,16 +198,6 @@ nautilus_view_cell_get_view (NautilusViewCell *self)
     return priv->view;
 }
 
-void
-nautilus_view_cell_set_item (NautilusViewCell *self,
-                             NautilusViewItem *item)
-{
-    g_return_if_fail (NAUTILUS_IS_VIEW_CELL (self));
-    g_return_if_fail (item == NULL || NAUTILUS_IS_VIEW_ITEM (item));
-
-    g_object_set (self, "item", item, NULL);
-}
-
 NautilusViewItem *
 nautilus_view_cell_get_item (NautilusViewCell *self)
 {
