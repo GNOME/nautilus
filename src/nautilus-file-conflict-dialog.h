@@ -51,7 +51,6 @@ void nautilus_file_conflict_dialog_set_suggested_name (NautilusFileConflictDialo
 void nautilus_file_conflict_dialog_set_replace_button_label (NautilusFileConflictDialog *fcd,
                                                              gchar *label);
 
-void nautilus_file_conflict_dialog_disable_skip (NautilusFileConflictDialog *fcd);
 void nautilus_file_conflict_dialog_disable_replace (NautilusFileConflictDialog *fcd);
 void nautilus_file_conflict_dialog_disable_apply_to_all (NautilusFileConflictDialog *fcd);
 
