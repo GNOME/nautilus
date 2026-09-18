@@ -28,8 +28,6 @@ void           nautilus_sidebar_row_reveal (NautilusSidebarRow *self);
 GtkWidget     *nautilus_sidebar_row_get_eject_button (NautilusSidebarRow *self);
 void           nautilus_sidebar_row_set_start_icon   (NautilusSidebarRow *self,
                                                  GIcon         *icon);
-void           nautilus_sidebar_row_set_end_icon     (NautilusSidebarRow *self,
-                                                 GIcon         *icon);
 void           nautilus_sidebar_row_set_busy         (NautilusSidebarRow *row,
                                                  gboolean       is_busy);
 
