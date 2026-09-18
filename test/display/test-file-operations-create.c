@@ -329,6 +329,8 @@ test_save_image_from_texture (void)
 
     g_assert_true (data.success);
     g_assert_true (g_file_query_exists (saved_image, NULL));
+
+    test_clear_tmp_dir ();
 }
 
 static void
@@ -353,7 +355,7 @@ test_save_image_from_clipboard (void)
 
     g_main_loop_run (data.loop);
 
-    const char *image_name = "Dropped image.png";
+    const char *image_name = "Pasted image.png";
     g_autoptr (GFile) saved_image = g_file_new_build_filename (test_get_tmp_dir (), image_name, NULL);
 
     g_assert_true (data.success);
