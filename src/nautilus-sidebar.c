@@ -2690,11 +2690,11 @@ on_key_pressed (GtkEventControllerKey *controller,
 
             if ((state & modifiers) == GDK_SHIFT_MASK)
             {
-                open_flags = NAUTILUS_OPEN_FLAG_NEW_TAB;
+                open_flags = NAUTILUS_OPEN_FLAG_NEW_WINDOW;
             }
             else if ((state & modifiers) == GDK_CONTROL_MASK)
             {
-                open_flags = NAUTILUS_OPEN_FLAG_NEW_WINDOW;
+                open_flags = NAUTILUS_OPEN_FLAG_NEW_TAB;
             }
 
             open_row (NAUTILUS_SIDEBAR_ROW (row), open_flags);
