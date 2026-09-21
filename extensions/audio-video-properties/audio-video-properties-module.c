@@ -71,8 +71,7 @@ disable_gst_display_decoders (void)
 
     for (guint i = 0; i < G_N_ELEMENTS (disabled_plugins); i++)
     {
-        GstPlugin *plugin = gst_registry_find_plugin (registry,
-                                                      disabled_plugins[i]);
+        g_autoptr (GstPlugin) plugin = gst_registry_find_plugin (registry, disabled_plugins[i]);
 
         if (plugin != NULL)
         {
