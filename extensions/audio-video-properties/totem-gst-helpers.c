@@ -47,7 +47,7 @@ totem_gst_disable_display_decoders (void)
 
     for (i = 0; i < G_N_ELEMENTS (blacklisted_plugins); i++)
     {
-        GstPlugin *plugin =
+        g_autoptr (GstPlugin) plugin =
             gst_registry_find_plugin (registry,
                                       blacklisted_plugins[i]);
         if (plugin)
