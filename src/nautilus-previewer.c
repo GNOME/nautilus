@@ -402,7 +402,7 @@ nautilus_previewer_call_show_file (const gchar        *uri,
     clear_exported_window_handle ();
     g_set_weak_pointer (&current_window, window);
     g_signal_connect_object (g_application_get_default (), "last-window-closed",
-                             G_CALLBACK (previewer_call_close), window, 0);
+                             G_CALLBACK (previewer_call_close), window, G_CONNECT_DEFAULT);
 
     GdkSurface *gdk_surface = gtk_native_get_surface (GTK_NATIVE (window));
 #ifdef GDK_WINDOWING_X11
