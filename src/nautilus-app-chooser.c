@@ -69,6 +69,13 @@ static void
 on_app_chosen (NautilusAppChooser *self)
 {
     g_autoptr (GAppInfo) info = nautilus_app_chooser_get_app_info (self);
+
+    if (info == NULL)
+    {
+        switch_to_search (self);
+        return;
+    }
+
     gboolean set_new_default = FALSE;
     g_autoptr (GError) error = NULL;
 
@@ -271,6 +278,8 @@ nautilus_app_chooser_constructed (GObject *object)
 
     g_signal_connect_object (limited_widget, "app-chosen",
                              G_CALLBACK (on_app_chosen), self, G_CONNECT_SWAPPED);
+    g_signal_connect_object (limited_widget, "show-all",
+                             G_CALLBACK (switch_to_search), self, G_CONNECT_SWAPPED);
     g_signal_connect_object (all_widget, "app-chosen",
                              G_CALLBACK (on_app_chosen), self, G_CONNECT_SWAPPED);
 
