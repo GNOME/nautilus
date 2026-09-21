@@ -122,7 +122,7 @@ update_general (AudioVideoPropertiesModel *self,
     guint i;
     GDate *date;
     GstDateTime *datetime;
-    gchar *comment;
+    g_autofree char *comment = NULL;
 
     for (i = 0; i < G_N_ELEMENTS (items); i++)
     {
@@ -140,8 +140,9 @@ update_general (AudioVideoPropertiesModel *self,
     if (gst_tag_list_get_string (list, GST_TAG_COMMENT, &comment) ||
         gst_tag_list_get_string (list, GST_TAG_DESCRIPTION, &comment))
     {
-        append_item (self, _("Comment"), comment);
-        g_free (comment);
+        g_autofree char *escaped = g_markup_escape_text (comment, -1);
+
+        append_item (self, _("Comment"), escaped);
     }
 
     /* Date */
