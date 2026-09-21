@@ -600,31 +600,17 @@ compare_section (gconstpointer a,
     const NautilusAppItem *item1 = a;
     const NautilusAppItem *item2 = b;
 
-    if (item1->is_default && !item2->is_default)
+    if (item1->is_default != item2->is_default)
     {
-        return -1;
+        return item1->is_default ? -1 : 1;
     }
-    else if (!item1->is_default && item2->is_default)
+    else if (item1->is_recommended != item2->is_recommended)
     {
-        return 1;
+        return item1->is_recommended ? -1 : 1;
     }
-
-    if (item1->is_recommended && !item2->is_recommended)
+    else if (item1->is_fallback != item2->is_fallback)
     {
-        return -1;
-    }
-    else if (!item1->is_recommended && item2->is_recommended)
-    {
-        return 1;
-    }
-
-    if (item1->is_fallback && !item2->is_fallback)
-    {
-        return -1;
-    }
-    else if (!item1->is_fallback && item2->is_fallback)
-    {
-        return 1;
+        return item1->is_fallback ? -1 : 1;
     }
 
     return 0;
