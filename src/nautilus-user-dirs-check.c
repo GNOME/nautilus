@@ -346,7 +346,6 @@ update_locale (XdgDirEntry *old_entries)
     int fd;
     char *filename;
     char *cmdline;
-    int i, j;
     GListStore *list_store;
     char *std_out, *std_err;
     gboolean has_changes;
@@ -382,50 +381,25 @@ update_locale (XdgDirEntry *old_entries)
 
     list_store = g_list_store_new (GTK_TYPE_STRING_LIST);
     has_changes = FALSE;
-    for (i = 0; old_entries[i].type != NULL; i++)
+    for (guint i = 0; new_entries[i].type != NULL; i++)
     {
-        for (j = 0; new_entries[j].type != NULL; j++)
+        XdgDirEntry *old_entry = find_dir_entry (old_entries, new_entries[i].type);
+
+        if (old_entry == NULL)
         {
-            if (strcmp (old_entries[i].type, new_entries[j].type) == 0)
-            {
-                break;
-            }
-        }
-        if (new_entries[j].type != NULL &&
-            strcmp (old_entries[i].path, new_entries[j].path) != 0)
-        {
-            char *from, *to;
-            g_autoptr (GtkStringList) string_list = NULL;
-            from = g_filename_display_name (old_entries[i].path);
-            to = g_filename_display_name (new_entries[j].path);
-            string_list = gtk_string_list_new ((const char *[]){ from, to, NULL });
+            g_autofree char *to = g_filename_display_name (new_entries[i].path);
+            g_autoptr (GtkStringList) string_list = gtk_string_list_new ((const char *[]){ "-", to, NULL });
+
             g_list_store_append (list_store, string_list);
-
-            g_free (from);
-            g_free (to);
-
             has_changes = TRUE;
         }
-    }
-    for (j = 0; new_entries[j].type != NULL; j++)
-    {
-        for (i = 0; old_entries[i].type != NULL; i++)
+        else if (strcmp (new_entries[i].path, old_entry->path) != 0)
         {
-            if (strcmp (old_entries[i].type, new_entries[j].type) == 0)
-            {
-                break;
-            }
-        }
-        if (old_entries[i].type == NULL)
-        {
-            char *to;
-            g_autoptr (GtkStringList) string_list = NULL;
-            to = g_filename_display_name (new_entries[j].path);
-            string_list = gtk_string_list_new ((const char *[]){ "-", to, NULL });
+            g_autofree char *from = g_filename_display_name (old_entry->path);
+            g_autofree char *to = g_filename_display_name (new_entries[i].path);
+            g_autoptr (GtkStringList) string_list = gtk_string_list_new ((const char *[]){ from, to, NULL });
+
             g_list_store_append (list_store, string_list);
-
-            g_free (to);
-
             has_changes = TRUE;
         }
     }
