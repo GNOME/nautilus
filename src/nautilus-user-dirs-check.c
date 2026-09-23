@@ -254,7 +254,50 @@ typedef struct
 } EntryData;
 
 static void
-on_response (AdwDialog *self,
+update_folders (EntryData *data)
+{
+    g_autoptr (GStrvBuilder) xdg_update_call = g_strv_builder_new ();
+
+    g_strv_builder_add (xdg_update_call, "xdg-user-dirs-update --force");
+
+    if (!g_spawn_command_line_sync ("xdg-user-dirs-update --force", NULL, NULL, &exit_status, NULL) ||
+        !WIFEXITED (exit_status) ||
+        WEXITSTATUS (exit_status) != 0)
+    {
+        AdwDialog *dialog = adw_alert_dialog_new (
+            _("Failed to Rename Folders"),
+            _("There was an error while updating the folders"),
+            NULL);
+
+        adw_alert_dialog_add_response (ADW_ALERT_DIALOG (dialog), "close", _("_OK"));
+        adw_dialog_present (dialog, NULL);
+    }
+    else
+    {
+        /* Change succeeded, remove any leftover empty directories */
+        for (i = 0; old_entries[i].type != NULL; i++)
+        {
+            /* Never remove homedir */
+            if (strcmp (old_entries[i].path, g_get_home_dir ()) == 0)
+            {
+                continue;
+            }
+
+            /* If the old path is used by the new config, don't remove */
+            entry = find_dir_entry_by_path (new_entries, old_entries[i].path);
+            if (entry)
+            {
+                continue;
+            }
+
+            /* Remove the dir, will fail if not empty */
+            g_rmdir (old_entries[i].path);
+        }
+    }
+}
+
+static void
+on_response (AdwDialog *dialog,
              gchar     *response,
              EntryData *data)
 {
@@ -266,40 +309,7 @@ on_response (AdwDialog *self,
 
     if (g_strcmp0 (response, "update") == 0)
     {
-        if (!g_spawn_command_line_sync ("xdg-user-dirs-update --force", NULL, NULL, &exit_status, NULL) ||
-            !WIFEXITED (exit_status) ||
-            WEXITSTATUS (exit_status) != 0)
-        {
-            AdwDialog *dialog = adw_alert_dialog_new (
-                _("Failed to Rename Folders"),
-                _("There was an error while updating the folders"),
-                NULL);
-
-            adw_alert_dialog_add_response (ADW_ALERT_DIALOG (dialog), "close", _("_OK"));
-            adw_dialog_present (dialog, NULL);
-        }
-        else
-        {
-            /* Change succeeded, remove any leftover empty directories */
-            for (i = 0; old_entries[i].type != NULL; i++)
-            {
-                /* Never remove homedir */
-                if (strcmp (old_entries[i].path, g_get_home_dir ()) == 0)
-                {
-                    continue;
-                }
-
-                /* If the old path is used by the new config, don't remove */
-                entry = find_dir_entry_by_path (new_entries, old_entries[i].path);
-                if (entry)
-                {
-                    continue;
-                }
-
-                /* Remove the dir, will fail if not empty */
-                g_rmdir (old_entries[i].path);
-            }
-        }
+        update_folders (data);
     }
     else if (g_strcmp0 (response, "keep") == 0)
     {
