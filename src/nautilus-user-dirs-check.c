@@ -337,6 +337,16 @@ bind (GtkSignalListItemFactory *factory,
     gtk_label_set_label (GTK_LABEL (child), label);
 }
 
+static gboolean
+is_home_dir_subfolder (const char *path)
+{
+    g_autoptr (GFile) location = g_file_new_for_path (path);
+    g_autoptr (GFile) parent_location = g_file_get_parent (location);
+    g_autofree char *parent_path = g_file_get_path (parent_location);
+
+    return g_strcmp0 (parent_path, g_get_home_dir ()) == 0;
+}
+
 static void
 update_locale (XdgDirEntry *old_entries)
 {
@@ -392,6 +402,10 @@ update_locale (XdgDirEntry *old_entries)
 
             g_list_store_append (list_store, string_list);
             has_changes = TRUE;
+        }
+        else if (!is_home_dir_subfolder (old_entry->path))
+        {
+            continue;
         }
         else if (strcmp (new_entries[i].path, old_entry->path) != 0)
         {
