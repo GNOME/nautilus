@@ -270,7 +270,10 @@ on_response (AdwDialog *self,
             !WIFEXITED (exit_status) ||
             WEXITSTATUS (exit_status) != 0)
         {
-            AdwDialog *dialog = adw_alert_dialog_new (_("There was an error updating the folders"), NULL);
+            AdwDialog *dialog = adw_alert_dialog_new (
+                _("Failed to Rename Folders"),
+                _("There was an error while updating the folders"),
+                NULL);
 
             adw_alert_dialog_add_response (ADW_ALERT_DIALOG (dialog), "close", _("_OK"));
             adw_dialog_present (dialog, NULL);

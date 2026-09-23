@@ -2,9 +2,9 @@ using Gtk 4.0;
 using Adw 1;
 
 Adw.AlertDialog user_dirs_dialog {
-  heading: _("Update standard folders to current language?");
+  heading: _("Rename Folders?");
   body: _(
-    "You have logged in in a new language. You can automatically update the names of some standard folders in your home folder to match this language. The update would change the following folders:"
+    "The system language has changed. Should the following folders in your Home directory be renamed?"
   );
   prefer-wide-layout: true;
   default-response: "update";
@@ -21,12 +21,12 @@ Adw.AlertDialog user_dirs_dialog {
       model: NoSelection selection_model {};
 
       ColumnViewColumn current_column {
-        title: _("Current folder name");
+        title: _("Current Folder Name");
         factory: SignalListItemFactory old_factory {};
       }
 
       ColumnViewColumn new_column {
-        title: _("New folder name");
+        title: _("New Folder Name");
         expand: true;
         factory: SignalListItemFactory new_factory {};
       }
