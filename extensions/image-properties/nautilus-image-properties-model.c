@@ -26,23 +26,23 @@ typedef struct
 } NautilusImagesPropertiesModel;
 
 /* tags and their alternatives */
-const char *title[] = { "Xmp.dc.title", NULL };
-const char *camera_brand[] = { "Exif.Image.Make", NULL };
-const char *camera_model[] = { "Exif.Image.Model", "Exif.Image.UniqueCameraModel", NULL };
-const char *created_on[] = { "Exif.Photo.DateTimeOriginal", "Xmp.xmp.CreateDate", "Exif.Image.DateTime", NULL };
-const char *exposure_time[] = { "Exif.Photo.ExposureTime", NULL };
-const char *aperture_value[] = { "Exif.Photo.ApertureValue", NULL };
-const char *iso_speed_ratings[] = { "Exif.Photo.ISOSpeedRatings", "Xmp.exifEX.ISOSpeed", NULL };
-const char *flash[] = { "Exif.Photo.Flash", NULL };
-const char *metering_mode[] = { "Exif.Photo.MeteringMode", NULL };
-const char *exposure_mode[] = { "Exif.Photo.ExposureMode", NULL };
-const char *focal_length[] = { "Exif.Photo.FocalLength", NULL };
-const char *software[] = { "Exif.Image.Software", NULL };
-const char *description[] = { "Xmp.dc.description", "Exif.Photo.UserComment", NULL };
-const char *subject[] = { "Xmp.dc.subject", NULL };
-const char *creator[] = { "Xmp.dc.creator", "Exif.Image.Artist", NULL };
-const char *rights[] = { "Xmp.dc.rights", NULL };
-const char *rating[] = { "Xmp.xmp.Rating", NULL };
+static const char *title[] = { "Xmp.dc.title", NULL };
+static const char *camera_brand[] = { "Exif.Image.Make", NULL };
+static const char *camera_model[] = { "Exif.Image.Model", "Exif.Image.UniqueCameraModel", NULL };
+static const char *created_on[] = { "Exif.Photo.DateTimeOriginal", "Xmp.xmp.CreateDate", "Exif.Image.DateTime", NULL };
+static const char *exposure_time[] = { "Exif.Photo.ExposureTime", NULL };
+static const char *aperture_value[] = { "Exif.Photo.ApertureValue", NULL };
+static const char *iso_speed_ratings[] = { "Exif.Photo.ISOSpeedRatings", "Xmp.exifEX.ISOSpeed", NULL };
+static const char *flash[] = { "Exif.Photo.Flash", NULL };
+static const char *metering_mode[] = { "Exif.Photo.MeteringMode", NULL };
+static const char *exposure_mode[] = { "Exif.Photo.ExposureMode", NULL };
+static const char *focal_length[] = { "Exif.Photo.FocalLength", NULL };
+static const char *software[] = { "Exif.Image.Software", NULL };
+static const char *description[] = { "Xmp.dc.description", "Exif.Photo.UserComment", NULL };
+static const char *subject[] = { "Xmp.dc.subject", NULL };
+static const char *creator[] = { "Xmp.dc.creator", "Exif.Image.Artist", NULL };
+static const char *rights[] = { "Xmp.dc.rights", NULL };
+static const char *rating[] = { "Xmp.xmp.Rating", NULL };
 
 static void
 nautilus_images_properties_model_free (NautilusImagesPropertiesModel *self)
