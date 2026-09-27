@@ -380,4 +380,30 @@ Adw.ShortcutsDialog shortcuts_dialog {
       action-name: "app.quit";
     }
   }
+
+  Adw.ShortcutsSection {
+    title: C_("shortcuts dialog", "Preview");
+
+    Adw.ShortcutsItem {
+      title: C_("shortcuts dialog", "Open With Default App");
+      accelerator: "o";
+    }
+
+    Adw.ShortcutsItem {
+      title: C_("shortcuts dialog", "Toggle Fullscreen");
+      accelerator: "F11 f";
+    }
+
+    Adw.ShortcutsItem {
+      title: C_("shortcuts dialog", "Exit Preview");
+      accelerator: "Escape";
+    }
+  }
+
+  Adw.ShortcutsSection {
+    Adw.ShortcutsItem {
+      title: C_("shortcuts dialog", "Play/Pause");
+      accelerator: "p";
+    }
+  }
 }
