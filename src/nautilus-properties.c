@@ -643,12 +643,6 @@ set_icon (NautilusPropertiesWidget *self,
 {
     g_autoptr (GlyLoader) loader = gly_loader_new (location);
 
-    /* Get tested image location */
-    g_autoptr (GFile) icon_location = NULL;
-
-    g_object_get (loader, "file", &icon_location, NULL);
-    g_return_if_fail (icon_location != NULL);
-
     if (self->icon_cancellable != NULL)
     {
         g_cancellable_cancel (self->icon_cancellable);
