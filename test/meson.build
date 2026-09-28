@@ -21,7 +21,7 @@ libtestutils_dep = declare_dependency(
   link_with: libtestutils,
   include_directories: include_directories('.'),
   dependencies: libnautilus_dep,
-  sources: resources
+  sources: resources_header
 )
 
 subdir('displayless')

@@ -14,3 +14,12 @@ resources = gnome.compile_resources(
   c_name: 'nautilus',
   extra_args: '--manual-register'
 )
+
+resources_header = []
+
+foreach res : resources
+  filename = res.full_path().split('/')[-1]
+  if filename == 'nautilus-resources.h'
+    resources_header += res
+  endif
+endforeach
