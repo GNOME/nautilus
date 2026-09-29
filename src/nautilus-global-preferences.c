@@ -10,8 +10,6 @@
 #include "nautilus-global-preferences.h"
 
 #include "nautilus-file-utilities.h"
-#include "nautilus-file.h"
-#include <glib/gi18n.h>
 
 GSettings *nautilus_preferences;
 GSettings *nautilus_compression_preferences;

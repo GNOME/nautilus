@@ -27,7 +27,6 @@
 #include "nautilus-application.h"
 #include "nautilus-app-chooser.h"
 #include "nautilus-batch-rename-dialog.h"
-#include "nautilus-batch-rename-utilities.h"
 #include "nautilus-clipboard.h"
 #include "nautilus-compress-dialog.h"
 #include "nautilus-dbus-launcher.h"

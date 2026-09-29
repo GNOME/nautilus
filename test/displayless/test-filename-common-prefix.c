@@ -1,5 +1,4 @@
 #include <glib.h>
-#include <glib/gprintf.h>
 
 #include "nautilus-filename-utilities.h"
 

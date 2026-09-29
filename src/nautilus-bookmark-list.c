@@ -14,8 +14,6 @@
 
 #include "nautilus-bookmark.h"
 #include "nautilus-file-utilities.h"
-#include "nautilus-file.h"
-#include "nautilus-icon-names.h"
 #include "nautilus-scheme.h"
 
 #include <gio/gio.h>

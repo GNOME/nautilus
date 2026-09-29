@@ -17,16 +17,13 @@
 #include <gio/gio.h>
 #include <glib.h>
 #include <glib/gi18n.h>
-#include <glib/gstdio.h>
 #include <gnome-autoar/gnome-autoar.h>
 #include <grp.h>
 #include <gtk/gtk.h>
 #include <sys/types.h>
 #include <limits.h>
 #include <pwd.h>
-#include <stdlib.h>
 #include <sys/stat.h>
-#include <sys/time.h>
 #include <time.h>
 #include <unistd.h>
 
@@ -39,7 +36,6 @@
 #include "nautilus-file-undo-manager.h"
 #include "nautilus-file-undo-operations.h"
 #include "nautilus-file-utilities.h"
-#include "nautilus-filename-utilities.h"
 #include "nautilus-global-preferences.h"
 #include "nautilus-icon-info.h"
 #include "nautilus-metadata.h"
@@ -50,7 +46,6 @@
 #include "nautilus-tag-manager.h"
 #include "nautilus-thumbnails.h"
 #include "nautilus-ui-utilities.h"
-#include "nautilus-vfs-file.h"
 
 #ifdef HAVE_SELINUX
 #include <selinux/selinux.h>

@@ -6,11 +6,12 @@
 
 #include "nautilus-name-cell.h"
 
+#include <adwaita.h>
+
 #include "nautilus-directory.h"
 #include "nautilus-file.h"
 #include "nautilus-file-utilities.h"
 #include "nautilus-image.h"
-#include "nautilus-thumbnails.h"
 #include "nautilus-ui-utilities.h"
 #include "nautilus-view-item.h"
 

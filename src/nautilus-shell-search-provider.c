@@ -9,7 +9,6 @@
  */
 
 #include <config.h>
-#include "nautilus-search-provider.h"
 
 #include <gio/gio.h>
 #include <string.h>
@@ -23,7 +22,6 @@
 #include "nautilus-scheme.h"
 #include "nautilus-search-engine.h"
 #include "nautilus-search-hit.h"
-#include "nautilus-ui-utilities.h"
 
 #include "nautilus-application.h"
 #include "nautilus-bookmark-list.h"

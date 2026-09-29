@@ -11,7 +11,6 @@
 #include <config.h>
 
 #include "nautilus-ui-utilities.h"
-#include "nautilus-icon-info.h"
 #include "nautilus-application.h"
 
 #include <gio/gio.h>

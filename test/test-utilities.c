@@ -8,13 +8,10 @@
 
 #include "test-utilities.h"
 
-#include <sched.h>
 #include <sys/random.h>
 #include <sys/types.h>
-#include <sys/wait.h>
 #include <nautilus-file.h>
 #include <src/nautilus-file-undo-manager.h>
-#include <src/nautilus-file-utilities.h>
 #include <nautilus-thumbnails.h>
 
 #include <glycin.h>

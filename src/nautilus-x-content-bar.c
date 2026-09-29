@@ -15,7 +15,6 @@
 #include <string.h>
 
 #include "nautilus-x-content-bar.h"
-#include "nautilus-icon-info.h"
 #include "nautilus-file-utilities.h"
 #include "nautilus-program-choosing.h"
 

@@ -10,7 +10,6 @@
 #include "nautilus-menu.h"
 
 #include <glib.h>
-#include <glib/gi18n-lib.h>
 
 /**
  * NautilusMenu:

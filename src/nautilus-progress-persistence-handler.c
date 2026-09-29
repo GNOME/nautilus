@@ -15,7 +15,6 @@
 #include "nautilus-progress-persistence-handler.h"
 
 #include "nautilus-application.h"
-#include "nautilus-progress-info-widget.h"
 
 #include <glib/gi18n.h>
 

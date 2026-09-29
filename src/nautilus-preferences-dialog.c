@@ -13,9 +13,7 @@
 
 #include <adwaita.h>
 #include <glib/gi18n.h>
-#include <nautilus-extension.h>
 
-#include "nautilus-column-utilities.h"
 #include "nautilus-date-utilities.h"
 #include "nautilus-global-preferences.h"
 

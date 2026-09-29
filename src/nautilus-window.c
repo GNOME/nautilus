@@ -16,11 +16,8 @@
 
 #include "nautilus-window.h"
 
-#include <gdk/gdkkeysyms.h>
 #include <glib/gi18n.h>
 #include <gtk/gtk.h>
-#include <math.h>
-#include <sys/time.h>
 
 #ifdef GDK_WINDOWING_WAYLAND
 #include <gdk/wayland/gdkwayland.h>
@@ -31,28 +28,20 @@
 #endif
 
 #include "nautilus-application.h"
-#include "nautilus-bookmark.h"
-#include "nautilus-bookmark-list.h"
-#include "nautilus-clipboard.h"
 #include "nautilus-dnd.h"
 #include "nautilus-enums.h"
 #include "nautilus-file.h"
 #include "nautilus-file-operations.h"
 #include "nautilus-file-undo-manager.h"
 #include "nautilus-file-undo-operations.h"
-#include "nautilus-file-utilities.h"
 #include "nautilus-global-preferences.h"
-#include "nautilus-metadata.h"
 #include "nautilus-network-address-bar.h"
-#include "nautilus-mime-actions.h"
 #include "nautilus-module.h"
 #include "nautilus-progress-indicator.h"
 #include "nautilus-scheme.h"
 #include "nautilus-shortcut-manager.h"
 #include "nautilus-sidebar.h"
-#include "nautilus-signaller.h"
 #include "nautilus-toolbar.h"
-#include "nautilus-trash-monitor.h"
 #include "nautilus-ui-utilities.h"
 #include "nautilus-window-slot.h"
 

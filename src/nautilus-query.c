@@ -9,7 +9,6 @@
 #include "nautilus-query.h"
 
 #include "nautilus-date-utilities.h"
-#include "nautilus-enum-types.h"
 #include "nautilus-file.h"
 #include "nautilus-global-preferences.h"
 #include "nautilus-scheme.h"

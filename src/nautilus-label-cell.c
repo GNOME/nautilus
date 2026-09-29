@@ -9,7 +9,6 @@
 /* Needed for NautilusColumn (full GType). */
 #include <nautilus-extension.h>
 
-#include "nautilus-column.h"
 #include "nautilus-file.h"
 #include "nautilus-global-preferences.h"
 #include "nautilus-view-item.h"

@@ -16,8 +16,6 @@
 
 #include "nautilus-file-operations.h"
 #include "nautilus-file.h"
-#include "nautilus-file-undo-manager.h"
-#include "nautilus-batch-rename-dialog.h"
 #include "nautilus-scheme.h"
 #include "nautilus-tag-manager.h"
 

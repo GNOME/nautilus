@@ -8,7 +8,6 @@
 
 #pragma once
 
-#include <gdk/gdk.h>
 #include <gio/gio.h>
 
 void nautilus_file_changes_queue_file_added                      (GFile      *location);

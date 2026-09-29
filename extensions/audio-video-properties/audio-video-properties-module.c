@@ -11,7 +11,6 @@
 #include <glib/gi18n-lib.h>
 #define GST_USE_UNSTABLE_API 1
 #include <gst/gst.h>
-#include <gst/gstprotection.h>
 
 #include "audio-video-properties-model.h"
 #include <nautilus-extension.h>

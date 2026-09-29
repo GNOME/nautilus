@@ -5,7 +5,6 @@
 #include <nautilus-file-private.h>
 #include <nautilus-file-undo-manager.h>
 #include <nautilus-file-utilities.h>
-#include <nautilus-file-undo-manager.h>
 #include <test-utilities.h>
 
 

@@ -12,8 +12,6 @@
 #include <gtk/gtk.h>
 #include <string.h>
 
-#include "nautilus-directory-notify.h"
-#include "nautilus-directory-private.h"
 #include "nautilus-enums.h"
 #include "nautilus-file-private.h"
 #include "nautilus-file-utilities.h"

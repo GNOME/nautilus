@@ -20,8 +20,6 @@
 
 #include <glib/gi18n.h>
 
-#include "nautilus-clipboard.h"
-#include "nautilus-dnd.h"
 #include "nautilus-ui-utilities.h"
 
 #define MAX_LEN_FILENAME 64

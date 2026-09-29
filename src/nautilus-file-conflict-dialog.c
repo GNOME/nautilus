@@ -15,7 +15,6 @@
 #include <string.h>
 #include <glib-object.h>
 #include <gio/gio.h>
-#include <glib/gi18n.h>
 #include <pango/pango.h>
 
 #include "nautilus-file.h"

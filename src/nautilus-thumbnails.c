@@ -13,9 +13,6 @@
 
 #define GNOME_DESKTOP_USE_UNSTABLE_API
 
-#include "nautilus-directory-notify.h"
-#include "nautilus-global-preferences.h"
-#include "nautilus-file-utilities.h"
 #include "nautilus-hash-queue.h"
 
 #include <glycin.h>

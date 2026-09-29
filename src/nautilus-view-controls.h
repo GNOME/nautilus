@@ -9,8 +9,6 @@
 #include <adwaita.h>
 #include <gtk/gtk.h>
 
-#include "nautilus-types.h"
-
 G_BEGIN_DECLS
 
 #define NAUTILUS_TYPE_VIEW_CONTROLS (nautilus_view_controls_get_type())

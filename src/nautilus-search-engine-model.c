@@ -11,7 +11,6 @@
 #include "nautilus-search-engine-model.h"
 
 #include "nautilus-directory.h"
-#include "nautilus-directory-private.h"
 #include "nautilus-file.h"
 #include "nautilus-query.h"
 #include "nautilus-search-hit.h"

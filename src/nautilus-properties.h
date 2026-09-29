@@ -11,7 +11,6 @@
 
 #include "nautilus-types.h"
 
-#include <adwaita.h>
 #include <gtk/gtk.h>
 
 void

@@ -7,7 +7,6 @@
 #include "nautilus-list-base.h"
 #include "nautilus-list-base-private.h"
 
-#include "nautilus-application.h"
 #include "nautilus-directory.h"
 #include "nautilus-dnd.h"
 #include "nautilus-view-cell.h"
@@ -15,10 +14,7 @@
 #include "nautilus-view-model.h"
 #include "nautilus-enum-types.h"
 #include "nautilus-file.h"
-#include "nautilus-file-operations.h"
-#include "nautilus-metadata.h"
 #include "nautilus-global-preferences.h"
-#include "nautilus-thumbnails.h"
 
 #ifdef GDK_WINDOWING_X11
 #include <gdk/x11/gdkx.h>

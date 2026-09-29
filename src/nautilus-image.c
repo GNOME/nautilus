@@ -10,15 +10,12 @@
 
 #include "nautilus-image.h"
 
-#include "nautilus-file.h"
 #include "nautilus-global-preferences.h"
 #include "nautilus-hash-queue.h"
 #include "nautilus-mime-actions.h"
-#include "nautilus-scheme.h"
 #include "nautilus-thumbnails.h"
 #include "nautilus-ui-utilities.h"
 
-#include <adwaita.h>
 #include <gtk/gtk.h>
 
 struct _NautilusImage

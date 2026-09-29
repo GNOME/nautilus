@@ -17,7 +17,6 @@
 #include "nautilus-file-operations.h"
 #include "nautilus-file-operations-dbus-data.h"
 #include "nautilus-file-undo-manager.h"
-#include "nautilus-file.h"
 
 struct _NautilusDBusManager
 {

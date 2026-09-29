@@ -13,7 +13,6 @@
 #include <glib/gi18n.h>
 #include "nautilus-progress-info.h"
 #include "nautilus-progress-info-manager.h"
-#include "nautilus-icon-info.h"
 
 enum
 {

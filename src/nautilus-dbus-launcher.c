@@ -8,7 +8,6 @@
 
 #include <glib/gi18n.h>
 
-#include "nautilus-file.h"
 #include "nautilus-ui-utilities.h"
 
 

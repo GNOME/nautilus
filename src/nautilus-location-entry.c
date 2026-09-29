@@ -15,15 +15,11 @@
 #include <config.h>
 #include "nautilus-location-entry.h"
 
-#include "nautilus-application.h"
 #include "nautilus-scheme.h"
 #include <gtk/gtk.h>
 #include <gdk/gdkkeysyms.h>
 #include <glib/gi18n.h>
 #include <gio/gio.h>
-#include "nautilus-file-utilities.h"
-#include "nautilus-clipboard.h"
-#include <stdio.h>
 #include <string.h>
 
 typedef enum

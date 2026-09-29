@@ -1,12 +1,9 @@
-#include "test-utilities.h"
-
 #include <src/nautilus-file-utilities.h>
 #include <src/nautilus-global-preferences.h>
 #include <src/nautilus-localsearch-utilities.h>
 #include <src/nautilus-query.h>
 #include <src/nautilus-search-engine.h>
 #include <src/nautilus-search-hit.h>
-#include <src/nautilus-search-provider.h>
 
 #include <tinysparql.h>
 

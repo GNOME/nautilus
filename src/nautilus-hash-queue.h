@@ -8,7 +8,6 @@
 
 #pragma once
 
-#include "nautilus-types.h"
 
 #include <glib.h>
 

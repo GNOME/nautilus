@@ -8,7 +8,6 @@
 
 #include "nautilus-dialog-utilities.h"
 
-#include "nautilus-error-reporting.h"
 #include "nautilus-operations-ui-manager.h"
 
 #include <adwaita.h>

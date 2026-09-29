@@ -13,11 +13,8 @@
 #include "nautilus-file.h"
 #include "nautilus-file-operations.h"
 #include "nautilus-filename-utilities.h"
-#include "nautilus-global-preferences.h"
 #include "nautilus-icon-names.h"
-#include "nautilus-metadata.h"
 #include "nautilus-network-directory.h"
-#include "nautilus-scheme.h"
 #include "nautilus-search-directory.h"
 #include "nautilus-starred-directory.h"
 #include "nautilus-ui-utilities.h"
@@ -27,7 +24,6 @@
 #include <glib/gstdio.h>
 #include <gio/gio.h>
 #include <unistd.h>
-#include <stdlib.h>
 #include <sys/vfs.h>
 
 #define NAUTILUS_USER_DIRECTORY_NAME "nautilus"

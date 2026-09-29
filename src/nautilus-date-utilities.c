@@ -13,7 +13,6 @@
 #include <glib.h>
 #include <glib/gi18n.h>
 #include <locale.h>
-#include <time.h>
 
 #include <unicode/udatpg.h>
 #include <unicode/ureldatefmt.h>

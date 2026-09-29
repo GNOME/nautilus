@@ -11,7 +11,6 @@
 #include <gio/gio.h>
 #include <gtk/gtk.h>
 #include <string.h>
-#include <sys/time.h>
 
 #include "nautilus-directory-private.h"
 #include "nautilus-file-private.h"

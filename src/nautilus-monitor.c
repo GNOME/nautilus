@@ -15,7 +15,6 @@
 #include <config.h>
 #include "nautilus-monitor.h"
 #include "nautilus-file-changes-queue.h"
-#include "nautilus-file-utilities.h"
 
 #include <gio/gio.h>
 

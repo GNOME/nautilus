@@ -9,7 +9,6 @@
 #include "nautilus-properties.h"
 
 #include <adwaita.h>
-#include <gdk/gdkkeysyms.h>
 #include <gio/gunixmounts.h>
 #include <glib/gi18n.h>
 #include <glycin.h>
@@ -24,16 +23,10 @@
 #include "nautilus-error-reporting.h"
 #include "nautilus-file-operations.h"
 #include "nautilus-file-utilities.h"
-#include "nautilus-global-preferences.h"
-#include "nautilus-icon-info.h"
 #include "nautilus-image.h"
 #include "nautilus-metadata.h"
-#include "nautilus-mime-actions.h"
 #include "nautilus-module.h"
-#include "nautilus-properties-model.h"
-#include "nautilus-properties-item.h"
 #include "nautilus-scheme.h"
-#include "nautilus-signaller.h"
 #include "nautilus-tag-manager.h"
 #include "nautilus-ui-utilities.h"
 

@@ -16,7 +16,6 @@
 #include "nautilus-file-utilities.h"
 #include "nautilus-global-preferences.h"
 #include "nautilus-hash-queue.h"
-#include "nautilus-metadata.h"
 #include "nautilus-monitor.h"
 #include "nautilus-signaller.h"
 #include "nautilus-thumbnails.h"

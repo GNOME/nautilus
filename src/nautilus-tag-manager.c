@@ -10,7 +10,6 @@
 #include "nautilus-file.h"
 #include "nautilus-file-undo-operations.h"
 #include "nautilus-file-undo-manager.h"
-#include "nautilus-localsearch-utilities.h"
 
 #include <glib/gi18n.h>
 #include <tinysparql.h>

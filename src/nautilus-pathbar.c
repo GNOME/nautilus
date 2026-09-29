@@ -21,7 +21,6 @@
 #include "nautilus-file.h"
 #include "nautilus-files-view.h"
 #include "nautilus-file-utilities.h"
-#include "nautilus-global-preferences.h"
 #include "nautilus-icon-names.h"
 #include "nautilus-scheme.h"
 #include "nautilus-trash-monitor.h"

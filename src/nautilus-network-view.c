@@ -9,7 +9,6 @@
 #include <glib/gi18n.h>
 
 #include "nautilus-file.h"
-#include "nautilus-global-preferences.h"
 #include "nautilus-list-base-private.h"
 #include "nautilus-network-cell.h"
 #include "nautilus-scheme.h"

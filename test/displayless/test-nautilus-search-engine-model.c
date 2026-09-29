@@ -5,7 +5,6 @@
 #include <src/nautilus-query.h>
 #include <src/nautilus-search-engine.h>
 #include <src/nautilus-search-hit.h>
-#include <src/nautilus-search-provider.h>
 
 static guint total_hits = 0;
 

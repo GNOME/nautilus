@@ -13,7 +13,6 @@
 #include <config.h>
 #include <glib/gi18n.h>
 #include <gxdp.h>
-#include <gxdp-dbus.h>
 #include <xdg-desktop-portal-dbus.h>
 
 #include "nautilus-file-chooser.h"

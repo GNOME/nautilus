@@ -11,10 +11,8 @@
 #include "nautilus-batch-rename-item.h"
 #include "nautilus-directory.h"
 #include "nautilus-file.h"
-#include "nautilus-error-reporting.h"
 #include "nautilus-batch-rename-utilities.h"
 
-#include <glib/gprintf.h>
 #include <glib.h>
 #include <string.h>
 #include <glib/gi18n.h>

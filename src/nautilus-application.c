@@ -17,18 +17,14 @@
 #include "nautilus-application.h"
 
 #include <adwaita.h>
-#include <fcntl.h>
 #include <gdk/gdk.h>
 #include <gio/gio.h>
 #include <gio/gunixmounts.h>
 #include <glib/gi18n.h>
-#include <glib/gstdio.h>
 #include <gtk/gtk.h>
 #include <gxdp.h>
 #include <libportal/portal.h>
 #include <nautilus-extension.h>
-#include <sys/stat.h>
-#include <sys/types.h>
 
 #include "nautilus-bookmark-list.h"
 #include "nautilus-clipboard.h"
@@ -37,10 +33,8 @@
 #include "nautilus-dbus-manager.h"
 #include "nautilus-directory-private.h"
 #include "nautilus-file.h"
-#include "nautilus-file-operations.h"
 #include "nautilus-file-undo-manager.h"
 #include "nautilus-file-utilities.h"
-#include "nautilus-files-view.h"
 #include "nautilus-freedesktop-dbus.h"
 #include "nautilus-global-preferences.h"
 #include "nautilus-icon-info.h"

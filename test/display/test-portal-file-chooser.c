@@ -8,13 +8,12 @@
 
 #define G_LOG_DOMAIN "test-portal-file-chooser"
 
+#include <config.h>
+
 #include <nautilus-application.h>
 #include <nautilus-file-chooser.h>
-#include <nautilus-file-utilities.h>
-#include <nautilus-filename-validator.h>
 #include <nautilus-resources.h>
 #include <nautilus-tag-manager.h>
-#include <nautilus-toolbar.h>
 
 #include <test-utilities.h>
 

@@ -15,7 +15,6 @@
 
 #include "nautilus-file.h"
 #include "nautilus-files-view.h"
-#include "nautilus-window.h"
 #include "nautilus-window-slot.h"
 
 #include <gio/gio.h>

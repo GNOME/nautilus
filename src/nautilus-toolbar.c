@@ -8,17 +8,13 @@
 
 #include "nautilus-toolbar.h"
 
-#include <glib/gi18n.h>
-#include <math.h>
 
 #include "nautilus-application.h"
-#include "nautilus-bookmark.h"
 #include "nautilus-global-preferences.h"
 #include "nautilus-history-controls.h"
 #include "nautilus-location-entry.h"
 #include "nautilus-pathbar.h"
 #include "nautilus-view-controls.h"
-#include "nautilus-ui-utilities.h"
 #include "nautilus-window-slot.h"
 
 struct _NautilusToolbar

@@ -24,7 +24,6 @@
 #include "nautilus-query-editor.h"
 #include "nautilus-scheme.h"
 #include "nautilus-tag-manager.h"
-#include "nautilus-toolbar.h"
 #include "nautilus-view-info.h"
 #include "nautilus-x-content-bar.h"
 
@@ -34,8 +33,6 @@
 #include "nautilus-file.h"
 #include "nautilus-file-utilities.h"
 #include "nautilus-global-preferences.h"
-#include "nautilus-module.h"
-#include "nautilus-monitor.h"
 #include "nautilus-ui-utilities.h"
 
 enum

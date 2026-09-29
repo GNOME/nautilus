@@ -7,7 +7,6 @@
  */
 
 #include <config.h>
-#include <glib/gi18n-lib.h>
 #include "nautilus-menu.h"
 
 typedef struct

@@ -17,8 +17,6 @@
 #include "nautilus-file-utilities.h"
 #include "nautilus-global-preferences.h"
 #include "nautilus-location-banner.h"
-#include "nautilus-enum-types.h"
-#include "nautilus-scheme.h"
 #include "nautilus-trash-monitor.h"
 
 #define USER_SHARE_CONNECTIONS "enabled-connections"

@@ -11,7 +11,6 @@
 
 #include <config.h>
 #include "nautilus-clipboard.h"
-#include "nautilus-file-utilities.h"
 #include "nautilus-file.h"
 
 #include <glib/gi18n.h>

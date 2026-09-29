@@ -8,7 +8,6 @@
 
 #pragma once
 
-#include <gtk/gtk.h>
 #include <gio/gio.h>
 
 #include "nautilus-enums.h"

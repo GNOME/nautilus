@@ -7,7 +7,6 @@
 
 #include "nautilus-icon-info.h"
 
-#include "nautilus-enums.h"
 #include <nautilus-hash-queue.h>
 
 #include <glycin.h>

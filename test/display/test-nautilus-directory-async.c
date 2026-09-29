@@ -1,8 +1,5 @@
 #include <src/nautilus-directory.h>
 #include <src/nautilus-file-utilities.h>
-#include <src/nautilus-search-directory.h>
-#include <src/nautilus-file.h>
-#include <unistd.h>
 
 static GMainLoop *main_loop;
 void *client1, *client2;

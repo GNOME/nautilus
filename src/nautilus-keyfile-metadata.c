@@ -12,13 +12,6 @@
 
 #include "nautilus-directory-notify.h"
 #include "nautilus-file-private.h"
-#include "nautilus-file-utilities.h"
-
-#include <glib/gstdio.h>
-
-#include <sys/types.h>
-#include <sys/stat.h>
-#include <fcntl.h>
 
 typedef struct
 {

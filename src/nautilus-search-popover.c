@@ -9,18 +9,14 @@
 
 #include "nautilus-date-range-dialog.h"
 #include "nautilus-date-utilities.h"
-#include "nautilus-enum-types.h"
 #include "nautilus-enums.h"
 #include "nautilus-search-popover.h"
 #include "nautilus-mime-actions.h"
 
 #include <glib/gi18n.h>
-#include "nautilus-file.h"
 #include "nautilus-global-preferences.h"
 #include "nautilus-icon-info.h"
 #include "nautilus-minimal-cell.h"
-#include "nautilus-query.h"
-#include "nautilus-ui-utilities.h"
 
  #define SEARCH_FILTER_MAX_YEARS 5
 

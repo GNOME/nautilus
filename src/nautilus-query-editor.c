@@ -16,7 +16,6 @@
 #include <gtk/gtk.h>
 #include <string.h>
 
-#include "nautilus-file.h"
 #include "nautilus-file-utilities.h"
 #include "nautilus-global-preferences.h"
 #include "nautilus-query.h"
@@ -24,7 +23,6 @@
 #include "nautilus-search-directory.h"
 #include "nautilus-search-popover.h"
 #include "nautilus-localsearch-utilities.h"
-#include "nautilus-ui-utilities.h"
 
 struct _NautilusQueryEditor
 {

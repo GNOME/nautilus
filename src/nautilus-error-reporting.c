@@ -16,7 +16,6 @@
 
 #include <string.h>
 #include <glib/gi18n.h>
-#include "nautilus-file.h"
 
 void
 nautilus_report_error_loading_directory (NautilusFile *file,

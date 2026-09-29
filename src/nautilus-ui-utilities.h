@@ -9,7 +9,6 @@
 
 #pragma once
 
-#include <adwaita.h>
 #include <gtk/gtk.h>
 
 #include "nautilus-enums.h"

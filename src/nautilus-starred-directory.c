@@ -7,12 +7,10 @@
 #include "nautilus-starred-directory.h"
 
 #include "nautilus-directory-private.h"
-#include "nautilus-file-private.h"
 #include "nautilus-file-utilities.h"
 #include "nautilus-internal-place-file.h"
 #include "nautilus-tag-manager.h"
 #include "nautilus-scheme.h"
-#include <glib/gi18n.h>
 
 struct _NautilusFavoriteDirectory
 {

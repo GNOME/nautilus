@@ -14,11 +14,7 @@
 
 #include <config.h>
 #include <string.h>
-#include <stdio.h>
-#include <stdarg.h>
-#include <math.h>
 #include <unistd.h>
-#include <sys/types.h>
 #include <stdlib.h>
 
 #include "nautilus-file-operations.h"
@@ -29,7 +25,6 @@
 
 #include <adwaita.h>
 #include <glib/gi18n.h>
-#include <glib/gstdio.h>
 #include <gdk/gdk.h>
 #include <gtk/gtk.h>
 #include <gio/gio.h>
@@ -38,10 +33,8 @@
 #include "nautilus-dialog-utilities.h"
 #include "nautilus-error-reporting.h"
 #include "nautilus-fd-holder.h"
-#include "nautilus-file-changes-queue.h"
 #include "nautilus-file-conflict-dialog.h"
 #include "nautilus-file-operations-dbus-data.h"
-#include "nautilus-file-private.h"
 #include "nautilus-file-undo-manager.h"
 #include "nautilus-file-undo-operations.h"
 #include "nautilus-file-utilities.h"
@@ -49,7 +42,6 @@
 #include "nautilus-operations-ui-manager.h"
 #include "nautilus-scheme.h"
 #include "nautilus-tag-manager.h"
-#include "nautilus-trash-monitor.h"
 #include "nautilus-ui-utilities.h"
 
 #ifdef GDK_WINDOWING_X11

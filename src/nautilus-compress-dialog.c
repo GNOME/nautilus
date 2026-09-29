@@ -6,7 +6,6 @@
 
 #include <adwaita.h>
 #include <glib/gi18n.h>
-#include <gnome-autoar/gnome-autoar.h>
 
 #include "nautilus-compress-dialog.h"
 

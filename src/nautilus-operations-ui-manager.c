@@ -9,9 +9,7 @@
 #include "nautilus-operations-ui-manager.h"
 
 #include "nautilus-file.h"
-#include "nautilus-file-operations.h"
 #include "nautilus-file-conflict-dialog.h"
-#include "nautilus-mime-actions.h"
 #include "nautilus-program-choosing.h"
 
 typedef struct

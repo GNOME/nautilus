@@ -11,7 +11,6 @@
 #include "nautilus-scheme.h"
 #include "nautilus-ui-utilities.h"
 #include "nautilus-window-slot.h"
-#include <glib/gi18n.h>
 
 /* Assume sort section is second item in view_menu. See nautilus-view-controls.blp */
 #define SORT_ITEM_POSITION 1

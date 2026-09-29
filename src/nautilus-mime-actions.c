@@ -19,7 +19,6 @@
 #include "nautilus-file.h"
 #include "nautilus-file-utilities.h"
 #include "nautilus-file-operations.h"
-#include "nautilus-global-preferences.h"
 #include "nautilus-program-choosing.h"
 #include "nautilus-scheme.h"
 #include "nautilus-signaller.h"

@@ -18,14 +18,12 @@
 
 #include <glib/gi18n.h>
 #include <gtk/gtk.h>
-#include <gio/gdesktopappinfo.h>
 
 #include <locale.h>
 #ifdef HAVE_MALLOC_H
 #include <malloc.h>
 #endif
 #include <stdlib.h>
-#include <string.h>
 #include <unistd.h>
 
 int

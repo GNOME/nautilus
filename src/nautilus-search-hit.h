@@ -6,7 +6,6 @@
 
 #pragma once
 
-#include "nautilus-types.h"
 
 #include <gio/gio.h>
 #include <glib-object.h>

@@ -13,7 +13,6 @@
 
 #pragma once
 
-#include <gtk/gtk.h>
 #include <gio/gio.h>
 
 G_BEGIN_DECLS

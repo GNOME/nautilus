@@ -12,7 +12,6 @@
 #include <nautilus-column-utilities.h>
 #include <nautilus-extension.h>
 #include <nautilus-global-preferences.h>
-#include <nautilus-types.h>
 
 struct _NautilusGridViewCaptionsDialog
 {
