@@ -952,6 +952,7 @@ create_extension_group_row (NautilusPropertiesItem   *item,
 
     adw_action_row_set_subtitle_selectable (ADW_ACTION_ROW (row), TRUE);
     gtk_widget_add_css_class (row, "property");
+    adw_preferences_row_set_use_markup (ADW_PREFERENCES_ROW (row), FALSE);
 
     g_object_bind_property (item, "name", row, "title", G_BINDING_SYNC_CREATE);
     g_object_bind_property (item, "value", row, "subtitle", G_BINDING_SYNC_CREATE);
