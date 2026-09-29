@@ -34,7 +34,7 @@ test_bookmark (void)
     g_assert_nonnull (symbolic_icon);
 }
 
-static void
+static GFile *
 setup_tmp_bookmarks_file (const char *tmp_dir)
 {
     g_autofree char *bookmark_list_folder = g_build_filename (tmp_dir,
@@ -56,20 +56,19 @@ setup_tmp_bookmarks_file (const char *tmp_dir)
                              NULL, &error);
 
     g_assert_no_error (error);
+
+    return g_steal_pointer (&bookmarks_list_file);
 }
 
 static void
 test_bookmark_list_basic (void)
 {
     const char *tmp_dir = test_get_tmp_dir ();
-    g_autoptr (GFile) bookmarks_list_file =
-        g_file_new_build_filename (tmp_dir, "gtk-3.0", "bookmarks", NULL);
-    g_autoptr (NautilusBookmarkList) list = NULL;
+    g_autoptr (GFile) bookmarks_list_file = setup_tmp_bookmarks_file (tmp_dir);
+    g_autoptr (NautilusBookmarkList) list = nautilus_bookmark_list_new ();
     g_autoptr (GFile) bookmark1 = g_file_new_build_filename (tmp_dir, "one", NULL);
     g_autoptr (GFile) bookmark2 = g_file_new_build_filename (tmp_dir, "two", NULL);
 
-    setup_tmp_bookmarks_file (tmp_dir);
-    list = nautilus_bookmark_list_new ();
     g_assert_nonnull (list);
     g_assert_false (nautilus_bookmark_list_contains (list, bookmark1));
     g_assert_false (nautilus_bookmark_list_contains (list, bookmark2));
@@ -153,11 +152,8 @@ static void
 test_bookmark_list_changed_signal_internal (void)
 {
     const char *tmp_dir = test_get_tmp_dir ();
-    g_autoptr (GFile) bookmarks_list_file = g_file_new_build_filename (tmp_dir,
-                                                                       "gtk-3.0",
-                                                                       "bookmarks",
-                                                                       NULL);
-    g_autoptr (NautilusBookmarkList) list = NULL;
+    g_autoptr (GFile) bookmarks_list_file = setup_tmp_bookmarks_file (tmp_dir);
+    g_autoptr (NautilusBookmarkList) list = nautilus_bookmark_list_new ();
     g_autoptr (GFile) bookmark1 = g_file_new_build_filename (test_get_tmp_dir (),
                                                              "one",
                                                              NULL);
@@ -168,8 +164,6 @@ test_bookmark_list_changed_signal_internal (void)
     NautilusBookmark *existing_bookmark;
     const char *existing_bookmark_new_name = "New Name";
 
-    setup_tmp_bookmarks_file (tmp_dir);
-    list = nautilus_bookmark_list_new ();
     g_signal_connect (list, "changed", G_CALLBACK (bookmark_list_changed_cb), &test_data);
 
     /* Wait for the list to be loaded */
@@ -216,10 +210,7 @@ static void
 test_bookmark_list_changed_signal_external (void)
 {
     const char *tmp_dir = test_get_tmp_dir ();
-    g_autoptr (GFile) bookmarks_list_file = g_file_new_build_filename (tmp_dir,
-                                                                       "gtk-3.0",
-                                                                       "bookmarks",
-                                                                       NULL);
+    g_autoptr (GFile) bookmarks_list_file = setup_tmp_bookmarks_file (tmp_dir);
     g_autoptr (NautilusBookmarkList) list = NULL;
     ChangedSignalTestData test_data = { 0, 0 };
     g_autoptr (GFile) tmp_bookmark = g_file_new_for_path ("/tmp/file1");
@@ -229,7 +220,6 @@ test_bookmark_list_changed_signal_external (void)
     g_autoptr (GError) error = NULL;
 
     /* Initialize file with old content */
-    setup_tmp_bookmarks_file (tmp_dir);
     g_file_replace_contents (bookmarks_list_file,
                              old_content, strlen (old_content),
                              NULL,
