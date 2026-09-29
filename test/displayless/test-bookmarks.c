@@ -69,6 +69,7 @@ test_bookmark_list_basic (void)
     g_autoptr (GFile) bookmark1 = g_file_new_build_filename (tmp_dir, "one", NULL);
     g_autoptr (GFile) bookmark2 = g_file_new_build_filename (tmp_dir, "two", NULL);
 
+    g_assert_true (g_file_query_exists (bookmarks_list_file, NULL));
     g_assert_nonnull (list);
     g_assert_false (nautilus_bookmark_list_contains (list, bookmark1));
     g_assert_false (nautilus_bookmark_list_contains (list, bookmark2));
@@ -164,6 +165,8 @@ test_bookmark_list_changed_signal_internal (void)
     NautilusBookmark *existing_bookmark;
     const char *existing_bookmark_new_name = "New Name";
 
+    g_assert_true (g_file_query_exists (bookmarks_list_file, NULL));
+
     g_signal_connect (list, "changed", G_CALLBACK (bookmark_list_changed_cb), &test_data);
 
     /* Wait for the list to be loaded */
@@ -218,6 +221,8 @@ test_bookmark_list_changed_signal_external (void)
     const char *old_content = "file:///tmp/file1 File1\n";
     const char *new_content = "file:///tmp/external External\n";
     g_autoptr (GError) error = NULL;
+
+    g_assert_true (g_file_query_exists (bookmarks_list_file, NULL));
 
     /* Initialize file with old content */
     g_file_replace_contents (bookmarks_list_file,
