@@ -204,9 +204,10 @@ nautilus_location_entry_set_location (NautilusLocationEntry *self,
     {
         g_set_object (&self->current_location, location);
 
-        g_autofree gchar *formatted_uri = g_file_get_parse_name (location);
+        g_autofree char *parse_name = g_file_get_parse_name (location);
+        g_autofree char *slash_suffixed = g_strdup_printf ("%s" G_DIR_SEPARATOR_S, parse_name);
 
-        nautilus_location_entry_set_text (self, formatted_uri);
+        nautilus_location_entry_set_text (self, slash_suffixed);
         set_position_and_selection_to_end (GTK_EDITABLE (self));
     }
 
@@ -317,6 +318,14 @@ completer_get_completions_thread (GTask        *task,
                            (GDestroyNotify) g_ptr_array_unref);
 }
 
+static GtkText *
+entry_get_gtk_text_widget (NautilusLocationEntry *self)
+{
+    /* HACK: There is no API in GTK for this and the widget is deprecated.
+     * Can be fixed when the widget code is copied in-tree. */
+    return GTK_TEXT (gtk_widget_get_first_child (GTK_WIDGET (self)));
+}
+
 static void
 show_completions (NautilusLocationEntry *self,
                   const char            *dimmed_prefix)
@@ -335,6 +344,9 @@ show_completions (NautilusLocationEntry *self,
     }
 
     set_prefix_dimming (self->completion_cell, dimmed_prefix);
+
+    g_signal_emit_by_name (entry_get_gtk_text_widget (self),
+                           "changed", self->completion);
 }
 
 static void
