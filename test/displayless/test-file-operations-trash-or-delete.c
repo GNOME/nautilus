@@ -6,6 +6,12 @@
 #include <src/nautilus-progress-info-manager.h>
 #include <src/nautilus-tag-manager.h>
 
+#define SKIP_IF_ROOT() \
+        if (getuid () == 0) \
+        { \
+            g_test_skip ("Skipping test because it is running as root"); \
+            return; \
+        } \
 
 typedef struct
 {
@@ -592,6 +598,8 @@ set_permissions (GFile   *file,
 static void
 test_delete_file_no_permission (void)
 {
+    SKIP_IF_ROOT ();
+
     g_autoptr (GFile) root = g_file_new_for_path (test_get_tmp_dir ());
     g_autoptr (GFile) first_dir = g_file_get_child (root, "delete_first_dir");
     g_autoptr (GFile) file = g_file_get_child (first_dir, "delete_first_dir_child");
@@ -622,6 +630,8 @@ test_delete_file_no_permission (void)
 static void
 test_delete_directory_no_permission (void)
 {
+    SKIP_IF_ROOT ();
+
     g_autoptr (GFile) root = g_file_new_for_path (test_get_tmp_dir ());
     g_autoptr (GFile) first_dir = g_file_get_child (root, "delete_first_dir");
     g_autoptr (GFile) enclosed_dir = g_file_get_child (first_dir, "delete_first_dir_child");
@@ -652,6 +662,8 @@ test_delete_directory_no_permission (void)
 static void
 test_delete_enclosed_file_no_permission (void)
 {
+    SKIP_IF_ROOT ();
+
     g_autoptr (GFile) root = g_file_new_for_path (test_get_tmp_dir ());
     g_autoptr (GFile) first_dir = g_file_get_child (root, "delete_first_dir");
     g_autoptr (GFile) file = g_file_get_child (first_dir, "delete_first_dir_child");
@@ -683,6 +695,8 @@ test_delete_enclosed_file_no_permission (void)
 static void
 test_delete_enclosed_directory_no_permission (void)
 {
+    SKIP_IF_ROOT ();
+
     g_autoptr (GFile) root = g_file_new_for_path (test_get_tmp_dir ());
     g_autoptr (GFile) first_dir = g_file_get_child (root, "delete_first_dir");
     g_autoptr (GFile) enclosed_dir = g_file_get_child (first_dir, "delete_first_dir_child");
