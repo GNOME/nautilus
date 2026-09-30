@@ -881,6 +881,8 @@ main (int   argc,
     g_autoptr (NautilusTagManager) tag_manager = NULL;
     int ret;
 
+    switch_to_user ();
+
     g_test_init (&argc, &argv, NULL);
     g_test_set_nonfatal_assertions ();
     nautilus_ensure_extension_points ();

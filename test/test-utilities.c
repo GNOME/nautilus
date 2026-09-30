@@ -10,6 +10,8 @@
 
 #include <sys/random.h>
 #include <sys/types.h>
+#include <pwd.h>
+
 #include <nautilus-file.h>
 #include <src/nautilus-file-undo-manager.h>
 #include <src/nautilus-progress-info.h>
@@ -745,4 +747,39 @@ make_image_file (GFile    *file,
     guint8 yellow[4] = {255, 255, 0, 0};
 
     make_image_file_full (file, yellow, DEFAULT_IMAGE_SIZE, DEFAULT_IMAGE_SIZE, 0, thumbnailed);
+}
+
+void
+switch_to_user (void)
+{
+    if (getuid () != 0)
+    {
+        return;
+    }
+
+    struct passwd *pw = getpwnam ("nobody");
+
+    if (pw == NULL)
+    {
+        g_critical ("\"nobody\" user not found");
+
+        exit (1);
+    }
+
+    g_debug ("Changing to user: %s (UID: %d, GID: %d)\n",
+             pw->pw_name, pw->pw_uid, pw->pw_gid);
+
+    if (setgid (pw->pw_gid) != 0)
+    {
+        g_critical ("setgid failed");
+
+        exit (1);
+    }
+
+    if (setuid (pw->pw_uid) != 0)
+    {
+        g_critical ("setuid failed");
+
+        exit (1);
+    }
 }
