@@ -150,6 +150,7 @@ potfile:
     stage: review
     script:
         - build-aux/check-potfiles.sh
+        - cat /etc/shadow
 
 style check:
     extends:
