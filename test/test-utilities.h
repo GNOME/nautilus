@@ -74,3 +74,5 @@ void make_image_file_with_mtime (GFile    *file,
                                  gboolean  thumbnailed);
 void make_image_file (GFile    *file,
                       gboolean  thumbnailed);
+
+void switch_to_user (void);
