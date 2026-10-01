@@ -517,6 +517,7 @@ nautilus_file_clear_info (NautilusFile *file)
     file->details->start_stop_type = G_DRIVE_START_STOP_TYPE_UNKNOWN;
     file->details->can_poll_for_media = FALSE;
     file->details->is_media_check_automatic = FALSE;
+    file->details->has_preview_icon = FALSE;
     file->details->has_permissions = FALSE;
     file->details->permissions = 0;
     file->details->size = -1;
@@ -2804,10 +2805,8 @@ update_info_internal (NautilusFile *file,
         changed = TRUE;
     }
 
-    if (g_file_info_has_attribute (info, G_FILE_ATTRIBUTE_PREVIEW_ICON))
-    {
-        file->details->has_preview_icon = TRUE;
-    }
+    file->details->has_preview_icon =
+        g_file_info_has_attribute (info, G_FILE_ATTRIBUTE_PREVIEW_ICON);
 
     changed |=
         nautilus_file_update_metadata_from_info (file, info);
