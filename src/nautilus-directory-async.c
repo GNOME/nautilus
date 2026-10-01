@@ -677,6 +677,8 @@ nautilus_directory_monitor_add_internal (NautilusDirectory         *directory,
 
     if (callback != NULL)
     {
+        g_assert (file == NULL);
+
         file_list = nautilus_directory_get_file_list (directory);
         (*callback)(directory, file_list, callback_data);
         nautilus_file_list_free (file_list);
