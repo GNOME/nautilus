@@ -3146,8 +3146,6 @@ on_row_activated (GtkListBox    *list_box,
                   GtkListBoxRow *row,
                   gpointer       user_data)
 {
-    NautilusSidebarRow *selected_row;
-
     /* Avoid to open a location if the user is dragging. Changing the location
      * while dragging usually makes clients changing the view of the files, which
      * is confusing while the user has the attention on the drag
@@ -3157,8 +3155,7 @@ on_row_activated (GtkListBox    *list_box,
         return;
     }
 
-    selected_row = NAUTILUS_SIDEBAR_ROW (gtk_list_box_get_selected_row (list_box));
-    open_row (selected_row, 0);
+    open_row (NAUTILUS_SIDEBAR_ROW (row), 0);
 }
 
 static void
