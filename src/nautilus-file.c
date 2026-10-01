@@ -51,9 +51,6 @@
 #include <selinux/selinux.h>
 #endif
 
-/* Time in seconds to cache getpwuid results */
-#define GETPWUID_CACHE_TIME (5 * 60)
-
 #define ICON_NAME_THUMBNAIL_LOADING   "image-loading"
 
 /* Emblems sometimes displayed for NautilusFiles. */
@@ -76,9 +73,6 @@
 /* Files that start with these characters sort after files that don't. */
 #define SORT_LAST_CHAR1 '.'
 #define SORT_LAST_CHAR2 '#'
-
-/* Name of Nautilus trash directories */
-#define TRASH_DIRECTORY_NAME ".Trash"
 
 #define METADATA_ID_IS_LIST_MASK (1U << 31)
 
@@ -3868,7 +3862,7 @@ nautilus_file_compare_for_sort_by_attribute     (NautilusFile *file_1,
 
 
 /**
- * nautilus_file_compare_name:
+ * nautilus_file_compare_display_name:
  * @file: A file object
  * @string: A string we are comparing it with
  *
@@ -5736,7 +5730,7 @@ nautilus_file_get_gid (NautilusFile *file)
  *
  * @file: The file in question.
  *
- * Return value: A newly-allocated string.
+ * Returns: (transfer none): The group name for the file.
  **/
 const char *
 nautilus_file_get_group_name (NautilusFile *file)
@@ -5784,10 +5778,6 @@ nautilus_file_can_set_group (NautilusFile *file)
     return FALSE;
 }
 
-/* Get a list of group names, filtered to only the ones
- * that contain the given username. If the username is
- * NULL, returns a list of all group names.
- */
 static GList *
 nautilus_get_group_names_for_user (void)
 {
