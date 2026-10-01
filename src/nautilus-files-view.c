@@ -3403,7 +3403,7 @@ nautilus_files_view_display_selection_info (NautilusFilesView *view)
         else
         {
             non_folder_count++;
-            if (!nautilus_file_can_get_size (file))
+            if (nautilus_file_can_get_size (file))
             {
                 non_folder_size_known = TRUE;
                 non_folder_size += nautilus_file_get_size (file);
