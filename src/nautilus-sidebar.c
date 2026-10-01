@@ -1946,7 +1946,8 @@ do_rename (GtkButton       *button,
 
     if (bookmark == NULL)
     {
-        g_warning ("Tried to rename non-existent bookmark of %s", sidebar->rename_uri);
+        g_warning ("Tried to rename non-existent bookmark of %s", uri);
+
         return;
     }
 
