@@ -2732,7 +2732,8 @@ update_info_internal (NautilusFile *file,
     atime = g_file_info_get_attribute_uint64 (info, G_FILE_ATTRIBUTE_TIME_ACCESS);
     mtime = g_file_info_get_attribute_uint64 (info, G_FILE_ATTRIBUTE_TIME_MODIFIED);
     btime = g_file_info_get_attribute_uint64 (info, G_FILE_ATTRIBUTE_TIME_CREATED);
-    if (file->details->atime != atime)
+    if (file->details->atime != atime ||
+        file->details->btime != btime)
     {
         changed = TRUE;
     }
