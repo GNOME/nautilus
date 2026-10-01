@@ -166,6 +166,8 @@ style check:
     script:
         - LANG=C.utf8 build-aux/run-uncrustify.sh
         - git diff --exit-code | tee uncrustify.diff
+        - build-aux/check-blueprint-format.sh
+        - build-aux/check-meson-format.sh
     rules:
         - if: $CI_COMMIT_BRANCH !~ /^gnome-.*$/
 
