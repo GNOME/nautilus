@@ -1708,19 +1708,17 @@ check_unmount_and_eject (GMount   *mount,
 }
 
 static void
-drive_start_from_bookmark_cb (GObject      *source_object,
-                              GAsyncResult *res,
-                              gpointer      user_data)
+drive_start_cb (GObject      *source_object,
+                GAsyncResult *res,
+                gpointer      user_data)
 {
-    NautilusSidebar *sidebar;
+    g_autoptr (NautilusSidebar) sidebar = NAUTILUS_PLACES_SIDEBAR (user_data);
     GError *error;
     char *primary;
     char *name;
 
-    sidebar = NAUTILUS_PLACES_SIDEBAR (user_data);
-
     error = NULL;
-    if (!g_drive_poll_for_media_finish (G_DRIVE (source_object), res, &error))
+    if (!g_drive_start_finish (G_DRIVE (source_object), res, &error))
     {
         if (error->code != G_IO_ERROR_FAILED_HANDLED)
         {
@@ -1857,7 +1855,12 @@ open_row (NautilusSidebarRow *self,
             g_autoptr (GMountOperation) mount_op = get_mount_operation (sidebar);
 
             nautilus_sidebar_row_set_busy (self, TRUE);
-            g_drive_start (drive, G_DRIVE_START_NONE, mount_op, NULL, drive_start_from_bookmark_cb, NULL);
+            g_drive_start (drive,
+                           G_DRIVE_START_NONE,
+                           mount_op,
+                           NULL,
+                           drive_start_cb,
+                           g_object_ref (sidebar));
         }
     }
 }
@@ -2584,35 +2587,6 @@ rescan_shortcut_cb (GSimpleAction *action,
         g_drive_poll_for_media (drive, NULL, drive_poll_for_media_cb, g_object_ref (sidebar));
         g_object_unref (drive);
     }
-}
-
-static void
-drive_start_cb (GObject      *source_object,
-                GAsyncResult *res,
-                gpointer      user_data)
-{
-    NautilusSidebar *sidebar;
-    GError *error;
-    char *primary;
-    char *name;
-
-    sidebar = NAUTILUS_PLACES_SIDEBAR (user_data);
-
-    error = NULL;
-    if (!g_drive_start_finish (G_DRIVE (source_object), res, &error))
-    {
-        if (error->code != G_IO_ERROR_FAILED_HANDLED)
-        {
-            name = g_drive_get_name (G_DRIVE (source_object));
-            primary = g_strdup_printf (_("Unable to start “%s”"), name);
-            g_free (name);
-            show_error_message (sidebar, primary, error->message);
-            g_free (primary);
-        }
-        g_error_free (error);
-    }
-
-    g_object_unref (sidebar);
 }
 
 static void
