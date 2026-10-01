@@ -1921,7 +1921,7 @@ rename_file_chain (gpointer data,
         /* We have a cycle, break it with a temporary name. */
         g_autofree gchar *random_string = g_uuid_string_random ();
 
-        snapped_file = g_ptr_array_index (chain_files, len - 1);
+        snapped_file = g_object_ref (g_ptr_array_index (chain_files, len - 1));
         GFile *renamed_file = g_file_set_display_name (snapped_file,
                                                        random_string,
                                                        op->cancellable,
@@ -1929,7 +1929,8 @@ rename_file_chain (gpointer data,
 
         if (renamed_file != NULL)
         {
-            chain_files->pdata[len - 1] = renamed_file;
+            g_ptr_array_remove_index_fast (chain_files, len - 1);
+            g_ptr_array_add (chain_files, renamed_file);
         }
         else
         {
