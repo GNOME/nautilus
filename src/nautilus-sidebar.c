@@ -1807,7 +1807,7 @@ mount_volume (NautilusSidebarRow *row,
               GVolume            *volume,
               NautilusOpenFlags   open_flags)
 {
-    NautilusSidebar *sidebar;
+    g_autoptr (NautilusSidebar) sidebar = NULL;
     g_autoptr (GMountOperation) mount_op = NULL;
     VolumeMountCallbackData *callback_data = NULL;
 
@@ -1816,7 +1816,6 @@ mount_volume (NautilusSidebarRow *row,
     mount_op = get_mount_operation (sidebar);
     g_mount_operation_set_password_save (mount_op, G_PASSWORD_SAVE_FOR_SESSION);
 
-    g_object_ref (sidebar);
     callback_data = g_new0 (VolumeMountCallbackData, 1);
     g_set_weak_pointer (&callback_data->window_slot, sidebar->window_slot);
     callback_data->row = g_object_ref (row);
@@ -2892,9 +2891,9 @@ create_row_popover (NautilusSidebar    *sidebar,
     NautilusSidebarRowType type;
     GMenu *menu, *section;
     GMenuItem *item;
-    GMount *mount;
-    GVolume *volume;
-    GDrive *drive;
+    g_autoptr (GMount) mount = NULL;
+    g_autoptr (GVolume) volume = NULL;
+    g_autoptr (GDrive) drive = NULL;
     GAction *action;
     gboolean show_unmount, show_eject;
     gboolean show_stop;
@@ -2903,7 +2902,7 @@ create_row_popover (NautilusSidebar    *sidebar,
     g_autoptr (GFile) trash = NULL;
     gboolean is_trash = FALSE, is_recent = FALSE, show_properties = FALSE;
 #ifdef HAVE_CLOUDPROVIDERS
-    CloudProvidersAccount *cloud_provider_account;
+    g_autoptr (CloudProvidersAccount) cloud_provider_account = NULL;
 #endif
 
     g_object_get (row,
@@ -3218,14 +3217,7 @@ on_row_released (GtkGestureClick    *gesture,
                  double              y,
                  NautilusSidebarRow *row)
 {
-    NautilusSidebar *sidebar;
-    NautilusSidebarSectionType section_type;
     guint button, state;
-
-    g_object_get (row,
-                  "sidebar", &sidebar,
-                  "section-type", &section_type,
-                  NULL);
 
     button = gtk_gesture_single_get_current_button (GTK_GESTURE_SINGLE (gesture));
     state = gtk_event_controller_get_current_event_state (GTK_EVENT_CONTROLLER (gesture));
