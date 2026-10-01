@@ -6715,7 +6715,7 @@ nautilus_file_attribute_slow_sort (const gchar *sort_attribute)
            attribute_q == attribute_deep_total_count_q;
 }
 
-struct
+static const struct
 {
     const char *icon_name;
     const char *display_name;
