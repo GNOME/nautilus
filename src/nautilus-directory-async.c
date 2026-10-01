@@ -4000,6 +4000,17 @@ cancel_directory_count_for_file (NautilusDirectory *directory,
 }
 
 static void
+cancel_extension_info_for_file (NautilusDirectory *directory,
+                                NautilusFile      *file)
+{
+    if (directory->details->extension_info_in_progress &&
+        directory->details->extension_info_file == file)
+    {
+        extension_info_cancel (directory);
+    }
+}
+
+static void
 cancel_deep_counts_for_file (NautilusDirectory *directory,
                              NautilusFile      *file)
 {
@@ -4128,6 +4139,10 @@ nautilus_directory_cancel_loading_attributes (NautilusDirectory  *directory,
     if (IS_ATTRIBUTE_SET (attributes, NAUTILUS_ATTRIBUTE_FILESYSTEM_INFO))
     {
         cancel_filesystem_info_for_file (directory, file);
+    }
+    if (IS_ATTRIBUTE_SET (attributes, NAUTILUS_ATTRIBUTE_EXTENSION_INFO))
+    {
+        cancel_extension_info_for_file (directory, file);
     }
     if (IS_ATTRIBUTE_SET (attributes, NAUTILUS_ATTRIBUTE_THUMBNAIL_INFO))
     {
