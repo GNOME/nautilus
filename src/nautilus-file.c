@@ -1578,14 +1578,8 @@ nautilus_file_operation_free (NautilusFileOperation *op)
 {
     nautilus_file_operation_remove (op);
 
-    if (op->files == NULL)
-    {
-        nautilus_file_unref (op->file);
-    }
-    else
-    {
-        nautilus_file_list_free (op->files);
-    }
+    g_clear_pointer (&op->file, nautilus_file_unref);
+    g_clear_list (&op->files, (GDestroyNotify) nautilus_file_unref);
 
     g_object_unref (op->cancellable);
     if (op->free_data)
@@ -2034,7 +2028,10 @@ real_batch_rename (GList                         *files,
     g_autoptr (GAsyncQueue) rollback_files = g_async_queue_new ();
     g_autoptr (GError) skip_error = NULL;
 
-    /* Set up a batch renaming operation. */
+    /* Set up a batch renaming operation.
+     * FIXME: Use a varient that doesn't take a single file, or move to
+     * file-operations.
+     */
     op = nautilus_file_operation_new (files->data, callback, callback_data);
     op->files = nautilus_file_list_copy (files);
     op->renamed_files = 0;
