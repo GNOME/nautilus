@@ -523,7 +523,8 @@ get_desktop_directory_uri (void)
     /* "To disable a directory, point it to the homedir."
      * See http://freedesktop.org/wiki/Software/xdg-user-dirs
      */
-    if (path_is_home_dir (name))
+    if (name == NULL ||
+        path_is_home_dir (name))
     {
         return NULL;
     }
