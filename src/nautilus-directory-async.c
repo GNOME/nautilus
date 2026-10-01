@@ -3014,8 +3014,6 @@ file_info_start (NautilusDirectory *directory,
     GFile *location;
     GetInfoState *state;
 
-    file_info_stop (directory);
-
     if (directory->details->get_info_in_progress != NULL)
     {
         *doing_io = TRUE;
