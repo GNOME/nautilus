@@ -4999,7 +4999,7 @@ nautilus_file_recompute_deep_counts (NautilusFile *file)
 gboolean
 nautilus_file_can_get_size (NautilusFile *file)
 {
-    return file->details->size == -1;
+    return file->details->size != -1;
 }
 
 
