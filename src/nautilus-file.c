@@ -2150,7 +2150,7 @@ real_batch_rename (GList                         *files,
      * Don't handle any errors though, it's likely futile. */
     while (g_async_queue_length (rollback_files) > 0)
     {
-        g_autofree TwoLists *rollback_file_lists = g_async_queue_pop (changed_files);
+        g_autofree TwoLists *rollback_file_lists = g_async_queue_pop (rollback_files);
         g_autoptr (GList) old_file_list = rollback_file_lists->old_files;
         g_autoptr (GList) new_file_list = rollback_file_lists->new_files;
 
