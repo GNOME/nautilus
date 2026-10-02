@@ -7,25 +7,20 @@ libnautilus_extension_headers = [
   'nautilus-properties-model-provider.h',
   'nautilus-properties-model.h',
   'nautilus-properties-item.h',
-  'nautilus-menu.h'
+  'nautilus-menu.h',
 ]
 
-install_headers(
-  'nautilus-extension.h',
-  subdir: 'nautilus'
-)
+install_headers('nautilus-extension.h', subdir: 'nautilus')
 install_headers(
   libnautilus_extension_headers,
-  subdir: join_paths('nautilus', 'libnautilus-extension')
+  subdir: join_paths('nautilus', 'libnautilus-extension'),
 )
 
 libnautilus_extension_enums = gnome.mkenums_simple(
   'nautilus-extension-enum-types',
   install_header: true,
   install_dir: join_paths(includedir, 'nautilus', 'libnautilus-extension'),
-  sources: [
-    'nautilus-info-provider.h'
-  ]
+  sources: ['nautilus-info-provider.h'],
 )
 
 libnautilus_extension_sources = [
@@ -42,46 +37,34 @@ libnautilus_extension_sources = [
   'nautilus-properties-model-provider.c',
   'nautilus-properties-model.c',
   'nautilus-properties-item.c',
-  'nautilus-menu.c'
+  'nautilus-menu.c',
 ]
 
-libnautilus_extension_deps = [
-  config_h,
-  glib,
-  gio
-]
+libnautilus_extension_deps = [config_h, glib, gio]
 
 libnautilus_extension = shared_library(
-  'nautilus-extension', [
+  'nautilus-extension',
+  [
     libnautilus_extension_sources,
   ],
-  c_args: [
-    '-DNAUTILUS_COMPILATION'
-  ],
+  c_args: ['-DNAUTILUS_COMPILATION'],
   dependencies: libnautilus_extension_deps,
   include_directories: nautilus_include_dirs,
   version: nautilus_extension_version,
-  install: true
+  install: true,
 )
 
 if get_option('introspection')
   nautilus_extension_gir = gnome.generate_gir(
     libnautilus_extension,
-    export_packages: [
-      'libnautilus-extension'
-    ],
-    extra_args: [
-      '-DNAUTILUS_COMPILATION'
-    ],
+    export_packages: ['libnautilus-extension'],
+    extra_args: ['-DNAUTILUS_COMPILATION'],
     sources: libnautilus_extension_sources,
     nsversion: nautilus_extension_version,
     namespace: 'Nautilus',
-    includes: [
-      'Gio-2.0',
-      'GLib-2.0'
-    ],
+    includes: ['Gio-2.0', 'GLib-2.0'],
     header: 'nautilus-extension.h',
-    install: true
+    install: true,
   )
 endif
 
@@ -89,19 +72,15 @@ nautilus_extension = declare_dependency(
   sources: libnautilus_extension_enums[1],
   link_with: libnautilus_extension,
   dependencies: libnautilus_extension_deps,
-  include_directories: nautilus_include_dirs
+  include_directories: nautilus_include_dirs,
 )
 
 pkgconfig.generate(
   description: 'A library to create Nautilus view extensions',
   filebase: 'libnautilus-extension-' + nautilus_extension_major_version,
-  libraries: [
-    libnautilus_extension
-  ],
+  libraries: [libnautilus_extension],
   name: 'libnautilus-extension',
-  subdirs: [
-    'nautilus'
-  ],
+  subdirs: ['nautilus'],
   requires: [
     'gio-2.0',
     'glib-2.0',
@@ -109,7 +88,7 @@ pkgconfig.generate(
   variables: [
     'exec_prefix=${prefix}',
     'extensiondir=${libdir}/nautilus/extensions-' + nautilus_extension_major_version,
-    'extensions_api_version=' + nautilus_extension_major_version
+    'extensions_api_version=' + nautilus_extension_major_version,
   ],
-  version: meson.project_version()
+  version: meson.project_version(),
 )

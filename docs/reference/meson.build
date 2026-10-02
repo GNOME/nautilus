@@ -18,7 +18,9 @@ custom_target(
     gi_docgen,
     'generate',
     '--quiet',
-    '--add-include-path=@0@'.format(meson.project_source_root() / 'libnautilus-extension'),
+    '--add-include-path=@0@'.format(
+      meson.project_source_root() / 'libnautilus-extension',
+    ),
     '--config=@INPUT0@',
     '--output-dir=@OUTPUT@',
     '--no-namespace-dir',
