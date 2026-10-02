@@ -1,15 +1,15 @@
-project('nautilus', 'c',
+project(
+  'nautilus',
+  'c',
   default_options: [
     'c_std=c11',
     'warning_level=2',
   ],
-
   # Do not forget when releasing:
   #  * Set release date in data/org.gnome.Nautilus.metainfo.xml.in.in
   version: '52.alpha',
-
   meson_version: '>= 1.1.0',
-  license: 'GPL-3.0-or-later'
+  license: 'GPL-3.0-or-later',
 )
 
 nautilus_extension_version = '4.1'
@@ -28,7 +28,11 @@ includedir = get_option('includedir')
 libdir = get_option('libdir')
 localedir = get_option('localedir')
 docdir = datadir / 'doc'
-extensiondir = join_paths(libdir, 'nautilus', 'extensions-' + nautilus_extension_major_version)
+extensiondir = join_paths(
+  libdir,
+  'nautilus',
+  'extensions-' + nautilus_extension_major_version,
+)
 servicedir = join_paths(datadir, 'dbus-1', 'services')
 
 ###################
@@ -46,42 +50,44 @@ cc = meson.get_compiler('c')
 #################
 
 add_project_arguments(
-  cc.get_supported_arguments([
-    '-Wduplicated-branches',
-    '-Wduplicated-cond',
-    '-Wlogical-op',
-    '-Werror=empty-body',
-    '-Werror=format=2',
-    '-Werror=implicit-function-declaration',
-    '-Werror=incompatible-pointer-types',
-    '-Werror=init-self',
-    '-Werror=missing-include-dirs',
-    '-Werror=missing-prototypes',
-    '-Werror=pointer-arith',
-    '-Werror=sequence-point',
-    '-Werror=shadow',
-    '-Werror=strict-prototypes',
-    '-Werror=undef',
-    '-Werror=uninitialized',
-    # There are currently too many warnings caused by deprecations, hindering the usefulness
-    # of any other warnings. Disable them until
-    # https://gitlab.gnome.org/GNOME/nautilus/-/issues/2722 is resolved.
-    '-Wno-deprecated-declarations',
-    # We want the general warnings in Wextra, but as GLib functions commonly accept additional
-    # user data, warnings for function casts are not feasible. Neither are warnings for unused
-    # parameters, as parameters in callbacks commonly aren't used.
-    '-Wno-cast-function-type',
-    '-Wno-unused-parameter',
-    # Context: https://gitlab.com/freedesktop-sdk/freedesktop-sdk/commit/ce54a2527555e51e4ebf4cce9cbb6259cafa89a4
-    # -O2 and -fexceptions unmask some cases of -Wmaybe-uninitialized, which
-    # become errors for some reason (I’m guessing because of the
-    # -Werror=uninitialized above, but no idea why that implies this).
-    # This being an error is nice and all, but not when its appearance is
-    # dependent on optimization level and other flags.
-    '-Wno-error=maybe-uninitialized',
-  ]),
+  cc.get_supported_arguments(
+    [
+      '-Wduplicated-branches',
+      '-Wduplicated-cond',
+      '-Wlogical-op',
+      '-Werror=empty-body',
+      '-Werror=format=2',
+      '-Werror=implicit-function-declaration',
+      '-Werror=incompatible-pointer-types',
+      '-Werror=init-self',
+      '-Werror=missing-include-dirs',
+      '-Werror=missing-prototypes',
+      '-Werror=pointer-arith',
+      '-Werror=sequence-point',
+      '-Werror=shadow',
+      '-Werror=strict-prototypes',
+      '-Werror=undef',
+      '-Werror=uninitialized',
+      # There are currently too many warnings caused by deprecations, hindering the usefulness
+      # of any other warnings. Disable them until
+      # https://gitlab.gnome.org/GNOME/nautilus/-/issues/2722 is resolved.
+      '-Wno-deprecated-declarations',
+      # We want the general warnings in Wextra, but as GLib functions commonly accept additional
+      # user data, warnings for function casts are not feasible. Neither are warnings for unused
+      # parameters, as parameters in callbacks commonly aren't used.
+      '-Wno-cast-function-type',
+      '-Wno-unused-parameter',
+      # Context: https://gitlab.com/freedesktop-sdk/freedesktop-sdk/commit/ce54a2527555e51e4ebf4cce9cbb6259cafa89a4
+      # -O2 and -fexceptions unmask some cases of -Wmaybe-uninitialized, which
+      # become errors for some reason (I’m guessing because of the
+      # -Werror=uninitialized above, but no idea why that implies this).
+      # This being an error is nice and all, but not when its appearance is
+      # dependent on optimization level and other flags.
+      '-Wno-error=maybe-uninitialized',
+    ],
+  ),
   '-D_GNU_SOURCE',
-  language: 'c'
+  language: 'c',
 )
 
 ##################
@@ -103,7 +109,8 @@ glib_ver = '>= 2.89.0'
 
 libm = cc.find_library('m')
 
-subproject('libgxdp',
+subproject(
+  'libgxdp',
   default_options: [
     'tests=false',
     'werror=false',
@@ -127,10 +134,22 @@ tinysparql = dependency('tinysparql-3.0', version: '>= 3.8')
 icu_dep = dependency('icu-uc', version: '>=56')
 icu_i18n_dep = dependency('icu-i18n', version: '>=56')
 
-blueprint_cmd = find_program('blueprint-compiler', required : true, version : '>= 0.19.0')
+blueprint_cmd = find_program(
+  'blueprint-compiler',
+  required: true,
+  version: '>= 0.19.0',
+)
 gi_docgen = find_program('gi-docgen', required: get_option('docs'))
-selinux = dependency('libselinux', version: '>= 2.0', required: get_option('selinux'))
-cloudproviders = dependency('cloudproviders', version: '>= 0.3.1', required: get_option('cloudproviders'))
+selinux = dependency(
+  'libselinux',
+  version: '>= 2.0',
+  required: get_option('selinux'),
+)
+cloudproviders = dependency(
+  'cloudproviders',
+  version: '>= 0.3.1',
+  required: get_option('cloudproviders'),
+)
 if get_option('extensions')
   gexiv = dependency('gexiv2-0.16', version: '>= 0.16.0')
   gdkpixbuf = dependency('gdk-pixbuf-2.0', version: '>= 2.30.0')
@@ -195,22 +214,16 @@ config_h = declare_dependency(
   sources: vcs_tag(
     command: ['git', 'rev-parse', '--short', 'HEAD'],
     fallback: profile != '' ? 'devel' : '',
-    input: configure_file(
-      output: 'config.h.in',
-      configuration: conf
-    ),
-    output: 'config.h'
-  )
+    input: configure_file(output: 'config.h.in', configuration: conf),
+    output: 'config.h',
+  ),
 )
 
 #####################
 # End configuration #
 #####################
 
-nautilus_include_dirs = include_directories(
-  '.',
-  'libnautilus-extension'
-)
+nautilus_include_dirs = include_directories('.', 'libnautilus-extension')
 
 #########
 # Build #

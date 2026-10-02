@@ -3,6 +3,7 @@ ontology_data = files(
   'nautilus.ontology',
 )
 
-install_data(ontology_data,
-  install_dir: join_paths(datadir, 'nautilus', 'ontology')
+install_data(
+  ontology_data,
+  install_dir: join_paths(datadir, 'nautilus', 'ontology'),
 )

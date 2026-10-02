@@ -3,7 +3,7 @@ subdir('ui')
 gresource_file = configure_file(
   input: 'nautilus.gresource.xml.in',
   output: 'nautilus.gresource.xml',
-  configuration: file_conf
+  configuration: file_conf,
 )
 
 resources = gnome.compile_resources(
@@ -12,7 +12,7 @@ resources = gnome.compile_resources(
   dependencies: [appdata, blueprints, gresource_file],
   source_dir: 'resources',
   c_name: 'nautilus',
-  extra_args: '--manual-register'
+  extra_args: '--manual-register',
 )
 
 resources_header = []

@@ -26,11 +26,7 @@ option(
 ############
 # Features #
 ############
-option(
-  'packagekit',
-  type: 'boolean',
-  deprecated: true
-)
+option('packagekit', type: 'boolean', deprecated: true)
 option(
   'selinux',
   type: 'feature',
@@ -55,11 +51,7 @@ option(
 option(
   'tests',
   type: 'combo',
-  choices: [
-    'none',
-    'headless',
-    'all'
-  ],
+  choices: ['none', 'headless', 'all'],
   value: 'headless',
   description: 'Build selected tests',
 )
