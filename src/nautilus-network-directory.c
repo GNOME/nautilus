@@ -219,11 +219,13 @@ on_recent_servers_loading_changed (GObject    *object,
     if (self->recent_servers_done_loading)
     {
         NautilusDirectory *self_as_directory = NAUTILUS_DIRECTORY (self);
+        GList *next;
 
         on_backend_directory_done_loading (self_as_directory, self);
 
-        for (GList *l = self->callback_list; l != NULL; l = l->next)
+        for (GList *l = self->callback_list; l != NULL; l = next)
         {
+            next = l->next;
             on_backend_directory_ready (self_as_directory, NULL, l->data);
         }
     }
