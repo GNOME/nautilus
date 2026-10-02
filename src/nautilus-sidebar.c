@@ -2241,7 +2241,7 @@ mount_shortcut_cb (GSimpleAction *action,
                    gpointer       data)
 {
     NautilusSidebar *sidebar = data;
-    GVolume *volume;
+    g_autoptr (GVolume) volume = NULL;
 
     g_object_get (sidebar->context_row,
                   "volume", &volume,
@@ -2251,8 +2251,6 @@ mount_shortcut_cb (GSimpleAction *action,
     {
         mount_volume (sidebar->context_row, volume, NAUTILUS_OPEN_FLAG_NORMAL);
     }
-
-    g_object_unref (volume);
 }
 
 static GMountOperation *
