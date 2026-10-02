@@ -360,7 +360,7 @@ add_place (NautilusSidebar           *sidebar,
 #ifdef HAVE_CLOUDPROVIDERS
            CloudProvidersAccount     *cloud_provider_account,
 #else
-           gpointer                  *cloud_provider_account,
+           gpointer                   cloud_provider_account,
 #endif
            const int                  index,
            const char                *tooltip)
