@@ -1331,6 +1331,7 @@ nautilus_directory_notify_files_moved (GList *file_pairs)
         GFile *to_location = pair->to;
         g_autoptr (NautilusFile) from_file = nautilus_file_get_existing (from_location);
         g_autoptr (NautilusFile) to_file = nautilus_file_get_existing (to_location);
+        g_autolist (NautilusFile) moved_affected_list = NULL;
 
         /* Handle overwriting a file. */
         if (to_file != NULL && from_file != NULL)
@@ -1346,14 +1347,14 @@ nautilus_directory_notify_files_moved (GList *file_pairs)
         }
 
         /* Update any directory objects that are affected. */
-        for (GList *node = nautilus_directory_moved_internal (from_location, to_location);
-             node != NULL; node = node->next)
+        moved_affected_list = nautilus_directory_moved_internal (from_location, to_location);
+        for (GList *node = moved_affected_list; node != NULL; node = node->next)
         {
             NautilusFile *affected_file = NAUTILUS_FILE (node->data);
             NautilusDirectory *directory = nautilus_file_get_directory (affected_file);
 
             /* Ownership of file moves to changed_lists */
-            hash_table_list_insert (changed_lists, directory, affected_file);
+            hash_table_list_insert (changed_lists, directory, nautilus_file_ref (affected_file));
         }
 
         /* Move an existing file. */
