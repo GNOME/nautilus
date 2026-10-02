@@ -222,8 +222,9 @@ on_recent_servers_loading_changed (GObject    *object,
 
         on_backend_directory_done_loading (self_as_directory, self);
 
-        for (GList *l = self->callback_list; l != NULL; l = l->next)
+        for (GList *l = self->callback_list, *next; l != NULL; l = next)
         {
+            next = l->next;
             on_backend_directory_ready (self_as_directory, NULL, l->data);
         }
     }
