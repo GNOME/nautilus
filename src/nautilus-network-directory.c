@@ -197,11 +197,12 @@ on_backend_directory_ready (NautilusDirectory *backend_directory,
     {
         g_autolist (NautilusFile) files = nautilus_directory_get_file_list (NAUTILUS_DIRECTORY (self));
 
+        /* Remove from list before calling to avoid double removal */
+        self->callback_list = g_list_remove (self->callback_list, network_callback);
+
         /* Invoke ready callback */
         (*network_callback->callback)(NAUTILUS_DIRECTORY (self), files, network_callback->callback_data);
 
-        /* Remove it from pending callbacks list and free it */
-        self->callback_list = g_list_remove (self->callback_list, network_callback);
         g_free (network_callback);
     }
 }
