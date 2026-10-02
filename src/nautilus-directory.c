@@ -1264,7 +1264,7 @@ nautilus_directory_moved_internal (GFile *old_location,
 
     NautilusFileList *affected_files = NULL;
 
-    for (GList *node = moved; node != NULL; node = node->next)
+    for (GList *node = moved; node != NULL; node = g_list_delete_link (node, node))
     {
         g_autofree FileWithLocation *file_with_location = node->data;
         g_autoptr (NautilusDirectory) directory = file_with_location->directory;
@@ -1347,7 +1347,8 @@ nautilus_directory_notify_files_moved (GList *file_pairs)
 
         /* Update any directory objects that are affected. */
         for (GList *node = nautilus_directory_moved_internal (from_location, to_location);
-             node != NULL; node = node->next)
+             node != NULL;
+             node = g_list_delete_link (node, node))
         {
             NautilusFile *affected_file = NAUTILUS_FILE (node->data);
             NautilusDirectory *directory = nautilus_file_get_directory (affected_file);
