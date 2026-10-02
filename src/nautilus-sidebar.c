@@ -43,8 +43,6 @@
 #include <gdk/x11/gdkx.h>
 #endif
 
-#pragma GCC diagnostic ignored "-Wshadow"
-
 /*< private >
  * NautilusSidebar:
  *
@@ -1014,7 +1012,7 @@ update_places (NautilusSidebar *sidebar)
     /* Needs to start from 1 so that bookmark drag placeholder can come first. */
     index = 1;
 
-    for (GList *l = bookmarks; l != NULL; l = l->next)
+    for (l = bookmarks; l != NULL; l = l->next)
     {
         GtkWidget *row;
 
