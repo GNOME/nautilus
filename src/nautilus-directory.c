@@ -1097,7 +1097,7 @@ nautilus_directory_notify_files_changed (GList *files)
         else
         {
             g_autoptr (GFile) parent = g_file_get_parent (location);
-            NautilusDirectory *dir = lookup_existing (location);
+            NautilusDirectory *dir = lookup_existing (parent);
 
             if (dir != NULL && dir->details->new_files_in_progress != NULL &&
                 files != dir->details->files_changed_while_adding)
