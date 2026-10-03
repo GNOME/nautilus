@@ -62,6 +62,7 @@ struct _NautilusPropertiesWidget
     GFileInfo *volume_fs_info;
     GCancellable *volume_fs_info_cancellable;
     AdwDialog *dialog;
+    gboolean presented;
 
     AdwToastOverlay *toast_overlay;
     AdwNavigationView *nav_view;
@@ -3640,26 +3641,28 @@ properties_files_are_ready (NautilusPropertiesWidget *self)
     /* Show main page */
     adw_navigation_view_replace_with_tags (self->nav_view, main_tag, 1);
 
-    int current_width = gtk_widget_get_width (GTK_WIDGET (self));
-
-    if (current_width != 0)
+    if (!self->presented)
     {
-        /* Properties were already drawn while loading, adjust height */
-        int natural_height;
+        return;
+    }
 
-        gtk_widget_measure (GTK_WIDGET (self), GTK_ORIENTATION_VERTICAL, current_width,
-                            NULL, &natural_height, NULL, NULL);
+    int width = self->dialog != NULL
+                ? adw_dialog_get_content_width (self->dialog)
+                : DEFAULT_PROPERTIES_WIDTH;
+    int natural_height;
 
-        if (self->dialog != NULL)
-        {
-            adw_dialog_set_content_height (self->dialog, natural_height);
-        }
-        else
-        {
-            gtk_window_set_default_size (get_parent_window (self),
-                                         DEFAULT_PROPERTIES_WIDTH,
-                                         natural_height);
-        }
+    gtk_widget_measure (GTK_WIDGET (self), GTK_ORIENTATION_VERTICAL, width,
+                        NULL, &natural_height, NULL, NULL);
+
+    if (self->dialog != NULL)
+    {
+        adw_dialog_set_content_height (self->dialog, natural_height);
+    }
+    else
+    {
+        gtk_window_set_default_size (get_parent_window (self),
+                                     DEFAULT_PROPERTIES_WIDTH,
+                                     natural_height);
     }
 }
 
@@ -3783,6 +3786,7 @@ nautilus_properties_present_window (NautilusFileList *files,
     }
 
     gtk_window_present (window);
+    self->presented = TRUE;
 
     return window;
 }
@@ -3808,6 +3812,7 @@ nautilus_properties_present_dialog (NautilusFileList *files,
     gtk_widget_set_visible (self->popout_button, TRUE);
 
     adw_dialog_present (dialog, parent_widget);
+    self->presented = TRUE;
 }
 
 static gboolean
