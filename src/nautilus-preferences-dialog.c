@@ -143,6 +143,30 @@ setup_combo (GtkBuilder  *builder,
     adw_combo_row_set_model (combo_row, G_LIST_MODEL (list_store));
 }
 
+static gboolean
+narrow_style_to_vertical_orientation (GBinding     *binding,
+                                      const GValue *source_value,
+                                      GValue       *target_value,
+                                      gpointer      user_data)
+{
+    g_return_val_if_fail (G_VALUE_HOLDS_BOXED (source_value), FALSE);
+
+    GStrv css_classes = (GStrv) g_value_get_boxed (source_value);
+
+    for (guint i = 0; css_classes[i] != NULL; i += 1)
+    {
+        if (g_str_equal (css_classes[i], "narrow"))
+        {
+            g_value_set_enum (target_value, GTK_ORIENTATION_VERTICAL);
+            return TRUE;
+        }
+    }
+
+    g_value_set_enum (target_value, GTK_ORIENTATION_HORIZONTAL);
+
+    return TRUE;
+}
+
 static void
 bind_builder_toggle_group (GtkBuilder *builder,
                            GSettings  *settings,
@@ -150,10 +174,15 @@ bind_builder_toggle_group (GtkBuilder *builder,
                            const char *group_name)
 {
     AdwToggleGroup *group = ADW_TOGGLE_GROUP (gtk_builder_get_object (builder, group_name));
+    GObject *preferences_dialog = gtk_builder_get_object (builder, "preferences_dialog");
 
     g_settings_bind (settings, prefs,
                      G_OBJECT (group), "active-name",
                      G_SETTINGS_BIND_DEFAULT);
+    g_object_bind_property_full (preferences_dialog, "css-classes",
+                                 group, "orientation",
+                                 G_BINDING_DEFAULT,
+                                 (GBindingTransformFunc) narrow_style_to_vertical_orientation, NULL, NULL, NULL);
 }
 
 static void
