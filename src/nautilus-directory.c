@@ -376,26 +376,23 @@ emit_change_signals_for_all_files_in_all_directories (void)
 }
 
 static void
-async_state_changed_one (gpointer key,
-                         gpointer value,
-                         gpointer user_data)
-{
-    g_return_if_fail (NAUTILUS_IS_DIRECTORY (value));
-
-    NautilusDirectory *directory = value;
-
-    nautilus_directory_async_state_changed (directory);
-    emit_change_signals_for_all_files (directory);
-}
-
-static void
 async_data_preference_changed_callback (gpointer callback_data)
 {
+    g_autolist (NautilusDirectory) dirs = g_hash_table_get_values (directories);
+
+    g_list_foreach (dirs, (GFunc) nautilus_directory_ref, NULL);
+
     /* Preference involving fetched async data has changed, so
      * we have to kick off refetching all async data, and tell
      * each file that it (might have) changed.
      */
-    g_hash_table_foreach (directories, async_state_changed_one, NULL);
+    for (NautilusDirectoryList *l = dirs; l != NULL; l = l->next)
+    {
+        NautilusDirectory *directory = l->data;
+
+        nautilus_directory_async_state_changed (directory);
+        emit_change_signals_for_all_files (directory);
+    }
 }
 
 static void
