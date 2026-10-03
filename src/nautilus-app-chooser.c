@@ -261,7 +261,7 @@ nautilus_app_chooser_constructed (GObject *object)
     }
     else if (content_type_is_folder (self))
     {
-        title = _("Open Folder");
+        title = C_("dialog title", "Open Folder");
     }
     else
     {

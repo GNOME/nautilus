@@ -945,7 +945,7 @@ nautilus_window_show_operation_notification (NautilusWindow *window,
 
         target = g_variant_new_take_string (g_file_get_uri (folder_to_open));
 
-        adw_toast_set_button_label (toast, _("Open Folder"));
+        adw_toast_set_button_label (toast, C_("toast button", "Open Folder"));
         adw_toast_set_action_name (toast, "slot.open-location");
         adw_toast_set_action_target_value (toast, target);
     }
