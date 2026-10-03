@@ -339,7 +339,8 @@ template $NautilusBatchRenameDialog: Adw.Dialog {
               template ListItem {
                 child: Box batch_row {
                   orientation: bind $batch_row_orientation(
-                    template.item as <ListItem>
+                    template
+                      .item as <ListItem>
                       .item as <$NautilusBatchRenameItem>
                       .dialog as <$NautilusBatchRenameDialog>
                       .current-breakpoint,
