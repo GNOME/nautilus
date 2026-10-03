@@ -564,7 +564,7 @@ search_engine_hits_added (NautilusSearchEngine    *engine,
             nautilus_file_monitor_add (hit_file, monitor, monitor->monitor_attributes);
         }
 
-        g_signal_connect (hit_file, "changed", G_CALLBACK (file_changed), self),
+        g_signal_connect (hit_file, "changed", G_CALLBACK (file_changed), self);
 
         file_list = g_list_prepend (file_list, hit_file);
         g_hash_table_add (self->files_hash, g_steal_pointer (&hit_file));
