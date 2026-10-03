@@ -74,9 +74,9 @@ static gboolean
 is_not_tentative (NautilusFile *file,
                   gpointer      callback_data)
 {
-    /* Files that are not added yet will will later be sent with the
-     * files_added signal, and a user doing get_file_list + files_added
-     * monitoring will then see the file twice */
+    /* Files that are not added yet will later be sent with the files_added
+     * signal, and a user doing get_file_list + files_added monitoring will
+     * then see the file twice */
     return file->details->got_file_info && file->details->is_added;
 }
 
@@ -168,7 +168,6 @@ nautilus_directory_finalize (GObject *object)
     g_clear_pointer (&directory->details->call_when_ready_hash.ready, g_hash_table_unref);
     g_clear_list (&directory->details->files_changed_while_adding, g_object_unref);
     g_warn_if_fail (directory->details->directory_load_in_progress == NULL);
-    g_warn_if_fail (directory->details->count_in_progress == NULL);
     g_warn_if_fail (directory->details->dequeue_pending_idle_id == 0);
     g_list_free_full (directory->details->pending_file_info, g_object_unref);
 
@@ -1012,7 +1011,7 @@ nautilus_directory_notify_files_added (GList *files)
         {
             /* In case the directory is not being
              * monitored, but the corresponding file is,
-             * we must invalidate it's item count.
+             * we must invalidate its item count.
              */
 
             if (parent == NULL)
