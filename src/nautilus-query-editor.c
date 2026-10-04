@@ -341,6 +341,12 @@ nautilus_query_editor_select_all_text (NautilusQueryEditor *editor)
     }
 }
 
+void
+nautilus_query_editor_show_filter (NautilusQueryEditor *self)
+{
+    gtk_menu_button_popup (GTK_MENU_BUTTON (self->dropdown_button));
+}
+
 static void
 nautilus_query_editor_get_property (GObject    *object,
                                     guint       prop_id,

@@ -40,6 +40,7 @@ void           nautilus_query_editor_set_location (NautilusQueryEditor *editor,
  * @editor: A #NautilusQueryEditor instance.
  */
 void           nautilus_query_editor_select_all_text (NautilusQueryEditor   *editor);
+void           nautilus_query_editor_show_filter     (NautilusQueryEditor   *self);
 
 gboolean       nautilus_query_editor_handle_event    (NautilusQueryEditor   *self,
                                                       GtkEventControllerKey *controller,

@@ -979,6 +979,21 @@ action_focus_search (GSimpleAction *action,
 }
 
 static void
+action_show_search_filter (GSimpleAction *action,
+                           GVariant      *state,
+                           gpointer       user_data)
+{
+    NautilusWindowSlot *self = NAUTILUS_WINDOW_SLOT (user_data);
+
+    if (!nautilus_window_slot_get_search_visible (self))
+    {
+        return;
+    }
+
+    nautilus_query_editor_show_filter (self->query_editor);
+}
+
+static void
 action_search_visible (GSimpleAction *action,
                        GVariant      *state,
                        gpointer       user_data)
@@ -1215,6 +1230,7 @@ const GActionEntry slot_entries[] =
     { .name = "search-visible", .state = "false", .change_state = action_search_visible },
     { .name = "search-global", .state = "false", .change_state = action_search_global },
     { .name = "focus-search", .activate = action_focus_search },
+    { .name = "show-search-filter", .activate = action_show_search_filter },
     { .name = "reload", .activate = action_reload },
     { .name = "stop", .activate = action_stop },
     { .name = "bookmark-current-directory", .activate = action_bookmark_current_directory },
@@ -1332,6 +1348,7 @@ nautilus_window_slot_init (NautilusWindowSlot *self)
                                        "slot.open-location", "Favorites",
                                        "s", SCHEME_STARRED ":///");
     ADD_SHORTCUT_FOR_ACTION (self->shortcuts, "slot.focus-search", "<control>f|Search");
+    ADD_SHORTCUT_FOR_ACTION (self->shortcuts, "slot.show-search-filter", "<control><shift>l");
     ADD_SHORTCUT_FOR_ACTION (self->shortcuts, "slot.search-global", "<control><shift>f");
     ADD_SHORTCUT_FOR_ACTION (self->shortcuts, "slot.reload", "F5|<ctrl>r|Refresh|Reload");
     ADD_SHORTCUT_FOR_ACTION (self->shortcuts, "slot.stop", "Stop");
