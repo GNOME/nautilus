@@ -223,7 +223,7 @@ nautilus_app_chooser_constructed (GObject *object)
     NautilusAppChooser *self = NAUTILUS_APP_CHOOSER (object);
     g_autoptr (GAppInfo) info = NULL;
     g_autofree gchar *description = NULL;
-    gchar *title;
+    const char *title;
 
     G_OBJECT_CLASS (nautilus_app_chooser_parent_class)->constructed (object);
 
