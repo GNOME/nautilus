@@ -1069,7 +1069,7 @@ extra_drag_drop_cb (AdwTabBar    *self,
     return nautilus_dnd_perform_drop (view, value, action, target_location);
 }
 
-const GActionEntry win_entries[] =
+static const GActionEntry win_entries[] =
 {
     { .name = "current-location-menu", .activate = action_show_current_location_menu },
     { .name = "new-tab", .activate = action_new_tab },
