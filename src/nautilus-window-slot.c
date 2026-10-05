@@ -2783,6 +2783,8 @@ nautilus_window_slot_stop_loading (NautilusWindowSlot *self)
         nautilus_files_view_stop_loading (self->content_view);
     }
 
+    self->needs_reload = FALSE;
+
     if (self->pending_location != NULL &&
         self->location != NULL &&
         self->content_view != NULL)
