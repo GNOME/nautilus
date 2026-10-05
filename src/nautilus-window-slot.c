@@ -393,7 +393,7 @@ hide_query_editor (NautilusWindowSlot *self)
         NautilusSelectionSource selection_source = nautilus_files_view_get_selection_source (view);
 
         /* Now that we have saved the search, clear the view's query. The view
-         * will immediately clear its model model and load the previous location
+         * will immediately clear its model and load the previous location
          */
         nautilus_files_view_set_search_query (view, NULL);
 
@@ -1805,7 +1805,7 @@ nautilus_window_slot_display_view_selection_failure (GtkWindow    *window,
     nautilus_show_ok_dialog (error_message, detail_message, GTK_WIDGET (window));
 }
 
-/* FIXME: This works in the folowwing way. begin_location_change tries to get the
+/* FIXME: This works in the folowing way. begin_location_change tries to get the
  * information of the file directly.
  * If the nautilus file finds that there is an error trying to get its
  * information and the error match that the file is not mounted, it sets an
@@ -1814,13 +1814,13 @@ nautilus_window_slot_display_view_selection_failure (GtkWindow    *window,
  * However, files are cached, and if the file doesn't get finalized in a location
  * change, because needs to be in the navigation history or is a bookmark, and the
  * file is not the root of the mount point, which is tracked by a volume monitor,
- * and it gets unmounted aftwerwards, the file doesn't realize it's unmounted, and
+ * and it gets unmounted afterwards, the file doesn't realize it's unmounted, and
  * therefore this trick to open an unmounted file will fail the next time the user
  * tries to open.
  * For that, we need to always invalidate the file attributes when a location is
  * changed, which is done in check_force_reload.
  * A better way would be to make sure any children of the mounted root gets
- * akwnoledge by it either by adding a reference to its parent volume monitor
+ * acknowledge by it either by adding a reference to its parent volume monitor
  * or with another solution. */
 static gboolean
 handle_mount_if_needed (NautilusWindowSlot *self,
@@ -1947,7 +1947,7 @@ got_file_info_for_view_selection_callback (NautilusFile *ready_file,
 
         /* Setting the view location might trigger a signal that calls
          * into the slot. We don't want that when setting the location
-         * outselves from the slot */
+         * ourselves from the slot */
         g_object_freeze_notify (G_OBJECT (self->content_view));
 
         apply_pending_location_and_selection_on_view (self);
