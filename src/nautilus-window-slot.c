@@ -2763,6 +2763,11 @@ static void
 nautilus_window_slot_set_allow_stop (NautilusWindowSlot *self,
                                      gboolean            allow)
 {
+    if (self->allow_stop == allow)
+    {
+        return;
+    }
+
     self->allow_stop = allow;
 
     GActionMap *action_map = G_ACTION_MAP (self->slot_action_group);
