@@ -2532,8 +2532,6 @@ nautilus_window_slot_dispose (GObject *object)
     NautilusWindowSlot *self;
     self = NAUTILUS_WINDOW_SLOT (object);
 
-    g_signal_handlers_disconnect_by_data (nautilus_preferences, self);
-
     nautilus_window_slot_clear_forward_list (self);
     nautilus_window_slot_clear_back_list (self);
     g_clear_list (&self->down_list, g_object_unref);
