@@ -11,6 +11,7 @@
 #include <sys/random.h>
 #include <sys/types.h>
 #include <nautilus-file.h>
+#include <nautilus-directory.h>
 #include <src/nautilus-file-undo-manager.h>
 #include <nautilus-thumbnails.h>
 
@@ -617,6 +618,30 @@ file_load_attributes (NautilusFile       *file,
                                    &done);
 
     ITER_CONTEXT_WHILE (!done);
+}
+
+static void
+directory_ready_cb (NautilusDirectory *directory,
+                    NautilusFileList  *files,
+                    gpointer           user_data)
+{
+    gboolean *ready = user_data;
+
+    *ready = TRUE;
+}
+
+/* Wait until the file list and the info of all files are loaded. */
+void
+directory_load_attributes (NautilusDirectory  *directory,
+                           NautilusAttributes  attributes)
+{
+    gboolean ready = FALSE;
+
+    nautilus_directory_call_when_ready (directory,
+                                        attributes,
+                                        directory_ready_cb, &ready);
+
+    ITER_CONTEXT_WHILE (!ready);
 }
 
 static void *
