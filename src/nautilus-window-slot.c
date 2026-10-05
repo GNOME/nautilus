@@ -2690,7 +2690,7 @@ nautilus_window_slot_class_init (NautilusWindowSlotClass *klass)
                              "Current location visible on the slot",
                              "Either the location that is used currently, or the pending location. Clients will see the same value they set, and therefore it will be cosistent from clients point of view.",
                              G_TYPE_FILE,
-                             G_PARAM_READWRITE);
+                             G_PARAM_READWRITE | G_PARAM_EXPLICIT_NOTIFY);
 
     properties[PROP_TOOLTIP] =
         g_param_spec_string ("tooltip",
