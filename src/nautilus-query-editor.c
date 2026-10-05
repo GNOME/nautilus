@@ -240,6 +240,10 @@ update_search_information (NautilusQueryEditor *editor)
     gtk_widget_set_visible (editor->search_settings_button, FALSE);
     gtk_widget_set_visible (editor->search_info_button, FALSE);
 
+    g_cancellable_cancel (editor->cancellable);
+    g_clear_object (&editor->cancellable);
+    editor->cancellable = g_cancellable_new ();
+
     if (editor->location == NULL)
     {
         return;
