@@ -228,7 +228,7 @@ add_numbering_tag (GSimpleAction *action,
     }
 }
 
-const GActionEntry dialog_entries[] =
+static const GActionEntry dialog_entries[] =
 {
     {
         .name = "numbering-order-changed", .parameter_type = "s", .state = "'name-ascending'",

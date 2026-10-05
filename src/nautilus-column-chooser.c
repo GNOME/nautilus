@@ -145,7 +145,7 @@ static void action_move_row_down (GSimpleAction *action,
     move_row (chooser, chooser->row_with_open_menu, FALSE);
 }
 
-const GActionEntry column_chooser_actions[] =
+static const GActionEntry column_chooser_actions[] =
 {
     { .name = "move-up", .activate = action_move_row_up },
     { .name = "move-down", .activate = action_move_row_down }

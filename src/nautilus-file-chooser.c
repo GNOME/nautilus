@@ -813,7 +813,7 @@ nautilus_file_chooser_constructed (GObject *object)
     gtk_window_set_default_size (GTK_WINDOW (self), width, height);
 }
 
-const GActionEntry chooser_action_entries[] =
+static const GActionEntry chooser_action_entries[] =
 {
     { .name = "accept", .activate = action_accept },
     { .name = "focus-entry", .activate = action_focus_entry },

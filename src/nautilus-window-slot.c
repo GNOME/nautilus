@@ -1197,7 +1197,7 @@ action_unstar_current_directory (GSimpleAction *action,
                                        &(GList){ .data = self->viewed_file }, NULL, NULL, NULL);
 }
 
-const GActionEntry slot_entries[] =
+static const GActionEntry slot_entries[] =
 {
     { .name = "open-location", .activate = action_open_location, .parameter_type = "s" },
     { .name = "back", .activate = action_back },

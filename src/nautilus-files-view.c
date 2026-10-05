@@ -6864,7 +6864,7 @@ action_template_empty (GSimpleAction *action,
     nautilus_files_view_new_file (self, NULL, NULL);
 }
 
-const GActionEntry view_entries[] =
+static const GActionEntry view_entries[] =
 {
     /* Toolbar menu */
     { .name = "zoom-in", .activate = action_zoom_in },

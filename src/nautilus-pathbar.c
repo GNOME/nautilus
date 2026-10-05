@@ -140,7 +140,7 @@ static void     pop_up_pathbar_context_menu (NautilusPathBar *self,
                                              NautilusFile    *file);
 static void nautilus_path_bar_clear_buttons (NautilusPathBar *self);
 
-const GActionEntry path_bar_actions[] =
+static const GActionEntry path_bar_actions[] =
 {
     { .name = "open-item-new-tab", .activate = action_pathbar_open_item_new_tab },
     { .name = "open-item-new-window", .activate = action_pathbar_open_item_new_window },
