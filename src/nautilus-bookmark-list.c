@@ -32,6 +32,7 @@ struct _NautilusBookmarkList
     GFileMonitor *monitor;
     GCancellable *load_cancellable;
     GCancellable *save_cancellable;
+    gboolean loaded_once;
 };
 
 enum
@@ -414,8 +415,11 @@ load_callback (GObject      *source_object,
     }
 
     NautilusBookmarkList *self = NAUTILUS_BOOKMARK_LIST (source_object);
+    gboolean bookmarks_to_merge_exist = !self->loaded_once && self->list != NULL;
+    g_autolist (NautilusBookmark) bookmarks_to_merge = NULL;
 
     g_clear_object (&self->load_cancellable);
+    self->loaded_once = TRUE;
 
     if (error != NULL)
     {
@@ -425,11 +429,25 @@ load_callback (GObject      *source_object,
                        error->message);
         }
 
+        if (bookmarks_to_merge_exist)
+        {
+            /* Pretend what we have are the new bookmarks and attempt to save
+             * regardless of the cause of error. */
+            nautilus_bookmark_list_save_file (self);
+        }
+
         return;
     }
 
-    /* Wipe out old list. */
-    clear (self);
+    if (bookmarks_to_merge_exist)
+    {
+        g_list_foreach (self->list, (GFunc) stop_monitoring_bookmark, self);
+        bookmarks_to_merge = g_steal_pointer (&self->list);
+    }
+    else
+    {
+        clear (self);
+    }
 
     char **lines = g_strsplit (contents, "\n", -1);
     for (guint i = 0; lines[i]; i++)
@@ -459,7 +477,41 @@ load_callback (GObject      *source_object,
         insert_bookmark_internal (self, new_bookmark, -1);
     }
 
-    g_signal_emit (self, signals[CHANGED], 0);
+    /* Merge the bookmarks added before the first bookmarks load by appending
+     * at the end of the list or by editing existing ones. */
+    for (GList *l = bookmarks_to_merge; l != NULL; l = l->next)
+    {
+        NautilusBookmark *bookmark = l->data;
+        GFile *location = nautilus_bookmark_get_location (bookmark);
+        NautilusBookmark *existing_bookmark = nautilus_bookmark_list_get_bookmark (self, location);
+
+        if (existing_bookmark == NULL)
+        {
+            insert_bookmark_internal (self, g_object_ref (bookmark), -1);
+        }
+        else
+        {
+            GStrv selected_uris = g_strdupv (nautilus_bookmark_get_selected_uris (bookmark));
+
+            /* Save only after all pending bookmarks have been merged. */
+            g_signal_handlers_block_by_func (existing_bookmark,
+                                             bookmark_in_list_name_changed, self);
+            nautilus_bookmark_set_name (existing_bookmark,
+                                        nautilus_bookmark_get_name (bookmark));
+            g_signal_handlers_unblock_by_func (existing_bookmark,
+                                               bookmark_in_list_name_changed, self);
+            nautilus_bookmark_take_selected_uris (existing_bookmark, selected_uris);
+        }
+    }
+
+    if (bookmarks_to_merge_exist)
+    {
+        nautilus_bookmark_list_save_file (self);
+    }
+    else
+    {
+        g_signal_emit (self, signals[CHANGED], 0);
+    }
 
     g_strfreev (lines);
 }
@@ -594,6 +646,13 @@ save_io_thread (GTask        *task,
 static void
 save_file_async (NautilusBookmarkList *self)
 {
+    if (!self->loaded_once)
+    {
+        /* We're OK with overwriting the old file only if it we loaded
+         * bookmarks at least once. */
+        return;
+    }
+
     g_autoptr (GTask) task = NULL;
     GString *bookmark_string = g_string_new (NULL);
 
