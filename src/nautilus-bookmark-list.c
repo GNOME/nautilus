@@ -17,12 +17,6 @@
 #include "nautilus-scheme.h"
 
 #include <gio/gio.h>
-#include <string.h>
-#include <errno.h>
-
-#define MAX_BOOKMARK_LENGTH 80
-#define LOAD_JOB 1
-#define SAVE_JOB 2
 
 struct _NautilusBookmarkList
 {
@@ -174,7 +168,8 @@ bookmark_monitor_changed_cb (GFileMonitor      *monitor,
     if (eflags == G_FILE_MONITOR_EVENT_CHANGED ||
         eflags == G_FILE_MONITOR_EVENT_CREATED)
     {
-        g_return_if_fail (NAUTILUS_IS_BOOKMARK_LIST (NAUTILUS_BOOKMARK_LIST (user_data)));
+        g_return_if_fail (NAUTILUS_IS_BOOKMARK_LIST (user_data));
+
         nautilus_bookmark_list_load_file (NAUTILUS_BOOKMARK_LIST (user_data));
     }
 }
