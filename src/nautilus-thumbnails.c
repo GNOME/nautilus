@@ -286,7 +286,8 @@ thumbnail_result_free (ThumbnailResult *result)
 G_DEFINE_AUTOPTR_CLEANUP_FUNC (ThumbnailResult, thumbnail_result_free)
 
 static GdkTexture *
-scale_image_to_texture (GlyImage *image)
+scale_image_to_texture (GlyImage   *image,
+                        GdkDisplay *display)
 {
     g_autoptr (GlyFrameRequest) frame_request = gly_frame_request_new ();
     g_autoptr (GlyFrame) frame = NULL;
@@ -313,13 +314,18 @@ scale_image_to_texture (GlyImage *image)
     double scale_factor = MIN ((double) max_size / iw, (double) max_size / ih);
     double width = iw * scale_factor;
     double height = ih * scale_factor;
-    g_autoptr (GtkSnapshot) snapshot = gtk_snapshot_new ();
+    const graphene_rect_t bounds = GRAPHENE_RECT_INIT (0, 0, width, height);
+    g_autoptr (GskRenderNode) node = gsk_texture_scale_node_new (texture, &bounds,
+                                                                 GSK_SCALING_FILTER_LINEAR);
+    g_autoptr (GskRenderer) renderer = gsk_cairo_renderer_new ();
 
-    gdk_paintable_snapshot (GDK_PAINTABLE (texture),
-                            GDK_SNAPSHOT (snapshot),
-                            width, height);
+    gsk_renderer_realize_for_display (renderer, display, NULL);
 
-    return GDK_TEXTURE (gtk_snapshot_to_paintable (snapshot, NULL));
+    GdkTexture *scaled_texture = gsk_renderer_render_texture (renderer, node, &bounds);
+
+    gsk_renderer_unrealize (renderer);
+
+    return scaled_texture;
 }
 
 #define XDG_THUMBNAIL_KEY_MTIME "Thumb::MTime"
@@ -333,7 +339,8 @@ thumbnail_load_from_stream_thread (GTask        *task,
     GInputStream *self = source_object;
     g_autoptr (GlyLoader) loader = gly_loader_new_for_stream (self);
     g_autoptr (GlyImage) image = gly_loader_load (loader, NULL);
-    GdkTexture *texture = scale_image_to_texture (image);
+    GdkDisplay *display = g_task_get_task_data (task);
+    GdkTexture *texture = scale_image_to_texture (image, display);
 
     if (texture != NULL)
     {
@@ -361,11 +368,16 @@ thumbnail_load_from_stream_async (GInputStream        *stream,
                                   GAsyncReadyCallback  callback,
                                   gpointer             user_data)
 {
+    GdkDisplay *display = gdk_display_get_default ();
+
+    g_return_if_fail (display != NULL);
+
     g_autoptr (GTask) task = g_task_new (stream, cancellable, callback, user_data);
 
     /* We're potentially starving other important threads from reaching the
      *  thread pool, so lets reduce the priority. */
     g_task_set_priority (task, G_PRIORITY_LOW);
+    g_task_set_task_data (task, display, NULL);
 
     g_task_run_in_thread (task, thumbnail_load_from_stream_thread);
 }
