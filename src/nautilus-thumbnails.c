@@ -313,13 +313,18 @@ scale_image_to_texture (GlyImage *image)
     double scale_factor = MIN ((double) max_size / iw, (double) max_size / ih);
     double width = iw * scale_factor;
     double height = ih * scale_factor;
-    g_autoptr (GtkSnapshot) snapshot = gtk_snapshot_new ();
+    const graphene_rect_t bounds = GRAPHENE_RECT_INIT (0, 0, width, height);
+    g_autoptr (GskRenderNode) node = gsk_texture_scale_node_new (texture, &bounds,
+                                                                 GSK_SCALING_FILTER_LINEAR);
+    g_autoptr (GskRenderer) renderer = gsk_cairo_renderer_new ();
 
-    gdk_paintable_snapshot (GDK_PAINTABLE (texture),
-                            GDK_SNAPSHOT (snapshot),
-                            width, height);
+    gsk_renderer_realize_for_display (renderer, gdk_display_get_default (), NULL);
 
-    return GDK_TEXTURE (gtk_snapshot_to_paintable (snapshot, NULL));
+    GdkTexture *scaled_texture = gsk_renderer_render_texture (renderer, node, &bounds);
+
+    gsk_renderer_unrealize (renderer);
+
+    return scaled_texture;
 }
 
 #define XDG_THUMBNAIL_KEY_MTIME "Thumb::MTime"
