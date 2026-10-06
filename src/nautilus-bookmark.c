@@ -15,7 +15,6 @@
 
 #include <gio/gio.h>
 #include <glib/gi18n.h>
-#include <gtk/gtk.h>
 
 #include "nautilus-file.h"
 #include "nautilus-file-utilities.h"
@@ -56,7 +55,7 @@ struct _NautilusBookmark
     GCancellable *cancellable;
 };
 
-static void nautilus_bookmark_disconnect_file (NautilusBookmark *file);
+static void nautilus_bookmark_disconnect_file (NautilusBookmark *bookmark);
 
 G_DEFINE_FINAL_TYPE (NautilusBookmark, nautilus_bookmark, G_TYPE_OBJECT);
 
