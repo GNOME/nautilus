@@ -4188,7 +4188,9 @@ nautilus_file_get_boolean_metadata (NautilusFile *file,
     }
     else
     {
-        g_error ("boolean metadata with value other than true or false");
+        g_warning ("Invalid boolean metadata value \"%s\" for key \"%s\", "
+                   "using default value",
+                   value, key);
         return default_metadata;
     }
 }
