@@ -407,14 +407,17 @@ load_callback (GObject      *source_object,
                gpointer      user_data)
 {
     g_autoptr (GError) error = NULL;
-    g_autofree gchar *contents = g_task_propagate_pointer (G_TASK (res), &error);
+    g_autofree gchar *contents = NULL;
 
-    if (g_cancellable_is_cancelled (g_task_get_cancellable (G_TASK (res))))
+    g_file_load_contents_finish (G_FILE (source_object), res,
+                                 &contents, NULL, NULL, &error);
+
+    if (g_error_matches (error, G_IO_ERROR, G_IO_ERROR_CANCELLED))
     {
         return;
     }
 
-    NautilusBookmarkList *self = NAUTILUS_BOOKMARK_LIST (source_object);
+    NautilusBookmarkList *self = NAUTILUS_BOOKMARK_LIST (user_data);
     gboolean bookmarks_to_merge_exist = !self->loaded_once && self->list != NULL;
     g_autolist (NautilusBookmark) bookmarks_to_merge = NULL;
 
@@ -517,31 +520,6 @@ load_callback (GObject      *source_object,
 }
 
 static void
-load_io_thread (GTask        *task,
-                gpointer      source_object,
-                gpointer      task_data,
-                GCancellable *cancellable)
-{
-    GFile *file;
-    gchar *contents;
-    GError *error = NULL;
-
-    file = nautilus_bookmark_list_get_file ();
-
-    g_file_load_contents (file, cancellable, &contents, NULL, NULL, &error);
-    g_object_unref (file);
-
-    if (error != NULL)
-    {
-        g_task_return_error (task, error);
-    }
-    else
-    {
-        g_task_return_pointer (task, contents, g_free);
-    }
-}
-
-static void
 load_file_async (NautilusBookmarkList *self)
 {
     /* This didn't come from a monitor since it would be temperorarly disabled.
@@ -549,7 +527,7 @@ load_file_async (NautilusBookmarkList *self)
      * occur after another operation */
     g_return_if_fail (self->save_cancellable == NULL);
 
-    g_autoptr (GTask) task = NULL;
+    g_autoptr (GFile) file = nautilus_bookmark_list_get_file ();
 
     if (self->load_cancellable != NULL)
     {
@@ -558,10 +536,10 @@ load_file_async (NautilusBookmarkList *self)
     }
     self->load_cancellable = g_cancellable_new ();
 
-    task = g_task_new (G_OBJECT (self),
-                       self->load_cancellable,
-                       load_callback, NULL);
-    g_task_run_in_thread (task, load_io_thread);
+    g_file_load_contents_async (file,
+                                self->load_cancellable,
+                                load_callback,
+                                self);
 }
 
 static void
