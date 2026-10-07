@@ -150,6 +150,83 @@ file_has_string (GFile      *file,
 }
 
 static void
+test_bookmark_list_missing_file (void)
+{
+    const char *tmp_dir = test_get_tmp_dir ();
+    g_autoptr (GFile) bookmarks_list_file =
+        g_file_new_build_filename (tmp_dir, "gtk-3.0", "bookmarks", NULL);
+    g_autoptr (NautilusBookmarkList) list = NULL;
+    g_autoptr (GFile) bookmark = g_file_new_build_filename (tmp_dir, "bookmark", NULL);
+    g_autofree char *bookmark_uri = g_file_get_uri (bookmark);
+
+    g_setenv ("XDG_CONFIG_HOME", tmp_dir, TRUE);
+    list = nautilus_bookmark_list_new ();
+    nautilus_bookmark_list_add (list, bookmark, -1);
+
+    ITER_CONTEXT_WHILE (!g_file_query_exists (bookmarks_list_file, NULL));
+    ITER_CONTEXT_WHILE (!file_has_string (bookmarks_list_file, bookmark_uri));
+
+    g_assert_true (nautilus_bookmark_list_contains (list, bookmark));
+
+    test_clear_tmp_dir ();
+}
+
+static void
+test_bookmark_list_first_load_merge (void)
+{
+    const char *tmp_dir = test_get_tmp_dir ();
+    g_autoptr (GFile) bookmarks_list_file = setup_tmp_bookmarks_file (tmp_dir);
+    g_autoptr (GFile) existing_location = g_file_new_build_filename (tmp_dir, "existing", NULL);
+    g_autoptr (GFile) new_location = g_file_new_build_filename (tmp_dir, "new", NULL);
+    g_autofree char *existing_uri = g_file_get_uri (existing_location);
+    g_autofree char *new_uri = g_file_get_uri (new_location);
+    g_autofree char *disk_contents = g_strdup_printf ("%s On disk\n", existing_uri);
+    g_autoptr (GError) error = NULL;
+    g_autoptr (NautilusBookmarkList) list = NULL;
+    g_autoptr (NautilusBookmark) pending_duplicate = NULL;
+    ChangedSignalTestData test_data = { 0, 0 };
+
+    g_file_replace_contents (bookmarks_list_file,
+                             disk_contents, strlen (disk_contents),
+                             NULL, FALSE, G_FILE_CREATE_NONE, NULL, NULL, &error);
+    g_assert_no_error (error);
+
+    list = nautilus_bookmark_list_new ();
+    g_signal_connect (list, "changed", G_CALLBACK (bookmark_list_changed_cb), &test_data);
+
+    test_data.expected_signal_count++;
+    nautilus_bookmark_list_add (list, existing_location, -1);
+    pending_duplicate = g_object_ref (nautilus_bookmark_list_get_bookmark (list, existing_location));
+
+    test_data.expected_signal_count++;
+    nautilus_bookmark_list_add (list, new_location, -1);
+
+    test_data.expected_signal_count++;
+    ITER_CONTEXT_WHILE (test_data.signal_count < test_data.expected_signal_count);
+
+    NautilusBookmark *loaded_duplicate = nautilus_bookmark_list_get_bookmark (list, existing_location);
+    NautilusBookmark *new_bookmark = nautilus_bookmark_list_get_bookmark (list, new_location);
+
+    g_assert_nonnull (loaded_duplicate);
+    g_assert_true (loaded_duplicate != pending_duplicate);
+    g_assert_nonnull (new_bookmark);
+
+    nautilus_bookmark_set_name (pending_duplicate, "No longer in list");
+    g_assert_cmpuint (test_data.signal_count, ==, test_data.expected_signal_count);
+
+    test_data.expected_signal_count++;
+    nautilus_bookmark_set_name (new_bookmark, "Renamed");
+    g_assert_cmpuint (test_data.signal_count, ==, test_data.expected_signal_count);
+
+    ITER_CONTEXT_WHILE (!file_has_string (bookmarks_list_file, "Renamed"));
+    g_assert_true (file_has_string (bookmarks_list_file, existing_uri));
+    g_assert_true (file_has_string (bookmarks_list_file, new_uri));
+    ITER_CONTEXT_WHILE (g_main_context_pending (NULL));
+
+    test_clear_tmp_dir ();
+}
+
+static void
 test_bookmark_list_changed_signal_internal (void)
 {
     const char *tmp_dir = test_get_tmp_dir ();
@@ -283,6 +360,10 @@ main (int   argc,
 
     g_test_add_func ("/bookmark-list/basic",
                      test_bookmark_list_basic);
+    g_test_add_func ("/bookmark-list/missing-file",
+                     test_bookmark_list_missing_file);
+    g_test_add_func ("/bookmark-list/first-load-merge",
+                     test_bookmark_list_first_load_merge);
     g_test_add_func ("/bookmark-list/changed-signal/internal",
                      test_bookmark_list_changed_signal_internal);
     g_test_add_func ("/bookmark-list/changed-signal/external",
