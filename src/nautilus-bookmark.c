@@ -64,7 +64,19 @@ void
 nautilus_bookmark_set_name (NautilusBookmark *bookmark,
                             const char       *new_name)
 {
-    if (g_set_str (&bookmark->name, new_name))
+    g_autofree char *escaped_name = NULL;
+
+    if (new_name != NULL)
+    {
+        GString *escaped_name_string = g_string_new (new_name);
+
+        /* Avoid splitting a name into multiple bookmarks due to return characters */
+        g_string_replace (escaped_name_string, "\n", " ", 0);
+        g_string_replace (escaped_name_string, "\r", " ", 0);
+        escaped_name = g_string_free_and_steal (escaped_name_string);
+    }
+
+    if (g_set_str_take (&bookmark->name, g_steal_pointer (&escaped_name)))
     {
         g_object_notify_by_pspec (G_OBJECT (bookmark), properties[PROP_NAME]);
     }
@@ -290,7 +302,9 @@ nautilus_bookmark_connect_file (NautilusBookmark *bookmark)
 
     if (bookmark->name == NULL)
     {
-        bookmark->name = nautilus_compute_title_for_location (bookmark->location);
+        g_autofree char *new_name = nautilus_compute_title_for_location (bookmark->location);
+
+        nautilus_bookmark_set_name (bookmark, new_name);
     }
 }
 
