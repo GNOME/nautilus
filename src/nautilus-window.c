@@ -78,8 +78,6 @@ struct _NautilusWindow
 
     /* Side Pane */
     NautilusSidebar *places_sidebar;
-    GVolume *selected_volume;     /* the selected volume in the sidebar popup callback */
-    GFile *selected_file;     /* the selected file in the sidebar popup callback */
 
     /* Notifications */
     AdwToastOverlay *toast_overlay;
@@ -87,11 +85,8 @@ struct _NautilusWindow
 
     /* Toolbar */
     GtkWidget *toolbar;
-    gboolean temporary_navigation_bar;
 
     GtkWidget *network_address_bar;
-
-    guint sidebar_width_handler_id;
 
     GQueue *tab_data_queue;
 
@@ -1257,11 +1252,6 @@ nautilus_window_finalize (GObject *object)
     NautilusWindow *window;
 
     window = NAUTILUS_WINDOW (object);
-
-    g_clear_handle_id (&window->sidebar_width_handler_id, g_source_remove);
-
-    g_clear_object (&window->selected_file);
-    g_clear_object (&window->selected_volume);
 
     g_signal_handlers_disconnect_by_func (nautilus_file_undo_manager_get (),
                                           G_CALLBACK (nautilus_window_on_undo_changed),
