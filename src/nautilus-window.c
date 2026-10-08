@@ -307,7 +307,7 @@ on_slot_location_changed (NautilusWindowSlot *slot,
 static AdwTabPage *
 create_tab_cb (NautilusWindow *window)
 {
-    gtk_widget_activate_action (GTK_WIDGET (window), "win.new-tab", NULL);
+    nautilus_window_new_tab (window);
 
     return adw_tab_view_get_selected_page (window->tab_view);
 }
