@@ -244,9 +244,8 @@ action_go_to_tab (GSimpleAction *action,
                   gpointer       user_data)
 {
     NautilusWindow *window = NAUTILUS_WINDOW (user_data);
-    gint16 num;
+    gint32 num = g_variant_get_int32 (value);
 
-    num = g_variant_get_int32 (value);
     if (num < adw_tab_view_get_n_pages (window->tab_view))
     {
         AdwTabPage *page = adw_tab_view_get_nth_page (window->tab_view, num);
@@ -499,7 +498,7 @@ remove_slot_from_window (NautilusWindowSlot *slot,
                          NautilusWindow     *window)
 {
     g_return_if_fail (NAUTILUS_IS_WINDOW_SLOT (slot));
-    g_return_if_fail (NAUTILUS_WINDOW (window));
+    g_return_if_fail (NAUTILUS_IS_WINDOW (window));
 
     g_debug ("Removing slot %p", slot);
 
@@ -972,9 +971,6 @@ tab_view_page_detached_cb (AdwTabView     *tab_view,
 {
     NautilusWindowSlot *slot = NAUTILUS_WINDOW_SLOT (adw_tab_page_get_child (page));
 
-    /* If the tab has been moved to another window, we need to remove the slot
-     * from the current window here. Otherwise, if the tab has been closed, then
-     * we have*/
     if (g_list_find (window->slots, slot))
     {
         remove_slot_from_window (slot, window);
@@ -1098,8 +1094,6 @@ nautilus_window_initialize_actions (NautilusWindow *window)
                                      win_entries, G_N_ELEMENTS (win_entries),
                                      window);
 
-#define ACCELS(...) ((const char *[]) { __VA_ARGS__, NULL })
-
     app = g_application_get_default ();
     nautilus_application_set_accelerator (app, "win.new-tab", "<control>t");
     nautilus_application_set_accelerator (app, "win.open-tab-overview", "<shift><control>o");
@@ -1123,8 +1117,6 @@ nautilus_window_initialize_actions (NautilusWindow *window)
     }
 
     nautilus_window_on_undo_changed (nautilus_file_undo_manager_get (), window);
-
-#undef ACCELS
 
     action = g_action_map_lookup_action (G_ACTION_MAP (window), "toggle-sidebar");
     g_object_bind_property (window->split_view, "collapsed",
@@ -1152,12 +1144,8 @@ is_layout_reversed (void)
     }
 
     /* Invalid layout, don't even try */
-    if (parts == NULL || g_strv_length (parts) < 2)
-    {
-        return FALSE;
-    }
+    g_return_val_if_fail (parts != NULL && g_strv_length (parts) >= 2, FALSE);
 
-    g_return_val_if_fail (parts[0] != NULL, FALSE);
     return (g_strrstr (parts[0], "close") != NULL);
 }
 
@@ -1374,19 +1362,6 @@ nautilus_window_key_bubble (GtkEventControllerKey *controller,
     }
 
     return GDK_EVENT_PROPAGATE;
-}
-
-/**
- * nautilus_window_show:
- * @widget: GtkWidget
- *
- * Call parent and then show/hide window items
- * base on user prefs.
- */
-static void
-nautilus_window_show (GtkWidget *widget)
-{
-    GTK_WIDGET_CLASS (nautilus_window_parent_class)->show (widget);
 }
 
 gboolean
@@ -1632,7 +1607,6 @@ nautilus_window_class_init (NautilusWindowClass *class)
     oclass->get_property = nautilus_window_get_property;
     oclass->set_property = nautilus_window_set_property;
 
-    wclass->show = nautilus_window_show;
     wclass->realize = nautilus_window_realize;
     wclass->grab_focus = nautilus_window_grab_focus;
 
@@ -1670,7 +1644,7 @@ nautilus_window_class_init (NautilusWindowClass *class)
     signals[LOCATIONS_CHANGED] =
         g_signal_new ("locations-changed",
                       G_TYPE_FROM_CLASS (class),
-                      G_SIGNAL_RUN_LAST | G_SIGNAL_ACTION,
+                      G_SIGNAL_RUN_LAST,
                       0,
                       NULL, NULL,
                       g_cclosure_marshal_VOID__VOID,
