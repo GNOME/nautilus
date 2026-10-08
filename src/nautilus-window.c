@@ -709,7 +709,8 @@ window_slot_close (NautilusWindow     *window,
     {
         GAction *restore_action = g_action_map_lookup_action (G_ACTION_MAP (window), "restore-tab");
 
-        g_simple_action_set_enabled (G_SIMPLE_ACTION (restore_action), TRUE);
+        g_simple_action_set_enabled (G_SIMPLE_ACTION (restore_action),
+                                     g_queue_get_length (window->tab_data_queue) > 0);
     }
 
 #ifdef HAVE_MALLOC_TRIM
@@ -886,7 +887,8 @@ nautilus_window_on_undo_changed (NautilusFileUndoManager *manager,
             /* Don't pop up a notification if the focus is not in the this
              * window. This is an easy way to know from which window was the
              * unstart operation made */
-            if (g_file_has_uri_scheme (location, SCHEME_STARRED) &&
+            if (location != NULL &&
+                g_file_has_uri_scheme (location, SCHEME_STARRED) &&
                 gtk_window_is_active (GTK_WINDOW (window)) &&
                 !nautilus_file_undo_info_starred_is_starred (NAUTILUS_FILE_UNDO_INFO_STARRED (undo_info)))
             {
