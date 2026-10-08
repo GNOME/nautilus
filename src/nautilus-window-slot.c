@@ -2355,7 +2355,7 @@ found_content_type_cb (const char **x_content_types,
         nautilus_window_slot_show_x_content_bar (self, data->mount, (const char * const *) x_content_types);
     }
 
-    self->find_mount_cancellable = NULL;
+    g_clear_object (&self->find_mount_cancellable);
 }
 
 static void
@@ -2385,7 +2385,7 @@ found_mount_cb (GObject      *source_object,
     {
         NautilusWindowSlot *self = NAUTILUS_WINDOW_SLOT (data->slot);
 
-        self->find_mount_cancellable = NULL;
+        g_clear_object (&self->find_mount_cancellable);
     }
 }
 
@@ -2476,7 +2476,7 @@ nautilus_window_slot_update_extra_location_widgets (NautilusWindowSlot *self)
     if (self->find_mount_cancellable != NULL)
     {
         g_cancellable_cancel (self->find_mount_cancellable);
-        self->find_mount_cancellable = NULL;
+        g_clear_object (&self->find_mount_cancellable);
     }
 
     data = g_new (FindMountData, 1);
@@ -2484,7 +2484,7 @@ nautilus_window_slot_update_extra_location_widgets (NautilusWindowSlot *self)
     data->cancellable = g_cancellable_new ();
     data->mount = NULL;
 
-    self->find_mount_cancellable = data->cancellable;
+    self->find_mount_cancellable = g_object_ref (data->cancellable);
     g_file_find_enclosing_mount_async (location,
                                        G_PRIORITY_DEFAULT,
                                        data->cancellable,
