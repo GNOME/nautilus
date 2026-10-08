@@ -442,8 +442,6 @@ nautilus_application_open (GApplication  *app,
     {
         GFile *file = files[idx];
 
-        g_return_if_fail (file != NULL);
-
         nautilus_application_open_location_full (self, file, flags, NULL, NULL);
     }
 }
@@ -680,7 +678,6 @@ nautilus_init_application_actions (NautilusApplication *app)
     g_action_map_add_action_entries (G_ACTION_MAP (app),
                                      app_entries, G_N_ELEMENTS (app_entries),
                                      app);
-
 
     nautilus_application_set_accelerator (G_APPLICATION (app),
                                           "app.clone-window", "<Primary>n");
