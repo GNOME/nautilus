@@ -734,7 +734,6 @@ nautilus_application_handle_file_args (NautilusApplication *self,
                                        GVariantDict        *options)
 {
     GFile **files;
-    GFile *file;
     gint idx, len;
     g_autofree const gchar **remaining = NULL;
     GPtrArray *file_array;
@@ -748,7 +747,8 @@ nautilus_application_handle_file_args (NautilusApplication *self,
     {
         for (idx = 0; remaining[idx] != NULL; idx++)
         {
-            gchar *cwd;
+            g_autofree gchar *cwd = NULL;
+            g_autoptr (GFile) file = NULL;
 
             g_variant_dict_lookup (options, "cwd", "s", &cwd);
             if (cwd == NULL)
@@ -758,7 +758,6 @@ nautilus_application_handle_file_args (NautilusApplication *self,
             else
             {
                 file = g_file_new_for_commandline_arg_and_cwd (remaining[idx], cwd);
-                g_free (cwd);
             }
 
             if (g_file_has_uri_scheme (file, SCHEME_SEARCH))
@@ -772,14 +771,15 @@ nautilus_application_handle_file_args (NautilusApplication *self,
             }
             else
             {
-                g_ptr_array_add (file_array, file);
+                g_ptr_array_add (file_array, g_steal_pointer (&file));
             }
         }
     }
     else if (g_variant_dict_contains (options, "new-window"))
     {
-        file = g_file_new_for_path (g_get_home_dir ());
-        g_ptr_array_add (file_array, file);
+        g_autoptr (GFile) file = g_file_new_for_path (g_get_home_dir ());
+
+        g_ptr_array_add (file_array, g_steal_pointer (&file));
     }
     else
     {
