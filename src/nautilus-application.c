@@ -1264,7 +1264,10 @@ nautilus_application_window_removed (GtkApplication *app,
         self->windows = g_list_remove_all (self->windows, window);
         g_signal_handlers_disconnect_by_func (window, schedule_dbus_location_update, app);
         g_signal_handlers_disconnect_by_func (window, on_window_is_active_changed, self);
-        g_clear_weak_pointer (&self->last_active_window);
+        if (self->last_active_window == NAUTILUS_WINDOW (window))
+        {
+            g_clear_weak_pointer (&self->last_active_window);
+        }
     }
 
     /* if this was the last window, close the previewer */
