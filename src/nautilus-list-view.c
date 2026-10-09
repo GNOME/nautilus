@@ -551,8 +551,7 @@ update_sort_directories_first (NautilusListView *self)
     }
     else
     {
-        self->directories_first = g_settings_get_boolean (gtk_filechooser_preferences,
-                                                          NAUTILUS_PREFERENCES_SORT_DIRECTORIES_FIRST);
+        self->directories_first = TRUE;
     }
 
     if (model != NULL)
@@ -1119,12 +1118,6 @@ nautilus_list_view_init (NautilusListView *self)
 
     gtk_scrolled_window_set_child (GTK_SCROLLED_WINDOW (scrolled_window),
                                    GTK_WIDGET (self->view_ui));
-
-    g_signal_connect_object (gtk_filechooser_preferences,
-                             "changed::" NAUTILUS_PREFERENCES_SORT_DIRECTORIES_FIRST,
-                             G_CALLBACK (update_sort_directories_first),
-                             self,
-                             G_CONNECT_SWAPPED);
 
     nautilus_list_base_set_zoom_level (NAUTILUS_LIST_BASE (self), get_default_zoom_level ());
 

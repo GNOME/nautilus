@@ -978,10 +978,6 @@ maybe_migrate_gtk_filechooser_preferences (void)
             gtk3_settings = g_settings_new_with_path ("org.gtk.Settings.FileChooser",
                                                       "/org/gtk/settings/file-chooser/");
             g_settings_set_boolean (gtk_filechooser_preferences,
-                                    NAUTILUS_PREFERENCES_SORT_DIRECTORIES_FIRST,
-                                    g_settings_get_boolean (gtk3_settings,
-                                                            NAUTILUS_PREFERENCES_SORT_DIRECTORIES_FIRST));
-            g_settings_set_boolean (gtk_filechooser_preferences,
                                     NAUTILUS_PREFERENCES_SHOW_HIDDEN_FILES,
                                     g_settings_get_boolean (gtk3_settings,
                                                             NAUTILUS_PREFERENCES_SHOW_HIDDEN_FILES));

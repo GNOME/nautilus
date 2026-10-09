@@ -18,8 +18,6 @@
 #include "nautilus-global-preferences.h"
 
 /* bool preferences */
-#define NAUTILUS_PREFERENCES_DIALOG_FOLDERS_FIRST_WIDGET                       \
-        "sort_folders_first_row"
 #define NAUTILUS_PREFERENCES_DIALOG_DELETE_PERMANENTLY_WIDGET                  \
         "show_delete_permanently_row"
 #define NAUTILUS_PREFERENCES_DIALOG_CREATE_LINK_WIDGET                         \
@@ -167,9 +165,6 @@ nautilus_preferences_dialog_setup (GtkBuilder *builder)
                  (const char *[]) { _("On This Device Only"), _("All Folders"), _("Never"), NULL });
 
     /* setup preferences */
-    bind_builder_bool (builder, gtk_filechooser_preferences,
-                       NAUTILUS_PREFERENCES_DIALOG_FOLDERS_FIRST_WIDGET,
-                       NAUTILUS_PREFERENCES_SORT_DIRECTORIES_FIRST);
     bind_builder_bool (builder, nautilus_list_view_preferences,
                        NAUTILUS_PREFERENCES_DIALOG_LIST_VIEW_USE_TREE_WIDGET,
                        NAUTILUS_PREFERENCES_LIST_VIEW_USE_TREE);
