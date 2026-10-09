@@ -78,6 +78,7 @@ struct _NautilusApplication
     NautilusDBusLauncher *dbus_launcher;
 
     GCancellable *check_dirs_cancellable;
+    GCancellable *help_launch_cancellable;
 
     guint dbus_location_update_timeout_id;
 
@@ -480,6 +481,9 @@ nautilus_application_finalize (GObject *object)
         g_clear_object (&self->check_dirs_cancellable);
     }
 
+    g_cancellable_cancel (self->help_launch_cancellable);
+    g_clear_object (&self->help_launch_cancellable);
+
     G_OBJECT_CLASS (nautilus_application_parent_class)->finalize (object);
 }
 
@@ -606,27 +610,44 @@ action_about (GSimpleAction *action,
 }
 
 static void
+help_launch_callback (GObject      *source_object,
+                      GAsyncResult *result,
+                      gpointer      user_data)
+{
+    GtkUriLauncher *launcher = GTK_URI_LAUNCHER (source_object);
+    g_autoptr (GError) error = NULL;
+
+    if (gtk_uri_launcher_launch_finish (launcher, result, &error))
+    {
+        return;
+    }
+
+    NautilusApplication *self = NAUTILUS_APPLICATION (user_data);
+    GtkWindow *window = gtk_application_get_active_window (GTK_APPLICATION (self));
+    AdwDialog *dialog = adw_alert_dialog_new (_("There was an error displaying help"),
+                                              error->message);
+
+    g_clear_object (&self->help_launch_cancellable);
+    adw_alert_dialog_add_response (ADW_ALERT_DIALOG (dialog), "ok", _("_OK"));
+    adw_alert_dialog_set_default_response (ADW_ALERT_DIALOG (dialog), "ok");
+
+    adw_dialog_present (dialog, window != NULL ? GTK_WIDGET (window) : NULL);
+}
+
+static void
 action_help (GSimpleAction *action,
              GVariant      *parameter,
              gpointer       user_data)
 {
-    AdwDialog *dialog;
-    GtkApplication *application = user_data;
-    GError *error = NULL;
-    GtkWindow *window = gtk_application_get_active_window (application);
+    NautilusApplication *self = NAUTILUS_APPLICATION (user_data);
+    GtkWindow *window = gtk_application_get_active_window (GTK_APPLICATION (self));
     g_autoptr (GtkUriLauncher) launcher = gtk_uri_launcher_new ("help:gnome-help/files");
 
-    gtk_uri_launcher_launch (launcher, window, NULL, NULL, NULL);
+    g_clear_object (&self->help_launch_cancellable);
+    self->help_launch_cancellable = g_cancellable_new ();
 
-    if (error)
-    {
-        dialog = adw_alert_dialog_new (_("There was an error displaying help"), error->message);
-        adw_alert_dialog_add_response (ADW_ALERT_DIALOG (dialog), "ok", _("_OK"));
-        adw_alert_dialog_set_default_response (ADW_ALERT_DIALOG (dialog), "ok");
-
-        adw_dialog_present (dialog, GTK_WIDGET (window));
-        g_error_free (error);
-    }
+    gtk_uri_launcher_launch (launcher, window, self->help_launch_cancellable,
+                             help_launch_callback, self);
 }
 
 static void
