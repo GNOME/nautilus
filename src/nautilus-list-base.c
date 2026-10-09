@@ -47,6 +47,7 @@ struct _NautilusListBasePrivate
 
     gboolean dnd_disabled;
     gboolean single_click_mode;
+    gboolean directories_first;
 
     gboolean activate_on_release;
     gboolean deny_background_click;
@@ -923,6 +924,25 @@ typedef struct
 } NautilusListBaseSortData;
 
 static void
+update_sort_directories_first (NautilusListBase *self)
+{
+    NautilusListBasePrivate *priv = nautilus_list_base_get_instance_private (self);
+    NautilusFile *directory_as_file = nautilus_list_base_get_directory_as_file (self);
+
+    /* Always treat directories as normal items in search and recent. Recent
+     * can accidentally contain directories when they were picked via file chooser. */
+    if (nautilus_file_is_in_search (directory_as_file) ||
+        nautilus_file_is_in_recent (directory_as_file))
+    {
+        priv->directories_first = FALSE;
+    }
+    else
+    {
+        priv->directories_first = TRUE;
+    }
+}
+
+static void
 base_setup_directory (NautilusListBase  *self,
                       NautilusDirectory *directory)
 {
@@ -965,6 +985,13 @@ base_setup_directory (NautilusListBase  *self,
          */
         gtk_scrolled_window_set_kinetic_scrolling (content, FALSE);
         gtk_scrolled_window_set_kinetic_scrolling (content, TRUE);
+    }
+
+    update_sort_directories_first (self);
+
+    if (priv->model != NULL)
+    {
+        nautilus_view_model_sort (priv->model);
     }
 }
 
@@ -1339,6 +1366,14 @@ nautilus_list_base_get_model (NautilusListBase *self)
     NautilusListBasePrivate *priv = nautilus_list_base_get_instance_private (self);
 
     return priv->model;
+}
+
+gboolean
+nautilus_list_base_get_sort_directories_first (NautilusListBase *self)
+{
+    NautilusListBasePrivate *priv = nautilus_list_base_get_instance_private (self);
+
+    return priv->directories_first;
 }
 
 GtkWidget *

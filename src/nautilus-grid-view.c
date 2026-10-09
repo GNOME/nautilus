@@ -23,7 +23,7 @@ struct _NautilusGridView
     GtkGridView *view_ui;
 
     gint zoom_level;
-
+    /* Mirrors value from ListBase parent, reduces call overhead in nautilus_grid_view_sort */
     gboolean directories_first;
 
     GQuark caption_attributes[NAUTILUS_GRID_CELL_N_CAPTIONS];
@@ -70,30 +70,6 @@ nautilus_grid_view_sort (gconstpointer a,
 }
 
 static void
-update_sort_directories_first (NautilusGridView *self)
-{
-    NautilusFile *directory_as_file = nautilus_list_base_get_directory_as_file (NAUTILUS_LIST_BASE (self));
-    NautilusViewModel *model = nautilus_list_base_get_model (NAUTILUS_LIST_BASE (self));
-
-    /* Always treat directories as normal items in search and recent. Recent
-     * can accidentally contain directories when they were picked via file chooser. */
-    if (nautilus_file_is_in_search (directory_as_file) ||
-        nautilus_file_is_in_recent (directory_as_file))
-    {
-        self->directories_first = FALSE;
-    }
-    else
-    {
-        self->directories_first = TRUE;
-    }
-
-    if (model != NULL)
-    {
-        nautilus_view_model_sort (model);
-    }
-}
-
-static void
 nautilus_grid_view_setup_directory (NautilusListBase  *list_base,
                                     NautilusDirectory *new_directory)
 {
@@ -101,7 +77,7 @@ nautilus_grid_view_setup_directory (NautilusListBase  *list_base,
 
     NAUTILUS_LIST_BASE_CLASS (nautilus_grid_view_parent_class)->setup_directory (list_base, new_directory);
 
-    update_sort_directories_first (self);
+    self->directories_first = nautilus_list_base_get_sort_directories_first (list_base);
 }
 
 static guint

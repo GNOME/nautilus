@@ -41,7 +41,6 @@ struct _NautilusListView
 
     gint zoom_level;
 
-    gboolean directories_first;
     gboolean expand_as_a_tree;
 
     GQuark path_attribute_q;
@@ -276,9 +275,9 @@ sort_directories_func (gconstpointer a,
                        gconstpointer b,
                        gpointer      user_data)
 {
-    gboolean *directories_first = user_data;
+    gboolean directories_first = GPOINTER_TO_UINT (user_data);
 
-    if (*directories_first)
+    if (directories_first)
     {
         NautilusFile *file_a = nautilus_view_item_get_file ((NautilusViewItem *) a);
         NautilusFile *file_b = nautilus_view_item_get_file ((NautilusViewItem *) b);
@@ -537,30 +536,6 @@ real_set_zoom_level (NautilusListBase *list_base,
 }
 
 static void
-update_sort_directories_first (NautilusListView *self)
-{
-    NautilusFile *directory_as_file = nautilus_list_base_get_directory_as_file (NAUTILUS_LIST_BASE (self));
-    NautilusViewModel *model = nautilus_list_base_get_model (NAUTILUS_LIST_BASE (self));
-
-    /* Always treat directories as normal items in search and recent. Recent
-     * can accidentally contain directories when they were picked via file chooser. */
-    if (nautilus_file_is_in_search (directory_as_file) ||
-        nautilus_file_is_in_recent (directory_as_file))
-    {
-        self->directories_first = FALSE;
-    }
-    else
-    {
-        self->directories_first = TRUE;
-    }
-
-    if (model != NULL)
-    {
-        nautilus_view_model_sort (model);
-    }
-}
-
-static void
 nautilus_list_view_setup_directory (NautilusListBase  *list_base,
                                     NautilusDirectory *new_directory)
 {
@@ -607,8 +582,6 @@ nautilus_list_view_setup_directory (NautilusListBase  *list_base,
          * relying on `nautilus_file_get_parent()`. */
         self->expand_as_a_tree = FALSE;
     }
-
-    update_sort_directories_first (self);
 
     model = nautilus_list_base_get_model (NAUTILUS_LIST_BASE (self));
     if (model != NULL)
@@ -1063,8 +1036,12 @@ on_model_changed (NautilusListView *self)
         g_autoptr (GtkMultiSorter) sorter = gtk_multi_sorter_new ();
         GtkSorter *column_view_sorter = gtk_column_view_get_sorter (self->view_ui);
         g_autoptr (GtkCustomSorter) directories_sorter = NULL;
+        gboolean sort_directories_first =
+            nautilus_list_base_get_sort_directories_first (NAUTILUS_LIST_BASE (self));
 
-        directories_sorter = gtk_custom_sorter_new (sort_directories_func, &self->directories_first, NULL);
+        directories_sorter = gtk_custom_sorter_new (sort_directories_func,
+                                                    GUINT_TO_POINTER (sort_directories_first),
+                                                    NULL);
         gtk_multi_sorter_append (sorter, g_object_ref (GTK_SORTER (directories_sorter)));
         gtk_multi_sorter_append (sorter, g_object_ref (column_view_sorter));
         g_set_object (&self->view_model_sorter, GTK_SORTER (sorter));
