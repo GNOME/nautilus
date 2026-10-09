@@ -77,6 +77,8 @@ nautilus_grid_view_setup_directory (NautilusListBase  *list_base,
 
     NAUTILUS_LIST_BASE_CLASS (nautilus_grid_view_parent_class)->setup_directory (list_base, new_directory);
 
+    gtk_grid_view_set_header_factory (self->view_ui,
+                                      nautilus_list_base_get_current_header_factory (list_base));
     self->directories_first = nautilus_list_base_get_sort_directories_first (list_base);
 }
 

@@ -7,6 +7,8 @@
 #include "nautilus-list-base.h"
 #include "nautilus-list-base-private.h"
 
+#include <glib/gi18n.h>
+
 #include "nautilus-directory.h"
 #include "nautilus-dnd.h"
 #include "nautilus-view-cell.h"
@@ -44,6 +46,11 @@ struct _NautilusListBasePrivate
 
     GtkWidget *overlay;
     GtkWidget *scrolled_window;
+
+    GtkSorter *section_sorter;
+    GtkListItemFactory *default_header_factory;
+    /* Not owned, pointer to actual head */
+    GtkListItemFactory *current_header_factory;
 
     gboolean dnd_disabled;
     gboolean single_click_mode;
@@ -910,6 +917,74 @@ setup_cell_common (GObject          *listitem,
     g_signal_connect (controller, "motion", G_CALLBACK (on_item_drag_hover_motion), cell);
 }
 
+static gboolean
+section_row_is_directory (gconstpointer item)
+{
+    GtkTreeListRow *row = (GtkTreeListRow *) item;
+    g_autoptr (GtkTreeListRow) parent = gtk_tree_list_row_get_parent (row);
+
+    if (parent != NULL)
+    {
+        /* Always group nested rows with parent directory */
+        return TRUE;
+    }
+
+    g_autoptr (NautilusViewItem) view_item = gtk_tree_list_row_get_item (row);
+
+    return nautilus_file_is_directory (nautilus_view_item_get_file (view_item));
+}
+
+static gint
+compare_sections (gconstpointer item1,
+                  gconstpointer item2,
+                  gpointer      user_data)
+{
+    gboolean is_directory1 = section_row_is_directory (item1);
+    gboolean is_directory2 = section_row_is_directory (item2);
+
+    if (is_directory1 == is_directory2)
+    {
+        return GTK_ORDERING_EQUAL;
+    }
+
+    return is_directory1 ? GTK_ORDERING_SMALLER : GTK_ORDERING_LARGER;
+}
+
+static void
+setup_section_header (GtkSignalListItemFactory *factory,
+                      GtkListHeader            *list_header,
+                      gpointer                  user_data)
+{
+    GtkWidget *label = gtk_label_new (NULL);
+
+    gtk_widget_add_css_class (label, "heading");
+    gtk_widget_add_css_class (label, "dimmed");
+    gtk_widget_set_margin_top (label, 12);
+    gtk_widget_set_margin_bottom (label, 12);
+    gtk_widget_set_margin_start (label, 12);
+    gtk_widget_set_margin_end (label, 12);
+    gtk_label_set_xalign (GTK_LABEL (label), 0.0);
+
+    gtk_list_header_set_child (list_header, label);
+}
+
+static void
+bind_section_header (GtkSignalListItemFactory *factory,
+                     GtkListHeader            *list_header,
+                     gpointer                  user_data)
+{
+    GtkLabel *label = (GtkLabel *) gtk_list_header_get_child (list_header);
+
+    if (section_row_is_directory (gtk_list_header_get_item (list_header)))
+    {
+        gtk_label_set_label (label, C_("section header", "Folders"));
+    }
+    else
+    {
+        gtk_label_set_label (label, C_("section header", "Files"));
+    }
+}
+
 static void
 nautilus_list_base_scroll_to_item (NautilusListBase *self,
                                    guint             position)
@@ -989,8 +1064,14 @@ base_setup_directory (NautilusListBase  *self,
 
     update_sort_directories_first (self);
 
+    /* Only use sections when direcotries should be sorted first */
+    priv->current_header_factory = priv->directories_first
+                                   ? priv->default_header_factory : NULL;
+
     if (priv->model != NULL)
     {
+        nautilus_view_model_set_section_sorter (priv->model, priv->directories_first
+                                                             ? priv->section_sorter : NULL);
         nautilus_view_model_sort (priv->model);
     }
 }
@@ -1085,6 +1166,8 @@ nautilus_list_base_dispose (GObject *object)
     NautilusListBase *self = NAUTILUS_LIST_BASE (object);
     NautilusListBasePrivate *priv = nautilus_list_base_get_instance_private (self);
 
+    g_clear_object (&priv->section_sorter);
+    g_clear_object (&priv->default_header_factory);
     g_clear_object (&priv->directory_as_file);
     g_clear_object (&priv->model);
     g_clear_handle_id (&priv->hover_timer_id, g_source_remove);
@@ -1340,6 +1423,14 @@ nautilus_list_base_init (NautilusListBase *self)
     gtk_overlay_set_child (GTK_OVERLAY (priv->overlay), priv->scrolled_window);
     adw_bin_set_child (ADW_BIN (self), priv->overlay);
 
+    priv->section_sorter = GTK_SORTER (gtk_custom_sorter_new (compare_sections, NULL, NULL));
+    priv->default_header_factory = gtk_signal_list_item_factory_new ();
+
+    g_signal_connect (priv->default_header_factory, "setup",
+                      G_CALLBACK (setup_section_header), NULL);
+    g_signal_connect (priv->default_header_factory, "bind",
+                      G_CALLBACK (bind_section_header), NULL);
+
     controller = gtk_event_controller_scroll_new (GTK_EVENT_CONTROLLER_SCROLL_VERTICAL);
     gtk_widget_add_controller (priv->scrolled_window, controller);
     gtk_event_controller_set_propagation_phase (controller, GTK_PHASE_CAPTURE);
@@ -1350,6 +1441,14 @@ nautilus_list_base_init (NautilusListBase *self)
                              G_CALLBACK (set_click_mode_from_settings), self,
                              G_CONNECT_SWAPPED);
     set_click_mode_from_settings (self);
+}
+
+GtkListItemFactory *
+nautilus_list_base_get_current_header_factory (NautilusListBase *self)
+{
+    NautilusListBasePrivate *priv = nautilus_list_base_get_instance_private (self);
+
+    return priv->current_header_factory;
 }
 
 NautilusFile *

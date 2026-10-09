@@ -19,6 +19,7 @@ G_BEGIN_DECLS
 /* Methods */
 void               nautilus_list_base_activate_selection (NautilusListBase *self,
                                                           gboolean          open_in_new_tab);
+GtkListItemFactory*nautilus_list_base_get_current_header_factory (NautilusListBase *self);
 NautilusFile      *nautilus_list_base_get_directory_as_file (NautilusListBase *self);
 gboolean           nautilus_list_base_get_sort_directories_first (NautilusListBase *self);
 NautilusViewModel *nautilus_list_base_get_model     (NautilusListBase *self);

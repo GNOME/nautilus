@@ -545,6 +545,9 @@ nautilus_list_view_setup_directory (NautilusListBase  *list_base,
 
     NAUTILUS_LIST_BASE_CLASS (nautilus_list_view_parent_class)->setup_directory (list_base, new_directory);
 
+    gtk_column_view_set_header_factory (self->view_ui,
+                                        nautilus_list_base_get_current_header_factory (list_base));
+
     g_clear_object (&self->search_directory);
     if (NAUTILUS_IS_SEARCH_DIRECTORY (new_directory))
     {
