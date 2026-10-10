@@ -961,38 +961,6 @@ icon_theme_changed_callback (GtkIconTheme *icon_theme,
 }
 
 static void
-maybe_migrate_gtk_filechooser_preferences (void)
-{
-    if (!g_settings_get_boolean (nautilus_preferences, NAUTILUS_PREFERENCES_MIGRATED_GTK_SETTINGS))
-    {
-        g_autoptr (GSettingsSchema) schema = NULL;
-
-        /* We don't depend on GTK 3. Check whether its schema is installed. */
-        schema = g_settings_schema_source_lookup (g_settings_schema_source_get_default (),
-                                                  "org.gtk.Settings.FileChooser",
-                                                  FALSE);
-        if (schema != NULL)
-        {
-            g_autoptr (GSettings) gtk3_settings = NULL;
-
-            gtk3_settings = g_settings_new_with_path ("org.gtk.Settings.FileChooser",
-                                                      "/org/gtk/settings/file-chooser/");
-            g_settings_set_boolean (gtk_filechooser_preferences,
-                                    NAUTILUS_PREFERENCES_SORT_DIRECTORIES_FIRST,
-                                    g_settings_get_boolean (gtk3_settings,
-                                                            NAUTILUS_PREFERENCES_SORT_DIRECTORIES_FIRST));
-            g_settings_set_boolean (gtk_filechooser_preferences,
-                                    NAUTILUS_PREFERENCES_SHOW_HIDDEN_FILES,
-                                    g_settings_get_boolean (gtk3_settings,
-                                                            NAUTILUS_PREFERENCES_SHOW_HIDDEN_FILES));
-        }
-        g_settings_set_boolean (nautilus_preferences,
-                                NAUTILUS_PREFERENCES_MIGRATED_GTK_SETTINGS,
-                                TRUE);
-    }
-}
-
-static void
 nautilus_application_identify_to_portal (GApplication *app)
 {
     GDBusConnection *session_bus = g_application_get_dbus_connection (app);
@@ -1081,11 +1049,6 @@ nautilus_application_startup (GApplication *app)
     check_required_directories_async (self);
 
     nautilus_init_application_actions (self);
-
-    if (!g_test_initialized ())
-    {
-        maybe_migrate_gtk_filechooser_preferences ();
-    }
 
     g_signal_connect (self, "shutdown", G_CALLBACK (on_application_shutdown), NULL);
 
