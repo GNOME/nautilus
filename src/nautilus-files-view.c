@@ -7417,9 +7417,7 @@ nautilus_files_view_update_actions_state (NautilusFilesView *self)
 
     for (l = selection; l != NULL; l = l->next)
     {
-        NautilusFile *file;
-
-        file = NAUTILUS_FILE (selection->data);
+        NautilusFile *file = NAUTILUS_FILE (l->data);
 
         if (!nautilus_file_opens_in_view (file))
         {
