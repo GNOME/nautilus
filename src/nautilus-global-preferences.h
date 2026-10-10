@@ -108,9 +108,6 @@ typedef enum
 /* Full Text Search enabled */
 #define NAUTILUS_PREFERENCES_FTS_ENABLED "fts-enabled"
 
-/* Gtk settings migration happened */
-#define NAUTILUS_PREFERENCES_MIGRATED_GTK_SETTINGS "migrated-gtk-settings"
-
 /* Date and time format in the view */
 #define NAUTILUS_PREFERENCES_DATE_TIME_FORMAT "date-time-format"
 
