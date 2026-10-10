@@ -6848,7 +6848,7 @@ action_remove_recent_server (GSimpleAction *action,
 
     for (GList *l = selection; l != NULL; l = l->next)
     {
-        g_autofree char *address = nautilus_file_get_activation_uri (NAUTILUS_FILE (selection->data));
+        g_autofree char *address = nautilus_file_get_activation_uri (NAUTILUS_FILE (l->data));
 
         nautilus_remove_recent_server (address);
     }
