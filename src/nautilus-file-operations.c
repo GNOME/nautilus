@@ -3101,6 +3101,7 @@ verify_destination (CommonJob   *job,
                 }
                 else if (response == RESPONSE_RETRY)
                 {
+                    g_object_unref (fsinfo);
                     continue;
                 }
                 else if (response == RESPONSE_COPY_FORCE)
