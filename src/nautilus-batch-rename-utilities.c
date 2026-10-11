@@ -399,13 +399,8 @@ static gint
 compare_files_by_name_ascending (gconstpointer a,
                                  gconstpointer b)
 {
-    NautilusFile *file1;
-    NautilusFile *file2;
-
-    file1 = NAUTILUS_FILE (a);
-    file2 = NAUTILUS_FILE (b);
-
-    return nautilus_file_compare_for_sort (file1, file2,
+    return nautilus_file_compare_for_sort ((NautilusFile *) a,
+                                           (NautilusFile *) b,
                                            NAUTILUS_FILE_SORT_BY_DISPLAY_NAME,
                                            FALSE, FALSE);
 }
@@ -414,13 +409,8 @@ static gint
 compare_files_by_name_descending (gconstpointer a,
                                   gconstpointer b)
 {
-    NautilusFile *file1;
-    NautilusFile *file2;
-
-    file1 = NAUTILUS_FILE (a);
-    file2 = NAUTILUS_FILE (b);
-
-    return nautilus_file_compare_for_sort (file1, file2,
+    return nautilus_file_compare_for_sort ((NautilusFile *) a,
+                                           (NautilusFile *) b,
                                            NAUTILUS_FILE_SORT_BY_DISPLAY_NAME,
                                            FALSE, TRUE);
 }
@@ -429,13 +419,8 @@ static gint
 compare_files_by_first_modified (gconstpointer a,
                                  gconstpointer b)
 {
-    NautilusFile *file1;
-    NautilusFile *file2;
-
-    file1 = NAUTILUS_FILE (a);
-    file2 = NAUTILUS_FILE (b);
-
-    return nautilus_file_compare_for_sort (file1, file2,
+    return nautilus_file_compare_for_sort ((NautilusFile *) a,
+                                           (NautilusFile *) b,
                                            NAUTILUS_FILE_SORT_BY_MTIME,
                                            FALSE, FALSE);
 }
@@ -444,13 +429,8 @@ static gint
 compare_files_by_last_modified (gconstpointer a,
                                 gconstpointer b)
 {
-    NautilusFile *file1;
-    NautilusFile *file2;
-
-    file1 = NAUTILUS_FILE (a);
-    file2 = NAUTILUS_FILE (b);
-
-    return nautilus_file_compare_for_sort (file1, file2,
+    return nautilus_file_compare_for_sort ((NautilusFile *) a,
+                                           (NautilusFile *) b,
                                            NAUTILUS_FILE_SORT_BY_MTIME,
                                            FALSE, TRUE);
 }
