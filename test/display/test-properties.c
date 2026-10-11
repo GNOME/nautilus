@@ -43,13 +43,13 @@ test_directory_empty (void)
 {
     g_autoptr (GFile) test_location = g_file_new_for_path (test_get_tmp_dir ());
     g_autoptr (NautilusFile) test_file = nautilus_file_get (test_location);
-    g_autoptr (GtkWindow) properties_window =
+    GtkWindow *properties_window =
         nautilus_properties_present_window (&(GList) { .data = test_file }, NULL);
 
     ITER_CONTEXT_WHILE (!nautilus_file_check_if_ready (test_file, NAUTILUS_ATTRIBUTE_DEEP_COUNT));
     gtk_test_widget_wait_for_draw (GTK_WIDGET (properties_window));
 
-    gtk_window_close (g_steal_pointer (&properties_window));
+    gtk_window_close (properties_window);
 
     test_clear_tmp_dir ();
 }
@@ -59,13 +59,13 @@ test_directory_root (void)
 {
     g_autoptr (GFile) test_location = g_file_new_for_path ("/");
     g_autoptr (NautilusFile) test_file = nautilus_file_get (test_location);
-    g_autoptr (GtkWindow) properties_window =
+    GtkWindow *properties_window =
         nautilus_properties_present_window (&(GList) { .data = test_file }, NULL);
 
     ITER_CONTEXT_WHILE (!nautilus_file_check_if_ready (test_file, NAUTILUS_ATTRIBUTE_INFO));
     gtk_test_widget_wait_for_draw (GTK_WIDGET (properties_window));
 
-    gtk_window_close (g_steal_pointer (&properties_window));
+    gtk_window_close (properties_window);
 
     test_clear_tmp_dir ();
 }
@@ -77,7 +77,7 @@ test_directory_unreadable (void)
                                                                        "unaccessible",
                                                                        NULL);
     g_autoptr (NautilusFile) unreadable_file = nautilus_file_get (unreadable_location);
-    g_autoptr (GtkWindow) properties_window = NULL;
+    GtkWindow *properties_window = NULL;
 
     g_assert_true (g_file_make_directory (unreadable_location, NULL, NULL));
     g_assert_true (g_file_set_attribute_uint32 (unreadable_location,
@@ -91,7 +91,7 @@ test_directory_unreadable (void)
     ITER_CONTEXT_WHILE (!nautilus_file_check_if_ready (unreadable_file, NAUTILUS_ATTRIBUTE_INFO));
     gtk_test_widget_wait_for_draw (GTK_WIDGET (properties_window));
 
-    gtk_window_close (g_steal_pointer (&properties_window));
+    gtk_window_close (properties_window);
 
     test_clear_tmp_dir ();
 }
@@ -107,7 +107,7 @@ test_image (void)
                                                                    NULL);
     g_autoptr (NautilusFile) image1_file = nautilus_file_get (image1_location);
     g_autoptr (NautilusFile) image2_file = nautilus_file_get (image2_location);
-    g_autoptr (GtkWindow) properties_window = NULL;
+    GtkWindow *properties_window = NULL;
 
     /* First image is thumbnailed */
     make_image_file_with_mtime (image1_location, 1, TRUE);
@@ -117,7 +117,7 @@ test_image (void)
                                                        NAUTILUS_ATTRIBUTE_THUMBNAIL_BUFFER));
     gtk_test_widget_wait_for_draw (GTK_WIDGET (properties_window));
 
-    gtk_window_close (g_steal_pointer (&properties_window));
+    gtk_window_close (properties_window);
 
     /* Second image is not thumbnailed */
     make_image_file_with_mtime (image2_location, 1, FALSE);
@@ -127,7 +127,7 @@ test_image (void)
                                                        NAUTILUS_ATTRIBUTE_THUMBNAIL_BUFFER));
     gtk_test_widget_wait_for_draw (GTK_WIDGET (properties_window));
 
-    gtk_window_close (g_steal_pointer (&properties_window));
+    gtk_window_close (properties_window);
 
     test_clear_tmp_dir ();
 }
@@ -147,7 +147,7 @@ test_images (void)
     g_autolist (GFile) thumb_image_locations = file_hierarchy_get_files_list (hier, "thumb_", FALSE);
     g_autolist (NautilusFile) image_files = NULL;
     g_autolist (NautilusFile) thumb_image_files = NULL;
-    g_autoptr (GtkWindow) properties_window = NULL;
+    GtkWindow *properties_window = NULL;
 
     /* Many images that are not thumbnailed */
     for (GList *l = image_locations; l != NULL; l = l->next)
@@ -163,7 +163,7 @@ test_images (void)
     ITER_CONTEXT_WHILE (!all_files_are_ready (image_files));
     gtk_test_widget_wait_for_draw (GTK_WIDGET (properties_window));
 
-    gtk_window_close (g_steal_pointer (&properties_window));
+    gtk_window_close (properties_window);
 
     /* Many images that are thumbnailed */
     for (GList *l = thumb_image_locations; l != NULL; l = l->next)
@@ -179,7 +179,7 @@ test_images (void)
     ITER_CONTEXT_WHILE (!all_files_are_ready (thumb_image_files));
     gtk_test_widget_wait_for_draw (GTK_WIDGET (properties_window));
 
-    gtk_window_close (g_steal_pointer (&properties_window));
+    gtk_window_close (properties_window);
 
     test_clear_tmp_dir ();
 }
