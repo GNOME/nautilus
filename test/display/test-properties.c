@@ -8,6 +8,7 @@
 
 #define G_LOG_DOMAIN "test-properties"
 
+#include <nautilus-application.h>
 #include <nautilus-file.h>
 #include <nautilus-file-utilities.h>
 #include <nautilus-global-preferences.h>
@@ -187,6 +188,14 @@ int
 main (int   argc,
       char *argv[])
 {
+    if (nautilus_application_is_sandboxed ())
+    {
+        g_message ("Properties tests don't run inside a sandbox, due to issues "
+                   "with window management.");
+
+        return 77;
+    }
+
     g_autoptr (NautilusTagManager) tag_manager = NULL;
 
     gtk_test_init (&argc, &argv, G_TEST_OPTION_ISOLATE_DIRS, NULL);
