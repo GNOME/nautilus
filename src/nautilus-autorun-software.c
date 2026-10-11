@@ -161,7 +161,6 @@ autorun_software_dialog_response (AdwDialog *dialog,
 static void
 present_autorun_for_software_dialog (GMount *mount)
 {
-    GIcon *icon;
     g_autofree char *mount_name = NULL;
     AdwDialog *dialog;
     AutorunSoftwareDialogData *data;
@@ -178,19 +177,6 @@ present_autorun_for_software_dialog (GMount *mount)
      * etc.)
      */
 
-
-    icon = g_mount_get_icon (mount);
-    if (G_IS_THEMED_ICON (icon))
-    {
-        const gchar * const *names;
-
-        names = g_themed_icon_get_names (G_THEMED_ICON (icon));
-
-        if (names != NULL)
-        {
-            gtk_window_set_icon_name (GTK_WINDOW (dialog), names[0]);
-        }
-    }
 
     data = g_new0 (AutorunSoftwareDialogData, 1);
     data->dialog = dialog;
