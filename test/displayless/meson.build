@@ -60,7 +60,7 @@ foreach test_name, extra_args : tests
       'G_TEST_SRCDIR=@0@'.format(meson.current_source_dir()),
     ],
     is_parallel: is_parallel,
-    timeout: 480,
+    timeout: 20,
     suite: suite,
   )
 endforeach
