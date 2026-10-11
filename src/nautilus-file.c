@@ -3634,7 +3634,7 @@ nautilus_file_compare_for_sort (NautilusFile         *file_1,
     {
         switch (sort_type)
         {
-            case NAUTILUS_FILE_SORT_BY_DISPLAY_NAME:
+            case NAUTILUS_FILE_SORT_BY_NAME:
             {
                 result = compare_by_display_name (file_1, file_2);
                 if (result == 0)
@@ -3736,7 +3736,7 @@ quark_to_sort_type (GQuark attribute)
 {
     if (attribute == 0 || attribute == attribute_name_q)
     {
-        return NAUTILUS_FILE_SORT_BY_DISPLAY_NAME;
+        return NAUTILUS_FILE_SORT_BY_NAME;
     }
     else if (attribute == attribute_size_q)
     {
@@ -7904,7 +7904,7 @@ nautilus_file_get_default_sort_order (NautilusFile *file,
                                       gboolean     *is_forced)
 {
     g_assert (reversed != NULL);
-    g_return_val_if_fail (is_forced != NULL, NAUTILUS_FILE_SORT_BY_DISPLAY_NAME);
+    g_return_val_if_fail (is_forced != NULL, NAUTILUS_FILE_SORT_BY_NAME);
 
     /* Special handling for certain directories */
     if (nautilus_file_is_user_special_directory (file, G_USER_DIRECTORY_DOWNLOAD))
