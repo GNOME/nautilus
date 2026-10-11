@@ -2157,7 +2157,7 @@ ownership_strings_func (NautilusFileUndoInfo  *info,
 
     name = g_file_get_parse_name (self->target_file);
 
-    if (op_type == NAUTILUS_FILE_UNDO_OP_CHANGE_OWNER)
+    if (op_type == NAUTILUS_FILE_UNDO_OP_CHANGE_GROUP)
     {
         *undo_description = g_strdup_printf (_("Restore group of “%s” to “%s”"),
                                              name, self->original_ownership);
@@ -2167,7 +2167,7 @@ ownership_strings_func (NautilusFileUndoInfo  *info,
         *undo_label = g_strdup (_("_Undo Change Group"));
         *redo_label = g_strdup (_("_Redo Change Group"));
     }
-    else if (op_type == NAUTILUS_FILE_UNDO_OP_CHANGE_GROUP)
+    else if (op_type == NAUTILUS_FILE_UNDO_OP_CHANGE_OWNER)
     {
         *undo_description = g_strdup_printf (_("Restore owner of “%s” to “%s”"),
                                              name, self->original_ownership);
