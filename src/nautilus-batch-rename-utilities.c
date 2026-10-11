@@ -401,7 +401,7 @@ compare_files_by_name_ascending (gconstpointer a,
 {
     return nautilus_file_compare_for_sort ((NautilusFile *) a,
                                            (NautilusFile *) b,
-                                           NAUTILUS_FILE_SORT_BY_DISPLAY_NAME,
+                                           NAUTILUS_FILE_SORT_BY_NAME,
                                            FALSE, FALSE);
 }
 
@@ -411,7 +411,7 @@ compare_files_by_name_descending (gconstpointer a,
 {
     return nautilus_file_compare_for_sort ((NautilusFile *) a,
                                            (NautilusFile *) b,
-                                           NAUTILUS_FILE_SORT_BY_DISPLAY_NAME,
+                                           NAUTILUS_FILE_SORT_BY_NAME,
                                            FALSE, TRUE);
 }
 

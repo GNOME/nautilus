@@ -3618,7 +3618,7 @@ nautilus_file_compare_for_sort (NautilusFile         *file_1,
     {
         switch (sort_type)
         {
-            case NAUTILUS_FILE_SORT_BY_DISPLAY_NAME:
+            case NAUTILUS_FILE_SORT_BY_NAME:
             {
                 result = compare_by_display_name (file_1, file_2);
                 if (result == 0)
@@ -3720,7 +3720,7 @@ quark_to_sort_type (GQuark attribute)
 {
     if (attribute == 0 || attribute == attribute_name_q)
     {
-        return NAUTILUS_FILE_SORT_BY_DISPLAY_NAME;
+        return NAUTILUS_FILE_SORT_BY_NAME;
     }
     else if (attribute == attribute_size_q)
     {

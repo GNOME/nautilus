@@ -41,7 +41,7 @@ typedef enum {
 	 * keep the values in sync with the "org.gnome.nautilus.SortOrder" enum in the
 	 * `data/org.gnome.nautilus.gschema.xml` schemas file.
 	 */
-	NAUTILUS_FILE_SORT_BY_DISPLAY_NAME = 0,
+	NAUTILUS_FILE_SORT_BY_NAME = 0,
 	NAUTILUS_FILE_SORT_BY_SIZE = 1,
 	NAUTILUS_FILE_SORT_BY_TYPE = 2,
 	NAUTILUS_FILE_SORT_BY_MTIME = 3,
