@@ -15,6 +15,9 @@
 #include <config.h>
 #include <string.h>
 #include <unistd.h>
+#include <sys/stat.h>
+#include <dirent.h>
+#include <fcntl.h>
 #include <stdlib.h>
 
 #include "nautilus-file-operations.h"
@@ -29,6 +32,7 @@
 #include <gtk/gtk.h>
 #include <gio/gio.h>
 #include <glib.h>
+#include <glib-unix.h>
 
 #include "nautilus-dialog-utilities.h"
 #include "nautilus-error-reporting.h"
@@ -123,6 +127,7 @@ typedef struct
 {
     CommonJob common;
     GList *trash_dirs;
+    char *mount_root_path;
     gboolean should_confirm;
     NautilusOpCallback done_callback;
     gpointer done_callback_data;
@@ -2037,6 +2042,129 @@ get_trash_dirs_for_mount (GMount *mount)
     return list;
 }
 
+static void
+close_fd (gpointer data)
+{
+    g_clear_fd ((int *) data, NULL);
+}
+
+/* Doesn't follow symbolic links or cross into other filesystems. */
+static int
+open_untrusted_dir_at (int         dirfd,
+                       const char *name,
+                       dev_t       dev)
+{
+    g_autofd int fd = openat (dirfd, name,
+                              O_RDONLY | O_DIRECTORY | O_NOFOLLOW | O_CLOEXEC | O_NOCTTY);
+    struct stat st;
+
+    if (fd < 0 || fstat (fd, &st) != 0 || st.st_dev != dev)
+    {
+        return -1;
+    }
+
+    return g_steal_fd (&fd);
+}
+
+static void
+append_trash_dir_at (GArray     *fds,
+                     int         parent_fd,
+                     const char *name,
+                     dev_t       dev)
+{
+    int fd = open_untrusted_dir_at (parent_fd, name, dev);
+
+    if (fd < 0)
+    {
+        return;
+    }
+
+    g_array_append_val (fds, fd);
+}
+
+/* The contents of a mount are not trusted, so paths below its root could be
+ * swapped for symbolic links at any time. Only use the returned fds. */
+static GArray *
+open_trash_dirs_at_mount_root (const char *root_path)
+{
+    GArray *fds = g_array_new (FALSE, FALSE, sizeof (int));
+    g_autofd int root_fd = -1;
+    g_autofd int shared_fd = -1;
+    g_autofree char *uid_name = g_strdup_printf ("%d", getuid ());
+    g_autofree char *user_trash_name = g_strdup_printf (".Trash-%d", getuid ());
+    struct stat root_st;
+
+    g_array_set_clear_func (fds, close_fd);
+
+    root_fd = open (root_path, O_RDONLY | O_DIRECTORY | O_CLOEXEC | O_NOCTTY);
+    if (root_fd < 0 || fstat (root_fd, &root_st) != 0)
+    {
+        return fds;
+    }
+
+    shared_fd = open_untrusted_dir_at (root_fd, ".Trash", root_st.st_dev);
+    if (shared_fd >= 0)
+    {
+        append_trash_dir_at (fds, shared_fd, uid_name, root_st.st_dev);
+    }
+
+    append_trash_dir_at (fds, root_fd, user_trash_name, root_st.st_dev);
+
+    return fds;
+}
+
+static char *
+get_native_root_path (GMount *mount)
+{
+    g_autoptr (GFile) root = g_mount_get_root (mount);
+
+    if (root == NULL || !g_file_is_native (root))
+    {
+        return NULL;
+    }
+
+    return g_file_get_path (root);
+}
+
+static void
+rm_rf_at (CommonJob  *job,
+          int         parent_fd,
+          const char *name,
+          dev_t       dev)
+{
+    int fd = open_untrusted_dir_at (parent_fd, name, dev);
+    DIR *dir;
+    struct dirent *entry;
+
+    if (fd < 0)
+    {
+        unlinkat (parent_fd, name, 0);
+        return;
+    }
+
+    dir = fdopendir (fd);
+    if (dir == NULL)
+    {
+        close (fd);
+        return;
+    }
+
+    while (!job_aborted (job) && (entry = readdir (dir)) != NULL)
+    {
+        if (!g_str_equal (entry->d_name, ".") && !g_str_equal (entry->d_name, ".."))
+        {
+            rm_rf_at (job, dirfd (dir), entry->d_name, dev);
+        }
+    }
+
+    closedir (dir);
+
+    if (!job_aborted (job))
+    {
+        unlinkat (parent_fd, name, AT_REMOVEDIR);
+    }
+}
+
 static AdwDialog *
 create_empty_trash_prompt (UnmountData *data)
 {
@@ -2086,7 +2214,7 @@ empty_trash_prompt_cb (AdwDialog *dialog,
 
         job = op_job_new (EmptyTrashJob, data->parent_window, NULL);
         job->should_confirm = FALSE;
-        job->trash_dirs = get_trash_dirs_for_mount (data->mount);
+        job->mount_root_path = get_native_root_path (data->mount);
         job->done_callback = empty_trash_for_unmount_done;
         job->done_callback_data = data;
 
@@ -6988,6 +7116,7 @@ empty_trash_task_done (GObject      *source_object,
     job = user_data;
 
     g_list_free_full (job->trash_dirs, g_object_unref);
+    g_free (job->mount_root_path);
 
     if (job->done_callback)
     {
@@ -7021,7 +7150,23 @@ empty_trash_thread_func (GTask        *task,
     {
         confirmed = TRUE;
     }
-    if (confirmed)
+    if (confirmed && job->mount_root_path != NULL)
+    {
+        g_autoptr (GArray) fds = open_trash_dirs_at_mount_root (job->mount_root_path);
+
+        for (guint i = 0; i < fds->len && !job_aborted (common); i++)
+        {
+            int trash_fd = g_array_index (fds, int, i);
+            struct stat st;
+
+            if (fstat (trash_fd, &st) == 0)
+            {
+                rm_rf_at (common, trash_fd, "files", st.st_dev);
+                rm_rf_at (common, trash_fd, "info", st.st_dev);
+            }
+        }
+    }
+    else if (confirmed)
     {
         for (l = job->trash_dirs;
              l != NULL && !job_aborted (common);
