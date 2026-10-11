@@ -231,6 +231,7 @@ struct _NautilusFilesView
     GMenuModel *scripts_menu;
 
     GCancellable *clipboard_cancellable;
+    GCancellable *clipboard_actions_cancellable;
 
     GCancellable *starred_cancellable;
 };
@@ -3291,6 +3292,9 @@ nautilus_files_view_dispose (GObject *object)
     clipboard = gdk_display_get_clipboard (gdk_display_get_default ());
     g_signal_handlers_disconnect_by_func (clipboard, on_clipboard_owner_changed, self);
     g_cancellable_cancel (self->clipboard_cancellable);
+
+    g_cancellable_cancel (self->clipboard_actions_cancellable);
+    g_clear_object (&self->clipboard_actions_cancellable);
 
     nautilus_file_unref (self->directory_as_file);
     self->directory_as_file = NULL;
@@ -7077,9 +7081,13 @@ update_actions_state_for_clipboard_targets (NautilusFilesView *self)
 
     if (gdk_content_formats_contain_gtype (formats, NAUTILUS_TYPE_CLIPBOARD))
     {
+        g_cancellable_cancel (self->clipboard_actions_cancellable);
+        g_clear_object (&self->clipboard_actions_cancellable);
+        self->clipboard_actions_cancellable = g_cancellable_new ();
+
         gdk_clipboard_read_value_async (clipboard, NAUTILUS_TYPE_CLIPBOARD,
                                         G_PRIORITY_DEFAULT,
-                                        self->clipboard_cancellable,
+                                        self->clipboard_actions_cancellable,
                                         update_actions_clipboard_contents_received,
                                         self);
     }
