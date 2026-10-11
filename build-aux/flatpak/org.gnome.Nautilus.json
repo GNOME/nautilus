@@ -206,6 +206,7 @@
           "--talk-name=org.gtk.vfs.*",
           "--talk-name=org.gtk.MountOperationHandler",
           "--filesystem=xdg-run/gvfsd",
+          "--env=GIO_USE_VFS=local",
           "--add-policy=LocalSearch3.dbus:org.freedesktop.Tracker3.Miner.Files=tracker:FileSystem"
         ]
       },
