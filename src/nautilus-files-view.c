@@ -6988,20 +6988,42 @@ can_paste_into_file (NautilusFile *file)
 }
 
 static void
+view_set_link_action_enabled (NautilusFilesView *self,
+                              gboolean           is_data_copied)
+{
+    GAction *action;
+    NautilusMode mode = nautilus_window_slot_get_mode (self->slot);
+    gboolean enabled = is_data_copied &&
+                       !showing_recent_directory (self) &&
+                       !showing_starred_directory (self) &&
+                       !showing_trash_directory (self) &&
+                       !nautilus_files_view_is_read_only (self);
+    gboolean settings_show_create_link =
+        g_settings_get_boolean (nautilus_preferences, NAUTILUS_PREFERENCES_SHOW_CREATE_LINK);
+
+    action = g_action_map_lookup_action (G_ACTION_MAP (self->view_action_group),
+                                         "create-link");
+    g_simple_action_set_enabled (G_SIMPLE_ACTION (action),
+                                 mode == NAUTILUS_MODE_BROWSE &&
+                                 enabled &&
+                                 settings_show_create_link);
+
+    action = g_action_map_lookup_action (G_ACTION_MAP (self->view_action_group),
+                                         "create-link-shortcut");
+    g_simple_action_set_enabled (G_SIMPLE_ACTION (action),
+                                 mode == NAUTILUS_MODE_BROWSE &&
+                                 enabled &&
+                                 !settings_show_create_link);
+}
+
+static void
 update_actions_clipboard_contents_received (GObject      *source_object,
                                             GAsyncResult *res,
                                             gpointer      user_data)
 {
     NautilusFilesView *self = user_data;
     NautilusClipboard *clip = NULL;
-    gboolean can_link_from_copied_files;
-    gboolean settings_show_create_link;
-    gboolean is_read_only;
-    gboolean selection_contains_recent;
-    gboolean selection_contains_starred;
-    GAction *action;
     const GValue *value;
-    NautilusMode mode;
 
     value = gdk_clipboard_read_value_finish (GDK_CLIPBOARD (source_object), res, NULL);
     if (value == NULL)
@@ -7021,28 +7043,7 @@ update_actions_clipboard_contents_received (GObject      *source_object,
         return;
     }
 
-    settings_show_create_link = g_settings_get_boolean (nautilus_preferences,
-                                                        NAUTILUS_PREFERENCES_SHOW_CREATE_LINK);
-    is_read_only = nautilus_files_view_is_read_only (self);
-    selection_contains_recent = showing_recent_directory (self);
-    selection_contains_starred = showing_starred_directory (self);
-    can_link_from_copied_files = clip != NULL && !nautilus_clipboard_is_cut (clip) &&
-                                 !selection_contains_recent && !selection_contains_starred &&
-                                 !is_read_only;
-    mode = nautilus_window_slot_get_mode (self->slot);
-
-    action = g_action_map_lookup_action (G_ACTION_MAP (self->view_action_group),
-                                         "create-link");
-    g_simple_action_set_enabled (G_SIMPLE_ACTION (action),
-                                 mode == NAUTILUS_MODE_BROWSE &&
-                                 can_link_from_copied_files &&
-                                 settings_show_create_link);
-    action = g_action_map_lookup_action (G_ACTION_MAP (self->view_action_group),
-                                         "create-link-shortcut");
-    g_simple_action_set_enabled (G_SIMPLE_ACTION (action),
-                                 mode == NAUTILUS_MODE_BROWSE &&
-                                 can_link_from_copied_files &&
-                                 !settings_show_create_link);
+    view_set_link_action_enabled (self, clip != NULL && !nautilus_clipboard_is_cut (clip));
 }
 
 static void
@@ -7073,23 +7074,24 @@ update_actions_state_for_clipboard_targets (NautilusFilesView *self)
     g_simple_action_set_enabled (G_SIMPLE_ACTION (action),
                                  is_data_copied && g_action_get_enabled (action));
 
-    action = g_action_map_lookup_action (G_ACTION_MAP (self->view_action_group),
-                                         "create-link");
-
-    g_simple_action_set_enabled (G_SIMPLE_ACTION (action),
-                                 is_data_copied && g_action_get_enabled (action));
-
     if (gdk_content_formats_contain_gtype (formats, NAUTILUS_TYPE_CLIPBOARD))
     {
         g_cancellable_cancel (self->clipboard_actions_cancellable);
         g_clear_object (&self->clipboard_actions_cancellable);
         self->clipboard_actions_cancellable = g_cancellable_new ();
 
+        /* Temprorarly disable until we know for certain */
+        view_set_link_action_enabled (self, FALSE);
+
         gdk_clipboard_read_value_async (clipboard, NAUTILUS_TYPE_CLIPBOARD,
                                         G_PRIORITY_DEFAULT,
                                         self->clipboard_actions_cancellable,
                                         update_actions_clipboard_contents_received,
                                         self);
+    }
+    else
+    {
+        view_set_link_action_enabled (self, is_data_copied);
     }
 }
 
