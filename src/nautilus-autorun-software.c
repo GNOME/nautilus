@@ -24,17 +24,12 @@ typedef struct
     GMount *mount;
 } AutorunSoftwareDialogData;
 
-static void autorun_software_dialog_mount_unmounted (GMount                    *mount,
-                                                     AutorunSoftwareDialogData *data);
-
 static void
-autorun_software_dialog_destroy (AutorunSoftwareDialogData *data)
+autorun_software_dialog_data_free (AutorunSoftwareDialogData *data)
 {
-    g_signal_handlers_disconnect_by_func (G_OBJECT (data->mount),
-                                          G_CALLBACK (autorun_software_dialog_mount_unmounted),
-                                          data);
+    g_signal_handlers_disconnect_by_data (data->mount, data);
+    g_signal_handlers_disconnect_by_data (data->dialog, data);
 
-    gtk_window_destroy (GTK_WINDOW (data->dialog));
     g_object_unref (data->mount);
     g_free (data);
 }
@@ -43,7 +38,10 @@ static void
 autorun_software_dialog_mount_unmounted (GMount                    *mount,
                                          AutorunSoftwareDialogData *data)
 {
-    autorun_software_dialog_destroy (data);
+    AdwDialog *dialog = data->dialog;
+
+    autorun_software_dialog_data_free (data);
+    adw_dialog_force_close (dialog);
 }
 
 static gboolean
@@ -148,10 +146,14 @@ autorun (GMount *mount)
 }
 
 static void
-autorun_software_dialog_response (AdwDialog *dialog,
-                                  gchar     *response,
-                                  GMount    *mount)
+autorun_software_dialog_response (AdwDialog                 *dialog,
+                                  gchar                     *response,
+                                  AutorunSoftwareDialogData *data)
 {
+    g_autoptr (GMount) mount = g_object_ref (data->mount);
+
+    autorun_software_dialog_data_free (data);
+
     if (g_strcmp0 (response, "run") == 0)
     {
         autorun (mount);
@@ -196,7 +198,7 @@ present_autorun_for_software_dialog (GMount *mount)
     g_signal_connect (dialog,
                       "response",
                       G_CALLBACK (autorun_software_dialog_response),
-                      mount);
+                      data);
 
     adw_dialog_present (dialog, NULL);
 }
