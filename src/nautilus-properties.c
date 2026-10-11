@@ -3877,6 +3877,7 @@ real_dispose (GObject *object)
 {
     G_OBJECT_CLASS (nautilus_properties_widget_parent_class)->dispose (object);
 
+    g_message ("start dispose");
     NautilusPropertiesWidget *self;
 
     self = NAUTILUS_PROPERTIES_WIDGET (object);
@@ -3905,6 +3906,7 @@ real_dispose (GObject *object)
     g_clear_handle_id (&self->deep_count_spinner_timeout_id, g_source_remove);
     g_clear_object (&self->volume_fs_info);
 
+    g_message ("middle dispose");
     while (self->deep_count_files)
     {
         stop_deep_count_for_file (self, self->deep_count_files->data);
@@ -3923,6 +3925,7 @@ real_dispose (GObject *object)
     g_clear_handle_id (&self->update_files_timeout_id, g_source_remove);
 
     gtk_widget_dispose_template (GTK_WIDGET (self), NAUTILUS_TYPE_PROPERTIES_WIDGET);
+    g_message ("finished dispose");
 }
 
 static void
@@ -3937,6 +3940,7 @@ real_finalize (GObject *object)
     g_clear_object (&self->extensions_list);
 
     G_OBJECT_CLASS (nautilus_properties_widget_parent_class)->finalize (object);
+    g_message ("finished finalize");
 }
 
 static void

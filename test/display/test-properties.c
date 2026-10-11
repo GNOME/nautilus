@@ -42,20 +42,28 @@ test_directory_empty (void)
 {
     g_autoptr (GFile) test_location = g_file_new_for_path (test_get_tmp_dir ());
     g_autoptr (NautilusFile) test_file = nautilus_file_get (test_location);
+    g_message ("where");
     GtkWindow *properties_window =
         nautilus_properties_present_window (&(GList) { .data = test_file }, NULL);
+    g_message ("is");
 
     ITER_CONTEXT_WHILE (!nautilus_file_check_if_ready (test_file, NAUTILUS_ATTRIBUTE_DEEP_COUNT));
+    g_message ("your");
     gtk_test_widget_wait_for_draw (GTK_WIDGET (properties_window));
+    g_message ("problem");
 
     gtk_window_destroy (properties_window);
 
+    g_message ("here");
+
     test_clear_tmp_dir ();
+    g_message ("huh");
 }
 
 static void
 test_directory_root (void)
 {
+    g_message ("next");
     g_autoptr (GFile) test_location = g_file_new_for_path ("/");
     g_autoptr (NautilusFile) test_file = nautilus_file_get (test_location);
     GtkWindow *properties_window =
