@@ -4364,9 +4364,9 @@ display_pending_files (NautilusFilesView *view)
 
     if (view_had_focus && n_items > 0 && !files_view_has_focus (view))
     {
-        guint restore_pos = (old_cursor_pos <= n_items - 1) ? old_cursor_pos : 0;
+        guint restore_pos = MIN (old_cursor_pos, n_items - 1);
 
-        nautilus_list_base_set_cursor (view->list_base, restore_pos, TRUE, TRUE);
+        nautilus_list_base_set_cursor (view->list_base, restore_pos, !no_selection, FALSE);
         gtk_widget_grab_focus (GTK_WIDGET (view));
     }
 
