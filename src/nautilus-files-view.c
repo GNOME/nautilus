@@ -9405,6 +9405,7 @@ nautilus_files_view_class_init (NautilusFilesViewClass *klass)
      */
     gtk_widget_class_add_binding_action (widget_class, GDK_KEY_Delete, GDK_NO_MODIFIER_MASK, "view.delete-permanently-menu-item", NULL);
 
+    gtk_widget_class_add_binding_action (widget_class, GDK_KEY_r, GDK_CONTROL_MASK | GDK_SHIFT_MASK, "view.rename", NULL);
     gtk_widget_class_add_binding_action (widget_class, GDK_KEY_F2, GDK_NO_MODIFIER_MASK, "view.rename", NULL);
     gtk_widget_class_add_binding_action (widget_class, GDK_KEY_Menu, GDK_NO_MODIFIER_MASK, "view.popup-menu", NULL);
     gtk_widget_class_add_binding_action (widget_class, GDK_KEY_F10, GDK_SHIFT_MASK, "view.popup-menu", NULL);
