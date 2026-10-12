@@ -2577,26 +2577,28 @@ action_visible_captions (GSimpleAction *action,
 }
 
 static void
+files_action_set_enabled (NautilusFilesView *self,
+                          gchar             *action_name,
+                          gboolean           enabled)
+{
+    GAction *action = g_action_map_lookup_action (G_ACTION_MAP (self->view_action_group),
+                                                  action_name);
+
+    g_simple_action_set_enabled (G_SIMPLE_ACTION (action), enabled);
+}
+
+static void
 update_zoom_actions_state (NautilusFilesView *self)
 {
     NautilusViewInfo view_info = nautilus_list_base_get_view_info (self->list_base);
     gint zoom_level = nautilus_list_base_get_zoom_level (self->list_base);
-    GAction *action;
 
-    action = g_action_map_lookup_action (G_ACTION_MAP (self->view_action_group),
-                                         "zoom-in");
-    g_simple_action_set_enabled (G_SIMPLE_ACTION (action),
-                                 zoom_level < view_info.zoom_level_max);
-
-    action = g_action_map_lookup_action (G_ACTION_MAP (self->view_action_group),
-                                         "zoom-out");
-    g_simple_action_set_enabled (G_SIMPLE_ACTION (action),
-                                 zoom_level > view_info.zoom_level_min);
-
-    action = g_action_map_lookup_action (G_ACTION_MAP (self->view_action_group),
-                                         "zoom-standard");
-    g_simple_action_set_enabled (G_SIMPLE_ACTION (action),
-                                 zoom_level != view_info.zoom_level_standard);
+    files_action_set_enabled (self, "zoom-in",
+                              zoom_level < view_info.zoom_level_max);
+    files_action_set_enabled (self, "zoom-out",
+                              zoom_level > view_info.zoom_level_min);
+    files_action_set_enabled (self, "zoom-standard",
+                              zoom_level != view_info.zoom_level_standard);
 }
 
 static void
@@ -6990,7 +6992,6 @@ static void
 view_set_link_action_enabled (NautilusFilesView *self,
                               gboolean           is_data_copied)
 {
-    GAction *action;
     NautilusMode mode = nautilus_window_slot_get_mode (self->slot);
     gboolean enabled = is_data_copied &&
                        !showing_recent_directory (self) &&
@@ -7000,19 +7001,14 @@ view_set_link_action_enabled (NautilusFilesView *self,
     gboolean settings_show_create_link =
         g_settings_get_boolean (nautilus_preferences, NAUTILUS_PREFERENCES_SHOW_CREATE_LINK);
 
-    action = g_action_map_lookup_action (G_ACTION_MAP (self->view_action_group),
-                                         "create-link");
-    g_simple_action_set_enabled (G_SIMPLE_ACTION (action),
-                                 mode == NAUTILUS_MODE_BROWSE &&
-                                 enabled &&
-                                 settings_show_create_link);
-
-    action = g_action_map_lookup_action (G_ACTION_MAP (self->view_action_group),
-                                         "create-link-shortcut");
-    g_simple_action_set_enabled (G_SIMPLE_ACTION (action),
-                                 mode == NAUTILUS_MODE_BROWSE &&
-                                 enabled &&
-                                 !settings_show_create_link);
+    files_action_set_enabled (self, "create-link",
+                              mode == NAUTILUS_MODE_BROWSE &&
+                              enabled &&
+                              settings_show_create_link);
+    files_action_set_enabled (self, "create-link-shortcut",
+                              mode == NAUTILUS_MODE_BROWSE &&
+                              enabled &&
+                              !settings_show_create_link);
 }
 
 static void
@@ -7314,7 +7310,6 @@ nautilus_files_view_update_actions_state (NautilusFilesView *self)
     gboolean item_opens_in_view;
     gboolean is_read_only;
     gboolean is_in_trash;
-    GAction *action;
     GActionGroup *view_action_group;
     gboolean show_mount;
     gboolean show_unmount;
@@ -7370,58 +7365,45 @@ nautilus_files_view_update_actions_state (NautilusFilesView *self)
     /* Right click actions
      * Selection menu actions
      */
-    action = g_action_map_lookup_action (G_ACTION_MAP (view_action_group),
-                                         "new-folder-with-selection");
-    g_simple_action_set_enabled (G_SIMPLE_ACTION (action),
-                                 mode == NAUTILUS_MODE_BROWSE &&
-                                 can_create_files && can_delete_files &&
-                                 (selection != NULL && selection->next != NULL) &&
-                                 !selection_contains_recent
-                                 && !selection_contains_starred);
+    files_action_set_enabled (self, "new-folder-with-selection",
+                              mode == NAUTILUS_MODE_BROWSE &&
+                              can_create_files && can_delete_files &&
+                              (selection != NULL && selection->next != NULL) &&
+                              !selection_contains_recent
+                              && !selection_contains_starred);
 
-    action = g_action_map_lookup_action (G_ACTION_MAP (view_action_group),
-                                         "rename");
     if (selection != NULL && selection->next != NULL)
     {
-        g_simple_action_set_enabled (G_SIMPLE_ACTION (action),
-                                     nautilus_file_can_rename_files (selection));
+        files_action_set_enabled (self, "rename",
+                                  nautilus_file_can_rename_files (selection));
     }
     else
     {
-        g_simple_action_set_enabled (G_SIMPLE_ACTION (action),
-                                     list_len_is_one (selection) &&
-                                     nautilus_file_can_rename (selection->data));
+        files_action_set_enabled (self, "rename",
+                                  list_len_is_one (selection) &&
+                                  nautilus_file_can_rename (selection->data));
     }
 
-    action = g_action_map_lookup_action (G_ACTION_MAP (view_action_group),
-                                         "extract-here");
-    g_simple_action_set_enabled (G_SIMPLE_ACTION (action),
-                                 mode == NAUTILUS_MODE_BROWSE &&
-                                 can_extract_files &&
-                                 !handles_all_files_to_extract &&
-                                 can_extract_here);
+    files_action_set_enabled (self, "extract-here",
+                              mode == NAUTILUS_MODE_BROWSE &&
+                              can_extract_files &&
+                              !handles_all_files_to_extract &&
+                              can_extract_here);
 
-    action = g_action_map_lookup_action (G_ACTION_MAP (view_action_group),
-                                         "extract-to");
-    g_simple_action_set_enabled (G_SIMPLE_ACTION (action),
-                                 mode == NAUTILUS_MODE_BROWSE &&
-                                 can_extract_files &&
-                                 (!handles_all_files_to_extract ||
-                                  can_extract_here));
+    files_action_set_enabled (self, "extract-to",
+                              mode == NAUTILUS_MODE_BROWSE &&
+                              can_extract_files &&
+                              (!handles_all_files_to_extract ||
+                               can_extract_here));
 
-    action = g_action_map_lookup_action (G_ACTION_MAP (view_action_group),
-                                         "compress");
-    g_simple_action_set_enabled (G_SIMPLE_ACTION (action),
-                                 mode == NAUTILUS_MODE_BROWSE &&
-                                 can_create_files && can_copy_files);
+    files_action_set_enabled (self, "compress",
+                              mode == NAUTILUS_MODE_BROWSE &&
+                              can_create_files && can_copy_files);
 
-    action = g_action_map_lookup_action (G_ACTION_MAP (view_action_group),
-                                         "open-item-location");
-
-    g_simple_action_set_enabled (G_SIMPLE_ACTION (action),
-                                 list_len_is_one (selection) &&
-                                 (selection_contains_recent || selection_contains_search ||
-                                  selection_contains_starred));
+    files_action_set_enabled (self, "open-item-location",
+                              list_len_is_one (selection) &&
+                              (selection_contains_recent || selection_contains_search ||
+                               selection_contains_starred));
 
     item_opens_in_view = selection != NULL;
 
@@ -7440,135 +7422,91 @@ nautilus_files_view_update_actions_state (NautilusFilesView *self)
         }
     }
 
-    action = g_action_map_lookup_action (G_ACTION_MAP (view_action_group),
-                                         "open-with-default-application");
-    g_simple_action_set_enabled (G_SIMPLE_ACTION (action),
-                                 mode == NAUTILUS_MODE_BROWSE &&
-                                 selection != NULL);
+    files_action_set_enabled (self, "open-with-default-application",
+                              mode == NAUTILUS_MODE_BROWSE &&
+                              selection != NULL);
 
     /* Allow to select a different application to open the item */
-    action = g_action_map_lookup_action (G_ACTION_MAP (view_action_group),
-                                         "open-with-other-application");
-    g_simple_action_set_enabled (G_SIMPLE_ACTION (action),
-                                 mode == NAUTILUS_MODE_BROWSE &&
-                                 selection != NULL);
+    files_action_set_enabled (self, "open-with-other-application",
+                              mode == NAUTILUS_MODE_BROWSE &&
+                              selection != NULL);
 
-    action = g_action_map_lookup_action (G_ACTION_MAP (view_action_group),
-                                         "open-item-new-tab");
-    g_simple_action_set_enabled (G_SIMPLE_ACTION (action),
-                                 mode == NAUTILUS_MODE_BROWSE &&
-                                 item_opens_in_view);
-    action = g_action_map_lookup_action (G_ACTION_MAP (view_action_group),
-                                         "open-item-new-window");
-    g_simple_action_set_enabled (G_SIMPLE_ACTION (action),
-                                 mode == NAUTILUS_MODE_BROWSE &&
-                                 item_opens_in_view);
-    action = g_action_map_lookup_action (G_ACTION_MAP (view_action_group),
-                                         "run-in-terminal");
-    g_simple_action_set_enabled (G_SIMPLE_ACTION (action),
-                                 mode == NAUTILUS_MODE_BROWSE &&
-                                 can_run_in_terminal (selection));
-    action = g_action_map_lookup_action (G_ACTION_MAP (view_action_group),
-                                         "set-as-wallpaper");
-    g_simple_action_set_enabled (G_SIMPLE_ACTION (action),
-                                 mode == NAUTILUS_MODE_BROWSE &&
-                                 can_set_wallpaper (selection));
-    action = g_action_map_lookup_action (G_ACTION_MAP (view_action_group),
-                                         "restore-from-trash");
-    g_simple_action_set_enabled (G_SIMPLE_ACTION (action),
-                                 mode == NAUTILUS_MODE_BROWSE &&
-                                 can_restore_from_trash (selection));
+    files_action_set_enabled (self, "open-item-new-tab",
+                              mode == NAUTILUS_MODE_BROWSE &&
+                              item_opens_in_view);
+    files_action_set_enabled (self, "open-item-new-window",
+                              mode == NAUTILUS_MODE_BROWSE &&
+                              item_opens_in_view);
+    files_action_set_enabled (self, "run-in-terminal",
+                              mode == NAUTILUS_MODE_BROWSE &&
+                              can_run_in_terminal (selection));
+    files_action_set_enabled (self, "set-as-wallpaper",
+                              mode == NAUTILUS_MODE_BROWSE &&
+                              can_set_wallpaper (selection));
+    files_action_set_enabled (self, "restore-from-trash",
+                              mode == NAUTILUS_MODE_BROWSE &&
+                              can_restore_from_trash (selection));
 
-    action = g_action_map_lookup_action (G_ACTION_MAP (view_action_group),
-                                         "move-to-trash");
-    g_simple_action_set_enabled (G_SIMPLE_ACTION (action), can_trash_files);
+    files_action_set_enabled (self, "move-to-trash", can_trash_files);
 
-    action = g_action_map_lookup_action (G_ACTION_MAP (view_action_group),
-                                         "delete-from-trash");
-    g_simple_action_set_enabled (G_SIMPLE_ACTION (action),
-                                 mode == NAUTILUS_MODE_BROWSE &&
-                                 can_delete_files && selection_all_in_trash);
+    files_action_set_enabled (self, "delete-from-trash",
+                              mode == NAUTILUS_MODE_BROWSE &&
+                              can_delete_files && selection_all_in_trash);
 
-    action = g_action_map_lookup_action (G_ACTION_MAP (view_action_group),
-                                         "delete-permanently-shortcut");
-    g_simple_action_set_enabled (G_SIMPLE_ACTION (action),
-                                 mode == NAUTILUS_MODE_BROWSE &&
-                                 can_delete_files);
+    files_action_set_enabled (self, "delete-permanently-shortcut",
+                              mode == NAUTILUS_MODE_BROWSE &&
+                              can_delete_files);
 
-    action = g_action_map_lookup_action (G_ACTION_MAP (view_action_group),
-                                         "delete-permanently-menu-item");
-    g_simple_action_set_enabled (G_SIMPLE_ACTION (action),
-                                 mode == NAUTILUS_MODE_BROWSE &&
-                                 can_delete_files && !can_trash_files &&
-                                 !selection_all_in_trash && !selection_contains_recent &&
-                                 !selection_contains_starred);
+    files_action_set_enabled (self, "delete-permanently-menu-item",
+                              mode == NAUTILUS_MODE_BROWSE &&
+                              can_delete_files && !can_trash_files &&
+                              !selection_all_in_trash && !selection_contains_recent &&
+                              !selection_contains_starred);
 
-    action = g_action_map_lookup_action (G_ACTION_MAP (view_action_group),
-                                         "permanent-delete-permanently-menu-item");
-    g_simple_action_set_enabled (G_SIMPLE_ACTION (action),
-                                 mode == NAUTILUS_MODE_BROWSE &&
-                                 can_delete_files && can_trash_files &&
-                                 settings_show_delete_permanently &&
-                                 !selection_all_in_trash && !selection_contains_recent &&
-                                 !selection_contains_starred);
+    files_action_set_enabled (self, "permanent-delete-permanently-menu-item",
+                              mode == NAUTILUS_MODE_BROWSE &&
+                              can_delete_files && can_trash_files &&
+                              settings_show_delete_permanently &&
+                              !selection_all_in_trash && !selection_contains_recent &&
+                              !selection_contains_starred);
 
-    action = g_action_map_lookup_action (G_ACTION_MAP (view_action_group),
-                                         "remove-from-recent");
-    g_simple_action_set_enabled (G_SIMPLE_ACTION (action),
-                                 mode == NAUTILUS_MODE_BROWSE &&
-                                 selection_contains_recent && selection != NULL);
+    files_action_set_enabled (self, "remove-from-recent",
+                              mode == NAUTILUS_MODE_BROWSE &&
+                              selection_contains_recent && selection != NULL);
 
-    action = g_action_map_lookup_action (G_ACTION_MAP (view_action_group),
-                                         "cut");
-    g_simple_action_set_enabled (G_SIMPLE_ACTION (action),
-                                 mode == NAUTILUS_MODE_BROWSE &&
-                                 can_move_files && !selection_contains_recent &&
-                                 !selection_contains_starred);
-    action = g_action_map_lookup_action (G_ACTION_MAP (view_action_group),
-                                         "copy");
-    g_simple_action_set_enabled (G_SIMPLE_ACTION (action),
-                                 mode == NAUTILUS_MODE_BROWSE &&
-                                 can_copy_files);
-    action = g_action_map_lookup_action (G_ACTION_MAP (view_action_group),
-                                         "create-link-in-place");
-    g_simple_action_set_enabled (G_SIMPLE_ACTION (action),
-                                 mode == NAUTILUS_MODE_BROWSE &&
-                                 can_copy_files &&
-                                 can_create_files &&
-                                 settings_show_create_link);
-    action = g_action_map_lookup_action (G_ACTION_MAP (view_action_group),
-                                         "create-link-in-place-shortcut");
-    g_simple_action_set_enabled (G_SIMPLE_ACTION (action),
-                                 mode == NAUTILUS_MODE_BROWSE &&
-                                 can_copy_files &&
-                                 can_create_files &&
-                                 !settings_show_create_link);
-    action = g_action_map_lookup_action (G_ACTION_MAP (view_action_group),
-                                         "send-email");
-    g_simple_action_set_enabled (G_SIMPLE_ACTION (action),
-                                 mode == NAUTILUS_MODE_BROWSE &&
-                                 app_info_mailto != NULL);
-    action = g_action_map_lookup_action (G_ACTION_MAP (view_action_group),
-                                         "copy-to");
-    g_simple_action_set_enabled (G_SIMPLE_ACTION (action),
-                                 mode == NAUTILUS_MODE_BROWSE &&
-                                 can_copy_files);
-    action = g_action_map_lookup_action (G_ACTION_MAP (view_action_group),
-                                         "move-to");
-    g_simple_action_set_enabled (G_SIMPLE_ACTION (action),
-                                 mode == NAUTILUS_MODE_BROWSE &&
-                                 can_move_files && !selection_contains_recent &&
-                                 !selection_contains_starred);
-    action = g_action_map_lookup_action (G_ACTION_MAP (view_action_group),
-                                         "preview-selection");
-    g_simple_action_set_enabled (G_SIMPLE_ACTION (action), selection != NULL);
-    action = g_action_map_lookup_action (G_ACTION_MAP (view_action_group),
-                                         "copy-current-location");
-    g_simple_action_set_enabled (G_SIMPLE_ACTION (action),
-                                 !selection_contains_recent &&
-                                 !selection_contains_search &&
-                                 !selection_contains_starred &&
-                                 !is_network_view);
+    files_action_set_enabled (self, "cut",
+                              mode == NAUTILUS_MODE_BROWSE &&
+                              can_move_files && !selection_contains_recent &&
+                              !selection_contains_starred);
+    files_action_set_enabled (self, "copy",
+                              mode == NAUTILUS_MODE_BROWSE &&
+                              can_copy_files);
+    files_action_set_enabled (self, "create-link-in-place",
+                              mode == NAUTILUS_MODE_BROWSE &&
+                              can_copy_files &&
+                              can_create_files &&
+                              settings_show_create_link);
+    files_action_set_enabled (self, "create-link-in-place-shortcut",
+                              mode == NAUTILUS_MODE_BROWSE &&
+                              can_copy_files &&
+                              can_create_files &&
+                              !settings_show_create_link);
+    files_action_set_enabled (self, "send-email",
+                              mode == NAUTILUS_MODE_BROWSE &&
+                              app_info_mailto != NULL);
+    files_action_set_enabled (self, "copy-to",
+                              mode == NAUTILUS_MODE_BROWSE &&
+                              can_copy_files);
+    files_action_set_enabled (self, "move-to",
+                              mode == NAUTILUS_MODE_BROWSE &&
+                              can_move_files && !selection_contains_recent &&
+                              !selection_contains_starred);
+    files_action_set_enabled (self, "preview-selection", selection != NULL);
+    files_action_set_enabled (self, "copy-current-location",
+                              !selection_contains_recent &&
+                              !selection_contains_search &&
+                              !selection_contains_starred &&
+                              !is_network_view);
 
     /* Drive menu */
     show_mount = (selection != NULL);
@@ -7609,143 +7547,96 @@ nautilus_files_view_update_actions_state (NautilusFilesView *self)
         show_detect_media &= show_detect_media_one;
     }
 
-    action = g_action_map_lookup_action (G_ACTION_MAP (view_action_group),
-                                         "mount-volume");
-    g_simple_action_set_enabled (G_SIMPLE_ACTION (action),
-                                 show_mount);
-    action = g_action_map_lookup_action (G_ACTION_MAP (view_action_group),
-                                         "unmount-volume");
-    g_simple_action_set_enabled (G_SIMPLE_ACTION (action),
-                                 show_unmount);
-    action = g_action_map_lookup_action (G_ACTION_MAP (view_action_group),
-                                         "eject-volume");
-    g_simple_action_set_enabled (G_SIMPLE_ACTION (action),
-                                 show_eject);
-    action = g_action_map_lookup_action (G_ACTION_MAP (view_action_group),
-                                         "start-volume");
-    g_simple_action_set_enabled (G_SIMPLE_ACTION (action),
-                                 show_start);
-    action = g_action_map_lookup_action (G_ACTION_MAP (view_action_group),
-                                         "stop-volume");
-    g_simple_action_set_enabled (G_SIMPLE_ACTION (action),
-                                 show_stop);
-    action = g_action_map_lookup_action (G_ACTION_MAP (view_action_group),
-                                         "detect-media");
-    g_simple_action_set_enabled (G_SIMPLE_ACTION (action),
-                                 show_detect_media);
+    files_action_set_enabled (self, "mount-volume", show_mount);
+    files_action_set_enabled (self, "unmount-volume", show_unmount);
+    files_action_set_enabled (self, "eject-volume", show_eject);
+    files_action_set_enabled (self, "start-volume", show_start);
+    files_action_set_enabled (self, "stop-volume", show_stop);
+    files_action_set_enabled (self, "detect-media", show_detect_media);
 
     /* Background menu actions */
-    action = g_action_map_lookup_action (G_ACTION_MAP (view_action_group),
-                                         "open-current-directory-with-other-application");
-    g_simple_action_set_enabled (G_SIMPLE_ACTION (action),
-                                 mode == NAUTILUS_MODE_BROWSE &&
-                                 !selection_contains_recent &&
+    files_action_set_enabled (self, "open-current-directory-with-other-application",
+                              mode == NAUTILUS_MODE_BROWSE &&
+                              !selection_contains_recent &&
+                              !selection_contains_search &&
+                              !selection_contains_starred &&
+                              !is_network_view);
+    files_action_set_enabled (self, "open-current-directory-with-files",
+                              mode != NAUTILUS_MODE_BROWSE &&
+                              !selection_contains_search);
+    files_action_set_enabled (self, "new-folder",
+                              (mode == NAUTILUS_MODE_BROWSE ||
+                               mode == NAUTILUS_MODE_SAVE_FILE ||
+                               mode == NAUTILUS_MODE_SAVE_FILES ||
+                               mode == NAUTILUS_MODE_OPEN_FOLDER ||
+                               mode == NAUTILUS_MODE_OPEN_FOLDERS) &&
+                              can_create_files);
+
+    files_action_set_enabled (self, "empty-trash",
+                              !nautilus_trash_monitor_is_empty () &&
+                              is_in_trash);
+
+    files_action_set_enabled (self, "paste",
+                              mode == NAUTILUS_MODE_BROWSE &&
+                              !is_read_only &&
+                              !selection_contains_recent &&
+                              !is_in_trash &&
+                              !selection_contains_starred);
+
+    files_action_set_enabled (self, "paste_accel",
+                              mode == NAUTILUS_MODE_BROWSE);
+
+    files_action_set_enabled (self, "paste-into",
+                              mode == NAUTILUS_MODE_BROWSE &&
+                              !selection_contains_recent &&
+                              !is_in_trash &&
+                              !selection_contains_starred &&
+                              can_paste_files_into);
+
+    files_action_set_enabled (self, "console",
+                              mode == NAUTILUS_MODE_BROWSE &&
+                              list_len_is_one (selection) && nautilus_file_is_directory (selection->data) &&
+                              nautilus_dbus_launcher_is_available (nautilus_dbus_launcher_get (),
+                                                                   NAUTILUS_DBUS_LAUNCHER_CONSOLE));
+    files_action_set_enabled (self, "current-directory-console",
+                              mode == NAUTILUS_MODE_BROWSE &&
+                              nautilus_dbus_launcher_is_available (nautilus_dbus_launcher_get (),
+                                                                   NAUTILUS_DBUS_LAUNCHER_CONSOLE));
+    files_action_set_enabled (self, "properties",
+                              mode == NAUTILUS_MODE_BROWSE &&
+                              (is_network_view ?
+                               (list_len_is_one (selection) &&
+                                nautilus_file_can_unmount (selection->data)) :
+                               (selection != NULL ||
+                                (!selection_contains_recent &&
                                  !selection_contains_search &&
-                                 !selection_contains_starred &&
-                                 !is_network_view);
-    action = g_action_map_lookup_action (G_ACTION_MAP (view_action_group),
-                                         "open-current-directory-with-files");
-    g_simple_action_set_enabled (G_SIMPLE_ACTION (action),
-                                 mode != NAUTILUS_MODE_BROWSE &&
-                                 !selection_contains_search);
-    action = g_action_map_lookup_action (G_ACTION_MAP (view_action_group),
-                                         "new-folder");
-    g_simple_action_set_enabled (G_SIMPLE_ACTION (action),
-                                 (mode == NAUTILUS_MODE_BROWSE ||
-                                  mode == NAUTILUS_MODE_SAVE_FILE ||
-                                  mode == NAUTILUS_MODE_SAVE_FILES ||
-                                  mode == NAUTILUS_MODE_OPEN_FOLDER ||
-                                  mode == NAUTILUS_MODE_OPEN_FOLDERS) &&
-                                 can_create_files);
-
-    action = g_action_map_lookup_action (G_ACTION_MAP (view_action_group),
-                                         "empty-trash");
-
-    g_simple_action_set_enabled (G_SIMPLE_ACTION (action),
-                                 !nautilus_trash_monitor_is_empty () &&
-                                 is_in_trash);
-
-    action = g_action_map_lookup_action (G_ACTION_MAP (view_action_group),
-                                         "paste");
-    g_simple_action_set_enabled (G_SIMPLE_ACTION (action),
-                                 mode == NAUTILUS_MODE_BROWSE &&
-                                 !is_read_only &&
-                                 !selection_contains_recent &&
-                                 !is_in_trash &&
-                                 !selection_contains_starred);
-
-    action = g_action_map_lookup_action (G_ACTION_MAP (view_action_group),
-                                         "paste_accel");
-    g_simple_action_set_enabled (G_SIMPLE_ACTION (action),
-                                 mode == NAUTILUS_MODE_BROWSE);
-
-    action = g_action_map_lookup_action (G_ACTION_MAP (view_action_group),
-                                         "paste-into");
-    g_simple_action_set_enabled (G_SIMPLE_ACTION (action),
-                                 mode == NAUTILUS_MODE_BROWSE &&
-                                 !selection_contains_recent &&
-                                 !is_in_trash &&
-                                 !selection_contains_starred &&
-                                 can_paste_files_into);
-
-    action = g_action_map_lookup_action (G_ACTION_MAP (view_action_group),
-                                         "console");
-    g_simple_action_set_enabled (G_SIMPLE_ACTION (action),
-                                 mode == NAUTILUS_MODE_BROWSE &&
-                                 list_len_is_one (selection) && nautilus_file_is_directory (selection->data) &&
-                                 nautilus_dbus_launcher_is_available (nautilus_dbus_launcher_get (),
-                                                                      NAUTILUS_DBUS_LAUNCHER_CONSOLE));
-    action = g_action_map_lookup_action (G_ACTION_MAP (view_action_group),
-                                         "current-directory-console");
-    g_simple_action_set_enabled (G_SIMPLE_ACTION (action),
-                                 mode == NAUTILUS_MODE_BROWSE &&
-                                 nautilus_dbus_launcher_is_available (nautilus_dbus_launcher_get (),
-                                                                      NAUTILUS_DBUS_LAUNCHER_CONSOLE));
-    action = g_action_map_lookup_action (G_ACTION_MAP (view_action_group),
-                                         "properties");
-    g_simple_action_set_enabled (G_SIMPLE_ACTION (action),
-                                 mode == NAUTILUS_MODE_BROWSE &&
-                                 (is_network_view ?
-                                  (list_len_is_one (selection) &&
-                                   nautilus_file_can_unmount (selection->data)) :
-                                  (selection != NULL ||
-                                   (!selection_contains_recent &&
-                                    !selection_contains_search &&
-                                    !selection_contains_starred))));
-    action = g_action_map_lookup_action (G_ACTION_MAP (view_action_group),
-                                         "current-directory-properties");
-    g_simple_action_set_enabled (G_SIMPLE_ACTION (action),
-                                 mode == NAUTILUS_MODE_BROWSE &&
-                                 !selection_contains_recent &&
-                                 !selection_contains_search &&
-                                 !selection_contains_starred &&
-                                 !is_network_view);
+                                 !selection_contains_starred))));
+    files_action_set_enabled (self, "current-directory-properties",
+                              mode == NAUTILUS_MODE_BROWSE &&
+                              !selection_contains_recent &&
+                              !selection_contains_search &&
+                              !selection_contains_starred &&
+                              !is_network_view);
 
     /* Actions that are related to the clipboard need request, request the data
      * and update them once we have the data */
     update_actions_state_for_clipboard_targets (self);
 
-    action = g_action_map_lookup_action (G_ACTION_MAP (view_action_group),
-                                         "select-all");
-    g_simple_action_set_enabled (G_SIMPLE_ACTION (action),
-                                 !nautilus_files_view_is_empty (self) &&
-                                 !self->loading &&
-                                 !nautilus_view_model_get_single_selection (self->model));
+    files_action_set_enabled (self, "select-all",
+                              !nautilus_files_view_is_empty (self) &&
+                              !self->loading &&
+                              !nautilus_view_model_get_single_selection (self->model));
 
     /* Toolbar menu actions */
     g_action_group_change_action_state (view_action_group,
                                         "show-hidden-files",
                                         g_variant_new_boolean (self->show_hidden_files));
 
-    action = g_action_map_lookup_action (G_ACTION_MAP (view_action_group),
-                                         "visible-columns");
-    g_simple_action_set_enabled (G_SIMPLE_ACTION (action),
-                                 NAUTILUS_IS_LIST_VIEW (self->list_base));
+    files_action_set_enabled (self, "visible-columns",
+                              NAUTILUS_IS_LIST_VIEW (self->list_base));
 
-    action = g_action_map_lookup_action (G_ACTION_MAP (view_action_group),
-                                         "visible-captions");
-    g_simple_action_set_enabled (G_SIMPLE_ACTION (action),
-                                 NAUTILUS_IS_GRID_VIEW (self->list_base));
+    files_action_set_enabled (self, "visible-captions",
+                              NAUTILUS_IS_GRID_VIEW (self->list_base));
 
     update_zoom_actions_state (self);
 
@@ -7776,17 +7667,13 @@ nautilus_files_view_update_actions_state (NautilusFilesView *self)
         }
     }
 
-    action = g_action_map_lookup_action (G_ACTION_MAP (view_action_group),
-                                         "star");
-    g_simple_action_set_enabled (G_SIMPLE_ACTION (action),
-                                 mode == NAUTILUS_MODE_BROWSE &&
-                                 show_star);
+    files_action_set_enabled (self, "star",
+                              mode == NAUTILUS_MODE_BROWSE &&
+                              show_star);
 
-    action = g_action_map_lookup_action (G_ACTION_MAP (view_action_group),
-                                         "unstar");
-    g_simple_action_set_enabled (G_SIMPLE_ACTION (action),
-                                 mode == NAUTILUS_MODE_BROWSE &&
-                                 show_unstar && selection_contains_starred);
+    files_action_set_enabled (self, "unstar",
+                              mode == NAUTILUS_MODE_BROWSE &&
+                              show_unstar && selection_contains_starred);
 
     /* Network view actions */
     gboolean can_remove_recent_server = is_network_view;
@@ -7803,16 +7690,12 @@ nautilus_files_view_update_actions_state (NautilusFilesView *self)
         }
     }
 
-    action = g_action_map_lookup_action (G_ACTION_MAP (view_action_group),
-                                         "copy-network-address");
-    g_simple_action_set_enabled (G_SIMPLE_ACTION (action),
-                                 (is_network_view &&
-                                  list_len_is_one (selection) &&
-                                  nautilus_file_has_activation_uri (selection->data)));
+    files_action_set_enabled (self, "copy-network-address",
+                              (is_network_view &&
+                               list_len_is_one (selection) &&
+                               nautilus_file_has_activation_uri (selection->data)));
 
-    action = g_action_map_lookup_action (G_ACTION_MAP (view_action_group),
-                                         "remove-recent-server");
-    g_simple_action_set_enabled (G_SIMPLE_ACTION (action), can_remove_recent_server);
+    files_action_set_enabled (self, "remove-recent-server", can_remove_recent_server);
 }
 
 static void
