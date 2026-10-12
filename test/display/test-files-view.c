@@ -376,7 +376,7 @@ test_selection_actions (void)
     NautilusViewModel *model = nautilus_files_view_get_private_model (files_view);
     g_autoptr (GFile) tmp_location = g_file_new_for_path (test_get_tmp_dir ());
     const guint file_count = 10, selected_count = 4;
-    g_autoptr (NautilusFileList) selection_set = NULL;
+    g_autolist (NautilusFile) selection_set = NULL;
     NautilusFileList *got_selection = NULL;
     guint got_count;
 
@@ -392,7 +392,7 @@ test_selection_actions (void)
         g_autoptr (GFile) location = g_file_get_child (tmp_location, name);
         g_autoptr (NautilusFile) file = nautilus_file_get (location);
 
-        selection_set = g_list_append (selection_set, nautilus_file_ref (file));
+        selection_set = g_list_append (selection_set, g_steal_pointer (&file));
     }
 
     /* Set the selection on the view */
@@ -580,8 +580,8 @@ test_selection_source_operation (void)
     const guint file_count = 4;
     const guint selected_count = 2;
     g_autolist (GFile) file_list = NULL;
-    g_autoptr (NautilusFileList) first_selection = NULL;
-    g_autoptr (NautilusFileList) second_selection = NULL;
+    g_autolist (NautilusFile) first_selection = NULL;
+    g_autolist (NautilusFile) second_selection = NULL;
     NautilusFileList *got_selection = NULL;
 
     file_hierarchy_create (files_hierarchy, "");
