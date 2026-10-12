@@ -165,8 +165,7 @@ nautilus_column_set_property (GObject      *object,
     {
         case PROP_NAME:
         {
-            g_free (column->name);
-            column->name = g_strdup (g_value_get_string (value));
+            g_set_str (&column->name, g_value_get_string (value));
             g_object_notify (object, "name");
         }
         break;
@@ -181,16 +180,14 @@ nautilus_column_set_property (GObject      *object,
 
         case PROP_LABEL:
         {
-            g_free (column->label);
-            column->label = g_strdup (g_value_get_string (value));
+            g_set_str (&column->label, g_value_get_string (value));
             g_object_notify (object, "label");
         }
         break;
 
         case PROP_DESCRIPTION:
         {
-            g_free (column->description);
-            column->description = g_strdup (g_value_get_string (value));
+            g_set_str (&column->description, g_value_get_string (value));
             g_object_notify (object, "description");
         }
         break;
