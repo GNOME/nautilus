@@ -1273,6 +1273,7 @@ main (int   argc,
 {
     g_autoptr (NautilusTagManager) tag_manager = NULL;
 
+    test_isolate_user_dirs ();
     gtk_test_init (&argc, &argv, NULL);
 
     if (nautilus_application_is_sandboxed ())

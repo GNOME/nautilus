@@ -45,6 +45,37 @@ test_clear_tmp_dir (void)
     }
 }
 
+void
+test_isolate_user_dirs (void)
+{
+    /* GLib caches these on first use, so this must run before anything reads them */
+    g_autofree char *root = g_dir_make_tmp ("nautilus-test-user-dirs-XXXXXX", NULL);
+    const struct
+    {
+        const char *variable;
+        const char *subdir;
+        const char * (*getter) (void);
+    } dirs[] =
+    {
+        { "XDG_CONFIG_HOME", "config", g_get_user_config_dir },  /* Bookmarks */
+        { "XDG_DATA_HOME", "data", g_get_user_data_dir },        /* Trash and recent files */
+        { "XDG_CACHE_HOME", "cache", g_get_user_cache_dir },     /* Thumbnails */
+    };
+
+    g_assert_nonnull (root);
+
+    for (guint i = 0; i < G_N_ELEMENTS (dirs); i++)
+    {
+        g_autofree char *path = g_build_filename (root, dirs[i].subdir, NULL);
+
+        g_mkdir_with_parents (path, 0700);
+        g_setenv (dirs[i].variable, path, TRUE);
+
+        /* Lock in the isolated path, and catch anything that read it too early */
+        g_assert_cmpstr (dirs[i].getter (), ==, path);
+    }
+}
+
 static gboolean config_dir_initialized = FALSE;
 
 void
@@ -52,6 +83,13 @@ test_init_config_dir (void)
 {
     if (config_dir_initialized == FALSE)
     {
+        /* This replaces the bookmarks file, so never touch the user's own */
+        if (!g_str_has_prefix (g_get_user_config_dir (), g_get_tmp_dir ()))
+        {
+            g_error ("Refusing to reset the bookmarks in %s, call "
+                     "test_isolate_user_dirs () first", g_get_user_config_dir ());
+        }
+
         /* Initialize bookmarks */
         g_autofree gchar *gtk3_dir = g_build_filename (g_get_user_config_dir (),
                                                        "gtk-3.0",

@@ -447,6 +447,7 @@ main (int   argc,
     g_autoptr (NautilusFileUndoManager) undo_manager = NULL;
     g_autoptr (NautilusTagManager) tag_manager = NULL;
 
+    test_isolate_user_dirs ();
     gtk_test_init (&argc, &argv, NULL);
 
     g_setenv ("RUNNING_TESTS", "TRUE", TRUE);

@@ -35,9 +35,10 @@ test_bookmark (void)
 }
 
 static GFile *
-setup_tmp_bookmarks_file (const char *tmp_dir)
+setup_tmp_bookmarks_file (void)
 {
-    g_autofree char *bookmark_list_folder = g_build_filename (tmp_dir,
+    /* The config directory is isolated by test_isolate_user_dirs () */
+    g_autofree char *bookmark_list_folder = g_build_filename (g_get_user_config_dir (),
                                                               "gtk-3.0",
                                                               NULL);
     g_autoptr (GFile) bookmarks_list_file = g_file_new_build_filename (bookmark_list_folder,
@@ -45,7 +46,6 @@ setup_tmp_bookmarks_file (const char *tmp_dir)
                                                                        NULL);
     g_autoptr (GError) error = NULL;
 
-    g_setenv ("XDG_CONFIG_HOME", tmp_dir, TRUE);
     g_mkdir_with_parents (bookmark_list_folder, 0700);
     g_file_replace_contents (bookmarks_list_file,
                              "", 0,
@@ -64,7 +64,7 @@ static void
 test_bookmark_list_basic (void)
 {
     const char *tmp_dir = test_get_tmp_dir ();
-    g_autoptr (GFile) bookmarks_list_file = setup_tmp_bookmarks_file (tmp_dir);
+    g_autoptr (GFile) bookmarks_list_file = setup_tmp_bookmarks_file ();
     g_autoptr (NautilusBookmarkList) list = nautilus_bookmark_list_new ();
     g_autoptr (GFile) bookmark1 = g_file_new_build_filename (tmp_dir, "one", NULL);
     g_autoptr (GFile) bookmark2 = g_file_new_build_filename (tmp_dir, "two", NULL);
@@ -154,12 +154,13 @@ test_bookmark_list_missing_file (void)
 {
     const char *tmp_dir = test_get_tmp_dir ();
     g_autoptr (GFile) bookmarks_list_file =
-        g_file_new_build_filename (tmp_dir, "gtk-3.0", "bookmarks", NULL);
+        g_file_new_build_filename (g_get_user_config_dir (), "gtk-3.0", "bookmarks", NULL);
     g_autoptr (NautilusBookmarkList) list = NULL;
     g_autoptr (GFile) bookmark = g_file_new_build_filename (tmp_dir, "bookmark", NULL);
     g_autofree char *bookmark_uri = g_file_get_uri (bookmark);
 
-    g_setenv ("XDG_CONFIG_HOME", tmp_dir, TRUE);
+    /* Earlier tests create the bookmarks file, so remove it */
+    g_file_delete (bookmarks_list_file, NULL, NULL);
     list = nautilus_bookmark_list_new ();
     nautilus_bookmark_list_add (list, bookmark, -1);
 
@@ -175,7 +176,7 @@ static void
 test_bookmark_list_first_load_merge (void)
 {
     const char *tmp_dir = test_get_tmp_dir ();
-    g_autoptr (GFile) bookmarks_list_file = setup_tmp_bookmarks_file (tmp_dir);
+    g_autoptr (GFile) bookmarks_list_file = setup_tmp_bookmarks_file ();
     g_autoptr (GFile) existing_location = g_file_new_build_filename (tmp_dir, "existing", NULL);
     g_autoptr (GFile) new_location = g_file_new_build_filename (tmp_dir, "new", NULL);
     g_autofree char *existing_uri = g_file_get_uri (existing_location);
@@ -229,8 +230,7 @@ test_bookmark_list_first_load_merge (void)
 static void
 test_bookmark_list_changed_signal_internal (void)
 {
-    const char *tmp_dir = test_get_tmp_dir ();
-    g_autoptr (GFile) bookmarks_list_file = setup_tmp_bookmarks_file (tmp_dir);
+    g_autoptr (GFile) bookmarks_list_file = setup_tmp_bookmarks_file ();
     g_autoptr (NautilusBookmarkList) list = nautilus_bookmark_list_new ();
     g_autoptr (GFile) bookmark1 = g_file_new_build_filename (test_get_tmp_dir (),
                                                              "one",
@@ -290,7 +290,7 @@ static void
 test_bookmark_list_changed_signal_external (void)
 {
     const char *tmp_dir = test_get_tmp_dir ();
-    g_autoptr (GFile) bookmarks_list_file = setup_tmp_bookmarks_file (tmp_dir);
+    g_autoptr (GFile) bookmarks_list_file = setup_tmp_bookmarks_file ();
     g_autoptr (NautilusBookmarkList) list = NULL;
     ChangedSignalTestData test_data = { 0, 0 };
     g_autoptr (GFile) tmp_bookmark = g_file_new_build_filename (tmp_dir, "file1", NULL);
@@ -353,6 +353,7 @@ int
 main (int   argc,
       char *argv[])
 {
+    test_isolate_user_dirs ();
     g_test_init (&argc, &argv, NULL);
 
     nautilus_ensure_extension_points ();

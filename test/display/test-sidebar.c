@@ -35,6 +35,7 @@ main (int   argc,
 {
     g_autoptr (NautilusTagManager) tag_manager = NULL;
 
+    test_isolate_user_dirs ();
     gtk_test_init (&argc, &argv, G_TEST_OPTION_ISOLATE_DIRS, NULL);
 
     nautilus_register_resource ();
