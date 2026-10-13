@@ -26,8 +26,10 @@
 static char *
 get_drop_filename (const char *text)
 {
+    /* Translator: This is the filename used for when you dnd text to a directory */
+    const char *default_filename = _("Dropped Text.txt");
     char *filename;
-    char trimmed[MAX_LEN_FILENAME];
+    g_autofree char *trimmed = NULL;
     int i;
     int last_word = -1;
     int end_sentence = -1;
@@ -37,9 +39,14 @@ get_drop_filename (const char *text)
     PangoLogAttr *attrs;
     gchar *current_char;
 
+    if (!g_utf8_validate (text, -1, NULL))
+    {
+        return g_strdup (default_filename);
+    }
+
     num_attrs = MIN (g_utf8_strlen (text, -1), MAX_LEN_FILENAME) + 1;
     attrs = g_new (PangoLogAttr, num_attrs);
-    g_utf8_strncpy (trimmed, text, num_attrs - 1);
+    trimmed = g_utf8_substring (text, 0, num_attrs - 1);
     pango_get_log_attrs (trimmed, -1, -1, pango_language_get_default (), attrs, num_attrs);
 
     /* since the end of the text will always match a word boundary don't include it */
@@ -81,8 +88,7 @@ get_drop_filename (const char *text)
     }
     else
     {
-        /* Translator: This is the filename used for when you dnd text to a directory */
-        filename = g_strdup (_("Dropped Text.txt"));
+        filename = g_strdup (default_filename);
     }
 
     /* Remove any invalid characters */
