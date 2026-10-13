@@ -557,7 +557,7 @@ on_key_pressed_bubble (GtkEventControllerKey *controller,
     NautilusFileChooser *self = NAUTILUS_FILE_CHOOSER (user_data);
 
     if (self->slot != NULL &&
-        nautilus_window_slot_handle_event (self->slot, controller, keyval, state))
+        nautilus_window_slot_handle_event (self->slot, keyval))
     {
         return GDK_EVENT_STOP;
     }

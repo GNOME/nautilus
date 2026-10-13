@@ -1352,7 +1352,7 @@ nautilus_window_key_bubble (GtkEventControllerKey *controller,
     widget = gtk_event_controller_get_widget (GTK_EVENT_CONTROLLER (controller));
     window = NAUTILUS_WINDOW (widget);
     if (window->active_slot != NULL &&
-        nautilus_window_slot_handle_event (window->active_slot, controller, keyval, state))
+        nautilus_window_slot_handle_event (window->active_slot, keyval))
     {
         return GDK_EVENT_STOP;
     }

@@ -51,6 +51,7 @@ enum
 {
     ACTIVATED,
     FOCUS_VIEW,
+    SEARCH_STARTED,
     CHANGED,
     CANCEL,
     LAST_SIGNAL
@@ -471,6 +472,15 @@ nautilus_query_editor_class_init (NautilusQueryEditorClass *class)
                       g_cclosure_marshal_VOID__VOID,
                       G_TYPE_NONE, 0);
 
+    signals[SEARCH_STARTED] =
+        g_signal_new ("search-started",
+                      G_TYPE_FROM_CLASS (class),
+                      G_SIGNAL_RUN_LAST,
+                      0,
+                      NULL, NULL,
+                      g_cclosure_marshal_VOID__VOID,
+                      G_TYPE_NONE, 0);
+
     shortcut = gtk_shortcut_new (gtk_keyval_trigger_new (GDK_KEY_Down, 0),
                                  gtk_signal_action_new ("focus-view"));
     gtk_widget_class_add_shortcut (widget_class, shortcut);
@@ -622,6 +632,12 @@ search_popover_fts_changed_cb (NautilusQueryEditor *editor,
 }
 
 static void
+on_input_intercepted (NautilusQueryEditor *self)
+{
+    g_signal_emit (self, signals[SEARCH_STARTED], 0);
+}
+
+static void
 on_clear_icon_pressed (GtkGestureClick     *gesture,
                        int                  n_press,
                        double               x,
@@ -654,6 +670,9 @@ nautilus_query_editor_init (NautilusQueryEditor *editor)
     editor->cancellable = g_cancellable_new ();
 
     gtk_widget_init_template (GTK_WIDGET (editor));
+
+    g_signal_connect_swapped (editor->text, "input-intercepted",
+                              G_CALLBACK (on_input_intercepted), editor);
 
     gtk_widget_set_child_visible (editor->clear_icon, FALSE);
 }
@@ -774,46 +793,11 @@ nautilus_query_editor_set_query (NautilusQueryEditor *self,
     self->change_frozen = FALSE;
 }
 
-static gboolean
-nautilus_gtk_search_entry_is_keynav_event (guint           keyval,
-                                           GdkModifierType state)
+void
+nautilus_query_editor_set_input_interceptor (NautilusQueryEditor *self,
+                                             GtkWidget           *interceptor)
 {
-    if (keyval == GDK_KEY_Tab || keyval == GDK_KEY_KP_Tab ||
-        keyval == GDK_KEY_Up || keyval == GDK_KEY_KP_Up ||
-        keyval == GDK_KEY_Down || keyval == GDK_KEY_KP_Down ||
-        keyval == GDK_KEY_Left || keyval == GDK_KEY_KP_Left ||
-        keyval == GDK_KEY_Right || keyval == GDK_KEY_KP_Right ||
-        keyval == GDK_KEY_Home || keyval == GDK_KEY_KP_Home ||
-        keyval == GDK_KEY_End || keyval == GDK_KEY_KP_End ||
-        keyval == GDK_KEY_Page_Up || keyval == GDK_KEY_KP_Page_Up ||
-        keyval == GDK_KEY_Page_Down || keyval == GDK_KEY_KP_Page_Down ||
-        ((state & (GDK_CONTROL_MASK | GDK_ALT_MASK)) != 0))
-    {
-        return TRUE;
-    }
+    g_return_if_fail (NAUTILUS_IS_QUERY_EDITOR (self));
 
-    /* Other navigation events should get automatically
-     * ignored as they will not change the content of the entry
-     */
-    return FALSE;
-}
-
-gboolean
-nautilus_query_editor_handle_event (NautilusQueryEditor   *self,
-                                    GtkEventControllerKey *controller,
-                                    guint                  keyval,
-                                    GdkModifierType        state)
-{
-    g_return_val_if_fail (NAUTILUS_IS_QUERY_EDITOR (self), GDK_EVENT_PROPAGATE);
-    g_return_val_if_fail (controller != NULL, GDK_EVENT_PROPAGATE);
-
-    /* Conditions are copied straight from GTK. */
-    if (nautilus_gtk_search_entry_is_keynav_event (keyval, state) ||
-        keyval == GDK_KEY_space ||
-        keyval == GDK_KEY_Menu)
-    {
-        return GDK_EVENT_PROPAGATE;
-    }
-
-    return gtk_event_controller_key_forward (controller, self->text);
+    gtk_editable_set_input_interceptor (GTK_EDITABLE (self->text), interceptor);
 }

@@ -41,7 +41,14 @@ void           nautilus_query_editor_set_location (NautilusQueryEditor *editor,
  */
 void           nautilus_query_editor_select_all_text (NautilusQueryEditor   *editor);
 
-gboolean       nautilus_query_editor_handle_event    (NautilusQueryEditor   *self,
-                                                      GtkEventControllerKey *controller,
-                                                      guint                  keyval,
-                                                      GdkModifierType        state);
+/**
+ * nautilus_query_editor_set_input_interceptor:
+ *
+ * @editor: A #NautilusQueryEditor instance.
+ * @interceptor: (nullable): The widget to capture text input from.
+ *
+ * Text typed while focus is within @interceptor is redirected to the search entry,
+ * emitting #NautilusQueryEditor::search-started.
+ */
+void           nautilus_query_editor_set_input_interceptor (NautilusQueryEditor *editor,
+                                                            GtkWidget           *interceptor);

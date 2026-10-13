@@ -357,6 +357,13 @@ query_editor_focus_view_callback (NautilusQueryEditor *editor,
 }
 
 static void
+query_editor_search_started_callback (NautilusQueryEditor *editor,
+                                      NautilusWindowSlot  *self)
+{
+    nautilus_window_slot_set_search_visible (self, TRUE);
+}
+
+static void
 query_editor_changed_callback (NautilusQueryEditor *editor,
                                NautilusQuery       *query,
                                gboolean             reload,
@@ -377,7 +384,10 @@ hide_query_editor (NautilusWindowSlot *self)
 {
     NautilusFilesView *view = self->content_view;
 
-    g_signal_handlers_disconnect_by_data (self->query_editor, self);
+    g_signal_handlers_disconnect_by_func (self->query_editor, query_editor_changed_callback, self);
+    g_signal_handlers_disconnect_by_func (self->query_editor, query_editor_cancel_callback, self);
+    g_signal_handlers_disconnect_by_func (self->query_editor, query_editor_activated_callback, self);
+    g_signal_handlers_disconnect_by_func (self->query_editor, query_editor_focus_view_callback, self);
 
     nautilus_query_editor_set_query (self->query_editor, NULL);
 
@@ -543,51 +553,17 @@ nautilus_window_slot_handle_activate_files (NautilusWindowSlot *self,
 }
 
 gboolean
-nautilus_window_slot_handle_event (NautilusWindowSlot    *self,
-                                   GtkEventControllerKey *controller,
-                                   guint                  keyval,
-                                   GdkModifierType        state)
+nautilus_window_slot_handle_event (NautilusWindowSlot *self,
+                                   guint               keyval)
 {
-    gboolean retval;
-    GAction *action;
-
-    retval = FALSE;
-    action = g_action_map_lookup_action (G_ACTION_MAP (self->slot_action_group),
-                                         "search-visible");
-
-    if (keyval == GDK_KEY_Escape ||
-        keyval == GDK_KEY_BackSpace)
+    if (keyval == GDK_KEY_Escape &&
+        nautilus_window_slot_get_search_visible (self))
     {
-        g_autoptr (GVariant) action_state = NULL;
-
-        action_state = g_action_get_state (action);
-
-        if (!g_variant_get_boolean (action_state))
-        {
-            return GDK_EVENT_PROPAGATE;
-        }
-        else if (keyval == GDK_KEY_Escape)
-        {
-            nautilus_window_slot_set_search_visible (self, FALSE);
-            return GDK_EVENT_STOP;
-        }
+        nautilus_window_slot_set_search_visible (self, FALSE);
+        return GDK_EVENT_STOP;
     }
 
-    /* If the action is not enabled, don't try to handle search */
-    if (g_action_get_enabled (action))
-    {
-        retval = nautilus_query_editor_handle_event (self->query_editor,
-                                                     controller,
-                                                     keyval,
-                                                     state);
-    }
-
-    if (retval)
-    {
-        nautilus_window_slot_set_search_visible (self, TRUE);
-    }
-
-    return retval;
+    return GDK_EVENT_PROPAGATE;
 }
 
 static void
@@ -858,6 +834,9 @@ nautilus_window_slot_constructed (GObject *object)
     /* We want to keep alive the query editor betwen additions and removals on the
      * UI, specifically when the toolbar adds or removes it */
     g_object_ref_sink (self->query_editor);
+    g_signal_connect_object (self->query_editor, "search-started",
+                             G_CALLBACK (query_editor_search_started_callback), self,
+                             G_CONNECT_DEFAULT);
 
     self->banner = ADW_BANNER (adw_banner_new (""));
     gtk_box_append (GTK_BOX (self->vbox),
@@ -2892,10 +2871,12 @@ nautilus_window_slot_set_active (NautilusWindowSlot *self,
             nautilus_window_slot_sync_actions (self);
 
             gtk_widget_insert_action_group (GTK_WIDGET (window), "slot", self->slot_action_group);
+            nautilus_query_editor_set_input_interceptor (self->query_editor, GTK_WIDGET (window));
         }
         else
         {
             gtk_widget_insert_action_group (GTK_WIDGET (window), "slot", NULL);
+            nautilus_query_editor_set_input_interceptor (self->query_editor, NULL);
         }
 
         g_object_notify_by_pspec (G_OBJECT (self), properties[PROP_ACTIVE]);
