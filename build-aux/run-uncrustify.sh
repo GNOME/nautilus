@@ -14,13 +14,30 @@ then
     exit 1
 fi
 
+format_file()
+{
+    local FILE="$1"
+    local TMP_FILE
+    local ALIGNED_FILE
+
+    TMP_FILE=$(mktemp) || return 1
+    ALIGNED_FILE=$(mktemp) || { rm -f "$TMP_FILE"; return 1; }
+
+    # Aligning prototypes is not working yet, so avoid headers
+    "$UNCRUSTIFY" -c "$BUILD_AUX/uncrustify.cfg" -f "$FILE" -o "$TMP_FILE" &&
+    "$BUILD_AUX/lineup-parameters" "$TMP_FILE" > "$ALIGNED_FILE" &&
+    if ! cmp -s "$FILE" "$ALIGNED_FILE"; then
+        mv "$ALIGNED_FILE" "$FILE"
+    fi
+
+    rm -f "$TMP_FILE" "$ALIGNED_FILE"
+}
+
 for DIR in "$BUILD_AUX/../"{src,test,libnautilus-extension,extensions}
 do
     for FILE in $(find "$DIR" -name "*.c")
     do
-        # Aligning prototypes is not working yet, so avoid headers
-        "$UNCRUSTIFY" -c "$BUILD_AUX/uncrustify.cfg" --no-backup "$FILE" &&
-        "$BUILD_AUX/lineup-parameters" "$FILE" > "$FILE.temp" && mv "$FILE.temp" "$FILE" &
+        format_file "$FILE" &
    done
 done
 
