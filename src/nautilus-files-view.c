@@ -6479,12 +6479,14 @@ set_wallpaper_with_portal_cb (GObject      *source,
                               gpointer      user_data)
 {
     XdpPortal *portal = XDP_PORTAL (source);
+    g_autoptr (NautilusFilesView) self = NAUTILUS_FILES_VIEW (user_data);
     g_autoptr (GError) error = NULL;
 
     if (!xdp_portal_set_wallpaper_finish (portal, result, &error)
         && !g_error_matches (error, G_IO_ERROR, G_IO_ERROR_CANCELLED))
     {
-        g_warning ("Failed to set wallpaper via portal: %s", error->message);
+        nautilus_show_ok_dialog (_("Could Not Set Background"),
+                                 error->message, GTK_WIDGET (self));
     }
 }
 
@@ -6508,7 +6510,7 @@ set_wallpaper_with_portal (NautilusFile *file,
 
     toplevel = gtk_widget_get_ancestor (GTK_WIDGET (user_data), GTK_TYPE_WINDOW);
     parent = xdp_parent_new_gtk (GTK_WINDOW (toplevel));
-    uri = nautilus_file_get_uri (file);
+    uri = nautilus_file_get_activation_uri (file);
 
     xdp_portal_set_wallpaper (portal,
                               parent,
@@ -6516,7 +6518,7 @@ set_wallpaper_with_portal (NautilusFile *file,
                               XDP_WALLPAPER_FLAG_BACKGROUND | XDP_WALLPAPER_FLAG_PREVIEW,
                               NULL,
                               set_wallpaper_with_portal_cb,
-                              NULL);
+                              g_object_ref (user_data));
     xdp_parent_free (parent);
 }
 
