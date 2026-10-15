@@ -28,11 +28,11 @@
  *
  * Abstract class containing shared code for #NautilusFilesView implementations
  * using a #GtkListBase-derived widget (e.g. GtkGridView, GtkColumnView) which
- * takes a #NautilusViewModel instance as its model and and a #NautilusViewCell
+ * takes a #NautilusViewModel instance as its model and a #NautilusViewCell
  * instance as #GtkListItem:child.
  *
- * It has been has been created to avoid code duplication in implementations,
- * while keeping #NautilusFilesView implementation-agnostic (should the need for
+ * It has been created to avoid code duplication in implementations, while
+ * keeping #NautilusFilesView implementation-agnostic (should the need for
  * non-#GtkListBase views arise).
  */
 
@@ -173,7 +173,7 @@ open_context_menu_on_press (NautilusListBase *self,
                             gdouble           x,
                             gdouble           y)
 {
-    /* Antecipate selection, if necessary. */
+    /* Anticipate selection, if necessary. */
     select_single_item_if_not_selected (self, cell);
 
     g_signal_emit (self, signals[POPUP_SELECTION_CONTEXT_MENU], 0, x, y, GTK_WIDGET (cell));
@@ -724,7 +724,7 @@ on_item_drop (GtkDropTarget *target,
     #ifdef GDK_WINDOWING_X11
     if (GDK_IS_X11_DISPLAY (gtk_widget_get_display (GTK_WIDGET (self))))
     {
-        /* Temporary workaround until the below GTK MR (or equivalend fix)
+        /* Temporary workaround until the below GTK MR (or equivalent fix)
          * is merged.  Without this fix, the preferred action isn't set correctly.
          * https://gitlab.gnome.org/GNOME/gtk/-/merge_requests/4982 */
         GdkDrag *drag = gdk_drop_get_drag (gtk_drop_target_get_current_drop (target));
@@ -828,7 +828,7 @@ on_view_drop (GtkDropTarget *target,
     #ifdef GDK_WINDOWING_X11
     if (GDK_IS_X11_DISPLAY (gtk_widget_get_display (GTK_WIDGET (self))))
     {
-        /* Temporary workaround until the below GTK MR (or equivalend fix)
+        /* Temporary workaround until the below GTK MR (or equivalent fix)
          * is merged.  Without this fix, the preferred action isn't set correctly.
          * https://gitlab.gnome.org/GNOME/gtk/-/merge_requests/4982 */
         GdkDrag *drag = gdk_drop_get_drag (gtk_drop_target_get_current_drop (target));

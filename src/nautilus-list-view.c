@@ -331,9 +331,9 @@ get_base_location (NautilusListView *self)
 }
 
 static void
-on_column_view_item_activated (GtkGridView *grid_view,
-                               guint        position,
-                               gpointer     user_data)
+on_column_view_item_activated (GtkColumnView *column_view,
+                               guint          position,
+                               gpointer       user_data)
 {
     NautilusListView *self = NAUTILUS_LIST_VIEW (user_data);
 
@@ -453,7 +453,8 @@ real_get_sort_state (NautilusListBase *list_base)
     }
 
     sort_text = gtk_column_view_column_get_id (primary);
-    reversed = gtk_column_view_sorter_get_primary_sort_order (column_view_sorter);
+    reversed =
+        gtk_column_view_sorter_get_primary_sort_order (column_view_sorter) == GTK_SORT_DESCENDING;
 
     return g_variant_take_ref (g_variant_new ("(sb)", sort_text, reversed));
 }
@@ -1020,7 +1021,7 @@ setup_view_columns (NautilusListView *self)
         gtk_column_view_column_set_title (view_column, label);
         gtk_column_view_column_set_sorter (view_column, GTK_SORTER (sorter));
 
-        if (strcmp (name, "name") == 0)
+        if (g_strcmp0 (name, "name") == 0)
         {
             g_signal_connect (factory, "setup", G_CALLBACK (setup_name_cell), self);
             g_signal_connect (factory, "bind", G_CALLBACK (bind_name_cell), self);
@@ -1163,13 +1164,6 @@ nautilus_list_view_dispose (GObject *object)
     g_clear_object (&self->view_model_sorter);
 
     g_clear_object (&self->search_directory);
-
-    g_signal_handlers_disconnect_by_func (nautilus_list_view_preferences,
-                                          update_columns_settings_from_metadata_and_preferences,
-                                          self);
-    g_signal_handlers_disconnect_by_func (nautilus_list_view_preferences,
-                                          nautilus_list_view_reload,
-                                          self);
 
     g_clear_object (&self->file_path_base_location);
     g_clear_pointer (&self->factory_to_column_map, g_hash_table_destroy);

@@ -77,8 +77,6 @@
 /* Milliseconds that have to pass without a change to reset the update interval */
 #define UPDATE_INTERVAL_RESET 1000
 
-#define SILENT_WINDOW_OPEN_LIMIT 5
-
 #define MAX_MENU_LEVELS 5
 #define TEMPLATE_LIMIT 30
 
@@ -87,7 +85,7 @@
 /* Delay to show the Loading... floating bar */
 #define FLOATING_BAR_LOADING_DELAY 200 /* ms */
 
-/* Delay loading to avoid flashing of blank page fore each folder load.
+/* Delay loading to avoid flashing of blank page for each folder load.
  * Especially useful during frequent changes such as typing during a search. */
 #define TRANSITION_TIMEOUT 200 /* ms */
 
@@ -438,7 +436,7 @@ floating_bar_set_status_data_free (gpointer data)
     g_free (status_data->primary_status);
     g_free (status_data->detail_status);
 
-    g_slice_free (FloatingBarSetStatusData, data);
+    g_free (data);
 }
 
 static gboolean
@@ -483,7 +481,7 @@ set_floating_bar_status (NautilusFilesView *self,
                   "gtk-double-click-time", &double_click_time,
                   NULL);
 
-    status_data = g_slice_new0 (FloatingBarSetStatusData);
+    status_data = g_new0 (FloatingBarSetStatusData, 1);
     status_data->primary_status = g_strdup (primary_status);
     status_data->detail_status = g_strdup (detail_status);
     status_data->view = self;
@@ -814,7 +812,7 @@ nautilus_files_view_call_set_selection (NautilusFilesView       *self,
         guint first_position = gtk_bitset_get_nth (new_selection_set, 0);
 
         /* We pass TRUE for the third parameter (`select`) here, which appears
-         * to be redundact, but is necessary in order to fix the bug reported in
+         * to be redundant, but is necessary in order to fix the bug reported in
          * https://gitlab.gnome.org/GNOME/nautilus/-/issues/2294 . See also
          * GTK ticket: https://gitlab.gnome.org/GNOME/gtk/-/issues/5485 */
         nautilus_list_base_set_cursor (self->list_base, first_position, TRUE, TRUE);
@@ -1431,7 +1429,7 @@ sandboxed_choose_program_callback (GObject      *source_object,
         gtk_recent_manager_add_item (gtk_recent_manager_get_default (), uri);
     }
 
-    /* Remove hanlded file from the list top of the list. */
+    /* Remove handled file from the list top of the list. */
     g_object_unref (files->data);
     files = g_list_delete_link (files, files);
 
@@ -1824,13 +1822,6 @@ clear_new_folder_data (NewFolderData *data)
 }
 
 G_DEFINE_AUTOPTR_CLEANUP_FUNC (NewFolderData, clear_new_folder_data)
-
-typedef struct
-{
-    NautilusFilesView *directory_view;
-    GHashTable *to_remove_locations;
-    NautilusFile *new_folder;
-} NewFolderSelectionData;
 
 static void
 track_newly_added_locations (NautilusFilesView *view,
@@ -3284,8 +3275,6 @@ nautilus_files_view_dispose (GObject *object)
                                           schedule_update_context_menus, self);
     g_signal_handlers_disconnect_by_func (gtk_filechooser_preferences,
                                           show_hidden_files_changed_callback, self);
-    g_signal_handlers_disconnect_by_func (nautilus_window_state,
-                                          nautilus_files_view_display_selection_info, self);
     g_signal_handlers_disconnect_by_func (gnome_lockdown_preferences,
                                           schedule_update_context_menus, self);
     g_signal_handlers_disconnect_by_func (nautilus_trash_monitor_get (),
@@ -4142,7 +4131,7 @@ nautilus_files_view_add_files (NautilusFilesView *self,
 
     items = g_list_copy_deep (files, (GCopyFunc) nautilus_view_item_new, NULL);
     /* Adding files can change selection indices, causing changed signal which
-     * is interpereted as manual selection source from the user. Instead,
+     * is interpreted as manual selection source from the user. Instead,
      * override that here. The selection of operation results is handled
      * elsewhere in this file. */
     if (self->in_progress_selection_source == NAUTILUS_SELECTION_SOURCE_NONE)
@@ -4178,7 +4167,7 @@ files_view_remove_files (NautilusFilesView *self,
         NautilusSelectionSource tmp_source = self->in_progress_selection_source;
 
         /* Removing files can change selection indices, causing changed signal
-         * which is interpereted as manual selection source from the user.
+         * which is interpreted as manual selection source from the user.
          * Instead, override that here. The selection of operation results is
          * handled elsewhere in this file. */
         if (self->in_progress_selection_source == NAUTILUS_SELECTION_SOURCE_NONE)
@@ -4803,7 +4792,7 @@ nautilus_files_view_remove_subdirectory (NautilusFilesView *self,
  * nautilus_files_view_get_loading:
  * @view: an #NautilusFilesView.
  *
- * Return value: #gboolean inicating whether @view is currently loaded.
+ * Return value: #gboolean indicating whether @view is currently loaded.
  *
  **/
 gboolean
@@ -6915,7 +6904,7 @@ static const GActionEntry view_entries[] =
     { .name = "unstar", .activate = action_unstar},
     /* We separate the shortcut and the menu item since we want the shortcut
      * to always be available, but we don't want the menu item shown if not
-     * completely necesary. Since the visibility of the menu item is based on
+     * completely necessary. Since the visibility of the menu item is based on
      * the action enability, we need to split the actions for the menu and the
      * shortcut. */
     { .name = "delete-permanently-shortcut", .activate = action_delete },
@@ -6948,7 +6937,7 @@ static const GActionEntry view_entries[] =
     /* Only in Network View */
     { .name = "copy-network-address", .activate = action_copy_network_address },
     { .name = "remove-recent-server", .activate = action_remove_recent_server },
-    /* Only accesible by shorcuts */
+    /* Only accessible by shortcuts */
     { .name = "select-pattern", .activate = action_select_pattern },
     { .name = "invert-selection", .activate = action_invert_selection },
     { .name = "preview-selection", .activate = action_preview_selection },
@@ -7060,7 +7049,7 @@ update_actions_state_for_clipboard_targets (NautilusFilesView *self)
     action = g_action_map_lookup_action (G_ACTION_MAP (self->view_action_group),
                                          "paste");
     /* Take into account if the action was previously disabled for other reasons,
-     * like the directory not being writabble */
+     * like the directory not being writable */
     g_simple_action_set_enabled (G_SIMPLE_ACTION (action),
                                  is_data_copied && g_action_get_enabled (action));
 
@@ -8965,9 +8954,9 @@ nautilus_files_view_set_search_query (NautilusFilesView *self,
              * directory from scratch, which saves time and disk/network usage.
              *
              * So, we need to keep the search directory alive until after the
-             * view sets up its own monitor. This can be achieved by holding
-             * adding a reference to the search directory, preventing its
-             * destruction during the location change.
+             * view sets up its own monitor. This can be achieved by adding
+             * a reference to the search directory, preventing its destruction
+             * during the location change.
              */
             self->outgoing_search = g_object_ref (self->directory);
 

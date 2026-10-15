@@ -23,8 +23,6 @@ struct _NautilusLabelCell
     GQuark attribute_q;
 
     GtkLabel *label;
-
-    gboolean show_snippet;
 };
 
 G_DEFINE_FINAL_TYPE (NautilusLabelCell, nautilus_label_cell, NAUTILUS_TYPE_VIEW_CELL)
