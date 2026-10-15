@@ -29,6 +29,8 @@
 #define RESPONSE_USER_CANCELLED 1
 #define RESPONSE_OTHER 2
 
+static gboolean can_use_gxdp = FALSE;
+
 struct _NautilusPortal
 {
     GObject parent;
@@ -590,7 +592,8 @@ handle_file_chooser_methods (XdpImplFileChooser    *object,
     /* Show window */
     if (arg_parent_window != NULL && *arg_parent_window != '\0')
     {
-        data->external_parent = gxdp_external_window_new_from_handle (arg_parent_window);
+        data->external_parent = can_use_gxdp
+                                ? gxdp_external_window_new_from_handle (arg_parent_window) : NULL;
         if (data->external_parent == NULL)
         {
             g_warning ("Failed to associate portal window with parent window %s",
@@ -685,4 +688,19 @@ void
 nautilus_portal_unregister (NautilusPortal *self)
 {
     g_dbus_interface_skeleton_unexport (G_DBUS_INTERFACE_SKELETON (self->impl_file_chooser_skeleton));
+}
+
+void
+nautilus_portal_setup_gxdp (void)
+{
+    g_autoptr (GError) error = NULL;
+
+    can_use_gxdp = gxdp_init_gtk (GXDP_SERVICE_CLIENT_TYPE_FILE_CHOOSER,
+                                  (const char *[]) { "org.freedesktop.portal.FileChooser", NULL },
+                                  &error);
+    if (error != NULL)
+    {
+        g_message ("Failed to initialize display server connection: %s",
+                   error->message);
+    }
 }

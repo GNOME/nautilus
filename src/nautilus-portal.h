@@ -12,6 +12,9 @@
 
 G_BEGIN_DECLS
 
+void
+nautilus_portal_setup_gxdp (void);
+
 #define NAUTILUS_TYPE_PORTAL (nautilus_portal_get_type())
 
 G_DECLARE_FINAL_TYPE (NautilusPortal, nautilus_portal, NAUTILUS, PORTAL, GObject)
