@@ -35,7 +35,7 @@ toggle_star (NautilusStarCell *self)
     item = nautilus_view_cell_get_item (NAUTILUS_VIEW_CELL (self));
     g_return_if_fail (item != NULL);
     file = nautilus_view_item_get_file (item);
-    uri = nautilus_file_get_uri (file);
+    uri = nautilus_file_get_activation_uri (file);
 
     if (nautilus_tag_manager_file_is_starred (tag_manager, uri))
     {
