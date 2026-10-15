@@ -22,7 +22,6 @@
 #include <gio/gunixmounts.h>
 #include <glib/gi18n.h>
 #include <gtk/gtk.h>
-#include <gxdp.h>
 #include <libportal/portal.h>
 #include <nautilus-extension.h>
 
@@ -1006,17 +1005,7 @@ nautilus_application_startup (GApplication *app)
 
     /* Initialize GDK display (for wayland-x11-interop protocol) before GTK does
      * it during the chain-up. */
-    g_autoptr (GError) error = NULL;
-
-    gxdp_init_gtk (GXDP_SERVICE_CLIENT_TYPE_FILE_CHOOSER,
-                   (const char *[]) { "org.freedesktop.portal.FileChooser", NULL },
-                   &error);
-
-    if (error != NULL)
-    {
-        g_message ("Failed to initialize display server connection: %s",
-                   error->message);
-    }
+    nautilus_portal_setup_gxdp ();
 
     /* Chain up to the GtkApplication implementation early, so that gtk_init()
      * is called for us.
