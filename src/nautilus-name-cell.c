@@ -124,7 +124,7 @@ update_labels (NautilusNameCell *self)
 
     gtk_label_set_text (GTK_LABEL (self->path), path_text);
     if (fts_snippet != NULL &&
-        !g_str_equal (gtk_label_get_text (self->snippet), fts_snippet))
+        !g_str_equal (gtk_label_get_label (self->snippet), fts_snippet))
     {
         gtk_label_set_markup (self->snippet, fts_snippet);
     }
@@ -315,7 +315,7 @@ on_item_is_loading_changed (NautilusNameCell *self)
 static void
 popover_show_cb (NautilusNameCell *self)
 {
-    const char *label = gtk_label_get_label (self->snippet);
+    const char *label = gtk_label_get_text (self->snippet);
 
     gtk_accessible_announce (GTK_ACCESSIBLE (self),
                              label,
