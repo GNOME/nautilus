@@ -232,10 +232,6 @@ setup_cell (GtkSignalListItemFactory *factory,
     gtk_list_item_set_child (listitem, GTK_WIDGET (cell));
     setup_cell_common (G_OBJECT (listitem), cell, GTK_WIDGET (cell));
 
-    g_object_bind_property (self, "icon-size",
-                            cell, "icon-size",
-                            G_BINDING_SYNC_CREATE);
-
     /* Use file display name as accessible label. Explaining in pseudo-code:
      * listitem:accessible-name :- listitem:item:item:file:display-name */
     expression = gtk_property_expression_new (GTK_TYPE_LIST_ITEM, NULL, "item");

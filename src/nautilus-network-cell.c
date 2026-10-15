@@ -133,7 +133,7 @@ nautilus_network_cell_class_init (NautilusNetworkCellClass *klass)
     gtk_widget_class_set_template_from_resource (widget_class, "/org/gnome/nautilus/ui/nautilus-network-cell.ui");
 
     /* Needs to add the direct child of the template widget to dispose it since
-     * a plain GtkWidget doesn't dispose it's child automatically. */
+     * a plain GtkWidget doesn't dispose its child automatically. */
     gtk_widget_class_bind_template_child (widget_class, NautilusNetworkCell, top_child);
     gtk_widget_class_bind_template_child (widget_class, NautilusNetworkCell, icon);
     gtk_widget_class_bind_template_child (widget_class, NautilusNetworkCell, target_uri);
