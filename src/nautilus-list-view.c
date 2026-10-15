@@ -939,12 +939,15 @@ unbind_name_cell (GtkSignalListItemFactory *factory,
 
     if (self->expand_as_a_tree)
     {
+        GtkWidget *cell = gtk_column_view_cell_get_child (listitem);
+        GtkTreeExpander *expander = nautilus_name_cell_get_expander (NAUTILUS_NAME_CELL (cell));
+
         g_signal_handlers_disconnect_by_func (gtk_column_view_cell_get_item (listitem),
                                               on_row_expanded_changed,
                                               self);
         g_signal_handlers_disconnect_by_func (gtk_column_view_cell_get_item (listitem),
                                               on_row_children_changed,
-                                              self);
+                                              expander);
     }
 }
 
