@@ -903,6 +903,39 @@ nautilus_ui_draw_icon_dashed_border (GtkSnapshot     *snapshot,
     gtk_snapshot_append_stroke (snapshot, path, stroke, &color);
 }
 
+GtkSvg *
+nautilus_ui_get_cut_svg (gboolean large)
+{
+    if (large)
+    {
+        static GtkSvg *svg_large = NULL;
+
+        if (G_UNLIKELY (svg_large == NULL))
+        {
+            const char *resource =
+                "/org/gnome/nautilus/icons/scalable/actions/cut-large-symbolic.svg";
+
+            svg_large = gtk_svg_new_from_resource (resource);
+        }
+
+        return svg_large;
+    }
+    else
+    {
+        static GtkSvg *svg_small = NULL;
+
+        if (G_UNLIKELY (svg_small == NULL))
+        {
+            const char *resource =
+                "/org/gnome/nautilus/icons/scalable/actions/cut-symbolic.svg";
+
+            svg_small = gtk_svg_new_from_resource (resource);
+        }
+
+        return svg_small;
+    }
+}
+
 void
 nautilus_ui_draw_svg (GtkSnapshot           *snapshot,
                       GtkSvg                *svg,

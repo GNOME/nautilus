@@ -441,8 +441,6 @@ snapshot (GtkWidget   *widget,
         GdkRGBA color, dashed_border_color, icon_color;
         const double border_opacity = is_high_contrast ? 0.5 : 0.15;
         const double dim_opacity = is_high_contrast ? 0.9 : 0.55;
-        const char *resource = "/org/gnome/nautilus/icons/scalable/actions/cut-large-symbolic.svg";
-        g_autoptr (GtkSvg) svg = gtk_svg_new_from_resource (resource);
 
         g_object_get (self, "icon-size", &icon_size, NULL);
         dash_bounds = GRAPHENE_RECT_INIT (EMBLEMS_BOX_WIDTH, 0, icon_size, icon_size);
@@ -455,7 +453,8 @@ snapshot (GtkWidget   *widget,
 
         icon_color = color;
         icon_color.alpha *= dim_opacity;
-        nautilus_ui_draw_svg (snapshot, svg, &icon_bounds, icon_color);
+        nautilus_ui_draw_svg (snapshot, nautilus_ui_get_cut_svg (TRUE),
+                              &icon_bounds, icon_color);
     }
 
     GTK_WIDGET_CLASS (nautilus_grid_cell_parent_class)->snapshot (widget, snapshot);
@@ -525,8 +524,8 @@ nautilus_grid_cell_new (NautilusListBase *view,
     g_assert (attrs != NULL);
 
     NautilusGridCell *self = g_object_new (NAUTILUS_TYPE_GRID_CELL,
-                         "view", view,
-                         NULL);
+                                           "view", view,
+                                           NULL);
 
     self->caption_attributes = attrs;
 
