@@ -965,6 +965,13 @@ set_click_mode_from_settings (NautilusListBase *self)
     priv->single_click_mode = (click_policy == NAUTILUS_CLICK_POLICY_SINGLE);
 }
 
+/*
+ * get_first_selected_item:
+ * @self: a #NautilusListBase instance
+ *
+ * Returns: the index of the first selected item in the view.
+ *   If no items are selected, returns G_MAXUINT.
+ */
 static guint
 get_first_selected_item (NautilusListBase *self)
 {
@@ -1010,10 +1017,15 @@ default_preview_selection_event (NautilusListBase *self,
                                  GtkDirectionType  direction)
 {
     NautilusListBasePrivate *priv = nautilus_list_base_get_instance_private (self);
-    guint i;
+    guint i = get_first_selected_item (self);
+
+    if (i == G_MAXUINT)
+    {
+        return;
+    }
+
     gboolean rtl = (gtk_widget_get_direction (GTK_WIDGET (self)) == GTK_TEXT_DIR_RTL);
 
-    i = get_first_selected_item (self);
     if (direction == GTK_DIR_UP ||
         direction == (rtl ? GTK_DIR_RIGHT : GTK_DIR_LEFT))
     {
@@ -1112,6 +1124,9 @@ nautilus_list_base_focus (GtkWidget        *widget,
 {
     NautilusListBase *self = NAUTILUS_LIST_BASE (widget);
     NautilusListBasePrivate *priv = nautilus_list_base_get_instance_private (self);
+
+    g_return_val_if_fail (priv->model != NULL, FALSE);
+
     g_autoptr (GtkBitset) selection = gtk_selection_model_get_selection (GTK_SELECTION_MODEL (priv->model));
     gboolean no_selection = gtk_bitset_is_empty (selection);
     gboolean handled;
