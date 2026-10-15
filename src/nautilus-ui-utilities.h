@@ -43,6 +43,7 @@ void        nautilus_ui_frame_video                 (GtkSnapshot       *snapshot
 void        nautilus_ui_draw_icon_dashed_border     (GtkSnapshot     *snapshot,
                                                      graphene_rect_t *rect,
                                                      GdkRGBA          color);
+GtkSvg    * nautilus_ui_get_cut_svg                 (gboolean           use_small_icon);
 void        nautilus_ui_draw_svg                    (GtkSnapshot           *snapshot,
                                                      GtkSvg                *svg,
                                                      const graphene_rect_t *rect,
