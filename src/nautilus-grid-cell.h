@@ -22,8 +22,7 @@ enum
 
 G_DECLARE_FINAL_TYPE (NautilusGridCell, nautilus_grid_cell, NAUTILUS, GRID_CELL, NautilusViewCell)
 
-NautilusGridCell * nautilus_grid_cell_new (NautilusListBase *view);
-void nautilus_grid_cell_set_caption_attributes (NautilusGridCell *self,
-                                                GQuark           *attrs);
+NautilusGridCell * nautilus_grid_cell_new (NautilusListBase *view,
+                                           GQuark           *attrs);
 
 G_END_DECLS

@@ -454,15 +454,13 @@ setup_cell (GtkSignalListItemFactory *factory,
     NautilusGridCell *cell;
     GtkExpression *expression;
 
-    cell = nautilus_grid_cell_new (NAUTILUS_LIST_BASE (self));
+    cell = nautilus_grid_cell_new (NAUTILUS_LIST_BASE (self), self->caption_attributes);
     gtk_list_item_set_child (listitem, GTK_WIDGET (cell));
     setup_cell_common (G_OBJECT (listitem), NAUTILUS_VIEW_CELL (cell), GTK_WIDGET (cell));
 
     g_object_bind_property (self, "icon-size",
                             cell, "icon-size",
                             G_BINDING_SYNC_CREATE);
-
-    nautilus_grid_cell_set_caption_attributes (cell, self->caption_attributes);
 
     /* Use file display name as accessible label. Explaining in pseudo-code:
      * listitem:accessible-name :- listitem:item:item:file:a11y-name */

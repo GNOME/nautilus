@@ -22,6 +22,7 @@ struct _NautilusGridCell
 
     GSignalGroup *item_signal_group;
 
+    /* Unowned pointer from the grid view */
     GQuark *caption_attributes;
 
     GtkWidget *icon;
@@ -518,16 +519,16 @@ nautilus_grid_cell_init (NautilusGridCell *self)
 }
 
 NautilusGridCell *
-nautilus_grid_cell_new (NautilusListBase *view)
+nautilus_grid_cell_new (NautilusListBase *view,
+                        GQuark           *attrs)
 {
-    return g_object_new (NAUTILUS_TYPE_GRID_CELL,
+    g_assert (attrs != NULL);
+
+    NautilusGridCell *self = g_object_new (NAUTILUS_TYPE_GRID_CELL,
                          "view", view,
                          NULL);
-}
 
-void
-nautilus_grid_cell_set_caption_attributes (NautilusGridCell *self,
-                                           GQuark           *attrs)
-{
     self->caption_attributes = attrs;
+
+    return self;
 }
