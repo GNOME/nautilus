@@ -30,7 +30,7 @@ struct _NautilusNetworkAddressBar
 
 G_DEFINE_FINAL_TYPE (NautilusNetworkAddressBar, nautilus_network_address_bar, GTK_TYPE_BOX)
 
-const char *unsupported_protocols[] =
+static const char *unsupported_protocols[] =
 {
     "afc", "archive", "burn", "computer", "file", "http", "localtest", "obex", "recent", "trash", NULL
 };
