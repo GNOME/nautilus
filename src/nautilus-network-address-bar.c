@@ -356,6 +356,8 @@ nautilus_network_address_bar_dispose (GObject *object)
     g_clear_object (&self->cancellable);
     g_clear_handle_id (&self->entry_pulse_timeout_id, g_source_remove);
 
+    gtk_widget_dispose_template (GTK_WIDGET (self), NAUTILUS_TYPE_NETWORK_ADDRESS_BAR);
+
     G_OBJECT_CLASS (nautilus_network_address_bar_parent_class)->dispose (object);
 }
 
