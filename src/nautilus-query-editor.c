@@ -830,8 +830,10 @@ nautilus_query_editor_set_query (NautilusQueryEditor *self,
         }
         else
         {
+            g_autoptr (GPtrArray) date_range = nautilus_query_get_date_range (self->query);
+
             nautilus_search_popover_set_date_range (NAUTILUS_SEARCH_POPOVER (self->popover),
-                                                    nautilus_query_get_date_range (self->query));
+                                                    date_range);
         }
         update_fts_sensitivity (self);
 
