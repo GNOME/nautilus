@@ -60,21 +60,19 @@ server_mount_ready_cb (GObject      *source_file,
     GFile *location = G_FILE (source_file);
 
     g_file_mount_enclosing_volume_finish (location, res, &error);
-    if (error != NULL)
+
+    /*
+     * Already mounted volume is not a critical error
+     * and we can still continue with the operation.
+     */
+    if (error != NULL &&
+        g_error_matches (error, G_IO_ERROR, G_IO_ERROR_ALREADY_MOUNTED))
     {
         should_show = FALSE;
 
-        if (error->code == G_IO_ERROR_ALREADY_MOUNTED)
-        {
-            /*
-             * Already mounted volume is not a critical error
-             * and we can still continue with the operation.
-             */
-            should_show = TRUE;
-        }
-        else if (error->domain != G_IO_ERROR ||
-                 (error->code != G_IO_ERROR_CANCELLED &&
-                  error->code != G_IO_ERROR_FAILED_HANDLED))
+        if (error->domain != G_IO_ERROR ||
+            (error->code != G_IO_ERROR_CANCELLED &&
+             error->code != G_IO_ERROR_FAILED_HANDLED))
         {
             /* if it wasn't cancelled show a dialog */
             show_error_message (self, _("Unable to access location"), error->message);
