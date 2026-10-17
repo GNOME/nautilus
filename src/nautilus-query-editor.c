@@ -274,11 +274,6 @@ recursive_search_preferences_changed (GSettings           *settings,
                                       gchar               *key,
                                       NautilusQueryEditor *editor)
 {
-    if (!editor->query)
-    {
-        return;
-    }
-
     if (nautilus_query_update_recursive_setting (editor->query))
     {
         update_filter_button (editor);
@@ -493,18 +488,6 @@ nautilus_query_editor_class_init (NautilusQueryEditorClass *class)
 }
 
 static void
-create_query (NautilusQueryEditor *editor)
-{
-    g_return_if_fail (editor->query == NULL);
-
-    g_autoptr (NautilusQuery) query = nautilus_query_new ();
-    nautilus_query_set_text (query, gtk_editable_get_text (GTK_EDITABLE (editor->text)));
-    nautilus_query_set_location (query, editor->location);
-
-    nautilus_query_editor_set_query (editor, query);
-}
-
-static void
 entry_activate_cb (NautilusQueryEditor *editor)
 {
     g_signal_emit (editor, signals[ACTIVATED], 0);
@@ -517,16 +500,9 @@ entry_changed_internal (NautilusQueryEditor *editor)
 
     editor->search_changed_idle_id = 0;
 
-    if (editor->query == NULL)
+    if (!nautilus_query_set_text (editor->query, text))
     {
-        create_query (editor);
-    }
-    else
-    {
-        if (!nautilus_query_set_text (editor->query, text))
-        {
-            return;
-        }
+        return;
     }
 
     nautilus_query_editor_changed (editor);
@@ -555,11 +531,6 @@ static void
 search_popover_date_range_changed_cb (NautilusQueryEditor *editor,
                                       GPtrArray           *date_range)
 {
-    if (editor->query == NULL)
-    {
-        create_query (editor);
-    }
-
     nautilus_query_set_date_range (editor->query, date_range);
 
     update_filter_button (editor);
@@ -570,11 +541,6 @@ static void
 search_popover_mime_type_changed_cb (NautilusQueryEditor *editor,
                                      GPtrArray           *mimetypes)
 {
-    if (editor->query == NULL)
-    {
-        create_query (editor);
-    }
-
     nautilus_query_set_mime_types (editor->query, mimetypes);
 
     update_filter_button (editor);
@@ -585,11 +551,6 @@ static void
 search_popover_time_type_changed_cb (NautilusQueryEditor    *editor,
                                      NautilusSearchTimeType  data)
 {
-    if (editor->query == NULL)
-    {
-        create_query (editor);
-    }
-
     nautilus_query_set_search_type (editor->query, data);
 
     update_filter_button (editor);
@@ -600,11 +561,6 @@ static void
 search_popover_fts_changed_cb (NautilusQueryEditor *editor,
                                gboolean             fts_enabled)
 {
-    if (editor->query == NULL)
-    {
-        create_query (editor);
-    }
-
     if (nautilus_query_update_search_content (editor->query))
     {
         update_filter_button (editor);
@@ -645,6 +601,8 @@ nautilus_query_editor_init (NautilusQueryEditor *editor)
                       "changed::recursive-search",
                       G_CALLBACK (recursive_search_preferences_changed),
                       editor);
+
+    editor->query = nautilus_query_new ();
 
     editor->cancellable = g_cancellable_new ();
 
@@ -767,10 +725,6 @@ nautilus_query_editor_set_location (NautilusQueryEditor *editor,
         should_notify = g_set_object (&editor->location, location);
     }
 
-    if (editor->query == NULL)
-    {
-        create_query (editor);
-    }
     nautilus_query_set_location (editor->query, editor->location);
 
     update_fts_sensitivity (editor);
@@ -796,16 +750,22 @@ void
 nautilus_query_editor_set_query (NautilusQueryEditor *self,
                                  NautilusQuery       *query)
 {
+    g_autoptr (NautilusQuery) empty_query = NULL;
     g_autofree char *text = NULL;
     g_autofree char *current_text = NULL;
 
     g_return_if_fail (NAUTILUS_IS_QUERY_EDITOR (self));
 
-    if (query != NULL)
+    if (query == NULL)
     {
-        text = nautilus_query_get_text (query);
+        empty_query = nautilus_query_new ();
+        nautilus_query_set_location (empty_query, self->location);
+        query = empty_query;
+
+        nautilus_search_popover_reset_mime_types (NAUTILUS_SEARCH_POPOVER (self->popover));
     }
 
+    text = nautilus_query_get_text (query);
     if (!text)
     {
         text = g_strdup ("");
@@ -823,18 +783,11 @@ nautilus_query_editor_set_query (NautilusQueryEditor *self,
 
     if (g_set_object (&self->query, query))
     {
-        if (query == NULL)
-        {
-            nautilus_search_popover_reset_mime_types (NAUTILUS_SEARCH_POPOVER (self->popover));
-            nautilus_search_popover_reset_date_range (NAUTILUS_SEARCH_POPOVER (self->popover));
-        }
-        else
-        {
-            g_autoptr (GPtrArray) date_range = nautilus_query_get_date_range (self->query);
+        g_autoptr (GPtrArray) date_range = nautilus_query_get_date_range (self->query);
 
-            nautilus_search_popover_set_date_range (NAUTILUS_SEARCH_POPOVER (self->popover),
-                                                    date_range);
-        }
+        nautilus_search_popover_set_date_range (NAUTILUS_SEARCH_POPOVER (self->popover),
+                                                date_range);
+
         update_fts_sensitivity (self);
 
         g_object_notify_by_pspec (G_OBJECT (self), properties[PROP_QUERY]);
