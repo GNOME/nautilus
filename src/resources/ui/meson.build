@@ -25,6 +25,7 @@ blueprint_names = [
   'nautilus-progress-info-widget',
   'nautilus-properties-widget',
   'nautilus-properties-window',
+  'nautilus-query-editor',
   'nautilus-rename-file-popover',
   'nautilus-search-popover',
   'nautilus-search-types-dialog',
