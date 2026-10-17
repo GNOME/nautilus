@@ -53,6 +53,7 @@ enum
     ITEM_PROP_NAME = 1,
     ITEM_PROP_EXECUTABLE,
     ITEM_PROP_ICON,
+    ITEM_PROP_SELF,
     NUM_ITEM_PROPS,
 };
 
@@ -90,6 +91,12 @@ nautilus_app_item_get_property (GObject    *object,
         case ITEM_PROP_ICON:
         {
             g_value_set_object (value, g_app_info_get_icon (item->app_info));
+            break;
+        }
+
+        case ITEM_PROP_SELF:
+        {
+            g_value_set_object (value, item);
             break;
         }
 
@@ -131,6 +138,11 @@ nautilus_app_item_class_init (NautilusAppItemClass *class)
 
     item_properties[ITEM_PROP_ICON] = g_param_spec_object ("icon", NULL, NULL,
                                                            G_TYPE_ICON,
+                                                           G_PARAM_READABLE |
+                                                           G_PARAM_STATIC_STRINGS);
+
+    item_properties[ITEM_PROP_SELF] = g_param_spec_object ("self", NULL, NULL,
+                                                           NAUTILUS_TYPE_APP_ITEM,
                                                            G_PARAM_READABLE |
                                                            G_PARAM_STATIC_STRINGS);
 
