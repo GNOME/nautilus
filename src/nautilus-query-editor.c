@@ -293,7 +293,7 @@ nautilus_query_editor_dispose (GObject *object)
 
     g_clear_handle_id (&editor->search_changed_idle_id, g_source_remove);
 
-    gtk_widget_unparent (gtk_widget_get_first_child (GTK_WIDGET (editor)));
+    g_clear_pointer (&editor->prefix_icon, gtk_widget_unparent);
     g_clear_pointer (&editor->text, gtk_widget_unparent);
     g_clear_pointer (&editor->dropdown_button, gtk_widget_unparent);
     g_clear_pointer (&editor->search_info_button, gtk_widget_unparent);
