@@ -48,15 +48,22 @@ template $NautilusAppChooserWidget: Adw.Bin {
                   item-type: typeof<$NautilusAppItem>;
                 };
 
-                filter: StringFilter filter {
-                  expression: expr item as <$NautilusAppItem>.name;
+                filter: AnyFilter {
+                  StringFilter name_filter {
+                    expression: expr item as <$NautilusAppItem>.name;
+                  }
+
+                  StringFilter {
+                    expression: expr item as <$NautilusAppItem>.app-exec;
+                    search: bind name_filter.search;
+                  }
                 };
               };
 
               section-sorter: CustomSorter section_sorter {};
 
               sorter: StringSorter {
-                expression: bind filter.expression;
+                expression: bind name_filter.expression;
               };
             };
           };
