@@ -51,6 +51,7 @@ struct _NautilusAppItem
 enum
 {
     ITEM_PROP_NAME = 1,
+    ITEM_PROP_APP_ID,
     ITEM_PROP_ICON,
     NUM_ITEM_PROPS,
 };
@@ -77,6 +78,12 @@ nautilus_app_item_get_property (GObject    *object,
         case ITEM_PROP_NAME:
         {
             g_value_set_string (value, g_app_info_get_display_name (item->app_info));
+            break;
+        }
+
+        case ITEM_PROP_APP_ID:
+        {
+            g_value_set_string (value, g_app_info_get_id (item->app_info));
             break;
         }
 
@@ -117,6 +124,11 @@ nautilus_app_item_class_init (NautilusAppItemClass *class)
                                                            G_PARAM_READABLE |
                                                            G_PARAM_STATIC_STRINGS);
 
+    item_properties[ITEM_PROP_APP_ID] = g_param_spec_string ("app-id", NULL, NULL,
+                                                             NULL,
+                                                             G_PARAM_READABLE |
+                                                             G_PARAM_STATIC_STRINGS);
+
     item_properties[ITEM_PROP_ICON] = g_param_spec_object ("icon", NULL, NULL,
                                                            G_TYPE_ICON,
                                                            G_PARAM_READABLE |
@@ -153,7 +165,7 @@ struct _NautilusAppChooserWidget
 
     GListStore *app_info_store;
     GtkListItemFactory *header_factory;
-    GtkStringFilter *filter;
+    GtkStringFilter *name_filter;
     GtkCustomSorter *section_sorter;
     GtkWidget *program_list;
     GtkWidget *no_apps_label;
@@ -507,7 +519,7 @@ nautilus_app_chooser_widget_class_init (NautilusAppChooserWidgetClass *klass)
     gtk_widget_class_bind_template_child (widget_class, NautilusAppChooserWidget, no_apps_label);
     gtk_widget_class_bind_template_child (widget_class, NautilusAppChooserWidget, list_stack);
     gtk_widget_class_bind_template_child (widget_class, NautilusAppChooserWidget, app_info_store);
-    gtk_widget_class_bind_template_child (widget_class, NautilusAppChooserWidget, filter);
+    gtk_widget_class_bind_template_child (widget_class, NautilusAppChooserWidget, name_filter);
     gtk_widget_class_bind_template_child (widget_class, NautilusAppChooserWidget, section_sorter);
 
     gtk_widget_class_bind_template_callback (widget_class, selection_changed_cb);
@@ -682,7 +694,7 @@ changed_cb (GtkEditable              *editable,
     GtkListView *list_view = GTK_LIST_VIEW (self->program_list);
     GtkSingleSelection *selection_model = GTK_SINGLE_SELECTION (gtk_list_view_get_model (list_view));
 
-    gtk_string_filter_set_search (self->filter, gtk_editable_get_text (editable));
+    gtk_string_filter_set_search (self->name_filter, gtk_editable_get_text (editable));
 
     if (g_list_model_get_n_items (G_LIST_MODEL (selection_model)) > 0)
     {
