@@ -1232,7 +1232,7 @@ nautilus_files_view_preview_update (NautilusFilesView *view)
         return;
     }
 
-    g_autofree gchar *uri = nautilus_file_get_uri (selection->data);
+    g_autofree gchar *uri = nautilus_file_get_activation_uri (selection->data);
 
     nautilus_previewer_call_show_file (uri, view->slot, FALSE);
 }
@@ -1720,7 +1720,7 @@ action_preview_selection (GSimpleAction *action,
 
     selection = nautilus_files_view_get_selection (self);
 
-    g_autofree gchar *uri = nautilus_file_get_uri (selection->data);
+    g_autofree gchar *uri = nautilus_file_get_activation_uri (selection->data);
 
     nautilus_previewer_call_show_file (uri, self->slot, TRUE);
 }
