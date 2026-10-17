@@ -38,7 +38,7 @@ nautilus_query_matches_mime_type (NautilusQuery *self,
                                   const char    *mime_type);
 char *
 nautilus_query_get_mime_type_str (NautilusQuery *query);
-void           nautilus_query_set_mime_types     (NautilusQuery *query, GPtrArray *mime_types);
+gboolean       nautilus_query_set_mime_types     (NautilusQuery *query, GPtrArray *mime_types);
 
 gboolean
 nautilus_query_can_search_content (NautilusQuery *self);
@@ -48,11 +48,11 @@ gboolean
 nautilus_query_update_search_content (NautilusQuery *self);
 
 NautilusSearchTimeType nautilus_query_get_search_type (NautilusQuery *query);
-void                   nautilus_query_set_search_type (NautilusQuery           *query,
+gboolean               nautilus_query_set_search_type (NautilusQuery           *query,
                                                        NautilusSearchTimeType   type);
 
 GPtrArray*     nautilus_query_get_date_range     (NautilusQuery *query);
-void           nautilus_query_set_date_range     (NautilusQuery *query,
+gboolean       nautilus_query_set_date_range     (NautilusQuery *query,
                                                   GPtrArray     *date_range);
 
 gboolean

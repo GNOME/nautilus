@@ -314,6 +314,34 @@ nautilus_query_get_mime_type_str (NautilusQuery *self)
     return g_string_free_and_steal (g_steal_pointer (&mimetype_str));
 }
 
+static gboolean
+mime_types_equal (GPtrArray *mime_types1,
+                  GPtrArray *mime_types2)
+{
+    if (mime_types1 == mime_types2)
+    {
+        return TRUE;
+    }
+
+    if (mime_types1 == NULL ||
+        mime_types2 == NULL ||
+        mime_types1->len != mime_types2->len)
+    {
+        return FALSE;
+    }
+
+    for (guint i = 0; i < mime_types1->len; i++)
+    {
+        if (g_strcmp0 (g_ptr_array_index (mime_types1, i),
+                       g_ptr_array_index (mime_types2, i)) != 0)
+        {
+            return FALSE;
+        }
+    }
+
+    return TRUE;
+}
+
 /**
  * nautilus_query_set_mime_types:
  * @query: A #NautilusQuery
@@ -325,15 +353,24 @@ nautilus_query_get_mime_type_str (NautilusQuery *self)
  * Search engines that are already running for a previous filter will ignore the
  * new filter. So, the caller must ensure that the search will be reloaded
  * afterwards.
+ *
+ * Returns: whether the MIME types filter has changed
  */
-void
+gboolean
 nautilus_query_set_mime_types (NautilusQuery *query,
                                GPtrArray     *mime_types)
 {
-    g_return_if_fail (NAUTILUS_IS_QUERY (query));
-    g_return_if_fail (mime_types != NULL);
+    g_return_val_if_fail (NAUTILUS_IS_QUERY (query), FALSE);
+    g_return_val_if_fail (mime_types != NULL, FALSE);
+
+    if (mime_types_equal (query->mime_types, mime_types))
+    {
+        return FALSE;
+    }
 
     g_set_ptr_array (&query->mime_types, mime_types);
+
+    return TRUE;
 }
 
 gboolean
@@ -408,13 +445,20 @@ nautilus_query_get_search_type (NautilusQuery *query)
     return query->search_type;
 }
 
-void
+gboolean
 nautilus_query_set_search_type (NautilusQuery          *query,
                                 NautilusSearchTimeType  type)
 {
-    g_return_if_fail (NAUTILUS_IS_QUERY (query));
+    g_return_val_if_fail (NAUTILUS_IS_QUERY (query), FALSE);
+
+    if (query->search_type == type)
+    {
+        return FALSE;
+    }
 
     query->search_type = type;
+
+    return TRUE;
 }
 
 /**
@@ -433,17 +477,48 @@ nautilus_query_get_date_range (NautilusQuery *query)
     return query->date_range != NULL ? g_ptr_array_ref (query->date_range) : NULL;
 }
 
-void
+static gboolean
+date_range_equal (GPtrArray *date_range1,
+                  GPtrArray *date_range2)
+{
+    if (date_range1 == date_range2)
+    {
+        return TRUE;
+    }
+
+    if (date_range1 == NULL || date_range2 == NULL)
+    {
+        return FALSE;
+    }
+
+    return g_date_time_equal (g_ptr_array_index (date_range1, 0),
+                              g_ptr_array_index (date_range2, 0)) &&
+           g_date_time_equal (g_ptr_array_index (date_range1, 1),
+                              g_ptr_array_index (date_range2, 1));
+}
+
+/**
+ * nautilus_query_set_date_range:
+ * @query: a #NautilusQuery
+ * @date_range: (nullable) (transfer none): the #GPtrArray composed of #GDateTime
+ *              representing the date range, or %NULL for any time
+ *
+ * Returns: whether the date range has changed
+ */
+gboolean
 nautilus_query_set_date_range (NautilusQuery *query,
                                GPtrArray     *date_range)
 {
-    g_return_if_fail (NAUTILUS_IS_QUERY (query));
+    g_return_val_if_fail (NAUTILUS_IS_QUERY (query), FALSE);
 
-    g_clear_pointer (&query->date_range, g_ptr_array_unref);
-    if (date_range)
+    if (date_range_equal (query->date_range, date_range))
     {
-        query->date_range = g_ptr_array_ref (date_range);
+        return FALSE;
     }
+
+    g_set_ptr_array (&query->date_range, date_range);
+
+    return TRUE;
 }
 
 /** Returns: whether recursive search is generally enabled */
