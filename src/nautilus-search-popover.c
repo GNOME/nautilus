@@ -748,19 +748,10 @@ nautilus_search_popover_set_date_range (NautilusSearchPopover *popover,
         g_set_ptr_array (&popover->specific_date_range, date_range);
         gtk_widget_set_visible (GTK_WIDGET (popover->specific_date_button), TRUE);
         set_active_button (&popover->active_date_button, popover->specific_date_button);
-        g_signal_emit_by_name (popover, "date-range", date_range);
     }
     else
     {
-        nautilus_search_popover_reset_date_range (popover);
+        set_active_button (&popover->active_date_button, NULL);
     }
-}
-
-void
-nautilus_search_popover_reset_date_range (NautilusSearchPopover *popover)
-{
-    g_return_if_fail (NAUTILUS_IS_SEARCH_POPOVER (popover));
-
-    set_active_button (&popover->active_date_button, NULL);
-    g_signal_emit_by_name (popover, "date-range", NULL);
+    g_signal_emit_by_name (popover, "date-range", date_range);
 }
