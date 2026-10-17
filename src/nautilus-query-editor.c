@@ -70,6 +70,27 @@ static guint signals[LAST_SIGNAL];
 
 static void nautilus_query_editor_changed (NautilusQueryEditor *editor);
 
+static void entry_activate_cb (NautilusQueryEditor *editor);
+static void entry_changed_cb (NautilusQueryEditor *editor);
+static void search_popover_date_range_changed_cb (NautilusQueryEditor *editor,
+                                                  GPtrArray           *date_range);
+static void search_popover_mime_type_changed_cb (NautilusQueryEditor *editor,
+                                                 GPtrArray           *mimetypes);
+static void search_popover_time_type_changed_cb (NautilusQueryEditor   *editor,
+                                                 NautilusSearchTimeType data);
+static void search_popover_fts_changed_cb (NautilusQueryEditor *editor,
+                                           gboolean             fts_enabled);
+static void on_clear_icon_pressed (GtkGestureClick     *gesture,
+                                   int                  n_press,
+                                   double               x,
+                                   double               y,
+                                   NautilusQueryEditor *self);
+static void on_clear_icon_released (GtkGestureClick     *gesture,
+                                    int                  n_press,
+                                    double               x,
+                                    double               y,
+                                    NautilusQueryEditor *self);
+
 G_DEFINE_FINAL_TYPE (NautilusQueryEditor, nautilus_query_editor, GTK_TYPE_WIDGET);
 
 static void
@@ -293,12 +314,6 @@ nautilus_query_editor_dispose (GObject *object)
 
     g_clear_handle_id (&editor->search_changed_idle_id, g_source_remove);
 
-    g_clear_pointer (&editor->prefix_icon, gtk_widget_unparent);
-    g_clear_pointer (&editor->text, gtk_widget_unparent);
-    g_clear_pointer (&editor->dropdown_button, gtk_widget_unparent);
-    g_clear_pointer (&editor->search_info_button, gtk_widget_unparent);
-    g_clear_pointer (&editor->clear_icon, gtk_widget_unparent);
-
     g_clear_object (&editor->location);
     g_clear_object (&editor->query);
 
@@ -308,6 +323,8 @@ nautilus_query_editor_dispose (GObject *object)
 
     g_cancellable_cancel (editor->cancellable);
     g_clear_object (&editor->cancellable);
+
+    gtk_widget_dispose_template (GTK_WIDGET (editor), NAUTILUS_TYPE_QUERY_EDITOR);
 
     G_OBJECT_CLASS (nautilus_query_editor_parent_class)->dispose (object);
 }
@@ -482,6 +499,29 @@ nautilus_query_editor_class_init (NautilusQueryEditorClass *class)
 
     g_object_class_install_properties (gobject_class, G_N_ELEMENTS (properties), properties);
 
+    g_type_ensure (NAUTILUS_TYPE_SEARCH_POPOVER);
+
+    gtk_widget_class_set_template_from_resource (widget_class,
+                                                 "/org/gnome/nautilus/ui/nautilus-query-editor.ui");
+
+    gtk_widget_class_bind_template_child (widget_class, NautilusQueryEditor, prefix_icon);
+    gtk_widget_class_bind_template_child (widget_class, NautilusQueryEditor, text);
+    gtk_widget_class_bind_template_child (widget_class, NautilusQueryEditor, clear_icon);
+    gtk_widget_class_bind_template_child (widget_class, NautilusQueryEditor, popover);
+    gtk_widget_class_bind_template_child (widget_class, NautilusQueryEditor, dropdown_button);
+    gtk_widget_class_bind_template_child (widget_class, NautilusQueryEditor, search_info_button);
+    gtk_widget_class_bind_template_child (widget_class, NautilusQueryEditor, status_page);
+    gtk_widget_class_bind_template_child (widget_class, NautilusQueryEditor, search_settings_button);
+
+    gtk_widget_class_bind_template_callback (widget_class, entry_activate_cb);
+    gtk_widget_class_bind_template_callback (widget_class, entry_changed_cb);
+    gtk_widget_class_bind_template_callback (widget_class, search_popover_date_range_changed_cb);
+    gtk_widget_class_bind_template_callback (widget_class, search_popover_mime_type_changed_cb);
+    gtk_widget_class_bind_template_callback (widget_class, search_popover_time_type_changed_cb);
+    gtk_widget_class_bind_template_callback (widget_class, search_popover_fts_changed_cb);
+    gtk_widget_class_bind_template_callback (widget_class, on_clear_icon_pressed);
+    gtk_widget_class_bind_template_callback (widget_class, on_clear_icon_released);
+
     gtk_widget_class_set_layout_manager_type (widget_class, GTK_TYPE_BOX_LAYOUT);
     gtk_widget_class_set_css_name (widget_class, "entry");
     gtk_widget_class_set_accessible_role (widget_class, GTK_ACCESSIBLE_ROLE_SEARCH_BOX);
@@ -600,12 +640,6 @@ on_clear_icon_released (GtkGestureClick     *gesture,
 static void
 nautilus_query_editor_init (NautilusQueryEditor *editor)
 {
-    gboolean rtl = (gtk_widget_get_direction (GTK_WIDGET (editor)) == GTK_TEXT_DIR_RTL);
-    GtkEventController *controller;
-
-    gtk_widget_add_css_class (GTK_WIDGET (editor), "nautilus-query-editor");
-    gtk_widget_add_css_class (GTK_WIDGET (editor), "search");
-
     g_signal_connect (nautilus_preferences,
                       "changed::recursive-search",
                       G_CALLBACK (recursive_search_preferences_changed),
@@ -615,78 +649,9 @@ nautilus_query_editor_init (NautilusQueryEditor *editor)
 
     editor->cancellable = g_cancellable_new ();
 
-    /* create the search entry */
-    editor->prefix_icon = gtk_image_new ();
-    g_object_set (editor->prefix_icon, "accessible-role", GTK_ACCESSIBLE_ROLE_PRESENTATION, NULL);
-    gtk_widget_set_margin_start (editor->prefix_icon, 4);
-    gtk_widget_set_margin_end (editor->prefix_icon, 6);
-    gtk_widget_set_parent (editor->prefix_icon, GTK_WIDGET (editor));
+    gtk_widget_init_template (GTK_WIDGET (editor));
 
-    editor->text = gtk_text_new ();
-    gtk_widget_set_hexpand (editor->text, TRUE);
-    gtk_widget_set_parent (editor->text, GTK_WIDGET (editor));
-
-    editor->clear_icon = gtk_image_new_from_icon_name (rtl ? "edit-clear-rtl-symbolic" :
-                                                             "edit-clear-symbolic");
-    g_object_set (editor->clear_icon, "accessible-role", GTK_ACCESSIBLE_ROLE_PRESENTATION, NULL);
-    gtk_widget_set_tooltip_text (editor->clear_icon, _("Clear Entry"));
     gtk_widget_set_child_visible (editor->clear_icon, FALSE);
-    gtk_widget_set_parent (editor->clear_icon, GTK_WIDGET (editor));
-
-    controller = GTK_EVENT_CONTROLLER (gtk_gesture_click_new ());
-    g_signal_connect (controller, "pressed", G_CALLBACK (on_clear_icon_pressed), editor);
-    g_signal_connect (controller, "released", G_CALLBACK (on_clear_icon_released), editor);
-    gtk_widget_add_controller (editor->clear_icon, controller);
-
-    /* setup the search popover */
-    editor->popover = nautilus_search_popover_new ();
-
-    g_signal_connect (editor->popover, "show",
-                      G_CALLBACK (gtk_widget_grab_focus), NULL);
-    g_signal_connect_swapped (editor->popover, "closed",
-                              G_CALLBACK (gtk_widget_grab_focus), editor);
-
-    GtkWidget *search_info_popover = gtk_popover_new ();
-    editor->status_page = adw_status_page_new ();
-    /* translators: This opens the search panel in the Settings app. */
-    editor->search_settings_button = gtk_button_new_with_mnemonic (_("_Search Settings"));
-    gtk_actionable_set_action_name (GTK_ACTIONABLE (editor->search_settings_button), "app.search-settings");
-    adw_status_page_set_child (ADW_STATUS_PAGE (editor->status_page), editor->search_settings_button);
-    g_signal_connect_swapped (editor->search_settings_button, "clicked", G_CALLBACK (gtk_popover_popdown), search_info_popover);
-    gtk_widget_set_size_request (editor->status_page, 300, -1);
-    gtk_widget_add_css_class (editor->status_page, "compact");
-    gtk_widget_add_css_class (editor->search_settings_button, "pill");
-    gtk_widget_set_halign (editor->search_settings_button, GTK_ALIGN_CENTER);
-    gtk_popover_set_child (GTK_POPOVER (search_info_popover), editor->status_page);
-
-    /* setup the filter menu button */
-    editor->dropdown_button = gtk_menu_button_new ();
-    gtk_menu_button_set_icon_name (GTK_MENU_BUTTON (editor->dropdown_button), "nautilus-search-filters-symbolic");
-    gtk_widget_set_tooltip_text (GTK_WIDGET (editor->dropdown_button), _("Filter Search Results"));
-    gtk_menu_button_set_popover (GTK_MENU_BUTTON (editor->dropdown_button), editor->popover);
-    gtk_widget_set_parent (editor->dropdown_button, GTK_WIDGET (editor));
-    gtk_widget_add_css_class (editor->dropdown_button, "circular");
-
-    editor->search_info_button = gtk_menu_button_new ();
-    gtk_menu_button_set_icon_name (GTK_MENU_BUTTON (editor->search_info_button), "info-outline-symbolic");
-    gtk_widget_set_tooltip_text (GTK_WIDGET (editor->search_info_button), _("Search Information"));
-    gtk_menu_button_set_popover (GTK_MENU_BUTTON (editor->search_info_button), search_info_popover);
-    gtk_widget_add_css_class (editor->search_info_button, "circular");
-    gtk_widget_set_visible (editor->search_info_button, FALSE);
-    gtk_widget_set_parent (editor->search_info_button, GTK_WIDGET (editor));
-
-    g_signal_connect_swapped (editor->text, "activate",
-                              G_CALLBACK (entry_activate_cb), editor);
-    g_signal_connect_swapped (editor->text, "changed",
-                              G_CALLBACK (entry_changed_cb), editor);
-    g_signal_connect_swapped (editor->popover, "date-range",
-                              G_CALLBACK (search_popover_date_range_changed_cb), editor);
-    g_signal_connect_swapped (editor->popover, "mime-type",
-                              G_CALLBACK (search_popover_mime_type_changed_cb), editor);
-    g_signal_connect_swapped (editor->popover, "time-type",
-                              G_CALLBACK (search_popover_time_type_changed_cb), editor);
-    g_signal_connect_swapped (editor->popover, "fts-changed",
-                              G_CALLBACK (search_popover_fts_changed_cb), editor);
 }
 
 static void

@@ -1,0 +1,84 @@
+using Gtk 4.0;
+using Adw 1;
+
+template $NautilusQueryEditor: Widget {
+  styles [
+    "nautilus-query-editor",
+    "search",
+  ]
+
+  Image prefix_icon {
+    accessible-role: presentation;
+    margin-start: 4;
+    margin-end: 6;
+  }
+
+  Text text {
+    hexpand: true;
+    activate => $entry_activate_cb() swapped;
+    changed => $entry_changed_cb() swapped;
+  }
+
+  Image clear_icon {
+    accessible-role: presentation;
+    icon-name: "edit-clear-symbolic";
+    tooltip-text: _("Clear Entry");
+
+    GestureClick {
+      pressed => $on_clear_icon_pressed();
+      released => $on_clear_icon_released();
+    }
+  }
+
+  MenuButton dropdown_button {
+    icon-name: "nautilus-search-filters-symbolic";
+    tooltip-text: _("Filter Search Results");
+
+    styles [
+      "circular",
+    ]
+
+    popover: $NautilusSearchPopover popover {
+      show => $gtk_widget_grab_focus(popover);
+      closed => $gtk_widget_grab_focus(template);
+      date-range => $search_popover_date_range_changed_cb() swapped;
+      mime-type => $search_popover_mime_type_changed_cb() swapped;
+      time-type => $search_popover_time_type_changed_cb() swapped;
+      fts-changed => $search_popover_fts_changed_cb() swapped;
+    };
+  }
+
+  MenuButton search_info_button {
+    icon-name: "info-outline-symbolic";
+    tooltip-text: _("Search Information");
+    visible: false;
+
+    styles [
+      "circular",
+    ]
+
+    popover: Popover search_info_popover {
+      child: Adw.StatusPage status_page {
+        width-request: 300;
+
+        styles [
+          "compact",
+        ]
+
+        child: Button search_settings_button {
+          // translators: This opens the search panel in the Settings app.
+          label: _("_Search Settings");
+          use-underline: true;
+          action-name: "app.search-settings";
+          halign: center;
+
+          styles [
+            "pill",
+          ]
+
+          clicked => $gtk_popover_popdown(search_info_popover);
+        };
+      };
+    };
+  }
+}
