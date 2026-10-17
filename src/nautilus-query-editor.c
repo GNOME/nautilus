@@ -531,7 +531,10 @@ static void
 search_popover_date_range_changed_cb (NautilusQueryEditor *editor,
                                       GPtrArray           *date_range)
 {
-    nautilus_query_set_date_range (editor->query, date_range);
+    if (!nautilus_query_set_date_range (editor->query, date_range))
+    {
+        return;
+    }
 
     update_filter_button (editor);
     nautilus_query_editor_changed (editor);
@@ -541,7 +544,10 @@ static void
 search_popover_mime_type_changed_cb (NautilusQueryEditor *editor,
                                      GPtrArray           *mimetypes)
 {
-    nautilus_query_set_mime_types (editor->query, mimetypes);
+    if (!nautilus_query_set_mime_types (editor->query, mimetypes))
+    {
+        return;
+    }
 
     update_filter_button (editor);
     nautilus_query_editor_changed (editor);
@@ -551,7 +557,10 @@ static void
 search_popover_time_type_changed_cb (NautilusQueryEditor    *editor,
                                      NautilusSearchTimeType  data)
 {
-    nautilus_query_set_search_type (editor->query, data);
+    if (!nautilus_query_set_search_type (editor->query, data))
+    {
+        return;
+    }
 
     update_filter_button (editor);
     nautilus_query_editor_changed (editor);
