@@ -272,6 +272,11 @@ nautilus_toolbar_init (NautilusToolbar *self)
     g_signal_connect (controller, "leave",
                       G_CALLBACK (on_location_entry_focus_leave), self);
 
+    g_signal_connect_object (nautilus_preferences,
+                             "changed::" NAUTILUS_PREFERENCES_ALWAYS_USE_LOCATION_ENTRY,
+                             G_CALLBACK (toolbar_update_appearance), self,
+                             G_CONNECT_SWAPPED);
+
     toolbar_update_appearance (self);
 }
 
@@ -411,9 +416,6 @@ nautilus_toolbar_finalize (GObject *obj)
     NautilusToolbar *self = NAUTILUS_TOOLBAR (obj);
 
     g_clear_weak_pointer (&self->focus_before_location_entry);
-
-    g_signal_handlers_disconnect_by_func (nautilus_preferences,
-                                          toolbar_update_appearance, self);
 
     if (self->window_slot != NULL)
     {
