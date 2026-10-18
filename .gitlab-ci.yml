@@ -8,6 +8,12 @@ include:
           job-stage: release
           dist-job-name: "flatpak@x86_64"
           tarball-artifact-path: "${TARBALL_ARTIFACT_PATH}"
+    - component: "gitlab.gnome.org/GNOME/citemplates/gnomeos-basic-ci@master"
+      inputs:
+          job-stage: "test"
+          gobject-linter: "enabled"
+          gobject-linter-options: "-c build-aux/gobject-linter.toml"
+    - component: "gitlab.gnome.org/GNOME/citemplates/basic-deploy-docs@master"
 
 variables:
     GIT_SUBMODULE_STRATEGY: normal
@@ -171,19 +177,6 @@ style check:
     rules:
         - if: $CI_COMMIT_BRANCH !~ /^gnome-.*$/
 
-gobject-linter:
-    stage: review
-    image:
-        name: "ghcr.io/bilelmoussaoui/gobject-linter:latest"
-        entrypoint: [""]
-    script:
-        - gobject-linter -c build-aux/gobject-linter.toml --format gitlab-codequality src/ > gobject-linter-codequality.json
-    artifacts:
-        expire_in: 14 days
-        reports:
-            codequality: gobject-linter-codequality.json
-
-
 fedora_rawhide@x86_64:
     extends:
         - .fdo.distribution-image@fedora
@@ -235,56 +228,6 @@ flatpak@aarch64:
           when: always
         - allow_failure: true
     extends: ['.flatpak@aarch64', '.vars-devel']
-
-
-asan:
-    extends:
-        - .fdo.distribution-image@fedora
-        - .fedora-x86_64
-    variables:
-        CFLAGS: "-fno-omit-frame-pointer"
-    stage: analyze
-    rules:
-        - when: manual
-          allow_failure: true
-    script:
-        - meson setup -Db_sanitize=address -Dextensions=false -Dintrospection=false -Dtests=all $MESON_BUILD_DIR
-        - meson compile -C $MESON_BUILD_DIR
-        # Run the tests inside an XWayland server inside a headless Wayland compositor.
-        # FIXME: Use wlheadless-run again, which broke during an image update
-        - xwfb-run -c mutter -- meson test --suite display --suite displayless --print-errorlogs -C $MESON_BUILD_DIR
-    artifacts:
-        name: 'Address Sanitizer-built test results'
-        when: on_failure
-        paths:
-            - $MESON_BUILD_DIR/meson-logs/testlog.txt
-        reports:
-            junit: $MESON_BUILD_DIR/meson-logs/testlog.junit.xml
-        expire_in: 7 days
-
-coverage:
-    extends:
-        - .fdo.distribution-image@fedora
-        - .fedora-x86_64
-    stage: analyze
-    needs:
-        - job: fedora_rawhide@x86_64
-          artifacts: true
-    rules:
-        - allow_failure: true
-    script:
-        - ninja coverage -C $MESON_BUILD_DIR
-    artifacts:
-        expose_as: 'Coverage'
-        paths:
-            - $MESON_BUILD_DIR/meson-logs/coveragereport/index.html
-            - $MESON_BUILD_DIR/meson-logs/coveragereport
-        reports:
-            coverage_report:
-                coverage_format: cobertura
-                path: $MESON_BUILD_DIR/meson-logs/coverage.xml
-        expire_in: 2 weeks
-    coverage: '/^\s*lines:\s+([\d.]+\%)\s*/'
 
 
 nightly@x86_64:
