@@ -272,16 +272,6 @@ nautilus_toolbar_init (NautilusToolbar *self)
     g_signal_connect (controller, "leave",
                       G_CALLBACK (on_location_entry_focus_leave), self);
 
-    /* Setting a max width on one entry to effectively set a max expansion for
-     * the whole title widget. */
-    gtk_editable_set_max_width_chars (GTK_EDITABLE (self->location_entry), 88);
-    g_signal_connect_object (self->location_entry, "location-changed",
-                             G_CALLBACK (on_location_entry_location_changed), self,
-                             G_CONNECT_DEFAULT);
-    g_signal_connect_object (self->location_entry, "cancel",
-                             G_CALLBACK (nautilus_toolbar_close_location_entry), self,
-                             G_CONNECT_SWAPPED);
-
     toolbar_update_appearance (self);
 }
 
@@ -490,6 +480,7 @@ nautilus_toolbar_class_init (NautilusToolbarClass *klass)
     gtk_widget_class_bind_template_child (widget_class, NautilusToolbar, search_button);
     gtk_widget_class_bind_template_child (widget_class, NautilusToolbar, search_button_placeholder);
 
+    gtk_widget_class_bind_template_callback (widget_class, on_location_entry_location_changed);
     gtk_widget_class_bind_template_callback (widget_class, nautilus_toolbar_close_location_entry);
 
     gtk_widget_class_set_accessible_role (widget_class, GTK_ACCESSIBLE_ROLE_TOOLBAR);
