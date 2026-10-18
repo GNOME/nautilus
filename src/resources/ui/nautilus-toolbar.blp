@@ -39,6 +39,7 @@ template $NautilusToolbar: Adw.Bin {
 
             Button {
               icon-name: "window-close-symbolic";
+              focus-on-click: false;
               tooltip-text: _("Cancel");
               clicked => $nautilus_toolbar_close_location_entry() swapped;
             }
