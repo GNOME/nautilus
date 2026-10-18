@@ -590,8 +590,6 @@ nautilus_toolbar_set_window_slot_real (NautilusToolbar    *self,
     }
 
     toolbar_update_appearance (self);
-
-    g_object_notify_by_pspec (G_OBJECT (self), properties[PROP_WINDOW_SLOT]);
 }
 
 void
