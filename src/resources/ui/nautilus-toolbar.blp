@@ -29,7 +29,13 @@ template $NautilusToolbar: Adw.Bin {
               "linked",
             ]
 
-            $NautilusLocationEntry location_entry {}
+            $NautilusLocationEntry location_entry {
+              // Setting a max width on one entry to effectively set a max expansion for
+              // the whole title widget.
+              max-width-chars: 88;
+              location-changed => $on_location_entry_location_changed();
+              cancel => $nautilus_toolbar_close_location_entry() swapped;
+            }
 
             Button {
               icon-name: "window-close-symbolic";
