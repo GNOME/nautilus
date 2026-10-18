@@ -25,7 +25,7 @@ struct _NautilusToolbar
     GtkWidget *history_controls;
     GtkWidget *history_controls_placeholder;
     GtkWidget *location_entry_container;
-    GtkWidget *search_container;
+    AdwBin *search_container;
     GtkWidget *toolbar_switcher;
     GtkWidget *path_bar;
     GtkWidget *location_entry;
@@ -507,16 +507,6 @@ nautilus_toolbar_new (void)
 }
 
 static void
-box_remove_all_children (GtkBox *box)
-{
-    GtkWidget *child;
-    while ((child = gtk_widget_get_first_child (GTK_WIDGET (box))) != NULL)
-    {
-        gtk_box_remove (GTK_BOX (box), child);
-    }
-}
-
-static void
 on_slot_location_changed (NautilusToolbar *self)
 {
     g_assert (self->window_slot != NULL);
@@ -591,12 +581,12 @@ nautilus_toolbar_set_window_slot_real (NautilusToolbar    *self,
                                   G_CALLBACK (toolbar_update_appearance), self);
     }
 
-    box_remove_all_children (GTK_BOX (self->search_container));
+    adw_bin_set_child (self->search_container, NULL);
 
     if (self->window_slot != NULL)
     {
-        gtk_box_append (GTK_BOX (self->search_container),
-                        GTK_WIDGET (nautilus_window_slot_get_query_editor (self->window_slot)));
+        adw_bin_set_child (self->search_container,
+                           GTK_WIDGET (nautilus_window_slot_get_query_editor (self->window_slot)));
     }
 
     toolbar_update_appearance (self);
