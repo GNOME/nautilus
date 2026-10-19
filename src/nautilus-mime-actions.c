@@ -1159,6 +1159,8 @@ activate_parameters_install_free (ActivateParametersInstall *parameters_install)
     g_free (parameters_install);
 }
 
+G_DEFINE_AUTOPTR_CLEANUP_FUNC (ActivateParametersInstall, activate_parameters_install_free)
+
 static char *
 get_application_no_mime_type_handler_message (NautilusFile *file)
 {
@@ -1184,7 +1186,7 @@ open_with_response_cb (GtkDialog *dialog,
 {
     NautilusFile *file;
     GAppInfo *info;
-    ActivateParametersInstall *parameters = user_data;
+    g_autoptr (ActivateParametersInstall) parameters = user_data;
 
     if (response_id != GTK_RESPONSE_OK)
     {
@@ -1203,8 +1205,6 @@ open_with_response_cb (GtkDialog *dialog,
                                  GTK_WIDGET (parameters->parent_window));
 
     g_object_unref (info);
-
-    activate_parameters_install_free (parameters);
 }
 
 static void
@@ -1212,14 +1212,13 @@ choose_program (AdwDialog *message_dialog,
                 gchar     *response,
                 gpointer   callback_data)
 {
+    g_autoptr (ActivateParametersInstall) parameters = callback_data;
     GtkWidget *dialog;
     NautilusFile *file;
     GFile *location;
-    ActivateParametersInstall *parameters = callback_data;
 
     if (g_strcmp0 (response, "select-application") != 0)
     {
-        activate_parameters_install_free (parameters);
         return;
     }
 
@@ -1246,7 +1245,7 @@ choose_program (AdwDialog *message_dialog,
     g_signal_connect (dialog,
                       "response",
                       G_CALLBACK (open_with_response_cb),
-                      parameters);
+                      g_steal_pointer (&parameters));
 
     g_object_unref (location);
     nautilus_file_unref (file);
@@ -1297,11 +1296,10 @@ search_for_application_dbus_call_notify_cb (GDBusProxy   *proxy,
                                             GAsyncResult *result,
                                             gpointer      user_data)
 {
-    ActivateParametersInstall *parameters_install = user_data;
-    GVariant *variant;
-    GError *error = NULL;
+    g_autoptr (ActivateParametersInstall) parameters_install = user_data;
+    g_autoptr (GError) error = NULL;
+    g_autoptr (GVariant) variant = g_dbus_proxy_call_finish (proxy, result, &error);
 
-    variant = g_dbus_proxy_call_finish (proxy, result, &error);
     if (variant == NULL)
     {
         if (!g_dbus_error_is_remote_error (error) ||
@@ -1322,15 +1320,7 @@ search_for_application_dbus_call_notify_cb (GDBusProxy   *proxy,
             g_warning ("Error while trying to search for apps: %s",
                        error->message);
         }
-
-        g_error_free (error);
-        activate_parameters_install_free (parameters_install);
-        return;
     }
-
-    g_variant_unref (variant);
-
-    activate_parameters_install_free (parameters_install);
 }
 
 static void
@@ -1361,10 +1351,12 @@ search_for_application_mime_type (ActivateParametersInstall *parameters_install,
 }
 
 static void
-application_unhandled_file_install (AdwDialog                 *dialog,
-                                    gchar                     *response,
-                                    ActivateParametersInstall *parameters_install)
+application_unhandled_file_install (AdwDialog *dialog,
+                                    gchar     *response,
+                                    gpointer   user_data)
 {
+    g_autoptr (ActivateParametersInstall) parameters_install = user_data;
+
     parameters_install->dialog = NULL;
 
     if (g_strcmp0 (response, "search-in-software") == 0)
@@ -1372,11 +1364,6 @@ application_unhandled_file_install (AdwDialog                 *dialog,
         const char *mime_type = nautilus_file_get_mime_type (parameters_install->file);
 
         search_for_application_mime_type (parameters_install, mime_type);
-    }
-    else
-    {
-        /* free as we're not going to get the async dbus callback */
-        activate_parameters_install_free (parameters_install);
     }
 }
 
