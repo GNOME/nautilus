@@ -204,20 +204,6 @@ date_button_clicked (NautilusSearchPopover *popover,
 }
 
 static void
-date_range_dialog_selected_cb (NautilusSearchPopover *self,
-                               GPtrArray             *date_range)
-{
-    g_set_ptr_array (&self->specific_date_range, date_range);
-
-    g_autofree char *description = nautilus_date_range_to_str (self->specific_date_range, FALSE);
-    gtk_button_set_label (self->specific_date_button, description);
-    gtk_widget_set_visible (GTK_WIDGET (self->specific_date_button), TRUE);
-    set_active_button (&self->active_date_button, self->specific_date_button);
-
-    g_signal_emit_by_name (self, "date-range", self->specific_date_range);
-}
-
-static void
 show_date_range_dialog_cb (NautilusSearchPopover *self)
 {
     GtkWindow *window = GTK_WINDOW (gtk_widget_get_root (GTK_WIDGET (self)));
@@ -226,7 +212,7 @@ show_date_range_dialog_cb (NautilusSearchPopover *self)
     adw_dialog_present (ADW_DIALOG (dialog), GTK_WIDGET (window));
 
     g_signal_connect_object (dialog, "date-range",
-                             G_CALLBACK (date_range_dialog_selected_cb),
+                             G_CALLBACK (nautilus_search_popover_set_date_range),
                              self, G_CONNECT_SWAPPED);
 
     gtk_popover_popdown (GTK_POPOVER (self));
@@ -752,6 +738,9 @@ nautilus_search_popover_set_date_range (NautilusSearchPopover *popover,
 
     if (date_range != NULL)
     {
+        g_autofree char *description = nautilus_date_range_to_str (date_range, FALSE);
+
+        gtk_button_set_label (popover->specific_date_button, description);
         g_set_ptr_array (&popover->specific_date_range, date_range);
         gtk_widget_set_visible (GTK_WIDGET (popover->specific_date_button), TRUE);
         set_active_button (&popover->active_date_button, popover->specific_date_button);
