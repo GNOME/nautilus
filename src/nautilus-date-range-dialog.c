@@ -136,7 +136,7 @@ try_confirm (NautilusDateRangeDialog *self)
     }
     else
     {
-        g_autoptr (GDateTime) center = nautilus_date_entry_row_get_date_time (self->from_entry_row);
+        g_autoptr (GDateTime) center = nautilus_date_entry_row_get_date_time (self->single_date_row);
 
         guint span = get_selected_span (selected_pos);
         start = g_date_time_add_days (center, -span);
