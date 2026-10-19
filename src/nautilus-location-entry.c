@@ -46,8 +46,6 @@ struct _NautilusLocationEntry
     gboolean has_special_text;
     NautilusLocationEntryAction secondary_action;
 
-    GtkEventController *controller;
-
     char *completed_path;
     guint completion_id;
     GtkEntryCompletion *completion;
@@ -189,9 +187,9 @@ void
 nautilus_location_entry_set_location (NautilusLocationEntry *self,
                                       GFile                 *location)
 {
-    g_autofree char *scheme = g_file_get_uri_scheme (location);
+    g_return_if_fail (location != NULL);
 
-    g_assert (location != NULL);
+    g_autofree char *scheme = g_file_get_uri_scheme (location);
 
     /* Note: This is called in reaction to external changes, and
      * thus should not emit the LOCATION_CHANGED signal. */
@@ -495,7 +493,7 @@ nautilus_location_entry_icon_release (GtkEntry             *gentry,
     {
         case NAUTILUS_LOCATION_ENTRY_ACTION_GOTO:
         {
-            g_signal_emit_by_name (gentry, "activate", gentry);
+            g_signal_emit_by_name (gentry, "activate", NULL);
         }
         break;
 
@@ -721,8 +719,8 @@ nautilus_location_entry_init (NautilusLocationEntry *self)
     g_signal_connect (self, "icon-release",
                       G_CALLBACK (nautilus_location_entry_icon_release), NULL);
 
-    g_signal_connect_object (self, "changed",
-                             G_CALLBACK (editable_changed_callback), self, G_CONNECT_DEFAULT);
+    g_signal_connect (self, "changed",
+                      G_CALLBACK (editable_changed_callback), NULL);
 
     controller = gtk_event_controller_key_new ();
     gtk_widget_add_controller (GTK_WIDGET (self), controller);
