@@ -1126,37 +1126,17 @@ show_confirm_multiple (ActivateParameters *parameters,
 
 typedef struct
 {
-    NautilusWindowSlot *slot;
-    GtkWindow *parent_window;
+    GtkWidget *parent_window;
     NautilusFile *file;
-    GList *files;
-    NautilusOpenFlags flags;
-    char *activation_directory;
-    gboolean user_confirmation;
     GDBusProxy *proxy;
-    GtkWidget *dialog;
 } ActivateParametersInstall;
 
 static void
 activate_parameters_install_free (ActivateParametersInstall *parameters_install)
 {
-    if (parameters_install->slot)
-    {
-        g_object_remove_weak_pointer (G_OBJECT (parameters_install->slot), (gpointer *) &parameters_install->slot);
-    }
-    if (parameters_install->parent_window)
-    {
-        g_object_remove_weak_pointer (G_OBJECT (parameters_install->parent_window), (gpointer *) &parameters_install->parent_window);
-    }
-
-    if (parameters_install->proxy != NULL)
-    {
-        g_object_unref (parameters_install->proxy);
-    }
-
+    g_clear_weak_pointer (&parameters_install->parent_window);
+    g_clear_object (&parameters_install->proxy);
     nautilus_file_unref (parameters_install->file);
-    nautilus_file_list_free (parameters_install->files);
-    g_free (parameters_install->activation_directory);
     g_free (parameters_install);
 }
 
@@ -1191,7 +1171,7 @@ app_chosen (AdwDialog *dialog,
     g_signal_emit_by_name (nautilus_signaller_get_current (), "mime-data-changed");
 
     nautilus_launch_application (info, &(NautilusFileList){ .data = parameters->file },
-                                 GTK_WIDGET (parameters->parent_window));
+                                 parameters->parent_window);
 
     adw_dialog_close (dialog);
 }
@@ -1217,7 +1197,7 @@ choose_program (AdwDialog *message_dialog,
                             (GDestroyNotify) activate_parameters_install_free);
 
     adw_dialog_close (message_dialog);
-    adw_dialog_present (ADW_DIALOG (dialog), GTK_WIDGET (parameters->parent_window));
+    adw_dialog_present (ADW_DIALOG (dialog), parameters->parent_window);
 
     g_signal_connect_object (dialog, "app-chosen",
                              G_CALLBACK (app_chosen),
@@ -1256,7 +1236,7 @@ show_unhandled_type_error (ActivateParametersInstall *parameters)
                             g_steal_pointer (&parameters),
                             (GDestroyNotify) activate_parameters_install_free);
 
-    adw_dialog_present (ADW_DIALOG (dialog), GTK_WIDGET (parameters->parent_window));
+    adw_dialog_present (ADW_DIALOG (dialog), parameters->parent_window);
 
     g_signal_connect (dialog, "response",
                       G_CALLBACK (choose_program), NULL);
@@ -1285,7 +1265,7 @@ search_for_application_dbus_call_notify_cb (GDBusProxy   *proxy,
                                        error->message);
             nautilus_show_ok_dialog (_("Unable to search for app"),
                                      message,
-                                     GTK_WIDGET (parameters_install->parent_window));
+                                     parameters_install->parent_window);
             g_free (message);
         }
         else
@@ -1329,8 +1309,6 @@ application_unhandled_file_install (AdwDialog *dialog,
                                     gpointer   user_data)
 {
     g_autoptr (ActivateParametersInstall) parameters_install = user_data;
-
-    parameters_install->dialog = NULL;
 
     if (g_strcmp0 (response, "search-in-software") == 0)
     {
@@ -1385,7 +1363,6 @@ pk_proxy_appeared_cb (GObject      *source,
 
     adw_alert_dialog_set_default_response (dialog, "search-in-software");
 
-    parameters_install->dialog = GTK_WIDGET (dialog);
     parameters_install->proxy = proxy;
 
     g_signal_connect (dialog, "response",
@@ -1401,18 +1378,12 @@ application_unhandled_uri (ActivateParameters *parameters,
 {
     /* copy the parts of parameters we are interested in as the orignal will be unref'd */
     ActivateParametersInstall *parameters_install = g_new0 (ActivateParametersInstall, 1);
-    parameters_install->slot = parameters->slot;
-    g_object_add_weak_pointer (G_OBJECT (parameters_install->slot), (gpointer *) &parameters_install->slot);
     if (parameters->parent_window)
     {
-        parameters_install->parent_window = parameters->parent_window;
+        parameters_install->parent_window = GTK_WIDGET (parameters->parent_window);
         g_object_add_weak_pointer (G_OBJECT (parameters_install->parent_window), (gpointer *) &parameters_install->parent_window);
     }
-    parameters_install->activation_directory = g_strdup (parameters->activation_directory);
     parameters_install->file = nautilus_file_get_by_uri (uri);
-    parameters_install->files = get_file_list_for_launch_locations (parameters->locations);
-    parameters_install->flags = parameters->flags;
-    parameters_install->user_confirmation = parameters->user_confirmation;
 
     if (!g_content_type_is_unknown (nautilus_file_get_mime_type (parameters_install->file)))
     {
