@@ -37,16 +37,15 @@ date_entry_row_set_date_time (NautilusDateEntryRow *self,
                               GDateTime            *date_time,
                               gboolean              update_entry)
 {
-    g_autoptr (GDateTime) fallback = NULL;
-
-    if (date_time == NULL)
-    {
-        fallback = g_date_time_new_now_local ();
-        date_time = fallback;
-    }
-
     if (!g_set_date_time (&self->date_time, date_time))
     {
+        return;
+    }
+
+    if (self->date_time == NULL)
+    {
+        g_object_notify_by_pspec (G_OBJECT (self), props[PROP_DATE_TIME]);
+
         return;
     }
 
@@ -72,7 +71,8 @@ text_changed (NautilusDateEntryRow *self)
     if (!g_date_valid (date))
     {
         gtk_widget_add_css_class (GTK_WIDGET (self), "warning");
-        g_clear_pointer (&self->date_time, g_date_time_unref);
+        date_entry_row_set_date_time (self, NULL, FALSE);
+
         return;
     }
     else
@@ -137,7 +137,16 @@ date_entry_row_set_property (GObject      *object,
     {
         case PROP_DATE_TIME:
         {
-            GDateTime *date_time = g_value_get_pointer (value);
+            GDateTime *date_time = g_value_get_boxed (value);
+            g_autoptr (GDateTime) fallback = NULL;
+
+            /* Fallback when setting from outside the widget */
+            if (date_time == NULL)
+            {
+                fallback = g_date_time_new_now_local ();
+                date_time = fallback;
+            }
+
             date_entry_row_set_date_time (self, date_time, TRUE);
         }
         break;
@@ -162,11 +171,7 @@ date_entry_row_get_property (GObject    *object,
     {
         case PROP_DATE_TIME:
         {
-            if (self->date_time)
-            {
-                g_date_time_ref (self->date_time);
-            }
-            g_value_set_pointer (value, self->date_time);
+            g_value_set_boxed (value, self->date_time);
         }
         break;
 
@@ -212,8 +217,12 @@ nautilus_date_entry_row_class_init (NautilusDateEntryRowClass *klass)
     object_class->set_property = date_entry_row_set_property;
 
     props[PROP_DATE_TIME] =
-        g_param_spec_pointer ("date-time", "", "",
-                              G_PARAM_READWRITE | G_PARAM_CONSTRUCT | G_PARAM_STATIC_STRINGS | G_PARAM_EXPLICIT_NOTIFY);
+        g_param_spec_boxed ("date-time", NULL, NULL,
+                            G_TYPE_DATE_TIME,
+                            G_PARAM_READWRITE |
+                            G_PARAM_CONSTRUCT |
+                            G_PARAM_STATIC_STRINGS |
+                            G_PARAM_EXPLICIT_NOTIFY);
 
     g_object_class_install_properties (object_class, NUM_PROPERTIES, props);
 
