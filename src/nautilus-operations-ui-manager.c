@@ -526,6 +526,15 @@ typedef struct
 } HandleUnsupportedFileData;
 
 static void
+handle_unsupported_file_data_free (HandleUnsupportedFileData *data)
+{
+    nautilus_file_unref (data->file);
+    g_free (data);
+}
+
+G_DEFINE_AUTOPTR_CLEANUP_FUNC (HandleUnsupportedFileData, handle_unsupported_file_data_free);
+
+static void
 on_app_chooser_response (GtkDialog *dialog,
                          gint       response_id,
                          gpointer   user_data)
@@ -553,11 +562,10 @@ on_app_chooser_response (GtkDialog *dialog,
 static gboolean
 open_file_in_application (gpointer user_data)
 {
-    HandleUnsupportedFileData *data;
+    HandleUnsupportedFileData *data = user_data;
     GtkWidget *dialog;
     const char *heading;
 
-    data = user_data;
     dialog = gtk_app_chooser_dialog_new_for_content_type (data->parent_window,
                                                           GTK_DIALOG_MODAL |
                                                           GTK_DIALOG_DESTROY_WITH_PARENT |
@@ -581,18 +589,12 @@ void
 handle_unsupported_compressed_file (GtkWindow *parent_window,
                                     GFile     *compressed_file)
 {
-    HandleUnsupportedFileData *data;
+    g_autoptr (HandleUnsupportedFileData) data = g_new0 (HandleUnsupportedFileData, 1);
 
-    data = g_slice_new0 (HandleUnsupportedFileData);
     data->parent_window = parent_window;
     data->file = nautilus_file_get (compressed_file);
 
     invoke_main_context_sync (NULL, open_file_in_application, data);
-
-    nautilus_file_unref (data->file);
-    g_slice_free (HandleUnsupportedFileData, data);
-
-    return;
 }
 
 typedef struct
