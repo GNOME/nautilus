@@ -8,6 +8,7 @@
 
 #include "nautilus-operations-ui-manager.h"
 
+#include "nautilus-app-chooser.h"
 #include "nautilus-file.h"
 #include "nautilus-file-conflict-dialog.h"
 #include "nautilus-program-choosing.h"
@@ -521,7 +522,7 @@ copy_move_conflict_ask_user_action (GtkWindow *parent_window,
 typedef struct
 {
     ContextInvokeData parent_type;
-    GtkWindow *parent_window;
+    GtkWidget *parent_window;
     NautilusFile *file;
 } HandleUnsupportedFileData;
 
@@ -535,26 +536,18 @@ handle_unsupported_file_data_free (HandleUnsupportedFileData *data)
 G_DEFINE_AUTOPTR_CLEANUP_FUNC (HandleUnsupportedFileData, handle_unsupported_file_data_free);
 
 static void
-on_app_chooser_response (GtkDialog *dialog,
-                         gint       response_id,
-                         gpointer   user_data)
+app_chosen (AdwDialog *dialog,
+            GAppInfo  *info,
+            gpointer   user_data)
 {
-    HandleUnsupportedFileData *data = user_data;
-    g_autoptr (GAppInfo) application = NULL;
+    g_autoptr (HandleUnsupportedFileData) data = g_object_steal_data (G_OBJECT (dialog),
+                                                                      "operations-ui:data");
 
-    if (response_id == GTK_RESPONSE_OK)
-    {
-        application = gtk_app_chooser_get_app_info (GTK_APP_CHOOSER (dialog));
-    }
+    nautilus_launch_application (info,
+                                 &(NautilusFileList){ .data = data->file },
+                                 data->parent_window);
 
-    gtk_window_destroy (GTK_WINDOW (dialog));
-
-    if (application != NULL)
-    {
-        nautilus_launch_application (application,
-                                     &(NautilusFileList){ .data = data->file },
-                                     GTK_WIDGET (data->parent_window));
-    }
+    adw_dialog_close (dialog);
 
     invoke_main_context_completed (user_data);
 }
@@ -562,22 +555,23 @@ on_app_chooser_response (GtkDialog *dialog,
 static gboolean
 open_file_in_application (gpointer user_data)
 {
-    HandleUnsupportedFileData *data = user_data;
-    GtkWidget *dialog;
-    const char *heading;
+    g_autoptr (HandleUnsupportedFileData) data = user_data;
+    g_autoptr (GFile) location = nautilus_file_get_location (data->file);
+    NautilusAppChooser *dialog = nautilus_app_chooser_new (&(GList){ .data = location });
+    GtkWidget *parent = data->parent_window;
 
-    dialog = gtk_app_chooser_dialog_new_for_content_type (data->parent_window,
-                                                          GTK_DIALOG_MODAL |
-                                                          GTK_DIALOG_DESTROY_WITH_PARENT |
-                                                          GTK_DIALOG_USE_HEADER_BAR,
-                                                          nautilus_file_get_mime_type (data->file));
-    heading = _("Password-protected archives are not yet supported. "
-                "This list contains apps that can open the archive.");
-
-    gtk_app_chooser_dialog_set_heading (GTK_APP_CHOOSER_DIALOG (dialog), heading);
-
-    g_signal_connect (dialog, "response", G_CALLBACK (on_app_chooser_response), data);
-    gtk_window_present (GTK_WINDOW (dialog));
+    /* Set custom title due to legacy code design */
+    adw_dialog_set_title (ADW_DIALOG (dialog),
+                          _("Password-protected archives are not yet supported. "
+                            "This list contains apps that can open the archive."));
+    g_object_set_data_full (G_OBJECT (dialog),
+                            "operations-ui:data",
+                            g_steal_pointer (&data),
+                            (GDestroyNotify) handle_unsupported_file_data_free);
+    g_signal_connect_object (dialog, "app-chosen",
+                             G_CALLBACK (app_chosen),
+                             NULL, G_CONNECT_DEFAULT);
+    adw_dialog_present (ADW_DIALOG (dialog), parent);
 
     return G_SOURCE_REMOVE;
 }
@@ -591,10 +585,10 @@ handle_unsupported_compressed_file (GtkWindow *parent_window,
 {
     g_autoptr (HandleUnsupportedFileData) data = g_new0 (HandleUnsupportedFileData, 1);
 
-    data->parent_window = parent_window;
+    data->parent_window = GTK_WIDGET (parent_window);
     data->file = nautilus_file_get (compressed_file);
 
-    invoke_main_context_sync (NULL, open_file_in_application, data);
+    invoke_main_context_sync (NULL, open_file_in_application, g_steal_pointer (&data));
 }
 
 typedef struct
