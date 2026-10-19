@@ -252,6 +252,16 @@
         <attribute name="action">view.unstar</attribute>
         <attribute name="hidden-when">action-disabled</attribute>
       </item>
+      <item>
+        <attribute name="label" translatable="yes" comments="Keeps a file from a network location available without a connection">Ma_ke Available Offline</attribute>
+        <attribute name="action">view.offline-pin</attribute>
+        <attribute name="hidden-when">action-disabled</attribute>
+      </item>
+      <item>
+        <attribute name="label" translatable="yes" comments="Stops keeping a file available without a connection">Do_n't Keep Offline</attribute>
+        <attribute name="action">view.offline-unpin</attribute>
+        <attribute name="hidden-when">action-disabled</attribute>
+      </item>
     </section>
     <section id="network-view-section">
       <attribute name="show-in-view">network</attribute>

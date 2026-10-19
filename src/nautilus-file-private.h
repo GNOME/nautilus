@@ -13,7 +13,7 @@
 #include "nautilus-file.h"
 
 #define NAUTILUS_FILE_DEFAULT_ATTRIBUTES				\
-	"standard::*,access::*,mountable::*,time::*,unix::*,owner::*,selinux::*,id::filesystem,trash::orig-path,trash::deletion-date,metadata::*,recent::*,preview::icon"
+	"standard::*,access::*,mountable::*,time::*,unix::*,owner::*,selinux::*,id::filesystem,trash::orig-path,trash::deletion-date,metadata::*,recent::*,preview::icon,offline::*"
 
 /* These are in the typical sort order. Known things come first, then
  * things where we can't know, finally things where we don't yet know.
@@ -142,6 +142,13 @@ struct NautilusFilePrivate
 	guint thumbnailing_failed           : 1;
 
 	guint is_symlink                    : 1;
+
+	/* gvfs offline cache (offline:: namespace); only meaningful on
+	 * mounts whose backend provides it. */
+	guint offline_supported             : 1;
+	guint offline_pinned                : 1;
+	guint offline_stale                 : 1;
+	guint offline_state                 : 2;
 	guint is_mountpoint                 : 1;
 	guint is_hidden                     : 1;
 

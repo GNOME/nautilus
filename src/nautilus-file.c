@@ -55,6 +55,8 @@
 
 /* Emblems sometimes displayed for NautilusFiles. */
 #define NAUTILUS_FILE_EMBLEM_NAME_SYMBOLIC_LINK "symbolic-link-symbolic"
+#define NAUTILUS_FILE_EMBLEM_NAME_OFFLINE_PINNED "folder-download-symbolic"
+#define NAUTILUS_FILE_EMBLEM_NAME_OFFLINE_MODIFIED "document-edit-symbolic"
 #define NAUTILUS_FILE_EMBLEM_NAME_CANT_READ "not-accessible-symbolic"
 #define NAUTILUS_FILE_EMBLEM_NAME_CANT_WRITE "readonly-symbolic"
 
@@ -2389,6 +2391,10 @@ update_info_internal (NautilusFile *file,
     const char *group, *owner, *owner_real;
     gboolean free_owner, free_group;
     const char *edit_name;
+    gboolean offline_supported;
+    gboolean offline_pinned;
+    gboolean offline_stale;
+    guint offline_state;
 
     if (file->details->is_gone)
     {
@@ -2467,6 +2473,24 @@ update_info_internal (NautilusFile *file,
         changed = TRUE;
     }
     file->details->is_hidden = is_hidden;
+
+    offline_supported = g_file_info_has_attribute (info, NAUTILUS_FILE_ATTRIBUTE_OFFLINE_PINNED);
+    offline_pinned = g_file_info_get_attribute_boolean (info, NAUTILUS_FILE_ATTRIBUTE_OFFLINE_PINNED);
+    offline_stale = g_file_info_get_attribute_boolean (info, NAUTILUS_FILE_ATTRIBUTE_OFFLINE_STALE);
+    offline_state = g_file_info_get_attribute_uint32 (info, NAUTILUS_FILE_ATTRIBUTE_OFFLINE_STATE) & 0x3;
+
+    if (file->details->offline_supported != offline_supported ||
+        file->details->offline_pinned != offline_pinned ||
+        file->details->offline_stale != offline_stale ||
+        file->details->offline_state != offline_state)
+    {
+        changed = TRUE;
+    }
+
+    file->details->offline_supported = offline_supported;
+    file->details->offline_pinned = offline_pinned;
+    file->details->offline_stale = offline_stale;
+    file->details->offline_state = offline_state;
 
     is_mountpoint = g_file_info_get_attribute_boolean (info, G_FILE_ATTRIBUTE_UNIX_IS_MOUNTPOINT);
     if (file->details->is_mountpoint != is_mountpoint)
@@ -4503,6 +4527,19 @@ get_automatic_emblem_keywords (NautilusFile *file)
         keywords = g_list_prepend (keywords, NAUTILUS_FILE_EMBLEM_NAME_SYMBOLIC_LINK);
     }
 
+    if (file->details->offline_supported)
+    {
+        if (file->details->offline_pinned)
+        {
+            keywords = g_list_prepend (keywords, NAUTILUS_FILE_EMBLEM_NAME_OFFLINE_PINNED);
+        }
+
+        if (file->details->offline_state != NAUTILUS_FILE_OFFLINE_STATE_CLEAN)
+        {
+            keywords = g_list_prepend (keywords, NAUTILUS_FILE_EMBLEM_NAME_OFFLINE_MODIFIED);
+        }
+    }
+
     if (!nautilus_file_can_read (file))
     {
         keywords = g_list_prepend (keywords, NAUTILUS_FILE_EMBLEM_NAME_CANT_READ);
@@ -4584,6 +4621,30 @@ nautilus_file_get_emblem_icons (NautilusFile *file)
     }
 
     return icons;
+}
+
+gboolean
+nautilus_file_get_offline_supported (NautilusFile *file)
+{
+    g_return_val_if_fail (NAUTILUS_IS_FILE (file), FALSE);
+
+    return file->details->offline_supported;
+}
+
+gboolean
+nautilus_file_get_offline_pinned (NautilusFile *file)
+{
+    g_return_val_if_fail (NAUTILUS_IS_FILE (file), FALSE);
+
+    return file->details->offline_pinned;
+}
+
+gboolean
+nautilus_file_get_offline_stale (NautilusFile *file)
+{
+    g_return_val_if_fail (NAUTILUS_IS_FILE (file), FALSE);
+
+    return file->details->offline_stale;
 }
 
 GIcon *

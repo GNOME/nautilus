@@ -402,6 +402,21 @@ GdkPaintable *          nautilus_file_get_icon_paintable                (Nautilu
 
 GList *                 nautilus_file_get_emblem_icons                  (NautilusFile                   *file);
 
+#define NAUTILUS_FILE_ATTRIBUTE_OFFLINE_PINNED "offline::pinned"
+#define NAUTILUS_FILE_ATTRIBUTE_OFFLINE_STATE  "offline::state"
+#define NAUTILUS_FILE_ATTRIBUTE_OFFLINE_STALE  "offline::stale"
+
+typedef enum
+{
+    NAUTILUS_FILE_OFFLINE_STATE_CLEAN      = 0,
+    NAUTILUS_FILE_OFFLINE_STATE_DIRTY      = 1,
+    NAUTILUS_FILE_OFFLINE_STATE_LOCAL_ONLY = 2,
+} NautilusFileOfflineState;
+
+gboolean                nautilus_file_get_offline_supported             (NautilusFile                   *file);
+gboolean                nautilus_file_get_offline_pinned                (NautilusFile                   *file);
+gboolean                nautilus_file_get_offline_stale                 (NautilusFile                   *file);
+
 /* Whether the file should open inside a view */
 gboolean                nautilus_file_opens_in_view                     (NautilusFile                   *file);
 

@@ -1672,6 +1672,74 @@ action_unstar (GSimpleAction *action,
 }
 
 static void
+offline_pin_set_cb (GObject      *source,
+                    GAsyncResult *res,
+                    gpointer      user_data)
+{
+    g_autoptr (NautilusFile) file = NAUTILUS_FILE (user_data);
+    g_autoptr (GError) error = NULL;
+
+    if (!g_file_set_attributes_finish (G_FILE (source), res, NULL, &error))
+    {
+        if (!g_error_matches (error, G_IO_ERROR, G_IO_ERROR_CANCELLED))
+        {
+            g_warning ("Could not change offline availability: %s", error->message);
+        }
+        return;
+    }
+
+    nautilus_file_invalidate_attributes (file, NAUTILUS_ATTRIBUTE_INFO);
+}
+
+static void
+set_selection_offline_pinned (NautilusFilesView *view,
+                              gboolean           pinned)
+{
+    g_autolist (NautilusFile) selection = nautilus_files_view_get_selection (view);
+
+    for (GList *l = selection; l != NULL; l = l->next)
+    {
+        NautilusFile *file = NAUTILUS_FILE (l->data);
+        g_autoptr (GFile) location = NULL;
+        g_autoptr (GFileInfo) info = NULL;
+
+        if (!nautilus_file_get_offline_supported (file))
+        {
+            continue;
+        }
+
+        location = nautilus_file_get_location (file);
+        info = g_file_info_new ();
+        g_file_info_set_attribute_boolean (info,
+                                           NAUTILUS_FILE_ATTRIBUTE_OFFLINE_PINNED,
+                                           pinned);
+
+        g_file_set_attributes_async (location, info,
+                                     G_FILE_QUERY_INFO_NONE,
+                                     G_PRIORITY_DEFAULT,
+                                     view->starred_cancellable,
+                                     offline_pin_set_cb,
+                                     nautilus_file_ref (file));
+    }
+}
+
+static void
+action_offline_pin (GSimpleAction *action,
+                    GVariant      *state,
+                    gpointer       user_data)
+{
+    set_selection_offline_pinned (NAUTILUS_FILES_VIEW (user_data), TRUE);
+}
+
+static void
+action_offline_unpin (GSimpleAction *action,
+                      GVariant      *state,
+                      gpointer       user_data)
+{
+    set_selection_offline_pinned (NAUTILUS_FILES_VIEW (user_data), FALSE);
+}
+
+static void
 action_restore_from_trash (GSimpleAction *action,
                            GVariant      *state,
                            gpointer       user_data)
@@ -6905,6 +6973,8 @@ const GActionEntry view_entries[] =
     { .name = "move-to-trash", .activate = action_move_to_trash},
     { .name = "delete-from-trash", .activate = action_delete },
     { .name = "star", .activate = action_star},
+    { .name = "offline-pin", .activate = action_offline_pin },
+    { .name = "offline-unpin", .activate = action_offline_unpin },
     { .name = "unstar", .activate = action_unstar},
     /* We separate the shortcut and the menu item since we want the shortcut
      * to always be available, but we don't want the menu item shown if not
@@ -7779,6 +7849,40 @@ nautilus_files_view_update_actions_state (NautilusFilesView *self)
     g_simple_action_set_enabled (G_SIMPLE_ACTION (action),
                                  mode == NAUTILUS_MODE_BROWSE &&
                                  show_unstar && selection_contains_starred);
+
+    gboolean show_offline_pin = (selection != NULL);
+    gboolean show_offline_unpin = (selection != NULL);
+
+    for (l = selection; l != NULL; l = l->next)
+    {
+        NautilusFile *file = NAUTILUS_FILE (l->data);
+
+        if (!nautilus_file_get_offline_supported (file))
+        {
+            show_offline_pin = FALSE;
+            show_offline_unpin = FALSE;
+            break;
+        }
+
+        if (nautilus_file_get_offline_pinned (file))
+        {
+            show_offline_pin = FALSE;
+        }
+        else
+        {
+            show_offline_unpin = FALSE;
+        }
+    }
+
+    action = g_action_map_lookup_action (G_ACTION_MAP (view_action_group),
+                                         "offline-pin");
+    g_simple_action_set_enabled (G_SIMPLE_ACTION (action),
+                                 mode == NAUTILUS_MODE_BROWSE && show_offline_pin);
+
+    action = g_action_map_lookup_action (G_ACTION_MAP (view_action_group),
+                                         "offline-unpin");
+    g_simple_action_set_enabled (G_SIMPLE_ACTION (action),
+                                 mode == NAUTILUS_MODE_BROWSE && show_offline_unpin);
 
     /* Network view actions */
     gboolean can_remove_recent_server = is_network_view;
