@@ -547,10 +547,7 @@ nautilus_location_entry_key_pressed (GtkEventControllerKey *controller,
     {
         if (selected)
         {
-            int position;
-
-            position = strlen (gtk_editable_get_text (editable));
-            gtk_editable_select_region (editable, position, position);
+            gtk_editable_select_region (editable, -1, -1);
             schedule_completion (self);
         }
         else
