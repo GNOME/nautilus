@@ -14,6 +14,7 @@
 #include <glib/gstdio.h>
 #include <string.h>
 
+#include "nautilus-app-chooser.h"
 #include "nautilus-application.h"
 #include "nautilus-enums.h"
 #include "nautilus-file.h"
@@ -1180,26 +1181,19 @@ get_application_no_mime_type_handler_message (NautilusFile *file)
 }
 
 static void
-open_with_response_cb (GtkDialog *dialog,
-                       gint       response_id,
-                       gpointer   user_data)
+app_chosen (AdwDialog *dialog,
+            GAppInfo  *info,
+            gpointer   user_data)
 {
-    if (response_id != GTK_RESPONSE_OK)
-    {
-        gtk_window_destroy (GTK_WINDOW (dialog));
-        return;
-    }
-
     g_autoptr (ActivateParametersInstall) parameters =
         g_object_steal_data (G_OBJECT (dialog), "mime-action:parameters");
-    g_autoptr (GAppInfo) info = gtk_app_chooser_get_app_info (GTK_APP_CHOOSER (dialog));
-
-    gtk_window_destroy (GTK_WINDOW (dialog));
 
     g_signal_emit_by_name (nautilus_signaller_get_current (), "mime-data-changed");
 
     nautilus_launch_application (info, &(NautilusFileList){ .data = parameters->file },
                                  GTK_WIDGET (parameters->parent_window));
+
+    adw_dialog_close (dialog);
 }
 
 static void
@@ -1207,8 +1201,6 @@ choose_program (AdwDialog *message_dialog,
                 gchar     *response,
                 gpointer   callback_data)
 {
-    GtkWidget *dialog;
-
     if (g_strcmp0 (response, "select-application") != 0)
     {
         return;
@@ -1217,23 +1209,19 @@ choose_program (AdwDialog *message_dialog,
     g_autoptr (ActivateParametersInstall) parameters =
         g_object_steal_data (G_OBJECT (message_dialog), "mime-action:parameters");
     g_autoptr (GFile) location = nautilus_file_get_location (parameters->file);
+    NautilusAppChooser *dialog = nautilus_app_chooser_new (&(GList){ .data = location });
 
-    adw_dialog_close (message_dialog);
-
-    dialog = gtk_app_chooser_dialog_new (parameters->parent_window,
-                                         GTK_DIALOG_MODAL,
-                                         location);
     g_object_set_data_full (G_OBJECT (dialog),
                             "mime-action:parameters",
                             g_steal_pointer (&parameters),
                             (GDestroyNotify) activate_parameters_install_free);
 
-    gtk_window_present (GTK_WINDOW (dialog));
+    adw_dialog_close (message_dialog);
+    adw_dialog_present (ADW_DIALOG (dialog), GTK_WIDGET (parameters->parent_window));
 
-    g_signal_connect (dialog,
-                      "response",
-                      G_CALLBACK (open_with_response_cb),
-                      NULL);
+    g_signal_connect_object (dialog, "app-chosen",
+                             G_CALLBACK (app_chosen),
+                             NULL, G_CONNECT_DEFAULT);
 }
 
 static void
