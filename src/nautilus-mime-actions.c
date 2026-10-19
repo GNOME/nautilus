@@ -1184,27 +1184,22 @@ open_with_response_cb (GtkDialog *dialog,
                        gint       response_id,
                        gpointer   user_data)
 {
-    NautilusFile *file;
-    GAppInfo *info;
-    g_autoptr (ActivateParametersInstall) parameters = user_data;
-
     if (response_id != GTK_RESPONSE_OK)
     {
         gtk_window_destroy (GTK_WINDOW (dialog));
         return;
     }
 
-    file = g_object_get_data (G_OBJECT (dialog), "mime-action:file");
-    info = gtk_app_chooser_get_app_info (GTK_APP_CHOOSER (dialog));
+    g_autoptr (ActivateParametersInstall) parameters =
+        g_object_steal_data (G_OBJECT (dialog), "mime-action:parameters");
+    g_autoptr (GAppInfo) info = gtk_app_chooser_get_app_info (GTK_APP_CHOOSER (dialog));
 
     gtk_window_destroy (GTK_WINDOW (dialog));
 
     g_signal_emit_by_name (nautilus_signaller_get_current (), "mime-data-changed");
 
-    nautilus_launch_application (info, &(NautilusFileList){ .data = file },
+    nautilus_launch_application (info, &(NautilusFileList){ .data = parameters->file },
                                  GTK_WIDGET (parameters->parent_window));
-
-    g_object_unref (info);
 }
 
 static void
@@ -1212,43 +1207,33 @@ choose_program (AdwDialog *message_dialog,
                 gchar     *response,
                 gpointer   callback_data)
 {
-    g_autoptr (ActivateParametersInstall) parameters = callback_data;
     GtkWidget *dialog;
-    NautilusFile *file;
-    GFile *location;
 
     if (g_strcmp0 (response, "select-application") != 0)
     {
         return;
     }
 
-    file = g_object_get_data (G_OBJECT (message_dialog), "mime-action:file");
+    g_autoptr (ActivateParametersInstall) parameters =
+        g_object_steal_data (G_OBJECT (message_dialog), "mime-action:parameters");
+    g_autoptr (GFile) location = nautilus_file_get_location (parameters->file);
 
-    g_assert (NAUTILUS_IS_FILE (file));
-
-    location = nautilus_file_get_location (file);
-    nautilus_file_ref (file);
-
-    /* Close the dialog after ref:ing the file */
     adw_dialog_close (message_dialog);
 
     dialog = gtk_app_chooser_dialog_new (parameters->parent_window,
                                          GTK_DIALOG_MODAL,
                                          location);
     g_object_set_data_full (G_OBJECT (dialog),
-                            "mime-action:file",
-                            nautilus_file_ref (file),
-                            (GDestroyNotify) nautilus_file_unref);
+                            "mime-action:parameters",
+                            g_steal_pointer (&parameters),
+                            (GDestroyNotify) activate_parameters_install_free);
 
     gtk_window_present (GTK_WINDOW (dialog));
 
     g_signal_connect (dialog,
                       "response",
                       G_CALLBACK (open_with_response_cb),
-                      g_steal_pointer (&parameters));
-
-    g_object_unref (location);
-    nautilus_file_unref (file);
+                      NULL);
 }
 
 static void
@@ -1279,14 +1264,14 @@ show_unhandled_type_error (ActivateParametersInstall *parameters)
     adw_alert_dialog_set_default_response (dialog, "ok");
 
     g_object_set_data_full (G_OBJECT (dialog),
-                            "mime-action:file",
-                            nautilus_file_ref (parameters->file),
-                            (GDestroyNotify) nautilus_file_unref);
+                            "mime-action:parameters",
+                            g_steal_pointer (&parameters),
+                            (GDestroyNotify) activate_parameters_install_free);
 
     adw_dialog_present (ADW_DIALOG (dialog), GTK_WIDGET (parameters->parent_window));
 
     g_signal_connect (dialog, "response",
-                      G_CALLBACK (choose_program), parameters);
+                      G_CALLBACK (choose_program), NULL);
 
     g_free (error_message);
 }
