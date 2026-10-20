@@ -112,7 +112,12 @@ update_confirm_button (NautilusDateRangeDialog *self)
 static void
 changed_range_mode (NautilusDateRangeDialog *self)
 {
-    gtk_widget_set_visible (GTK_WIDGET (self->single_date_row), !in_date_range_mode (self));
+    gboolean is_single_date = !in_date_range_mode (self);
+
+    gtk_widget_set_visible (GTK_WIDGET (self->single_date_row), is_single_date);
+    gtk_widget_grab_focus (GTK_WIDGET (is_single_date
+                                       ? self->single_date_row
+                                       : self->from_entry_row));
     update_confirm_button (self);
 }
 
@@ -249,8 +254,6 @@ nautilus_date_range_dialog_new (GPtrArray *initial_date_range)
     {
         set_initial_date_range (self, initial_date_range);
     }
-
-    gtk_widget_grab_focus (GTK_WIDGET (self->from_entry_row));
 
     return self;
 }
