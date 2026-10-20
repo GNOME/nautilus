@@ -316,9 +316,15 @@ on_other_types_dialog_response (NautilusSearchPopover *popover)
     mimetypes = get_mime_types (popover);
     g_signal_emit (popover, signals[MIME_TYPE], 0, mimetypes);
 
+    g_clear_pointer (&popover->type_dialog, adw_dialog_close);
     g_clear_object (&popover->other_types_model);
+}
 
-    adw_dialog_close (popover->type_dialog);
+static void
+on_other_types_dialog_close (NautilusSearchPopover *popover)
+{
+    g_clear_pointer (&popover->type_dialog, adw_dialog_close);
+    g_clear_object (&popover->other_types_model);
 }
 
 static gchar *
@@ -435,10 +441,10 @@ show_other_types_dialog (NautilusSearchPopover *popover)
 
     g_signal_connect_swapped (adw_dialog_get_default_widget (popover->type_dialog), "clicked",
                               G_CALLBACK (on_other_types_dialog_response), popover);
-    g_signal_connect_swapped (popover->type_dialog, "close-attempt",
-                              G_CALLBACK (on_other_types_dialog_response), popover);
     g_signal_connect_swapped (listview, "activate",
                               G_CALLBACK (on_other_types_dialog_response), popover);
+    g_signal_connect_swapped (popover->type_dialog, "closed",
+                              G_CALLBACK (on_other_types_dialog_close), popover);
 
     adw_dialog_present (popover->type_dialog, GTK_WIDGET (toplevel));
 }
