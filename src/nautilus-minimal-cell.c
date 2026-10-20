@@ -93,7 +93,7 @@ nautilus_minimal_cell_set_property (GObject      *object,
     {
         case PROP_PAINTABLE:
         {
-            self->paintable = g_value_get_object (value);
+            g_set_object (&self->paintable, g_value_get_object (value));
         }
         break;
 
