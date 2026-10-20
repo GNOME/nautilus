@@ -419,6 +419,7 @@ get_dir_name (ButtonData *button_data)
 static void
 button_data_free (ButtonData *button_data)
 {
+    g_clear_handle_id (&button_data->switch_location_timer, g_source_remove);
     g_object_unref (button_data->path);
     g_free (button_data->dir_name);
     if (button_data->file != NULL)
