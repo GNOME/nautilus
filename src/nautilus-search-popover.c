@@ -405,7 +405,7 @@ show_other_types_dialog (NautilusSearchPopover *popover)
         g_autofree gchar *content_type = l->data;
         g_autofree gchar *description = g_content_type_get_description (content_type);
         g_autoptr (GIcon) icon = g_content_type_get_icon (content_type);
-        GdkPaintable *paintable = nautilus_icon_info_lookup (icon, 32, scale);
+        g_autoptr (GdkPaintable) paintable = nautilus_icon_info_lookup (icon, 32, scale);
 
         g_list_store_append (file_type_list, nautilus_minimal_cell_new (description,
                                                                         content_type,
