@@ -18,7 +18,7 @@
 
 struct _NautilusDateRangeDialog
 {
-    AdwWindow parent_instance;
+    AdwDialog parent_instance;
 
     AdwComboRow *date_range_row;
     NautilusDateEntryRow *single_date_row;
