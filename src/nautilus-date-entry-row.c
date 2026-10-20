@@ -239,7 +239,7 @@ nautilus_date_entry_row_class_init (NautilusDateEntryRowClass *klass)
 
 /**
  * Creates a new #NautilusDateEntryRow which allows to select a date
- * by either typing or selectiong one from a calendar popover. It
+ * by either typing or selecting one from a calendar popover. It
  * provides a "date-time" property that can be listened to for changes.
  *
  * @initial: a #GDateTime to display initially

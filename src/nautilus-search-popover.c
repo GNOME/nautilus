@@ -18,8 +18,6 @@
 #include "nautilus-icon-info.h"
 #include "nautilus-minimal-cell.h"
 
- #define SEARCH_FILTER_MAX_YEARS 5
-
 struct _NautilusSearchPopover
 {
     GtkPopover parent;
