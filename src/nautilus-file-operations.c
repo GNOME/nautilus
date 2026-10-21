@@ -126,7 +126,6 @@ typedef struct
 typedef struct
 {
     CommonJob common;
-    GList *trash_dirs;
     char *mount_root_path;
     gboolean should_confirm;
     NautilusOpCallback done_callback;
@@ -7049,61 +7048,37 @@ nautilus_file_operations_new_file (GtkWidget              *parent_view,
 
 
 static void
-delete_trash_file (CommonJob *job,
-                   GFile     *file,
-                   gboolean   del_file,
-                   gboolean   del_children)
+delete_main_trash_contents (CommonJob *job)
 {
+    g_autoptr (GFile) trash = g_file_new_for_uri (SCHEME_TRASH ":");
+    g_autoptr (GFileEnumerator) enumerator = NULL;
     GFileInfo *info;
-    GFile *child;
-    GFileEnumerator *enumerator;
 
-    if (job_aborted (job))
+    enumerator = g_file_enumerate_children (trash,
+                                            G_FILE_ATTRIBUTE_STANDARD_NAME,
+                                            G_FILE_QUERY_INFO_NOFOLLOW_SYMLINKS,
+                                            job->cancellable,
+                                            NULL);
+    if (enumerator == NULL)
     {
         return;
     }
 
-    if (del_children)
+    /* The g_file_delete operation works differently for locations provided
+     * by the trash backend as it prevents modifications of trashed items
+     * For that reason, it is enough to call g_file_delete on top-level
+     * items only.
+     */
+    while (!job_aborted (job) &&
+           (info = g_file_enumerator_next_file (enumerator, job->cancellable, NULL)) != NULL)
     {
-        gboolean should_recurse;
+        g_autoptr (GFile) child = g_file_get_child (trash, g_file_info_get_name (info));
 
-        /* The g_file_delete operation works differently for locations provided
-         * by the trash backend as it prevents modifications of trashed items
-         * For that reason, it is enough to call g_file_delete on top-level
-         * items only.
-         */
-        should_recurse = !g_file_has_uri_scheme (file, SCHEME_TRASH);
-
-        enumerator = g_file_enumerate_children (file,
-                                                G_FILE_ATTRIBUTE_STANDARD_NAME ","
-                                                G_FILE_ATTRIBUTE_STANDARD_TYPE,
-                                                G_FILE_QUERY_INFO_NOFOLLOW_SYMLINKS,
-                                                job->cancellable,
-                                                NULL);
-        if (enumerator)
-        {
-            while (!job_aborted (job) &&
-                   (info = g_file_enumerator_next_file (enumerator, job->cancellable, NULL)) != NULL)
-            {
-                gboolean is_dir;
-
-                child = g_file_get_child (file,
-                                          g_file_info_get_name (info));
-                is_dir = (g_file_info_get_file_type (info) == G_FILE_TYPE_DIRECTORY);
-
-                delete_trash_file (job, child, TRUE, should_recurse && is_dir);
-                g_object_unref (child);
-                g_object_unref (info);
-            }
-            g_file_enumerator_close (enumerator, job->cancellable, NULL);
-            g_object_unref (enumerator);
-        }
+        g_file_delete (child, job->cancellable, NULL);
+        g_object_unref (info);
     }
 
-    if (!job_aborted (job) && del_file)
-    {
-        g_file_delete (file, job->cancellable, NULL);
-    }
+    g_file_enumerator_close (enumerator, job->cancellable, NULL);
 }
 
 static void
@@ -7115,7 +7090,6 @@ empty_trash_task_done (GObject      *source_object,
 
     job = user_data;
 
-    g_list_free_full (job->trash_dirs, g_object_unref);
     g_free (job->mount_root_path);
 
     if (job->done_callback)
@@ -7135,22 +7109,18 @@ empty_trash_thread_func (GTask        *task,
 {
     EmptyTrashJob *job = task_data;
     CommonJob *common;
-    GList *l;
-    gboolean confirmed;
 
     common = (CommonJob *) job;
 
     nautilus_progress_info_start (job->common.progress);
 
-    if (job->should_confirm)
+    if (job->should_confirm &&
+        !confirm_empty_trash (common))
     {
-        confirmed = confirm_empty_trash (common);
+        return;
     }
-    else
-    {
-        confirmed = TRUE;
-    }
-    if (confirmed && job->mount_root_path != NULL)
+
+    if (job->mount_root_path != NULL)
     {
         g_autoptr (GArray) fds = open_trash_dirs_at_mount_root (job->mount_root_path);
 
@@ -7166,14 +7136,9 @@ empty_trash_thread_func (GTask        *task,
             }
         }
     }
-    else if (confirmed)
+    else
     {
-        for (l = job->trash_dirs;
-             l != NULL && !job_aborted (common);
-             l = l->next)
-        {
-            delete_trash_file (common, l->data, FALSE, TRUE);
-        }
+        delete_main_trash_contents (common);
     }
 }
 
@@ -7193,8 +7158,6 @@ nautilus_file_operations_empty_trash (GtkWidget                      *parent_vie
     }
 
     job = op_job_new (EmptyTrashJob, parent_window, dbus_data);
-    job->trash_dirs = g_list_prepend (job->trash_dirs,
-                                      g_file_new_for_uri (SCHEME_TRASH ":"));
     job->should_confirm = ask_confirmation;
 
     inhibit_power_manager ((CommonJob *) job, _("Emptying Trash"));
