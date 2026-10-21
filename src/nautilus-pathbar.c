@@ -470,7 +470,7 @@ nautilus_path_bar_class_init (NautilusPathBarClass *path_bar_class)
     path_bar_signals [OPEN_LOCATION] =
         g_signal_new ("open-location",
                       G_OBJECT_CLASS_TYPE (path_bar_class),
-                      G_SIGNAL_RUN_FIRST | G_SIGNAL_RUN_LAST,
+                      G_SIGNAL_RUN_LAST,
                       0,
                       NULL, NULL, NULL,
                       G_TYPE_NONE, 2,
@@ -1280,24 +1280,15 @@ make_button_data (NautilusPathBar *self,
         }
     }
 
-    if (button_data->path == NULL)
-    {
-        button_data->path = g_object_ref (path);
-    }
-    if (button_data->dir_name == NULL)
-    {
-        button_data->dir_name = g_strdup (nautilus_file_get_display_name (file));
-    }
-    if (button_data->file == NULL)
-    {
-        button_data->file = nautilus_file_ref (file);
-        nautilus_file_monitor_add (button_data->file, button_data,
-                                   NAUTILUS_ATTRIBUTE_INFO);
-        button_data->file_changed_signal_id =
-            g_signal_connect (button_data->file, "changed",
-                              G_CALLBACK (button_data_file_changed),
-                              button_data);
-    }
+    button_data->path = g_object_ref (path);
+    button_data->dir_name = g_strdup (nautilus_file_get_display_name (file));
+    button_data->file = nautilus_file_ref (file);
+    nautilus_file_monitor_add (button_data->file, button_data,
+                               NAUTILUS_ATTRIBUTE_INFO);
+    button_data->file_changed_signal_id =
+        g_signal_connect (button_data->file, "changed",
+                          G_CALLBACK (button_data_file_changed),
+                          button_data);
 
     gtk_button_set_child (GTK_BUTTON (button_data->button), child);
     gtk_widget_set_visible (button_data->container, TRUE);
