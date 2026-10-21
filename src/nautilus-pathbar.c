@@ -1133,7 +1133,7 @@ button_data_file_changed (NautilusFile *file,
 
         if (renamed)
         {
-            button_data->path = g_object_ref (location);
+            g_set_object (&button_data->path, location);
         }
         else
         {
@@ -1247,6 +1247,8 @@ make_button_data (NautilusPathBar *self,
             gtk_box_append (GTK_BOX (button_data->container), separator_label);
             gtk_box_append (GTK_BOX (button_data->container), button_data->button);
 
+            gtk_widget_set_visible (button_data->image, FALSE);
+            gtk_box_append (GTK_BOX (child), button_data->image);
             gtk_box_append (GTK_BOX (child), button_data->label);
         }
         break;
