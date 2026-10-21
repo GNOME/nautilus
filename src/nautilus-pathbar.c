@@ -867,8 +867,14 @@ on_drag_drop (GtkDropTarget *target,
         return FALSE;
     }
 
-    target_location = nautilus_file_get_location (button_data->file);
     target_view = nautilus_window_slot_get_current_view (self->slot);
+
+    if (target_view != NULL)
+    {
+        return FALSE;
+    }
+
+    target_location = nautilus_file_get_location (button_data->file);
     action = gdk_drop_get_actions (gtk_drop_target_get_current_drop (target));
 
     #ifdef GDK_WINDOWING_X11
