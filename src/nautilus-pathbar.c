@@ -1147,8 +1147,6 @@ button_data_file_changed (NautilusFile *file,
             if (child)
             {
                 /* moved file inside current path hierarchy */
-                g_object_unref (location);
-                location = g_file_get_parent (button_data->path);
                 current_location = g_object_ref (self->current_path);
             }
             else
@@ -1159,7 +1157,6 @@ button_data_file_changed (NautilusFile *file,
                 current_location = nautilus_file_get_location (current_button_data->file);
             }
 
-            nautilus_path_bar_update_path (self, location);
             nautilus_path_bar_set_path (self, current_location);
             g_object_unref (location);
             g_object_unref (current_location);
