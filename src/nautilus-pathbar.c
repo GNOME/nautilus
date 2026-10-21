@@ -363,8 +363,6 @@ nautilus_path_bar_finalize (GObject *object)
 
     g_clear_weak_pointer (&self->slot);
 
-    unschedule_pop_up_context_menu (NAUTILUS_PATH_BAR (object));
-
     G_OBJECT_CLASS (nautilus_path_bar_parent_class)->finalize (object);
 }
 
@@ -376,6 +374,8 @@ nautilus_path_bar_dispose (GObject *object)
     g_clear_handle_id (&self->bind_menu_model_to_popover_id, g_source_remove);
 
     nautilus_path_bar_clear_buttons (self);
+
+    unschedule_pop_up_context_menu (NAUTILUS_PATH_BAR (object));
 
     G_OBJECT_CLASS (nautilus_path_bar_parent_class)->dispose (object);
 }
