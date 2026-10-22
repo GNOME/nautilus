@@ -114,7 +114,9 @@ hits_added_cb (NautilusSearchEngine *engine,
     g_print ("Hits added for search engine localsearch!\n");
     for (guint i = 0; i < hits->len; i++)
     {
-        g_print ("Hit %i: %s\n", i, nautilus_search_hit_get_uri (hits->pdata[i]));
+        NautilusSearchHit *hit = hits->pdata[i];
+
+        g_print ("Hit %i: %s\n", i, hit->uri);
         total_hits += 1;
     }
 }

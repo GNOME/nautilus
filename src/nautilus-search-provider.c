@@ -96,7 +96,7 @@ actual_start (NautilusSearchProvider *self)
 
     priv->delayed_timeout_id = 0;
     priv->cancellable = g_cancellable_new ();
-    priv->hits = g_ptr_array_new_with_free_func (g_object_unref);
+    priv->hits = g_ptr_array_new_with_free_func ((GDestroyNotify) nautilus_search_hit_free);
     /* Keep reference on self while running */
     g_object_ref (self);
 
@@ -255,6 +255,13 @@ nautilus_search_provider_get_query (gpointer self)
     return priv->query;
 }
 
+/**
+ * nautilus_search_provider_add_hit:
+ * @self: A #NautilusSearchProvider
+ * @hit: (transfer full): A #NautilusSearchHit
+ *
+ * Adds a search hit.
+ */
 void
 nautilus_search_provider_add_hit (gpointer           self,
                                   NautilusSearchHit *hit)
@@ -304,7 +311,7 @@ nautilus_search_provider_flush_hits (gpointer self)
         search_provider_submit_hits (self, g_steal_pointer (&priv->hits));
     }
 
-    priv->hits = g_ptr_array_new_with_free_func (g_object_unref);
+    priv->hits = g_ptr_array_new_with_free_func ((GDestroyNotify) nautilus_search_hit_free);
 }
 
 /* End protected methods */

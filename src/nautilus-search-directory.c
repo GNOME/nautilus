@@ -549,12 +549,11 @@ search_engine_hits_added (NautilusSearchEngine    *engine,
     for (guint i = 0; i < hits->len; i++)
     {
         NautilusSearchHit *hit = hits->pdata[i];
-        const char *uri = nautilus_search_hit_get_uri (hit);
-        NautilusFile *hit_file = nautilus_file_get_by_uri (uri);
+        NautilusFile *hit_file = nautilus_file_get_by_uri (hit->uri);
 
         nautilus_search_hit_compute_scores (hit, now, query_location);
-        nautilus_file_set_search_relevance (hit_file, nautilus_search_hit_get_relevance (hit));
-        nautilus_file_set_search_fts_snippet (hit_file, nautilus_search_hit_get_fts_snippet (hit));
+        nautilus_file_set_search_relevance (hit_file, hit->relevance);
+        nautilus_file_set_search_fts_snippet (hit_file, hit->fts_snippet);
 
         for (monitor_list = self->monitor_list; monitor_list; monitor_list = monitor_list->next)
         {

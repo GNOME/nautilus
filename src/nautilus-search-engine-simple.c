@@ -133,13 +133,13 @@ iterate_file (GFileInfo                  *info,
 
     if (found)
     {
-        g_autofree gchar *uri = g_file_get_uri (location);
-        NautilusSearchHit *hit = nautilus_search_hit_new (uri);
+        NautilusSearchHit *hit = g_new0 (NautilusSearchHit, 1);
 
-        nautilus_search_hit_set_fts_rank (hit, match);
-        nautilus_search_hit_set_modification_time (hit, mtime);
-        nautilus_search_hit_set_access_time (hit, atime);
-        nautilus_search_hit_set_creation_time (hit, ctime);
+        hit->uri = g_file_get_uri (location);
+        hit->fts_rank = match,
+        hit->modification_time = g_steal_pointer (&mtime),
+        hit->access_time = g_steal_pointer (&atime),
+        hit->creation_time = g_steal_pointer (&ctime),
 
         nautilus_search_provider_add_hit (self, hit);
     }

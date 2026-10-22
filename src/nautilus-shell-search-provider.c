@@ -119,7 +119,6 @@ search_hits_added_cb (NautilusSearchEngine *engine,
                       gpointer              user_data)
 {
     PendingSearch *search = user_data;
-    const gchar *hit_uri;
     g_autoptr (GDateTime) now = g_date_time_new_now_local ();
 
     g_debug ("*** Search engine hits added");
@@ -129,11 +128,10 @@ search_hits_added_cb (NautilusSearchEngine *engine,
         NautilusSearchHit *hit = hits->pdata[i];
 
         nautilus_search_hit_compute_scores (hit, now, NULL);
-        hit_uri = nautilus_search_hit_get_uri (hit);
-        g_debug ("    %s", hit_uri);
+        g_debug ("    %s", hit->uri);
 
         g_hash_table_replace (search->hits,
-                              g_strdup (hit_uri),
+                              g_strdup (hit->uri),
                               g_object_ref (g_ptr_array_index (hits, i)));
     }
 }
@@ -142,20 +140,14 @@ static gint
 search_hit_compare_relevance (gconstpointer a,
                               gconstpointer b)
 {
-    NautilusSearchHit *hit_a, *hit_b;
-    gdouble relevance_a, relevance_b;
+    const NautilusSearchHit *hit_a = a;
+    const NautilusSearchHit *hit_b = b;
 
-    hit_a = NAUTILUS_SEARCH_HIT ((gpointer) a);
-    hit_b = NAUTILUS_SEARCH_HIT ((gpointer) b);
-
-    relevance_a = nautilus_search_hit_get_relevance (hit_a);
-    relevance_b = nautilus_search_hit_get_relevance (hit_b);
-
-    if (relevance_a > relevance_b)
+    if (hit_a->relevance > hit_b->relevance)
     {
         return -1;
     }
-    else if (relevance_a == relevance_b)
+    else if (hit_a->relevance == hit_b->relevance)
     {
         return 0;
     }
@@ -183,7 +175,7 @@ search_finished_cb (PendingSearch *search)
     for (uint i = 0; i < hits->len; i++)
     {
         hit = hits->pdata[i];
-        g_variant_builder_add (&builder, "s", nautilus_search_hit_get_uri (hit));
+        g_variant_builder_add (&builder, "s", hit->uri);
     }
 
     pending_search_finish (search, search->invocation,
@@ -220,7 +212,6 @@ search_hit_candidate_new (const gchar *uri,
 static void
 search_add_volumes_and_bookmarks (PendingSearch *search)
 {
-    NautilusSearchHit *hit;
     NautilusBookmark *bookmark;
     const gchar *name;
     gchar *string, *uri;
@@ -364,8 +355,11 @@ search_add_volumes_and_bookmarks (PendingSearch *search)
 
         if (match > -1)
         {
-            hit = nautilus_search_hit_new (candidate->uri);
-            nautilus_search_hit_set_fts_rank (hit, match);
+            NautilusSearchHit *hit = g_new0 (NautilusSearchHit, 1);
+
+            hit->uri = g_strdup (candidate->uri);
+            hit->fts_rank = match,
+
             nautilus_search_hit_compute_scores (hit, now, NULL);
             g_hash_table_replace (search->hits, g_strdup (candidate->uri), hit);
         }
@@ -413,7 +407,7 @@ execute_search (NautilusShellSearchProvider  *self,
 
     pending_search = g_slice_new0 (PendingSearch);
     pending_search->invocation = g_object_ref (invocation);
-    pending_search->hits = g_hash_table_new_full (g_str_hash, g_str_equal, g_free, g_object_unref);
+    pending_search->hits = g_hash_table_new_full (g_str_hash, g_str_equal, g_free, (GDestroyNotify) nautilus_search_hit_free);
     pending_search->query = query;
     pending_search->engine = nautilus_search_engine_new (NAUTILUS_SEARCH_TYPE_GLOBAL);
     pending_search->start_time = g_get_monotonic_time ();

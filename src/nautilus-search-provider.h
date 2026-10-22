@@ -9,6 +9,7 @@
 
 #pragma once
 
+#include "nautilus-search-hit.h"
 #include "nautilus-types.h"
 
 #include <gio/gio.h>

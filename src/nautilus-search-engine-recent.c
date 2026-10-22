@@ -155,7 +155,6 @@ recent_thread_func (NautilusSearchEngineRecent *self)
 
         if (rank > 0)
         {
-            NautilusSearchHit *hit;
             g_autoptr (GDateTime) mtime = NULL;
             g_autoptr (GDateTime) atime = NULL;
             g_autoptr (GDateTime) ctime = NULL;
@@ -235,11 +234,13 @@ recent_thread_func (NautilusSearchEngineRecent *self)
                 }
             }
 
-            hit = nautilus_search_hit_new (uri);
-            nautilus_search_hit_set_fts_rank (hit, rank);
-            nautilus_search_hit_set_modification_time (hit, mtime);
-            nautilus_search_hit_set_access_time (hit, atime);
-            nautilus_search_hit_set_creation_time (hit, ctime);
+            NautilusSearchHit *hit = g_new0 (NautilusSearchHit, 1);
+
+            hit->uri = g_strdup (uri);
+            hit->fts_rank = rank,
+            hit->modification_time = g_steal_pointer (&mtime),
+            hit->access_time = g_steal_pointer (&atime),
+            hit->creation_time = g_steal_pointer (&ctime),
 
             nautilus_search_provider_add_hit (self, hit);
         }

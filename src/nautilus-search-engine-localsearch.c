@@ -87,6 +87,25 @@ cursor_next (NautilusSearchEngineLocalsearch *self,
                                       self);
 }
 
+static GDateTime *
+get_hit_time (NautilusSearchEngineLocalsearch *self,
+              const char                      *time_str)
+{
+    if (time_str == NULL)
+    {
+        return NULL;
+    }
+
+    GDateTime *date = g_date_time_new_from_iso8601 (time_str, self->tz);
+
+    if (date == NULL)
+    {
+        g_warning ("unable to parse time: %s", time_str);
+    }
+
+    return date;
+}   
+
 static void
 cursor_callback (GObject      *object,
                  GAsyncResult *result,
@@ -95,12 +114,11 @@ cursor_callback (GObject      *object,
     NautilusSearchEngineLocalsearch *self = NAUTILUS_SEARCH_ENGINE_LOCALSEARCH (user_data);
     GError *error = NULL;
     TrackerSparqlCursor *cursor;
-    NautilusSearchHit *hit;
     const char *uri;
     const char *mtime_str;
     const char *atime_str;
     const char *ctime_str;
-    const gchar *snippet;
+    g_autofree char *snippet = NULL;
     gdouble rank, match;
     gboolean success;
     gchar *basename;
@@ -127,60 +145,35 @@ cursor_callback (GObject      *object,
     atime_str = tracker_sparql_cursor_get_string (cursor, 4, NULL);
     basename = g_path_get_basename (uri);
 
-    hit = nautilus_search_hit_new (uri);
     match = nautilus_query_matches_string (nautilus_search_provider_get_query (self), basename);
-    nautilus_search_hit_set_fts_rank (hit, rank + match);
     g_free (basename);
 
     if (self->fts_enabled)
     {
-        snippet = tracker_sparql_cursor_get_string (cursor, 5, NULL);
+        const char *raw_snippet = tracker_sparql_cursor_get_string (cursor, 5, NULL);
+
         if (snippet != NULL)
         {
             g_autofree gchar *escaped = NULL;
             g_autoptr (GString) buffer = NULL;
             /* Escape for markup, before adding our own markup. */
-            escaped = g_markup_escape_text (snippet, -1);
+            escaped = g_markup_escape_text (raw_snippet, -1);
             buffer = g_string_new (escaped);
             g_string_replace (buffer, "_NAUTILUS_SNIPPET_DELIM_START_", "<b>", 0);
             g_string_replace (buffer, "_NAUTILUS_SNIPPET_DELIM_END_", "</b>", 0);
 
-            nautilus_search_hit_set_fts_snippet (hit, buffer->str);
+            snippet = g_string_free_and_steal (buffer);
         }
     }
 
-    if (mtime_str != NULL)
-    {
-        g_autoptr (GDateTime) date = g_date_time_new_from_iso8601 (mtime_str, self->tz);
+    NautilusSearchHit *hit = g_new0 (NautilusSearchHit, 1);
 
-        if (date == NULL)
-        {
-            g_warning ("unable to parse mtime: %s", mtime_str);
-        }
-        nautilus_search_hit_set_modification_time (hit, date);
-    }
-
-    if (atime_str != NULL)
-    {
-        g_autoptr (GDateTime) date = g_date_time_new_from_iso8601 (atime_str, self->tz);
-
-        if (date == NULL)
-        {
-            g_warning ("unable to parse atime: %s", atime_str);
-        }
-        nautilus_search_hit_set_access_time (hit, date);
-    }
-
-    if (ctime_str != NULL)
-    {
-        g_autoptr (GDateTime) date = g_date_time_new_from_iso8601 (ctime_str, self->tz);
-
-        if (date == NULL)
-        {
-            g_warning ("unable to parse ctime: %s", ctime_str);
-        }
-        nautilus_search_hit_set_creation_time (hit, date);
-    }
+    hit->uri = g_strdup (uri),
+    hit->fts_rank = rank + match,
+    hit->fts_snippet = g_steal_pointer (&snippet),
+    hit->modification_time = get_hit_time (self, mtime_str),
+    hit->access_time = get_hit_time (self, atime_str),
+    hit->creation_time = get_hit_time (self, ctime_str),
 
     nautilus_search_provider_add_hit (self, hit);
 
