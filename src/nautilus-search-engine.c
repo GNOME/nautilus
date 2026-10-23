@@ -162,7 +162,8 @@ search_provider_hits_added (NautilusSearchProvider *provider,
         return;
     }
 
-    g_autoptr (GPtrArray) added = g_ptr_array_new_with_free_func (g_object_unref);
+    g_autoptr (GPtrArray) added = g_ptr_array_new ();
+
     for (guint i = 0; i < hits->len; i++)
     {
         NautilusSearchHit *hit = hits->pdata[i];
@@ -171,7 +172,7 @@ search_provider_hits_added (NautilusSearchProvider *provider,
         if (!g_hash_table_contains (self->uris, uri))
         {
             g_hash_table_add (self->uris, g_strdup (uri));
-            g_ptr_array_add (added, g_object_ref (hit));
+            g_ptr_array_add (added, hits->pdata[i]);
         }
     }
 
