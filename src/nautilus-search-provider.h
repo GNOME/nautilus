@@ -56,8 +56,13 @@ nautilus_search_provider_get_cancellable (gpointer self);
 NautilusQuery *
 nautilus_search_provider_get_query (gpointer self);
 void
-nautilus_search_provider_add_hit (gpointer           self,
-                                  NautilusSearchHit *hit);
+nautilus_search_provider_add_hit (gpointer   self,
+                                  char      *uri,
+                                  double     fts_rank,
+                                  char      *fts_snippet,
+                                  GDateTime *modification_time,
+                                  GDateTime *access_time,
+                                  GDateTime *creation_time);
 void
 nautilus_search_provider_flush_hits (gpointer self);
 

@@ -11,7 +11,6 @@
 #include "nautilus-search-engine-recent.h"
 
 #include "nautilus-query.h"
-#include "nautilus-search-hit.h"
 #include "nautilus-search-provider.h"
 #include "nautilus-ui-utilities.h"
 
@@ -155,7 +154,6 @@ recent_thread_func (NautilusSearchEngineRecent *self)
 
         if (rank > 0)
         {
-            NautilusSearchHit *hit;
             g_autoptr (GDateTime) mtime = NULL;
             g_autoptr (GDateTime) atime = NULL;
             g_autoptr (GDateTime) ctime = NULL;
@@ -235,13 +233,11 @@ recent_thread_func (NautilusSearchEngineRecent *self)
                 }
             }
 
-            hit = nautilus_search_hit_new (uri);
-            nautilus_search_hit_set_fts_rank (hit, rank);
-            nautilus_search_hit_set_modification_time (hit, mtime);
-            nautilus_search_hit_set_access_time (hit, atime);
-            nautilus_search_hit_set_creation_time (hit, ctime);
-
-            nautilus_search_provider_add_hit (self, hit);
+            nautilus_search_provider_add_hit (self, g_strdup (uri),
+                                              rank, NULL,
+                                              g_steal_pointer (&mtime),
+                                              g_steal_pointer (&atime),
+                                              g_steal_pointer (&ctime));
         }
     }
 

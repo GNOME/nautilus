@@ -362,8 +362,9 @@ search_add_volumes_and_bookmarks (PendingSearch *search)
 
         if (match > -1)
         {
-            hit = nautilus_search_hit_new (candidate->uri);
-            nautilus_search_hit_set_fts_rank (hit, match);
+            hit = nautilus_search_hit_new (g_strdup (candidate->uri),
+                                           match, NULL,
+                                           NULL, NULL, NULL);
             nautilus_search_hit_compute_scores (hit, now, NULL);
             g_hash_table_replace (search->hits, g_strdup (candidate->uri), hit);
         }

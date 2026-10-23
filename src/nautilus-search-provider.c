@@ -12,6 +12,7 @@
 #include "nautilus-search-provider.h"
 
 #include "nautilus-query.h"
+#include "nautilus-search-hit.h"
 
 #include <gio/gio.h>
 #include <glib-object.h>
@@ -256,14 +257,21 @@ nautilus_search_provider_get_query (gpointer self)
 }
 
 void
-nautilus_search_provider_add_hit (gpointer           self,
-                                  NautilusSearchHit *hit)
+nautilus_search_provider_add_hit (gpointer   self,
+                                  char      *uri,
+                                  double     rank,
+                                  char      *fts_snippet,
+                                  GDateTime *modification_time,
+                                  GDateTime *access_time,
+                                  GDateTime *creation_time)
 {
     const guint BATCH_LIMIT = 100;
 
     NautilusSearchProviderPrivate *priv = nautilus_search_provider_get_instance_private (self);
 
-    g_ptr_array_add (priv->hits, hit);
+    g_ptr_array_add (priv->hits,
+                     nautilus_search_hit_new (uri, rank, fts_snippet,
+                                              modification_time, access_time, creation_time));
 
     if (priv->hits->len >= BATCH_LIMIT)
     {

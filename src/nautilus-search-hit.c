@@ -22,7 +22,7 @@ struct _NautilusSearchHit
     GDateTime *modification_time;
     GDateTime *access_time;
     GDateTime *creation_time;
-    gdouble fts_rank;
+    double rank;
     gchar *fts_snippet;
 
     gdouble relevance;
@@ -118,9 +118,9 @@ nautilus_search_hit_compute_scores (NautilusSearchHit *hit,
         }
     }
 
-    if (hit->fts_rank > 0)
+    if (hit->rank > 0)
     {
-        match_bonus = MIN (500, 10.0 * hit->fts_rank);
+        match_bonus = MIN (500, 10.0 * hit->rank);
     }
     else
     {
@@ -165,7 +165,7 @@ void
 nautilus_search_hit_set_fts_rank (NautilusSearchHit *hit,
                                   gdouble            rank)
 {
-    hit->fts_rank = rank;
+    hit->rank = rank;
 }
 
 void
@@ -278,7 +278,7 @@ nautilus_search_hit_get_property (GObject    *object,
 
         case PROP_FTS_RANK:
         {
-            g_value_set_double (value, hit->fts_rank);
+            g_value_set_double (value, hit->rank);
         }
         break;
 
@@ -398,14 +398,35 @@ nautilus_search_hit_init (NautilusSearchHit *hit)
 {
 }
 
+/**
+ * nautilus_search_hit_new:
+ * @uri: (tranfer full): URI of the search hit
+ * @rank: Full-text search rank of the search hit
+ * @fts_snippet: (tranfer full) (nullable): Text snippet from full-text search results
+ * @modification_time: (tranfer full) (nullable): Modification time
+ * @access_time:  (tranfer full) (nullable): Access time
+ * @creation_time:  (tranfer full) (nullable): Creation time
+ *
+ * Creates a new #NautilusSearchHit.
+ *
+ * Returns: (tranfer full): A new #NautilusSearchHit.
+ */
 NautilusSearchHit *
-nautilus_search_hit_new (const char *uri)
+nautilus_search_hit_new (char      *uri,
+                         double     rank,
+                         char      *fts_snippet,
+                         GDateTime *modification_time,
+                         GDateTime *access_time,
+                         GDateTime *creation_time)
 {
-    NautilusSearchHit *hit;
+    NautilusSearchHit *hit = g_object_new (NAUTILUS_TYPE_SEARCH_HIT, NULL);
 
-    hit = g_object_new (NAUTILUS_TYPE_SEARCH_HIT,
-                        "uri", uri,
-                        NULL);
+    hit->uri = uri;
+    hit->rank = rank;
+    hit->fts_snippet = fts_snippet;
+    hit->modification_time = modification_time;
+    hit->access_time = access_time;
+    hit->creation_time = creation_time;
 
     return hit;
 }

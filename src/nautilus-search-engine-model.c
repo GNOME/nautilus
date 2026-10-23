@@ -13,7 +13,6 @@
 #include "nautilus-directory.h"
 #include "nautilus-file.h"
 #include "nautilus-query.h"
-#include "nautilus-search-hit.h"
 #include "nautilus-search-provider.h"
 #include "nautilus-ui-utilities.h"
 
@@ -79,12 +78,10 @@ model_directory_ready_cb (NautilusDirectory *directory,
                           gpointer           user_data)
 {
     NautilusSearchEngineModel *model = user_data;
-    gchar *uri;
     GList *files, *l;
     NautilusFile *file;
     gdouble match;
     gboolean found;
-    NautilusSearchHit *hit;
     GDateTime *initial_date;
     GDateTime *end_date;
     GPtrArray *date_range;
@@ -164,16 +161,11 @@ model_directory_ready_cb (NautilusDirectory *directory,
 
         if (found)
         {
-            uri = nautilus_file_get_uri (file);
-            hit = nautilus_search_hit_new (uri);
-            nautilus_search_hit_set_fts_rank (hit, match);
-            nautilus_search_hit_set_modification_time (hit, mtime);
-            nautilus_search_hit_set_access_time (hit, atime);
-            nautilus_search_hit_set_creation_time (hit, ctime);
-
-            nautilus_search_provider_add_hit (model, hit);
-
-            g_free (uri);
+            nautilus_search_provider_add_hit (model, nautilus_file_get_uri (file),
+                                              match, NULL,
+                                              g_steal_pointer (&mtime),
+                                              g_steal_pointer (&atime),
+                                              g_steal_pointer (&ctime));
         }
     }
 

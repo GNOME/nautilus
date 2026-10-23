@@ -16,7 +16,13 @@ G_BEGIN_DECLS
 
 G_DECLARE_FINAL_TYPE (NautilusSearchHit, nautilus_search_hit, NAUTILUS, SEARCH_HIT, GObject);
 
-NautilusSearchHit * nautilus_search_hit_new                   (const char        *uri);
+NautilusSearchHit *
+nautilus_search_hit_new (char      *uri,
+                         double     rank,
+                         char      *fts_snippet,
+                         GDateTime *modification_time,
+                         GDateTime *access_time,
+                         GDateTime *creation_time);
 
 void                nautilus_search_hit_set_fts_rank          (NautilusSearchHit *hit,
 							       gdouble            fts_rank);

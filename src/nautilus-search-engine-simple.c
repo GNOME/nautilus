@@ -12,7 +12,6 @@
 
 #include "nautilus-file-utilities.h"
 #include "nautilus-query.h"
-#include "nautilus-search-hit.h"
 #include "nautilus-search-provider.h"
 #include "nautilus-ui-utilities.h"
 
@@ -133,15 +132,11 @@ iterate_file (GFileInfo                  *info,
 
     if (found)
     {
-        g_autofree gchar *uri = g_file_get_uri (location);
-        NautilusSearchHit *hit = nautilus_search_hit_new (uri);
-
-        nautilus_search_hit_set_fts_rank (hit, match);
-        nautilus_search_hit_set_modification_time (hit, mtime);
-        nautilus_search_hit_set_access_time (hit, atime);
-        nautilus_search_hit_set_creation_time (hit, ctime);
-
-        nautilus_search_provider_add_hit (self, hit);
+        nautilus_search_provider_add_hit (self, g_file_get_uri (location),
+                                          match, NULL,
+                                          g_steal_pointer (&mtime),
+                                          g_steal_pointer (&atime),
+                                          g_steal_pointer (&ctime));
     }
 
     current_time = g_get_monotonic_time ();
