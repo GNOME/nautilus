@@ -10,6 +10,7 @@ include:
     - component: "gitlab.gnome.org/GNOME/citemplates/gnomeos-basic-ci@master"
       inputs:
           job-stage: "test"
+          meson-options: "-Dtests=all"
           gobject-linter: "enabled"
           gobject-linter-options: "-c build-aux/gobject-linter.toml"
     - component: "gitlab.gnome.org/GNOME/citemplates/basic-deploy-docs@master"
