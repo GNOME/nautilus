@@ -2,9 +2,7 @@ tests = {
   'test-nautilus-directory-async': {},
   'test-file-operations-create': {},
   'test-files-view': {
-    'suite': ['tracker'],
-    'tracker': true,
-    'is_parallel' : false,
+    'is_parallel': false,
   },
   'test-sidebar': {
     'is_parallel' : false,
