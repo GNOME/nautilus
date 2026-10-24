@@ -703,7 +703,8 @@ window_slot_close (NautilusWindow     *window,
     {
         GAction *restore_action = g_action_map_lookup_action (G_ACTION_MAP (window), "restore-tab");
 
-        g_simple_action_set_enabled (G_SIMPLE_ACTION (restore_action), TRUE);
+        g_simple_action_set_enabled (G_SIMPLE_ACTION (restore_action),
+                                     g_queue_get_length (window->tab_data_queue) > 0);
     }
 
 #ifdef HAVE_MALLOC_TRIM
