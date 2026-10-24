@@ -424,6 +424,11 @@ ensure_directories_hash_table (void)
 static NautilusDirectory *
 lookup_existing (GFile *location)
 {
+    if (location == NULL)
+    {
+        return NULL;
+    }
+
     ensure_directories_hash_table ();
 
     return g_hash_table_lookup (directories, location);
