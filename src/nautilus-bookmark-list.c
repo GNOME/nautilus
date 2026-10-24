@@ -437,6 +437,8 @@ load_callback (GObject      *source_object,
         return;
     }
 
+    g_auto (GStrv) lines = g_strsplit (contents, "\n", -1);
+
     if (bookmarks_to_merge_exist)
     {
         g_list_foreach (self->list, (GFunc) stop_monitoring_bookmark, self);
@@ -447,7 +449,6 @@ load_callback (GObject      *source_object,
         clear (self);
     }
 
-    char **lines = g_strsplit (contents, "\n", -1);
     for (guint i = 0; lines[i]; i++)
     {
         char *uri = lines[i];
@@ -507,8 +508,6 @@ load_callback (GObject      *source_object,
     {
         g_signal_emit (self, signals[CHANGED], 0);
     }
-
-    g_strfreev (lines);
 }
 
 static void
