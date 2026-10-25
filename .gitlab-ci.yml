@@ -12,6 +12,8 @@ include:
           job-stage: "test"
           gobject-linter: "enabled"
           gobject-linter-options: "-c build-aux/gobject-linter.toml"
+          gcov: "disabled"
+          grcov-c: "disabled"
     - component: "gitlab.gnome.org/GNOME/citemplates/basic-deploy-docs@master"
 
 variables:
@@ -232,6 +234,30 @@ nightly@x86_64:
 nightly@aarch64:
     extends: '.publish_nightly'
     needs: ['flatpak@aarch64']
+
+coverage:
+    extends:
+        - .fdo.distribution-image@fedora
+        - .fedora-x86_64
+    stage: analyze
+    needs:
+        - job: fedora_rawhide@x86_64
+          artifacts: true
+    rules:
+        - allow_failure: true
+    script:
+        - ninja coverage -C $MESON_BUILD_DIR
+    artifacts:
+        expose_as: 'Coverage'
+        paths:
+            - $MESON_BUILD_DIR/meson-logs/coveragereport/index.html
+            - $MESON_BUILD_DIR/meson-logs/coveragereport
+        reports:
+            coverage_report:
+                coverage_format: cobertura
+                path: $MESON_BUILD_DIR/meson-logs/coverage.xml
+        expire_in: 2 weeks
+    coverage: '/^\s*lines:\s+([\d.]+\%)\s*/'
 
 pages:
     extends:
