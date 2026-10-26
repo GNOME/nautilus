@@ -3606,7 +3606,7 @@ nautilus_files_view_update_status_overlay (NautilusFilesView *self)
 
             if (global_search)
             {
-                adw_status_page_set_icon_name (status_page, "edit-find-symbolic");
+                adw_status_page_set_icon_name (status_page, "nautilus-edit-find");
                 adw_status_page_set_description (status_page,
                                                  _("More locations can be added to search in the settings"));
                 adw_status_page_set_child (status_page, build_search_settings_button ());
@@ -3628,31 +3628,31 @@ nautilus_files_view_update_status_overlay (NautilusFilesView *self)
         }
         else if (nautilus_is_root_for_scheme (self->location, SCHEME_TRASH))
         {
-            adw_status_page_set_icon_name (status_page, "user-trash-symbolic");
+            adw_status_page_set_icon_name (status_page, "nautilus-user-trash");
             adw_status_page_set_title (status_page, _("Trash is Empty"));
             adw_status_page_set_description (status_page, NULL);
         }
         else if (g_file_has_uri_scheme (self->location, SCHEME_STARRED))
         {
-            adw_status_page_set_icon_name (status_page, "starred-symbolic");
+            adw_status_page_set_icon_name (status_page, "nautilus-starred");
             adw_status_page_set_title (status_page, _("No Starred Files"));
             adw_status_page_set_description (status_page, NULL);
         }
         else if (g_file_has_uri_scheme (self->location, SCHEME_RECENT))
         {
-            adw_status_page_set_icon_name (status_page, "document-open-recent-symbolic");
+            adw_status_page_set_icon_name (status_page, "nautilus-recent");
             adw_status_page_set_title (status_page, _("No Recent Files"));
             adw_status_page_set_description (status_page, NULL);
         }
         else if (g_file_has_uri_scheme (self->location, SCHEME_NETWORK_VIEW))
         {
-            adw_status_page_set_icon_name (status_page, "network-computer-symbolic");
+            adw_status_page_set_icon_name (status_page, "nautilus-network");
             adw_status_page_set_title (status_page, _("No Known Connections"));
             adw_status_page_set_description (status_page, _("Enter an address to connect to a network location."));
         }
         else
         {
-            adw_status_page_set_icon_name (status_page, "folder-symbolic");
+            adw_status_page_set_icon_name (status_page, "nautilus-folder");
             adw_status_page_set_title (status_page, _("Folder is Empty"));
             adw_status_page_set_description (status_page, NULL);
         }
