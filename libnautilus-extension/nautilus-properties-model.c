@@ -37,7 +37,7 @@ struct _NautilusPropertiesModel
     GListModel *model;
 };
 
-G_DEFINE_TYPE (NautilusPropertiesModel, nautilus_properties_model, G_TYPE_OBJECT)
+G_DEFINE_FINAL_TYPE (NautilusPropertiesModel, nautilus_properties_model, G_TYPE_OBJECT)
 
 /**
  * nautilus_properties_model_new:

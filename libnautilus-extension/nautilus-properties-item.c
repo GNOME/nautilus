@@ -34,7 +34,7 @@ struct _NautilusPropertiesItem
     char *value;
 };
 
-G_DEFINE_TYPE (NautilusPropertiesItem, nautilus_properties_item, G_TYPE_OBJECT)
+G_DEFINE_FINAL_TYPE (NautilusPropertiesItem, nautilus_properties_item, G_TYPE_OBJECT)
 
 /**
  * nautilus_properties_item_new:

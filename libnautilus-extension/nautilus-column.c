@@ -48,7 +48,7 @@ struct _NautilusColumn
     gboolean visible;
 };
 
-G_DEFINE_TYPE (NautilusColumn, nautilus_column, G_TYPE_OBJECT);
+G_DEFINE_FINAL_TYPE (NautilusColumn, nautilus_column, G_TYPE_OBJECT);
 
 /**
  * nautilus_column_new:

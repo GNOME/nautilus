@@ -41,7 +41,7 @@ struct _NautilusMenu
     GList *item_list;
 };
 
-G_DEFINE_TYPE (NautilusMenu, nautilus_menu, G_TYPE_OBJECT);
+G_DEFINE_FINAL_TYPE (NautilusMenu, nautilus_menu, G_TYPE_OBJECT);
 
 /**
  * nautilus_menu_append_item:
