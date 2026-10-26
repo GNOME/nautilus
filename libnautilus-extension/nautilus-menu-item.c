@@ -186,58 +186,70 @@ nautilus_menu_item_set_property (GObject      *object,
     {
         case PROP_NAME:
         {
-            g_free (priv->name);
-            priv->name = g_strdup (g_value_get_string (value));
-            g_object_notify (object, "name");
+            if (g_set_str (&priv->name, g_value_get_string (value)))
+            {
+                g_object_notify (object, "name");
+            }
         }
         break;
 
         case PROP_LABEL:
         {
-            g_free (priv->label);
-            priv->label = g_strdup (g_value_get_string (value));
-            g_object_notify (object, "label");
+            if (g_set_str (&priv->label, g_value_get_string (value)))
+            {
+                g_object_notify (object, "label");
+            }
         }
         break;
 
         case PROP_TIP:
         {
-            g_free (priv->tip);
-            priv->tip = g_strdup (g_value_get_string (value));
-            g_object_notify (object, "tip");
+            if (g_set_str (&priv->tip, g_value_get_string (value)))
+            {
+                g_object_notify (object, "tip");
+            }
         }
         break;
 
         case PROP_ICON:
         {
-            g_free (priv->icon);
-            priv->icon = g_strdup (g_value_get_string (value));
-            g_object_notify (object, "icon");
+            if (g_set_str (&priv->icon, g_value_get_string (value)))
+            {
+                g_object_notify (object, "icon");
+            }
         }
         break;
 
         case PROP_SENSITIVE:
         {
-            priv->sensitive = g_value_get_boolean (value);
-            g_object_notify (object, "sensitive");
+            gboolean sensitive = g_value_get_boolean (value);
+
+            if (priv->sensitive != sensitive)
+            {
+                priv->sensitive = sensitive;
+                g_object_notify (object, "sensitive");
+            }
         }
         break;
 
         case PROP_PRIORITY:
         {
-            priv->priority = g_value_get_boolean (value);
-            g_object_notify (object, "priority");
+            gboolean priority = g_value_get_boolean (value);
+
+            if (priv->priority != priority)
+            {
+                priv->priority = priority;
+                g_object_notify (object, "priority");
+            }
         }
         break;
 
         case PROP_MENU:
         {
-            if (priv->menu)
+            if (g_set_object (&priv->menu, g_value_get_object (value)))
             {
-                g_object_unref (priv->menu);
+                g_object_notify (object, "menu");
             }
-            priv->menu = g_object_ref (g_value_get_object (value));
-            g_object_notify (object, "menu");
         }
         break;
 
@@ -314,7 +326,8 @@ nautilus_menu_item_class_init (NautilusMenuItemClass *class)
     properties[PROP_NAME] =
         g_param_spec_string ("name", NULL, NULL,
                              NULL,
-                             G_PARAM_CONSTRUCT_ONLY | G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS);
+                             G_PARAM_CONSTRUCT_ONLY | G_PARAM_READWRITE |
+                             G_PARAM_EXPLICIT_NOTIFY | G_PARAM_STATIC_STRINGS);
     /**
      * NautilusMenuItem:label:
      *
@@ -323,7 +336,7 @@ nautilus_menu_item_class_init (NautilusMenuItemClass *class)
     properties[PROP_LABEL] =
         g_param_spec_string ("label", NULL, NULL,
                              NULL,
-                             G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS);
+                             G_PARAM_READWRITE | G_PARAM_EXPLICIT_NOTIFY | G_PARAM_STATIC_STRINGS);
     /**
      * NautilusMenuItem:tip:
      *
@@ -334,7 +347,7 @@ nautilus_menu_item_class_init (NautilusMenuItemClass *class)
     properties[PROP_TIP] =
         g_param_spec_string ("tip", NULL, NULL,
                              NULL,
-                             G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS);
+                             G_PARAM_READWRITE | G_PARAM_EXPLICIT_NOTIFY | G_PARAM_STATIC_STRINGS);
     /**
      * NautilusMenuItem:icon:
      *
@@ -345,7 +358,7 @@ nautilus_menu_item_class_init (NautilusMenuItemClass *class)
     properties[PROP_ICON] =
         g_param_spec_string ("icon", NULL, NULL,
                              NULL,
-                             G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS);
+                             G_PARAM_READWRITE | G_PARAM_EXPLICIT_NOTIFY | G_PARAM_STATIC_STRINGS);
     /**
      * NautilusMenuItem:sensitive:
      *
@@ -355,7 +368,7 @@ nautilus_menu_item_class_init (NautilusMenuItemClass *class)
     properties[PROP_SENSITIVE] =
         g_param_spec_boolean ("sensitive", NULL, NULL,
                               TRUE,
-                              G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS);
+                              G_PARAM_READWRITE | G_PARAM_EXPLICIT_NOTIFY | G_PARAM_STATIC_STRINGS);
     /**
      * NautilusMenuItem:priority:
      *
@@ -366,15 +379,16 @@ nautilus_menu_item_class_init (NautilusMenuItemClass *class)
     properties[PROP_PRIORITY] =
         g_param_spec_boolean ("priority", NULL, NULL,
                               TRUE,
-                              G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS);
+                              G_PARAM_READWRITE | G_PARAM_EXPLICIT_NOTIFY | G_PARAM_STATIC_STRINGS);
     /**
      * NautilusMenuItem:menu:
      *
      * A submenu for the current `NautilusMenuItem`.
      */
-    properties[PROP_MENU] = g_param_spec_object ("menu", NULL, NULL,
-                                                 NAUTILUS_TYPE_MENU,
-                                                 G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS);
+    properties[PROP_MENU] =
+        g_param_spec_object ("menu", NULL, NULL,
+                             NAUTILUS_TYPE_MENU,
+                             G_PARAM_READWRITE | G_PARAM_EXPLICIT_NOTIFY | G_PARAM_STATIC_STRINGS);
 
     g_object_class_install_properties (object_class, NUM_PROPS, properties);
 }
