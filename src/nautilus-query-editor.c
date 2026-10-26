@@ -711,7 +711,7 @@ nautilus_query_editor_set_location (NautilusQueryEditor *editor,
     gtk_image_set_from_icon_name (GTK_IMAGE (editor->prefix_icon),
                                   (editor->location != NULL ?
                                    "nautilus-folder-search-symbolic" :
-                                   "edit-find-symbolic"));
+                                   "nautilus-edit-find"));
     gtk_text_set_placeholder_text (GTK_TEXT (editor->text),
                                    (editor->location != NULL ?
                                     _("Search current folder") :

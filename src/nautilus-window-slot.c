@@ -866,7 +866,7 @@ nautilus_window_slot_constructed (GObject *object)
                     GTK_WIDGET (self->banner));
 
     self->global_search_page = ADW_STATUS_PAGE (adw_status_page_new ());
-    adw_status_page_set_icon_name (self->global_search_page, "edit-find-symbolic");
+    adw_status_page_set_icon_name (self->global_search_page, "nautilus-edit-find");
     adw_status_page_set_title (self->global_search_page, _("Search Everywhere"));
     adw_status_page_set_description (self->global_search_page, _("Find files and folders in all search locations"));
     gtk_stack_add_child (GTK_STACK (self->stack), GTK_WIDGET (self->global_search_page));
