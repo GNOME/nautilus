@@ -14,6 +14,8 @@
 
 G_BEGIN_DECLS
 
+/* FIXME: Remove next line with gobject-linter version > 0.1.2 available */
+/* gobject-linter-ignore-next-line: missing_implementation */
 extern NautilusFileInfo *(*nautilus_file_info_getter) (GFile *location, gboolean create);
 
 G_END_DECLS
