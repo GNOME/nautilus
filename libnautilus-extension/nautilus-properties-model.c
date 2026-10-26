@@ -22,11 +22,12 @@
 
 enum
 {
-    PROP_0,
-    PROP_TITLE,
+    PROP_TITLE = 1,
     PROP_MODEL,
-    LAST_PROP
+    NUM_PROPS
 };
+
+static GParamSpec *properties[NUM_PROPS];
 
 struct _NautilusPropertiesModel
 {
@@ -150,32 +151,34 @@ nautilus_properties_model_init (NautilusPropertiesModel *self)
 static void
 nautilus_properties_model_class_init (NautilusPropertiesModelClass *class)
 {
-    GParamSpec *pspec;
+    GObjectClass *object_class = G_OBJECT_CLASS (class);
 
-    G_OBJECT_CLASS (class)->finalize = nautilus_properties_model_finalize;
-    G_OBJECT_CLASS (class)->dispose = nautilus_properties_model_dispose;
-    G_OBJECT_CLASS (class)->get_property = nautilus_properties_model_get_property;
-    G_OBJECT_CLASS (class)->set_property = nautilus_properties_model_set_property;
+    object_class->finalize = nautilus_properties_model_finalize;
+    object_class->dispose = nautilus_properties_model_dispose;
+    object_class->get_property = nautilus_properties_model_get_property;
+    object_class->set_property = nautilus_properties_model_set_property;
 
     /**
      * NautilusPropertiesModel:title:
      *
      * The user visible title
      */
-    pspec = g_param_spec_string ("title", "", "",
-                                 NULL,
-                                 G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS);
-    g_object_class_install_property (G_OBJECT_CLASS (class), PROP_TITLE, pspec);
+    properties[PROP_TITLE] =
+        g_param_spec_string ("title", NULL, NULL,
+                             NULL,
+                             G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS);
 
     /**
      * NautilusPropertiesModel:model
      *
      * The item model.
      */
-    pspec = g_param_spec_object ("model", "", "",
-                                 G_TYPE_LIST_MODEL,
-                                 G_PARAM_CONSTRUCT_ONLY | G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS);
-    g_object_class_install_property (G_OBJECT_CLASS (class), PROP_MODEL, pspec);
+    properties[PROP_MODEL] =
+        g_param_spec_object ("model", NULL, NULL,
+                             G_TYPE_LIST_MODEL,
+                             G_PARAM_CONSTRUCT_ONLY | G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS);
+
+    g_object_class_install_properties (object_class, NUM_PROPS, properties);
 }
 
 /**

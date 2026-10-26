@@ -22,8 +22,7 @@
 
 enum
 {
-    PROP_0,
-    PROP_NAME,
+    PROP_NAME = 1,
     PROP_ATTRIBUTE,
     PROP_ATTRIBUTE_Q,
     PROP_LABEL,
@@ -31,8 +30,10 @@ enum
     PROP_XALIGN,
     PROP_DEFAULT_SORT_ORDER,
     PROP_VISIBLE,
-    LAST_PROP
+    NUM_PROPS
 };
+
+static GParamSpec *properties[NUM_PROPS];
 
 struct _NautilusColumn
 {
@@ -174,7 +175,7 @@ nautilus_column_set_property (GObject      *object,
         {
             column->attribute = g_quark_from_string (g_value_get_string (value));
             g_object_notify (object, "attribute");
-            g_object_notify (object, "attribute_q");
+            g_object_notify (object, "attribute-q");
         }
         break;
 
@@ -243,89 +244,72 @@ nautilus_column_init (NautilusColumn *column)
 static void
 nautilus_column_class_init (NautilusColumnClass *class)
 {
-    G_OBJECT_CLASS (class)->finalize = nautilus_column_finalize;
-    G_OBJECT_CLASS (class)->get_property = nautilus_column_get_property;
-    G_OBJECT_CLASS (class)->set_property = nautilus_column_set_property;
+    GObjectClass *object_class = G_OBJECT_CLASS (class);
+
+    object_class->finalize = nautilus_column_finalize;
+    object_class->get_property = nautilus_column_get_property;
+    object_class->set_property = nautilus_column_set_property;
 
     /**
      * NautilusColumn:name:
      *
      * The identifier for the column.
      */
-    g_object_class_install_property (G_OBJECT_CLASS (class),
-                                     PROP_NAME,
-                                     g_param_spec_string ("name",
-                                                          "Name",
-                                                          "Name of the column",
-                                                          NULL,
-                                                          G_PARAM_CONSTRUCT_ONLY | G_PARAM_WRITABLE | G_PARAM_READABLE));
+    properties[PROP_NAME] =
+        g_param_spec_string ("name", NULL, NULL,
+                             NULL,
+                             G_PARAM_CONSTRUCT_ONLY | G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS);
 
     /**
      * NautilusColumn:attribute:
      *
      * The file attribute to be displayed in the column.
      */
-    g_object_class_install_property (G_OBJECT_CLASS (class),
-                                     PROP_ATTRIBUTE,
-                                     g_param_spec_string ("attribute",
-                                                          "Attribute",
-                                                          "The attribute name to display",
-                                                          NULL,
-                                                          G_PARAM_READWRITE));
+    properties[PROP_ATTRIBUTE] =
+        g_param_spec_string ("attribute", NULL, NULL,
+                             NULL,
+                             G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS);
 
     /**
-     * NautilusColumn:attribute_q:
+     * NautilusColumn:attribute-q:
      *
      * The name of the attribute to display, in quark form.
      */
-    g_object_class_install_property (G_OBJECT_CLASS (class),
-                                     PROP_ATTRIBUTE_Q,
-                                     g_param_spec_uint ("attribute_q",
-                                                        "Attribute quark",
-                                                        "The attribute name to display, in quark form",
-                                                        0, G_MAXUINT, 0,
-                                                        G_PARAM_READABLE));
+    properties[PROP_ATTRIBUTE_Q] =
+        g_param_spec_uint ("attribute-q", NULL, NULL,
+                           0, G_MAXUINT, 0,
+                           G_PARAM_READABLE | G_PARAM_STATIC_STRINGS);
 
     /**
      * NautilusColumn:label:
      *
      * The label to display in the column.
      */
-    g_object_class_install_property (G_OBJECT_CLASS (class),
-                                     PROP_LABEL,
-                                     g_param_spec_string ("label",
-                                                          "Label",
-                                                          "Label to display in the column",
-                                                          NULL,
-                                                          G_PARAM_READWRITE));
+    properties[PROP_LABEL] =
+        g_param_spec_string ("label", NULL, NULL,
+                             NULL,
+                             G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS);
 
     /**
      * NautilusColumn:description:
      *
      * The user-visible description of the column.
      */
-    g_object_class_install_property (G_OBJECT_CLASS (class),
-                                     PROP_DESCRIPTION,
-                                     g_param_spec_string ("description",
-                                                          "Description",
-                                                          "A user-visible description of the column",
-                                                          NULL,
-                                                          G_PARAM_READWRITE));
+    properties[PROP_DESCRIPTION] =
+        g_param_spec_string ("description", NULL, NULL,
+                             NULL,
+                             G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS);
 
     /**
      * NautilusColumn:xalign:
      *
      * The x-alignment of the column.
      */
-    g_object_class_install_property (G_OBJECT_CLASS (class),
-                                     PROP_XALIGN,
-                                     g_param_spec_float ("xalign",
-                                                         "xalign",
-                                                         "The x-alignment of the column",
-                                                         0.0,
-                                                         1.0,
-                                                         0.0,
-                                                         G_PARAM_READWRITE));
+    properties[PROP_XALIGN] =
+        g_param_spec_float ("xalign", NULL, NULL,
+                            0.0, 1.0, 0.0,
+                            G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS);
+
     /**
      * NautilusColumn:default-sort-order: (type gboolean)
      *
@@ -336,13 +320,10 @@ nautilus_column_class_init (NautilusColumnClass *class)
      *
      * Stability: Private: Internal to the application.
      */
-    g_object_class_install_property (G_OBJECT_CLASS (class),
-                                     PROP_DEFAULT_SORT_ORDER,
-                                     g_param_spec_int ("default-sort-order",
-                                                       "Default sort order",
-                                                       "Default sort order",
-                                                       G_MININT, G_MAXINT, 0,
-                                                       G_PARAM_READWRITE));
+    properties[PROP_DEFAULT_SORT_ORDER] =
+        g_param_spec_int ("default-sort-order", NULL, NULL,
+                          G_MININT, G_MAXINT, 0,
+                          G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS);
 
     /**
      * NautilusColumn:visible: (type gboolean)
@@ -354,10 +335,10 @@ nautilus_column_class_init (NautilusColumnClass *class)
      *
      * Stability: Private: Internal to the application.
      */
-    g_object_class_install_property (G_OBJECT_CLASS (class),
-                                     PROP_VISIBLE,
-                                     g_param_spec_boolean ("visible",
-                                                           NULL, NULL,
-                                                           FALSE,
-                                                           G_PARAM_READWRITE));
+    properties[PROP_VISIBLE] =
+        g_param_spec_boolean ("visible", NULL, NULL,
+                              FALSE,
+                              G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS);
+
+    g_object_class_install_properties (object_class, NUM_PROPS, properties);
 }

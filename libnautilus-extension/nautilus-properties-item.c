@@ -19,11 +19,12 @@
 
 enum
 {
-    PROP_0,
-    PROP_NAME,
+    PROP_NAME = 1,
     PROP_VALUE,
-    LAST_PROP
+    NUM_PROPS
 };
+
+static GParamSpec *properties[NUM_PROPS];
 
 struct _NautilusPropertiesItem
 {
@@ -138,31 +139,33 @@ nautilus_properties_item_init (NautilusPropertiesItem *self)
 static void
 nautilus_properties_item_class_init (NautilusPropertiesItemClass *class)
 {
-    GParamSpec *pspec;
+    GObjectClass *object_class = G_OBJECT_CLASS (class);
 
-    G_OBJECT_CLASS (class)->finalize = nautilus_properties_item_finalize;
-    G_OBJECT_CLASS (class)->get_property = nautilus_properties_item_get_property;
-    G_OBJECT_CLASS (class)->set_property = nautilus_properties_item_set_property;
+    object_class->finalize = nautilus_properties_item_finalize;
+    object_class->get_property = nautilus_properties_item_get_property;
+    object_class->set_property = nautilus_properties_item_set_property;
 
     /**
      * NautilusPropertiesItem:name:
      *
      * The user-visible name.
      */
-    pspec = g_param_spec_string ("name", "", "",
-                                 NULL,
-                                 G_PARAM_CONSTRUCT_ONLY | G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS);
-    g_object_class_install_property (G_OBJECT_CLASS (class), PROP_NAME, pspec);
+    properties[PROP_NAME] =
+        g_param_spec_string ("name", NULL, NULL,
+                             NULL,
+                             G_PARAM_CONSTRUCT_ONLY | G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS);
 
     /**
      * NautilusPropertiesItem:value:
      *
      * The user-visible value.
      */
-    pspec = g_param_spec_string ("value", "", "",
-                                 NULL,
-                                 G_PARAM_CONSTRUCT_ONLY | G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS);
-    g_object_class_install_property (G_OBJECT_CLASS (class), PROP_VALUE, pspec);
+    properties[PROP_VALUE] =
+        g_param_spec_string ("value", NULL, NULL,
+                             NULL,
+                             G_PARAM_CONSTRUCT_ONLY | G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS);
+
+    g_object_class_install_properties (object_class, NUM_PROPS, properties);
 }
 
 /**

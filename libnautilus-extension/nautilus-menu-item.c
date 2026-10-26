@@ -30,16 +30,17 @@ enum
 
 enum
 {
-    PROP_0,
-    PROP_NAME,
+    PROP_NAME = 1,
     PROP_LABEL,
     PROP_TIP,
     PROP_ICON,
     PROP_SENSITIVE,
     PROP_PRIORITY,
     PROP_MENU,
-    LAST_PROP
+    NUM_PROPS
 };
+
+static GParamSpec *properties[NUM_PROPS];
 
 static guint signals[LAST_SIGNAL];
 
@@ -283,9 +284,11 @@ nautilus_menu_item_init (NautilusMenuItem *self)
 static void
 nautilus_menu_item_class_init (NautilusMenuItemClass *class)
 {
-    G_OBJECT_CLASS (class)->finalize = nautilus_menu_item_finalize;
-    G_OBJECT_CLASS (class)->get_property = nautilus_menu_item_get_property;
-    G_OBJECT_CLASS (class)->set_property = nautilus_menu_item_set_property;
+    GObjectClass *object_class = G_OBJECT_CLASS (class);
+
+    object_class->finalize = nautilus_menu_item_finalize;
+    object_class->get_property = nautilus_menu_item_get_property;
+    object_class->set_property = nautilus_menu_item_set_property;
 
     /**
      * NautilusMenuItem::activate:
@@ -308,25 +311,19 @@ nautilus_menu_item_class_init (NautilusMenuItemClass *class)
      *
      * A unique identifier for the `NautilusMenuItem`.  This is not user visible.
      */
-    g_object_class_install_property (G_OBJECT_CLASS (class),
-                                     PROP_NAME,
-                                     g_param_spec_string ("name",
-                                                          "Name",
-                                                          "Name of the item",
-                                                          NULL,
-                                                          G_PARAM_CONSTRUCT_ONLY | G_PARAM_WRITABLE | G_PARAM_READABLE));
+    properties[PROP_NAME] =
+        g_param_spec_string ("name", NULL, NULL,
+                             NULL,
+                             G_PARAM_CONSTRUCT_ONLY | G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS);
     /**
      * NautilusMenuItem:label:
      *
      * A user visible string describing the `NautilusMenuItem`.
      */
-    g_object_class_install_property (G_OBJECT_CLASS (class),
-                                     PROP_LABEL,
-                                     g_param_spec_string ("label",
-                                                          "Label",
-                                                          "Label to display to the user",
-                                                          NULL,
-                                                          G_PARAM_READWRITE));
+    properties[PROP_LABEL] =
+        g_param_spec_string ("label", NULL, NULL,
+                             NULL,
+                             G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS);
     /**
      * NautilusMenuItem:tip:
      *
@@ -334,13 +331,10 @@ nautilus_menu_item_class_init (NautilusMenuItemClass *class)
      *
      * Deprecated: 4.1
      */
-    g_object_class_install_property (G_OBJECT_CLASS (class),
-                                     PROP_TIP,
-                                     g_param_spec_string ("tip",
-                                                          "Tip",
-                                                          "Tooltip for the menu item",
-                                                          NULL,
-                                                          G_PARAM_READWRITE));
+    properties[PROP_TIP] =
+        g_param_spec_string ("tip", NULL, NULL,
+                             NULL,
+                             G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS);
     /**
      * NautilusMenuItem:icon:
      *
@@ -348,26 +342,20 @@ nautilus_menu_item_class_init (NautilusMenuItemClass *class)
      *
      * Deprecated: 4.1
      */
-    g_object_class_install_property (G_OBJECT_CLASS (class),
-                                     PROP_ICON,
-                                     g_param_spec_string ("icon",
-                                                          "Icon",
-                                                          "Name of the icon to display in the menu item",
-                                                          NULL,
-                                                          G_PARAM_READWRITE));
+    properties[PROP_ICON] =
+        g_param_spec_string ("icon", NULL, NULL,
+                             NULL,
+                             G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS);
     /**
      * NautilusMenuItem:sensitive:
      *
      * Whether the `NautilusMenuItem` should be sensitive (i.e. clickable).
      *
      */
-    g_object_class_install_property (G_OBJECT_CLASS (class),
-                                     PROP_SENSITIVE,
-                                     g_param_spec_boolean ("sensitive",
-                                                           "Sensitive",
-                                                           "Whether the menu item is sensitive",
-                                                           TRUE,
-                                                           G_PARAM_READWRITE));
+    properties[PROP_SENSITIVE] =
+        g_param_spec_boolean ("sensitive", NULL, NULL,
+                              TRUE,
+                              G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS);
     /**
      * NautilusMenuItem:priority:
      *
@@ -375,23 +363,18 @@ nautilus_menu_item_class_init (NautilusMenuItemClass *class)
      *
      * Deprecated: 4.1
      */
-    g_object_class_install_property (G_OBJECT_CLASS (class),
-                                     PROP_PRIORITY,
-                                     g_param_spec_boolean ("priority",
-                                                           "Priority",
-                                                           "Show priority text in toolbars",
-                                                           TRUE,
-                                                           G_PARAM_READWRITE));
+    properties[PROP_PRIORITY] =
+        g_param_spec_boolean ("priority", NULL, NULL,
+                              TRUE,
+                              G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS);
     /**
      * NautilusMenuItem:menu:
      *
      * A submenu for the current `NautilusMenuItem`.
      */
-    g_object_class_install_property (G_OBJECT_CLASS (class),
-                                     PROP_MENU,
-                                     g_param_spec_object ("menu",
-                                                          "Menu",
-                                                          "The menu belonging to this item. May be null.",
-                                                          NAUTILUS_TYPE_MENU,
-                                                          G_PARAM_READWRITE));
+    properties[PROP_MENU] = g_param_spec_object ("menu", NULL, NULL,
+                                                 NAUTILUS_TYPE_MENU,
+                                                 G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS);
+
+    g_object_class_install_properties (object_class, NUM_PROPS, properties);
 }
