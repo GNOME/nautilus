@@ -11,7 +11,7 @@ include:
       inputs:
           job-stage: "test"
           gobject-linter: "enabled"
-          gobject-linter-options: "-c build-aux/gobject-linter.toml src/"
+          gobject-linter-options: "-c build-aux/gobject-linter.toml"
           gcov: "disabled"
           grcov-c: "disabled"
     - component: "gitlab.gnome.org/GNOME/citemplates/basic-deploy-docs@master"
