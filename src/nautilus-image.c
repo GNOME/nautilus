@@ -190,14 +190,16 @@ get_error_paintable (NautilusImage *self)
 }
 
 static void
-setup_pixbuf_for_image (NautilusImage *self,
-                        GdkPixbuf     *pixbuf)
+handle_loading_success (NautilusImage *self,
+                        GdkTexture    *texture,
+                        gboolean       update_cache)
 {
-    g_autoptr (GdkPixbuf) rotated_pixbuf = gdk_pixbuf_apply_embedded_orientation (pixbuf);
-    g_autoptr (GdkTexture) texture = gdk_texture_new_for_pixbuf (rotated_pixbuf);
-
     nautilus_image_set_texture (self, texture);
-    thumbnail_cache_add (self->source, self->texture, self->source_mtime);
+    if (update_cache)
+    {
+        thumbnail_cache_add (self->source, self->texture, self->source_mtime);
+    }
+    g_clear_object (&self->cancellable);
 }
 
 static void
@@ -206,6 +208,7 @@ handle_loading_error (NautilusImage *self)
     /* Transition to error state */
     nautilus_image_set_texture (self, NULL);
     gtk_widget_queue_draw (GTK_WIDGET (self));
+    g_clear_object (&self->cancellable);
 }
 
 static void
@@ -227,7 +230,10 @@ thumbnailing_done_cb (GObject      *source_object,
 
     if (pixbuf != NULL && self->error == NULL)
     {
-        setup_pixbuf_for_image (self, pixbuf);
+        g_autoptr (GdkPixbuf) rotated_pixbuf = gdk_pixbuf_apply_embedded_orientation (pixbuf);
+        g_autoptr (GdkTexture) texture = gdk_texture_new_for_pixbuf (rotated_pixbuf);
+
+        handle_loading_success (self, texture, TRUE);
     }
     else
     {
@@ -254,8 +260,7 @@ thumbnail_texture_ready_callback (GObject      *source_object,
 
     if (texture != NULL && self->error == NULL)
     {
-        nautilus_image_set_texture (self, texture);
-        thumbnail_cache_add (self->source, self->texture, self->source_mtime);
+        handle_loading_success (self, texture, TRUE);
     }
     else
     {
@@ -342,7 +347,7 @@ file_info_ready_callback (GObject      *source_object,
     if (cache_item != NULL &&
         cache_item->mtime == self->source_mtime)
     {
-        nautilus_image_set_texture (self, cache_item->texture);
+        handle_loading_success (self, cache_item->texture, FALSE);
 
         return;
     }
