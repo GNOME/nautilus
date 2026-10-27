@@ -1232,8 +1232,6 @@ report_delete_trash_progress (CommonJob    *job,
     {
         nautilus_progress_info_set_remaining_time (job->progress,
                                                    remaining_time);
-        nautilus_progress_info_set_elapsed_time (job->progress,
-                                                 elapsed);
     }
 
     if (source_info->num_files != 0)
@@ -3348,8 +3346,6 @@ report_copy_progress (CopyMoveJob  *copy_job,
     {
         nautilus_progress_info_set_remaining_time (job->progress,
                                                    remaining_time);
-        nautilus_progress_info_set_elapsed_time (job->progress,
-                                                 elapsed);
     }
 
     nautilus_progress_info_set_progress (job->progress, transfer_info->num_bytes, total_size);
@@ -7359,8 +7355,6 @@ extract_job_on_progress (AutoarExtractor *extractor,
     {
         nautilus_progress_info_set_remaining_time (common->progress,
                                                    remaining_time);
-        nautilus_progress_info_set_elapsed_time (common->progress,
-                                                 elapsed);
     }
 
     nautilus_progress_info_set_progress (common->progress, job_progress, 1);
@@ -7906,8 +7900,6 @@ compress_job_on_progress (AutoarCompressor *compressor,
     {
         nautilus_progress_info_set_remaining_time (common->progress,
                                                    remaining_time);
-        nautilus_progress_info_set_elapsed_time (common->progress,
-                                                 elapsed);
     }
 
     nautilus_progress_info_set_progress (common->progress,

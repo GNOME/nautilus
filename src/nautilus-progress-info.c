@@ -53,7 +53,6 @@ struct _NautilusProgressInfo
     char *details;
     double progress;
     gdouble remaining_time;
-    gdouble elapsed_time;
     gboolean activity_mode;
     gboolean started;
     gboolean finished;
@@ -852,15 +851,6 @@ nautilus_progress_info_get_remaining_time (NautilusProgressInfo *info)
     G_UNLOCK (progress_info);
 
     return remaining_time;
-}
-
-void
-nautilus_progress_info_set_elapsed_time (NautilusProgressInfo *info,
-                                         gdouble               time)
-{
-    G_LOCK (progress_info);
-    info->elapsed_time = time;
-    G_UNLOCK (progress_info);
 }
 
 gdouble

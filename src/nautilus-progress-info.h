@@ -25,7 +25,7 @@ G_DECLARE_FINAL_TYPE (NautilusProgressInfo, nautilus_progress_info, NAUTILUS, PR
    "progress-changed" - the percentage progress changed (or we pulsed if in activity_mode
    "started" - emited on job start
    "finished" - emitted when job is done
-   
+
    All signals are emitted from idles in main loop.
    All methods are threadsafe.
  */
@@ -64,8 +64,6 @@ void          nautilus_progress_info_pulse_progress  (NautilusProgressInfo *info
 void          nautilus_progress_info_set_remaining_time (NautilusProgressInfo *info,
                                                          gdouble               time);
 gdouble       nautilus_progress_info_get_remaining_time (NautilusProgressInfo *info);
-void          nautilus_progress_info_set_elapsed_time (NautilusProgressInfo *info,
-                                                       gdouble               time);
 gdouble       nautilus_progress_info_get_total_elapsed_time (NautilusProgressInfo *info);
 
 void nautilus_progress_info_set_destination (NautilusProgressInfo *info,
