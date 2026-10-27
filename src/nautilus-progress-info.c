@@ -393,6 +393,13 @@ nautilus_progress_info_init (NautilusProgressInfo *info)
     info->progress_timer = g_timer_new ();
 }
 
+/**
+ * nautilus_progress_info_new:
+ *
+ * Must be called from the main thread.
+ *
+ * Returns: (transfer full): a new #NautilusProgressInfo
+ */
 NautilusProgressInfo *
 nautilus_progress_info_new (void)
 {
