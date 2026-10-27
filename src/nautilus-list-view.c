@@ -958,6 +958,10 @@ setup_view_columns (NautilusListView *self)
 {
     GtkListItemFactory *factory;
     g_autolist (NautilusColumn) nautilus_columns = NULL;
+    g_autoptr (GMenu) menu = NULL;
+
+    menu = g_menu_new ();
+    g_menu_append (menu, _("_Visible Columns…"), "view.visible-columns");
 
     nautilus_columns = nautilus_get_all_columns ();
 
@@ -993,6 +997,7 @@ setup_view_columns (NautilusListView *self)
         gtk_column_view_column_set_resizable (view_column, TRUE);
         gtk_column_view_column_set_title (view_column, label);
         gtk_column_view_column_set_sorter (view_column, GTK_SORTER (sorter));
+        gtk_column_view_column_set_header_menu (view_column, G_MENU_MODEL (menu));
 
         if (strcmp (name, "name") == 0)
         {
