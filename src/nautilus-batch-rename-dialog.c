@@ -260,6 +260,16 @@ compare_int (gconstpointer a,
     return *number1 - *number2;
 }
 
+static gint
+compare_conflict_data_index (gconstpointer a,
+                             gconstpointer b)
+{
+    const ConflictData *conflict_data1 = (const ConflictData *) a;
+    const ConflictData *conflict_data2 = (const ConflictData *) b;
+
+    return (gint) conflict_data1->index - (gint) conflict_data2->index;
+}
+
 /* This function splits the entry text into a list of regular text and tags.
  * For instance, "[1, 2, 3]Paris[Creation date]" would result in:
  * "[1, 2, 3]", "Paris", "[Creation date]" */
@@ -815,6 +825,10 @@ on_directory_attributes_ready_for_conflicts_check (NautilusDirectory *conflict_d
 
     if (self->directories_pending_conflict_check == NULL)
     {
+        /* Conflicts were collected per directory, so sort them globally by
+         * index to match the order of the displayed rows. */
+        g_ptr_array_sort_values (self->duplicates, compare_conflict_data_index);
+
         update_listbox (self);
     }
 }
