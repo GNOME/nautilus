@@ -78,7 +78,6 @@ struct _NautilusBatchRenameDialog
 
 typedef struct
 {
-    gboolean available;
     gboolean set;
     gint position;
     /* if the tag was just added, then we shouldn't update it's position */
@@ -159,7 +158,6 @@ add_tag (NautilusBatchRenameDialog *self,
 
     tag_text_representation = batch_rename_get_tag_text_representation (tag_constants);
     tag_data = g_hash_table_lookup (self->tag_info_table, tag_text_representation);
-    tag_data->available = TRUE;
     tag_data->set = TRUE;
     tag_data->just_added = TRUE;
     tag_data->position = cursor_position;
@@ -1136,7 +1134,6 @@ nautilus_batch_rename_dialog_query_finished (NautilusBatchRenameDialog *dialog,
             file_metadata->metadata[metadata_type]->len <= 0)
         {
             disable_action (dialog, tag_data->tag_constants.action_name);
-            tag_data->available = FALSE;
         }
     }
 }
@@ -1632,7 +1629,6 @@ nautilus_batch_rename_dialog_init (NautilusBatchRenameDialog *self)
 
         tag_text_representation = batch_rename_get_tag_text_representation (numbering_tags_constants[i]);
         tag_data = g_new (TagData, 1);
-        tag_data->available = TRUE;
         tag_data->set = FALSE;
         tag_data->position = -1;
         tag_data->tag_constants = numbering_tags_constants[i];
@@ -1647,7 +1643,6 @@ nautilus_batch_rename_dialog_init (NautilusBatchRenameDialog *self)
         tag_text_representation = batch_rename_get_tag_text_representation (metadata_tags_constants[i]);
 
         tag_data = g_new (TagData, 1);
-        tag_data->available = FALSE;
         tag_data->set = FALSE;
         tag_data->position = -1;
         tag_data->tag_constants = metadata_tags_constants[i];
