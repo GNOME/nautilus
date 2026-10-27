@@ -856,11 +856,6 @@ file_names_list_has_duplicates_async (NautilusBatchRenameDialog *self)
 {
     GList *l;
 
-    if (self->directories_pending_conflict_check != NULL)
-    {
-        cancel_conflict_check (self);
-    }
-
     self->directories_pending_conflict_check = nautilus_directory_list_copy (self->distinct_parent_directories);
     g_ptr_array_set_size (self->duplicates, 0);
 
@@ -1034,6 +1029,8 @@ update_display_text (NautilusBatchRenameDialog *dialog)
     }
 
     dialog->new_names = batch_rename_dialog_get_new_names (dialog);
+
+    cancel_conflict_check (dialog);
 
     if (have_unallowed_character (dialog))
     {
