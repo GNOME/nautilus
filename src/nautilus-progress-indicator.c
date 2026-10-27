@@ -6,7 +6,6 @@
 
 #include "nautilus-progress-indicator.h"
 
-#include "nautilus-file-operations.h"
 #include "nautilus-progress-info.h"
 #include "nautilus-progress-info-manager.h"
 #include "nautilus-progress-info-widget.h"
@@ -31,7 +30,6 @@ struct _NautilusProgressIndicator
 {
     AdwBin parent_instance;
 
-    guint start_operations_timeout_id;
     guint remove_finished_operations_timeout_id;
     guint operations_button_attention_timeout_id;
 
@@ -39,6 +37,8 @@ struct _NautilusProgressIndicator
     GtkWidget *operations_popover;
     GtkWidget *operations_list;
     GListStore *progress_infos_model;
+    GtkFilter *filter;
+    GtkFilterListModel *filter_model;
     GtkWidget *sidebar_list;
 
     gboolean reveal;
@@ -49,53 +49,6 @@ struct _NautilusProgressIndicator
 
 G_DEFINE_FINAL_TYPE (NautilusProgressIndicator, nautilus_progress_indicator, ADW_TYPE_BIN);
 
-
-static void update_operations (NautilusProgressIndicator *self);
-
-static inline gboolean
-should_show_progress_info (NautilusProgressInfo *info)
-{
-    return nautilus_progress_info_get_total_elapsed_time (info) +
-           nautilus_progress_info_get_remaining_time (info) > OPERATION_MINIMUM_TIME;
-}
-
-static GList *
-get_filtered_progress_infos (NautilusProgressIndicator *self)
-{
-    GList *l;
-    GList *filtered_progress_infos;
-    GList *progress_infos;
-
-    progress_infos = nautilus_progress_info_manager_get_all_infos (self->progress_manager);
-    filtered_progress_infos = NULL;
-
-    for (l = progress_infos; l != NULL; l = l->next)
-    {
-        if (should_show_progress_info (l->data))
-        {
-            filtered_progress_infos = g_list_append (filtered_progress_infos, l->data);
-        }
-    }
-
-    return filtered_progress_infos;
-}
-
-static gboolean
-should_hide_operations_button (NautilusProgressIndicator *self)
-{
-    g_autoptr (GList) progress_infos = get_filtered_progress_infos (self);
-
-    for (GList *l = progress_infos; l != NULL; l = l->next)
-    {
-        if (!nautilus_progress_info_get_is_cancelled (l->data) &&
-            !nautilus_progress_info_get_is_finished (l->data))
-        {
-            return FALSE;
-        }
-    }
-
-    return TRUE;
-}
 
 static void
 nautilus_progress_indicator_set_reveal (NautilusProgressIndicator *self,
@@ -111,17 +64,20 @@ nautilus_progress_indicator_set_reveal (NautilusProgressIndicator *self,
 static void
 on_remove_finished_operations_timeout (NautilusProgressIndicator *self)
 {
-    nautilus_progress_info_manager_remove_finished_or_cancelled_infos (self->progress_manager);
-    if (should_hide_operations_button (self))
-    {
-        nautilus_progress_indicator_set_reveal (self, FALSE);
-    }
-    else
-    {
-        update_operations (self);
-    }
+    GListModel *model = G_LIST_MODEL (self->progress_infos_model);
 
     self->remove_finished_operations_timeout_id = 0;
+
+    for (guint i = g_list_model_get_n_items (model); i > 0; i--)
+    {
+        g_autoptr (NautilusProgressInfo) info = g_list_model_get_item (model, i - 1);
+
+        if (nautilus_progress_info_get_is_finished (info) ||
+            nautilus_progress_info_get_is_cancelled (info))
+        {
+            g_list_store_remove (self->progress_infos_model, i - 1);
+        }
+    }
 }
 
 static void
@@ -137,6 +93,12 @@ unschedule_remove_finished_operations (NautilusProgressIndicator *self)
 static void
 schedule_remove_finished_operations (NautilusProgressIndicator *self)
 {
+    /* Keep finished operations around while the user is looking at them */
+    if (gtk_widget_get_visible (self->operations_popover))
+    {
+        return;
+    }
+
     if (self->remove_finished_operations_timeout_id == 0)
     {
         self->remove_finished_operations_timeout_id =
@@ -185,10 +147,7 @@ add_operations_button_attention_style (NautilusProgressIndicator *self)
 static void
 on_progress_info_cancelled (NautilusProgressIndicator *self)
 {
-    if (!nautilus_progress_manager_has_viewers (self->progress_manager))
-    {
-        schedule_remove_finished_operations (self);
-    }
+    schedule_remove_finished_operations (self);
 }
 
 static void
@@ -201,10 +160,7 @@ on_progress_info_finished (NautilusProgressIndicator *self,
 
     window = NAUTILUS_WINDOW (gtk_widget_get_root (GTK_WIDGET (self)));
 
-    if (!nautilus_progress_manager_has_viewers (self->progress_manager))
-    {
-        schedule_remove_finished_operations (self);
-    }
+    schedule_remove_finished_operations (self);
 
     folder_to_open = nautilus_progress_info_get_destination (info);
     /* If destination is null, don't show a notification. This happens when the
@@ -254,96 +210,33 @@ get_paintable (GtkListItem          *listitem,
 }
 
 static void
-update_operations (NautilusProgressIndicator *self)
+on_filter_model_n_items_changed (NautilusProgressIndicator *self)
 {
-    g_autoptr (GList) progress_infos = get_filtered_progress_infos (self);
-    gboolean should_show_progress_button = (progress_infos != NULL);
+    gboolean reveal = g_list_model_get_n_items (G_LIST_MODEL (self->filter_model)) > 0;
 
-    g_list_store_remove_all (self->progress_infos_model);
-
-    for (GList *l = progress_infos; l != NULL; l = l->next)
-    {
-        g_list_store_append (self->progress_infos_model, l->data);
-    }
-
-    if (should_show_progress_button && !self->reveal)
+    if (reveal && !self->reveal)
     {
         add_operations_button_attention_style (self);
-        nautilus_progress_indicator_set_reveal (self, TRUE);
     }
 
-    /* Since we removed the info widgets, we need to restore the focus */
-    if (gtk_widget_get_visible (self->operations_popover))
-    {
-        gtk_widget_grab_focus (self->operations_popover);
-    }
-}
-
-static gboolean
-on_progress_info_started_timeout (NautilusProgressIndicator *self)
-{
-    GList *progress_infos;
-    GList *filtered_progress_infos;
-
-    update_operations (self);
-
-    /* In case we didn't show the operations button because the operation total
-     * time stimation is not good enough, update again to make sure we don't miss
-     * a long time operation because of that */
-
-    progress_infos = nautilus_progress_info_manager_get_all_infos (self->progress_manager);
-    filtered_progress_infos = get_filtered_progress_infos (self);
-    if (!nautilus_progress_manager_are_all_infos_finished_or_cancelled (self->progress_manager) &&
-        g_list_length (progress_infos) != g_list_length (filtered_progress_infos))
-    {
-        g_list_free (filtered_progress_infos);
-        return G_SOURCE_CONTINUE;
-    }
-    else
-    {
-        g_list_free (filtered_progress_infos);
-        self->start_operations_timeout_id = 0;
-        return G_SOURCE_REMOVE;
-    }
+    nautilus_progress_indicator_set_reveal (self, reveal);
 }
 
 static void
-schedule_operations_start (NautilusProgressIndicator *self)
+on_progress_info_long_running_changed (NautilusProgressIndicator *self)
 {
-    if (self->start_operations_timeout_id == 0)
-    {
-        /* Timeout is a little more than what we require for a stimated operation
-         * total time, to make sure the stimated total time is correct */
-        self->start_operations_timeout_id =
-            g_timeout_add (SECONDS_NEEDED_FOR_APROXIMATE_TRANSFER_RATE * 1000 + 500,
-                           (GSourceFunc) on_progress_info_started_timeout,
-                           self);
-    }
+    /* Infos only ever become long running, never the opposite */
+    gtk_filter_changed (self->filter, GTK_FILTER_CHANGE_LESS_STRICT);
 }
 
 static void
-unschedule_operations_start (NautilusProgressIndicator *self)
+add_progress_info (NautilusProgressIndicator *self,
+                   NautilusProgressInfo      *info)
 {
-    if (self->start_operations_timeout_id != 0)
-    {
-        g_source_remove (self->start_operations_timeout_id);
-        self->start_operations_timeout_id = 0;
-    }
-}
+    g_list_store_insert (self->progress_infos_model, 0, info);
 
-static void
-on_progress_info_started (NautilusProgressIndicator *self)
-{
-    schedule_operations_start (self);
-}
-
-static void
-on_new_progress_info (NautilusProgressInfoManager *manager,
-                      NautilusProgressInfo        *info,
-                      NautilusProgressIndicator   *self)
-{
-    g_signal_connect_object (info, "started",
-                             G_CALLBACK (on_progress_info_started), self,
+    g_signal_connect_object (info, "notify::long-running",
+                             G_CALLBACK (on_progress_info_long_running_changed), self,
                              G_CONNECT_SWAPPED);
     g_signal_connect_object (info, "finished",
                              G_CALLBACK (on_progress_info_finished), self,
@@ -354,6 +247,14 @@ on_new_progress_info (NautilusProgressInfoManager *manager,
 }
 
 static void
+on_new_progress_info (NautilusProgressInfoManager *manager,
+                      NautilusProgressInfo        *info,
+                      NautilusProgressIndicator   *self)
+{
+    add_progress_info (self, info);
+}
+
+static void
 on_operations_popover_notify_visible (NautilusProgressIndicator *self,
                                       GParamSpec                *pspec,
                                       GObject                   *popover)
@@ -361,29 +262,9 @@ on_operations_popover_notify_visible (NautilusProgressIndicator *self,
     if (gtk_widget_get_visible (GTK_WIDGET (popover)))
     {
         unschedule_remove_finished_operations (self);
-        nautilus_progress_manager_add_viewer (self->progress_manager,
-                                              G_OBJECT (self));
     }
     else
     {
-        nautilus_progress_manager_remove_viewer (self->progress_manager,
-                                                 G_OBJECT (self));
-    }
-}
-
-static void
-on_progress_has_viewers_changed (NautilusProgressInfoManager *manager,
-                                 NautilusProgressIndicator   *self)
-{
-    if (nautilus_progress_manager_has_viewers (manager))
-    {
-        unschedule_remove_finished_operations (self);
-        return;
-    }
-
-    if (nautilus_progress_manager_are_all_infos_finished_or_cancelled (manager))
-    {
-        unschedule_remove_finished_operations (self);
         schedule_remove_finished_operations (self);
     }
 }
@@ -483,20 +364,32 @@ nautilus_progress_indicator_constructed (GObject *object)
     g_signal_connect_object (self->progress_manager, "new-progress-info",
                              G_CALLBACK (on_new_progress_info), self,
                              G_CONNECT_DEFAULT);
-    g_signal_connect_object (self->progress_manager, "has-viewers-changed",
-                             G_CALLBACK (on_progress_has_viewers_changed), self,
-                             G_CONNECT_DEFAULT);
 
     self->progress_infos_model = g_list_store_new (NAUTILUS_TYPE_PROGRESS_INFO);
+
+    GtkExpression *long_running = gtk_property_expression_new (NAUTILUS_TYPE_PROGRESS_INFO, NULL,
+                                                               "long-running");
+    self->filter = GTK_FILTER (gtk_bool_filter_new (long_running));
+    self->filter_model = gtk_filter_list_model_new (g_object_ref (G_LIST_MODEL (self->progress_infos_model)),
+                                                    g_object_ref (self->filter));
+    g_signal_connect_swapped (self->filter_model, "notify::n-items",
+                              G_CALLBACK (on_filter_model_n_items_changed), self);
+
+    /* Pick up operations that started before this window was opened. The
+     * manager's list is newest first, like ours. */
+    for (GList *l = g_list_last (nautilus_progress_info_manager_get_all_infos (self->progress_manager));
+         l != NULL; l = l->prev)
+    {
+        add_progress_info (self, l->data);
+    }
+
     gtk_list_box_bind_model (GTK_LIST_BOX (self->operations_list),
-                             G_LIST_MODEL (self->progress_infos_model),
+                             G_LIST_MODEL (self->filter_model),
                              (GtkListBoxCreateWidgetFunc) operations_list_create_widget,
                              NULL,
                              NULL);
 
-    update_operations (self);
-
-    GtkSliceListModel *slice = gtk_slice_list_model_new (g_object_ref (G_LIST_MODEL (self->progress_infos_model)),
+    GtkSliceListModel *slice = gtk_slice_list_model_new (g_object_ref (G_LIST_MODEL (self->filter_model)),
                                                          0, MAX_ITEMS_IN_SIDEBAR);
     g_autoptr (GtkNoSelection) selection_model = gtk_no_selection_new (G_LIST_MODEL (slice));
 
@@ -525,9 +418,10 @@ nautilus_progress_indicator_finalize (GObject *obj)
     NautilusProgressIndicator *self = NAUTILUS_PROGRESS_INDICATOR (obj);
 
     unschedule_remove_finished_operations (self);
-    unschedule_operations_start (self);
     unschedule_operations_button_attention_style (self);
 
+    g_clear_object (&self->filter_model);
+    g_clear_object (&self->filter);
     g_clear_object (&self->progress_infos_model);
     g_clear_object (&self->progress_manager);
 

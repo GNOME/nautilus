@@ -115,6 +115,21 @@ nautilus_progress_info_manager_dup_singleton (void)
     return g_object_new (NAUTILUS_TYPE_PROGRESS_INFO_MANAGER, NULL);
 }
 
+static void
+remove_progress_info (NautilusProgressInfo        *info,
+                      NautilusProgressInfoManager *self)
+{
+    GList *link = g_list_find (self->progress_infos, info);
+
+    if (link == NULL)
+    {
+        return;
+    }
+
+    self->progress_infos = g_list_delete_link (self->progress_infos, link);
+    g_object_unref (info);
+}
+
 void
 nautilus_progress_info_manager_add_new_info (NautilusProgressInfoManager *self,
                                              NautilusProgressInfo        *info)
@@ -127,6 +142,15 @@ nautilus_progress_info_manager_add_new_info (NautilusProgressInfoManager *self,
 
     self->progress_infos =
         g_list_prepend (self->progress_infos, g_object_ref (info));
+
+    /* The manager only keeps track of infos in progress, so that new windows
+     * can pick them up. Each progress indicator holds on to its own infos. */
+    g_signal_connect_object (info, "finished",
+                             G_CALLBACK (remove_progress_info), self,
+                             G_CONNECT_DEFAULT);
+    g_signal_connect_object (info, "cancelled",
+                             G_CALLBACK (remove_progress_info), self,
+                             G_CONNECT_DEFAULT);
 
     g_signal_emit (self, signals[NEW_PROGRESS_INFO], 0, info);
 }
