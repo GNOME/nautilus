@@ -1370,7 +1370,7 @@ file_deleted_callback (GFile    *file,
         return;
     }
 
-    primary = _("Error while deleting.");
+    primary = _("Failed to Delete Files");
 
     basename = get_basename (file);
 
@@ -1934,12 +1934,12 @@ unmount_mount_callback (GObject      *source_object,
             mount_name = g_mount_get_name (G_MOUNT (source_object));
             if (data->eject)
             {
-                primary = g_strdup_printf (_("Unable to eject “%s”"),
+                primary = g_strdup_printf (_("Unable to Eject “%s”"),
                                            mount_name);
             }
             else
             {
-                primary = g_strdup_printf (_("Unable to unmount “%s”"),
+                primary = g_strdup_printf (_("Unable to Unmount “%s”"),
                                            mount_name);
             }
             nautilus_show_ok_dialog (primary,
@@ -2410,27 +2410,27 @@ get_scan_primary (OpKind kind)
         default:
         case OP_KIND_COPY:
         {
-            return g_strdup (_("Error while copying."));
+            return g_strdup (_("Failed to Copy Files"));
         }
 
         case OP_KIND_MOVE:
         {
-            return g_strdup (_("Error while moving."));
+            return g_strdup (_("Failed to Move Files"));
         }
 
         case OP_KIND_DELETE:
         {
-            return g_strdup (_("Error while deleting."));
+            return g_strdup (_("Failed to Delete Files"));
         }
 
         case OP_KIND_TRASH:
         {
-            return g_strdup (_("Error while moving files to trash."));
+            return g_strdup (_("Failed to Move Files to Trash"));
         }
 
         case OP_KIND_COMPRESS:
         {
-            return g_strdup (_("Error while compressing files."));
+            return g_strdup (_("Failed to Compress Files"));
         }
     }
 }
@@ -2803,7 +2803,7 @@ verify_destination (CommonJob   *job,
             }
 
             g_autofree gchar *basename = get_basename (dest);
-            g_autofree gchar *primary = g_strdup_printf (_("Error while copying to “%s”."), basename);
+            g_autofree gchar *primary = g_strdup_printf (_("Failed to Copy Files to “%s”"), basename);
             const char *secondary;
             const char *details = NULL;
 
@@ -2860,7 +2860,7 @@ verify_destination (CommonJob   *job,
         if (file_type != G_FILE_TYPE_DIRECTORY)
         {
             g_autofree gchar *basename = get_basename (dest);
-            g_autofree char *heading = g_strdup_printf (_("Error while copying to “%s”."), basename);
+            g_autofree char *heading = g_strdup_printf (_("Failed to Copy Files to “%s”"), basename);
             const char *body = _("The destination is not a folder.");
 
             nautilus_show_ok_dialog (heading, body, GTK_WIDGET (job->parent_window));
@@ -2906,7 +2906,7 @@ verify_destination (CommonJob   *job,
             {
                 g_autofree gchar *basename = get_basename (dest);
                 g_autofree gchar *formatted_size = NULL;
-                g_autofree gchar *primary = g_strdup_printf (_("Error while copying to “%s”."), basename);
+                g_autofree gchar *primary = g_strdup_printf (_("Failed to Copy Files to “%s”"), basename);
                 const char *secondary;
                 g_autofree char *details = NULL;
 
@@ -2967,7 +2967,7 @@ verify_destination (CommonJob   *job,
                                            G_FILE_ATTRIBUTE_FILESYSTEM_READONLY))
     {
         g_autofree gchar *basename = get_basename (dest);
-        g_autofree gchar *heading = g_strdup_printf (_("Error while copying to “%s”."), basename);
+        g_autofree gchar *heading = g_strdup_printf (_("Failed to Copy Files to “%s”"), basename);
         const char *body = _("The destination is read-only.");
 
         nautilus_show_ok_dialog (heading, body, GTK_WIDGET (job->parent_window));
@@ -3865,7 +3865,7 @@ create_dest_dir (CommonJob  *job,
             }
 
             response = run_dialog (job,
-                                   _("Error while copying."),
+                                   _("Failed to Copy Files"),
                                    secondary,
                                    details,
                                    RESPONSE_SKIP | RESPONSE_RETRY);
@@ -4031,11 +4031,11 @@ copy_move_directory (CopyMoveJob   *copy_job,
 
                 if (copy_job->is_move)
                 {
-                    primary = _("Error while moving.");
+                    primary = _("Failed to Move Files");
                 }
                 else
                 {
-                    primary = _("Error while copying.");
+                    primary = _("Failed to Copy Files");
                 }
                 basename = get_basename (src);
 
@@ -4105,11 +4105,11 @@ copy_move_directory (CopyMoveJob   *copy_job,
 
             if (copy_job->is_move)
             {
-                primary = _("Error while moving.");
+                primary = _("Failed to Move Files");
             }
             else
             {
-                primary = _("Error while copying.");
+                primary = _("Failed to Copy Files");
             }
             basename = get_basename (src);
 
@@ -4180,7 +4180,7 @@ copy_move_directory (CopyMoveJob   *copy_job,
             }
 
             g_autofree gchar *basename = get_basename (src);
-            g_autofree char *primary = g_strdup_printf (_("Error while moving “%s”."), basename);
+            g_autofree char *primary = g_strdup_printf (_("Failed to Move “%s”"), basename);
             const char *secondary = _("Could not remove the source folder.");
             const char *details = error->message;
 
@@ -4366,8 +4366,8 @@ get_target_file_from_source_display_name (CopyMoveJob *copy_job,
     if (info == NULL)
     {
         const char *heading = copy_job->is_move ?
-                              _("Error while moving.") :
-                              _("Error while copying.");
+                              _("Failed to Move Files") :
+                              _("Failed to Copy Files");
 
         nautilus_show_ok_dialog (heading, error->message, GTK_WIDGET (job->parent_window));
 
@@ -4459,8 +4459,8 @@ copy_move_file (CopyMoveJob   *copy_job,
         }
 
         const char *primary = copy_job->is_move ?
-                              _("You cannot move a folder into itself.") :
-                              _("You cannot copy a folder into itself.");
+                              _("Folder Cannot Be Moved Into Itself") :
+                              _("Folder Cannot Be Copied Into Itself");
         const char *secondary = _("The destination folder is inside the source folder.");
 
         show_skip_dialog (job,
@@ -4483,8 +4483,8 @@ copy_move_file (CopyMoveJob   *copy_job,
         }
 
         const char *primary = copy_job->is_move ?
-                              _("You cannot move a file over itself.") :
-                              _("You cannot copy a file over itself.");
+                              _("File Cannot Be Moved Over Itself") :
+                              _("File Cannot Be Copied Over Itself");
         const char *secondary = _("The source file would be overwritten by the destination.");
 
         show_skip_dialog (job,
@@ -4732,11 +4732,11 @@ copy_move_file (CopyMoveJob   *copy_job,
 
                     if (copy_job->is_move)
                     {
-                        primary = g_strdup_printf (_("Error while moving “%s”."), basename);
+                        primary = g_strdup_printf (_("Failed to Move “%s”"), basename);
                     }
                     else
                     {
-                        primary = g_strdup_printf (_("Error while copying “%s”."), basename);
+                        primary = g_strdup_printf (_("Failed to Copy “%s”"), basename);
                     }
                     filename = get_truncated_parse_name (dest_dir);
                     secondary = g_strdup_printf (_("Could not remove the already existing file "
@@ -4795,7 +4795,7 @@ copy_move_file (CopyMoveJob   *copy_job,
 
             g_autofree gchar *basename = get_basename (src);
             g_autofree gchar *filename = get_truncated_parse_name (dest_dir);
-            g_autofree char *primary = g_strdup_printf (_("Error while copying “%s”."), basename);
+            g_autofree char *primary = g_strdup_printf (_("Failed to Copy “%s”"), basename);
             g_autofree char *secondary = g_strdup_printf (_("There was an error copying the file into %s."),
                                                           filename);
             const char *details = error->message;
@@ -5169,8 +5169,8 @@ move_file_prepare (CopyMoveJob  *move_job,
         }
 
         const char *primary = move_job->is_move ?
-                              _("You cannot move a folder into itself.") :
-                              _("You cannot copy a folder into itself.");
+                              _("Folder Cannot Be Moved Into Itself") :
+                              _("Folder Cannot Be Copied Into Itself");
         const char *secondary = _("The destination folder is inside the source folder.");
 
         show_skip_dialog (job,
@@ -5193,8 +5193,8 @@ move_file_prepare (CopyMoveJob  *move_job,
         }
 
         const char *primary = move_job->is_move ?
-                              _("You cannot move a file over itself.") :
-                              _("You cannot copy a file over itself.");
+                              _("File Cannot Be Moved Over Itself") :
+                              _("File Cannot Be Copied Over Itself");
         const char *secondary = _("The source file would be overwritten by the destination.");
 
         show_skip_dialog (job,
@@ -5361,7 +5361,7 @@ move_file_prepare (CopyMoveJob  *move_job,
 
             g_autofree gchar *basename = get_basename (src);
             g_autofree gchar *filename = get_truncated_parse_name (dest_dir);
-            g_autofree char *primary = g_strdup_printf (_("Error while moving “%s”."), basename);
+            g_autofree char *primary = g_strdup_printf (_("Failed to Move “%s”"), basename);
             g_autofree char *secondary = g_strdup_printf (_("There was an error moving the file into %s."),
                                                           filename);
             const char *details = error->message;
@@ -5816,7 +5816,7 @@ link_file (CopyMoveJob  *job,
                 return;
             }
             g_autofree gchar *basename = get_basename (src);
-            g_autofree char *primary = g_strdup_printf (_("Error while creating link to %s."),
+            g_autofree char *primary = g_strdup_printf (_("Failed to Create Link to %s"),
                                                         basename);
             g_autofree char *secondary = NULL;
             const char *details = NULL;
@@ -6594,12 +6594,12 @@ create_task_thread_func (GTask        *task,
 
                 if (job->make_dir)
                 {
-                    primary = g_strdup_printf (_("Error while creating directory “%s”."),
+                    primary = g_strdup_printf (_("Failed to Create Directory “%s”"),
                                                basename);
                 }
                 else
                 {
-                    primary = g_strdup_printf (_("Error while creating file “%s”."),
+                    primary = g_strdup_printf (_("Failed to Create File “%s”"),
                                                basename);
                 }
                 parse_name = get_truncated_parse_name (job->dest_dir);
@@ -7391,7 +7391,7 @@ extract_job_on_error (AutoarExtractor *extractor,
                                                          source_file,
                                                          (GCompareFunc) g_file_equal)) - 1;
 
-    heading = g_strdup_printf (_("There was an error while extracting “%s”."),
+    heading = g_strdup_printf (_("Failed to Extract “%s”"),
                                basename);
 
     show_skip_dialog ((CommonJob *) extract_job,
@@ -7466,7 +7466,7 @@ extract_job_on_scanned (AutoarExtractor *extractor,
     {
         GFile *source_file = autoar_extractor_get_source_file (extractor);
         g_autofree gchar *basename = get_basename (source_file);
-        g_autofree char *primary = g_strdup_printf (_("Not enough free space to extract “%s”"),
+        g_autofree char *primary = g_strdup_printf (_("Not Enough Free Space to Extract “%s”"),
                                                     basename);
         GtkWidget *parent = GTK_WIDGET (extract_job->common.parent_window);
 
@@ -7929,7 +7929,7 @@ compress_job_on_error (AutoarCompressor *compressor,
 
     if (!g_test_initialized ())
     {
-        nautilus_show_ok_dialog (_("There was an error while compressing files."),
+        nautilus_show_ok_dialog (_("Failed to Compress Files"),
                                  error->message,
                                  GTK_WIDGET (compress_job->common.parent_window));
     }
