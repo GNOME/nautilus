@@ -46,6 +46,8 @@ struct _NautilusProgressInfo
     GCancellable *cancellable;
     guint cancellable_id;
 
+    GMutex mutex;
+
     GTimer *progress_timer;
 
     char *status;
@@ -73,8 +75,6 @@ struct _NautilusProgressInfo
     GFile *destination;
 };
 
-G_LOCK_DEFINE_STATIC (progress_info);
-
 G_DEFINE_FINAL_TYPE (NautilusProgressInfo, nautilus_progress_info, G_TYPE_OBJECT)
 
 static void set_details (NautilusProgressInfo *info,
@@ -95,6 +95,7 @@ nautilus_progress_info_finalize (GObject *object)
     g_cancellable_disconnect (info->cancellable, info->cancellable_id);
     g_object_unref (info->cancellable);
     g_clear_object (&info->destination);
+    g_mutex_clear (&info->mutex);
 
     if (G_OBJECT_CLASS (nautilus_progress_info_parent_class)->finalize)
     {
@@ -109,7 +110,7 @@ nautilus_progress_info_dispose (GObject *object)
 
     info = NAUTILUS_PROGRESS_INFO (object);
 
-    G_LOCK (progress_info);
+    g_autoptr (GMutexLocker) locker = g_mutex_locker_new (&info->mutex);
 
     /* Destroy source in dispose, because the callback
      *  could come here before the destroy, which should
@@ -120,7 +121,8 @@ nautilus_progress_info_dispose (GObject *object)
         g_source_unref (info->idle_source);
         info->idle_source = NULL;
     }
-    G_UNLOCK (progress_info);
+
+    g_clear_pointer (&locker, g_mutex_locker_free);
 
     G_OBJECT_CLASS (nautilus_progress_info_parent_class)->dispose (object);
 }
@@ -149,13 +151,13 @@ nautilus_progress_info_get_property (GObject    *object,
 
         case (PROP_PROGRESS):
         {
-            G_LOCK (progress_info);
+            g_autoptr (GMutexLocker) locker = g_mutex_locker_new (&self->mutex);
+
             /* This is a little different than nautilus_progress_info_get_progress ()
              * in that we don't want to ever return -1, which would be the case when
              * activity mode is true
              */
             g_value_set_double (value, self->progress);
-            G_UNLOCK (progress_info);
         }
         break;
 
@@ -252,10 +254,10 @@ update_long_running (NautilusProgressInfo *info)
         return;
     }
 
-    G_LOCK (progress_info);
+    g_mutex_lock (&info->mutex);
     info->long_running = g_timer_elapsed (info->progress_timer, NULL) +
                          info->remaining_time > OPERATION_MINIMUM_TIME;
-    G_UNLOCK (progress_info);
+    g_mutex_unlock (&info->mutex);
 
     if (info->long_running)
     {
@@ -293,8 +295,7 @@ idle_callback (gpointer data)
     gboolean status_at_idle;
     gboolean cancelled_at_idle;
     GSource *source;
-
-    G_LOCK (progress_info);
+    g_autoptr (GMutexLocker) locker = g_mutex_locker_new (&info->mutex);
 
     source = g_main_current_source ();
 
@@ -305,7 +306,6 @@ idle_callback (gpointer data)
      */
     if (g_source_is_destroyed (source))
     {
-        G_UNLOCK (progress_info);
         return FALSE;
     }
 
@@ -334,7 +334,7 @@ idle_callback (gpointer data)
     info->status_at_idle = FALSE;
     info->cancel_at_idle = FALSE;
 
-    G_UNLOCK (progress_info);
+    g_clear_pointer (&locker, g_mutex_locker_free);
 
     update_long_running (info);
 
@@ -428,18 +428,20 @@ static void
 on_canceled (GCancellable         *cancellable,
              NautilusProgressInfo *info)
 {
-    G_LOCK (progress_info);
+    g_autoptr (GMutexLocker) locker = g_mutex_locker_new (&info->mutex);
+
     set_details (info, _("Cancelled"));
     info->cancel_at_idle = TRUE;
     g_timer_stop (info->progress_timer);
     queue_idle (info, TRUE);
-    G_UNLOCK (progress_info);
 }
 
 static void
 nautilus_progress_info_init (NautilusProgressInfo *info)
 {
     NautilusProgressInfoManager *manager;
+
+    g_mutex_init (&info->mutex);
 
     info->cancellable = g_cancellable_new ();
     info->cancellable_id = g_cancellable_connect (info->cancellable,
@@ -473,79 +475,48 @@ nautilus_progress_info_new (void)
 char *
 nautilus_progress_info_get_short_status (NautilusProgressInfo *info)
 {
-    char *res;
+    g_autoptr (GMutexLocker) locker = g_mutex_locker_new (&info->mutex);
 
-    G_LOCK (progress_info);
+    if (info->status == NULL)
+    {
+        return g_strdup (_("Preparing"));
+    }
 
-    res = info->status != NULL ? info->short_status : _("Preparing");
-    res = g_strdup (res);
-
-    G_UNLOCK (progress_info);
-
-    return res;
+    return g_strdup (info->short_status);
 }
 
 char *
 nautilus_progress_info_get_status (NautilusProgressInfo *info)
 {
-    char *res;
+    g_autoptr (GMutexLocker) locker = g_mutex_locker_new (&info->mutex);
 
-    G_LOCK (progress_info);
-
-    if (info->status)
+    if (info->status == NULL)
     {
-        res = g_strdup (info->status);
-    }
-    else
-    {
-        res = g_strdup (_("Preparing"));
+        return g_strdup (_("Preparing"));
     }
 
-    G_UNLOCK (progress_info);
-
-    return res;
+    return g_strdup (info->status);
 }
 
 char *
 nautilus_progress_info_get_details (NautilusProgressInfo *info)
 {
-    char *res;
+    g_autoptr (GMutexLocker) locker = g_mutex_locker_new (&info->mutex);
 
-    G_LOCK (progress_info);
-
-    if (info->details)
+    if (info->details == NULL)
     {
-        res = g_strdup (info->details);
-    }
-    else
-    {
-        res = g_strdup (_("Preparing"));
+        return g_strdup (_("Preparing"));
     }
 
-    G_UNLOCK (progress_info);
-
-    return res;
+    return g_strdup (info->details);
 }
 
 double
 nautilus_progress_info_get_progress (NautilusProgressInfo *info)
 {
-    double res;
+    g_autoptr (GMutexLocker) locker = g_mutex_locker_new (&info->mutex);
 
-    G_LOCK (progress_info);
-
-    if (info->activity_mode)
-    {
-        res = -1.0;
-    }
-    else
-    {
-        res = info->progress;
-    }
-
-    G_UNLOCK (progress_info);
-
-    return res;
+    return info->activity_mode ? -1.0 : info->progress;
 }
 
 void
@@ -569,15 +540,9 @@ nautilus_progress_info_get_is_cancelled (NautilusProgressInfo *info)
 gboolean
 nautilus_progress_info_get_is_finished (NautilusProgressInfo *info)
 {
-    gboolean res;
+    g_autoptr (GMutexLocker) locker = g_mutex_locker_new (&info->mutex);
 
-    G_LOCK (progress_info);
-
-    res = info->finished;
-
-    G_UNLOCK (progress_info);
-
-    return res;
+    return info->finished;
 }
 
 static const char *
@@ -598,49 +563,39 @@ get_icon_name (NautilusProgressInfo *info)
 gboolean
 nautilus_progress_info_get_is_paused (NautilusProgressInfo *info)
 {
-    gboolean res;
+    g_autoptr (GMutexLocker) locker = g_mutex_locker_new (&info->mutex);
 
-    G_LOCK (progress_info);
-
-    res = info->paused;
-
-    G_UNLOCK (progress_info);
-
-    return res;
+    return info->paused;
 }
 
 void
 nautilus_progress_info_pause (NautilusProgressInfo *info)
 {
-    G_LOCK (progress_info);
+    g_autoptr (GMutexLocker) locker = g_mutex_locker_new (&info->mutex);
 
     if (!info->paused)
     {
         info->paused = TRUE;
         g_timer_stop (info->progress_timer);
     }
-
-    G_UNLOCK (progress_info);
 }
 
 void
 nautilus_progress_info_resume (NautilusProgressInfo *info)
 {
-    G_LOCK (progress_info);
+    g_autoptr (GMutexLocker) locker = g_mutex_locker_new (&info->mutex);
 
     if (info->paused)
     {
         info->paused = FALSE;
         g_timer_continue (info->progress_timer);
     }
-
-    G_UNLOCK (progress_info);
 }
 
 void
 nautilus_progress_info_start (NautilusProgressInfo *info)
 {
-    G_LOCK (progress_info);
+    g_autoptr (GMutexLocker) locker = g_mutex_locker_new (&info->mutex);
 
     if (!info->started)
     {
@@ -650,14 +605,12 @@ nautilus_progress_info_start (NautilusProgressInfo *info)
         info->start_at_idle = TRUE;
         queue_idle (info, TRUE);
     }
-
-    G_UNLOCK (progress_info);
 }
 
 void
 nautilus_progress_info_finish (NautilusProgressInfo *info)
 {
-    G_LOCK (progress_info);
+    g_autoptr (GMutexLocker) locker = g_mutex_locker_new (&info->mutex);
 
     if (!info->finished)
     {
@@ -667,15 +620,26 @@ nautilus_progress_info_finish (NautilusProgressInfo *info)
         info->finish_at_idle = TRUE;
         queue_idle (info, TRUE);
     }
-
-    G_UNLOCK (progress_info);
 }
 
-static void
-set_status (NautilusProgressInfo *info,
-            const char           *status,
-            const char           *short_status)
+void
+nautilus_progress_info_take_status (NautilusProgressInfo *info,
+                                    char                 *status,
+                                    char                 *short_status)
 {
+    nautilus_progress_info_set_status (info, status, short_status);
+
+    g_free (status);
+    g_free (short_status);
+}
+
+void
+nautilus_progress_info_set_status (NautilusProgressInfo *info,
+                                   const char           *status,
+                                   const char           *short_status)
+{
+    g_autoptr (GMutexLocker) locker = g_mutex_locker_new (&info->mutex);
+
     if (g_cancellable_is_cancelled (info->cancellable))
     {
         return;
@@ -689,33 +653,6 @@ set_status (NautilusProgressInfo *info,
         info->status_at_idle = TRUE;
         queue_idle (info, FALSE);
     }
-}
-
-void
-nautilus_progress_info_take_status (NautilusProgressInfo *info,
-                                    char                 *status,
-                                    char                 *short_status)
-{
-    G_LOCK (progress_info);
-
-    set_status (info, status, short_status);
-
-    G_UNLOCK (progress_info);
-
-    g_free (status);
-    g_free (short_status);
-}
-
-void
-nautilus_progress_info_set_status (NautilusProgressInfo *info,
-                                   const char           *status,
-                                   const char           *short_status)
-{
-    G_LOCK (progress_info);
-
-    set_status (info, status, short_status);
-
-    G_UNLOCK (progress_info);
 }
 
 static void
@@ -732,15 +669,7 @@ void
 nautilus_progress_info_take_details (NautilusProgressInfo *info,
                                      char                 *details)
 {
-    G_LOCK (progress_info);
-
-    if (g_strcmp0 (info->details, details) != 0 &&
-        !g_cancellable_is_cancelled (info->cancellable))
-    {
-        set_details (info, details);
-    }
-
-    G_UNLOCK (progress_info);
+    nautilus_progress_info_set_details (info, details);
 
     g_free (details);
 }
@@ -749,28 +678,24 @@ void
 nautilus_progress_info_set_details (NautilusProgressInfo *info,
                                     const char           *details)
 {
-    G_LOCK (progress_info);
+    g_autoptr (GMutexLocker) locker = g_mutex_locker_new (&info->mutex);
 
     if (g_strcmp0 (info->details, details) != 0 &&
         !g_cancellable_is_cancelled (info->cancellable))
     {
         set_details (info, details);
     }
-
-    G_UNLOCK (progress_info);
 }
 
 void
 nautilus_progress_info_pulse_progress (NautilusProgressInfo *info)
 {
-    G_LOCK (progress_info);
+    g_autoptr (GMutexLocker) locker = g_mutex_locker_new (&info->mutex);
 
     info->activity_mode = TRUE;
     info->progress = 0.0;
     info->progress_at_idle = TRUE;
     queue_idle (info, FALSE);
-
-    G_UNLOCK (progress_info);
 }
 
 void
@@ -799,7 +724,7 @@ nautilus_progress_info_set_progress (NautilusProgressInfo *info,
         }
     }
 
-    G_LOCK (progress_info);
+    g_autoptr (GMutexLocker) locker = g_mutex_locker_new (&info->mutex);
 
     if ((info->activity_mode ||     /* emit on switch from activity mode */
          fabs (current_percent - info->progress) > 0.005) &&    /* Emit on change of 0.5 percent */
@@ -810,66 +735,51 @@ nautilus_progress_info_set_progress (NautilusProgressInfo *info,
         info->progress_at_idle = TRUE;
         queue_idle (info, FALSE);
     }
-
-    G_UNLOCK (progress_info);
 }
 
 void
 nautilus_progress_info_set_remaining_time (NautilusProgressInfo *info,
                                            gdouble               time)
 {
-    G_LOCK (progress_info);
+    g_autoptr (GMutexLocker) locker = g_mutex_locker_new (&info->mutex);
+
     info->remaining_time = time;
-    G_UNLOCK (progress_info);
 }
 
 gdouble
 nautilus_progress_info_get_remaining_time (NautilusProgressInfo *info)
 {
-    gint remaining_time;
+    g_autoptr (GMutexLocker) locker = g_mutex_locker_new (&info->mutex);
 
-    G_LOCK (progress_info);
-    remaining_time = info->remaining_time;
-    G_UNLOCK (progress_info);
-
-    return remaining_time;
+    return info->remaining_time;
 }
 
 gdouble
 nautilus_progress_info_get_total_elapsed_time (NautilusProgressInfo *info)
 {
-    gdouble elapsed_time = 0;
+    g_autoptr (GMutexLocker) locker = g_mutex_locker_new (&info->mutex);
 
-    G_LOCK (progress_info);
-    if (info->progress_timer != NULL)
-    {
-        elapsed_time = g_timer_elapsed (info->progress_timer, NULL);
-    }
-    G_UNLOCK (progress_info);
-
-    return elapsed_time;
+    return g_timer_elapsed (info->progress_timer, NULL);
 }
 
 void
 nautilus_progress_info_set_destination (NautilusProgressInfo *info,
                                         GFile                *file)
 {
-    G_LOCK (progress_info);
+    g_autoptr (GMutexLocker) locker = g_mutex_locker_new (&info->mutex);
+
     g_set_object (&info->destination, file);
-    G_UNLOCK (progress_info);
 }
 
 GFile *
 nautilus_progress_info_get_destination (NautilusProgressInfo *info)
 {
-    GFile *destination = NULL;
+    g_autoptr (GMutexLocker) locker = g_mutex_locker_new (&info->mutex);
 
-    G_LOCK (progress_info);
-    if (info->destination)
+    if (info->destination == NULL)
     {
-        destination = g_object_ref (info->destination);
+        return NULL;
     }
-    G_UNLOCK (progress_info);
 
-    return destination;
+    return g_object_ref (info->destination);
 }
