@@ -534,16 +534,7 @@ nautilus_column_chooser_constructed (GObject *object)
 
     populate_list (chooser);
 
-    const GStrv file_visible_columns =
-        nautilus_file_get_metadata_list (chooser->file,
-                                         NAUTILUS_METADATA_KEY_LIST_VIEW_VISIBLE_COLUMNS);
-    const GStrv file_column_order =
-        nautilus_file_get_metadata_list (chooser->file,
-                                         NAUTILUS_METADATA_KEY_LIST_VIEW_COLUMN_ORDER);
-
-    has_custom_columns = ((file_visible_columns != NULL && file_visible_columns[0] != NULL) ||
-                          (file_column_order != NULL && file_column_order[0] != NULL) ||
-                          is_special_folder (chooser));
+    has_custom_columns = nautilus_column_has_custom_settings (chooser->file);
 
     adw_switch_row_set_active (ADW_SWITCH_ROW (chooser->use_custom_row), has_custom_columns);
     gtk_widget_set_visible (chooser->use_custom_box, !has_custom_columns);

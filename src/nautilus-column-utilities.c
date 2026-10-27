@@ -456,6 +456,21 @@ nautilus_column_get_default_column_order (NautilusFile *file)
                                 NAUTILUS_PREFERENCES_LIST_VIEW_DEFAULT_COLUMN_ORDER);
 }
 
+gboolean
+nautilus_column_has_custom_settings (NautilusFile *file)
+{
+    const GStrv visible_columns =
+        nautilus_file_get_metadata_list (file, NAUTILUS_METADATA_KEY_LIST_VIEW_VISIBLE_COLUMNS);
+    const GStrv column_order =
+        nautilus_file_get_metadata_list (file, NAUTILUS_METADATA_KEY_LIST_VIEW_COLUMN_ORDER);
+
+    return ((visible_columns != NULL && visible_columns[0] != NULL) ||
+            (column_order != NULL && column_order[0] != NULL) ||
+            nautilus_file_is_in_trash (file) ||
+            nautilus_file_is_in_search (file) ||
+            nautilus_file_is_in_recent (file));
+}
+
 GStrv
 nautilus_column_get_column_order (NautilusFile *file)
 {

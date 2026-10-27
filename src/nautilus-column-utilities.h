@@ -29,3 +29,5 @@ GStrv  nautilus_column_get_default_visible_columns (NautilusFile *file);
 GStrv  nautilus_column_get_visible_columns         (NautilusFile *file);
 GStrv  nautilus_column_get_default_column_order    (NautilusFile *file);
 GStrv  nautilus_column_get_column_order            (NautilusFile *file);
+
+gboolean nautilus_column_has_custom_settings (NautilusFile *file);
