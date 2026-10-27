@@ -60,7 +60,8 @@ struct _NautilusBatchRenameDialog
     /* total conflicts number */
     gint conflicts_number;
 
-    GList *duplicates;
+    /* sorted by ascending ConflictData index */
+    GPtrArray *duplicates;
     GList *distinct_parent_directories;
     GList *directories_pending_conflict_check;
 
@@ -479,8 +480,7 @@ select_nth_conflict (NautilusBatchRenameDialog *dialog)
     ConflictData *conflict_data;
 
     nth_conflict = dialog->selected_conflict;
-    l = g_list_nth (dialog->duplicates, nth_conflict);
-    conflict_data = l->data;
+    conflict_data = g_ptr_array_index (dialog->duplicates, nth_conflict);
 
     /* the conflict that has to be selected */
     conflict_file_name = g_string_new (conflict_data->name);
@@ -560,30 +560,27 @@ select_next_conflict_up (NautilusBatchRenameDialog *dialog)
 static void
 update_conflict_row_background (NautilusBatchRenameDialog *dialog)
 {
-    GList *duplicates;
     GListModel *model = G_LIST_MODEL (dialog->batch_listmodel);
     guint model_size = g_list_model_get_n_items (model);
-
-    duplicates = dialog->duplicates;
+    guint conflict_position = 0;
 
     for (guint index = 0; index < model_size; index++)
     {
         g_autoptr (NautilusBatchRenameItem) item = g_list_model_get_item (model, index);
+        gboolean has_conflict = FALSE;
 
-        if (duplicates != NULL)
+        if (conflict_position < dialog->duplicates->len)
         {
-            ConflictData *conflict_data = duplicates->data;
-            gboolean has_conflict = conflict_data->index == index;
-            nautilus_batch_rename_item_set_has_conflict (item, has_conflict);
+            ConflictData *conflict_data = g_ptr_array_index (dialog->duplicates, conflict_position);
+
+            has_conflict = conflict_data->index == index;
             if (has_conflict)
             {
-                duplicates = duplicates->next;
+                conflict_position++;
             }
         }
-        else
-        {
-            nautilus_batch_rename_item_set_has_conflict (item, FALSE);
-        }
+
+        nautilus_batch_rename_item_set_has_conflict (item, has_conflict);
     }
 }
 
@@ -644,7 +641,7 @@ update_listbox (NautilusBatchRenameDialog *dialog)
     }
 
     /* check if there are name conflicts and display them if they exist */
-    if (dialog->duplicates != NULL)
+    if (dialog->duplicates->len > 0)
     {
         update_conflict_row_background (dialog);
 
@@ -653,27 +650,19 @@ update_listbox (NautilusBatchRenameDialog *dialog)
         adw_toolbar_view_set_reveal_bottom_bars (dialog->toolbar_view, TRUE);
 
         dialog->selected_conflict = 0;
-        dialog->conflicts_number = g_list_length (dialog->duplicates);
+        dialog->conflicts_number = dialog->duplicates->len;
 
         select_nth_conflict (dialog);
 
         gtk_widget_set_sensitive (dialog->conflict_up, FALSE);
-
-        if (dialog->duplicates != NULL && dialog->duplicates->next == NULL)
-        {
-            gtk_widget_set_sensitive (dialog->conflict_down, FALSE);
-        }
-        else
-        {
-            gtk_widget_set_sensitive (dialog->conflict_down, TRUE);
-        }
+        gtk_widget_set_sensitive (dialog->conflict_down, dialog->duplicates->len > 1);
     }
     else
     {
         adw_toolbar_view_set_reveal_bottom_bars (dialog->toolbar_view, FALSE);
 
         /* re-enable the rename button if there are no more name conflicts */
-        if (dialog->duplicates == NULL && !gtk_widget_is_sensitive (dialog->rename_button))
+        if (!gtk_widget_is_sensitive (dialog->rename_button))
         {
             update_conflict_row_background (dialog);
             gtk_widget_set_sensitive (dialog->rename_button, TRUE);
@@ -681,12 +670,12 @@ update_listbox (NautilusBatchRenameDialog *dialog)
     }
 
     /* if the rename button was clicked and there's no conflict, then start renaming */
-    if (dialog->rename_clicked && dialog->duplicates == NULL)
+    if (dialog->rename_clicked && dialog->duplicates->len == 0)
     {
         prepare_batch_rename (dialog);
     }
 
-    if (dialog->rename_clicked && dialog->duplicates != NULL)
+    if (dialog->rename_clicked && dialog->duplicates->len > 0)
     {
         dialog->rename_clicked = FALSE;
     }
@@ -780,8 +769,7 @@ check_conflict_for_files (NautilusBatchRenameDialog *dialog,
                 conflict_data = g_new (ConflictData, 1);
                 conflict_data->name = g_strdup (new_name->str);
                 conflict_data->index = index;
-                dialog->duplicates = g_list_prepend (dialog->duplicates,
-                                                     conflict_data);
+                g_ptr_array_add (dialog->duplicates, conflict_data);
 
                 have_conflict = TRUE;
             }
@@ -797,8 +785,7 @@ check_conflict_for_files (NautilusBatchRenameDialog *dialog,
                 conflict_data = g_new (ConflictData, 1);
                 conflict_data->name = g_strdup (new_name->str);
                 conflict_data->index = index;
-                dialog->duplicates = g_list_prepend (dialog->duplicates,
-                                                     conflict_data);
+                g_ptr_array_add (dialog->duplicates, conflict_data);
             }
         }
     }
@@ -828,8 +815,6 @@ on_directory_attributes_ready_for_conflicts_check (NautilusDirectory *conflict_d
 
     if (self->directories_pending_conflict_check == NULL)
     {
-        self->duplicates = g_list_reverse (self->duplicates);
-
         update_listbox (self);
     }
 }
@@ -863,7 +848,7 @@ file_names_list_has_duplicates_async (NautilusBatchRenameDialog *self)
     }
 
     self->directories_pending_conflict_check = nautilus_directory_list_copy (self->distinct_parent_directories);
-    self->duplicates = NULL;
+    g_ptr_array_set_size (self->duplicates, 0);
 
     for (l = self->distinct_parent_directories; l != NULL; l = l->next)
     {
@@ -1018,11 +1003,7 @@ update_display_text (NautilusBatchRenameDialog *dialog)
         return;
     }
 
-    if (dialog->duplicates != NULL)
-    {
-        g_list_free_full (dialog->duplicates, conflict_data_free);
-        dialog->duplicates = NULL;
-    }
+    g_ptr_array_set_size (dialog->duplicates, 0);
 
     if (dialog->new_names != NULL)
     {
@@ -1463,7 +1444,7 @@ nautilus_batch_rename_dialog_finalize (GObject *object)
     }
 
     g_list_free_full (dialog->new_names, string_free);
-    g_list_free_full (dialog->duplicates, conflict_data_free);
+    g_clear_pointer (&dialog->duplicates, g_ptr_array_unref);
 
     nautilus_file_list_free (dialog->selection);
     nautilus_directory_list_free (dialog->distinct_parent_directories);
@@ -1623,7 +1604,7 @@ nautilus_batch_rename_dialog_init (NautilusBatchRenameDialog *self)
     gtk_label_set_ellipsize (GTK_LABEL (self->conflict_label), PANGO_ELLIPSIZE_END);
     gtk_label_set_max_width_chars (GTK_LABEL (self->conflict_label), 1);
 
-    self->duplicates = NULL;
+    self->duplicates = g_ptr_array_new_with_free_func (conflict_data_free);
     self->distinct_parent_directories = NULL;
     self->directories_pending_conflict_check = NULL;
     self->new_names = NULL;
