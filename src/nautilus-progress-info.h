@@ -17,6 +17,9 @@
 
 G_DECLARE_FINAL_TYPE (NautilusProgressInfo, nautilus_progress_info, NAUTILUS, PROGRESS_INFO, GObject)
 
+/* The minimum time an operation should run until its shown */
+#define OPERATION_MINIMUM_TIME 2
+
 /* Signals:
    "changed" - status or details changed
    "progress-changed" - the percentage progress changed (or we pulsed if in activity_mode

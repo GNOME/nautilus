@@ -31,6 +31,7 @@ enum
 {
     PROP_0,
     PROP_ICON_NAME,
+    PROP_LONG_RUNNING,
     PROP_PROGRESS,
     PROP_SHORT_STATUS,
     N_PROPS
@@ -57,6 +58,8 @@ struct _NautilusProgressInfo
     gboolean started;
     gboolean finished;
     gboolean paused;
+    /* Only accessed from the main thread */
+    gboolean long_running;
 
     GSource *idle_source;
     gboolean source_is_now;
@@ -136,6 +139,12 @@ nautilus_progress_info_get_property (GObject    *object,
         case (PROP_ICON_NAME):
         {
             g_value_set_string (value, get_icon_name (self));
+        }
+        break;
+
+        case (PROP_LONG_RUNNING):
+        {
+            g_value_set_boolean (value, self->long_running);
         }
         break;
 
@@ -222,6 +231,9 @@ nautilus_progress_info_class_init (NautilusProgressInfoClass *klass)
                                                       NULL, NULL,
                                                       NULL,
                                                       G_PARAM_READABLE | G_PARAM_STATIC_STRINGS);
+    properties[PROP_LONG_RUNNING] = g_param_spec_boolean ("long-running", NULL, NULL,
+                                                          FALSE,
+                                                          G_PARAM_READABLE | G_PARAM_STATIC_STRINGS);
     properties[PROP_PROGRESS] = g_param_spec_double ("progress", NULL, NULL,
                                                      0, G_MAXDOUBLE, 0,
                                                      G_PARAM_READABLE | G_PARAM_STATIC_STRINGS);
@@ -230,6 +242,45 @@ nautilus_progress_info_class_init (NautilusProgressInfoClass *klass)
                                                          "",
                                                          G_PARAM_READABLE | G_PARAM_STATIC_STRINGS);
     g_object_class_install_properties (gobject_class, N_PROPS, properties);
+}
+
+/* Must be called from the main thread */
+static void
+update_long_running (NautilusProgressInfo *info)
+{
+    if (info->long_running)
+    {
+        return;
+    }
+
+    G_LOCK (progress_info);
+    info->long_running = g_timer_elapsed (info->progress_timer, NULL) +
+                         info->remaining_time > OPERATION_MINIMUM_TIME;
+    G_UNLOCK (progress_info);
+
+    if (info->long_running)
+    {
+        g_object_notify_by_pspec (G_OBJECT (info), properties[PROP_LONG_RUNNING]);
+    }
+}
+
+static gboolean
+on_long_running_timeout (gpointer user_data)
+{
+    NautilusProgressInfo *info = user_data;
+
+    /* Catches operations that don't report progress often enough to trigger
+     * an update from the idle callback */
+    update_long_running (info);
+
+    if (info->long_running ||
+        nautilus_progress_info_get_is_finished (info) ||
+        nautilus_progress_info_get_is_cancelled (info))
+    {
+        return G_SOURCE_REMOVE;
+    }
+
+    return G_SOURCE_CONTINUE;
 }
 
 static gboolean
@@ -286,11 +337,21 @@ idle_callback (gpointer data)
 
     G_UNLOCK (progress_info);
 
+    update_long_running (info);
+
     if (start_at_idle)
     {
         g_signal_emit (info,
                        signals[STARTED],
                        0);
+
+        if (!info->long_running)
+        {
+            g_timeout_add_seconds_full (G_PRIORITY_DEFAULT, 1,
+                                        on_long_running_timeout,
+                                        g_object_ref (info),
+                                        g_object_unref);
+        }
     }
 
     if (changed_at_idle || status_at_idle)
