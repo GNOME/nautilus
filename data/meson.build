@@ -66,9 +66,15 @@ appdata = i18n.merge_file(
   po_dir: po_dir,
 )
 
+systemd_unit_name = (profile == 'Devel' ? 'nautilus-devel' : 'nautilus') + '.service'
+
 service_conf = configuration_data()
 service_conf.set('appid', application_id)
 service_conf.set('bindir', join_paths(prefix, bindir))
+service_conf.set(
+  'systemd_service',
+  systemd_dep.found() ? 'SystemdService=' + systemd_unit_name : '',
+)
 
 configure_file(
   input: 'org.gnome.Nautilus.service.in',
@@ -83,6 +89,18 @@ configure_file(
   configuration: service_conf,
   install_dir: servicedir,
 )
+
+if systemd_dep.found()
+  configure_file(
+    input: 'nautilus.service.in',
+    output: systemd_unit_name,
+    configuration: service_conf,
+    install_dir: join_paths(
+      prefix,
+      systemd_dep.get_variable(pkgconfig: 'systemduserunitdir')
+    )
+  )
+endif
 
 search_provider_conf = configuration_data()
 
