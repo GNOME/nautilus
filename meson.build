@@ -133,6 +133,7 @@ libportal_gtk4 = dependency('libportal-gtk4', version: '>= 0.5')
 tinysparql = dependency('tinysparql-3.0', version: '>= 3.8')
 icu_dep = dependency('icu-uc', version: '>=56')
 icu_i18n_dep = dependency('icu-i18n', version: '>=56')
+systemd_dep = dependency('systemd', required: get_option('systemd'))
 
 blueprint_cmd = find_program(
   'blueprint-compiler',
@@ -271,6 +272,7 @@ summary(
     'Extensions': get_option('extensions'),
     'Cloud providers support': cloudproviders.found(),
     'SELinux support': selinux.found(),
+    'Systemd user service': systemd_dep.found(),
   },
   section: 'Features',
   bool_yn: true,
