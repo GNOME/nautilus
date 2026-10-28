@@ -28,6 +28,7 @@ typedef struct
 
     GHashTable *selection_metadata;
 
+    guint metadata_count[G_N_ELEMENTS (metadata_tags_constants)];
     gboolean has_metadata[G_N_ELEMENTS (metadata_tags_constants)];
 
     GCancellable *cancellable;
@@ -83,6 +84,20 @@ file_metadata_free (gpointer data)
     }
 
     g_free (file_metadata);
+}
+
+static void
+update_metadata_availability (QueryData *query_data)
+{
+    guint selection_size = g_hash_table_size (query_data->selection_metadata);
+
+    for (guint i = 0; i < G_N_ELEMENTS (metadata_tags_constants); i++)
+    {
+        /* True when non-empty values were received for every file in
+         * selection */
+        query_data->has_metadata[i] = selection_size > 0 &&
+                                      query_data->metadata_count[i] == selection_size;
+    }
 }
 
 const gchar *
@@ -579,6 +594,7 @@ on_cursor_callback (GObject      *object,
         if (error == NULL ||
             (error != NULL && error->code != G_IO_ERROR_CANCELLED))
         {
+            update_metadata_availability (query_data);
             nautilus_batch_rename_dialog_query_finished (query_data->dialog,
                                                          query_data->date_order_hash_table,
                                                          query_data->selection_metadata,
@@ -616,7 +632,8 @@ on_cursor_callback (GObject      *object,
     album_name = tracker_sparql_cursor_get_string (cursor, ALBUM_NAME_INDEX, NULL);
     file_name = tracker_sparql_cursor_get_string (cursor, FILE_NAME_INDEX, NULL);
 
-    /* Set metadata when available, and delete for the whole selection when not */
+    /* Set metadata when available, and delete for the whole selection when a
+     * single file doesn't have the metadata for some type. */
     for (i = 0; i < G_N_ELEMENTS (metadata_tags_constants); i++)
     {
         if (!query_data->has_metadata[i])
@@ -689,7 +706,9 @@ on_cursor_callback (GObject      *object,
             break;
         }
 
-        if (!current_metadata)
+        /* Treat empty strings as a missing metadata */
+        if (current_metadata == NULL ||
+            (metadata_type != CREATION_DATE && *(const gchar *) current_metadata == '\0'))
         {
             query_data->has_metadata[i] = FALSE;
 
@@ -702,6 +721,8 @@ on_cursor_callback (GObject      *object,
         }
         else
         {
+            query_data->metadata_count[i]++;
+
             if (metadata_type == CREATION_DATE)
             {
                 /* Add the sort order to the order hash table */
@@ -755,6 +776,7 @@ batch_rename_dialog_query_callback (GObject      *object,
         /* The dialog is being finalized at this point */
         if (error->code != G_IO_ERROR_CANCELLED)
         {
+            update_metadata_availability (query_data);
             nautilus_batch_rename_dialog_query_finished (query_data->dialog,
                                                          query_data->date_order_hash_table,
                                                          query_data->selection_metadata,
@@ -784,17 +806,6 @@ check_metadata_for_selection (NautilusBatchRenameDialog *dialog,
     guint i;
     g_autofree gchar *parent_uri = NULL;
     gchar *file_name_escaped;
-
-    connection = nautilus_localsearch_get_miner_fs_connection (&error);
-    if (!connection)
-    {
-        if (error)
-        {
-            g_warning ("Error on batch rename tracker connection: %s", error->message);
-        }
-
-        return;
-    }
 
     selection_metadata = g_hash_table_new_full (NULL, NULL,
                                                 (GDestroyNotify) nautilus_file_unref, file_metadata_free);
@@ -854,6 +865,24 @@ check_metadata_for_selection (NautilusBatchRenameDialog *dialog,
 
     g_string_append (query, "} ORDER BY ASC(nie:contentCreated(?content))");
 
+    connection = nautilus_localsearch_get_miner_fs_connection (&error);
+    if (connection == NULL)
+    {
+        gboolean has_metadata[G_N_ELEMENTS (metadata_tags_constants)] = { 0 };
+
+        if (error)
+        {
+            g_warning ("Error on batch rename tracker connection: %s", error->message);
+        }
+
+        nautilus_batch_rename_dialog_query_finished (dialog,
+                                                     NULL,
+                                                     g_steal_pointer (&selection_metadata),
+                                                     has_metadata);
+
+        return;
+    }
+
     query_data = g_new (QueryData, 1);
     query_data->date_order_hash_table = g_hash_table_new_full (g_str_hash,
                                                                g_str_equal,
@@ -863,6 +892,7 @@ check_metadata_for_selection (NautilusBatchRenameDialog *dialog,
     query_data->selection_metadata = g_steal_pointer (&selection_metadata);
     for (i = 0; i < G_N_ELEMENTS (metadata_tags_constants); i++)
     {
+        query_data->metadata_count[i] = 0;
         query_data->has_metadata[i] = TRUE;
     }
     query_data->cancellable = cancellable;

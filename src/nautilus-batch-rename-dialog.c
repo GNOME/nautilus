@@ -1073,8 +1073,6 @@ nautilus_batch_rename_dialog_query_finished (NautilusBatchRenameDialog *dialog,
                                              GHashTable                *selection_metadata,
                                              gboolean                   has_metadata[])
 {
-    GHashTableIter selection_metadata_iter;
-    FileMetadata *file_metadata;
     MetadataType metadata_type;
     g_autoptr (GList) tag_info_keys = NULL;
     GList *l;
@@ -1113,9 +1111,6 @@ nautilus_batch_rename_dialog_query_finished (NautilusBatchRenameDialog *dialog,
 
     dialog->selection_metadata = selection_metadata;
 
-    g_hash_table_iter_init (&selection_metadata_iter, selection_metadata);
-    g_hash_table_iter_next (&selection_metadata_iter, NULL, (gpointer *) &file_metadata);
-
     tag_info_keys = g_hash_table_get_keys (dialog->tag_info_table);
     for (l = tag_info_keys; l != NULL; l = l->next)
     {
@@ -1129,9 +1124,12 @@ nautilus_batch_rename_dialog_query_finished (NautilusBatchRenameDialog *dialog,
         }
 
         metadata_type = tag_data->tag_constants.metadata_type;
-        if (has_metadata[metadata_type] == FALSE ||
-            file_metadata->metadata[metadata_type] == NULL ||
-            file_metadata->metadata[metadata_type]->len <= 0)
+        if (has_metadata[metadata_type] &&
+            !tag_data->set)
+        {
+            enable_action (dialog, tag_data->tag_constants.action_name);
+        }
+        else
         {
             disable_action (dialog, tag_data->tag_constants.action_name);
         }
@@ -1141,8 +1139,6 @@ nautilus_batch_rename_dialog_query_finished (NautilusBatchRenameDialog *dialog,
 static void
 nautilus_batch_rename_dialog_initialize_actions (NautilusBatchRenameDialog *dialog)
 {
-    GAction *action;
-
     dialog->action_group = G_ACTION_GROUP (g_simple_action_group_new ());
 
     g_action_map_add_action_entries (G_ACTION_MAP (dialog->action_group),
@@ -1153,9 +1149,11 @@ nautilus_batch_rename_dialog_initialize_actions (NautilusBatchRenameDialog *dial
                                     "dialog",
                                     G_ACTION_GROUP (dialog->action_group));
 
-    action = g_action_map_lookup_action (G_ACTION_MAP (dialog->action_group),
-                                         metadata_tags_constants[ORIGINAL_FILE_NAME].action_name);
-    g_simple_action_set_enabled (G_SIMPLE_ACTION (action), FALSE);
+    /* Disable all actions before querying indexer for metadata */
+    for (guint i = 0; i < G_N_ELEMENTS (metadata_tags_constants); i++)
+    {
+        disable_action (dialog, metadata_tags_constants[i].action_name);
+    }
 
     check_metadata_for_selection (dialog, dialog->selection,
                                   dialog->metadata_cancellable);
