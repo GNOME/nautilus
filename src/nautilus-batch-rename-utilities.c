@@ -721,7 +721,16 @@ on_cursor_callback (GObject      *object,
         }
         else
         {
-            query_data->metadata_count[i]++;
+            if (file_metadata->metadata[metadata_type] != NULL)
+            {
+                query_data->metadata_count[i]++;
+            }
+            else
+            {
+                g_warning ("File %s has metadata type number %u being set but it already exists.",
+                           file_uri, metadata_type);
+                g_string_free (file_metadata->metadata[metadata_type], TRUE);
+            }
 
             if (metadata_type == CREATION_DATE)
             {
@@ -735,13 +744,6 @@ on_cursor_callback (GObject      *object,
             }
             else
             {
-                if (file_metadata->metadata[metadata_type] != NULL)
-                {
-                    g_warning ("File %s has metadata type number %u being set but it already exists.",
-                               file_uri, metadata_type);
-                    g_string_free (file_metadata->metadata[metadata_type], TRUE);
-                }
-
                 file_metadata->metadata[metadata_type] = g_string_new (current_metadata);
                 g_string_replace (file_metadata->metadata[metadata_type], "/", "_", 0);
             }
