@@ -41,6 +41,12 @@ option(
   deprecated: {'true': 'enabled', 'false': 'disabled'},
   description: 'Enable the cloudproviders support',
 )
+option(
+  'systemd',
+  type: 'feature',
+  value: 'auto',
+  description: 'Enable systemd user service for D-Bus activation',
+)
 ################
 # End features #
 ################
