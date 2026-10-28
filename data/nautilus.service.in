@@ -1,0 +1,10 @@
+[Unit]
+Description=Nautilus
+PartOf=graphical-session.target
+Requisite=graphical-session.target
+After=graphical-session.target
+
+[Service]
+Type=dbus
+BusName=@appid@
+ExecStart=@bindir@/nautilus --gapplication-service

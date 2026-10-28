@@ -84,6 +84,15 @@ configure_file(
   install_dir: servicedir,
 )
 
+if systemd_dep.found()
+  configure_file(
+    input: 'nautilus.service.in',
+    output: 'nautilus.service',
+    configuration: service_conf,
+    install_dir: userunitdir,
+  )
+endif
+
 search_provider_conf = configuration_data()
 
 search_provider_conf.set('appid', application_id)

@@ -35,6 +35,11 @@ extensiondir = join_paths(
 )
 servicedir = join_paths(datadir, 'dbus-1', 'services')
 
+systemd_dep = dependency('systemd', required: false)
+if systemd_dep.found()
+  userunitdir = systemd_dep.get_variable(pkgconfig: 'systemduserunitdir')
+endif
+
 ###################
 # End directories #
 ###################
