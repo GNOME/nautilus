@@ -68,10 +68,10 @@ add_project_arguments(
       '-Werror=strict-prototypes',
       '-Werror=undef',
       '-Werror=uninitialized',
-      # There are currently too many warnings caused by deprecations, hindering the usefulness
-      # of any other warnings. Disable them until
+      # There are currently too many warnings caused by GTK deprecations, hindering the usefulness
+      # of any other warnings. Disable the GTK warnings until
       # https://gitlab.gnome.org/GNOME/nautilus/-/issues/2722 is resolved.
-      '-Wno-deprecated-declarations',
+      '-DGDK_DISABLE_DEPRECATION_WARNINGS',
       # We want the general warnings in Wextra, but as GLib functions commonly accept additional
       # user data, warnings for function casts are not feasible. Neither are warnings for unused
       # parameters, as parameters in callbacks commonly aren't used.
