@@ -8,6 +8,11 @@
 
 #include <gio/gio.h>
 
+typedef void (*CheckMetadataCallback) (GHashTable                *date_order_hash_table,
+                                       GHashTable                *selection_metadata,
+                                       gboolean                   has_metadata[],
+                                       gpointer                   user_data);
+
 GList* batch_rename_dialog_get_new_names_list          (NautilusBatchRenameDialogMode  mode,
                                                         GList                         *selection,
                                                         GList                         *tags_list,
@@ -19,9 +24,10 @@ GList* nautilus_batch_rename_dialog_sort        (GList                       *se
                                                  SortMode                     mode,
                                                  GHashTable                  *creation_date_table);
 
-void check_metadata_for_selection               (NautilusBatchRenameDialog *dialog,
-                                                 GList                     *selection,
-                                                 GCancellable              *cancellable);
+void check_metadata_for_selection               (GList                 *selection,
+                                                 CheckMetadataCallback  callback,
+                                                 GCancellable          *cancellable,
+                                                 gpointer               user_data);
 
 void string_free                                (gpointer mem);
 

@@ -22,7 +22,6 @@ typedef struct
 
 typedef struct
 {
-    NautilusBatchRenameDialog *dialog;
     GHashTable *date_order_hash_table;
 
     GHashTable *selection_metadata;
@@ -30,6 +29,8 @@ typedef struct
     guint metadata_count[G_N_ELEMENTS (metadata_tags_constants)];
     gboolean has_metadata[G_N_ELEMENTS (metadata_tags_constants)];
 
+    CheckMetadataCallback callback;
+    gpointer callback_data;
     GCancellable *cancellable;
 } QueryData;
 
@@ -604,11 +605,11 @@ on_cursor_callback (GObject      *object,
              !g_error_matches (error, G_IO_ERROR, G_IO_ERROR_CANCELLED)))
         {
             update_metadata_availability (query_data);
-            nautilus_batch_rename_dialog_query_finished (
-                query_data->dialog,
+            query_data->callback (
                 g_steal_pointer (&query_data->date_order_hash_table),
                 g_steal_pointer (&query_data->selection_metadata),
-                query_data->has_metadata);
+                query_data->has_metadata,
+                query_data->callback_data);
         }
 
         return;
@@ -786,11 +787,11 @@ batch_rename_dialog_query_callback (GObject      *object,
         if (!g_error_matches (error, G_IO_ERROR, G_IO_ERROR_CANCELLED))
         {
             update_metadata_availability (query_data);
-            nautilus_batch_rename_dialog_query_finished (
-                query_data->dialog,
+            query_data->callback (
                 g_steal_pointer (&query_data->date_order_hash_table),
                 g_steal_pointer (&query_data->selection_metadata),
-                query_data->has_metadata);
+                query_data->has_metadata,
+                query_data->callback_data);
         }
     }
     else
@@ -800,9 +801,10 @@ batch_rename_dialog_query_callback (GObject      *object,
 }
 
 void
-check_metadata_for_selection (NautilusBatchRenameDialog *dialog,
-                              GList                     *selection,
-                              GCancellable              *cancellable)
+check_metadata_for_selection (GList                 *selection,
+                              CheckMetadataCallback  callback,
+                              GCancellable          *cancellable,
+                              gpointer               user_data)
 {
     TrackerSparqlConnection *connection;
     g_autoptr (GString) query = NULL;
@@ -882,10 +884,10 @@ check_metadata_for_selection (NautilusBatchRenameDialog *dialog,
             g_warning ("Error on batch rename tracker connection: %s", error->message);
         }
 
-        nautilus_batch_rename_dialog_query_finished (dialog,
-                                                     NULL,
-                                                     g_steal_pointer (&selection_metadata),
-                                                     has_metadata);
+        callback (NULL,
+                  g_steal_pointer (&selection_metadata),
+                  has_metadata,
+                  user_data);
 
         return;
     }
@@ -894,7 +896,8 @@ check_metadata_for_selection (NautilusBatchRenameDialog *dialog,
                                                                g_str_equal,
                                                                (GDestroyNotify) g_free,
                                                                NULL);
-    query_data->dialog = dialog;
+    query_data->callback_data = user_data;
+    query_data->callback = callback;
     query_data->selection_metadata = g_steal_pointer (&selection_metadata);
     for (i = 0; i < G_N_ELEMENTS (metadata_tags_constants); i++)
     {

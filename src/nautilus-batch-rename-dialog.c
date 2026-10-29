@@ -1062,12 +1062,13 @@ batch_rename_dialog_mode_changed (NautilusBatchRenameDialog *dialog)
     update_display_text (dialog);
 }
 
-void
-nautilus_batch_rename_dialog_query_finished (NautilusBatchRenameDialog *dialog,
-                                             GHashTable                *hash_table,
-                                             GHashTable                *selection_metadata,
-                                             gboolean                   has_metadata[])
+static void
+nautilus_batch_rename_dialog_query_finished (GHashTable *hash_table,
+                                             GHashTable *selection_metadata,
+                                             gboolean    has_metadata[],
+                                             gpointer    user_data)
 {
+    NautilusBatchRenameDialog *dialog = user_data;
     MetadataType metadata_type;
     g_autoptr (GList) tag_info_keys = NULL;
     GList *l;
@@ -1150,8 +1151,10 @@ nautilus_batch_rename_dialog_initialize_actions (NautilusBatchRenameDialog *dial
         disable_action (dialog, metadata_tags_constants[i].action_name);
     }
 
-    check_metadata_for_selection (dialog, dialog->selection,
-                                  dialog->metadata_cancellable);
+    check_metadata_for_selection (dialog->selection,
+                                  nautilus_batch_rename_dialog_query_finished,
+                                  dialog->metadata_cancellable,
+                                  dialog);
 }
 
 static void
