@@ -34,6 +34,16 @@ typedef struct
     GCancellable *cancellable;
 } QueryData;
 
+static void
+query_data_free (QueryData *query_data)
+{
+    g_clear_pointer (&query_data->date_order_hash_table, g_hash_table_unref);
+    g_clear_pointer (&query_data->selection_metadata, g_hash_table_unref);
+    g_free (query_data);
+}
+
+G_DEFINE_AUTOPTR_CLEANUP_FUNC (QueryData, query_data_free)
+
 enum
 {
     FILE_NAME_INDEX,
@@ -558,7 +568,7 @@ on_cursor_callback (GObject      *object,
 {
     TrackerSparqlCursor *cursor;
     gboolean success;
-    QueryData *query_data;
+    g_autoptr (QueryData) query_data = user_data;
     MetadataType metadata_type;
     g_autoptr (GError) error = NULL;
     FileMetadata *file_metadata;
@@ -578,7 +588,6 @@ on_cursor_callback (GObject      *object,
     file_metadata = NULL;
 
     cursor = TRACKER_SPARQL_CURSOR (object);
-    query_data = user_data;
 
     success = tracker_sparql_cursor_next_finish (cursor, result, &error);
     if (!success)
@@ -595,13 +604,12 @@ on_cursor_callback (GObject      *object,
             (error != NULL && error->code != G_IO_ERROR_CANCELLED))
         {
             update_metadata_availability (query_data);
-            nautilus_batch_rename_dialog_query_finished (query_data->dialog,
-                                                         query_data->date_order_hash_table,
-                                                         query_data->selection_metadata,
-                                                         query_data->has_metadata);
+            nautilus_batch_rename_dialog_query_finished (
+                query_data->dialog,
+                g_steal_pointer (&query_data->date_order_hash_table),
+                g_steal_pointer (&query_data->selection_metadata),
+                query_data->has_metadata);
         }
-
-        g_free (query_data);
 
         return;
     }
@@ -614,7 +622,7 @@ on_cursor_callback (GObject      *object,
     if (G_UNLIKELY (file_metadata == NULL))
     {
         g_warning ("Got a file that was not in the list of requested files");
-        cursor_next (query_data, cursor);
+        cursor_next (g_steal_pointer (&query_data), cursor);
 
         return;
     }
@@ -751,7 +759,7 @@ on_cursor_callback (GObject      *object,
     }
 
     /* Get next */
-    cursor_next (query_data, cursor);
+    cursor_next (g_steal_pointer (&query_data), cursor);
 }
 
 static void
@@ -761,11 +769,10 @@ batch_rename_dialog_query_callback (GObject      *object,
 {
     TrackerSparqlConnection *connection;
     TrackerSparqlCursor *cursor;
-    QueryData *query_data;
+    g_autoptr (QueryData) query_data = user_data;
     g_autoptr (GError) error = NULL;
 
     connection = TRACKER_SPARQL_CONNECTION (object);
-    query_data = user_data;
 
     cursor = tracker_sparql_connection_query_finish (connection,
                                                      result,
@@ -779,17 +786,16 @@ batch_rename_dialog_query_callback (GObject      *object,
         if (error->code != G_IO_ERROR_CANCELLED)
         {
             update_metadata_availability (query_data);
-            nautilus_batch_rename_dialog_query_finished (query_data->dialog,
-                                                         query_data->date_order_hash_table,
-                                                         query_data->selection_metadata,
-                                                         query_data->has_metadata);
+            nautilus_batch_rename_dialog_query_finished (
+                query_data->dialog,
+                g_steal_pointer (&query_data->date_order_hash_table),
+                g_steal_pointer (&query_data->selection_metadata),
+                query_data->has_metadata);
         }
-
-        g_free (query_data);
     }
     else
     {
-        cursor_next (query_data, cursor);
+        cursor_next (g_steal_pointer (&query_data), cursor);
     }
 }
 
@@ -802,7 +808,7 @@ check_metadata_for_selection (NautilusBatchRenameDialog *dialog,
     g_autoptr (GString) query = NULL;
     GList *l;
     g_autoptr (GError) error = NULL;
-    QueryData *query_data;
+    g_autoptr (QueryData) query_data = g_new0 (QueryData, 1);
     FileMetadata *file_metadata;
     g_autoptr (GHashTable) selection_metadata = NULL;
     guint i;
@@ -885,7 +891,6 @@ check_metadata_for_selection (NautilusBatchRenameDialog *dialog,
         return;
     }
 
-    query_data = g_new (QueryData, 1);
     query_data->date_order_hash_table = g_hash_table_new_full (g_str_hash,
                                                                g_str_equal,
                                                                (GDestroyNotify) g_free,
@@ -904,7 +909,7 @@ check_metadata_for_selection (NautilusBatchRenameDialog *dialog,
                                            query->str,
                                            cancellable,
                                            batch_rename_dialog_query_callback,
-                                           query_data);
+                                           g_steal_pointer (&query_data));
 }
 
 GList *
