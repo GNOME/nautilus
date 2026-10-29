@@ -601,7 +601,8 @@ on_cursor_callback (GObject      *object,
 
         /* The dialog is going away at the time of cancellation */
         if (error == NULL ||
-            (error != NULL && error->code != G_IO_ERROR_CANCELLED))
+            (error != NULL &&
+             !g_error_matches (error, G_IO_ERROR, G_IO_ERROR_CANCELLED)))
         {
             update_metadata_availability (query_data);
             nautilus_batch_rename_dialog_query_finished (
@@ -783,7 +784,7 @@ batch_rename_dialog_query_callback (GObject      *object,
         g_warning ("Error on batch rename query for metadata: %s", error->message);
 
         /* The dialog is being finalized at this point */
-        if (error->code != G_IO_ERROR_CANCELLED)
+        if (!g_error_matches (error, G_IO_ERROR, G_IO_ERROR_CANCELLED))
         {
             update_metadata_availability (query_data);
             nautilus_batch_rename_dialog_query_finished (
