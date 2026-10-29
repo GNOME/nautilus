@@ -1098,12 +1098,12 @@ nautilus_batch_rename_dialog_query_finished (NautilusBatchRenameDialog *dialog,
     {
         g_autoptr (GMenuItem) first_created = NULL, last_created = NULL;
 
-        first_created = g_menu_item_new ("First Created",
+        first_created = g_menu_item_new (_("First Created"),
                                          "dialog.numbering-order-changed('first-created')");
 
         g_menu_append_item (dialog->numbering_order_menu, first_created);
 
-        last_created = g_menu_item_new ("Last Created",
+        last_created = g_menu_item_new (_("Last Created"),
                                         "dialog.numbering-order-changed('last-created')");
 
         g_menu_append_item (dialog->numbering_order_menu, last_created);
