@@ -24,10 +24,7 @@ Adw.PreferencesDialog preferences_dialog {
         title: _("_Action to Open Items");
         use-underline: true;
 
-        [suffix]
-        Adw.ToggleGroup open_action_toggle_group {
-          valign: center;
-
+        body: Adw.ToggleGroup open_action_toggle_group {
           Adw.Toggle single_click_toggle {
             label: _("Single-Click");
             name: "single";
@@ -37,7 +34,7 @@ Adw.PreferencesDialog preferences_dialog {
             label: _("Double-Click");
             name: "double";
           }
-        }
+        };
       }
     }
 
