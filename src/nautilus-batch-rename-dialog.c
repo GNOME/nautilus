@@ -17,9 +17,6 @@
 #include <string.h>
 #include <glib/gi18n.h>
 
-#define ROW_MARGIN_START 6
-#define ROW_MARGIN_TOP_BOTTOM 4
-
 struct _NautilusBatchRenameDialog
 {
     AdwDialog parent;
@@ -70,7 +67,6 @@ struct _NautilusBatchRenameDialog
      * and position */
     GHashTable *tag_info_table;
 
-    gint row_height;
     gboolean rename_clicked;
 
     GCancellable *metadata_cancellable;
@@ -241,7 +237,6 @@ static const GActionEntry dialog_entries[] =
     { .name = "add-equipment-tag", .activate = add_metadata_tag },
     { .name = "add-season-number-tag", .activate = add_metadata_tag },
     { .name = "add-episode-number-tag", .activate = add_metadata_tag },
-    { .name = "add-video-album-tag", .activate = add_metadata_tag },
     { .name = "add-track-number-tag", .activate = add_metadata_tag },
     { .name = "add-artist-name-tag", .activate = add_metadata_tag },
     { .name = "add-title-tag", .activate = add_metadata_tag },
@@ -1646,8 +1641,6 @@ nautilus_batch_rename_dialog_init (NautilusBatchRenameDialog *self)
         tag_data->tag_constants = metadata_tags_constants[i];
         g_hash_table_insert (self->tag_info_table, g_strdup (tag_text_representation), tag_data);
     }
-
-    self->row_height = -1;
 
     g_signal_connect_object (gtk_editable_get_delegate (GTK_EDITABLE (self->name_entry)),
                              "delete-text", G_CALLBACK (on_delete_text), self, G_CONNECT_DEFAULT);

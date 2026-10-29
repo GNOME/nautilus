@@ -38,10 +38,8 @@ typedef enum
 } NumberingType;
 
 typedef enum {
-    NAUTILUS_BATCH_RENAME_DIALOG_APPEND = 0,
-    NAUTILUS_BATCH_RENAME_DIALOG_PREPEND = 1,
-    NAUTILUS_BATCH_RENAME_DIALOG_REPLACE = 2,
-    NAUTILUS_BATCH_RENAME_DIALOG_FORMAT = 3,
+    NAUTILUS_BATCH_RENAME_DIALOG_REPLACE = 0,
+    NAUTILUS_BATCH_RENAME_DIALOG_FORMAT = 1,
 } NautilusBatchRenameDialogMode;
 
 typedef enum {
@@ -202,7 +200,6 @@ typedef struct
 } ConflictData;
 
 typedef struct {
-    NautilusFile *file;
     GString *metadata [G_N_ELEMENTS (metadata_tags_constants)];
 } FileMetadata;
 

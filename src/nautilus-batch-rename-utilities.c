@@ -12,7 +12,6 @@
 #include "nautilus-localsearch-utilities.h"
 
 #include <glib.h>
-#include <gtk/gtk.h>
 #include <tinysparql.h>
 
 typedef struct
@@ -864,7 +863,6 @@ check_metadata_for_selection (NautilusBatchRenameDialog *dialog,
         }
 
         file_metadata = g_new0 (FileMetadata, 1);
-        file_metadata->file = file;
 
         g_hash_table_insert (selection_metadata,
                              nautilus_file_ref (file), file_metadata);
