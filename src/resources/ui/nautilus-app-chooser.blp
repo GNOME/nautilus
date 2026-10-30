@@ -42,10 +42,7 @@ template $NautilusAppChooser: Adw.Dialog {
     ListBox set_default_list_box {
       selection-mode: none;
 
-      Adw.SwitchRow set_default_row {
-        title: _("Always use for this file type");
-        subtitle: bind template.type-description;
-      }
+      Adw.SwitchRow set_default_row {}
     }
   };
 }
