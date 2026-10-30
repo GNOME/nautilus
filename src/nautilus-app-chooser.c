@@ -56,6 +56,12 @@ static void
 on_app_chosen (NautilusAppChooser *self)
 {
     g_autoptr (GAppInfo) info = nautilus_app_chooser_get_app_info (self);
+
+    if (info == NULL)
+    {
+        return;
+    }
+
     gboolean set_new_default = FALSE;
     g_autoptr (GError) error = NULL;
 
