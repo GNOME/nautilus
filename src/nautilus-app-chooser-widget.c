@@ -42,9 +42,13 @@ struct _NautilusAppItem
 {
     GObject parent_instance;
     GAppInfo *app_info;
+    const char *name;
+    const char *executable;
+    GIcon *icon;
     gboolean is_default;
     gboolean is_recommended;
     gboolean is_fallback;
+    gboolean is_show_all;
 };
 
 enum
@@ -77,19 +81,19 @@ nautilus_app_item_get_property (GObject    *object,
     {
         case ITEM_PROP_NAME:
         {
-            g_value_set_string (value, g_app_info_get_display_name (item->app_info));
+            g_value_set_string (value, item->name);
             break;
         }
 
         case ITEM_PROP_EXECUTABLE:
         {
-            g_value_set_string (value, g_app_info_get_executable (item->app_info));
+            g_value_set_string (value, item->executable);
             break;
         }
 
         case ITEM_PROP_ICON:
         {
-            g_value_set_object (value, g_app_info_get_icon (item->app_info));
+            g_value_set_object (value, item->icon);
             break;
         }
 
@@ -112,7 +116,11 @@ nautilus_app_item_finalize (GObject *object)
 {
     NautilusAppItem *item = NAUTILUS_APP_ITEM (object);
 
-    g_object_unref (item->app_info);
+    if (item->is_show_all)
+    {
+        g_clear_object (&item->icon);
+    }
+    g_clear_object (&item->app_info);
 
     G_OBJECT_CLASS (nautilus_app_item_parent_class)->finalize (object);
 }
@@ -156,7 +164,19 @@ nautilus_app_item_new (GAppInfo *app_info,
 {
     NautilusAppItem *item = g_object_new (NAUTILUS_TYPE_APP_ITEM, NULL);
 
-    item->app_info = g_object_ref (app_info);
+    if (app_info != NULL)
+    {
+        item->app_info = g_object_ref (app_info);
+        item->name = g_app_info_get_display_name (item->app_info);
+        item->executable = g_app_info_get_executable (item->app_info);
+        item->icon = g_app_info_get_icon (item->app_info);
+    }
+    else
+    {
+        item->is_show_all = TRUE;
+        item->name = _("All Apps");
+        item->icon = g_icon_new_for_string ("app-icon-search", NULL);
+    }
     item->is_default = is_default;
     item->is_recommended = is_recommended;
     item->is_fallback = is_fallback;
@@ -333,6 +353,13 @@ nautilus_app_chooser_widget_real_add_items (NautilusAppChooserWidget *self)
                                                  FALSE,
                                                  all_applications, seen_apps);
     }
+    else
+    {
+        /* Show all apps entry */
+        g_autoptr (NautilusAppItem) item = nautilus_app_item_new (NULL, FALSE, FALSE, FALSE);
+
+        g_list_store_append (self->app_info_store, item);
+    }
 
     gboolean apps_added = g_hash_table_size (seen_apps) > 0;
 
@@ -500,6 +527,13 @@ on_app_chosen (GtkGridView              *grid,
     g_autoptr (NautilusAppItem) app_item =
         g_list_model_get_item (G_LIST_MODEL (gtk_grid_view_get_model (grid)), position);
 
+    if (app_item->is_show_all)
+    {
+        self->show_all = TRUE;
+        nautilus_app_chooser_widget_refresh (self);
+        return;
+    }
+
     g_set_object (&self->selected_app_info, app_item->app_info);
 
     g_signal_emit (self, signals[SIGNAL_APP_CHOSEN], 0, self->selected_app_info);
@@ -524,6 +558,11 @@ compare_section (gconstpointer a,
     else if (item1->is_fallback != item2->is_fallback)
     {
         return item1->is_fallback ? -1 : 1;
+    }
+    if (item1->is_show_all != item2->is_show_all)
+    {
+        /* swapped as show all always goes last*/
+        return item1->is_show_all ? 1 : -1;
     }
 
     return 0;
