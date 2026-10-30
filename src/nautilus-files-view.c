@@ -3619,7 +3619,7 @@ nautilus_files_view_update_status_overlay (NautilusFilesView *self)
                 g_autofree gchar *local_description = g_strdup_printf (_("No matches in “%s”"),
                                                                        nautilus_file_get_display_name (file));
 
-                adw_status_page_set_icon_name (status_page, "nautilus-folder-search-symbolic");
+                adw_status_page_set_icon_name (status_page, "nautilus-folder-search");
                 adw_status_page_set_description (status_page, local_description);
                 adw_status_page_set_child (status_page, (build_search_everywhere_button ()));
             }
