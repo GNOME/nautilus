@@ -18,7 +18,6 @@ struct _NautilusAppChooser
     AdwDialog parent_instance;
 
     gchar *content_type;
-    char *type_description;
     char *target_description;
     gboolean single_content_type;
 
@@ -38,7 +37,6 @@ enum
     PROP_CONTENT_TYPE,
     PROP_SINGLE_CONTENT_TYPE,
     PROP_TARGET_DESCRIPTION,
-    PROP_TYPE_DESCRIPTION,
     LAST_PROP
 };
 
@@ -135,12 +133,6 @@ app_chooser_get_property (GObject    *object,
             break;
         }
 
-        case PROP_TYPE_DESCRIPTION:
-        {
-            g_value_set_string (value, self->type_description);
-            break;
-        }
-
         default:
         {
             G_OBJECT_WARN_INVALID_PROPERTY_ID (object, prop_id, pspec);
@@ -156,14 +148,13 @@ update_content_type (NautilusAppChooser *self,
 
     if (self->single_content_type)
     {
-        self->type_description = g_content_type_get_description (self->content_type);
-    }
-    else
-    {
-        g_set_str (&self->type_description, _("Multiple Types"));
-    }
+        g_autofree char *type_description = g_content_type_get_description (self->content_type);
+        g_autofree char *default_row_text = g_strdup_printf (_("Always use for <b>%s</b> files"),
+                                                             type_description);
 
-    g_object_notify_by_pspec (G_OBJECT (self), properties[PROP_TYPE_DESCRIPTION]);
+        adw_preferences_row_set_title (ADW_PREFERENCES_ROW (self->set_default_row),
+                                       default_row_text);
+    }
 }
 
 static void
@@ -263,7 +254,6 @@ nautilus_app_chooser_finalize (GObject *object)
     NautilusAppChooser *self = (NautilusAppChooser *) object;
 
     g_free (self->content_type);
-    g_free (self->type_description);
     g_free (self->target_description);
 
     G_OBJECT_CLASS (nautilus_app_chooser_parent_class)->finalize (object);
@@ -308,11 +298,6 @@ nautilus_app_chooser_class_init (NautilusAppChooserClass *klass)
         g_param_spec_boolean ("single-content-type", "", "",
                               TRUE,
                               G_PARAM_CONSTRUCT_ONLY | G_PARAM_WRITABLE);
-
-    properties[PROP_TYPE_DESCRIPTION] =
-        g_param_spec_string ("type-description", NULL, "",
-                             NULL,
-                             G_PARAM_READABLE | G_PARAM_STATIC_STRINGS);
 
     g_object_class_install_properties (object_class, G_N_ELEMENTS (properties), properties);
 }
