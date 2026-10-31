@@ -32,11 +32,13 @@
 #include <gdk/gdk.h>
 #include <gio/gio.h>
 #include <gio/gunixmounts.h>
+#include <glib-unix.h>
 #include <glib/gi18n.h>
 #include <glib/gstdio.h>
 #include <gtk/gtk.h>
 #include <libportal/portal.h>
 #include <nautilus-extension.h>
+#include <signal.h>
 #include <sys/stat.h>
 #include <sys/types.h>
 #include <xdp-gnome/externalwindow.h>
@@ -582,6 +584,14 @@ action_kill (GSimpleAction *action,
     g_application_quit (G_APPLICATION (application));
 }
 
+static gboolean
+on_sigint (gpointer user_data)
+{
+    g_application_quit (G_APPLICATION (user_data));
+
+    return G_SOURCE_REMOVE;
+}
+
 static void
 action_quit (GSimpleAction *action,
              GVariant      *parameter,
@@ -1000,6 +1010,9 @@ nautilus_application_startup (GApplication *app)
 
     /* initialize data preference watchers */
     nautilus_date_setup_preferences ();
+
+    /* Do this before module_setup, so they don't interfere with SIGINT */
+    g_unix_signal_add (SIGINT, on_sigint, self);
 
     /* initialize nautilus modules */
     nautilus_module_setup ();
