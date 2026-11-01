@@ -43,6 +43,7 @@ struct _NautilusAppItem
 {
     GObject parent_instance;
     GAppInfo *app_info;
+    GIcon *icon;
     gboolean is_default;
     gboolean is_recommended;
     gboolean is_fallback;
@@ -89,7 +90,7 @@ nautilus_app_item_get_property (GObject    *object,
 
         case ITEM_PROP_ICON:
         {
-            g_value_set_object (value, g_app_info_get_icon (item->app_info));
+            g_value_set_object (value, item->icon);
             break;
         }
 
@@ -107,6 +108,7 @@ nautilus_app_item_finalize (GObject *object)
     NautilusAppItem *item = NAUTILUS_APP_ITEM (object);
 
     g_object_unref (item->app_info);
+    g_object_unref (item->icon);
 
     G_OBJECT_CLASS (nautilus_app_item_parent_class)->finalize (object);
 }
@@ -137,15 +139,31 @@ nautilus_app_item_class_init (NautilusAppItemClass *class)
     g_object_class_install_properties (object_class, NUM_ITEM_PROPS, item_properties);
 }
 
+static void
+nautilus_app_item_set_app_icon (NautilusAppItem *self,
+                                GAppInfo        *info,
+                                GtkIconTheme    *icon_theme)
+{
+    GIcon *icon = g_app_info_get_icon (self->app_info);
+    gboolean use_fallback = icon == NULL ||
+                            (G_IS_THEMED_ICON (icon) &&
+                             !gtk_icon_theme_has_gicon (icon_theme, icon));
+
+    self->icon = use_fallback ? g_themed_icon_new ("application-x-executable-symbolic")
+                              : g_object_ref (icon);
+}
+
 static NautilusAppItem *
-nautilus_app_item_new (GAppInfo *app_info,
-                       gboolean  is_default,
-                       gboolean  is_recommended,
-                       gboolean  is_fallback)
+nautilus_app_item_new (GAppInfo     *app_info,
+                       gboolean      is_default,
+                       gboolean      is_recommended,
+                       gboolean      is_fallback,
+                       GtkIconTheme *icon_theme)
 {
     NautilusAppItem *item = g_object_new (NAUTILUS_TYPE_APP_ITEM, NULL);
 
     item->app_info = g_object_ref (app_info);
+    nautilus_app_item_set_app_icon (item, app_info, icon_theme);
     item->is_default = is_default;
     item->is_recommended = is_recommended;
     item->is_fallback = is_fallback;
@@ -255,6 +273,9 @@ nautilus_app_chooser_widget_add_section (NautilusAppChooserWidget *self,
                                          GList                    *applications,
                                          GHashTable               *seen_apps)
 {
+    GdkDisplay *display = gtk_widget_get_display (GTK_WIDGET (self));
+    GtkIconTheme *icon_theme = gtk_icon_theme_get_for_display (display);
+
     for (GList *l = applications; l != NULL; l = l->next)
     {
         GAppInfo *app = l->data;
@@ -273,7 +294,9 @@ nautilus_app_chooser_widget_add_section (NautilusAppChooserWidget *self,
 
         g_hash_table_add (seen_apps, app);
 
-        g_autoptr (NautilusAppItem) item = nautilus_app_item_new (app, FALSE, recommended, fallback);
+        g_autoptr (NautilusAppItem) item = nautilus_app_item_new (app,
+                                                                  FALSE, recommended, fallback,
+                                                                  icon_theme);
 
         g_list_store_append (self->app_info_store, item);
     }
@@ -283,7 +306,9 @@ static void
 nautilus_app_chooser_widget_add_default (NautilusAppChooserWidget *self,
                                          GAppInfo                 *app)
 {
-    g_autoptr (NautilusAppItem) item = nautilus_app_item_new (app, TRUE, FALSE, FALSE);
+    GdkDisplay *display = gtk_widget_get_display (GTK_WIDGET (self));
+    GtkIconTheme *icon_theme = gtk_icon_theme_get_for_display (display);
+    g_autoptr (NautilusAppItem) item = nautilus_app_item_new (app, TRUE, FALSE, FALSE, icon_theme);
 
     g_list_store_append (self->app_info_store, item);
 }
