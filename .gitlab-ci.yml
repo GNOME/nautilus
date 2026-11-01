@@ -164,13 +164,10 @@ style check:
         expose_as: 'Get style check diff here'
         when: on_failure
         paths:
-            - 'uncrustify.diff'
+            - 'style-check.diff'
         expire_in: 14 days
     script:
-        - LANG=C.utf8 build-aux/run-uncrustify.sh
-        - git diff --exit-code | tee uncrustify.diff
-        - build-aux/check-blueprint-format.sh
-        - build-aux/check-meson-format.sh
+        - build-aux/format.sh
     rules:
         - if: $CI_COMMIT_BRANCH !~ /^gnome-.*$/
 
