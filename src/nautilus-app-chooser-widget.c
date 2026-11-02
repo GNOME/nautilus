@@ -149,7 +149,7 @@ nautilus_app_item_set_app_icon (NautilusAppItem *self,
                             (G_IS_THEMED_ICON (icon) &&
                              !gtk_icon_theme_has_gicon (icon_theme, icon));
 
-    self->icon = use_fallback ? g_themed_icon_new ("application-x-executable-symbolic")
+    self->icon = use_fallback ? g_themed_icon_new ("nautilus-missing-app")
                               : g_object_ref (icon);
 }
 
