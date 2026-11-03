@@ -2,7 +2,6 @@ using Gtk 4.0;
 using Adw 1;
 
 template $NautilusAppChooser: Adw.Dialog {
-  title: _("Open File");
   content-width: 420;
   content-height: 560;
   default-widget: ok_button;
@@ -13,6 +12,11 @@ template $NautilusAppChooser: Adw.Dialog {
     Adw.HeaderBar {
       show-start-title-buttons: false;
       show-end-title-buttons: false;
+
+      title-widget: Adw.WindowTitle {
+        title: _("Open With");
+        subtitle: bind template.target-description;
+      };
 
       [start]
       Button cancel_button {
@@ -65,13 +69,6 @@ template $NautilusAppChooser: Adw.Dialog {
       child: Box content_box {
         orientation: vertical;
         spacing: 12;
-
-        Label label_description {
-          wrap: true;
-          wrap-mode: word_char;
-          justify: center;
-          label: _("Choose an app to open the selected files");
-        }
       };
     };
 
