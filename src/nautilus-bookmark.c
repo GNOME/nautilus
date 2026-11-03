@@ -543,32 +543,24 @@ nautilus_bookmark_class_init (NautilusBookmarkClass *class)
                       G_TYPE_NONE, 0);
 
     properties[PROP_NAME] =
-        g_param_spec_string ("name",
-                             "Bookmark's name",
-                             "The name of this bookmark",
+        g_param_spec_string ("name", NULL, NULL,
                              NULL,
-                             G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS | G_PARAM_CONSTRUCT | G_PARAM_EXPLICIT_NOTIFY);
+                             G_PARAM_READWRITE | G_PARAM_CONSTRUCT | G_PARAM_EXPLICIT_NOTIFY | G_PARAM_STATIC_NAME);
 
     properties[PROP_LOCATION] =
-        g_param_spec_object ("location",
-                             "Bookmark's location",
-                             "The location of this bookmark",
+        g_param_spec_object ("location", NULL, NULL,
                              G_TYPE_FILE,
-                             G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS | G_PARAM_CONSTRUCT_ONLY);
+                             G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY | G_PARAM_STATIC_NAME);
 
     properties[PROP_ICON] =
-        g_param_spec_object ("icon",
-                             "Bookmark's icon",
-                             "The icon of this bookmark",
+        g_param_spec_object ("icon", NULL, NULL,
                              G_TYPE_ICON,
-                             G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS | G_PARAM_EXPLICIT_NOTIFY);
+                             G_PARAM_READWRITE | G_PARAM_EXPLICIT_NOTIFY | G_PARAM_STATIC_NAME);
 
     properties[PROP_SYMBOLIC_ICON] =
-        g_param_spec_object ("symbolic-icon",
-                             "Bookmark's symbolic icon",
-                             "The symbolic icon of this bookmark",
+        g_param_spec_object ("symbolic-icon", NULL, NULL,
                              G_TYPE_ICON,
-                             G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS | G_PARAM_EXPLICIT_NOTIFY);
+                             G_PARAM_READWRITE | G_PARAM_EXPLICIT_NOTIFY | G_PARAM_STATIC_NAME);
 
     g_object_class_install_properties (oclass, NUM_PROPERTIES, properties);
 }

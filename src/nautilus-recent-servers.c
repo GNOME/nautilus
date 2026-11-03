@@ -364,11 +364,9 @@ nautilus_recent_servers_class_init (NautilusRecentServersClass *klass)
     object_class->get_property = nautilus_recent_servers_get_property;
 
     properties[PROP_LOADING] =
-        g_param_spec_boolean ("loading",
-                              "Loading",
-                              "Whether the view is loading locations",
+        g_param_spec_boolean ("loading", NULL, NULL,
                               FALSE,
-                              G_PARAM_READABLE | G_PARAM_STATIC_NAME | G_PARAM_STATIC_NICK | G_PARAM_STATIC_BLURB);
+                              G_PARAM_READABLE | G_PARAM_STATIC_NAME);
 
     g_object_class_install_properties (object_class, LAST_PROP, properties);
 

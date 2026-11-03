@@ -355,17 +355,13 @@ nautilus_search_engine_class_init (NautilusSearchEngineClass *class)
      * Whether the search engine is running a search.
      */
     properties[PROP_RUNNING] =
-        g_param_spec_boolean ("running",
-                              "search running",
-                              "Whether the engine is running a search",
+        g_param_spec_boolean ("running", NULL, NULL,
                               FALSE,
-                              G_PARAM_READABLE);
+                              G_PARAM_READABLE | G_PARAM_STATIC_NAME);
     properties[PROP_SEARCH_TYPE] =
-        g_param_spec_int ("search-type",
-                          "search type",
-                          "a #NautilusSearchType",
+        g_param_spec_int ("search-type", NULL, NULL,
                           0, G_MAXINT, 0,
-                          G_PARAM_WRITABLE);
+                          G_PARAM_WRITABLE | G_PARAM_STATIC_NAME);
 
     g_object_class_install_properties (object_class, N_PROPERTIES, properties);
 

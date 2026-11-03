@@ -3907,18 +3907,14 @@ nautilus_sidebar_class_init (NautilusSidebarClass *class)
                       G_TYPE_MOUNT_OPERATION);
 
     properties[PROP_LOCATION] =
-        g_param_spec_object ("location",
-                             "Location to Select",
-                             "The location to highlight in the sidebar",
+        g_param_spec_object ("location", NULL, NULL,
                              G_TYPE_FILE,
-                             G_PARAM_READWRITE | G_PARAM_STATIC_NAME | G_PARAM_STATIC_NICK | G_PARAM_STATIC_BLURB);
+                             G_PARAM_READWRITE | G_PARAM_STATIC_NAME);
     properties[PROP_OPEN_FLAGS] =
-        g_param_spec_flags ("open-flags",
-                            "Open Flags",
-                            "Modes in which the calling app can open locations selected in the sidebar",
+        g_param_spec_flags ("open-flags", NULL, NULL,
                             NAUTILUS_TYPE_OPEN_FLAGS,
                             NAUTILUS_OPEN_FLAG_NORMAL,
-                            G_PARAM_READWRITE | G_PARAM_STATIC_NAME | G_PARAM_STATIC_NICK | G_PARAM_STATIC_BLURB);
+                            G_PARAM_READWRITE | G_PARAM_STATIC_NAME);
     properties[PROP_WINDOW_SLOT] =
         g_param_spec_object ("window-slot", NULL, NULL,
                              NAUTILUS_TYPE_WINDOW_SLOT,

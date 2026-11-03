@@ -157,18 +157,15 @@ nautilus_view_item_class_init (NautilusViewItemClass *klass)
     object_class->get_property = nautilus_view_item_get_property;
     object_class->set_property = nautilus_view_item_set_property;
 
-    properties[PROP_IS_CUT] = g_param_spec_boolean ("is-cut",
-                                                    "", "",
+    properties[PROP_IS_CUT] = g_param_spec_boolean ("is-cut", NULL, NULL,
                                                     FALSE,
-                                                    G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS);
-    properties[PROP_DRAG_ACCEPT] = g_param_spec_boolean ("drag-accept",
-                                                         "", "",
+                                                    G_PARAM_READWRITE | G_PARAM_STATIC_NAME);
+    properties[PROP_DRAG_ACCEPT] = g_param_spec_boolean ("drag-accept", NULL, NULL,
                                                          FALSE,
-                                                         G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS);
-    properties[PROP_FILE] = g_param_spec_object ("file",
-                                                 "", "",
+                                                         G_PARAM_READWRITE | G_PARAM_STATIC_NAME);
+    properties[PROP_FILE] = g_param_spec_object ("file", NULL, NULL,
                                                  NAUTILUS_TYPE_FILE,
-                                                 G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY | G_PARAM_STATIC_STRINGS);
+                                                 G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY | G_PARAM_STATIC_NAME);
     properties[PROP_LOADING] = g_param_spec_boolean ("loading", NULL, NULL,
                                                      FALSE,
                                                      G_PARAM_READWRITE | G_PARAM_EXPLICIT_NOTIFY | G_PARAM_STATIC_STRINGS);

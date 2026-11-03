@@ -1258,12 +1258,11 @@ nautilus_list_base_class_init (NautilusListBaseClass *klass)
     klass->preview_selection_event = default_preview_selection_event;
     klass->setup_directory = base_setup_directory;
 
-    properties[PROP_ICON_SIZE] = g_param_spec_uint ("icon-size",
-                                                    "", "",
+    properties[PROP_ICON_SIZE] = g_param_spec_uint ("icon-size", NULL, NULL,
                                                     NAUTILUS_LIST_ICON_SIZE_SMALL,
                                                     NAUTILUS_GRID_ICON_SIZE_EXTRA_LARGE,
                                                     NAUTILUS_GRID_ICON_SIZE_LARGE,
-                                                    G_PARAM_READABLE | G_PARAM_STATIC_STRINGS);
+                                                    G_PARAM_READABLE | G_PARAM_STATIC_NAME);
     properties[PROP_MODEL] = g_param_spec_object ("model", NULL, NULL,
                                                   NAUTILUS_TYPE_VIEW_MODEL,
                                                   G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS);

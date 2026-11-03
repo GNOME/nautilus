@@ -2610,11 +2610,9 @@ nautilus_window_slot_class_init (NautilusWindowSlotClass *klass)
     widget_class->grab_focus = nautilus_window_slot_grab_focus;
 
     properties[PROP_ACTIVE] =
-        g_param_spec_boolean ("active",
-                              "Whether the slot is active",
-                              "Whether the slot is the active slot of the window",
+        g_param_spec_boolean ("active", NULL, NULL,
                               FALSE,
-                              G_PARAM_READABLE);
+                              G_PARAM_READABLE | G_PARAM_STATIC_NAME);
 
     properties[PROP_FILTER] =
         g_param_spec_object ("filter", NULL, NULL,
@@ -2627,11 +2625,9 @@ nautilus_window_slot_class_init (NautilusWindowSlotClass *klass)
                            G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY | G_PARAM_STATIC_STRINGS);
 
     properties[PROP_LOADING] =
-        g_param_spec_boolean ("loading",
-                              "Whether the slot loading",
-                              "Whether the slot is loading a new location",
+        g_param_spec_boolean ("loading", NULL, NULL,
                               FALSE,
-                              G_PARAM_READABLE);
+                              G_PARAM_READABLE | G_PARAM_STATIC_NAME);
 
     /**
      * NautilusWindowSlot:search-visible:
@@ -2640,9 +2636,9 @@ nautilus_window_slot_class_init (NautilusWindowSlotClass *klass)
      * This doesn't necessarily mean the view is showing search results.
      */
     properties[PROP_SEARCH_VISIBLE] =
-        g_param_spec_boolean ("search-visible", "", "",
+        g_param_spec_boolean ("search-visible", NULL, NULL,
                               FALSE,
-                              G_PARAM_READWRITE | G_PARAM_EXPLICIT_NOTIFY | G_PARAM_STATIC_STRINGS);
+                              G_PARAM_READWRITE | G_PARAM_EXPLICIT_NOTIFY | G_PARAM_STATIC_NAME);
 
     properties[PROP_SEARCH_GLOBAL] =
         g_param_spec_boolean ("search-global", NULL, NULL,
@@ -2654,49 +2650,39 @@ nautilus_window_slot_class_init (NautilusWindowSlotClass *klass)
                               G_PARAM_READWRITE | G_PARAM_EXPLICIT_NOTIFY | G_PARAM_STATIC_STRINGS);
 
     properties[PROP_ICON_NAME] =
-        g_param_spec_string ("icon-name",
-                             "Icon that represents the slot",
-                             "The icon that represents the slot",
+        g_param_spec_string ("icon-name", NULL, NULL,
                              NULL,
-                             G_PARAM_READABLE);
+                             G_PARAM_READABLE | G_PARAM_STATIC_NAME);
 
     properties[PROP_EXTENSIONS_BACKGROUND_MENU] =
-        g_param_spec_object ("extensions-background-menu",
-                             "Background menu of extensions",
-                             "Proxy property from the view for the background menu for extensions",
+        g_param_spec_object ("extensions-background-menu", NULL, NULL,
                              G_TYPE_MENU_MODEL,
-                             G_PARAM_READWRITE);
+                             G_PARAM_READWRITE | G_PARAM_STATIC_NAME);
 
     properties[PROP_TEMPLATES_MENU] =
-        g_param_spec_object ("templates-menu",
-                             "Templates menu",
-                             "Proxy property from the view for the templates menu",
+        g_param_spec_object ("templates-menu", NULL, NULL,
                              G_TYPE_MENU_MODEL,
-                             G_PARAM_READWRITE);
+                             G_PARAM_READWRITE | G_PARAM_STATIC_NAME);
 
     properties[PROP_LOCATION] =
-        g_param_spec_object ("location",
-                             "Current location visible on the slot",
-                             "Either the location that is used currently, or the pending location. Clients will see the same value they set, and therefore it will be cosistent from clients point of view.",
+        g_param_spec_object ("location", NULL, NULL,
                              G_TYPE_FILE,
-                             G_PARAM_READWRITE | G_PARAM_EXPLICIT_NOTIFY);
+                             G_PARAM_READWRITE | G_PARAM_EXPLICIT_NOTIFY | G_PARAM_STATIC_NAME);
 
     properties[PROP_TOOLTIP] =
-        g_param_spec_string ("tooltip",
-                             "Tooltip that represents the slot",
-                             "The tooltip that represents the slot",
+        g_param_spec_string ("tooltip", NULL, NULL,
                              NULL,
-                             G_PARAM_READABLE);
+                             G_PARAM_READABLE | G_PARAM_STATIC_NAME);
 
     properties[PROP_ALLOW_STOP] =
-        g_param_spec_boolean ("allow-stop", "", "",
+        g_param_spec_boolean ("allow-stop", NULL, NULL,
                               FALSE,
-                              G_PARAM_READABLE | G_PARAM_STATIC_STRINGS);
+                              G_PARAM_READABLE | G_PARAM_STATIC_NAME);
 
     properties[PROP_TITLE] =
-        g_param_spec_string ("title", "", "",
+        g_param_spec_string ("title", NULL, NULL,
                              NULL,
-                             G_PARAM_READABLE | G_PARAM_STATIC_STRINGS);
+                             G_PARAM_READABLE | G_PARAM_STATIC_NAME);
 
     g_object_class_install_properties (oclass, NUM_PROPERTIES, properties);
 

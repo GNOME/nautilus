@@ -154,10 +154,9 @@ nautilus_label_cell_class_init (NautilusLabelCellClass *klass)
     object_class->constructed = nautilus_label_cell_constructed;
     object_class->dispose = nautilus_label_cell_dispose;
 
-    properties[PROP_COLUMN] = g_param_spec_object ("column",
-                                                   "", "",
+    properties[PROP_COLUMN] = g_param_spec_object ("column", NULL, NULL,
                                                    NAUTILUS_TYPE_COLUMN,
-                                                   G_PARAM_WRITABLE | G_PARAM_CONSTRUCT_ONLY | G_PARAM_STATIC_STRINGS);
+                                                   G_PARAM_WRITABLE | G_PARAM_CONSTRUCT_ONLY | G_PARAM_STATIC_NAME);
 
     g_object_class_install_properties (object_class, N_PROPS, properties);
 

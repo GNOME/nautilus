@@ -201,12 +201,9 @@ nautilus_progress_info_widget_class_init (NautilusProgressInfoWidgetClass *klass
     oclass->dispose = nautilus_progress_info_widget_dispose;
 
     properties[PROP_INFO] =
-        g_param_spec_object ("info",
-                             "NautilusProgressInfo",
-                             "The NautilusProgressInfo associated with this widget",
+        g_param_spec_object ("info", NULL, NULL,
                              NAUTILUS_TYPE_PROGRESS_INFO,
-                             G_PARAM_WRITABLE | G_PARAM_CONSTRUCT_ONLY |
-                             G_PARAM_STATIC_STRINGS);
+                             G_PARAM_WRITABLE | G_PARAM_CONSTRUCT_ONLY | G_PARAM_STATIC_NAME);
 
     g_object_class_install_properties (oclass, NUM_PROPERTIES, properties);
 

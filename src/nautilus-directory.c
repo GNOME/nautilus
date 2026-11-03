@@ -275,11 +275,9 @@ nautilus_directory_class_init (NautilusDirectoryClass *klass)
                       G_TYPE_NONE, 1, G_TYPE_POINTER);
 
     properties[PROP_LOCATION] =
-        g_param_spec_object ("location",
-                             "The location",
-                             "The location of this directory",
+        g_param_spec_object ("location", NULL, NULL,
                              G_TYPE_FILE,
-                             G_PARAM_CONSTRUCT_ONLY | G_PARAM_READWRITE);
+                             G_PARAM_CONSTRUCT_ONLY | G_PARAM_READWRITE | G_PARAM_STATIC_NAME);
 
     g_object_class_install_properties (object_class, NUM_PROPERTIES, properties);
 }

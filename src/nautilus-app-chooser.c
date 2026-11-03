@@ -318,24 +318,24 @@ nautilus_app_chooser_class_init (NautilusAppChooserClass *klass)
     gtk_widget_class_bind_template_callback (widget_class, on_app_chosen);
 
     properties[PROP_CONTENT_TYPE] =
-        g_param_spec_string ("content-type", "", "",
+        g_param_spec_string ("content-type", NULL, NULL,
                              NULL,
-                             G_PARAM_CONSTRUCT_ONLY | G_PARAM_WRITABLE);
+                             G_PARAM_CONSTRUCT_ONLY | G_PARAM_WRITABLE | G_PARAM_STATIC_NAME);
 
     properties[PROP_FILE_NAME] =
-        g_param_spec_string ("file-name", "", "",
+        g_param_spec_string ("file-name", NULL, NULL,
                              NULL,
-                             G_PARAM_CONSTRUCT_ONLY | G_PARAM_WRITABLE);
+                             G_PARAM_CONSTRUCT_ONLY | G_PARAM_WRITABLE | G_PARAM_STATIC_NAME);
 
     properties[PROP_SINGLE_CONTENT_TYPE] =
-        g_param_spec_boolean ("single-content-type", "", "",
+        g_param_spec_boolean ("single-content-type", NULL, NULL,
                               TRUE,
-                              G_PARAM_CONSTRUCT_ONLY | G_PARAM_WRITABLE);
+                              G_PARAM_CONSTRUCT_ONLY | G_PARAM_WRITABLE | G_PARAM_STATIC_NAME);
 
     properties[PROP_TYPE_DESCRIPTION] =
-        g_param_spec_string ("type-description", NULL, "",
+        g_param_spec_string ("type-description", NULL, NULL,
                              NULL,
-                             G_PARAM_READABLE | G_PARAM_STATIC_STRINGS);
+                             G_PARAM_READABLE | G_PARAM_STATIC_NAME);
 
     g_object_class_install_properties (object_class, G_N_ELEMENTS (properties), properties);
 }

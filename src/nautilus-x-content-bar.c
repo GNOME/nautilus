@@ -284,18 +284,14 @@ nautilus_x_content_bar_class_init (NautilusXContentBarClass *klass)
     object_class->finalize = nautilus_x_content_bar_finalize;
 
     properties[PROP_MOUNT] =
-        g_param_spec_object ("mount",
-                             "The GMount to run programs for",
-                             "The GMount to run programs for",
+        g_param_spec_object ("mount", NULL, NULL,
                              G_TYPE_MOUNT,
-                             G_PARAM_READWRITE | G_PARAM_CONSTRUCT);
+                             G_PARAM_READWRITE | G_PARAM_CONSTRUCT | G_PARAM_STATIC_NAME);
 
     properties[PROP_X_CONTENT_TYPES] =
-        g_param_spec_boxed ("x-content-types",
-                            "The x-content types for the cluebar",
-                            "The x-content types for the cluebar",
+        g_param_spec_boxed ("x-content-types", NULL, NULL,
                             G_TYPE_STRV,
-                            G_PARAM_READWRITE | G_PARAM_CONSTRUCT);
+                            G_PARAM_READWRITE | G_PARAM_CONSTRUCT | G_PARAM_STATIC_NAME);
 
     g_object_class_install_properties (object_class, G_N_ELEMENTS (properties), properties);
 }

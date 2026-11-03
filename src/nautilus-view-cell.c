@@ -159,20 +159,17 @@ nautilus_view_cell_class_init (NautilusViewCellClass *klass)
     object_class->get_property = nautilus_view_cell_get_property;
     object_class->set_property = nautilus_view_cell_set_property;
 
-    properties[PROP_VIEW] = g_param_spec_object ("view",
-                                                 "", "",
+    properties[PROP_VIEW] = g_param_spec_object ("view", NULL, NULL,
                                                  NAUTILUS_TYPE_LIST_BASE,
-                                                 G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY | G_PARAM_STATIC_STRINGS);
-    properties[PROP_ITEM] = g_param_spec_object ("item",
-                                                 "", "",
+                                                 G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY | G_PARAM_STATIC_NAME);
+    properties[PROP_ITEM] = g_param_spec_object ("item", NULL, NULL,
                                                  NAUTILUS_TYPE_VIEW_ITEM,
-                                                 G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS);
-    properties[PROP_ICON_SIZE] = g_param_spec_uint ("icon-size",
-                                                    "", "",
+                                                 G_PARAM_READWRITE | G_PARAM_STATIC_NAME);
+    properties[PROP_ICON_SIZE] = g_param_spec_uint ("icon-size", NULL, NULL,
                                                     NAUTILUS_LIST_ICON_SIZE_SMALL,
                                                     NAUTILUS_GRID_ICON_SIZE_EXTRA_LARGE,
                                                     NAUTILUS_GRID_ICON_SIZE_LARGE,
-                                                    G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS);
+                                                    G_PARAM_READWRITE | G_PARAM_STATIC_NAME);
 
     properties[PROP_POSITION] = g_param_spec_uint ("position", NULL, NULL,
                                                    0, G_MAXUINT, GTK_INVALID_LIST_POSITION,

@@ -344,29 +344,21 @@ nautilus_search_hit_class_init (NautilusSearchHitClass *class)
     object_class->set_property = nautilus_search_hit_set_property;
 
     properties[PROP_URI] =
-        g_param_spec_string ("uri",
-                             "URI",
-                             "URI",
+        g_param_spec_string ("uri", NULL, NULL,
                              NULL,
-                             G_PARAM_CONSTRUCT_ONLY | G_PARAM_WRITABLE | G_PARAM_READABLE);
+                             G_PARAM_CONSTRUCT_ONLY | G_PARAM_WRITABLE | G_PARAM_READABLE | G_PARAM_STATIC_NAME);
     properties[PROP_MODIFICATION_TIME] =
-        g_param_spec_boxed ("modification-time",
-                            "Modification time",
-                            "Modification time",
+        g_param_spec_boxed ("modification-time", NULL, NULL,
                             G_TYPE_DATE_TIME,
-                            G_PARAM_READWRITE | G_PARAM_CONSTRUCT);
+                            G_PARAM_READWRITE | G_PARAM_CONSTRUCT | G_PARAM_STATIC_NAME);
     properties[PROP_ACCESS_TIME] =
-        g_param_spec_boxed ("access-time",
-                            "access time",
-                            "access time",
+        g_param_spec_boxed ("access-time", NULL, NULL,
                             G_TYPE_DATE_TIME,
-                            G_PARAM_READWRITE | G_PARAM_CONSTRUCT);
+                            G_PARAM_READWRITE | G_PARAM_CONSTRUCT | G_PARAM_STATIC_NAME);
     properties[PROP_CREATION_TIME] =
-        g_param_spec_boxed ("creation-time",
-                            "creation time",
-                            "creation time",
+        g_param_spec_boxed ("creation-time", NULL, NULL,
                             G_TYPE_DATE_TIME,
-                            G_PARAM_READWRITE | G_PARAM_CONSTRUCT);
+                            G_PARAM_READWRITE | G_PARAM_CONSTRUCT | G_PARAM_STATIC_NAME);
     properties[PROP_RELEVANCE] =
         g_param_spec_double ("relevance",
                              NULL,
@@ -382,11 +374,9 @@ nautilus_search_hit_class_init (NautilusSearchHitClass *class)
                              0,
                              G_PARAM_READWRITE);
     properties[PROP_FTS_SNIPPET] =
-        g_param_spec_string ("fts-snippet",
-                             "fts-snippet",
-                             "fts-snippet",
+        g_param_spec_string ("fts-snippet", NULL, NULL,
                              NULL,
-                             G_PARAM_READWRITE);
+                             G_PARAM_READWRITE | G_PARAM_STATIC_NAME);
 
     g_object_class_install_properties (object_class, G_N_ELEMENTS (properties), properties);
 }

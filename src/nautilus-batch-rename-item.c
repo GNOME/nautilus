@@ -145,32 +145,24 @@ nautilus_batch_rename_item_class_init (NautilusBatchRenameItemClass *klass)
     oclass->set_property = nautilus_batch_rename_item_set_property;
 
     props[PROP_NAME_BEFORE] =
-        g_param_spec_string ("name-before",
-                             NULL,
+        g_param_spec_string ("name-before", NULL, NULL,
                              "",
-                             "",
-                             G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS | G_PARAM_EXPLICIT_NOTIFY);
+                             G_PARAM_READWRITE | G_PARAM_EXPLICIT_NOTIFY | G_PARAM_STATIC_NAME);
 
     props[PROP_NAME_AFTER] =
-        g_param_spec_string ("name-after",
-                             NULL,
+        g_param_spec_string ("name-after", NULL, NULL,
                              "",
-                             "",
-                             G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS | G_PARAM_EXPLICIT_NOTIFY);
+                             G_PARAM_READWRITE | G_PARAM_EXPLICIT_NOTIFY | G_PARAM_STATIC_NAME);
 
     props[PROP_HAS_CONFLICT] =
-        g_param_spec_boolean ("has-conflict",
-                              NULL,
-                              "",
+        g_param_spec_boolean ("has-conflict", NULL, NULL,
                               FALSE,
-                              G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS | G_PARAM_EXPLICIT_NOTIFY);
+                              G_PARAM_READWRITE | G_PARAM_EXPLICIT_NOTIFY | G_PARAM_STATIC_NAME);
 
     props[PROP_DIALOG] =
-        g_param_spec_object ("dialog",
-                             NULL,
-                             "",
+        g_param_spec_object ("dialog", NULL, NULL,
                              NAUTILUS_TYPE_BATCH_RENAME_DIALOG,
-                             G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY | G_PARAM_STATIC_STRINGS | G_PARAM_EXPLICIT_NOTIFY);
+                             G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY | G_PARAM_EXPLICIT_NOTIFY | G_PARAM_STATIC_NAME);
 
     g_object_class_install_properties (oclass, NUM_PROPERTIES, props);
 }

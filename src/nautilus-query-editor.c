@@ -495,11 +495,9 @@ nautilus_query_editor_class_init (NautilusQueryEditorClass *class)
      * The current query of the query editor. It it always synchronized
      * with the filter popover's query.
      */
-    properties[PROP_QUERY] = g_param_spec_object ("query",
-                                                  "Query of the search",
-                                                  "The query that the editor is handling",
+    properties[PROP_QUERY] = g_param_spec_object ("query", NULL, NULL,
                                                   NAUTILUS_TYPE_QUERY,
-                                                  G_PARAM_READWRITE);
+                                                  G_PARAM_READWRITE | G_PARAM_STATIC_NAME);
 
     g_object_class_install_properties (gobject_class, G_N_ELEMENTS (properties), properties);
 

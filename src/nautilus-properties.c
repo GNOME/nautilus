@@ -324,9 +324,9 @@ nautilus_permission_entry_class_init (NautilusPermissionEntryClass *klass)
     gobject_class->finalize = nautilus_permission_entry_finalize;
     gobject_class->get_property = nautilus_permission_entry_get_property;
 
-    perm_entry_properties[PROP_NAME] = g_param_spec_string ("name", "", "",
+    perm_entry_properties[PROP_NAME] = g_param_spec_string ("name", NULL, NULL,
                                                             NULL,
-                                                            G_PARAM_READABLE);
+                                                            G_PARAM_READABLE | G_PARAM_STATIC_NAME);
 
     g_object_class_install_properties (gobject_class,
                                        G_N_ELEMENTS (perm_entry_properties),

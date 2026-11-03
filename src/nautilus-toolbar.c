@@ -442,12 +442,9 @@ nautilus_toolbar_class_init (NautilusToolbarClass *klass)
     oclass->finalize = nautilus_toolbar_finalize;
 
     properties [PROP_WINDOW_SLOT] =
-        g_param_spec_object ("window-slot",
-                             "Window slot currently active",
-                             "Window slot currently active",
+        g_param_spec_object ("window-slot", NULL, NULL,
                              NAUTILUS_TYPE_WINDOW_SLOT,
-                             (G_PARAM_READWRITE |
-                              G_PARAM_STATIC_STRINGS));
+                             (G_PARAM_READWRITE | G_PARAM_STATIC_NAME));
 
     properties[PROP_SHOW_NEW_FOLDER_BUTTON] =
         g_param_spec_boolean ("show-new-folder-button", NULL, NULL,

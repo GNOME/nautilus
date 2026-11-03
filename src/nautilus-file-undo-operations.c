@@ -212,19 +212,13 @@ nautilus_file_undo_info_class_init (NautilusFileUndoInfoClass *klass)
     klass->strings_func = nautilus_file_undo_info_strings_func;
 
     properties[PROP_OP_TYPE] =
-        g_param_spec_int ("op-type",
-                          "Undo info op type",
-                          "Type of undo operation",
+        g_param_spec_int ("op-type", NULL, NULL,
                           0, NAUTILUS_FILE_UNDO_OP_NUM_TYPES - 1, 0,
-                          G_PARAM_READWRITE |
-                          G_PARAM_CONSTRUCT_ONLY);
+                          G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY | G_PARAM_STATIC_NAME);
     properties[PROP_ITEM_COUNT] =
-        g_param_spec_int ("item-count",
-                          "Number of items",
-                          "Number of items",
+        g_param_spec_int ("item-count", NULL, NULL,
                           0, G_MAXINT, 0,
-                          G_PARAM_READWRITE |
-                          G_PARAM_CONSTRUCT_ONLY);
+                          G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY | G_PARAM_STATIC_NAME);
 
     g_object_class_install_properties (oclass, N_PROPERTIES, properties);
 }
@@ -1589,17 +1583,11 @@ nautilus_file_undo_info_starred_class_init (NautilusFileUndoInfoStarredClass *kl
     iclass->is_noop_func = starred_is_noop_func;
     iclass->strings_func = starred_strings_func;
 
-    properties[PROP_FILES] = g_param_spec_pointer ("files",
-                                                   "files",
-                                                   "The files for which to undo star/unstar",
-                                                   G_PARAM_WRITABLE |
-                                                   G_PARAM_CONSTRUCT_ONLY);
-    properties[PROP_STARRED] = g_param_spec_boolean ("starred",
-                                                     "starred",
-                                                     "Whether the files were starred or unstarred",
+    properties[PROP_FILES] = g_param_spec_pointer ("files", NULL, NULL,
+                                                   G_PARAM_WRITABLE | G_PARAM_CONSTRUCT_ONLY | G_PARAM_STATIC_NAME);
+    properties[PROP_STARRED] = g_param_spec_boolean ("starred", NULL, NULL,
                                                      FALSE,
-                                                     G_PARAM_WRITABLE |
-                                                     G_PARAM_CONSTRUCT_ONLY);
+                                                     G_PARAM_WRITABLE | G_PARAM_CONSTRUCT_ONLY | G_PARAM_STATIC_NAME);
 
     g_object_class_install_properties (oclass, G_N_ELEMENTS (properties), properties);
 }

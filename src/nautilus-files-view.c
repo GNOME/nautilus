@@ -8798,43 +8798,35 @@ nautilus_files_view_class_init (NautilusFilesViewClass *klass)
      * %TRUE if the view is loading the location, %FALSE otherwise.
      */
     properties[PROP_LOADING] =
-        g_param_spec_boolean ("loading",
-                              "Current view is loading",
-                              "Whether the current view is loading the location or not",
+        g_param_spec_boolean ("loading", NULL, NULL,
                               FALSE,
-                              G_PARAM_READABLE);
+                              G_PARAM_READABLE | G_PARAM_STATIC_NAME);
     /**
      * NautilusFilesView:location:
      *
      * The current location of the view.
      */
     properties[PROP_LOCATION] =
-        g_param_spec_object ("location",
-                             "Location displayed by the view",
-                             "The current location displayed by the view",
+        g_param_spec_object ("location", NULL, NULL,
                              G_TYPE_FILE,
-                             G_PARAM_READWRITE);
+                             G_PARAM_READWRITE | G_PARAM_STATIC_NAME);
     /**
      * NautilusFilesView:selection:
      *
      * The current selection of the view.
      */
     properties[PROP_SELECTION] =
-        g_param_spec_pointer ("selection",
-                              "Selection of the view",
-                              "The current selection of the view",
-                              G_PARAM_READWRITE);
+        g_param_spec_pointer ("selection", NULL, NULL,
+                              G_PARAM_READWRITE | G_PARAM_STATIC_NAME);
     /**
      * NautilusFilesView:searching:
      *
      * %TRUE if the view is searching, %FALSE otherwise.
      */
     properties[PROP_SEARCHING] =
-        g_param_spec_boolean ("searching",
-                              "Current view is searching",
-                              "Whether the current view is searching or not",
+        g_param_spec_boolean ("searching", NULL, NULL,
                               FALSE,
-                              G_PARAM_READABLE);
+                              G_PARAM_READABLE | G_PARAM_STATIC_NAME);
 
     /**
      * NautilusFilesView:extensions-background-menu:
@@ -8842,29 +8834,23 @@ nautilus_files_view_class_init (NautilusFilesViewClass *klass)
      * Menu for the background click of extensions
      */
     properties[PROP_EXTENSIONS_BACKGROUND_MENU] =
-        g_param_spec_object ("extensions-background-menu",
-                             "Menu for the background click of extensions",
-                             "Menu for the background click of extensions",
+        g_param_spec_object ("extensions-background-menu", NULL, NULL,
                              G_TYPE_MENU_MODEL,
-                             G_PARAM_READWRITE);
+                             G_PARAM_READWRITE | G_PARAM_STATIC_NAME);
     /**
      * NautilusFilesView:templates-menu:
      *
      * Menu of templates
      */
     properties[PROP_TEMPLATES_MENU] =
-        g_param_spec_object ("templates-menu",
-                             "Menu of templates",
-                             "Menu of templates",
+        g_param_spec_object ("templates-menu", NULL, NULL,
                              G_TYPE_MENU_MODEL,
-                             G_PARAM_READWRITE);
+                             G_PARAM_READWRITE | G_PARAM_STATIC_NAME);
 
     properties[PROP_WINDOW_SLOT] =
-        g_param_spec_object ("window-slot",
-                             "Window Slot",
-                             "The parent window slot reference",
+        g_param_spec_object ("window-slot", NULL, NULL,
                              NAUTILUS_TYPE_WINDOW_SLOT,
-                             G_PARAM_WRITABLE | G_PARAM_CONSTRUCT_ONLY);
+                             G_PARAM_WRITABLE | G_PARAM_CONSTRUCT_ONLY | G_PARAM_STATIC_NAME);
 
     g_object_class_install_properties (oclass, NUM_PROPERTIES, properties);
 
