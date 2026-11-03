@@ -1006,7 +1006,7 @@ setup_view_columns (NautilusListView *self)
         g_object_get (nautilus_column,
                       "name", &name,
                       "label", &label,
-                      "attribute_q", &attribute_q,
+                      "attribute-q", &attribute_q,
                       "default-sort-order", &sort_order,
                       NULL);
 
