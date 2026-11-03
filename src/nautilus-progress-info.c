@@ -551,37 +551,19 @@ nautilus_progress_info_get_progress (NautilusProgressInfo *info)
 void
 nautilus_progress_info_cancel (NautilusProgressInfo *info)
 {
-    GCancellable *cancellable;
-
-    cancellable = nautilus_progress_info_get_cancellable (info);
-    g_cancellable_cancel (cancellable);
-    g_object_unref (cancellable);
+    g_cancellable_cancel (info->cancellable);
 }
 
 GCancellable *
 nautilus_progress_info_get_cancellable (NautilusProgressInfo *info)
 {
-    GCancellable *c;
-
-    G_LOCK (progress_info);
-
-    c = g_object_ref (info->cancellable);
-
-    G_UNLOCK (progress_info);
-
-    return c;
+    return g_object_ref (info->cancellable);
 }
 
 gboolean
 nautilus_progress_info_get_is_cancelled (NautilusProgressInfo *info)
 {
-    gboolean cancelled;
-
-    G_LOCK (progress_info);
-    cancelled = g_cancellable_is_cancelled (info->cancellable);
-    G_UNLOCK (progress_info);
-
-    return cancelled;
+    return g_cancellable_is_cancelled (info->cancellable);
 }
 
 gboolean
