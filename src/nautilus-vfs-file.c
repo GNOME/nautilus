@@ -147,14 +147,14 @@ static void
 vfs_file_set_metadata (NautilusFile         *file,
                        const char           *key,
                        NautilusMetadataType  type,
-                       gpointer              value)
+                       gconstpointer         value)
 {
     g_autoptr (GFileInfo) info = g_file_info_new ();
     g_autofree char *gio_key = g_strconcat ("metadata::", key, NULL);
 
     if (value != NULL)
     {
-        g_file_info_set_attribute (info, gio_key, (GFileAttributeType) type, value);
+        g_file_info_set_attribute (info, gio_key, (GFileAttributeType) type, (gpointer) value);
     }
     else
     {

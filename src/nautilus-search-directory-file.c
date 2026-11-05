@@ -159,7 +159,7 @@ static void
 search_directory_file_set_metadata (NautilusFile         *file,
                                     const char           *key,
                                     NautilusMetadataType  type,
-                                    gpointer              value)
+                                    gconstpointer         value)
 {
     NautilusSearchDirectoryFile *search_file;
 

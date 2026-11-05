@@ -328,7 +328,7 @@ GStrv		            nautilus_file_get_metadata_list                 (NautilusFile
 void                    nautilus_file_set_metadata                      (NautilusFile                   *file,
                             const char         *key,
 									 NautilusMetadataType type,
-                            		 gpointer             value);
+                            		 gconstpointer        value);
 
 /* Covers for common data types. */
 gboolean                nautilus_file_get_boolean_metadata              (NautilusFile                   *file,
@@ -498,7 +498,7 @@ typedef struct {
 	void                  (* set_metadata)           (NautilusFile           *file,
 							  const char             *key,
 							  NautilusMetadataType    type,
-							  gpointer             	  value);
+							  gconstpointer        	  value);
 
 	void                  (* mount)                  (NautilusFile                   *file,
 							  GMountOperation                *mount_op,

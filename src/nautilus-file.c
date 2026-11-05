@@ -4058,7 +4058,7 @@ void
 nautilus_file_set_metadata (NautilusFile         *file,
                             const char           *key,
                             NautilusMetadataType  type,
-                            gpointer              value)
+                            gconstpointer         value)
 {
     g_return_if_fail (NAUTILUS_IS_FILE (file));
     g_return_if_fail (key != NULL);
