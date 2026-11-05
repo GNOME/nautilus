@@ -1246,7 +1246,8 @@ recursive_directory_iterator_thread (GTask        *task,
 
             while (g_file_enumerator_iterate (enumerator, &info, &location, self->cancellable, &error) && info != NULL)
             {
-                if (g_file_info_get_file_type (info) == G_FILE_TYPE_DIRECTORY &&
+                if (depth < self->max_depth &&
+                    g_file_info_get_file_type (info) == G_FILE_TYPE_DIRECTORY &&
                     (!self->local_only || !is_remote (location)))
                 {
                     const char *id = g_file_info_get_attribute_string (info, G_FILE_ATTRIBUTE_ID_FILE);
