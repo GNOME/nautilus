@@ -1609,25 +1609,10 @@ static int
 compare_by_uri (NautilusDirectory *a,
                 NautilusDirectory *b)
 {
-    char *uri_a, *uri_b;
-    int res;
+    g_autofree char *uri_a = g_file_get_uri (a->details->location);
+    g_autofree char *uri_b = g_file_get_uri (b->details->location);
 
-    uri_a = g_file_get_uri (a->details->location);
-    uri_b = g_file_get_uri (b->details->location);
-
-    res = strcmp (uri_a, uri_b);
-
-    g_free (uri_a);
-    g_free (uri_b);
-
-    return res;
-}
-
-static int
-compare_by_uri_cover (gconstpointer a,
-                      gconstpointer b)
-{
-    return compare_by_uri (NAUTILUS_DIRECTORY (a), NAUTILUS_DIRECTORY (b));
+    return g_strcmp0 (uri_a, uri_b);
 }
 
 /**
@@ -1639,7 +1624,7 @@ compare_by_uri_cover (gconstpointer a,
 GList *
 nautilus_directory_list_sort_by_uri (GList *list)
 {
-    return g_list_sort (list, compare_by_uri_cover);
+    return g_list_sort (list, (GCompareFunc) compare_by_uri);
 }
 
 /* Return the number of extant NautilusDirectories */
