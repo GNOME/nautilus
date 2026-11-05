@@ -247,8 +247,7 @@ get_menu_for_directory (NautilusScriptsMonitor *self,
 
     if (!any_scripts)
     {
-        g_object_unref (menu);
-        menu = NULL;
+        g_clear_object (&menu);
     }
 
     return menu;

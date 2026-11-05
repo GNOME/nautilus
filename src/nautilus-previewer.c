@@ -119,8 +119,7 @@ clear_exported_window_handle (void)
     }
 #endif
 
-    g_free (exported_window_handle);
-    exported_window_handle = NULL;
+    g_clear_pointer (&exported_window_handle, g_free);
 }
 
 static gboolean

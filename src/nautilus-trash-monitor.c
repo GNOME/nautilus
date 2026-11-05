@@ -41,11 +41,7 @@ nautilus_trash_monitor_finalize (GObject *object)
 
     trash_monitor = NAUTILUS_TRASH_MONITOR (object);
 
-    if (trash_monitor->timeout_id > 0)
-    {
-        g_source_remove (trash_monitor->timeout_id);
-        trash_monitor->timeout_id = 0;
-    }
+    g_clear_handle_id (&trash_monitor->timeout_id, g_source_remove);
 
     if (trash_monitor->file_monitor)
     {

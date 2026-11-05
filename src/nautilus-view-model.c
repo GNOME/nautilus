@@ -224,8 +224,7 @@ dispose (GObject *object)
         g_signal_handlers_disconnect_by_func (self->selection_model,
                                               gtk_selection_model_selection_changed,
                                               self);
-        g_object_unref (self->selection_model);
-        self->selection_model = NULL;
+        g_clear_object (&self->selection_model);
     }
 
     if (self->sort_model != NULL)
@@ -236,8 +235,7 @@ dispose (GObject *object)
         g_signal_handlers_disconnect_by_func (self->sort_model,
                                               gtk_section_model_sections_changed,
                                               self);
-        g_object_unref (self->sort_model);
-        self->sort_model = NULL;
+        g_clear_object (&self->sort_model);
     }
 
     g_clear_object (&self->tree_model);

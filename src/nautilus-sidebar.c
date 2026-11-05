@@ -764,8 +764,7 @@ update_places (NautilusSidebar *sidebar)
     {
         g_signal_handlers_disconnect_by_data (l->data, sidebar);
     }
-    g_list_free_full (sidebar->unready_accounts, g_object_unref);
-    sidebar->unready_accounts = NULL;
+    g_clear_list (&sidebar->unready_accounts, g_object_unref);
     for (l = cloud_providers; l != NULL; l = l->next)
     {
         cloud_provider = CLOUD_PROVIDERS_PROVIDER (l->data);
@@ -3662,8 +3661,7 @@ nautilus_sidebar_dispose (GObject *object)
 
     if (sidebar->rename_popover)
     {
-        gtk_widget_unparent (sidebar->rename_popover);
-        sidebar->rename_popover = NULL;
+        g_clear_pointer (&sidebar->rename_popover, gtk_widget_unparent);
         sidebar->rename_entry = NULL;
         sidebar->rename_button = NULL;
         sidebar->rename_error = NULL;
@@ -3671,9 +3669,7 @@ nautilus_sidebar_dispose (GObject *object)
 
     if (sidebar->trash_row)
     {
-        g_object_remove_weak_pointer (G_OBJECT (sidebar->trash_row),
-                                      (gpointer *) &sidebar->trash_row);
-        sidebar->trash_row = NULL;
+        g_clear_weak_pointer (&sidebar->trash_row);
     }
 
     if (sidebar->volume_monitor != NULL)
@@ -3699,8 +3695,7 @@ nautilus_sidebar_dispose (GObject *object)
     {
         g_signal_handlers_disconnect_by_data (l->data, sidebar);
     }
-    g_list_free_full (sidebar->unready_accounts, g_object_unref);
-    sidebar->unready_accounts = NULL;
+    g_clear_list (&sidebar->unready_accounts, g_object_unref);
     if (sidebar->cloud_manager)
     {
         g_signal_handlers_disconnect_by_data (sidebar->cloud_manager, sidebar);
@@ -3709,8 +3704,7 @@ nautilus_sidebar_dispose (GObject *object)
         {
             g_signal_handlers_disconnect_by_data (l->data, sidebar);
         }
-        g_object_unref (sidebar->cloud_manager);
-        sidebar->cloud_manager = NULL;
+        g_clear_object (&sidebar->cloud_manager);
     }
 #endif
 

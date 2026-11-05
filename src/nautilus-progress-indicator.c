@@ -128,11 +128,7 @@ on_remove_finished_operations_timeout (NautilusProgressIndicator *self)
 static void
 unschedule_remove_finished_operations (NautilusProgressIndicator *self)
 {
-    if (self->remove_finished_operations_timeout_id != 0)
-    {
-        g_source_remove (self->remove_finished_operations_timeout_id);
-        self->remove_finished_operations_timeout_id = 0;
-    }
+    g_clear_handle_id (&self->remove_finished_operations_timeout_id, g_source_remove);
 }
 
 static void
@@ -163,11 +159,7 @@ on_remove_operations_button_attention_style_timeout (NautilusProgressIndicator *
 static void
 unschedule_operations_button_attention_style (NautilusProgressIndicator *self)
 {
-    if (self->operations_button_attention_timeout_id != 0)
-    {
-        g_source_remove (self->operations_button_attention_timeout_id);
-        self->operations_button_attention_timeout_id = 0;
-    }
+    g_clear_handle_id (&self->operations_button_attention_timeout_id, g_source_remove);
 }
 
 static void
@@ -325,11 +317,7 @@ schedule_operations_start (NautilusProgressIndicator *self)
 static void
 unschedule_operations_start (NautilusProgressIndicator *self)
 {
-    if (self->start_operations_timeout_id != 0)
-    {
-        g_source_remove (self->start_operations_timeout_id);
-        self->start_operations_timeout_id = 0;
-    }
+    g_clear_handle_id (&self->start_operations_timeout_id, g_source_remove);
 }
 
 static void

@@ -523,8 +523,7 @@ search_directory_add_pending_files_callbacks (NautilusSearchDirectory *self)
     self->callback_list = g_list_concat (self->callback_list,
                                          self->pending_callback_list);
 
-    g_list_free (self->pending_callback_list);
-    self->pending_callback_list = NULL;
+    g_clear_list (&self->pending_callback_list, NULL);
 }
 
 static void
@@ -760,8 +759,7 @@ search_dispose (GObject *object)
             search_monitor_destroy ((SearchMonitor *) list->data, self);
         }
 
-        g_list_free (self->monitor_list);
-        self->monitor_list = NULL;
+        g_clear_list (&self->monitor_list, NULL);
     }
 
     reset_file_list (self);
@@ -771,16 +769,14 @@ search_dispose (GObject *object)
         /* Remove callbacks */
         g_list_foreach (self->callback_list,
                         (GFunc) search_callback_destroy, NULL);
-        g_list_free (self->callback_list);
-        self->callback_list = NULL;
+        g_clear_list (&self->callback_list, NULL);
     }
 
     if (self->pending_callback_list)
     {
         g_list_foreach (self->pending_callback_list,
                         (GFunc) search_callback_destroy, NULL);
-        g_list_free (self->pending_callback_list);
-        self->pending_callback_list = NULL;
+        g_clear_list (&self->pending_callback_list, NULL);
     }
 
     g_clear_object (&self->query);

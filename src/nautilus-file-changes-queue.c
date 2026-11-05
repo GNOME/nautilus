@@ -208,29 +208,25 @@ nautilus_file_changes_consume_changes (void)
 
                 deletions = g_list_reverse (deletions);
                 nautilus_directory_notify_files_removed (deletions);
-                g_list_free_full (deletions, g_object_unref);
-                deletions = NULL;
+                g_clear_list (&deletions, g_object_unref);
             }
             if (moves != NULL)
             {
                 moves = g_list_reverse (moves);
                 nautilus_directory_notify_files_moved (moves);
-                pairs_list_free (moves);
-                moves = NULL;
+                g_clear_pointer (&moves, pairs_list_free);
             }
             if (additions != NULL)
             {
                 additions = g_list_reverse (additions);
                 nautilus_directory_notify_files_added (additions);
-                g_list_free_full (additions, g_object_unref);
-                additions = NULL;
+                g_clear_list (&additions, g_object_unref);
             }
             if (changes != NULL)
             {
                 changes = g_list_reverse (changes);
                 nautilus_directory_notify_files_changed (changes);
-                g_list_free_full (changes, g_object_unref);
-                changes = NULL;
+                g_clear_list (&changes, g_object_unref);
             }
         }
 

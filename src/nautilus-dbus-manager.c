@@ -32,11 +32,7 @@ nautilus_dbus_manager_dispose (GObject *object)
 {
     NautilusDBusManager *self = (NautilusDBusManager *) object;
 
-    if (self->file_operations2)
-    {
-        g_object_unref (self->file_operations2);
-        self->file_operations2 = NULL;
-    }
+    g_clear_object (&self->file_operations2);
 
     G_OBJECT_CLASS (nautilus_dbus_manager_parent_class)->dispose (object);
 }

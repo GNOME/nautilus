@@ -290,8 +290,7 @@ static void
 nautilus_file_clear_display_name (NautilusFile *file)
 {
     g_clear_pointer (&file->details->display_name, g_ref_string_release);
-    g_free (file->details->display_name_collation_key);
-    file->details->display_name_collation_key = NULL;
+    g_clear_pointer (&file->details->display_name_collation_key, g_free);
     g_clear_pointer (&file->details->edit_name, g_ref_string_release);
 }
 
@@ -380,11 +379,7 @@ metadata_hash_equal (GHashTable *hash1,
 static void
 clear_metadata (NautilusFile *file)
 {
-    if (file->details->metadata)
-    {
-        metadata_hash_free (file->details->metadata);
-        file->details->metadata = NULL;
-    }
+    g_clear_pointer (&file->details->metadata, metadata_hash_free);
 }
 
 static GHashTable *
@@ -463,11 +458,7 @@ void
 nautilus_file_clear_info (NautilusFile *file)
 {
     file->details->got_file_info = FALSE;
-    if (file->details->get_info_error)
-    {
-        g_error_free (file->details->get_info_error);
-        file->details->get_info_error = NULL;
-    }
+    g_clear_error (&file->details->get_info_error);
     /* Reset to default type, which might be other than unknown for
      *  special kinds of files like the desktop or a search directory */
     file->details->type = NAUTILUS_FILE_GET_CLASS (file)->default_file_type;
@@ -477,20 +468,11 @@ nautilus_file_clear_info (NautilusFile *file)
         nautilus_file_clear_display_name (file);
     }
 
-    if (file->details->activation_uri != NULL)
-    {
-        g_free (file->details->activation_uri);
-        file->details->activation_uri = NULL;
-    }
+    g_clear_pointer (&file->details->activation_uri, g_free);
 
-    if (file->details->icon != NULL)
-    {
-        g_object_unref (file->details->icon);
-        file->details->icon = NULL;
-    }
+    g_clear_object (&file->details->icon);
 
-    g_free (file->details->thumbnail_path);
-    file->details->thumbnail_path = NULL;
+    g_clear_pointer (&file->details->thumbnail_path, g_free);
     file->details->thumbnailing_failed = FALSE;
 
     file->details->is_symlink = FALSE;
@@ -523,11 +505,9 @@ nautilus_file_clear_info (NautilusFile *file)
     file->details->btime = 0;
     file->details->trash_time = 0;
     file->details->recency = 0;
-    g_free (file->details->symlink_name);
-    file->details->symlink_name = NULL;
+    g_clear_pointer (&file->details->symlink_name, g_free);
     g_clear_pointer (&file->details->mime_type, g_ref_string_release);
-    g_free (file->details->selinux_context);
-    file->details->selinux_context = NULL;
+    g_clear_pointer (&file->details->selinux_context, g_free);
     g_clear_pointer (&file->details->owner, g_ref_string_release);
     g_clear_pointer (&file->details->owner_real, g_ref_string_release);
     g_clear_pointer (&file->details->group, g_ref_string_release);
@@ -1320,8 +1300,7 @@ file_stop_callback (GObject      *source_object,
         (error->code == G_IO_ERROR_FAILED_HANDLED ||
          error->code == G_IO_ERROR_CANCELLED))
     {
-        g_error_free (error);
-        error = NULL;
+        g_clear_error (&error);
     }
 
     nautilus_file_operation_complete (op, NULL, error);
@@ -5381,8 +5360,7 @@ get_real_name (const char *name,
         || g_strcmp0 (name, real_name) == 0
         || g_strcmp0 (capitalized_login_name, real_name) == 0)
     {
-        g_free (real_name);
-        real_name = NULL;
+        g_clear_pointer (&real_name, g_free);
     }
 
     g_free (capitalized_login_name);
@@ -6898,8 +6876,7 @@ nautilus_file_set_mount (NautilusFile *file,
     if (file->details->mount)
     {
         g_signal_handlers_disconnect_by_func (file->details->mount, file_mount_unmounted, file);
-        g_object_unref (file->details->mount);
-        file->details->mount = NULL;
+        g_clear_object (&file->details->mount);
     }
 
     if (mount)
@@ -7624,8 +7601,7 @@ invalidate_mount (NautilusFile *file)
 void
 nautilus_file_invalidate_extension_info_internal (NautilusFile *file)
 {
-    g_list_free_full (file->details->extension_emblems, g_free);
-    file->details->extension_emblems = NULL;
+    g_clear_list (&file->details->extension_emblems, g_free);
     g_clear_pointer (&file->details->extension_attributes, g_hash_table_destroy);
     g_list_free_full (file->details->pending_info_providers, g_object_unref);
 

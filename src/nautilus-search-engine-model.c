@@ -40,11 +40,7 @@ finalize (GObject *object)
 
     model = NAUTILUS_SEARCH_ENGINE_MODEL (object);
 
-    if (model->finished_id != 0)
-    {
-        g_source_remove (model->finished_id);
-        model->finished_id = 0;
-    }
+    g_clear_handle_id (&model->finished_id, g_source_remove);
 
     g_clear_object (&model->directory);
 

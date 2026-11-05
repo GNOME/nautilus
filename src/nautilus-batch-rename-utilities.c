@@ -696,8 +696,7 @@ on_cursor_callback (GObject      *object,
             if (metadata_type == CREATION_DATE &&
                 query_data->date_order_hash_table)
             {
-                g_hash_table_destroy (query_data->date_order_hash_table);
-                query_data->date_order_hash_table = NULL;
+                g_clear_pointer (&query_data->date_order_hash_table, g_hash_table_destroy);
             }
         }
         else

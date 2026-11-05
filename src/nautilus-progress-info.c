@@ -115,8 +115,7 @@ nautilus_progress_info_dispose (GObject *object)
     if (info->idle_source)
     {
         g_source_destroy (info->idle_source);
-        g_source_unref (info->idle_source);
-        info->idle_source = NULL;
+        g_clear_pointer (&info->idle_source, g_source_unref);
     }
     G_UNLOCK (progress_info);
 
@@ -346,8 +345,7 @@ queue_idle (NautilusProgressInfo *info,
         if (info->idle_source)
         {
             g_source_destroy (info->idle_source);
-            g_source_unref (info->idle_source);
-            info->idle_source = NULL;
+            g_clear_pointer (&info->idle_source, g_source_unref);
         }
 
         info->source_is_now = now;

@@ -782,11 +782,7 @@ check_switch_location_timer (ButtonData *button_data)
 static void
 remove_switch_location_timer (ButtonData *button_data)
 {
-    if (button_data->switch_location_timer != 0)
-    {
-        g_source_remove (button_data->switch_location_timer);
-        button_data->switch_location_timer = 0;
-    }
+    g_clear_handle_id (&button_data->switch_location_timer, g_source_remove);
 }
 
 static GdkDragAction

@@ -328,11 +328,7 @@ list_len_is_one (GList *list)
 static void
 remove_loading_floating_bar (NautilusFilesView *self)
 {
-    if (self->floating_bar_loading_timeout_id != 0)
-    {
-        g_source_remove (self->floating_bar_loading_timeout_id);
-        self->floating_bar_loading_timeout_id = 0;
-    }
+    g_clear_handle_id (&self->floating_bar_loading_timeout_id, g_source_remove);
 
     gtk_widget_set_visible (self->floating_bar, FALSE);
     nautilus_floating_bar_set_show_stop (NAUTILUS_FLOATING_BAR (self->floating_bar), FALSE);
@@ -362,17 +358,9 @@ static void
 setup_loading_floating_bar (NautilusFilesView *self)
 {
     /* setup loading overlay */
-    if (self->floating_bar_set_status_timeout_id != 0)
-    {
-        g_source_remove (self->floating_bar_set_status_timeout_id);
-        self->floating_bar_set_status_timeout_id = 0;
-    }
+    g_clear_handle_id (&self->floating_bar_set_status_timeout_id, g_source_remove);
 
-    if (self->floating_bar_loading_timeout_id != 0)
-    {
-        g_source_remove (self->floating_bar_loading_timeout_id);
-        self->floating_bar_loading_timeout_id = 0;
-    }
+    g_clear_handle_id (&self->floating_bar_loading_timeout_id, g_source_remove);
 
     self->floating_bar_loading_timeout_id =
         g_timeout_add_once (FLOATING_BAR_LOADING_DELAY, setup_loading_floating_bar_timeout_cb, self);
@@ -462,11 +450,7 @@ set_floating_bar_status (NautilusFilesView *self,
     gint double_click_time;
     FloatingBarSetStatusData *status_data;
 
-    if (self->floating_bar_set_status_timeout_id != 0)
-    {
-        g_source_remove (self->floating_bar_set_status_timeout_id);
-        self->floating_bar_set_status_timeout_id = 0;
-    }
+    g_clear_handle_id (&self->floating_bar_set_status_timeout_id, g_source_remove);
 
     settings = gtk_settings_get_for_display (gtk_widget_get_display (GTK_WIDGET (self)));
     g_object_get (settings,
@@ -478,11 +462,7 @@ set_floating_bar_status (NautilusFilesView *self,
     status_data->detail_status = g_strdup (detail_status);
     status_data->view = self;
 
-    if (self->floating_bar_set_passthrough_timeout_id != 0)
-    {
-        g_source_remove (self->floating_bar_set_passthrough_timeout_id);
-        self->floating_bar_set_passthrough_timeout_id = 0;
-    }
+    g_clear_handle_id (&self->floating_bar_set_passthrough_timeout_id, g_source_remove);
     /* Activate passthrough on the floating bar just long enough for a
      * potential double click to happen, so to not interfere with it */
     gtk_widget_set_can_target (self->floating_bar, FALSE);
@@ -3167,11 +3147,7 @@ nautilus_files_view_dispose (GObject *object)
     g_clear_pointer (&self->background_menu, gtk_widget_unparent);
     g_clear_pointer (&self->rename_file_popover, gtk_widget_unparent);
 
-    if (self->directory)
-    {
-        nautilus_directory_unref (self->directory);
-        self->directory = NULL;
-    }
+    g_clear_pointer (&self->directory, nautilus_directory_unref);
 
     for (node = self->templates_directory_list; node != NULL; node = next)
     {
@@ -3191,29 +3167,13 @@ nautilus_files_view_dispose (GObject *object)
 
     g_clear_handle_id (&self->transition_timeout_id, g_source_remove);
 
-    if (self->display_selection_idle_id != 0)
-    {
-        g_source_remove (self->display_selection_idle_id);
-        self->display_selection_idle_id = 0;
-    }
+    g_clear_handle_id (&self->display_selection_idle_id, g_source_remove);
 
-    if (self->floating_bar_set_status_timeout_id != 0)
-    {
-        g_source_remove (self->floating_bar_set_status_timeout_id);
-        self->floating_bar_set_status_timeout_id = 0;
-    }
+    g_clear_handle_id (&self->floating_bar_set_status_timeout_id, g_source_remove);
 
-    if (self->floating_bar_loading_timeout_id != 0)
-    {
-        g_source_remove (self->floating_bar_loading_timeout_id);
-        self->floating_bar_loading_timeout_id = 0;
-    }
+    g_clear_handle_id (&self->floating_bar_loading_timeout_id, g_source_remove);
 
-    if (self->floating_bar_set_passthrough_timeout_id != 0)
-    {
-        g_source_remove (self->floating_bar_set_passthrough_timeout_id);
-        self->floating_bar_set_passthrough_timeout_id = 0;
-    }
+    g_clear_handle_id (&self->floating_bar_set_passthrough_timeout_id, g_source_remove);
 
     g_signal_handlers_disconnect_by_func (nautilus_preferences,
                                           schedule_update_context_menus, self);
@@ -3231,8 +3191,7 @@ nautilus_files_view_dispose (GObject *object)
     g_cancellable_cancel (self->clipboard_actions_cancellable);
     g_clear_object (&self->clipboard_actions_cancellable);
 
-    nautilus_file_unref (self->directory_as_file);
-    self->directory_as_file = NULL;
+    g_clear_pointer (&self->directory_as_file, nautilus_file_unref);
 
     g_clear_object (&self->search_query);
     g_clear_object (&self->location_before_search);
@@ -4334,11 +4293,7 @@ display_selection_info_idle_callback (gpointer data)
 static void
 remove_update_context_menus_timeout_callback (NautilusFilesView *self)
 {
-    if (self->update_context_menus_timeout_id != 0)
-    {
-        g_source_remove (self->update_context_menus_timeout_id);
-        self->update_context_menus_timeout_id = 0;
-    }
+    g_clear_handle_id (&self->update_context_menus_timeout_id, g_source_remove);
 }
 
 static void
@@ -4435,11 +4390,7 @@ static void
 unschedule_display_of_pending_files (NautilusFilesView *self)
 {
     /* Get rid of source if it's active. */
-    if (self->display_pending_source_id != 0)
-    {
-        g_source_remove (self->display_pending_source_id);
-        self->display_pending_source_id = 0;
-    }
+    g_clear_handle_id (&self->display_pending_source_id, g_source_remove);
 }
 
 static void
@@ -4474,11 +4425,7 @@ queue_pending_files (NautilusFilesView  *self,
 static void
 remove_changes_timeout_callback (NautilusFilesView *self)
 {
-    if (self->changes_timeout_id != 0)
-    {
-        g_source_remove (self->changes_timeout_id);
-        self->changes_timeout_id = 0;
-    }
+    g_clear_handle_id (&self->changes_timeout_id, g_source_remove);
 }
 
 static void
@@ -5405,8 +5352,7 @@ update_directory_in_templates_menu (NautilusFilesView *view,
 
     if (!any_templates)
     {
-        g_object_unref (menu);
-        menu = NULL;
+        g_clear_object (&menu);
     }
 
     return G_MENU_MODEL (menu);
@@ -7948,11 +7894,7 @@ schedule_update_context_menus (NautilusFilesView *self)
 static void
 remove_update_status_idle_callback (NautilusFilesView *self)
 {
-    if (self->update_status_idle_id != 0)
-    {
-        g_source_remove (self->update_status_idle_id);
-        self->update_status_idle_id = 0;
-    }
+    g_clear_handle_id (&self->update_status_idle_id, g_source_remove);
 }
 
 static gboolean
@@ -8309,14 +8251,11 @@ nautilus_files_view_stop_loading (NautilusFilesView *self)
     reset_update_interval (self);
 
     /* Free extra undisplayed files */
-    g_list_free_full (self->new_added_files, file_and_directory_free);
-    self->new_added_files = NULL;
+    g_clear_list (&self->new_added_files, file_and_directory_free);
 
-    g_list_free_full (self->new_changed_files, file_and_directory_free);
-    self->new_changed_files = NULL;
+    g_clear_list (&self->new_changed_files, file_and_directory_free);
 
-    g_list_free_full (self->pending_selection, g_object_unref);
-    self->pending_selection = NULL;
+    g_clear_list (&self->pending_selection, g_object_unref);
 
     done_loading (self, FALSE);
 

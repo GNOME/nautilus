@@ -110,8 +110,7 @@ static void
 clear (NautilusBookmarkList *bookmarks)
 {
     g_list_foreach (bookmarks->list, (GFunc) stop_monitoring_bookmark, bookmarks);
-    g_list_free_full (bookmarks->list, g_object_unref);
-    bookmarks->list = NULL;
+    g_clear_list (&bookmarks->list, g_object_unref);
 }
 
 static void

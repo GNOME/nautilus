@@ -538,14 +538,10 @@ nautilus_sidebar_row_finalize (GObject *object)
 
     g_clear_object (&self->start_icon);
     g_clear_object (&self->end_icon);
-    g_free (self->label);
-    self->label = NULL;
-    g_free (self->tooltip);
-    self->tooltip = NULL;
-    g_free (self->eject_tooltip);
-    self->eject_tooltip = NULL;
-    g_free (self->uri);
-    self->uri = NULL;
+    g_clear_pointer (&self->label, g_free);
+    g_clear_pointer (&self->tooltip, g_free);
+    g_clear_pointer (&self->eject_tooltip, g_free);
+    g_clear_pointer (&self->uri, g_free);
     g_clear_object (&self->drive);
     g_clear_object (&self->volume);
     g_clear_object (&self->mount);

@@ -494,8 +494,7 @@ new_files_cancel (NautilusDirectory *directory)
             g_cancellable_cancel (state->cancellable);
             state->directory = NULL;
         }
-        g_list_free (directory->details->new_files_in_progress);
-        directory->details->new_files_in_progress = NULL;
+        g_clear_list (&directory->details->new_files_in_progress, NULL);
     }
 }
 
@@ -1005,17 +1004,9 @@ file_list_cancel (NautilusDirectory *directory)
 {
     directory_load_cancel (directory);
 
-    if (directory->details->dequeue_pending_idle_id != 0)
-    {
-        g_source_remove (directory->details->dequeue_pending_idle_id);
-        directory->details->dequeue_pending_idle_id = 0;
-    }
+    g_clear_handle_id (&directory->details->dequeue_pending_idle_id, g_source_remove);
 
-    if (directory->details->pending_file_info != NULL)
-    {
-        g_list_free_full (directory->details->pending_file_info, g_object_unref);
-        directory->details->pending_file_info = NULL;
-    }
+    g_clear_list (&directory->details->pending_file_info, g_object_unref);
 }
 
 static void
@@ -1072,8 +1063,7 @@ nautilus_directory_monitor_remove_internal (NautilusDirectory *directory,
     if (directory->details->monitor != NULL
         && g_hash_table_size (directory->details->monitor_table) == 0)
     {
-        nautilus_monitor_cancel (directory->details->monitor);
-        directory->details->monitor = NULL;
+        g_clear_pointer (&directory->details->monitor, nautilus_monitor_cancel);
     }
 
     /* XXX - do we need to remove anything from the work queue? */
@@ -2651,8 +2641,7 @@ deep_count_next_dir (DeepCountState *state)
 
     directory = state->directory;
 
-    g_object_unref (state->deep_count_location);
-    state->deep_count_location = NULL;
+    g_clear_object (&state->deep_count_location);
 
     done = FALSE;
     file = directory->details->deep_count_file;
@@ -2722,8 +2711,7 @@ deep_count_more_files_callback (GObject      *source_object,
     if (files == NULL)
     {
         g_file_enumerator_close_async (state->enumerator, 0, NULL, NULL, NULL);
-        g_object_unref (state->enumerator);
-        state->enumerator = NULL;
+        g_clear_object (&state->enumerator);
 
         deep_count_next_dir (state);
     }
@@ -3035,11 +3023,7 @@ file_info_start (NautilusDirectory *directory,
 
     directory->details->get_info_file = file;
     file->details->get_info_failed = FALSE;
-    if (file->details->get_info_error)
-    {
-        g_error_free (file->details->get_info_error);
-        file->details->get_info_error = NULL;
-    }
+    g_clear_error (&file->details->get_info_error);
 
     state = g_new (GetInfoState, 1);
     state->directory = directory;
@@ -3437,8 +3421,7 @@ find_enclosing_mount_callback (GObject      *source_object,
         location = nautilus_file_get_location (state->file);
         if (!g_file_equal (location, root))
         {
-            g_object_unref (mount);
-            mount = NULL;
+            g_clear_object (&mount);
         }
         g_object_unref (root);
         g_object_unref (location);

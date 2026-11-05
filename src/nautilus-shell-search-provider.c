@@ -524,9 +524,7 @@ cancel_result_meta_requests (NautilusShellSearchProvider *self)
 {
     g_debug ("*** Cancel Results Meta requests");
 
-    g_list_free_full (self->metas_requests,
-                      (GDestroyNotify) result_metas_return_empty);
-    self->metas_requests = NULL;
+    g_clear_list (&self->metas_requests, (GDestroyNotify) result_metas_return_empty);
 }
 
 static void

@@ -461,8 +461,7 @@ nautilus_starred_directory_dispose (GObject *object)
             starred_monitor_destroy ((FavoriteMonitor *) l->data, starred);
         }
 
-        g_list_free (starred->monitor_list);
-        starred->monitor_list = NULL;
+        g_clear_list (&starred->monitor_list, NULL);
     }
 
     G_OBJECT_CLASS (nautilus_starred_directory_parent_class)->dispose (object);

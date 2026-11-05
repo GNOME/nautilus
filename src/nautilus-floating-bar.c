@@ -196,11 +196,7 @@ update_labels (NautilusFloatingBar *self)
 void
 nautilus_floating_bar_remove_hover_timeout (NautilusFloatingBar *self)
 {
-    if (self->hover_timeout_id != 0)
-    {
-        g_source_remove (self->hover_timeout_id);
-        self->hover_timeout_id = 0;
-    }
+    g_clear_handle_id (&self->hover_timeout_id, g_source_remove);
 }
 
 typedef struct
@@ -311,8 +307,7 @@ on_parent_changed (GObject    *object,
             gtk_widget_remove_controller (old_parent, self->motion_controller);
         }
 
-        g_object_unref (self->motion_controller);
-        self->motion_controller = NULL;
+        g_clear_object (&self->motion_controller);
     }
 
     if (parent != NULL)

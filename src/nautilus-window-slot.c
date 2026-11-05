@@ -2014,8 +2014,7 @@ apply_pending_location_and_selection_on_view (NautilusWindowSlot *self)
                                        self->pending_selection,
                                        NAUTILUS_SELECTION_SOURCE_AUTO);
 
-    nautilus_file_list_free (self->pending_selection);
-    self->pending_selection = NULL;
+    g_clear_pointer (&self->pending_selection, nautilus_file_list_free);
 
     if (self->pending_file_to_activate != NULL &&
         nautilus_mime_file_defaults_to_nautilus (self->pending_file_to_activate))
@@ -2048,8 +2047,7 @@ free_location_change (NautilusWindowSlot *self)
     g_clear_object (&self->pending_location);
     g_clear_object (&self->pending_file_to_activate);
     self->location_change_distance = 0;
-    nautilus_file_list_free (self->pending_selection);
-    self->pending_selection = NULL;
+    g_clear_pointer (&self->pending_selection, nautilus_file_list_free);
 
     if (self->mount_cancellable != NULL)
     {
@@ -2166,8 +2164,7 @@ nautilus_window_slot_clear_forward_list (NautilusWindowSlot *self)
 {
     g_assert (NAUTILUS_IS_WINDOW_SLOT (self));
 
-    g_list_free_full (self->forward_list, g_object_unref);
-    self->forward_list = NULL;
+    g_clear_list (&self->forward_list, g_object_unref);
 }
 
 static void
@@ -2175,8 +2172,7 @@ nautilus_window_slot_clear_back_list (NautilusWindowSlot *self)
 {
     g_assert (NAUTILUS_IS_WINDOW_SLOT (self));
 
-    g_list_free_full (self->back_list, g_object_unref);
-    self->back_list = NULL;
+    g_clear_list (&self->back_list, g_object_unref);
 }
 
 static void

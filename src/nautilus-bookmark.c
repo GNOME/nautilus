@@ -249,11 +249,7 @@ nautilus_bookmark_disconnect_file (NautilusBookmark *bookmark)
         g_clear_object (&bookmark->cancellable);
     }
 
-    if (bookmark->exists_id != 0)
-    {
-        g_source_remove (bookmark->exists_id);
-        bookmark->exists_id = 0;
-    }
+    g_clear_handle_id (&bookmark->exists_id, g_source_remove);
 }
 
 static void

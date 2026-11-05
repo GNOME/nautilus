@@ -1016,11 +1016,7 @@ update_display_text (NautilusBatchRenameDialog *dialog)
         return;
     }
 
-    if (dialog->duplicates != NULL)
-    {
-        g_list_free_full (dialog->duplicates, conflict_data_free);
-        dialog->duplicates = NULL;
-    }
+    g_clear_list (&dialog->duplicates, conflict_data_free);
 
     if (dialog->new_names != NULL)
     {
@@ -1090,9 +1086,8 @@ nautilus_batch_rename_dialog_query_finished (NautilusBatchRenameDialog *dialog,
     /* for files with no metadata */
     if (hash_table != NULL && g_hash_table_size (hash_table) == 0)
     {
-        g_hash_table_destroy (hash_table);
+        g_clear_pointer (&hash_table, g_hash_table_destroy);
 
-        hash_table = NULL;
     }
 
     if (hash_table == NULL)
