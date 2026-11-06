@@ -5,7 +5,8 @@
  * SPDX-License-Identifier: GPL-3.0-or-later
  */
 
-#include "config.h"
+#include <config.h>
+
 #include "nautilus-application.h"
 #include "nautilus-global-preferences.h"
 #include "nautilus-localsearch-utilities.h"

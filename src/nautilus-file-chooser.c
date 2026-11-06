@@ -8,9 +8,10 @@
 
 #define G_LOG_DOMAIN "nautilus-file-chooser"
 
+#include <config.h>
+
 #include "nautilus-file-chooser.h"
 
-#include <config.h>
 #include <glib/gi18n.h>
 #include <gtk/gtk.h>
 
