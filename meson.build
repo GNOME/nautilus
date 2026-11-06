@@ -167,12 +167,10 @@ endif
 conf = configuration_data()
 
 profile = get_option('profile')
-name_suffix = ''
 app_id_suffix = ''
 
 if get_option('profile') == 'Devel'
   app_id_suffix = '.Devel'
-  name_suffix = ' (Development Snapshot)'
 endif
 
 application_id = 'org.gnome.Nautilus' + app_id_suffix
@@ -188,7 +186,6 @@ endif
 conf.set_quoted('APPLICATION_ID', application_id)
 conf.set_quoted('GETTEXT_PACKAGE', 'nautilus')
 conf.set_quoted('LOCALEDIR', join_paths(prefix, localedir))
-conf.set_quoted('NAME_SUFFIX', name_suffix)
 conf.set_quoted('NAUTILUS_DATADIR', join_paths(prefix, datadir, 'nautilus'))
 conf.set_quoted('NAUTILUS_EXTENSIONDIR', join_paths(prefix, extensiondir))
 conf.set_quoted('PACKAGE_VERSION', meson.project_version())
