@@ -53,8 +53,8 @@ vfs_file_call_when_ready (NautilusFile         *file,
 
     directory = nautilus_file_get_directory (file);
 
-    nautilus_directory_call_when_ready_internal (directory, file, attributes,
-                                                 NULL, callback, callback_data);
+    nautilus_directory_call_when_vfs_file_ready (directory, file, attributes,
+                                                 callback, callback_data);
 }
 
 static void
@@ -66,8 +66,7 @@ vfs_file_cancel_call_when_ready (NautilusFile         *file,
 
     directory = nautilus_file_get_directory (file);
 
-    nautilus_directory_cancel_callback_internal (directory, file, NULL,
-                                                 callback, callback_data);
+    nautilus_directory_cancel_vfs_file_callback (directory, file, callback, callback_data);
 }
 
 static gboolean

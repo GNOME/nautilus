@@ -1179,50 +1179,27 @@ ready_callback_call (NautilusDirectory   *directory,
     }
 }
 
-void
-nautilus_directory_call_when_ready_internal (NautilusDirectory         *directory,
-                                             NautilusFile              *file,
-                                             NautilusAttributes         attributes,
-                                             NautilusDirectoryCallback  directory_callback,
-                                             NautilusFileCallback       file_callback,
-                                             gpointer                   callback_data)
+static void
+call_when_vfs_ready_internal (NautilusDirectory *directory,
+                              ReadyCallback     *callback)
 {
-    ReadyCallback callback;
-    GList *node;
-
-    g_assert (directory == NULL || NAUTILUS_IS_DIRECTORY (directory));
-    g_assert (file == NULL || NAUTILUS_IS_FILE (file));
-    g_assert (file != NULL || directory_callback != NULL);
-
-    /* Construct a callback object. */
-    callback.file = file;
-    if (file == NULL)
-    {
-        callback.callback = G_CALLBACK (directory_callback);
-    }
-    else
-    {
-        callback.callback = G_CALLBACK (file_callback);
-    }
-    callback.callback_data = callback_data;
-    callback.attributes = attributes;
-
     /* Handle the NULL case. */
     if (directory == NULL)
     {
-        ready_callback_call (NULL, &callback);
+        ready_callback_call (NULL, callback);
         return;
     }
 
     /* Check if the callback is already there. */
-    node = g_hash_table_lookup (directory->details->call_when_ready_hash.unsatisfied, callback.file);
+    GList *node = g_hash_table_lookup (directory->details->call_when_ready_hash.unsatisfied,
+                                       callback->file);
 
-    if (g_list_find_custom (node, &callback, ready_callback_key_compare) != NULL)
+    if (g_list_find_custom (node, callback, ready_callback_key_compare) != NULL)
     {
-        if (file_callback != NULL || directory_callback != NULL)
+        if (callback->callback != NULL)
         {
-            g_autofree char *uri = file != NULL
-                                   ? nautilus_file_get_uri (file)
+            g_autofree char *uri = callback->file != NULL
+                                   ? nautilus_file_get_uri (callback->file)
                                    : nautilus_directory_get_uri (directory);
             g_warning ("Tried to add a duplicate callback for '%s'. "
                        "Make sure to cancel previous callback", uri);
@@ -1232,15 +1209,15 @@ nautilus_directory_call_when_ready_internal (NautilusDirectory         *director
     }
 
     /* Add the new callback to the list. */
-    node = g_list_prepend (node, g_memdup2 (&callback, sizeof (callback)));
-    g_hash_table_replace (directory->details->call_when_ready_hash.unsatisfied, callback.file, node);
+    node = g_list_prepend (node, g_memdup2 (callback, sizeof (ReadyCallback)));
+    g_hash_table_replace (directory->details->call_when_ready_hash.unsatisfied, callback->file, node);
     request_counter_add (directory->details->call_when_ready_counters,
-                         callback.attributes);
+                         callback->attributes);
 
     /* Put the callback file or all the files on the work queue. */
-    if (file != NULL)
+    if (callback->file != NULL)
     {
-        nautilus_directory_add_file_to_work_queue (directory, file);
+        nautilus_directory_add_file_to_work_queue (directory, callback->file);
     }
     else
     {
@@ -1248,6 +1225,40 @@ nautilus_directory_call_when_ready_internal (NautilusDirectory         *director
     }
 
     nautilus_directory_async_state_changed (directory);
+}
+
+void
+nautilus_directory_call_when_vfs_file_ready (NautilusDirectory    *directory,
+                                             NautilusFile         *file,
+                                             NautilusAttributes    attributes,
+                                             NautilusFileCallback  file_callback,
+                                             gpointer              callback_data)
+{
+    g_return_if_fail (directory == NULL || NAUTILUS_IS_DIRECTORY (directory));
+    g_return_if_fail (NAUTILUS_IS_FILE (file));
+
+    call_when_vfs_ready_internal (directory, &(ReadyCallback){
+        .file = file,
+        .callback = G_CALLBACK (file_callback),
+        .callback_data = callback_data,
+        .attributes = attributes,
+    });
+}
+
+void
+nautilus_directory_call_when_vfs_ready (NautilusDirectory         *directory,
+                                        NautilusAttributes         attributes,
+                                        NautilusDirectoryCallback  directory_callback,
+                                        gpointer                   callback_data)
+{
+    g_return_if_fail (directory == NULL || NAUTILUS_IS_DIRECTORY (directory));
+    g_return_if_fail (directory_callback != NULL);
+
+    call_when_vfs_ready_internal (directory, &(ReadyCallback){
+        .callback = G_CALLBACK (directory_callback),
+        .callback_data = callback_data,
+        .attributes = attributes,
+    });
 }
 
 gboolean
@@ -1324,37 +1335,44 @@ remove_similar_callbacks (NautilusDirectory *directory,
 }
 
 void
-nautilus_directory_cancel_callback_internal (NautilusDirectory         *directory,
-                                             NautilusFile              *file,
-                                             NautilusDirectoryCallback  directory_callback,
-                                             NautilusFileCallback       file_callback,
-                                             gpointer                   callback_data)
+nautilus_directory_cancel_vfs_file_callback (NautilusDirectory    *directory,
+                                             NautilusFile         *file,
+                                             NautilusFileCallback  file_callback,
+                                             gpointer              callback_data)
 {
-    ReadyCallback callback;
-
     if (directory == NULL)
     {
         return;
     }
 
-    g_assert (NAUTILUS_IS_DIRECTORY (directory));
-    g_assert (file == NULL || NAUTILUS_IS_FILE (file));
-    g_assert (file != NULL || directory_callback != NULL);
-    g_assert (file == NULL || file_callback != NULL);
+    g_return_if_fail (NAUTILUS_IS_DIRECTORY (directory));
+    g_return_if_fail (NAUTILUS_IS_FILE (file));
+    g_return_if_fail (file_callback != NULL);
 
-    /* Construct a callback object. */
-    callback.file = file;
-    if (file == NULL)
-    {
-        callback.callback = G_CALLBACK (directory_callback);
-    }
-    else
-    {
-        callback.callback = G_CALLBACK (file_callback);
-    }
-    callback.callback_data = callback_data;
+    remove_similar_callbacks (directory, &(ReadyCallback){
+        .file = file,
+        .callback = G_CALLBACK (file_callback),
+        .callback_data = callback_data,
+    });
+}
 
-    remove_similar_callbacks (directory, &callback);
+void
+nautilus_directory_cancel_vfs_callback (NautilusDirectory         *directory,
+                                        NautilusDirectoryCallback  directory_callback,
+                                        gpointer                   callback_data)
+{
+    if (directory == NULL)
+    {
+        return;
+    }
+
+    g_return_if_fail (NAUTILUS_IS_DIRECTORY (directory));
+    g_return_if_fail (directory_callback != NULL);
+
+    remove_similar_callbacks (directory, &(ReadyCallback){
+        .callback = G_CALLBACK (directory_callback),
+        .callback_data = callback_data,
+    });
 }
 
 static void

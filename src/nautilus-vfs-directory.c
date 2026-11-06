@@ -30,13 +30,7 @@ vfs_call_when_ready (NautilusDirectory         *directory,
 {
     g_assert (NAUTILUS_IS_VFS_DIRECTORY (directory));
 
-    nautilus_directory_call_when_ready_internal
-        (directory,
-        NULL,
-        attributes,
-        callback,
-        NULL,
-        callback_data);
+    nautilus_directory_call_when_vfs_ready (directory, attributes, callback, callback_data);
 }
 
 static void
@@ -46,12 +40,7 @@ vfs_cancel_callback (NautilusDirectory         *directory,
 {
     g_assert (NAUTILUS_IS_VFS_DIRECTORY (directory));
 
-    nautilus_directory_cancel_callback_internal
-        (directory,
-        NULL,
-        callback,
-        NULL,
-        callback_data);
+    nautilus_directory_cancel_vfs_callback (directory, callback, callback_data);
 }
 
 static void
