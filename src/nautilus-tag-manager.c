@@ -6,6 +6,8 @@
  */
 #define G_LOG_DOMAIN "nautilus-tag-manager"
 
+#include <config.h>
+
 #include "nautilus-tag-manager.h"
 #include "nautilus-file.h"
 #include "nautilus-file-undo-operations.h"
@@ -13,8 +15,6 @@
 
 #include <glib/gi18n.h>
 #include <tinysparql.h>
-
-#include "config.h"
 
 struct _NautilusTagManager
 {

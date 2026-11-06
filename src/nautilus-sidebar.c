@@ -10,9 +10,11 @@
  * the file chooser in GTK3, became private with GTK4 and thus reimported into
  * nautilus with the GTK4 port in 7bf5ab0c73d5027dbe754df34243054a83ffae1b
  */
+
+ #include <config.h>
+
 #include "nautilus-sidebar.h"
 
-#include "config.h"
 #include <glib/gi18n.h>
 #include <gtk/gtk.h>
 #include "nautilus-enum-types.h"

@@ -9,7 +9,7 @@
  */
 #define G_LOG_DOMAIN "nautilus-previewer"
 
-#include "config.h"
+#include <config.h>
 
 #include "nautilus-previewer.h"
 

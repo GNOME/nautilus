@@ -8,9 +8,10 @@
 
 #define G_LOG_DOMAIN "nautilus-dbus"
 
+#include <config.h>
+
 #include "nautilus-portal.h"
 
-#include <config.h>
 #include <glib/gi18n.h>
 #include <gxdp.h>
 #include <xdg-desktop-portal-dbus.h>
