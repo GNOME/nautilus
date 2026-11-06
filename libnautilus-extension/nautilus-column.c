@@ -168,14 +168,12 @@ nautilus_column_set_property (GObject      *object,
         case PROP_NAME:
         {
             g_set_str (&column->name, g_value_get_string (value));
-            g_object_notify (object, "name");
         }
         break;
 
         case PROP_ATTRIBUTE:
         {
             column->attribute = g_quark_from_string (g_value_get_string (value));
-            g_object_notify (object, "attribute");
             g_object_notify (object, "attribute-q");
         }
         break;
@@ -183,28 +181,24 @@ nautilus_column_set_property (GObject      *object,
         case PROP_LABEL:
         {
             g_set_str (&column->label, g_value_get_string (value));
-            g_object_notify (object, "label");
         }
         break;
 
         case PROP_DESCRIPTION:
         {
             g_set_str (&column->description, g_value_get_string (value));
-            g_object_notify (object, "description");
         }
         break;
 
         case PROP_XALIGN:
         {
             column->xalign = g_value_get_float (value);
-            g_object_notify (object, "xalign");
         }
         break;
 
         case PROP_DEFAULT_SORT_ORDER:
         {
             column->default_sort_order = g_value_get_int (value);
-            g_object_notify (object, "default-sort-order");
         }
         break;
 
