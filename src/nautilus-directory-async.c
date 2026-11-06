@@ -1236,6 +1236,7 @@ nautilus_directory_call_when_vfs_file_ready (NautilusDirectory    *directory,
 {
     g_return_if_fail (directory == NULL || NAUTILUS_IS_DIRECTORY (directory));
     g_return_if_fail (NAUTILUS_IS_FILE (file));
+    g_return_if_fail (file_callback != NULL);
 
     call_when_vfs_ready_internal (directory, &(ReadyCallback){
         .file = file,
