@@ -7553,12 +7553,6 @@ nautilus_file_call_when_ready (NautilusFile         *file,
                                NautilusFileCallback  callback,
                                gpointer              callback_data)
 {
-    if (file == NULL)
-    {
-        (*callback)(file, callback_data);
-        return;
-    }
-
     g_return_if_fail (NAUTILUS_IS_FILE (file));
 
     NAUTILUS_FILE_CLASS (G_OBJECT_GET_CLASS (file))->call_when_ready
