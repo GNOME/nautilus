@@ -3898,11 +3898,10 @@ nautilus_file_should_show (NautilusFile *file,
 gboolean
 nautilus_file_is_home (NautilusFile *file)
 {
-    g_autoptr (GFile) location = NULL;
-
     g_return_val_if_fail (NAUTILUS_IS_FILE (file), FALSE);
 
-    location = nautilus_directory_get_location (file->details->directory);
+    GFile *location = file->details->directory->details->location;
+
     if (location == NULL)
     {
         return FALSE;
@@ -8548,7 +8547,7 @@ nautilus_file_get_uri_scheme (NautilusFile *file)
         return NULL;
     }
 
-    g_autoptr (GFile) location = nautilus_directory_get_location (file->details->directory);
+    GFile *location = file->details->directory->details->location;
 
     if (location == NULL)
     {
@@ -8745,11 +8744,11 @@ nautilus_file_get_location (NautilusFile *file)
 {
     g_return_val_if_fail (NAUTILUS_IS_FILE (file), NULL);
 
-    g_autoptr (GFile) location = nautilus_directory_get_location (file->details->directory);
+    GFile *location = file->details->directory->details->location;
 
     if (nautilus_file_is_self_owned (file))
     {
-        return g_steal_pointer (&location);
+        return g_object_ref (location);
     }
 
     return g_file_get_child (location, file->details->name);

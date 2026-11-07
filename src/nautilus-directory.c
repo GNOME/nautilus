@@ -518,8 +518,7 @@ nautilus_directory_get_corresponding_file (NautilusDirectory *directory)
     file = nautilus_directory_get_existing_corresponding_file (directory);
     if (file == NULL)
     {
-        g_autoptr (GFile) location = nautilus_directory_get_location (directory);
-        file = nautilus_file_get (location);
+        file = nautilus_file_get (directory->details->location);
     }
 
     return file;
@@ -540,8 +539,7 @@ nautilus_directory_get_existing_corresponding_file (NautilusDirectory *directory
         return file;
     }
 
-    g_autoptr (GFile) location = nautilus_directory_get_location (directory);
-    file = nautilus_file_get_existing (location);
+    file = nautilus_file_get_existing (directory->details->location);
 
     return file;
 }
