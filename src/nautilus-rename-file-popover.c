@@ -208,6 +208,7 @@ nautilus_rename_file_popover_show_for_file (NautilusRenameFilePopover *self,
                                                       self->target_is_folder);
     nautilus_filename_validator_set_original_name (self->validator,
                                                    nautilus_file_get_display_name (self->target_file));
+    nautilus_filename_validator_validate (self->validator);
 
     self->file_changed_handler_id = g_signal_connect (self->target_file,
                                                       "changed",
