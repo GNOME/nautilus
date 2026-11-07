@@ -2650,10 +2650,8 @@ on_key_pressed (GtkEventControllerKey *controller,
     {
         modifiers = gtk_accelerator_get_default_mod_mask ();
 
-        if (keyval == GDK_KEY_Return ||
-            keyval == GDK_KEY_KP_Enter ||
-            keyval == GDK_KEY_ISO_Enter ||
-            keyval == GDK_KEY_space)
+        if (gdk_keyval_is_alias (keyval, GDK_KEY_Return) ||
+            gdk_keyval_is_alias (keyval, GDK_KEY_space))
         {
             NautilusOpenFlags open_flags = NAUTILUS_OPEN_FLAG_NORMAL;
 
@@ -2677,8 +2675,7 @@ on_key_pressed (GtkEventControllerKey *controller,
             return eject_or_unmount_selection (sidebar);
         }
 
-        if ((keyval == GDK_KEY_Delete ||
-             keyval == GDK_KEY_KP_Delete) &&
+        if (gdk_keyval_is_alias (keyval, GDK_KEY_Delete) &&
             (state & modifiers) == 0)
         {
             remove_bookmark (NAUTILUS_SIDEBAR_ROW (row));

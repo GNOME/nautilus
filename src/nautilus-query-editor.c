@@ -778,15 +778,15 @@ static gboolean
 nautilus_gtk_search_entry_is_keynav_event (guint           keyval,
                                            GdkModifierType state)
 {
-    if (keyval == GDK_KEY_Tab || keyval == GDK_KEY_KP_Tab ||
-        keyval == GDK_KEY_Up || keyval == GDK_KEY_KP_Up ||
-        keyval == GDK_KEY_Down || keyval == GDK_KEY_KP_Down ||
-        keyval == GDK_KEY_Left || keyval == GDK_KEY_KP_Left ||
-        keyval == GDK_KEY_Right || keyval == GDK_KEY_KP_Right ||
-        keyval == GDK_KEY_Home || keyval == GDK_KEY_KP_Home ||
-        keyval == GDK_KEY_End || keyval == GDK_KEY_KP_End ||
-        keyval == GDK_KEY_Page_Up || keyval == GDK_KEY_KP_Page_Up ||
-        keyval == GDK_KEY_Page_Down || keyval == GDK_KEY_KP_Page_Down ||
+    if (gdk_keyval_is_alias (keyval, GDK_KEY_Tab) ||
+        gdk_keyval_is_alias (keyval, GDK_KEY_Up) ||
+        gdk_keyval_is_alias (keyval, GDK_KEY_Down) ||
+        gdk_keyval_is_alias (keyval, GDK_KEY_Left) ||
+        gdk_keyval_is_alias (keyval, GDK_KEY_Right) ||
+        gdk_keyval_is_alias (keyval, GDK_KEY_Home) ||
+        gdk_keyval_is_alias (keyval, GDK_KEY_End) ||
+        gdk_keyval_is_alias (keyval, GDK_KEY_Page_Up) ||
+        gdk_keyval_is_alias (keyval, GDK_KEY_Page_Down) ||
         ((state & (GDK_CONTROL_MASK | GDK_ALT_MASK)) != 0))
     {
         return TRUE;
