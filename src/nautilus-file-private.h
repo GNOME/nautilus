@@ -35,7 +35,6 @@ struct NautilusFilePrivate
 
 	GRefString *display_name;
 	char *display_name_collation_key;
-	char *directory_name_collation_key;
 	GRefString *edit_name;
 
 	goffset size; /* -1 is unknown */

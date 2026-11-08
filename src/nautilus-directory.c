@@ -157,6 +157,7 @@ nautilus_directory_finalize (GObject *object)
     {
         g_object_unref (directory->details->location);
     }
+    g_free (directory->details->name_collation_key);
 
     g_warn_if_fail (directory->details->file_list == NULL);
     g_hash_table_destroy (directory->details->file_hash);
@@ -579,6 +580,28 @@ nautilus_directory_get_uri (NautilusDirectory *directory)
     g_return_val_if_fail (NAUTILUS_IS_DIRECTORY (directory), NULL);
 
     return g_file_get_uri (directory->details->location);
+}
+
+/**
+ * nautilus_directory_peek_name_collation_key:
+ * @directory: the directory
+ *
+ * Returns a collation key for the directory URI, used for sorting
+ * files by their parent directory. The key is lazily calculated.
+ *
+ * Returns: (transfer none): the cached collation key.
+ */
+const char *
+nautilus_directory_peek_name_collation_key (NautilusDirectory *directory)
+{
+    if (directory->details->name_collation_key == NULL)
+    {
+        g_autofree char *uri = g_file_get_uri (directory->details->location);
+
+        directory->details->name_collation_key = g_utf8_collate_key_for_filename (uri, -1);
+    }
+
+    return directory->details->name_collation_key;
 }
 
 GFile *
@@ -1175,6 +1198,8 @@ set_directory_location (NautilusDirectory *directory,
 {
     if (g_set_object (&directory->details->location, location))
     {
+        g_clear_pointer (&directory->details->name_collation_key, g_free);
+
         g_object_notify_by_pspec (G_OBJECT (directory), properties[PROP_LOCATION]);
     }
 }

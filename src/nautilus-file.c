@@ -554,22 +554,18 @@ nautilus_file_set_directory (NautilusFile      *file,
         return;
     }
 
-    g_clear_pointer (&file->details->directory_name_collation_key, g_free);
-
     g_object_notify_by_pspec (G_OBJECT (file), properties[PROP_DIRECTORY]);
 }
 
 static inline const gchar *
 nautilus_file_get_directory_name (NautilusFile *file)
 {
-    if (G_UNLIKELY (file->details->directory_name_collation_key == NULL))
+    if (G_UNLIKELY (nautilus_file_is_self_owned (file)))
     {
-        g_autofree char *parent_uri = nautilus_file_get_parent_uri (file);
-
-        file->details->directory_name_collation_key = g_utf8_collate_key_for_filename (parent_uri, -1);
+        return "";
     }
 
-    return file->details->directory_name_collation_key;
+    return nautilus_directory_peek_name_collation_key (file->details->directory);
 }
 
 static NautilusFile *
@@ -850,7 +846,6 @@ finalize (GObject *object)
     g_clear_pointer (&file->details->name, g_ref_string_release);
     g_clear_pointer (&file->details->display_name, g_ref_string_release);
     g_free (file->details->display_name_collation_key);
-    g_free (file->details->directory_name_collation_key);
     g_clear_pointer (&file->details->edit_name, g_ref_string_release);
     if (file->details->icon)
     {

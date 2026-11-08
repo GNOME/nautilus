@@ -35,6 +35,9 @@ struct NautilusDirectoryPrivate
 	/* The location. */
 	GFile *location;
 
+	/* Lazy-initialized collation key for the directory name. */
+	char *name_collation_key;
+
 	/* The file objects. */
 	NautilusFile *as_file;
 	GList *file_list;
@@ -166,6 +169,7 @@ void               nautilus_directory_emit_done_loading               (NautilusD
 void               nautilus_directory_emit_load_error                 (NautilusDirectory         *directory,
 								       GError                    *error);
 char *             nautilus_directory_get_name_for_self_as_new_file   (NautilusDirectory         *directory);
+const char *       nautilus_directory_peek_name_collation_key         (NautilusDirectory         *directory);
 
 /* Interface to the file list. */
 NautilusFile *     nautilus_directory_find_file_by_name               (NautilusDirectory         *directory,
