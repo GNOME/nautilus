@@ -3375,7 +3375,7 @@ compare_by_type (NautilusFile *file_1,
     if (result == 0)
     {
         /* Among files of the same (generic) type, sort them by mime type. */
-        result = g_utf8_collate (file_1->details->mime_type, file_2->details->mime_type);
+        result = g_strcmp0 (file_1->details->mime_type, file_2->details->mime_type);
     }
 
     return result;
