@@ -3300,6 +3300,12 @@ static int
 compare_by_directory_name (NautilusFile *file_1,
                            NautilusFile *file_2)
 {
+    /* Skip when the parent directory is the same */
+    if (file_1->details->directory == file_2->details->directory)
+    {
+        return 0;
+    }
+
     const gchar *directory_key1 = nautilus_file_get_directory_name (file_1);
     const gchar *directory_key2 = nautilus_file_get_directory_name (file_2);
 
