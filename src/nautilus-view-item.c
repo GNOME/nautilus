@@ -243,8 +243,7 @@ nautilus_view_item_set_loading (NautilusViewItem *self,
 NautilusFile *
 nautilus_view_item_get_file (NautilusViewItem *self)
 {
-    g_return_val_if_fail (NAUTILUS_IS_VIEW_ITEM (self), NULL);
-
+    /* This is performance sensitive, don't add checks. */
     return self->file;
 }
 
