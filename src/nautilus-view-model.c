@@ -636,8 +636,7 @@ nautilus_view_model_add_items (NautilusViewModel *self,
             splice_items_into_common_parent (self, array, previous_parent);
 
             /* Clear pending items and start a new with a new parent. */
-            g_ptr_array_unref (array);
-            array = g_ptr_array_new ();
+            g_ptr_array_set_size (array, 0);
         }
         g_set_object (&previous_parent, parent);
 
