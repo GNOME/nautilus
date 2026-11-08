@@ -437,13 +437,14 @@ compare_data_func (gconstpointer a,
                    gpointer      user_data)
 {
     NautilusViewModel *self = (NautilusViewModel *) user_data;
+    GtkSorter *sorter = nautilus_view_model_get_sorter (self);
 
-    if (nautilus_view_model_get_sorter (self) == NULL)
+    if (sorter == NULL)
     {
         return GTK_ORDERING_EQUAL;
     }
 
-    return gtk_sorter_compare (nautilus_view_model_get_sorter (self), (gpointer) a, (gpointer) b);
+    return gtk_sorter_compare (sorter, (gpointer) a, (gpointer) b);
 }
 
 NautilusViewModel *
