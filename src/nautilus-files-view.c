@@ -1817,23 +1817,19 @@ G_DEFINE_AUTOPTR_CLEANUP_FUNC (NewFolderData, clear_new_folder_data)
 
 static void
 track_newly_added_locations (NautilusFilesView *view,
-                             GList             *new_files,
+                             GPtrArray         *new_files,
                              gpointer           user_data)
 {
     GHashTable *added_locations;
 
     added_locations = user_data;
 
-    while (new_files)
+    for (guint i = 0; i < new_files->len; i++)
     {
-        NautilusFile *new_file;
-
-        new_file = NAUTILUS_FILE (new_files->data);
+        NautilusFile *new_file = g_ptr_array_index (new_files, i);
 
         g_hash_table_add (added_locations,
                           nautilus_file_get_location (new_file));
-
-        new_files = new_files->next;
     }
 }
 
@@ -3748,22 +3744,19 @@ debuting_files_data_free (DebutingFilesData *data)
  */
 static void
 debuting_files_add_files_callback (NautilusFilesView *view,
-                                   GList             *new_files,
+                                   GPtrArray         *new_files,
                                    DebutingFilesData *data)
 {
-    GFile *location;
-    GList *l;
-
-    for (l = new_files; l != NULL; l = l->next)
+    for (guint i = 0; i < new_files->len; i++)
     {
-        location = nautilus_file_get_location (NAUTILUS_FILE (l->data));
+        NautilusFile *new_file = g_ptr_array_index (new_files, i);
+        g_autoptr (GFile) location = nautilus_file_get_location (new_file);
 
         if (g_hash_table_remove (data->debuting_files, location))
         {
-            nautilus_file_ref (NAUTILUS_FILE (l->data));
-            data->added_files = g_list_prepend (data->added_files, NAUTILUS_FILE (l->data));
+            nautilus_file_ref (new_file);
+            data->added_files = g_list_prepend (data->added_files, new_file);
         }
-        g_object_unref (location);
     }
 
     if (g_hash_table_size (data->debuting_files) == 0)
@@ -3794,15 +3787,15 @@ copy_move_done_data_free (CopyMoveDoneData *data)
 
 static void
 pre_copy_move_add_files_callback (NautilusFilesView *view,
-                                  GList             *new_files,
+                                  GPtrArray         *new_files,
                                   CopyMoveDoneData  *data)
 {
-    GList *l;
-
-    for (l = new_files; l != NULL; l = l->next)
+    for (guint i = 0; i < new_files->len; i++)
     {
-        nautilus_file_ref (NAUTILUS_FILE (l->data));
-        data->added_files = g_list_prepend (data->added_files, l->data);
+        NautilusFile *new_file = NAUTILUS_FILE (g_ptr_array_index (new_files, i));
+
+        nautilus_file_ref (new_file);
+        data->added_files = g_list_prepend (data->added_files, new_file);
     }
 }
 
@@ -4068,12 +4061,14 @@ remove_fad_duplicates (GList **files)
 
 static void
 nautilus_files_view_add_files (NautilusFilesView *self,
-                               GList             *files)
+                               GPtrArray         *files)
 {
-    g_autolist (NautilusViewItem) items = NULL;
+    g_autoptr (GPtrArray) items = g_ptr_array_copy (files,
+                                                    (GCopyFunc) nautilus_view_item_new, NULL);
     NautilusSelectionSource tmp_source = self->in_progress_selection_source;
 
-    items = g_list_copy_deep (files, (GCopyFunc) nautilus_view_item_new, NULL);
+    g_ptr_array_set_free_func (items, g_object_unref);
+
     /* Adding files can change selection indices, causing changed signal which
      * is interpreted as manual selection source from the user. Instead,
      * override that here. The selection of operation results is handled
@@ -4151,7 +4146,10 @@ files_view_file_changed (NautilusFilesView *self,
         /* When a file that was hidden is not hidden anymore (e.g. undoing the
          * rename operation which made it hidden), we get a change notification
          * for a file that's not in our model. Let's add it then. */
-        nautilus_files_view_add_files (self, &(GList){ .data = file });
+        g_autoptr (GPtrArray) files = g_ptr_array_new ();
+
+        g_ptr_array_add (files, file);
+        nautilus_files_view_add_files (self, files);
     }
 }
 
@@ -4166,7 +4164,7 @@ process_pending_files (NautilusFilesView *self)
         return;
     }
 
-    g_autoptr (GList) pending_additions = NULL;
+    g_autoptr (GPtrArray) pending_additions = g_ptr_array_new ();
     g_autoptr (GHashTable) files_removed = g_hash_table_new (NULL, NULL);
 
     remove_fad_duplicates (&files_added);
@@ -4179,7 +4177,7 @@ process_pending_files (NautilusFilesView *self)
 
         if (should_add_file)
         {
-            pending_additions = g_list_prepend (pending_additions, pending->file);
+            g_ptr_array_add (pending_additions, pending->file);
         }
 
         /* Acknowledge the files that were pending to be revealed */
@@ -4193,9 +4191,8 @@ process_pending_files (NautilusFilesView *self)
             g_hash_table_remove (self->awaiting_acknowledge, pending->file);
         }
     }
-    pending_additions = g_list_reverse (pending_additions);
 
-    if (pending_additions != NULL)
+    if (pending_additions->len > 0)
     {
         g_signal_emit (self,
                        signals[ADD_FILES], 0, pending_additions);
@@ -8872,8 +8869,8 @@ nautilus_files_view_class_init (NautilusFilesViewClass *klass)
      * NautilusFilesView::add-files:
      *
      * @view: The view which emitted the signal.
-     * @files: (element-type NautilusFile) (transfer none): A list of files
-     *   that were added.
+     * @files: (element-type NautilusFile) (transfer none): A #GPtrArray of
+     *   files that were added.
      *
      * Emitted to add a set of files to the view.
      *
@@ -8885,7 +8882,7 @@ nautilus_files_view_class_init (NautilusFilesViewClass *klass)
                                     G_CALLBACK (nautilus_files_view_add_files),
                                     NULL, NULL,
                                     g_cclosure_marshal_generic,
-                                    G_TYPE_NONE, 1, G_TYPE_POINTER);
+                                    G_TYPE_NONE, 1, G_TYPE_PTR_ARRAY);
     /*
      * NautilusFilesView::begin-loading:
      *

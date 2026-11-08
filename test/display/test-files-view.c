@@ -1139,12 +1139,13 @@ test_remove_files (void)
 
 static void
 collect_added_files_cb (NautilusFilesView *view,
-                        GList             *added_files,
+                        GPtrArray         *added_files,
                         GPtrArray         *data_files)
 {
-    for (GList *link = added_files; link != NULL; link = link->next)
+    for (guint i = 0; i < added_files->len; i++)
     {
-        g_ptr_array_add (data_files, nautilus_file_ref (NAUTILUS_FILE (link->data)));
+        g_ptr_array_add (data_files,
+                         nautilus_file_ref (g_ptr_array_index (added_files, i)));
     }
 }
 

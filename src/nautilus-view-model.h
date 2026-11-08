@@ -41,7 +41,7 @@ void nautilus_view_model_remove_items (NautilusViewModel     *self,
                                        NautilusDirectory     *directory);
 void nautilus_view_model_remove_all_items (NautilusViewModel *self);
 void nautilus_view_model_add_items (NautilusViewModel *self,
-                                    GList             *items);
+                                    GPtrArray         *items);
 void nautilus_view_model_clear_subdirectory (NautilusViewModel *self,
                                              NautilusViewItem  *item);
 void nautilus_view_model_expand_as_a_tree (NautilusViewModel *self,
