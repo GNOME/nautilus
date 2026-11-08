@@ -1235,8 +1235,12 @@ recursive_directory_iterator_thread (GTask        *task,
 
             if (error != NULL)
             {
-                g_warning ("Error enumerating directory '%s': %s",
-                           g_file_get_path (directory), error->message);
+                if (!g_error_matches (error, G_IO_ERROR, G_IO_ERROR_CANCELLED))
+                {
+                    g_warning ("Error enumerating directory '%s': %s",
+                               g_file_get_path (directory), error->message);
+                }
+
                 continue;
             }
 
