@@ -3124,6 +3124,12 @@ get_time (NautilusFile     *file,
     return KNOWN;
 }
 
+static inline gboolean
+is_directory_internal (NautilusFile *file)
+{
+    return file->details->type == G_FILE_TYPE_DIRECTORY;
+}
+
 static int
 compare_directories_by_count (NautilusFile *file_1,
                               NautilusFile *file_2)
@@ -3233,8 +3239,8 @@ compare_by_size (NautilusFile *file_1,
 
     gboolean is_directory_1, is_directory_2;
 
-    is_directory_1 = nautilus_file_is_directory (file_1);
-    is_directory_2 = nautilus_file_is_directory (file_2);
+    is_directory_1 = is_directory_internal (file_1);
+    is_directory_2 = is_directory_internal (file_2);
 
     if (is_directory_1 && !is_directory_2)
     {
@@ -3327,8 +3333,8 @@ compare_by_type (NautilusFile *file_1,
      * that the string is dependent entirely on the mime type,
      * which is true now but might not be later.
      */
-    is_directory_1 = nautilus_file_is_directory (file_1);
-    is_directory_2 = nautilus_file_is_directory (file_2);
+    is_directory_1 = is_directory_internal (file_1);
+    is_directory_2 = is_directory_internal (file_2);
 
     if (is_directory_1 && is_directory_2)
     {
@@ -3523,8 +3529,8 @@ nautilus_file_compare_for_sort_internal (NautilusFile *file_1,
 
     if (directories_first)
     {
-        is_directory_1 = nautilus_file_is_directory (file_1);
-        is_directory_2 = nautilus_file_is_directory (file_2);
+        is_directory_1 = is_directory_internal (file_1);
+        is_directory_2 = is_directory_internal (file_2);
 
         if (is_directory_1 && !is_directory_2)
         {
@@ -3959,7 +3965,7 @@ nautilus_file_list_are_all_folders (const GList *files)
 
     for (l = files; l != NULL; l = l->next)
     {
-        if (!nautilus_file_is_directory (NAUTILUS_FILE (l->data)))
+        if (!nautilus_file_is_directory (l->data))
         {
             return FALSE;
         }
@@ -6534,7 +6540,7 @@ nautilus_file_get_string_attribute_with_default_q (NautilusFile *file,
             return g_strdup ("—");
         }
         count_unreadable = FALSE;
-        if (nautilus_file_is_directory (file))
+        if (is_directory_internal (file))
         {
             nautilus_file_get_directory_item_count (file, &item_count, &count_unreadable);
         }
@@ -8249,7 +8255,7 @@ nautilus_file_get_property (GObject    *object,
             NautilusTagManager *tag_manager = nautilus_tag_manager_get ();
             g_autofree gchar *uri = nautilus_file_get_uri (file);
             gboolean is_starred = nautilus_tag_manager_file_is_starred (tag_manager, uri);
-            gboolean is_directory = nautilus_file_is_directory (file);
+            gboolean is_directory = is_directory_internal (file);
 
             const gchar *role = is_directory ?
                                 /* Translators: This is the role for a folder icon when a screen reader is
@@ -8618,7 +8624,7 @@ nautilus_file_is_mime_type (NautilusFile *file,
 }
 
 static gboolean
-is_directory (NautilusFileInfo *file_info)
+real_is_directory (NautilusFileInfo *file_info)
 {
     return nautilus_file_is_directory (NAUTILUS_FILE (file_info));
 }
@@ -8637,7 +8643,7 @@ nautilus_file_is_directory (NautilusFile *file)
 {
     g_return_val_if_fail (NAUTILUS_IS_FILE (file), FALSE);
 
-    return nautilus_file_get_file_type (file) == G_FILE_TYPE_DIRECTORY;
+    return is_directory_internal (file);
 }
 
 static void
@@ -8845,7 +8851,7 @@ nautilus_file_info_iface_init (NautilusFileInfoInterface *iface)
 
     iface->get_mime_type = get_mime_type;
     iface->is_mime_type = is_mime_type;
-    iface->is_directory = is_directory;
+    iface->is_directory = real_is_directory;
 
     iface->add_emblem = add_emblem;
     iface->get_string_attribute = get_string_attribute;
