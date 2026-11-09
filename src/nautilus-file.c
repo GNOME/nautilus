@@ -4273,7 +4273,7 @@ get_mount_icon (NautilusFile *file,
                ? g_mount_get_symbolic_icon (mount)
                : g_mount_get_icon (mount);
     }
-    else
+    else if (nautilus_file_is_self_owned (file))
     {
         g_autoptr (GFile) location = nautilus_file_get_location (file);
 
