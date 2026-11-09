@@ -134,9 +134,9 @@ is_uri_selected (NautilusFilesView *files_view,
         return FALSE;
     }
 
-    g_autofree char *activation_uri = nautilus_file_get_activation_uri (selection->data);
+    g_autoptr (NautilusFile) file = nautilus_file_get_by_uri (uri);
 
-    return g_strcmp0 (activation_uri, uri) == 0;
+    return file == selection->data;
 }
 
 typedef void (*PreviewerEventCallback) (NautilusFilesView *files_view,
