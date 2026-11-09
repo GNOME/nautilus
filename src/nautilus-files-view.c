@@ -3961,9 +3961,13 @@ still_should_show_file (NautilusFilesView *view,
 }
 
 static void
-files_view_end_file_changes (NautilusFilesView *self)
+files_view_end_file_changes (NautilusFilesView *self,
+                             gboolean           needs_sort)
 {
-    nautilus_view_model_sort (self->model);
+    if (needs_sort)
+    {
+        nautilus_view_model_sort (self->model);
+    }
 
     /* Addition and removal of files modify the empty state */
     nautilus_files_view_update_status_overlay (self);
@@ -4166,6 +4170,7 @@ process_pending_files (NautilusFilesView *self)
 
     g_autoptr (GPtrArray) pending_additions = g_ptr_array_new ();
     g_autoptr (GHashTable) files_removed = g_hash_table_new (NULL, NULL);
+    gboolean needs_sort = FALSE;
 
     remove_fad_duplicates (&files_added);
     remove_fad_duplicates (&files_changed);
@@ -4205,6 +4210,14 @@ process_pending_files (NautilusFilesView *self)
 
         if (should_show_file)
         {
+            /* Only a change in an item that is already in the model may
+             * require a resort. */
+            if (!needs_sort &&
+                nautilus_view_model_get_item_for_file (self->model, pending->file) != NULL)
+            {
+                needs_sort = TRUE;
+            }
+
             g_signal_emit (self,
                            signals[FILE_CHANGED], 0, pending->file, pending->directory);
         }
@@ -4258,7 +4271,7 @@ process_pending_files (NautilusFilesView *self)
         }
     }
 
-    g_signal_emit (self, signals[END_FILE_CHANGES], 0);
+    g_signal_emit (self, signals[END_FILE_CHANGES], 0, needs_sort);
 }
 
 static gboolean
@@ -8919,8 +8932,9 @@ nautilus_files_view_class_init (NautilusFilesViewClass *klass)
      * NautilusFilesView::end-file-changes:
      *
      * @view: The view which emitted the signal.
+     * @needs_sort: %TRUE if the sort order of the items may have changed.
      *
-     * Emitted after a set of files are added to the view.
+     * Emitted after a set of files are added, removed or changed in the view.
      *
      */
     signals[END_FILE_CHANGES] =
@@ -8929,8 +8943,8 @@ nautilus_files_view_class_init (NautilusFilesViewClass *klass)
                                     G_SIGNAL_RUN_LAST,
                                     G_CALLBACK (files_view_end_file_changes),
                                     NULL, NULL,
-                                    g_cclosure_marshal_VOID__VOID,
-                                    G_TYPE_NONE, 0);
+                                    g_cclosure_marshal_VOID__BOOLEAN,
+                                    G_TYPE_NONE, 1, G_TYPE_BOOLEAN);
     /*
      * NautilusFilesView::end-loading:
      *

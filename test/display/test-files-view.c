@@ -97,6 +97,7 @@ collect_changed_files (NautilusFilesView *view,
 
 static void
 file_changes_done (NautilusFilesView *view,
+                   gboolean           needs_sort,
                    gpointer           user_data)
 {
     gboolean *end_of_changes = user_data;
