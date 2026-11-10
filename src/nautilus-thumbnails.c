@@ -28,7 +28,7 @@
 /* This specific number of processors seems to work ok even on relatively slow
  * computers. However, this might not be the effective number of processors
  * used simultaneously because of main thread load and I/O bounds. */
-#define MAX_THUMBNAILING_THREADS ceil (g_get_num_processors () / 2);
+#define MAX_THUMBNAILING_THREADS ((g_get_num_processors () + 1) / 2)
 
 static gboolean thumbnail_starter_cb (gpointer data);
 
@@ -774,12 +774,12 @@ thumbnail_starter_cb (gpointer data)
 
     if (G_UNLIKELY (max_threads == 0))
     {
-        max_threads = MAX_THUMBNAILING_THREADS
+        max_threads = MAX_THUMBNAILING_THREADS;
     }
 
     /* We loop until the queue is empty, or we reach the thread limit. */
     while (ignored_thumbnails < nautilus_hash_queue_get_length (thumbnails_to_make) &&
-           running_threads <= max_threads)
+           running_threads < max_threads)
     {
         info = nautilus_hash_queue_peek_head (thumbnails_to_make);
         nautilus_hash_queue_remove (thumbnails_to_make, info->image_uri);
