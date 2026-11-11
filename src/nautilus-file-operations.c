@@ -4158,6 +4158,9 @@ copy_move_directory (CopyMoveJob   *copy_job,
 
     gboolean local_skipped_file = FALSE;
     g_autofree char *dest_fs_type = NULL;
+    /* The undo information already covers the contents of a newly created
+     * folder, so only record its children when merging into an existing one. */
+    NautilusFileUndoInfo *undo_info = create_dest ? g_steal_pointer (&job->undo_info) : NULL;
 
     skip_error = should_skip_readdir_error (job, src);
 
@@ -4324,6 +4327,11 @@ copy_move_directory (CopyMoveJob   *copy_job,
         }
 
         break;
+    }
+
+    if (undo_info != NULL)
+    {
+        job->undo_info = undo_info;
     }
 
     if (src_info != NULL)
