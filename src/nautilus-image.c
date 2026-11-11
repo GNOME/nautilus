@@ -236,8 +236,7 @@ thumbnailing_done_cb (GObject      *source_object,
 
     if (pixbuf != NULL && self->error == NULL)
     {
-        g_autoptr (GdkPixbuf) rotated_pixbuf = gdk_pixbuf_apply_embedded_orientation (pixbuf);
-        g_autoptr (GdkTexture) texture = gdk_texture_new_for_pixbuf (rotated_pixbuf);
+        g_autoptr (GdkTexture) texture = gdk_texture_new_for_pixbuf (pixbuf);
 
         handle_loading_success (self, texture, TRUE);
     }
