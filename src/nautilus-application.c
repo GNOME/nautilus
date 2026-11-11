@@ -263,13 +263,21 @@ nautilus_application_create_window (NautilusApplication *self)
     return window;
 }
 
+/* Ignore file chooser windows */
+static NautilusWindow *
+get_active_nautilus_window (NautilusApplication *self)
+{
+    GtkWindow *window = gtk_application_get_active_window (GTK_APPLICATION (self));
+
+    return NAUTILUS_IS_WINDOW (window) ? NAUTILUS_WINDOW (window) : NULL;
+}
+
 static NautilusWindow *
 get_window_with_location (NautilusApplication *self,
                           GFile               *location)
 {
     /* Check active window as a first priority */
-    NautilusWindow *active_window = NAUTILUS_WINDOW (
-        gtk_application_get_active_window (GTK_APPLICATION (self)));
+    NautilusWindow *active_window = get_active_nautilus_window (self);
     if (active_window != NULL && nautilus_window_has_open_location (active_window, location))
     {
         return active_window;
@@ -302,7 +310,7 @@ nautilus_application_open_location_full (NautilusApplication *self,
      * gtk_application_get_active_window, see https://bugzilla.gnome.org/show_bug.cgi?id=756499
      * so what we do is never rely on this on the callers, but would be cool to
      * make it work without explicitly setting the active window on the callers. */
-    active_window = NAUTILUS_WINDOW (gtk_application_get_active_window (GTK_APPLICATION (self)));
+    active_window = get_active_nautilus_window (self);
     /* There is no active window if the application is run with
      * --gapplication-service
      */
@@ -552,8 +560,9 @@ action_clone_window (GSimpleAction *action,
                      gpointer       user_data)
 {
     GtkApplication *application = user_data;
-    NautilusWindow *active_window = NAUTILUS_WINDOW (gtk_application_get_active_window (application));
-    GFile *window_location = nautilus_window_get_active_location (active_window);
+    NautilusWindow *active_window = get_active_nautilus_window (NAUTILUS_APPLICATION (application));
+    GFile *window_location = active_window != NULL ?
+                             nautilus_window_get_active_location (active_window) : NULL;
     g_autoptr (GFile) cloned_location = NULL;
 
     if (window_location == NULL || g_file_has_uri_scheme (window_location, SCHEME_SEARCH))
