@@ -130,10 +130,10 @@ gboolean nautilus_location_is_autofs_mountpoint (GFile *location);
 gboolean
 selection_source_is_intentional (NautilusSelectionSource selection_source);
 
-/* Note: Also called for directories */
-typedef void (*IterationFileCallback) (GFileInfo *info,
-                                       GFile     *location,
-                                       gpointer   user_data);
+/* Note: Also called for directories, returning whether to iterate their children */
+typedef gboolean (*IterationFileCallback) (GFileInfo *info,
+                                           GFile     *location,
+                                           gpointer   user_data);
 gboolean
 nautilus_iterate_directory_recursive (GFile                *directory,
                                       guint                 max_depth,

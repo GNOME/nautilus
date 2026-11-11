@@ -1268,9 +1268,11 @@ recursive_directory_iterator_thread (GTask        *task,
 
             while (g_file_enumerator_iterate (enumerator, &info, &location, self->cancellable, &error) && info != NULL)
             {
-                if (depth < self->max_depth &&
-                    g_file_info_get_file_type (info) == G_FILE_TYPE_DIRECTORY &&
-                    (!self->local_only || is_known_local (info, local_fs_id) || !is_remote (location)))
+                gboolean should_recurse = (depth < self->max_depth &&
+                                           g_file_info_get_file_type (info) == G_FILE_TYPE_DIRECTORY &&
+                                           (!self->local_only || is_known_local (info, local_fs_id) || !is_remote (location)));
+
+                if (should_recurse)
                 {
                     const char *id = g_file_info_get_attribute_string (info, G_FILE_ATTRIBUTE_ID_FILE);
 
@@ -1286,11 +1288,14 @@ recursive_directory_iterator_thread (GTask        *task,
                             g_hash_table_add (self->visited, g_strdup (id));
                         }
                     }
-
-                    g_queue_push_tail (pending_directories, g_object_ref (location));
                 }
 
-                self->file_callback (info, location, self->user_data);
+                gboolean iterate_children = self->file_callback (info, location, self->user_data);
+
+                if (should_recurse && iterate_children)
+                {
+                    g_queue_push_tail (pending_directories, g_object_ref (location));
+                }
             }
 
             if (g_cancellable_is_cancelled (self->cancellable))

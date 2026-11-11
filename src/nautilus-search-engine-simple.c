@@ -48,7 +48,7 @@ G_DEFINE_FINAL_TYPE (NautilusSearchEngineSimple,
         G_FILE_ATTRIBUTE_STANDARD_CONTENT_TYPE "," \
         G_FILE_ATTRIBUTE_STANDARD_FAST_CONTENT_TYPE
 
-static void
+static gboolean
 iterate_file (GFileInfo                  *info,
               GFile                      *location,
               NautilusSearchEngineSimple *self)
@@ -62,14 +62,15 @@ iterate_file (GFileInfo                  *info,
 
     if (display_name == NULL)
     {
-        return;
+        return TRUE;
     }
 
     if (!show_hidden &&
         (g_file_info_get_attribute_boolean (info, G_FILE_ATTRIBUTE_STANDARD_IS_HIDDEN) ||
          g_file_info_get_attribute_boolean (info, G_FILE_ATTRIBUTE_STANDARD_IS_BACKUP)))
     {
-        return;
+        /* Files in hidden folders are hidden too */
+        return FALSE;
     }
 
     gdouble match = nautilus_query_matches_string (query, display_name);
@@ -149,6 +150,8 @@ iterate_file (GFileInfo                  *info,
         self->last_saved_time = current_time;
         nautilus_search_provider_flush_hits (self);
     }
+
+    return TRUE;
 }
 
 static void

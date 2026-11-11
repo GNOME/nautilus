@@ -6037,7 +6037,7 @@ set_permissions_task_done (GObject      *source_object,
     finalize_common ((CommonJob *) job);
 }
 
-static void
+static gboolean
 set_permissions_file (GFileInfo         *info,
                       GFile             *file,
                       SetPermissionsJob *job)
@@ -6078,6 +6078,8 @@ set_permissions_file (GFileInfo         *info,
                                      current, G_FILE_QUERY_INFO_NOFOLLOW_SYMLINKS,
                                      common->cancellable, NULL);
     }
+
+    return TRUE;
 }
 
 #define PERMISSION_ATTRIBUTES \
