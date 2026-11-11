@@ -2905,10 +2905,12 @@ deep_count_start (NautilusDirectory *directory,
 
     directory->details->deep_count_in_progress = state;
 
+    /* Follow symlinks on the root only, as the counted folder
+     * may be a link to another file system. deep_count_load() */
     location = nautilus_file_get_location (file);
     g_file_query_info_async (location,
                              G_FILE_ATTRIBUTE_ID_FILESYSTEM,
-                             G_FILE_QUERY_INFO_NOFOLLOW_SYMLINKS,
+                             G_FILE_QUERY_INFO_NONE,
                              G_PRIORITY_DEFAULT,
                              NULL,
                              deep_count_got_info,
