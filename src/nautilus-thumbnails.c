@@ -715,16 +715,9 @@ thumbnail_generated_cb (GObject      *source_object,
 
     if (pixbuf != NULL)
     {
-        g_autofree gchar *mtime = g_strdup_printf ("%" G_GINT64_FORMAT,
-                                                   (gint64) info->updated_file_mtime);
-
         g_debug ("(Thumbnail Async Thread) Saving thumbnail: %s",
                  info->image_uri);
 
-        /* This is needed since the attribute is not set on the pixbuf,
-         *  only the written thumbnail file.
-         */
-        gdk_pixbuf_set_option (pixbuf, "tEXt::Thumb::MTime", mtime);
         g_clear_object (&info->pixbuf);
         info->pixbuf = pixbuf;
 
