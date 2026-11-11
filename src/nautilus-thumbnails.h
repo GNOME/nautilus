@@ -21,14 +21,14 @@ GdkTexture *thumbnail_load_from_stream_finish       (GAsyncResult  *result,
                                                      time_t        *mtime,
                                                      GError       **error);
 
-/* Returns NULL if there's no thumbnail yet. */
+/* The returned texture is at most nautilus_thumbnail_get_max_size() */
 void       nautilus_create_thumbnail_async          (const gchar         *uri,
                                                      const gchar         *mime_type,
                                                      time_t               modified_time,
                                                      GCancellable        *cancellable,
                                                      GAsyncReadyCallback  callback,
                                                      gpointer             user_data);
-GdkPixbuf *nautilus_create_thumbnail_finish         (GAsyncResult  *res,
+GdkTexture *nautilus_create_thumbnail_finish        (GAsyncResult  *res,
                                                      GError       **error);
 gboolean   nautilus_can_thumbnail                   (const gchar *uri,
                                                      const gchar *mime_type,

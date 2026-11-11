@@ -47,7 +47,7 @@ typedef struct
     char *mime_type;
     time_t original_file_mtime;
     time_t updated_file_mtime;
-    GdkPixbuf *pixbuf;
+    GdkTexture *texture;
     GPtrArray *callbacks;
 
     GError *error;
@@ -99,7 +99,7 @@ free_thumbnail_info (NautilusThumbnailInfo *info)
 {
     g_free (info->image_uri);
     g_free (info->mime_type);
-    g_clear_object (&info->pixbuf);
+    g_clear_object (&info->texture);
     g_clear_pointer (&info->callbacks, g_ptr_array_unref);
     g_clear_error (&info->error);
     g_free (info);
@@ -593,7 +593,7 @@ thumbnail_enqueue (NautilusThumbnailInfo     *info,
     }
 }
 
-GdkPixbuf *
+GdkTexture *
 nautilus_create_thumbnail_finish (GAsyncResult  *res,
                                   GError       **error)
 {
@@ -622,7 +622,7 @@ nautilus_create_thumbnail_finish (GAsyncResult  *res,
         return NULL;
     }
 
-    return info->pixbuf != NULL ? g_object_ref (info->pixbuf) : NULL;
+    return info->texture != NULL ? g_object_ref (info->texture) : NULL;
 }
 
 static void
@@ -707,7 +707,7 @@ thumbnail_generated_cb (GObject      *source_object,
     GnomeDesktopThumbnailFactory *thumbnail_factory = GNOME_DESKTOP_THUMBNAIL_FACTORY (source_object);
     NautilusThumbnailInfo *info = data;
     g_autoptr (GError) error = NULL;
-    GdkPixbuf *pixbuf = NULL;
+    g_autoptr (GdkPixbuf) pixbuf = NULL;
 
     pixbuf = gnome_desktop_thumbnail_factory_generate_thumbnail_finish (thumbnail_factory,
                                                                         result,
@@ -718,8 +718,8 @@ thumbnail_generated_cb (GObject      *source_object,
         g_debug ("(Thumbnail Async Thread) Saving thumbnail: %s",
                  info->image_uri);
 
-        g_clear_object (&info->pixbuf);
-        info->pixbuf = pixbuf;
+        g_clear_object (&info->texture);
+        info->texture = gdk_texture_new_for_pixbuf (pixbuf);
 
         gnome_desktop_thumbnail_factory_save_thumbnail_async (thumbnail_factory,
                                                               pixbuf,

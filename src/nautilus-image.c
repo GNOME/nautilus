@@ -218,50 +218,17 @@ handle_loading_error (NautilusImage *self)
 }
 
 static void
-thumbnailing_done_cb (GObject      *source_object,
-                      GAsyncResult *res,
-                      gpointer      data)
+thumbnail_load_finished (NautilusImage  *self,
+                         GdkTexture     *texture,
+                         GError        **error)
 {
-    NautilusImage *self = data;
-    g_autoptr (GError) error = NULL;
-    g_autoptr (GdkPixbuf) pixbuf = nautilus_create_thumbnail_finish (res, &error);
-
-    if (g_error_matches (error, G_IO_ERROR, G_IO_ERROR_CANCELLED))
+    if (g_error_matches (*error, G_IO_ERROR, G_IO_ERROR_CANCELLED))
     {
         /* The operation was cancelled and the file was disposed, bailout. */
         return;
     }
 
-    self->error = g_steal_pointer (&error);
-
-    if (pixbuf != NULL && self->error == NULL)
-    {
-        g_autoptr (GdkTexture) texture = gdk_texture_new_for_pixbuf (pixbuf);
-
-        handle_loading_success (self, texture, TRUE);
-    }
-    else
-    {
-        handle_loading_error (self);
-    }
-}
-
-static void
-thumbnail_texture_ready_callback (GObject      *source_object,
-                                  GAsyncResult *res,
-                                  gpointer      user_data)
-{
-    g_autoptr (GError) error = NULL;
-    NautilusImage *self = user_data;
-    g_autoptr (GdkTexture) texture = thumbnail_load_from_stream_finish (res, NULL, &error);
-
-    if (g_error_matches (error, G_IO_ERROR, G_IO_ERROR_CANCELLED))
-    {
-        /* The operation was cancelled, bailout. */
-        return;
-    }
-
-    self->error = g_steal_pointer (&error);
+    self->error = g_steal_pointer (error);
 
     if (texture != NULL && self->error == NULL)
     {
@@ -271,6 +238,30 @@ thumbnail_texture_ready_callback (GObject      *source_object,
     {
         handle_loading_error (self);
     }
+}
+
+static void
+thumbnail_created_callback (GObject      *source_object,
+                            GAsyncResult *res,
+                            gpointer      user_data)
+{
+    NautilusImage *self = user_data;
+    g_autoptr (GError) error = NULL;
+    g_autoptr (GdkTexture) texture = nautilus_create_thumbnail_finish (res, &error);
+
+    thumbnail_load_finished (self, texture, &error);
+}
+
+static void
+thumbnail_texture_ready_callback (GObject      *source_object,
+                                  GAsyncResult *res,
+                                  gpointer      user_data)
+{
+    NautilusImage *self = user_data;
+    g_autoptr (GError) error = NULL;
+    g_autoptr (GdkTexture) texture = thumbnail_load_from_stream_finish (res, NULL, &error);
+
+    thumbnail_load_finished (self, texture, &error);
 }
 
 static void
@@ -427,7 +418,7 @@ file_info_ready_callback (GObject      *source_object,
                                      self->source_content_type,
                                      self->source_mtime,
                                      self->cancellable,
-                                     thumbnailing_done_cb,
+                                     thumbnail_created_callback,
                                      self);
 }
 

@@ -14,11 +14,10 @@
 
 #include <glib.h>
 #include <gio/gio.h>
-#include <gdk-pixbuf/gdk-pixbuf.h>
 
 typedef struct
 {
-    GdkPixbuf *pixbuf;
+    GdkTexture *texture;
     gboolean done;
     GError *error;
 } ThumbnailCallbackData;
@@ -27,7 +26,7 @@ static void
 thumbnail_data_free (ThumbnailCallbackData *data)
 {
     g_clear_error (&data->error);
-    g_clear_object (&data->pixbuf);
+    g_clear_object (&data->texture);
 }
 
 G_DEFINE_AUTO_CLEANUP_CLEAR_FUNC (ThumbnailCallbackData, thumbnail_data_free)
@@ -40,7 +39,7 @@ thumbnailing_done_cb (GObject      *source_object,
     g_autoptr (GError) error = NULL;
     ThumbnailCallbackData *cb_data = data;
 
-    cb_data->pixbuf = nautilus_create_thumbnail_finish (res, &error);
+    cb_data->texture = nautilus_create_thumbnail_finish (res, &error);
 
     cb_data->error = g_steal_pointer (&error);
     cb_data->done = TRUE;
@@ -190,12 +189,12 @@ test_thumbnail_image (void)
     ITER_CONTEXT_WHILE (!thumbnailing_data.done);
 
     g_assert_true (g_file_query_exists (thumbnail_location, NULL));
-    g_assert_nonnull (thumbnailing_data.pixbuf);
+    g_assert_nonnull (thumbnailing_data.texture);
     g_assert_no_error (thumbnailing_data.error);
     g_assert_true (file_has_valid_thumbnail_path (image_location, thumbnail_path));
 
-    g_assert_cmpint (gdk_pixbuf_get_height (thumbnailing_data.pixbuf), ==, DEFAULT_IMAGE_SIZE);
-    g_assert_cmpint (gdk_pixbuf_get_width (thumbnailing_data.pixbuf), ==, DEFAULT_IMAGE_SIZE);
+    g_assert_cmpint (gdk_texture_get_height (thumbnailing_data.texture), ==, DEFAULT_IMAGE_SIZE);
+    g_assert_cmpint (gdk_texture_get_width (thumbnailing_data.texture), ==, DEFAULT_IMAGE_SIZE);
 
     g_assert_true (g_file_delete (thumbnail_location, NULL, NULL));
 
@@ -233,12 +232,12 @@ test_thumbnail_old_time (void)
     ITER_CONTEXT_WHILE (!thumbnailing_data.done);
 
     g_assert_true (g_file_query_exists (thumbnail_location, NULL));
-    g_assert_nonnull (thumbnailing_data.pixbuf);
+    g_assert_nonnull (thumbnailing_data.texture);
     g_assert_no_error (thumbnailing_data.error);
     g_assert_true (file_has_valid_thumbnail_path (image_location, thumbnail_path));
 
-    g_assert_cmpint (gdk_pixbuf_get_height (thumbnailing_data.pixbuf), ==, DEFAULT_IMAGE_SIZE);
-    g_assert_cmpint (gdk_pixbuf_get_width (thumbnailing_data.pixbuf), ==, DEFAULT_IMAGE_SIZE);
+    g_assert_cmpint (gdk_texture_get_height (thumbnailing_data.texture), ==, DEFAULT_IMAGE_SIZE);
+    g_assert_cmpint (gdk_texture_get_width (thumbnailing_data.texture), ==, DEFAULT_IMAGE_SIZE);
 
     g_assert_true (g_file_delete (thumbnail_location, NULL, NULL));
 
@@ -274,12 +273,12 @@ test_thumbnail_image_no_mtime (void)
     ITER_CONTEXT_WHILE (!thumbnailing_data.done);
 
     g_assert_true (g_file_query_exists (thumbnail_location, NULL));
-    g_assert_nonnull (thumbnailing_data.pixbuf);
+    g_assert_nonnull (thumbnailing_data.texture);
     g_assert_no_error (thumbnailing_data.error);
     g_assert_true (file_has_valid_thumbnail_path (image_location, thumbnail_path));
 
-    g_assert_cmpint (gdk_pixbuf_get_height (thumbnailing_data.pixbuf), ==, DEFAULT_IMAGE_SIZE);
-    g_assert_cmpint (gdk_pixbuf_get_width (thumbnailing_data.pixbuf), ==, DEFAULT_IMAGE_SIZE);
+    g_assert_cmpint (gdk_texture_get_height (thumbnailing_data.texture), ==, DEFAULT_IMAGE_SIZE);
+    g_assert_cmpint (gdk_texture_get_width (thumbnailing_data.texture), ==, DEFAULT_IMAGE_SIZE);
 
     g_assert_true (g_file_delete (thumbnail_location, NULL, NULL));
 
@@ -321,7 +320,7 @@ test_thumbnail_cancel (void)
 
     g_assert_nonnull (thumbnailing_data.error);
     g_assert_error (thumbnailing_data.error, G_IO_ERROR, G_IO_ERROR_CANCELLED);
-    g_assert_null (thumbnailing_data.pixbuf);
+    g_assert_null (thumbnailing_data.texture);
 
     test_clear_tmp_dir ();
 }
@@ -370,15 +369,15 @@ test_thumbnail_overwrite (void)
 
     g_assert_true (g_file_query_exists (thumbnail_location, NULL));
     g_assert_true (file_has_valid_thumbnail_path (image_location, thumbnail_path));
-    g_assert_nonnull (thumbnailing_data1.pixbuf);
+    g_assert_nonnull (thumbnailing_data1.texture);
     g_assert_no_error (thumbnailing_data1.error);
-    g_assert_nonnull (thumbnailing_data2.pixbuf);
+    g_assert_nonnull (thumbnailing_data2.texture);
     g_assert_no_error (thumbnailing_data2.error);
 
-    g_assert_cmpint (gdk_pixbuf_get_height (thumbnailing_data1.pixbuf), ==, DEFAULT_IMAGE_SIZE);
-    g_assert_cmpint (gdk_pixbuf_get_width (thumbnailing_data1.pixbuf), ==, DEFAULT_IMAGE_SIZE);
-    g_assert_cmpint (gdk_pixbuf_get_height (thumbnailing_data2.pixbuf), ==, DEFAULT_IMAGE_SIZE);
-    g_assert_cmpint (gdk_pixbuf_get_width (thumbnailing_data2.pixbuf), ==, DEFAULT_IMAGE_SIZE);
+    g_assert_cmpint (gdk_texture_get_height (thumbnailing_data1.texture), ==, DEFAULT_IMAGE_SIZE);
+    g_assert_cmpint (gdk_texture_get_width (thumbnailing_data1.texture), ==, DEFAULT_IMAGE_SIZE);
+    g_assert_cmpint (gdk_texture_get_height (thumbnailing_data2.texture), ==, DEFAULT_IMAGE_SIZE);
+    g_assert_cmpint (gdk_texture_get_width (thumbnailing_data2.texture), ==, DEFAULT_IMAGE_SIZE);
 
     g_assert_true (g_file_delete (thumbnail_location, NULL, NULL));
 
@@ -411,7 +410,7 @@ test_thumbnail_rethumbnail_failed_on_mtime_change (void)
     ITER_CONTEXT_WHILE (!thumbnailing_data.done);
 
     g_assert_false (g_file_query_exists (thumbnail_location, NULL));
-    g_assert_null (thumbnailing_data.pixbuf);
+    g_assert_null (thumbnailing_data.texture);
     g_assert_nonnull (thumbnailing_data.error);
     thumbnail_data_free (&thumbnailing_data);
 
@@ -437,7 +436,7 @@ test_thumbnail_rethumbnail_failed_on_mtime_change (void)
     ITER_CONTEXT_WHILE (!thumbnailing_data.done);
 
     g_assert_true (g_file_query_exists (thumbnail_location, NULL));
-    g_assert_nonnull (thumbnailing_data.pixbuf);
+    g_assert_nonnull (thumbnailing_data.texture);
     g_assert_no_error (thumbnailing_data.error);
 
     test_clear_tmp_dir ();
@@ -507,7 +506,7 @@ test_thumbnail_text (void)
     ITER_CONTEXT_WHILE (!thumbnailing_data.done);
 
     g_assert_false (g_file_query_exists (thumbnail_location, NULL));
-    g_assert_null (thumbnailing_data.pixbuf);
+    g_assert_null (thumbnailing_data.texture);
     g_assert_nonnull (thumbnailing_data.error);
     g_assert_false (file_has_valid_thumbnail_path (text_location, thumbnail_path));
 
