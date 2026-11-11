@@ -232,9 +232,9 @@ create_statement (NautilusSearchProvider *provider,
 #define TRIPLE_PATTERN \
         "?file a nfo:FileDataObject;" \
         "  nfo:fileLastModified ?mtime;" \
-        "  nfo:fileLastAccessed ?atime;" \
-        "  nfo:fileCreated ?ctime;" \
-        "  nie:url ?url."
+        "  nie:url ?url." \
+        "  OPTIONAL { ?file nfo:fileLastAccessed ?atime }" \
+        "  OPTIONAL { ?file nfo:fileCreated ?ctime }"
 
     sparql = g_string_new ("SELECT DISTINCT " VARIABLES " WHERE {");
 
