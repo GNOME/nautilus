@@ -65,6 +65,7 @@
 #include "nautilus-view-info.h"
 #include "nautilus-view-item.h"
 #include "nautilus-view-model.h"
+#include "nautilus-window.h"
 #include "nautilus-window-slot.h"
 
 /* Minimum starting update interval */
@@ -165,6 +166,9 @@ struct _NautilusFilesView
     /* Containers with FileAndDirectory* elements */
     GList *new_added_files;
     GList *new_changed_files;
+
+    /* Locations of open windows shown in Recent in file chooser mode. */
+    GHashTable *open_window_files;
 
     NautilusFileList *pending_selection;
     GHashTable *pending_reveal;
@@ -3264,6 +3268,7 @@ nautilus_files_view_finalize (GObject *object)
 
     g_hash_table_unref (self->pending_reveal);
     g_hash_table_unref (self->awaiting_acknowledge);
+    g_hash_table_unref (self->open_window_files);
 
     g_clear_object (&self->clipboard_cancellable);
 
@@ -4088,6 +4093,58 @@ nautilus_files_view_add_files (NautilusFilesView *self,
     self->in_progress_selection_source = tmp_source;
 }
 
+#define MAX_OPEN_WINDOW_LOCATIONS 3
+
+static void
+add_open_window_locations (NautilusFilesView *self)
+{
+    if (nautilus_window_slot_get_mode (self->slot) == NAUTILUS_MODE_BROWSE ||
+        !nautilus_is_root_for_scheme (self->location, SCHEME_RECENT) ||
+        g_hash_table_size (self->open_window_files) > 0)
+    {
+        return;
+    }
+
+    GList *windows = gtk_application_get_windows (GTK_APPLICATION (g_application_get_default ()));
+    g_autolist (NautilusFile) files = NULL;
+
+    for (GList *l = windows;
+         l != NULL && g_hash_table_size (self->open_window_files) < MAX_OPEN_WINDOW_LOCATIONS;
+         l = l->next)
+    {
+        if (!NAUTILUS_IS_WINDOW (l->data))
+        {
+            continue;
+        }
+
+        GFile *location = nautilus_window_get_active_location (l->data);
+        if (location == NULL)
+        {
+            continue;
+        }
+
+        g_autofree char *scheme = g_file_get_uri_scheme (location);
+        if (nautilus_scheme_is_internal (scheme))
+        {
+            continue;
+        }
+
+        g_autoptr (NautilusFile) file = nautilus_file_get (location);
+        if (g_hash_table_contains (self->open_window_files, file))
+        {
+            continue;
+        }
+
+        g_hash_table_add (self->open_window_files, g_object_ref (file));
+        files = g_list_prepend (files, g_steal_pointer (&file));
+    }
+
+    if (files != NULL)
+    {
+        nautilus_files_view_add_files (self, files);
+    }
+}
+
 static void
 files_view_remove_files (NautilusFilesView *self,
                          GList             *files,
@@ -4280,6 +4337,8 @@ static void
 display_pending_files (NautilusFilesView *view)
 {
     transition_emit_delayed_signals_if_pending (view);
+
+    add_open_window_locations (view);
 
     /* Remember focus, so we can restore it if it gets lost. */
     gboolean view_had_focus = files_view_has_focus (view);
@@ -8047,6 +8106,7 @@ static void
 files_view_clear (NautilusFilesView *self)
 {
     nautilus_view_model_remove_all_items (self->model);
+    g_hash_table_remove_all (self->open_window_files);
 }
 
 static void
@@ -9096,6 +9156,7 @@ nautilus_files_view_init (NautilusFilesView *self)
 
     self->pending_reveal = g_hash_table_new (NULL, NULL);
     self->awaiting_acknowledge = g_hash_table_new (NULL, NULL);
+    self->open_window_files = g_hash_table_new_full (NULL, NULL, g_object_unref, NULL);
 
     g_signal_connect_object (nautilus_scripts_monitor_get (), "scripts-changed",
                              G_CALLBACK (scripts_added_or_changed_callback),
