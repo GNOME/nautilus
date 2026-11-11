@@ -251,7 +251,7 @@ nautilus_window_slot_get_view_id_for_location (NautilusWindowSlot *self,
 {
     g_autoptr (GFile) effective_location = g_object_ref (location);
 
-    if (self->content_view != NULL)
+    if (self->content_view != NULL && g_file_has_uri_scheme (location, SCHEME_SEARCH))
     {
         NautilusQuery *query = nautilus_files_view_get_search_query (self->content_view);
 
