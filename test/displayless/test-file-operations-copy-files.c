@@ -603,6 +603,13 @@ test_copy_full_directory (void)
     file_hierarchy_assert_exists (before_copy_hierarchy, "copy", TRUE);
     file_hierarchy_assert_exists (after_copy_hierarchy, "copy", FALSE);
 
+    test_operation_redo ();
+
+    file_hierarchy_assert_exists (before_copy_hierarchy, "copy", TRUE);
+    file_hierarchy_assert_exists (after_copy_hierarchy, "copy", TRUE);
+    /* The folder's child must not be copied on its own. */
+    file_hierarchy_assert_exists ((char *[]) { "%s_second_dir/%s_first_dir_child", NULL }, "copy", FALSE);
+
     test_clear_tmp_dir ();
 }
 
