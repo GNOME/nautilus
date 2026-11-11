@@ -42,7 +42,6 @@ fill_menu (NautilusHistoryControls *self,
     int step = back ? -1 : 1;
     int index = step;
     GList *list;
-    const gchar *name;
 
     list = back ? nautilus_window_slot_get_back_history (self->window_slot) :
                   nautilus_window_slot_get_forward_history (self->window_slot);
@@ -50,9 +49,11 @@ fill_menu (NautilusHistoryControls *self,
     while (list != NULL)
     {
         g_autoptr (GMenuItem) item = NULL;
+        g_autoptr (GString) label = g_string_new (nautilus_bookmark_get_name (NAUTILUS_BOOKMARK (list->data)));
 
-        name = nautilus_bookmark_get_name (NAUTILUS_BOOKMARK (list->data));
-        item = g_menu_item_new (name, NULL);
+        /* Preserve underscores, which would be used for mnemonics */
+        g_string_replace (label, "_", "__", 0);
+        item = g_menu_item_new (label->str, NULL);
         g_menu_item_set_action_and_target (item,
                                            back ? "slot.back-n" : "slot.forward-n",
                                            "i", index);
