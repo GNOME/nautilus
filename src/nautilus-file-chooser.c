@@ -421,10 +421,26 @@ static void
 on_slot_activate_files (NautilusFileChooser *self,
                         GList               *files)
 {
-    if (gtk_widget_get_sensitive (self->accept_button) &&
-        mode_can_accept_files (self->mode, files))
+    if (!mode_can_accept_files (self->mode, files))
     {
-        gtk_widget_activate (self->accept_button);
+        return;
+    }
+
+    if (self->mode == NAUTILUS_MODE_SAVE_FILE)
+    {
+        if (gtk_widget_get_sensitive (self->accept_button))
+        {
+            gtk_widget_activate (self->accept_button);
+        }
+    }
+    else
+    {
+        /* The slot selection is updated in an idle, so it may be outdated. */
+        g_autolist (GFile) file_locations = g_list_copy_deep (files,
+                                                              (GCopyFunc) get_file_chooser_activation_location,
+                                                              NULL);
+
+        emit_accepted (self, file_locations);
     }
 }
 

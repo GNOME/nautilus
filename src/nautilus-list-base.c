@@ -317,8 +317,11 @@ on_item_click_stopped (GtkGestureClick *gesture,
     NautilusViewCell *cell = user_data;
     NautilusListBase *self = nautilus_view_cell_get_view (cell);
 
-    /* In a UI interaction, assure cell is bound to a listbase. */
-    g_return_if_fail (self != NULL);
+    if (self == NULL)
+    {
+        /* The view may already be gone before the cell finalized. */
+        return;
+    }
 
     NautilusListBasePrivate *priv = nautilus_list_base_get_instance_private (self);
 
