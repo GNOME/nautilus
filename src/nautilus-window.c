@@ -731,17 +731,17 @@ static gchar *
 toast_undo_deleted_get_label (NautilusFileUndoInfo *undo_info)
 {
     g_autoptr (GList) files = nautilus_file_undo_info_trash_get_files (NAUTILUS_FILE_UNDO_INFO_TRASH (undo_info));
-    gchar *file_label;
     gchar *label;
     gint length;
 
     length = g_list_length (files);
     if (length == 1)
     {
-        file_label = g_file_get_basename (files->data);
+        g_autofree gchar *basename = g_file_get_basename (files->data);
+        g_autofree gchar *file_label = g_filename_display_name (basename);
+
         /* Translators: only one item has been moved to trash and %s is its name. */
         label = g_markup_printf_escaped (_("“%s” moved to trash"), file_label);
-        g_free (file_label);
     }
     else
     {
