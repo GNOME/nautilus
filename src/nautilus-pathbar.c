@@ -668,12 +668,17 @@ on_click_gesture_pressed (GtkGestureClick *gesture,
     self = button_data->path_bar;
     current_button = gtk_gesture_single_get_current_button (GTK_GESTURE_SINGLE (gesture));
     state = gtk_event_controller_get_current_event_state (GTK_EVENT_CONTROLLER (gesture));
-
+    gboolean is_browse_mode = nautilus_window_slot_get_mode (self->slot) == NAUTILUS_MODE_BROWSE;
 
     switch (current_button)
     {
         case GDK_BUTTON_MIDDLE:
         {
+            if (!is_browse_mode)
+            {
+                return;
+            }
+
             if ((state & gtk_accelerator_get_default_mod_mask ()) == 0)
             {
                 g_signal_emit (self, path_bar_signals[OPEN_LOCATION], 0,
@@ -708,7 +713,7 @@ on_click_gesture_pressed (GtkGestureClick *gesture,
 
         case GDK_BUTTON_PRIMARY:
         {
-            if ((state & GDK_CONTROL_MASK) != 0)
+            if (is_browse_mode && (state & GDK_CONTROL_MASK) != 0)
             {
                 g_signal_emit (button_data->path_bar, path_bar_signals[OPEN_LOCATION], 0,
                                button_data->path,
