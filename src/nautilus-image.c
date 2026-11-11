@@ -142,12 +142,12 @@ thumbnail_cache_add (GFile      *file,
 
 static GdkPaintable *
 get_paintable_for_themed_icon (NautilusImage *self,
-                               const gchar   *icon_name)
+                               const gchar   *icon_name,
+                               int            scale)
 {
     GtkIconTheme *icon_theme = gtk_icon_theme_get_for_display (gdk_display_get_default ());
     g_autoptr (GIcon) icon = g_themed_icon_new (icon_name);
     GtkTextDirection direction = gtk_widget_get_direction (GTK_WIDGET (self));
-    const int scale = 2;
 
     return GDK_PAINTABLE (gtk_icon_theme_lookup_by_gicon (icon_theme,
                                                           icon,
@@ -161,14 +161,17 @@ static GdkPaintable *
 get_loading_paintable (NautilusImage *self)
 {
     static GdkPaintable *loading_paintable[3];
-    int index = CLAMP (gtk_widget_get_scale_factor (GTK_WIDGET (self)), 1, 3) - 1;
+    int scale_factor = gtk_widget_get_scale_factor (GTK_WIDGET (self));
+    int index = CLAMP (scale_factor, 1, 3) - 1;
 
     if (G_LIKELY (loading_paintable[index] != NULL))
     {
         return loading_paintable[index];
     }
 
-    loading_paintable[index] = get_paintable_for_themed_icon (self, LOADING_ICON_NAME);
+    loading_paintable[index] = get_paintable_for_themed_icon (self,
+                                                              LOADING_ICON_NAME,
+                                                              scale_factor);
 
     return loading_paintable[index];
 }
@@ -177,14 +180,17 @@ static GdkPaintable *
 get_error_paintable (NautilusImage *self)
 {
     static GdkPaintable *error_paintable[3];
-    int index = CLAMP (gtk_widget_get_scale_factor (GTK_WIDGET (self)), 1, 3) - 1;
+    int scale_factor = gtk_widget_get_scale_factor (GTK_WIDGET (self));
+    int index = CLAMP (scale_factor, 1, 3) - 1;
 
     if (G_LIKELY (error_paintable[index] != NULL))
     {
         return error_paintable[index];
     }
 
-    error_paintable[index] = get_paintable_for_themed_icon (self, ERROR_ICON_NAME);
+    error_paintable[index] = get_paintable_for_themed_icon (self,
+                                                            ERROR_ICON_NAME,
+                                                            scale_factor);
 
     return error_paintable[index];
 }
