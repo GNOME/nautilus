@@ -59,6 +59,9 @@ struct _NautilusFileChooser
 
     NautilusFilenameValidator *validator;
     AdwBreakpoint *breakpoint;
+
+    NautilusFileChooserCallback present_callback;
+    gpointer present_user_data;
 };
 
 G_DEFINE_FINAL_TYPE (NautilusFileChooser, nautilus_file_chooser, ADW_TYPE_WINDOW)
@@ -1025,6 +1028,63 @@ nautilus_file_chooser_set_starting_location (NautilusFileChooser *self,
     }
 
     nautilus_window_slot_open_location_full (self->slot, location_to_open, NULL);
+}
+
+static void
+finish_present (NautilusFileChooser *self,
+                GList               *locations)
+{
+    NautilusFileChooserCallback callback = g_steal_pointer (&self->present_callback);
+
+    if (callback != NULL)
+    {
+        callback (locations, self->present_user_data);
+    }
+}
+
+static void
+on_present_accepted (NautilusFileChooser *self,
+                     GList               *locations)
+{
+    finish_present (self, locations);
+    gtk_window_destroy (GTK_WINDOW (self));
+}
+
+static gboolean
+on_present_close_request (NautilusFileChooser *self)
+{
+    finish_present (self, NULL);
+
+    return FALSE;
+}
+
+/**
+ * nautilus_file_chooser_present_internal:
+ * @parent: the window to attach the chooser to
+ * @callback: called once the chooser is done
+ * @user_data: data to pass to @callback
+ *
+ * Presents the chooser as a modal dialog of @parent, for use within Nautilus
+ * itself. @callback is called exactly once, with the chosen locations, or
+ * with %NULL if the chooser was dismissed. The chooser is destroyed afterwards.
+ */
+void
+nautilus_file_chooser_present_internal (NautilusFileChooser         *self,
+                                        GtkWindow                   *parent,
+                                        NautilusFileChooserCallback  callback,
+                                        gpointer                     user_data)
+{
+    self->present_callback = callback;
+    self->present_user_data = user_data;
+
+    g_signal_connect (self, "accepted",
+                      G_CALLBACK (on_present_accepted), NULL);
+    g_signal_connect (self, "close-request",
+                      G_CALLBACK (on_present_close_request), NULL);
+
+    gtk_window_set_transient_for (GTK_WINDOW (self), parent);
+    gtk_window_set_modal (GTK_WINDOW (self), TRUE);
+    gtk_window_present (GTK_WINDOW (self));
 }
 
 void
