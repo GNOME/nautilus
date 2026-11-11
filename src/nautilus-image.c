@@ -517,17 +517,19 @@ nautilus_image_set_fallback (NautilusImage *self,
                   gdk_paintable_get_intrinsic_height (paintable));
     }
 
-    if (g_set_object (&self->fallback_paintable, paintable) &&
-        (status == NAUTILUS_IMAGE_STATUS_LOADING_ATTRIBUTES ||
-         status == NAUTILUS_IMAGE_STATUS_FALLBACK))
+    if (g_set_object (&self->fallback_paintable, paintable))
     {
-        if (resize)
+        if (status == NAUTILUS_IMAGE_STATUS_LOADING_ATTRIBUTES ||
+            status == NAUTILUS_IMAGE_STATUS_FALLBACK)
         {
-            gtk_widget_queue_resize (GTK_WIDGET (self));
-        }
-        else
-        {
-            gtk_widget_queue_draw (GTK_WIDGET (self));
+            if (resize)
+            {
+                gtk_widget_queue_resize (GTK_WIDGET (self));
+            }
+            else
+            {
+                gtk_widget_queue_draw (GTK_WIDGET (self));
+            }
         }
 
         g_object_notify_by_pspec (G_OBJECT (self), properties[PROP_FALLBACK]);
