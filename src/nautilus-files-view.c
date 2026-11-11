@@ -169,6 +169,7 @@ struct _NautilusFilesView
 
     /* Locations of open windows shown in Recent in file chooser mode. */
     GHashTable *open_window_files;
+    GtkSorter *open_windows_sorter;
 
     NautilusFileList *pending_selection;
     GHashTable *pending_reveal;
@@ -3244,6 +3245,7 @@ nautilus_files_view_dispose (GObject *object)
     g_clear_object (&self->location);
     g_clear_object (&self->selection);
     g_clear_object (&self->model);
+    g_clear_object (&self->open_windows_sorter);
 
     adw_bin_set_child (ADW_BIN (self), NULL);
     gtk_widget_dispose_template (GTK_WIDGET (self), NAUTILUS_TYPE_FILES_VIEW);
@@ -4095,6 +4097,46 @@ nautilus_files_view_add_files (NautilusFilesView *self,
 
 #define MAX_OPEN_WINDOW_LOCATIONS 3
 
+static gint
+get_open_window_rank (NautilusFilesView *self,
+                      GtkTreeListRow    *row)
+{
+    GtkTreeListRow *root = g_object_ref (row);
+    GtkTreeListRow *parent;
+
+    while ((parent = gtk_tree_list_row_get_parent (root)) != NULL)
+    {
+        g_object_unref (root);
+        root = parent;
+    }
+
+    g_autoptr (NautilusViewItem) item = NAUTILUS_VIEW_ITEM (gtk_tree_list_row_get_item (root));
+    g_object_unref (root);
+
+    gpointer rank = g_hash_table_lookup (self->open_window_files,
+                                         nautilus_view_item_get_file (item));
+
+    return rank != NULL ? GPOINTER_TO_INT (rank) : G_MAXINT;
+}
+
+static gint
+sort_open_windows_first (gconstpointer a,
+                         gconstpointer b,
+                         gpointer      user_data)
+{
+    NautilusFilesView *self = NAUTILUS_FILES_VIEW (user_data);
+
+    if (g_hash_table_size (self->open_window_files) == 0)
+    {
+        return GTK_ORDERING_EQUAL;
+    }
+
+    gint rank_a = get_open_window_rank (self, GTK_TREE_LIST_ROW ((gpointer) a));
+    gint rank_b = get_open_window_rank (self, GTK_TREE_LIST_ROW ((gpointer) b));
+
+    return (rank_a > rank_b) - (rank_a < rank_b);
+}
+
 static void
 add_open_window_locations (NautilusFilesView *self)
 {
@@ -4135,13 +4177,27 @@ add_open_window_locations (NautilusFilesView *self)
             continue;
         }
 
-        g_hash_table_add (self->open_window_files, g_object_ref (file));
+        gint rank = g_hash_table_size (self->open_window_files) + 1;
+
+        g_hash_table_insert (self->open_window_files, g_object_ref (file), GINT_TO_POINTER (rank));
         files = g_list_prepend (files, g_steal_pointer (&file));
     }
 
-    if (files != NULL)
+    if (files == NULL)
     {
-        nautilus_files_view_add_files (self, files);
+        return;
+    }
+
+    if (self->open_windows_sorter == NULL)
+    {
+        self->open_windows_sorter = GTK_SORTER (gtk_custom_sorter_new (sort_open_windows_first, self, NULL));
+    }
+    nautilus_view_model_set_section_sorter (self->model, self->open_windows_sorter);
+
+    files = g_list_reverse (files);
+    for (GList *l = files; l != NULL; l = l->next)
+    {
+        nautilus_files_view_add_files (self, &(GList){ .data = l->data });
     }
 }
 
