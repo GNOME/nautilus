@@ -8576,6 +8576,21 @@ load_directory (NautilusFilesView *self,
 }
 
 static void
+on_model_items_changed (NautilusFilesView *self)
+{
+    if (self->in_destruction || self->loading)
+    {
+        return;
+    }
+
+    if (gtk_widget_get_visible (self->empty_view_page) != nautilus_files_view_is_empty (self))
+    {
+        nautilus_files_view_update_status_overlay (self);
+        nautilus_files_view_update_toolbar_menus (self);
+    }
+}
+
+static void
 finish_loading (NautilusFilesView *self)
 {
     NautilusAttributes attributes;
@@ -9160,6 +9175,9 @@ nautilus_files_view_constructed (GObject *object)
     g_object_bind_property (self->slot, "filter",
                             self->model, "filter",
                             G_BINDING_SYNC_CREATE);
+    g_signal_connect_object (self->model, "items-changed",
+                             G_CALLBACK (on_model_items_changed), self,
+                             G_CONNECT_SWAPPED);
 
     /* GtkSelectionModel::selection-changed only notifies about individual item
      * selection state changes. Changes to the selection set require listening
