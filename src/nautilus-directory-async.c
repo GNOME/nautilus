@@ -2656,8 +2656,9 @@ deep_count_next_dir (DeepCountState *state)
 
     done = FALSE;
     file = directory->details->deep_count_file;
+    gboolean file_is_dir = nautilus_file_is_directory (file);
 
-    if (state->deep_count_subdirectories != NULL)
+    if (state->deep_count_subdirectories != NULL && file_is_dir)
     {
         /* Work on a new directory. */
         location = state->deep_count_subdirectories->data;
@@ -2675,7 +2676,10 @@ deep_count_next_dir (DeepCountState *state)
         done = TRUE;
     }
 
-    nautilus_file_updated_deep_count_in_progress (file);
+    if (file_is_dir)
+    {
+        nautilus_file_updated_deep_count_in_progress (file);
+    }
 
     if (done)
     {
