@@ -3533,8 +3533,8 @@ setup_permissions_page (NautilusPropertiesWidget *self)
         {
             g_autofree gchar *prompt_text = NULL;
 
-            prompt_text = g_strdup_printf (_("The permissions of “%s” could not be determined."),
-                                           nautilus_file_get_display_name (get_file (self)));
+            prompt_text = g_markup_printf_escaped (_("The permissions of “%s” could not be determined."),
+                                                   nautilus_file_get_display_name (get_file (self)));
             adw_status_page_set_description (ADW_STATUS_PAGE (self->unknown_permissions_page), prompt_text);
         }
 

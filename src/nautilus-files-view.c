@@ -3696,8 +3696,8 @@ nautilus_files_view_update_status_overlay (NautilusFilesView *self)
                 g_autoptr (GFile) location = nautilus_query_get_location (query);
                 g_autoptr (NautilusFile) file = nautilus_file_get (location);
                 /* Translators: %s is the name of the search location formatted for display */
-                g_autofree gchar *local_description = g_strdup_printf (_("No matches in “%s”"),
-                                                                       nautilus_file_get_display_name (file));
+                g_autofree gchar *local_description = g_markup_printf_escaped (_("No matches in “%s”"),
+                                                                               nautilus_file_get_display_name (file));
 
                 adw_status_page_set_icon_name (status_page, "nautilus-folder-search-symbolic");
                 adw_status_page_set_description (status_page, local_description);
