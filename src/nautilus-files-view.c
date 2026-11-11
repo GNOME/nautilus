@@ -4767,7 +4767,7 @@ home_dir_in_selection (NautilusFileList *selection)
 {
     for (NautilusFileList *node = selection; node != NULL; node = node->next)
     {
-        if (nautilus_file_is_home (NAUTILUS_FILE (node->data)))
+        if (nautilus_file_is_home (node->data))
         {
             return TRUE;
         }
