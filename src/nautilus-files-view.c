@@ -35,6 +35,7 @@
 #include "nautilus-dnd.h"
 #include "nautilus-enums.h"
 #include "nautilus-error-reporting.h"
+#include "nautilus-file-chooser.h"
 #include "nautilus-file-operations.h"
 #include "nautilus-file-utilities.h"
 #include "nautilus-file.h"
@@ -5536,23 +5537,20 @@ typedef struct _CopyCallbackData
 static void
 copy_data_free (CopyCallbackData *data)
 {
+    g_object_unref (data->view);
     nautilus_file_list_free (data->selection);
     g_free (data);
 }
 
 static void
-on_destination_dialog_response (GtkFileDialog *dialog,
-                                GAsyncResult  *result,
-                                gpointer       user_data)
+on_destination_chooser_done (GList    *locations,
+                             gpointer  user_data)
 {
     CopyCallbackData *copy_data = user_data;
-    g_autoptr (GFile) target_location = NULL;
-    g_autoptr (GError) error = NULL;
 
-    target_location = gtk_file_dialog_select_folder_finish (dialog, result, &error);
-
-    if (target_location != NULL)
+    if (locations != NULL)
     {
+        GFile *target_location = locations->data;
         char *target_uri;
         GList *uris, *l;
         NautilusFilesView *view = copy_data->view;
@@ -5577,11 +5575,6 @@ on_destination_dialog_response (GtkFileDialog *dialog,
         g_list_free_full (uris, g_free);
         g_free (target_uri);
     }
-    else if (error != NULL &&
-             !g_error_matches (error, GTK_DIALOG_ERROR, GTK_DIALOG_ERROR_DISMISSED))
-    {
-        g_warning ("Error while choosing a destination folder: %s", error->message);
-    }
 
     copy_data_free (copy_data);
 }
@@ -5590,8 +5583,8 @@ static void
 copy_or_move_selection (NautilusFilesView *view,
                         gboolean           is_move)
 {
-    g_autoptr (GtkFileDialog) dialog = gtk_file_dialog_new ();
     g_autoptr (GFile) location = NULL;
+    NautilusFileChooser *chooser;
     CopyCallbackData *copy_data;
     NautilusFileList *selection;
     const gchar *title;
@@ -5612,23 +5605,20 @@ copy_or_move_selection (NautilusFilesView *view,
         return;
     }
 
-    gtk_file_dialog_set_title (dialog, title);
-    gtk_file_dialog_set_accept_label (dialog, _("_Select"));
-
     copy_data = g_new0 (CopyCallbackData, 1);
-    copy_data->view = view;
+    copy_data->view = g_object_ref (view);
     copy_data->selection = selection;
     copy_data->is_move = is_move;
 
     location = get_dialog_initial_location (view, selection);
 
-    gtk_file_dialog_set_initial_folder (dialog, location);
+    chooser = nautilus_file_chooser_new (NAUTILUS_MODE_OPEN_FOLDER);
+    gtk_window_set_title (GTK_WINDOW (chooser), title);
+    nautilus_file_chooser_set_accept_label (chooser, _("_Select"));
+    nautilus_file_chooser_set_starting_location (chooser, location);
 
-    gtk_file_dialog_select_folder (dialog,
-                                   GTK_WINDOW (gtk_widget_get_root (GTK_WIDGET (view))),
-                                   NULL,
-                                   (GAsyncReadyCallback) on_destination_dialog_response,
-                                   copy_data);
+    nautilus_file_chooser_present_internal (chooser, nautilus_files_view_get_containing_window (view),
+                                            on_destination_chooser_done, copy_data);
 }
 
 static void
@@ -5939,29 +5929,25 @@ typedef struct
 } ExtractToData;
 
 static void
-on_extract_destination_dialog_response (GtkFileDialog *dialog,
-                                        GAsyncResult  *result,
-                                        gpointer       user_data)
+extract_to_data_free (ExtractToData *data)
 {
-    ExtractToData *data;
-    g_autoptr (GFile) destination_directory = NULL;
-    g_autoptr (GError) error = NULL;
-
-    data = user_data;
-    destination_directory = gtk_file_dialog_select_folder_finish (dialog, result, &error);
-
-    if (destination_directory != NULL)
-    {
-        extract_files (data->view, data->files, destination_directory);
-    }
-    else if (error != NULL &&
-             !g_error_matches (error, GTK_DIALOG_ERROR, GTK_DIALOG_ERROR_DISMISSED))
-    {
-        g_warning ("Error while choosing a destination folder: %s", error->message);
-    }
-
+    g_object_unref (data->view);
     nautilus_file_list_free (data->files);
     g_free (data);
+}
+
+static void
+on_extract_destination_chooser_done (GList    *locations,
+                                     gpointer  user_data)
+{
+    ExtractToData *data = user_data;
+
+    if (locations != NULL)
+    {
+        extract_files (data->view, data->files, locations->data);
+    }
+
+    extract_to_data_free (data);
 }
 
 static void
@@ -5969,7 +5955,7 @@ extract_files_to_chosen_location (NautilusFilesView *view,
                                   GList             *files)
 {
     ExtractToData *data;
-    g_autoptr (GtkFileDialog) dialog = NULL;
+    NautilusFileChooser *chooser;
     g_autoptr (GFile) location = NULL;
 
     if (files == NULL)
@@ -5979,22 +5965,19 @@ extract_files_to_chosen_location (NautilusFilesView *view,
 
     data = g_new (ExtractToData, 1);
 
-    dialog = gtk_file_dialog_new ();
-    gtk_file_dialog_set_title (dialog, _("Select Extract Destination"));
-    gtk_file_dialog_set_accept_label (dialog, _("_Select"));
+    chooser = nautilus_file_chooser_new (NAUTILUS_MODE_OPEN_FOLDER);
+    gtk_window_set_title (GTK_WINDOW (chooser), _("Select Extract Destination"));
+    nautilus_file_chooser_set_accept_label (chooser, _("_Select"));
 
     location = get_dialog_initial_location (view, files);
 
-    gtk_file_dialog_set_initial_folder (dialog, location);
+    nautilus_file_chooser_set_starting_location (chooser, location);
 
-    data->view = view;
+    data->view = g_object_ref (view);
     data->files = nautilus_file_list_copy (files);
 
-    gtk_file_dialog_select_folder (dialog,
-                                   GTK_WINDOW (gtk_widget_get_root (GTK_WIDGET (view))),
-                                   NULL,
-                                   (GAsyncReadyCallback) on_extract_destination_dialog_response,
-                                   data);
+    nautilus_file_chooser_present_internal (chooser, nautilus_files_view_get_containing_window (view),
+                                            on_extract_destination_chooser_done, data);
 }
 
 static void

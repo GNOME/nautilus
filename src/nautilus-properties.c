@@ -22,6 +22,7 @@
 #include "nautilus-dbus-launcher.h"
 #include "nautilus-enums.h"
 #include "nautilus-error-reporting.h"
+#include "nautilus-file-chooser.h"
 #include "nautilus-file-operations.h"
 #include "nautilus-file-utilities.h"
 #include "nautilus-image.h"
@@ -3955,21 +3956,14 @@ real_finalize (GObject *object)
 }
 
 static void
-custom_icon_file_chooser_response_cb (GtkFileDialog            *dialog,
-                                      GAsyncResult             *result,
-                                      NautilusPropertiesWidget *self)
+custom_icon_file_chooser_done (GList    *locations,
+                               gpointer  user_data)
 {
-    g_autoptr (GError) error = NULL;
-    g_autoptr (GFile) location = gtk_file_dialog_open_finish (dialog, result, &error);
+    NautilusPropertiesWidget *self = user_data;
 
-    if (location != NULL)
+    if (locations != NULL)
     {
-        set_icon (self, location);
-    }
-    else if (error != NULL &&
-             !g_error_matches (error, GTK_DIALOG_ERROR, GTK_DIALOG_ERROR_DISMISSED))
-    {
-        g_warning ("Error while choosing an icon: %s", error->message);
+        set_icon (self, locations->data);
     }
 }
 
@@ -3977,35 +3971,32 @@ static void
 select_image_button_callback (GtkWidget                *widget,
                               NautilusPropertiesWidget *self)
 {
-    g_autoptr (GtkFileDialog) dialog = gtk_file_dialog_new ();
+    NautilusFileChooser *chooser = nautilus_file_chooser_new (NAUTILUS_MODE_OPEN_FILE);
+    g_autoptr (GListStore) filters = g_list_store_new (GTK_TYPE_FILE_FILTER);
     g_autoptr (GtkFileFilter) filter = gtk_file_filter_new ();
     g_auto (GStrv) mime_types = gly_loader_get_mime_types ();
     NautilusFile *file = get_file (self);
 
-    gtk_file_dialog_set_title (dialog, _("Select Custom Icon"));
-    gtk_file_dialog_set_accept_label (dialog, _("_Select"));
+    gtk_window_set_title (GTK_WINDOW (chooser), _("Select Custom Icon"));
+    nautilus_file_chooser_set_accept_label (chooser, _("_Select"));
 
+    gtk_file_filter_set_name (filter, _("Images"));
     gtk_file_filter_add_mime_types (filter, (const char **) mime_types);
-    gtk_file_dialog_set_default_filter (dialog, filter);
+    g_list_store_append (filters, filter);
+    nautilus_file_chooser_set_filters (chooser, G_LIST_MODEL (filters));
 
     /* it's likely that the user wants to pick an icon that is inside a local directory */
+    g_autoptr (GFile) image_location = NULL;
+
     if (nautilus_file_is_directory (file))
     {
-        g_autoptr (GFile) image_location = NULL;
-
         image_location = nautilus_file_get_location (file);
-
-        if (image_location != NULL)
-        {
-            gtk_file_dialog_set_initial_folder (dialog, image_location);
-        }
     }
 
-    gtk_file_dialog_open (dialog,
-                          get_parent_window (self),
-                          NULL,
-                          (GAsyncReadyCallback) custom_icon_file_chooser_response_cb,
-                          self);
+    nautilus_file_chooser_set_starting_location (chooser, image_location);
+
+    nautilus_file_chooser_present_internal (chooser, get_parent_window (self),
+                                            custom_icon_file_chooser_done, self);
 }
 
 static void

@@ -43,4 +43,13 @@ nautilus_file_chooser_add_choices        (NautilusFileChooser *self,
                                           GActionGroup        *action_group,
                                           GMenuModel          *menu);
 
+typedef void (*NautilusFileChooserCallback) (GList    *locations,
+                                             gpointer  user_data);
+
+void
+nautilus_file_chooser_present_internal   (NautilusFileChooser         *self,
+                                          GtkWindow                   *parent,
+                                          NautilusFileChooserCallback  callback,
+                                          gpointer                     user_data);
+
 G_END_DECLS
