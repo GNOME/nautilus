@@ -354,7 +354,9 @@ maybe_append_extension (NautilusCompressDialog *self,
 
     g_strstrip (basename);
 
-    if (selected_item != NULL && selected_item->extension != NULL &&
+    /* Leave an empty name empty, so that it isn't accepted. */
+    if (basename[0] != '\0' &&
+        selected_item != NULL && selected_item->extension != NULL &&
         !g_str_has_suffix (basename, selected_item->extension))
     {
         return g_strconcat (basename, selected_item->extension, NULL);
