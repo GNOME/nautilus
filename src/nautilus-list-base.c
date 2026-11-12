@@ -569,6 +569,14 @@ on_item_drag_hover_motion (GtkDropControllerMotion *controller,
     }
 }
 
+static void
+on_vadjustment_value_changed (NautilusListBase *self)
+{
+    NautilusListBasePrivate *priv = nautilus_list_base_get_instance_private (self);
+
+    g_clear_handle_id (&priv->hover_timer_id, g_source_remove);
+}
+
 static GdkDragAction
 get_preferred_action (NautilusFile *target_file,
                       const GValue *value)
@@ -1321,6 +1329,11 @@ nautilus_list_base_init (NautilusListBase *self)
     gtk_widget_add_controller (priv->scrolled_window, controller);
     gtk_event_controller_set_propagation_phase (controller, GTK_PHASE_CAPTURE);
     g_signal_connect (controller, "scroll", G_CALLBACK (on_scroll), self);
+
+    GtkAdjustment *vadjustment = gtk_scrolled_window_get_vadjustment (GTK_SCROLLED_WINDOW (priv->scrolled_window));
+    g_signal_connect_object (vadjustment, "value-changed",
+                             G_CALLBACK (on_vadjustment_value_changed), self,
+                             G_CONNECT_SWAPPED);
 
     g_signal_connect_object (nautilus_preferences,
                              "changed::" NAUTILUS_PREFERENCES_CLICK_POLICY,
