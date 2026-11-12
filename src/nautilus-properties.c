@@ -553,7 +553,7 @@ update_properties_widget_icon (NautilusPropertiesWidget *self)
     }
     else
     {
-        g_autoptr (GFile) location = nautilus_file_get_location (self->files->data);
+        g_autoptr (GFile) location = nautilus_file_get_activation_location (self->files->data);
 
         nautilus_image_set_source (NAUTILUS_IMAGE (self->icon_image), location);
     }

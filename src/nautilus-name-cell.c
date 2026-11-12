@@ -175,7 +175,9 @@ update_icon (NautilusNameCell *self)
 
     if (show_thumbnail)
     {
-        g_autoptr (GFile) location = nautilus_file_get_location (file);
+        /* Use the location of the actual file, e.g. for files in Recent, so
+         * that its thumbnail is found and created for it. */
+        g_autoptr (GFile) location = nautilus_file_get_activation_location (file);
 
         nautilus_image_set_source (NAUTILUS_IMAGE (self->icon), location);
     }
