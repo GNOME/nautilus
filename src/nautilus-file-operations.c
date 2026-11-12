@@ -3028,7 +3028,8 @@ report_copy_progress (CopyMoveJob  *copy_job,
         /* Avoid changing this unless files_left changed since last time */
         transfer_info->last_reported_files_left = files_left;
 
-        if (source_info->num_files == 1)
+        /* Ensure that it was always 1 file and that others weren't skipped */
+        if (source_info->num_files == 1 && copy_job->files->next == NULL)
         {
             g_autofree gchar *basename_dest = NULL;
 
