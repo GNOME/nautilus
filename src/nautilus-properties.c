@@ -2525,7 +2525,13 @@ setup_open_in_disks (NautilusPropertiesWidget *self)
 
         if (mount_entry != NULL)
         {
-            self->device_identifier = g_strdup (g_unix_mount_entry_get_device_path (mount_entry));
+            const char *device_path = g_unix_mount_entry_get_device_path (mount_entry);
+
+            /* Disks can only open block devices */
+            if (g_str_has_prefix (device_path, "/dev/"))
+            {
+                self->device_identifier = g_strdup (device_path);
+            }
         }
     }
 
