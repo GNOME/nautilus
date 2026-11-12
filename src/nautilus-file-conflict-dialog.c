@@ -76,8 +76,8 @@ nautilus_file_conflict_dialog_set_images (NautilusFileConflictDialog *fcd,
                                           NautilusFile               *source_file)
 {
     int scale = gtk_widget_get_scale_factor (GTK_WIDGET (fcd));
-    g_autoptr (GFile) dest_location = nautilus_file_get_location (destination_file);
-    g_autoptr (GFile) src_location = nautilus_file_get_location (source_file);
+    g_autoptr (GFile) dest_location = nautilus_file_get_activation_location (destination_file);
+    g_autoptr (GFile) src_location = nautilus_file_get_activation_location (source_file);
     g_autoptr (GdkPaintable) destination_paintable
         = nautilus_file_get_icon_paintable (destination_file,
                                             NAUTILUS_GRID_ICON_SIZE_SMALL,

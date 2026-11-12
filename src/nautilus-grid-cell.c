@@ -72,7 +72,7 @@ update_icon (NautilusGridCell *self)
 
     if (show_thumbnail)
     {
-        g_autoptr (GFile) location = nautilus_file_get_location (file);
+        g_autoptr (GFile) location = nautilus_file_get_activation_location (file);
 
         nautilus_image_set_source (NAUTILUS_IMAGE (self->icon), location);
     }
