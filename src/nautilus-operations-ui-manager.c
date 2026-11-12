@@ -227,7 +227,7 @@ set_copy_move_dialog_text (FileConflictDialogData *data)
 static void
 set_images (FileConflictDialogData *data)
 {
-    nautilus_file_conflict_dialog_set_images (data->dialog, data->source, data->destination);
+    nautilus_file_conflict_dialog_set_images (data->dialog, data->destination, data->source);
 }
 
 static void
