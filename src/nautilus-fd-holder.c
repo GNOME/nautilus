@@ -76,8 +76,9 @@ on_enumerator_ready (GObject      *source_object,
     g_autoptr (GError) error = NULL;
     g_autoptr (GFileEnumerator) enumerator = g_file_enumerate_children_finish (location, res, &error);
 
-    if (g_error_matches (error, G_IO_ERROR, G_IO_ERROR_CANCELLED))
+    if (enumerator == NULL)
     {
+        /* Cancelled or can't be listed. */
         return;
     }
 
