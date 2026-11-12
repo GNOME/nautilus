@@ -5421,6 +5421,7 @@ typedef struct
      * (e.g. after the user picked a new name in move_file_prepare). */
     GFile *precomputed_dest;
     gboolean overwrite;
+    gboolean needs_copy;
 } MoveFileCopyFallback;
 
 static void
@@ -5435,7 +5436,8 @@ G_DEFINE_AUTOPTR_CLEANUP_FUNC (MoveFileCopyFallback, move_file_copy_fallback_fre
 static MoveFileCopyFallback *
 move_copy_file_callback_new (GFile    *file,
                              GFile    *precomputed_dest,
-                             gboolean  overwrite)
+                             gboolean  overwrite,
+                             gboolean  needs_copy)
 {
     MoveFileCopyFallback *fallback;
 
@@ -5445,6 +5447,7 @@ move_copy_file_callback_new (GFile    *file,
                                  ? g_object_ref (precomputed_dest)
                                  : NULL;
     fallback->overwrite = overwrite;
+    fallback->needs_copy = needs_copy;
 
     return fallback;
 }
@@ -5692,7 +5695,9 @@ move_file_prepare (CopyMoveJob  *move_job,
         {
             fallback = move_copy_file_callback_new (src,
                                                     dest,
-                                                    overwrite);
+                                                    overwrite,
+                                                    !same_fs ||
+                                                    IS_IO_ERROR (error, NOT_SUPPORTED));
             *fallback_files = g_list_prepend (*fallback_files, fallback);
         }
         else if (!IS_IO_ERROR (error, CANCELLED))
@@ -5992,10 +5997,24 @@ nautilus_file_operations_move (GTask        *task,
         return;
     }
 
+    /* Only check the space when something must be copied. */
+    gboolean needs_copy = FALSE;
+    for (GList *l = fallbacks; l != NULL; l = l->next)
+    {
+        MoveFileCopyFallback *fallback = l->data;
+
+        if (fallback->needs_copy)
+        {
+            /* We conservatively consider all files to be copied if one will */
+            needs_copy = TRUE;
+            break;
+        }
+    }
+
     verify_destination (&job->common,
                         job->destination,
                         NULL,
-                        &source_info);
+                        needs_copy ? &source_info : NULL);
     if (job_aborted (common))
     {
         return;
