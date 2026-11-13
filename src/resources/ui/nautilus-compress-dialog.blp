@@ -69,7 +69,12 @@ template $NautilusCompressDialog: Adw.Dialog {
         Adw.ComboRow extension_combo_row {
           title: _("Co_mpression Method");
           use-underline: true;
+          use-subtitle: true;
           notify::selected-item => $update_selected_format() swapped;
+
+          styles [
+            "property",
+          ]
         }
       }
 
