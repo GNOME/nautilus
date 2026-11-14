@@ -141,27 +141,6 @@
       ]
     },
     {
-      "name": "libportal",
-      "buildsystem": "meson",
-      "builddir": true,
-      "config-opts": [
-        "-Dbackend-gtk4=enabled",
-        "-Dbackend-gtk3=disabled",
-        "-Ddocs=false",
-        "-Dintrospection=false",
-        "-Dtests=false",
-        "-Dvapi=false",
-        "--buildtype=debugoptimized"
-      ],
-      "sources": [
-        {
-          "type": "git",
-          "url": "https://github.com/flatpak/libportal.git",
-          "branch": "main"
-        }
-      ]
-    },
-    {
       "name": "libcloudproviders",
       "buildsystem": "meson",
       "builddir": true,
