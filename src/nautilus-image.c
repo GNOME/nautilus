@@ -124,9 +124,7 @@ thumbnail_cache_add (GFile      *file,
     }
     else if (nautilus_hash_queue_get_length (thumbnail_cache) >= CACHE_COUNT_LIMIT)
     {
-        ThumbnailCacheItem *item = nautilus_hash_queue_peek_head (thumbnail_cache);
-
-        nautilus_hash_queue_remove (thumbnail_cache, item->file);
+        nautilus_hash_queue_remove_head (thumbnail_cache);
     }
 
     ThumbnailCacheItem *new_item = g_new0 (ThumbnailCacheItem, 1);
