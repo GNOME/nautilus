@@ -335,6 +335,11 @@ thumbnail_load_from_stream_thread (GTask        *task,
                                    gpointer      task_data,
                                    GCancellable *cancellable)
 {
+    if (g_task_return_error_if_cancelled (task))
+    {
+        return;
+    }
+
     GdkDisplay *display = task_data;
 
     if (display == NULL)
@@ -358,6 +363,11 @@ thumbnail_load_from_stream_thread (GTask        *task,
                                  G_IO_ERROR_FAILED,
                                  "Failed to load thumbnail");
 
+        return;
+    }
+
+    if (g_task_return_error_if_cancelled (task))
+    {
         return;
     }
 
