@@ -335,10 +335,32 @@ thumbnail_load_from_stream_thread (GTask        *task,
                                    gpointer      task_data,
                                    GCancellable *cancellable)
 {
+    GdkDisplay *display = task_data;
+
+    if (display == NULL)
+    {
+        g_task_return_new_error (task,
+                                 G_IO_ERROR,
+                                 G_IO_ERROR_FAILED,
+                                 "Failed to load thumbnail");
+
+        return;
+    }
+
     GInputStream *self = source_object;
     g_autoptr (GlyLoader) loader = gly_loader_new_for_stream (self);
     g_autoptr (GlyImage) image = gly_loader_load (loader, NULL);
-    GdkDisplay *display = g_task_get_task_data (task);
+
+    if (image == NULL)
+    {
+        g_task_return_new_error (task,
+                                 G_IO_ERROR,
+                                 G_IO_ERROR_FAILED,
+                                 "Failed to load thumbnail");
+
+        return;
+    }
+
     GdkTexture *texture = scale_image_to_texture (image, display);
 
     if (texture != NULL)
@@ -354,10 +376,10 @@ thumbnail_load_from_stream_thread (GTask        *task,
     }
     else
     {
-        g_task_return_error (task,
-                             g_error_new (G_IO_ERROR,
-                                          G_IO_ERROR_FAILED,
-                                          "Failed to load thumbnail"));
+        g_task_return_new_error (task,
+                                 G_IO_ERROR,
+                                 G_IO_ERROR_FAILED,
+                                 "Failed to load thumbnail");
     }
 }
 
@@ -367,16 +389,12 @@ thumbnail_load_from_stream_async (GInputStream        *stream,
                                   GAsyncReadyCallback  callback,
                                   gpointer             user_data)
 {
-    GdkDisplay *display = gdk_display_get_default ();
-
-    g_return_if_fail (display != NULL);
-
     g_autoptr (GTask) task = g_task_new (stream, cancellable, callback, user_data);
 
     /* We're potentially starving other important threads from reaching the
      *  thread pool, so lets reduce the priority. */
     g_task_set_priority (task, G_PRIORITY_LOW);
-    g_task_set_task_data (task, display, NULL);
+    g_task_set_task_data (task, gdk_display_get_default (), NULL);
 
     g_task_run_in_thread (task, thumbnail_load_from_stream_thread);
 }
