@@ -197,10 +197,6 @@ nautilus_thumbnail_get_path_for_uri (const char *uri)
     return gnome_desktop_thumbnail_path_for_uri (uri, get_thumbnail_scale ());
 }
 
-/***************************************************************************
- * Thumbnail Thread Functions.
- ***************************************************************************/
-
 static GHashTable *
 get_types_table (void)
 {
@@ -608,8 +604,7 @@ thumbnail_enqueue (NautilusThumbnailInfo     *info,
     if (existing_info == NULL)
     {
         /* Add the thumbnail to the list. */
-        g_debug ("(Main Thread) Adding thumbnail: %s",
-                 info->image_uri);
+        g_debug ("Adding thumbnail: %s", info->image_uri);
 
         g_ptr_array_add (info->callbacks, cb_data);
         nautilus_hash_queue_enqueue (thumbnails_to_make, info->image_uri, info);
@@ -624,8 +619,7 @@ thumbnail_enqueue (NautilusThumbnailInfo     *info,
     }
     else
     {
-        g_debug ("(Main Thread) Updating non-current mtime: %s",
-                 info->image_uri);
+        g_debug ("Updating non-current mtime: %s", info->image_uri);
 
         /* The file in the queue might need a new original mtime */
         existing_info->updated_file_mtime = info->original_file_mtime;
@@ -690,7 +684,7 @@ thumbnail_finalize (NautilusThumbnailInfo *info)
 
     if (nautilus_hash_queue_is_empty (thumbnails_to_make))
     {
-        g_debug ("(Thumbnail Async Thread) Exiting");
+        g_debug ("Exiting");
     }
     else if (thumbnail_thread_starter_id == 0)
     {
@@ -712,7 +706,7 @@ thumbnail_failed_cb (GObject      *source_object,
                                                                     &error);
     if (error != NULL)
     {
-        g_debug ("(Thumbnail Async Thread) Could not create a failed thumbnail: %s (%s)",
+        g_debug ("Could not create a failed thumbnail: %s (%s)",
                  info->image_uri, error->message);
     }
 
@@ -733,7 +727,7 @@ thumbnail_saved_cb (GObject      *source_object,
                                                            &error);
     if (error != NULL)
     {
-        g_debug ("(Thumbnail Async Thread) Saving thumbnail failed: %s (%s)",
+        g_debug ("Saving thumbnail failed: %s (%s)",
                  info->image_uri, error->message);
     }
 
@@ -756,8 +750,7 @@ thumbnail_generated_cb (GObject      *source_object,
 
     if (pixbuf != NULL)
     {
-        g_debug ("(Thumbnail Async Thread) Saving thumbnail: %s",
-                 info->image_uri);
+        g_debug ("Saving thumbnail: %s", info->image_uri);
 
         g_clear_object (&info->texture);
         info->texture = gdk_texture_new_for_pixbuf (pixbuf);
@@ -773,7 +766,7 @@ thumbnail_generated_cb (GObject      *source_object,
     else
     {
         info->error = g_error_copy (error);
-        g_debug ("(Thumbnail Async Thread) Thumbnail failed: %s (%s)",
+        g_debug ("Thumbnail failed: %s (%s)",
                  info->image_uri, error->message);
 
         gnome_desktop_thumbnail_factory_create_failed_thumbnail_async (thumbnail_factory,
@@ -801,7 +794,7 @@ thumbnail_starter_cb (gpointer data)
     guint backoff_time;
     guint backoff_time_min = THUMBNAIL_CREATION_DELAY_SECS + 1;
 
-    g_debug ("(Main Thread) Creating thumbnails thread");
+    g_debug ("Creating thumbnails thread");
 
     thumbnail_factory = get_thumbnail_factory ();
     thumbnail_thread_starter_id = 0;
@@ -835,8 +828,7 @@ thumbnail_starter_cb (gpointer data)
         if (current_time < current_orig_mtime + THUMBNAIL_CREATION_DELAY_SECS &&
             current_time >= current_orig_mtime)
         {
-            g_debug ("(Thumbnail Thread) Skipping: %s",
-                     info->image_uri);
+            g_debug ("Skipping: %s", info->image_uri);
 
             /* Only retain the smallest backoff time */
             backoff_time = THUMBNAIL_CREATION_DELAY_SECS - (current_time - current_orig_mtime);
@@ -848,8 +840,7 @@ thumbnail_starter_cb (gpointer data)
         }
 
         /* Create the thumbnail. */
-        g_debug ("(Thumbnail Thread) Creating thumbnail: %s",
-                 info->image_uri);
+        g_debug ("Creating thumbnail: %s", info->image_uri);
 
         running_threads += 1;
         g_hash_table_insert (currently_thumbnailing_hash, info->image_uri, info);
