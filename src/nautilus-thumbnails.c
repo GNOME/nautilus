@@ -614,7 +614,8 @@ thumbnail_enqueue (NautilusThumbnailInfo     *info,
          *  done, so the GUI will be updated as quickly as possible. */
         if (thumbnail_thread_starter_id == 0)
         {
-            thumbnail_thread_starter_id = g_idle_add_full (G_PRIORITY_LOW, thumbnail_starter_cb, NULL, NULL);
+            thumbnail_thread_starter_id =
+                g_idle_add_full (G_PRIORITY_LOW, thumbnail_starter_cb, NULL, NULL);
         }
     }
     else
@@ -688,7 +689,8 @@ thumbnail_finalize (NautilusThumbnailInfo *info)
     }
     else if (thumbnail_thread_starter_id == 0)
     {
-        thumbnail_thread_starter_id = g_idle_add (thumbnail_starter_cb, NULL);
+        thumbnail_thread_starter_id =
+            g_idle_add_full (G_PRIORITY_LOW, thumbnail_starter_cb, NULL, NULL);
     }
 }
 
@@ -857,8 +859,9 @@ thumbnail_starter_cb (gpointer data)
     if (thumbnail_thread_starter_id == 0 &&
         ignored_thumbnails > 0)
     {
-        thumbnail_thread_starter_id = g_timeout_add_seconds (backoff_time_min,
-                                                             thumbnail_starter_cb, NULL);
+        thumbnail_thread_starter_id =
+            g_timeout_add_seconds_full (G_PRIORITY_LOW, backoff_time_min,
+                                        thumbnail_starter_cb, NULL, NULL);
     }
 
     return G_SOURCE_REMOVE;
