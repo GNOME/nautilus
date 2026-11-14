@@ -275,6 +275,12 @@ typedef struct
     guint64 mtime;
 } ThumbnailResult;
 
+typedef struct
+{
+    GdkDisplay *display;
+    guint max_size;
+} ThumbnailLoadData;
+
 static void
 thumbnail_result_free (ThumbnailResult *result)
 {
@@ -286,11 +292,11 @@ G_DEFINE_AUTOPTR_CLEANUP_FUNC (ThumbnailResult, thumbnail_result_free)
 
 static GdkTexture *
 scale_image_to_texture (GlyImage   *image,
-                        GdkDisplay *display)
+                        GdkDisplay *display,
+                        gint        max_size)
 {
     g_autoptr (GlyFrameRequest) frame_request = gly_frame_request_new ();
     g_autoptr (GlyFrame) frame = NULL;
-    gint max_size = nautilus_thumbnail_get_max_size ();
 
     gly_frame_request_set_scale (frame_request, max_size, max_size);
     frame = gly_image_get_specific_frame (image, frame_request, NULL);
@@ -340,7 +346,9 @@ thumbnail_load_from_stream_thread (GTask        *task,
         return;
     }
 
-    GdkDisplay *display = task_data;
+    ThumbnailLoadData *thumbnail_load_data = task_data;
+    GdkDisplay *display = thumbnail_load_data->display;
+    gint max_size = thumbnail_load_data->max_size;
 
     if (display == NULL)
     {
@@ -371,7 +379,7 @@ thumbnail_load_from_stream_thread (GTask        *task,
         return;
     }
 
-    GdkTexture *texture = scale_image_to_texture (image, display);
+    GdkTexture *texture = scale_image_to_texture (image, display, max_size);
 
     if (texture != NULL)
     {
@@ -400,11 +408,16 @@ thumbnail_load_from_stream_async (GInputStream        *stream,
                                   gpointer             user_data)
 {
     g_autoptr (GTask) task = g_task_new (stream, cancellable, callback, user_data);
+    ThumbnailLoadData *task_data = g_new (ThumbnailLoadData, 1);
+
+    /* Need to be read from the main thread */
+    task_data->display = gdk_display_get_default ();
+    task_data->max_size = nautilus_thumbnail_get_max_size ();
 
     /* We're potentially starving other important threads from reaching the
      *  thread pool, so lets reduce the priority. */
     g_task_set_priority (task, G_PRIORITY_LOW);
-    g_task_set_task_data (task, gdk_display_get_default (), NULL);
+    g_task_set_task_data (task, task_data, g_free);
 
     g_task_run_in_thread (task, thumbnail_load_from_stream_thread);
 }
