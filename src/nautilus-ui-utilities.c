@@ -867,14 +867,14 @@ nautilus_ui_draw_icon_dashed_border (GtkSnapshot     *snapshot,
     const float ideal_dash_length = get_dash_length (width) + stroke_width;
     const float radius = get_dash_radius (width);
     /* Need to inset the rectangle and the dash length by the dash width. */
-    graphene_rect_t *dash_bounds = graphene_rect_inset (rect,
-                                                        stroke_width / 2.0,
-                                                        stroke_width / 2.0);
+    graphene_rect_t dash_bounds;
+
+    graphene_rect_inset_r (rect, stroke_width / 2.0, stroke_width / 2.0, &dash_bounds);
     /* Calculate the path length and divide it by the number of dashes to have
      * an exact fractional dash length with no overlap at the start/end point.
      */
-    float border_length = dash_bounds->size.width * 2 +
-                          dash_bounds->size.height * 2 +
+    float border_length = dash_bounds.size.width * 2 +
+                          dash_bounds.size.height * 2 +
                           2 * G_PI * radius - 8 * radius;
     const float number_of_dashes = round (border_length / ideal_dash_length);
     float dash_length = border_length / number_of_dashes;
@@ -888,7 +888,7 @@ nautilus_ui_draw_icon_dashed_border (GtkSnapshot     *snapshot,
     GskPathBuilder *path_builder = gsk_path_builder_new ();
     g_autoptr (GskStroke) stroke = gsk_stroke_new (stroke_width);
 
-    gsk_rounded_rect_init (&round_rect, dash_bounds, &arc_size, &arc_size, &arc_size, &arc_size);
+    gsk_rounded_rect_init (&round_rect, &dash_bounds, &arc_size, &arc_size, &arc_size, &arc_size);
 
     gsk_path_builder_add_rounded_rect (path_builder, &round_rect);
     gsk_path_builder_close (path_builder);
