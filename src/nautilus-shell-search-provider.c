@@ -630,12 +630,14 @@ handle_get_result_metas (NautilusShellSearchProvider2  *skeleton,
         return TRUE;
     }
 
+    NautilusFileListHandle *handle = &data->handle;
+
+    self->metas_requests = g_list_prepend (self->metas_requests, data);
     nautilus_file_list_call_when_ready (missing_files,
                                         NAUTILUS_ATTRIBUTE_THUMBNAIL_BUFFER,
-                                        &data->handle,
+                                        handle,
                                         result_list_attributes_ready_cb,
-                                        data);
-    self->metas_requests = g_list_prepend (self->metas_requests, data);
+                                        g_steal_pointer (&data));
     nautilus_file_list_free (missing_files);
     return TRUE;
 }
