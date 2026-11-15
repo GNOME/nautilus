@@ -477,7 +477,7 @@ nautilus_progress_info_get_short_status (NautilusProgressInfo *info)
 {
     g_autoptr (GMutexLocker) locker = g_mutex_locker_new (&info->mutex);
 
-    if (info->status == NULL)
+    if (info->short_status == NULL)
     {
         return g_strdup (_("Preparing"));
     }
