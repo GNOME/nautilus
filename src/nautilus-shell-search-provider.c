@@ -634,7 +634,7 @@ handle_get_result_metas (NautilusShellSearchProvider2  *skeleton,
 
     self->metas_requests = g_list_prepend (self->metas_requests, data);
     nautilus_file_list_call_when_ready (missing_files,
-                                        NAUTILUS_ATTRIBUTE_THUMBNAIL_BUFFER,
+                                        NAUTILUS_ATTRIBUTE_THUMBNAIL_INFO,
                                         handle,
                                         result_list_attributes_ready_cb,
                                         g_steal_pointer (&data));
