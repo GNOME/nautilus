@@ -14,6 +14,9 @@ tests = {
   },
   'test-properties': {},
   'test-thumbnails': {},
+  'test-window-slot': {
+    'is_parallel': false,
+  },
 }
 
 foreach test_name, extra_args : tests
