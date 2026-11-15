@@ -114,7 +114,7 @@ nautilus_search_provider_start (NautilusSearchProvider *self,
     NautilusSearchProviderPrivate *priv = nautilus_search_provider_get_instance_private (self);
 
     /* Can't start provider again before it finished */
-    g_return_val_if_fail (priv->cancellable == NULL, FALSE);
+    g_return_val_if_fail (priv->cancellable == NULL && priv->delayed_timeout_id == 0, FALSE);
 
     if (!klass->should_search (self, query))
     {
@@ -206,6 +206,8 @@ nautilus_search_provider_finished (NautilusSearchProvider *self)
     NautilusSearchProviderPrivate *priv = nautilus_search_provider_get_instance_private (self);
     GPtrArray *ready_hits;
 
+    g_return_if_fail (priv->cancellable != NULL);
+
     g_mutex_lock (&priv->idle_submit_mutex);
     g_clear_handle_id (&priv->submit_on_idle_id, g_source_remove);
     ready_hits = g_steal_pointer (&priv->hits_to_submit);
@@ -261,6 +263,8 @@ nautilus_search_provider_add_hit (gpointer           self,
     const guint BATCH_LIMIT = 100;
 
     NautilusSearchProviderPrivate *priv = nautilus_search_provider_get_instance_private (self);
+
+    g_return_if_fail (priv->hits != NULL);
 
     g_ptr_array_add (priv->hits, hit);
 
