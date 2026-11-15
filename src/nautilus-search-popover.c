@@ -460,7 +460,7 @@ nautilus_search_popover_dispose (GObject *obj)
 {
     NautilusSearchPopover *self = NAUTILUS_SEARCH_POPOVER (obj);
 
-    g_free (self->specific_mimetype);
+    g_clear_pointer (&self->specific_mimetype, g_free);
     g_clear_pointer (&self->specific_date_range, g_ptr_array_unref);
 
     gtk_popover_set_child (GTK_POPOVER (obj), NULL);

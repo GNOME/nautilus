@@ -712,7 +712,7 @@ search_provider_dispose (GObject *obj)
     NautilusShellSearchProvider *self = NAUTILUS_SHELL_SEARCH_PROVIDER (obj);
 
     g_clear_object (&self->skeleton);
-    g_hash_table_destroy (self->metas_cache);
+    g_clear_pointer (&self->metas_cache, g_hash_table_destroy);
     cancel_current_search_ignoring_partial_results (self);
     cancel_result_meta_requests (self);
 
