@@ -10,6 +10,7 @@
 #include "nautilus-global-preferences.h"
 
 #include <gdesktop-enums.h>
+#include <gio/gio.h>
 #include <glib.h>
 #include <glib/gi18n.h>
 #include <locale.h>
@@ -59,6 +60,9 @@ G_DECLARE_FINAL_TYPE (NautilusClock, nautilus_clock, NAUTILUS, CLOCK, GObject)
 struct _NautilusClock
 {
     GObject parent_instance;
+
+    GTimeZone *timezone;
+    GFileMonitor *timezone_monitor;
 };
 
 G_DEFINE_FINAL_TYPE (NautilusClock, nautilus_clock, G_TYPE_OBJECT)
@@ -66,17 +70,55 @@ G_DEFINE_FINAL_TYPE (NautilusClock, nautilus_clock, G_TYPE_OBJECT)
 static GTimeZone *
 nautilus_clock_get_timezone (NautilusClock *self)
 {
-    return g_time_zone_new_local ();
+    return g_time_zone_ref (self->timezone);
+}
+
+static void
+on_timezone_file_changed (NautilusClock *self)
+{
+    g_autoptr (GTimeZone) tz = g_time_zone_new_local ();
+
+    if (g_strcmp0 (g_time_zone_get_identifier (tz),
+                   g_time_zone_get_identifier (self->timezone)) != 0)
+    {
+        g_time_zone_unref (self->timezone);
+        self->timezone = g_steal_pointer (&tz);
+    }
+}
+
+static void
+nautilus_clock_finalize (GObject *object)
+{
+    NautilusClock *self = NAUTILUS_CLOCK (object);
+
+    g_clear_object (&self->timezone_monitor);
+    g_clear_pointer (&self->timezone, g_time_zone_unref);
+
+    G_OBJECT_CLASS (nautilus_clock_parent_class)->finalize (object);
 }
 
 static void
 nautilus_clock_class_init (NautilusClockClass *klass)
 {
+    GObjectClass *object_class = G_OBJECT_CLASS (klass);
+
+    object_class->finalize = nautilus_clock_finalize;
 }
 
 static void
 nautilus_clock_init (NautilusClock *self)
 {
+    g_autoptr (GFile) localtime_file = g_file_new_for_path ("/etc/localtime");
+
+    self->timezone = g_time_zone_new_local ();
+
+    self->timezone_monitor = g_file_monitor_file (localtime_file, G_FILE_MONITOR_NONE, NULL, NULL);
+    if (self->timezone_monitor != NULL)
+    {
+        g_signal_connect_object (self->timezone_monitor, "changed",
+                                 G_CALLBACK (on_timezone_file_changed), self,
+                                 G_CONNECT_SWAPPED);
+    }
 }
 
 static NautilusClock *
@@ -92,7 +134,11 @@ get_clock (void)
     return instance;
 }
 
-/** Returns: (transfer full): the local time zone. */
+/**
+ * Must only be called from the main thread.
+ *
+ * Returns: (transfer full): the local time zone.
+ */
 GTimeZone *
 nautilus_date_get_local_timezone (void)
 {
