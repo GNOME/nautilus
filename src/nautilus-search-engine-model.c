@@ -78,6 +78,14 @@ model_directory_ready_cb (NautilusDirectory *directory,
                           gpointer           user_data)
 {
     NautilusSearchEngineModel *model = user_data;
+
+    if (nautilus_search_provider_should_stop (model))
+    {
+        search_finished_idle (model);
+
+        return;
+    }
+
     gchar *uri;
     GList *files, *l;
     NautilusFile *file;
