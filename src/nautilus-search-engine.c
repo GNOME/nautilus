@@ -256,6 +256,11 @@ setup_provider (NautilusSearchEngine    *self,
     }
     else
     {
+        if (*provider_pointer != NULL)
+        {
+            nautilus_search_provider_stop (*provider_pointer);
+        }
+
         g_clear_object (provider_pointer);
     }
 }
