@@ -16,7 +16,6 @@
 #include "nautilus-search-provider.h"
 #include "nautilus-ui-utilities.h"
 
-#include <string.h>
 #include <glib.h>
 #include <gio/gio.h>
 
@@ -40,12 +39,7 @@ finalize (GObject *object)
 
     model = NAUTILUS_SEARCH_ENGINE_MODEL (object);
 
-    if (model->finished_id != 0)
-    {
-        g_source_remove (model->finished_id);
-        model->finished_id = 0;
-    }
-
+    g_clear_handle_id (&model->finished_id, g_source_remove);
     g_clear_object (&model->directory);
 
     G_OBJECT_CLASS (nautilus_search_engine_model_parent_class)->finalize (object);
@@ -101,7 +95,6 @@ model_directory_ready_cb (NautilusDirectory *directory,
 
     for (l = files; l != NULL; l = l->next)
     {
-        g_autofree gchar *display_name = NULL;
         g_autoptr (GDateTime) mtime = NULL;
         g_autoptr (GDateTime) atime = NULL;
         g_autoptr (GDateTime) ctime = NULL;

@@ -14,7 +14,6 @@
 #include "nautilus-search-provider.h"
 #include "nautilus-ui-utilities.h"
 
-#include <string.h>
 #include <glib.h>
 #include <gio/gio.h>
 

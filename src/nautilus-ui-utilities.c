@@ -366,10 +366,6 @@ nautilus_show_ok_dialog (const char *heading,
 #define TIMED_WAIT_STANDARD_DURATION 2000
 #define TIMED_WAIT_MIN_TIME_UP 3000
 
-#define TIMED_WAIT_MINIMUM_DIALOG_WIDTH 300
-
-#define RESPONSE_DETAILS 1000
-
 typedef struct
 {
     TimedWaitCancelCallback cancel_callback;
