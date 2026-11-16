@@ -213,8 +213,15 @@ nautilus_search_provider_finished (NautilusSearchProvider *self)
     ready_hits = g_steal_pointer (&priv->hits_to_submit);
     g_mutex_unlock (&priv->idle_submit_mutex);
 
+    if (ready_hits != NULL)
+    {
+        g_ptr_array_extend_and_steal (ready_hits, g_steal_pointer (&priv->hits));
+    }
+    else
+    {
+        ready_hits = g_steal_pointer (&priv->hits);
+    }
     search_provider_submit_hits (self, ready_hits);
-    search_provider_submit_hits (self, g_steal_pointer (&priv->hits));
 
     g_clear_object (&priv->cancellable);
     g_clear_object (&priv->query);
