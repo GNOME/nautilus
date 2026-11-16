@@ -8,6 +8,7 @@
 
 #include <adwaita.h>
 
+#include "nautilus-date-utilities.h"
 #include "nautilus-file.h"
 #include "nautilus-global-preferences.h"
 #include "nautilus-image.h"
@@ -153,6 +154,18 @@ update_captions (NautilusGridCell *self)
             string = nautilus_file_get_string_attribute_q (file, attribute_q);
             gtk_label_set_text (GTK_LABEL (self->caption_labels[i]), string);
         }
+    }
+}
+
+static void
+on_day_changed (NautilusGridCell *self)
+{
+    g_autoptr (NautilusViewItem) item = nautilus_view_cell_get_item (NAUTILUS_VIEW_CELL (self));
+
+    /* Unbound cells are refreshed when they get bound again. */
+    if (item != NULL)
+    {
+        update_captions (self);
     }
 }
 
@@ -500,6 +513,9 @@ nautilus_grid_cell_init (NautilusGridCell *self)
 
     g_signal_connect_object (nautilus_preferences, "changed::" NAUTILUS_PREFERENCES_DATE_TIME_FORMAT,
                              G_CALLBACK (update_captions), self,
+                             G_CONNECT_SWAPPED);
+    g_signal_connect_object (nautilus_date_get_clock (), "day-changed",
+                             G_CALLBACK (on_day_changed), self,
                              G_CONNECT_SWAPPED);
 
     /* Connect automatically to an item. */
