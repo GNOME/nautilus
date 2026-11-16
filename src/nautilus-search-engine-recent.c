@@ -33,8 +33,6 @@ struct _NautilusSearchEngineRecent
 {
     NautilusSearchProvider parent_instance;
 
-    GtkRecentManager *recent_manager;
-
     GHashTable *parents_visibility_cache;
 };
 
@@ -166,17 +164,25 @@ is_file_valid (NautilusSearchEngineRecent  *self,
     return TRUE;
 }
 
-static gpointer
-recent_thread_func (NautilusSearchEngineRecent *self)
+typedef struct
 {
+    NautilusSearchEngineRecent *self;
+
+    GList *recent_items;
+} RecentSearchData;
+
+static gpointer
+recent_thread_func (gpointer user_data)
+{
+    g_autofree RecentSearchData *data = user_data;
+    NautilusSearchEngineRecent *self = data->self;
     g_autoptr (GPtrArray) date_range = NULL;
     g_autoptr (GFile) query_location = NULL;
-    GList *recent_items;
+    GList *recent_items = data->recent_items;
     NautilusQuery *query = nautilus_search_provider_get_query (self);
     gboolean show_hidden = nautilus_query_get_show_hidden_files (query);
     GList *l;
 
-    recent_items = gtk_recent_manager_get_items (self->recent_manager);
     date_range = nautilus_query_get_date_range (query);
     query_location = nautilus_query_get_location (query);
 
@@ -330,8 +336,12 @@ start_search (NautilusSearchProvider *provider)
 {
     NautilusSearchEngineRecent *self = NAUTILUS_SEARCH_ENGINE_RECENT (provider);
     g_autoptr (GThread) thread = NULL;
+    g_autofree RecentSearchData *data = g_new0 (RecentSearchData, 1);
 
-    thread = g_thread_new ("nautilus-search-recent", (GThreadFunc) recent_thread_func, self);
+    data->self = self;
+    data->recent_items = gtk_recent_manager_get_items (gtk_recent_manager_get_default ());
+
+    thread = g_thread_new ("nautilus-search-recent", recent_thread_func, g_steal_pointer (&data));
 }
 static void
 nautilus_search_engine_recent_class_init (NautilusSearchEngineRecentClass *klass)
@@ -348,7 +358,6 @@ nautilus_search_engine_recent_class_init (NautilusSearchEngineRecentClass *klass
 static void
 nautilus_search_engine_recent_init (NautilusSearchEngineRecent *self)
 {
-    self->recent_manager = gtk_recent_manager_get_default ();
     self->parents_visibility_cache = g_hash_table_new_full (g_file_hash,
                                                             (GEqualFunc) g_file_equal,
                                                             g_object_unref,
