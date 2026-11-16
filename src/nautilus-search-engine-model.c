@@ -178,7 +178,7 @@ model_directory_ready_cb (NautilusDirectory *directory,
 
     nautilus_file_list_free (files);
 
-    search_finished (model);
+    search_finished_idle (model);
 }
 
 static const char *
