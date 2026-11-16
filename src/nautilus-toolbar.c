@@ -10,6 +10,7 @@
 
 
 #include "nautilus-application.h"
+#include "nautilus-dnd.h"
 #include "nautilus-global-preferences.h"
 #include "nautilus-history-controls.h"
 #include "nautilus-location-entry.h"
@@ -37,6 +38,7 @@ struct _NautilusToolbar
     GtkWidget *focus_before_location_entry;
 
     GtkWidget *sidebar_button;
+    guint sidebar_hover_timer_id;
     gboolean show_new_folder_button;
     gboolean show_sidebar_button;
     gboolean sidebar_button_active;
@@ -234,6 +236,34 @@ action_prompt_home_location (GtkWidget  *widget,
 }
 
 static void
+sidebar_hover_timer (gpointer user_data)
+{
+    NautilusToolbar *self = NAUTILUS_TOOLBAR (user_data);
+
+    self->sidebar_hover_timer_id = 0;
+
+    gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (self->sidebar_button), TRUE);
+}
+
+static void
+on_sidebar_button_drag_enter (NautilusToolbar *self)
+{
+    if (gtk_toggle_button_get_active (GTK_TOGGLE_BUTTON (self->sidebar_button)))
+    {
+        return;
+    }
+
+    g_clear_handle_id (&self->sidebar_hover_timer_id, g_source_remove);
+    self->sidebar_hover_timer_id = g_timeout_add_once (HOVER_TIMEOUT, sidebar_hover_timer, self);
+}
+
+static void
+on_sidebar_button_drag_leave (NautilusToolbar *self)
+{
+    g_clear_handle_id (&self->sidebar_hover_timer_id, g_source_remove);
+}
+
+static void
 nautilus_toolbar_init (NautilusToolbar *self)
 {
     g_type_ensure (NAUTILUS_TYPE_HISTORY_CONTROLS);
@@ -404,6 +434,8 @@ nautilus_toolbar_dispose (GObject *object)
 {
     NautilusToolbar *self = NAUTILUS_TOOLBAR (object);
 
+    g_clear_handle_id (&self->sidebar_hover_timer_id, g_source_remove);
+
     adw_bin_set_child (ADW_BIN (object), NULL);
     gtk_widget_dispose_template (GTK_WIDGET (self), NAUTILUS_TYPE_TOOLBAR);
 
@@ -481,8 +513,12 @@ nautilus_toolbar_class_init (NautilusToolbarClass *klass)
     gtk_widget_class_bind_template_child (widget_class, NautilusToolbar, search_button_stack);
     gtk_widget_class_bind_template_child (widget_class, NautilusToolbar, search_button);
     gtk_widget_class_bind_template_child (widget_class, NautilusToolbar, search_button_placeholder);
+    gtk_widget_class_bind_template_child_full (widget_class, "show_sidebar_button", FALSE,
+                                               G_STRUCT_OFFSET (NautilusToolbar, sidebar_button));
 
     gtk_widget_class_bind_template_callback (widget_class, on_location_entry_location_changed);
+    gtk_widget_class_bind_template_callback (widget_class, on_sidebar_button_drag_enter);
+    gtk_widget_class_bind_template_callback (widget_class, on_sidebar_button_drag_leave);
     gtk_widget_class_bind_template_callback (widget_class, nautilus_toolbar_close_location_entry);
 
     gtk_widget_class_set_accessible_role (widget_class, GTK_ACCESSIBLE_ROLE_TOOLBAR);

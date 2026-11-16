@@ -76,6 +76,11 @@ template $NautilusToolbar: Adw.Bin {
       active: bind template.sidebar-button-active bidirectional;
       tooltip-text: _("Show Sidebar");
       icon-name: "sidebar-show-symbolic";
+
+      DropControllerMotion {
+        enter => $on_sidebar_button_drag_enter() swapped;
+        leave => $on_sidebar_button_drag_leave() swapped;
+      }
     }
 
     [start]
