@@ -103,6 +103,14 @@ actual_start (NautilusSearchProvider *self)
     klass->start_search (self);
 }
 
+static gboolean
+actual_start_cb (NautilusSearchProvider *self)
+{
+    actual_start (self);
+
+    return G_SOURCE_REMOVE;
+}
+
 gboolean
 nautilus_search_provider_start (NautilusSearchProvider *self,
                                 NautilusQuery          *query)
@@ -124,12 +132,15 @@ nautilus_search_provider_start (NautilusSearchProvider *self,
     g_set_object (&priv->query, query);
 
     guint delay_ms = klass->search_delay (self);
+
     if (delay_ms > 0)
     {
         g_debug ("Search provider '%s' delayed", search_provider_name (self));
-        priv->delayed_timeout_id = g_timeout_add_once (delay_ms,
-                                                       (GSourceOnceFunc) actual_start,
-                                                       self);
+        priv->delayed_timeout_id = g_timeout_add_full (G_PRIORITY_DEFAULT,
+                                                       delay_ms,
+                                                       (GSourceFunc) actual_start_cb,
+                                                       g_object_ref (self),
+                                                       g_object_unref);
     }
     else
     {
