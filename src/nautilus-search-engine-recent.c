@@ -25,11 +25,17 @@
         G_FILE_ATTRIBUTE_TIME_ACCESS "," \
         G_FILE_ATTRIBUTE_TIME_CREATED
 
+#define PARENT_ATTRIBS G_FILE_ATTRIBUTE_STANDARD_NAME "," \
+        G_FILE_ATTRIBUTE_STANDARD_IS_HIDDEN "," \
+        G_FILE_ATTRIBUTE_STANDARD_IS_BACKUP
+
 struct _NautilusSearchEngineRecent
 {
     NautilusSearchProvider parent_instance;
 
     GtkRecentManager *recent_manager;
+
+    GHashTable *parents_visibility_cache;
 };
 
 G_DEFINE_FINAL_TYPE (NautilusSearchEngineRecent,
@@ -45,17 +51,78 @@ nautilus_search_engine_recent_new (void)
 static void
 nautilus_search_engine_recent_finalize (GObject *object)
 {
+    NautilusSearchEngineRecent *self = NAUTILUS_SEARCH_ENGINE_RECENT (object);
+
+    g_clear_pointer (&self->parents_visibility_cache, g_hash_table_unref);
+
     G_OBJECT_CLASS (nautilus_search_engine_recent_parent_class)->finalize (object);
 }
 
 static gboolean
-is_file_valid_recursive (NautilusSearchEngineRecent  *self,
+all_parents_are_visible (NautilusSearchEngineRecent  *self,
                          GFile                       *file,
-                         gboolean                     show_hidden,
-                         GDateTime                  **mtime,
-                         GDateTime                  **atime,
-                         GDateTime                  **ctime,
                          GError                     **error)
+{
+    g_autoptr (GFile) parent = g_file_get_parent (file);
+    g_autoptr (GFileInfo) file_info = NULL;
+    gpointer cached_value;
+    gboolean is_hidden;
+    gboolean is_visible;
+
+    if (parent == NULL)
+    {
+        /* Reached the root of the file system. */
+        return TRUE;
+    }
+
+    if (g_hash_table_lookup_extended (self->parents_visibility_cache, parent,
+                                      NULL, &cached_value))
+    {
+        return GPOINTER_TO_INT (cached_value);
+    }
+
+    file_info = g_file_query_info (parent, PARENT_ATTRIBS,
+                                   G_FILE_QUERY_INFO_NONE,
+                                   nautilus_search_provider_get_cancellable (self), error);
+    if (file_info == NULL)
+    {
+        return FALSE;
+    }
+
+    is_hidden = g_file_info_get_attribute_boolean (file_info,
+                                                   G_FILE_ATTRIBUTE_STANDARD_IS_HIDDEN) ||
+                g_file_info_get_attribute_boolean (file_info,
+                                                   G_FILE_ATTRIBUTE_STANDARD_IS_BACKUP);
+
+    if (is_hidden)
+    {
+        is_visible = FALSE;
+    }
+    else
+    {
+        is_visible = all_parents_are_visible (self, parent, error);
+
+        if (error != NULL && *error != NULL)
+        {
+            /* Don't cache failures, they may be transient. */
+            return FALSE;
+        }
+    }
+
+    g_hash_table_insert (self->parents_visibility_cache,
+                         g_steal_pointer (&parent), GINT_TO_POINTER (is_visible));
+
+    return is_visible;
+}
+
+static gboolean
+is_file_valid (NautilusSearchEngineRecent  *self,
+               GFile                       *file,
+               gboolean                     show_hidden,
+               GDateTime                  **mtime,
+               GDateTime                  **atime,
+               GDateTime                  **ctime,
+               GError                     **error)
 {
     g_autoptr (GFileInfo) file_info = NULL;
 
@@ -88,21 +155,12 @@ is_file_valid_recursive (NautilusSearchEngineRecent  *self,
                                                        G_FILE_ATTRIBUTE_STANDARD_IS_HIDDEN) ||
                     g_file_info_get_attribute_boolean (file_info,
                                                        G_FILE_ATTRIBUTE_STANDARD_IS_BACKUP);
-        if (!is_hidden)
-        {
-            g_autoptr (GFile) parent = g_file_get_parent (file);
-
-            if (parent)
-            {
-                return is_file_valid_recursive (self, parent, show_hidden,
-                                                NULL, NULL, NULL,
-                                                error);
-            }
-        }
-        else
+        if (is_hidden)
         {
             return FALSE;
         }
+
+        return all_parents_are_visible (self, file, error);
     }
 
     return TRUE;
@@ -121,6 +179,9 @@ recent_thread_func (NautilusSearchEngineRecent *self)
     recent_items = gtk_recent_manager_get_items (self->recent_manager);
     date_range = nautilus_query_get_date_range (query);
     query_location = nautilus_query_get_location (query);
+
+    /* The cache is used for the duration of a single search. */
+    g_hash_table_remove_all (self->parents_visibility_cache);
 
     for (l = recent_items; l != NULL; l = l->next)
     {
@@ -165,7 +226,7 @@ recent_thread_func (NautilusSearchEngineRecent *self)
                 continue;
             }
 
-            if (!is_file_valid_recursive (self, file, show_hidden, &mtime, &atime, &ctime, &error))
+            if (!is_file_valid (self, file, show_hidden, &mtime, &atime, &ctime, &error))
             {
                 if (g_error_matches (error, G_IO_ERROR, G_IO_ERROR_CANCELLED))
                 {
@@ -287,4 +348,8 @@ static void
 nautilus_search_engine_recent_init (NautilusSearchEngineRecent *self)
 {
     self->recent_manager = gtk_recent_manager_get_default ();
+    self->parents_visibility_cache = g_hash_table_new_full (g_file_hash,
+                                                            (GEqualFunc) g_file_equal,
+                                                            g_object_unref,
+                                                            NULL);
 }
