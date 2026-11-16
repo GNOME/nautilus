@@ -6,11 +6,14 @@
 
 #pragma once
 
-#include <glib.h>
+#include <glib-object.h>
 
 
 void
 nautilus_date_setup_preferences (void);
+
+GObject *
+nautilus_date_get_clock (void);
 
 GTimeZone *
 nautilus_date_get_local_timezone (void);
