@@ -129,7 +129,7 @@ is_file_valid (NautilusSearchEngineRecent  *self,
     file_info = g_file_query_info (file, FILE_ATTRIBS,
                                    G_FILE_QUERY_INFO_NONE,
                                    nautilus_search_provider_get_cancellable (self), error);
-    if (*error != NULL)
+    if (file_info == NULL)
     {
         return FALSE;
     }
