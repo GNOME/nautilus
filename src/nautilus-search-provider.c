@@ -78,10 +78,10 @@ search_provider_name (NautilusSearchProvider *self)
 {
     NautilusSearchProviderPrivate *priv = nautilus_search_provider_get_instance_private (self);
 
-    if (G_UNLIKELY (priv->name == NULL))
+    if (g_once_init_enter_pointer (&priv->name))
     {
         NautilusSearchProviderClass *klass = NAUTILUS_SEARCH_PROVIDER_CLASS (G_OBJECT_GET_CLASS (self));
-        priv->name = klass->get_name (self);
+        g_once_init_leave_pointer (&priv->name, klass->get_name (self));
     }
 
     return priv->name;
