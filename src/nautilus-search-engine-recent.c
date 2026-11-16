@@ -235,7 +235,7 @@ recent_thread_func (NautilusSearchEngineRecent *self)
                 }
 
                 if (error != NULL &&
-                    !g_error_matches (error, G_IO_ERROR, G_IO_ERROR_EXISTS))
+                    !g_error_matches (error, G_IO_ERROR, G_IO_ERROR_NOT_FOUND))
                 {
                     g_debug ("Impossible to read recent file info: %s",
                              error->message);
