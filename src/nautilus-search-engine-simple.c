@@ -202,6 +202,7 @@ start_search (NautilusSearchProvider *provider)
                              : STD_ATTRIBUTES;
     gboolean recursion_enabled = nautilus_query_recursive (query);
 
+    self->last_saved_time = g_get_monotonic_time ();
     nautilus_iterate_directory_recursive (toplevel,
                                           recursion_enabled ? G_MAXUINT : 0,
                                           attributes,
@@ -227,7 +228,6 @@ nautilus_search_engine_simple_class_init (NautilusSearchEngineSimpleClass *class
 static void
 nautilus_search_engine_simple_init (NautilusSearchEngineSimple *self)
 {
-    self->last_saved_time = g_get_monotonic_time ();
 }
 
 NautilusSearchEngineSimple *
