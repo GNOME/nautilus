@@ -210,7 +210,8 @@ recent_thread_func (NautilusSearchEngineRecent *self)
         if (rank == -1)
         {
             g_autofree char *short_name = gtk_recent_info_get_short_name (info);
-            rank = nautilus_query_matches_string (query, short_name);
+
+            rank = short_name != NULL ? nautilus_query_matches_string (query, short_name) : rank;
         }
 
         if (rank > -1)
