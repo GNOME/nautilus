@@ -125,7 +125,15 @@ nautilus_search_engine_start (NautilusSearchEngine *self,
 void
 nautilus_search_engine_stop (NautilusSearchEngine *self)
 {
+    if (!self->running)
+    {
+        return;
+    }
+
     g_debug ("Search engine stop");
+
+    /* Need to be called before stopping so it doesn't restart */
+    self->restart = FALSE;
 
     if (self->localsearch != NULL)
     {
@@ -143,8 +151,6 @@ nautilus_search_engine_stop (NautilusSearchEngine *self)
     {
         nautilus_search_provider_stop (self->simple);
     }
-
-    self->restart = FALSE;
 }
 
 static void
