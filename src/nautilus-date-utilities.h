@@ -12,6 +12,12 @@
 void
 nautilus_date_setup_preferences (void);
 
+GTimeZone *
+nautilus_date_get_local_timezone (void);
+
+GDateTime *
+nautilus_date_time_new_from_unix_local (gint64 unix_time);
+
 char *
 nautilus_date_to_str (GDateTime *timestamp,
                       gboolean   use_short_format);

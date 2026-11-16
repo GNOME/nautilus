@@ -53,6 +53,70 @@ nautilus_date_setup_preferences (void)
                               NULL);
 }
 
+#define NAUTILUS_TYPE_CLOCK (nautilus_clock_get_type ())
+G_DECLARE_FINAL_TYPE (NautilusClock, nautilus_clock, NAUTILUS, CLOCK, GObject)
+
+struct _NautilusClock
+{
+    GObject parent_instance;
+};
+
+G_DEFINE_FINAL_TYPE (NautilusClock, nautilus_clock, G_TYPE_OBJECT)
+
+static GTimeZone *
+nautilus_clock_get_timezone (NautilusClock *self)
+{
+    return g_time_zone_new_local ();
+}
+
+static void
+nautilus_clock_class_init (NautilusClockClass *klass)
+{
+}
+
+static void
+nautilus_clock_init (NautilusClock *self)
+{
+}
+
+static NautilusClock *
+get_clock (void)
+{
+    static NautilusClock *instance = NULL;
+
+    if (G_UNLIKELY (instance == NULL))
+    {
+        instance = g_object_new (NAUTILUS_TYPE_CLOCK, NULL);
+    }
+
+    return instance;
+}
+
+/** Returns: (transfer full): the local time zone. */
+GTimeZone *
+nautilus_date_get_local_timezone (void)
+{
+    return nautilus_clock_get_timezone (get_clock ());
+}
+
+/**
+ * Like g_date_time_new_from_unix_local(), but gets the time zone from
+ * nautilus_date_get_local_timezone().
+ */
+GDateTime *
+nautilus_date_time_new_from_unix_local (gint64 unix_time)
+{
+    g_autoptr (GDateTime) utc = g_date_time_new_from_unix_utc (unix_time);
+    g_autoptr (GTimeZone) tz = nautilus_date_get_local_timezone ();
+
+    if (utc == NULL)
+    {
+        return NULL;
+    }
+
+    return g_date_time_to_timezone (utc, tz);
+}
+
 static gchar *
 posix_locale_to_icu (const gchar *posix_locale)
 {
@@ -498,7 +562,8 @@ nautilus_date_range_to_str (GPtrArray *date_range,
         return date_to_str (start_date, use_short_format, FALSE, FALSE);
     }
 
-    g_autoptr (GDateTime) now = g_date_time_new_now_local ();
+    g_autoptr (GTimeZone) tz = nautilus_date_get_local_timezone ();
+    g_autoptr (GDateTime) now = g_date_time_new_now (tz);
     g_autofree char *start = date_to_str (start_date, use_short_format, FALSE, FALSE);
 
     if (equal_date (start_date, end_date))

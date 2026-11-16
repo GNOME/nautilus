@@ -9,6 +9,7 @@
 
 #include "nautilus-search-engine-model.h"
 
+#include "nautilus-date-utilities.h"
 #include "nautilus-directory.h"
 #include "nautilus-file.h"
 #include "nautilus-query.h"
@@ -115,9 +116,9 @@ model_directory_ready_cb (NautilusDirectory *directory,
             continue;
         }
 
-        mtime = g_date_time_new_from_unix_local (nautilus_file_get_mtime (file));
-        atime = g_date_time_new_from_unix_local (nautilus_file_get_atime (file));
-        ctime = g_date_time_new_from_unix_local (nautilus_file_get_btime (file));
+        mtime = nautilus_date_time_new_from_unix_local (nautilus_file_get_mtime (file));
+        atime = nautilus_date_time_new_from_unix_local (nautilus_file_get_atime (file));
+        ctime = nautilus_date_time_new_from_unix_local (nautilus_file_get_btime (file));
 
         date_range = nautilus_query_get_date_range (query);
         if (found && date_range != NULL)

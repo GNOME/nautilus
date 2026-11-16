@@ -2773,7 +2773,7 @@ update_info_internal (NautilusFile *file,
     time_string = g_file_info_get_attribute_string (info, "trash::deletion-date");
     if (time_string != NULL)
     {
-        g_autoptr (GTimeZone) tz = g_time_zone_new_local ();
+        g_autoptr (GTimeZone) tz = nautilus_date_get_local_timezone ();
         g_autoptr (GDateTime) date_time = g_date_time_new_from_iso8601 (time_string, tz);
 
         trash_time = date_time != NULL ? g_date_time_to_unix (date_time) : 0;
@@ -4768,7 +4768,7 @@ nautilus_file_get_date (NautilusFile     *file,
         return NULL;
     }
 
-    return g_date_time_new_from_unix_local (file_time_raw);
+    return nautilus_date_time_new_from_unix_local (file_time_raw);
 }
 
 static char *
