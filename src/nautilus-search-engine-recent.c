@@ -146,13 +146,13 @@ recent_thread_func (NautilusSearchEngineRecent *self)
         name = gtk_recent_info_get_display_name (info);
         rank = nautilus_query_matches_string (query, name);
 
-        if (rank <= 0)
+        if (rank == -1)
         {
             g_autofree char *short_name = gtk_recent_info_get_short_name (info);
             rank = nautilus_query_matches_string (query, short_name);
         }
 
-        if (rank > 0)
+        if (rank > -1)
         {
             NautilusSearchHit *hit;
             g_autoptr (GDateTime) mtime = NULL;
