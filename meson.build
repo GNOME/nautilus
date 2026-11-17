@@ -239,7 +239,9 @@ subdirs = [
 
 if get_option('docs')
   if not get_option('introspection')
-    error('Building the documentation (-Ddocs=true) requires -Dintrospection=true')
+    error(
+      'Building the documentation (-Ddocs=true) requires -Dintrospection=true',
+    )
   endif
   subdirs += 'docs'
 endif
