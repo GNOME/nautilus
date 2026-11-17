@@ -158,7 +158,7 @@ iterate_finish (GObject      *source_object,
 {
     NautilusSearchEngineSimple *self = user_data;
 
-    g_idle_add_once ((GSourceOnceFunc) nautilus_search_provider_finished, self);
+    nautilus_search_provider_finished (NAUTILUS_SEARCH_PROVIDER (self));
 }
 
 static const char *
