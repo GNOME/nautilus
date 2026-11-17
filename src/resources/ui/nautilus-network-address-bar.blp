@@ -1,4 +1,5 @@
 using Gtk 4.0;
+using Adw 1;
 
 Popover server_addresses_popover {
   position: top;
@@ -83,33 +84,44 @@ template $NautilusNetworkAddressBar: Box {
     "toolbar",
   ]
 
-  Entry address_entry {
-    input-purpose: url;
-    input-hints: no_spellcheck | no_emoji;
-    width-chars: 10;
-    max-width-chars: 34;
-    placeholder-text: _("Server address");
-    notify::text => $on_address_entry_text_changed(template);
-    activate => $on_connect_button_clicked(template);
-  }
+  Adw.Clamp {
+    halign: start;
+    maximum-size: 600;
+    tightening-threshold: 600;
 
-  Button connect_button {
-    label: _("Con_nect");
-    use-underline: true;
-    can-shrink: true;
-    sensitive: false;
-    valign: center;
-    clicked => $on_connect_button_clicked(template);
-  }
+    Box {
+      spacing: 6;
 
-  MenuButton {
-    tooltip-text: _("Server Address Information");
-    popover: server_addresses_popover;
-    icon-name: "info-outline-symbolic";
+      Entry address_entry {
+        hexpand: true;
+        input-purpose: url;
+        input-hints: no_spellcheck | no_emoji;
+        width-chars: 10;
+        max-width-chars: 88;
+        placeholder-text: _("Server address");
+        notify::text => $on_address_entry_text_changed(template);
+        activate => $on_connect_button_clicked(template);
+      }
 
-    styles [
-      "flat",
-      "circular",
-    ]
+      Button connect_button {
+        label: _("Con_nect");
+        use-underline: true;
+        can-shrink: true;
+        sensitive: false;
+        valign: center;
+        clicked => $on_connect_button_clicked(template);
+      }
+
+      MenuButton {
+        tooltip-text: _("Server Address Information");
+        popover: server_addresses_popover;
+        icon-name: "info-outline-symbolic";
+
+        styles [
+          "flat",
+          "circular",
+        ]
+      }
+    }
   }
 }
