@@ -168,6 +168,7 @@ style check:
         expire_in: 14 days
     script:
         - build-aux/format.sh
+        - git diff --exit-code | tee style-check.diff
     rules:
         - if: $CI_COMMIT_BRANCH !~ /^gnome-.*$/
 
