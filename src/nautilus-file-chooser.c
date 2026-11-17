@@ -470,6 +470,24 @@ on_filename_entry_focus_leave (NautilusFileChooser *self)
                                  self->filename_button_container);
 }
 
+static gboolean
+on_filename_entry_key_pressed (NautilusFileChooser   *self,
+                               guint                  keyval,
+                               guint                  keycode,
+                               GdkModifierType        state,
+                               GtkEventControllerKey *controller)
+{
+    if (keyval == GDK_KEY_Escape)
+    {
+        /* Leave the entry instead of closing the window. */
+        gtk_widget_grab_focus (GTK_WIDGET (self->slot));
+
+        return GDK_EVENT_STOP;
+    }
+
+    return GDK_EVENT_PROPAGATE;
+}
+
 static void
 on_filename_entry_changed (NautilusFileChooser *self)
 {
@@ -950,6 +968,7 @@ nautilus_file_chooser_class_init (NautilusFileChooserClass *klass)
     gtk_widget_class_bind_template_callback (widget_class, on_filename_undo_button_clicked);
     gtk_widget_class_bind_template_callback (widget_class, on_filename_entry_changed);
     gtk_widget_class_bind_template_callback (widget_class, on_filename_entry_focus_leave);
+    gtk_widget_class_bind_template_callback (widget_class, on_filename_entry_key_pressed);
     gtk_widget_class_bind_template_callback (widget_class, nautilus_filename_validator_validate);
     gtk_widget_class_bind_template_callback (widget_class, on_validator_has_feedback_changed);
     gtk_widget_class_bind_template_callback (widget_class, on_validator_will_overwrite_changed);

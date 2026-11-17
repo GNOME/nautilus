@@ -235,6 +235,11 @@ template $NautilusFileChooser: Adw.Window {
                 EventControllerFocus {
                   leave => $on_filename_entry_focus_leave(template);
                 }
+
+                EventControllerKey {
+                  propagation-phase: capture;
+                  key-pressed => $on_filename_entry_key_pressed(template);
+                }
               }
             }
 
