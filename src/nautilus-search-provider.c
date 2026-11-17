@@ -124,7 +124,8 @@ nautilus_search_provider_start (NautilusSearchProvider *self,
     /* Can't start provider again before it finished */
     g_return_val_if_fail (priv->cancellable == NULL && priv->delayed_timeout_id == 0, FALSE);
 
-    if (!klass->should_search (self, query))
+    if (nautilus_query_is_empty (query) ||
+        !klass->should_search (self, query))
     {
         return FALSE;
     }
