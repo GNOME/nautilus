@@ -1857,8 +1857,6 @@ handle_regular_file_if_needed (NautilusWindowSlot *self,
         g_clear_pointer (&self->pending_selection, nautilus_file_list_free);
         g_clear_object (&self->pending_location);
         self->pending_location = nautilus_file_get_parent_location (file);
-        g_clear_object (&self->pending_file);
-        self->pending_file = g_steal_pointer (&parent_file);
         g_clear_object (&self->pending_file_to_activate);
         if (self->mode == NAUTILUS_MODE_BROWSE && nautilus_mime_file_extracts (file))
         {
@@ -1866,6 +1864,8 @@ handle_regular_file_if_needed (NautilusWindowSlot *self,
         }
 
         self->pending_selection = g_list_prepend (NULL, nautilus_file_ref (file));
+        g_clear_object (&self->pending_file);
+        self->pending_file = g_steal_pointer (&parent_file);
 
         nautilus_file_invalidate_all_attributes (self->pending_file);
         nautilus_file_call_when_ready (self->pending_file,
