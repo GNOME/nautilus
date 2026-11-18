@@ -1845,25 +1845,27 @@ handle_mount_if_needed (NautilusWindowSlot *self,
 }
 
 static gboolean
-handle_regular_file_if_needed (NautilusWindowSlot *self,
-                               NautilusFile       *file)
+handle_regular_file_if_needed (NautilusWindowSlot *self)
 {
-    NautilusFile *parent_file;
-    gboolean needs_regular_file_handling = FALSE;
-    parent_file = nautilus_file_get_parent (file);
-    if ((parent_file != NULL) &&
-        nautilus_file_get_file_type (file) == G_FILE_TYPE_REGULAR)
+    if (nautilus_file_get_file_type (self->pending_file) != G_FILE_TYPE_REGULAR)
     {
-        g_clear_pointer (&self->pending_selection, nautilus_file_list_free);
-        g_clear_object (&self->pending_location);
-        self->pending_location = nautilus_file_get_parent_location (file);
-        g_clear_object (&self->pending_file_to_activate);
-        if (self->mode == NAUTILUS_MODE_BROWSE && nautilus_mime_file_extracts (file))
-        {
-            self->pending_file_to_activate = nautilus_file_ref (file);
-        }
+        return FALSE;
+    }
 
-        self->pending_selection = g_list_prepend (NULL, nautilus_file_ref (file));
+    g_autoptr (NautilusFile) parent_file = nautilus_file_get_parent (self->pending_file);
+    gboolean needs_regular_file_handling = FALSE;
+
+    if (parent_file != NULL)
+    {
+        g_clear_object (&self->pending_location);
+        self->pending_location = nautilus_file_get_parent_location (self->pending_file);
+        g_clear_object (&self->pending_file_to_activate);
+        if (self->mode == NAUTILUS_MODE_BROWSE && nautilus_mime_file_extracts (self->pending_file))
+        {
+            self->pending_file_to_activate = nautilus_file_ref (self->pending_file);
+        }
+        g_clear_pointer (&self->pending_selection, nautilus_file_list_free);
+        self->pending_selection = g_list_prepend (NULL, nautilus_file_ref (self->pending_file));
         g_clear_object (&self->pending_file);
         self->pending_file = g_steal_pointer (&parent_file);
 
@@ -1876,8 +1878,6 @@ handle_regular_file_if_needed (NautilusWindowSlot *self,
 
         needs_regular_file_handling = TRUE;
     }
-
-    nautilus_file_unref (parent_file);
 
     return needs_regular_file_handling;
 }
@@ -1892,7 +1892,7 @@ got_file_info_for_view_selection_callback (NautilusFile *ready_file,
     g_assert (self->pending_file == ready_file);
 
     if (handle_mount_if_needed (self, ready_file) ||
-        handle_regular_file_if_needed (self, ready_file))
+        handle_regular_file_if_needed (self))
     {
         return;
     }
