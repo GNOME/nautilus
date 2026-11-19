@@ -27,10 +27,11 @@ struct _NautilusViewCellPrivate
     GtkWidget parent_instance;
 
     NautilusListBase *view; /* Unowned */
+    /* Unowned. The list item widget keeps a reference on the cell. */
+    GtkListItem *list_item;
     NautilusViewItem *item; /* Owned reference */
 
     guint icon_size;
-    guint position;
 };
 
 
@@ -42,7 +43,6 @@ enum
     PROP_VIEW,
     PROP_ITEM,
     PROP_ICON_SIZE,
-    PROP_POSITION,
     N_PROPS
 };
 
@@ -74,12 +74,6 @@ nautilus_view_cell_get_property (GObject    *object,
         case PROP_ICON_SIZE:
         {
             g_value_set_uint (value, priv->icon_size);
-        }
-        break;
-
-        case PROP_POSITION:
-        {
-            g_value_set_uint (value, priv->position);
         }
         break;
 
@@ -119,12 +113,6 @@ nautilus_view_cell_set_property (GObject      *object,
         }
         break;
 
-        case PROP_POSITION:
-        {
-            priv->position = g_value_get_uint (value);
-        }
-        break;
-
         default:
         {
             G_OBJECT_WARN_INVALID_PROPERTY_ID (object, prop_id, pspec);
@@ -146,6 +134,7 @@ nautilus_view_cell_dispose (GObject *object)
 
     g_clear_object (&priv->item);
     g_clear_weak_pointer (&priv->view);
+    priv->list_item = NULL;
 
     G_OBJECT_CLASS (nautilus_view_cell_parent_class)->dispose (object);
 }
@@ -174,9 +163,6 @@ nautilus_view_cell_class_init (NautilusViewCellClass *klass)
                                                     NAUTILUS_GRID_ICON_SIZE_LARGE,
                                                     G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS);
 
-    properties[PROP_POSITION] = g_param_spec_uint ("position", NULL, NULL,
-                                                   0, G_MAXUINT, GTK_INVALID_LIST_POSITION,
-                                                   G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS);
     g_object_class_install_properties (object_class, N_PROPS, properties);
 }
 
@@ -185,7 +171,9 @@ nautilus_view_cell_get_position (NautilusViewCell *self)
 {
     NautilusViewCellPrivate *priv = nautilus_view_cell_get_instance_private (self);
 
-    return priv->position;
+    g_return_val_if_fail (priv->list_item != NULL, GTK_INVALID_LIST_POSITION);
+
+    return gtk_list_item_get_position (priv->list_item);
 }
 
 NautilusListBase *
@@ -207,6 +195,18 @@ nautilus_view_cell_get_item (NautilusViewCell *self)
 
     /* Return full reference for consistency with gtk_tree_list_row_get_item() */
     return priv->item != NULL ? g_object_ref (priv->item) : NULL;
+}
+
+void
+nautilus_view_cell_set_list_item (NautilusViewCell *self,
+                                  GtkListItem      *list_item)
+{
+    g_return_if_fail (NAUTILUS_IS_VIEW_CELL (self));
+    g_return_if_fail (list_item == NULL || GTK_IS_LIST_ITEM (list_item));
+
+    NautilusViewCellPrivate *priv = nautilus_view_cell_get_instance_private (self);
+
+    priv->list_item = list_item;
 }
 
 void

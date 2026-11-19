@@ -882,11 +882,12 @@ setup_cell_common (GObject          *listitem,
     GtkEventController *controller;
     GtkDropTarget *drop_target;
 
+    nautilus_view_cell_set_list_item (cell, GTK_LIST_ITEM (listitem));
+
     g_signal_connect_object (listitem, "notify::item",
                              G_CALLBACK (on_list_item_item_changed), cell,
                              G_CONNECT_DEFAULT);
     on_list_item_item_changed (GTK_LIST_ITEM (listitem), NULL, cell);
-    g_object_bind_property (listitem, "position", cell, "position", G_BINDING_SYNC_CREATE);
 
     controller = GTK_EVENT_CONTROLLER (gtk_gesture_click_new ());
     gtk_widget_add_controller (GTK_WIDGET (cell), controller);
