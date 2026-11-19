@@ -19,10 +19,18 @@ G_DECLARE_DERIVABLE_TYPE (NautilusViewCell, nautilus_view_cell, NAUTILUS, VIEW_C
 struct _NautilusViewCellClass
 {
     GtkWidgetClass parent_class;
+
+    /* Called when the cell's item changes */
+    void (* item_changed) (NautilusViewCell *self,
+                           NautilusViewItem *old_item,
+                           NautilusViewItem *item);
 };
 
 NautilusListBase *nautilus_view_cell_get_view (NautilusViewCell *self);
 NautilusViewItem *nautilus_view_cell_get_item (NautilusViewCell *self);
+NautilusViewItem *nautilus_view_cell_peek_item (NautilusViewCell *self);
+void nautilus_view_cell_set_item (NautilusViewCell *self,
+                                  NautilusViewItem *item);
 guint nautilus_view_cell_get_position (NautilusViewCell *self);
 
 G_END_DECLS

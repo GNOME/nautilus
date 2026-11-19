@@ -109,7 +109,7 @@ nautilus_view_cell_set_property (GObject      *object,
 
         case PROP_ITEM:
         {
-            g_set_object (&priv->item, g_value_get_object (value));
+            nautilus_view_cell_set_item (self, g_value_get_object (value));
         }
         break;
 
@@ -166,7 +166,7 @@ nautilus_view_cell_class_init (NautilusViewCellClass *klass)
     properties[PROP_ITEM] = g_param_spec_object ("item",
                                                  "", "",
                                                  NAUTILUS_TYPE_VIEW_ITEM,
-                                                 G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS);
+                                                 G_PARAM_READWRITE | G_PARAM_EXPLICIT_NOTIFY | G_PARAM_STATIC_STRINGS);
     properties[PROP_ICON_SIZE] = g_param_spec_uint ("icon-size",
                                                     "", "",
                                                     NAUTILUS_LIST_ICON_SIZE_SMALL,
@@ -207,4 +207,29 @@ nautilus_view_cell_get_item (NautilusViewCell *self)
 
     /* Return full reference for consistency with gtk_tree_list_row_get_item() */
     return priv->item != NULL ? g_object_ref (priv->item) : NULL;
+}
+
+void
+nautilus_view_cell_set_item (NautilusViewCell *self,
+                             NautilusViewItem *item)
+{
+    g_return_if_fail (NAUTILUS_IS_VIEW_CELL (self));
+
+    NautilusViewCellPrivate *priv = nautilus_view_cell_get_instance_private (self);
+
+    if (priv->item == item)
+    {
+        return;
+    }
+
+    g_autoptr (NautilusViewItem) old_item = g_steal_pointer (&priv->item);
+
+    g_set_object (&priv->item, item);
+
+    if (NAUTILUS_VIEW_CELL_GET_CLASS (self)->item_changed != NULL)
+    {
+        NAUTILUS_VIEW_CELL_GET_CLASS (self)->item_changed (self, old_item, item);
+    }
+
+    g_object_notify_by_pspec (G_OBJECT (self), properties[PROP_ITEM]);
 }
