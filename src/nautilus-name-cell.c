@@ -21,8 +21,6 @@ struct _NautilusNameCell
 {
     NautilusViewCell parent_instance;
 
-    GSignalGroup *item_signal_group;
-
     GQuark path_attribute_q;
     GFile *file_path_base_location;
 
@@ -353,23 +351,15 @@ nautilus_name_cell_init (NautilusNameCell *self)
                       G_CALLBACK (on_icon_size_changed), NULL);
     g_signal_connect (self, "notify::scale-factor", G_CALLBACK (on_icon_size_changed), NULL);
 
-    /* Connect automatically to an item. */
-    self->item_signal_group = g_signal_group_new (NAUTILUS_TYPE_VIEW_ITEM);
-    g_signal_group_connect_swapped (self->item_signal_group, "notify::drag-accept",
-                                    (GCallback) on_item_drag_accept_changed, self);
-    g_signal_group_connect_swapped (self->item_signal_group, "notify::is-cut",
-                                    (GCallback) update_icon, self);
-    g_signal_group_connect_swapped (self->item_signal_group, "notify::loading",
-                                    (GCallback) on_item_is_loading_changed, self);
-    g_signal_group_connect_swapped (self->item_signal_group, "file-changed",
-                                    (GCallback) on_file_changed, self);
-    g_signal_connect_object (self->item_signal_group, "bind",
-                             (GCallback) on_file_changed, self,
-                             G_CONNECT_SWAPPED);
-
-    g_object_bind_property (self, "item",
-                            self->item_signal_group, "target",
-                            G_BINDING_SYNC_CREATE);
+    nautilus_view_cell_connect_item_signals (NAUTILUS_VIEW_CELL (self),
+                                             G_CALLBACK (on_file_changed),
+                                             "notify::drag-accept",
+                                             G_CALLBACK (on_item_drag_accept_changed),
+                                             "notify::is-cut",
+                                             G_CALLBACK (update_icon),
+                                             "notify::loading",
+                                             G_CALLBACK (on_item_is_loading_changed),
+                                             NULL);
 }
 
 static void
@@ -378,7 +368,6 @@ nautilus_name_cell_dispose (GObject *object)
     NautilusNameCell *self = (NautilusNameCell *) object;
 
     g_clear_handle_id (&self->loading_timeout_id, g_source_remove);
-    g_clear_object (&self->item_signal_group);
 
     gtk_widget_dispose_template (GTK_WIDGET (self), NAUTILUS_TYPE_NAME_CELL);
 

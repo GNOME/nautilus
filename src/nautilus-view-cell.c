@@ -29,6 +29,9 @@ struct _NautilusViewCellPrivate
     NautilusListBase *view; /* Unowned */
     NautilusViewItem *item; /* Owned reference */
 
+    GSignalGroup *item_signal_group;
+    void (*file_changed_callback) (NautilusViewCell *);
+
     guint icon_size;
     guint position;
 };
@@ -109,7 +112,7 @@ nautilus_view_cell_set_property (GObject      *object,
 
         case PROP_ITEM:
         {
-            g_set_object (&priv->item, g_value_get_object (value));
+            nautilus_view_cell_set_item (self, g_value_get_object (value));
         }
         break;
 
@@ -135,7 +138,11 @@ nautilus_view_cell_set_property (GObject      *object,
 static void
 nautilus_view_cell_init (NautilusViewCell *self)
 {
+    NautilusViewCellPrivate *priv = nautilus_view_cell_get_instance_private (self);
+
     gtk_widget_add_css_class (GTK_WIDGET (self), "nautilus-view-cell");
+
+    priv->item_signal_group = g_signal_group_new (NAUTILUS_TYPE_VIEW_ITEM);
 }
 
 static void
@@ -144,6 +151,7 @@ nautilus_view_cell_dispose (GObject *object)
     NautilusViewCell *self = NAUTILUS_VIEW_CELL (object);
     NautilusViewCellPrivate *priv = nautilus_view_cell_get_instance_private (self);
 
+    g_clear_object (&priv->item_signal_group);
     g_clear_object (&priv->item);
     g_clear_weak_pointer (&priv->view);
 
@@ -166,7 +174,9 @@ nautilus_view_cell_class_init (NautilusViewCellClass *klass)
     properties[PROP_ITEM] = g_param_spec_object ("item",
                                                  "", "",
                                                  NAUTILUS_TYPE_VIEW_ITEM,
-                                                 G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS);
+                                                 G_PARAM_READWRITE |
+                                                 G_PARAM_EXPLICIT_NOTIFY |
+                                                 G_PARAM_STATIC_STRINGS);
     properties[PROP_ICON_SIZE] = g_param_spec_uint ("icon-size",
                                                     "", "",
                                                     NAUTILUS_LIST_ICON_SIZE_SMALL,
@@ -188,6 +198,48 @@ nautilus_view_cell_get_position (NautilusViewCell *self)
     return priv->position;
 }
 
+/**
+ * nautilus_view_cell_connect_item_signal:
+ * @self: a #NautilusViewCell
+ * @file_changed_callback: (scope notified): the mandatory handler for the
+ *   "file-changed" signal of #NautilusViewItem. It is also invoked once when a
+ *   new item is set, so that the cell updates itself for that item.
+ * @...: pairs of a signal name and a #GCallback handling it, for other
+ *   #NautilusViewItem signals to connect to, terminated by %NULL
+ *
+ * Connects @file_changed_callback and the given handlers to the signals of
+ * whichever #NautilusViewItem is set on @self.
+ */
+void
+nautilus_view_cell_connect_item_signals (NautilusViewCell *self,
+                                         GCallback         file_changed_callback,
+                                         ...)
+{
+    g_return_if_fail (NAUTILUS_IS_VIEW_CELL (self));
+    g_return_if_fail (file_changed_callback != NULL);
+
+    NautilusViewCellPrivate *priv = nautilus_view_cell_get_instance_private (self);
+    va_list args;
+
+    priv->file_changed_callback = (void (*) (NautilusViewCell *)) file_changed_callback;
+    g_signal_group_connect_swapped (priv->item_signal_group, "file-changed",
+                                    file_changed_callback, self);
+
+    va_start (args, file_changed_callback);
+
+    const char *detailed_signal;
+
+    while ((detailed_signal = va_arg (args, const char *)) != NULL)
+    {
+        GCallback callback = va_arg (args, GCallback);
+
+        g_signal_group_connect_swapped (priv->item_signal_group, detailed_signal,
+                                        callback, self);
+    }
+
+    va_end (args);
+}
+
 NautilusListBase *
 nautilus_view_cell_get_view (NautilusViewCell *self)
 {
@@ -207,4 +259,26 @@ nautilus_view_cell_get_item (NautilusViewCell *self)
 
     /* Return full reference for consistency with gtk_tree_list_row_get_item() */
     return priv->item != NULL ? g_object_ref (priv->item) : NULL;
+}
+
+void
+nautilus_view_cell_set_item (NautilusViewCell *self,
+                             NautilusViewItem *item)
+{
+    NautilusViewCellPrivate *priv = nautilus_view_cell_get_instance_private (self);
+
+    if (priv->item == item)
+    {
+        return;
+    }
+
+    g_set_object (&priv->item, item);
+    g_signal_group_set_target (priv->item_signal_group, item);
+
+    if (item != NULL && priv->file_changed_callback != NULL)
+    {
+        priv->file_changed_callback (self);
+    }
+
+    g_object_notify_by_pspec (G_OBJECT (self), properties[PROP_ITEM]);
 }

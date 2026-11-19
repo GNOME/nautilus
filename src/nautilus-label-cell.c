@@ -18,8 +18,6 @@ struct _NautilusLabelCell
 {
     NautilusViewCell parent_instance;
 
-    GSignalGroup *item_signal_group;
-
     NautilusColumn *column;
     GQuark attribute_q;
 
@@ -86,16 +84,9 @@ nautilus_label_cell_init (NautilusLabelCell *self)
     gtk_widget_add_css_class (child, "dimmed");
     self->label = GTK_LABEL (child);
 
-    /* Connect automatically to an item. */
-    self->item_signal_group = g_signal_group_new (NAUTILUS_TYPE_VIEW_ITEM);
-    g_signal_group_connect_swapped (self->item_signal_group, "file-changed",
-                                    G_CALLBACK (update_label), self);
-    g_signal_connect_object (self->item_signal_group, "bind",
-                             G_CALLBACK (update_label), self,
-                             G_CONNECT_SWAPPED);
-    g_object_bind_property (self, "item",
-                            self->item_signal_group, "target",
-                            G_BINDING_SYNC_CREATE);
+    nautilus_view_cell_connect_item_signals (NAUTILUS_VIEW_CELL (self),
+                                             G_CALLBACK (update_label),
+                                             NULL);
 }
 
 static void
@@ -135,7 +126,6 @@ nautilus_label_cell_dispose (GObject *object)
 {
     NautilusLabelCell *self = (NautilusLabelCell *) object;
 
-    g_clear_object (&self->item_signal_group);
     if (self->label)
     {
         gtk_widget_unparent (GTK_WIDGET (self->label));

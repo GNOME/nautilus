@@ -17,8 +17,6 @@ struct _NautilusNetworkCell
 {
     NautilusViewCell parent_instance;
 
-    GSignalGroup *item_signal_group;
-
     GtkWidget *top_child;
     GtkWidget *icon;
     GtkWidget *target_uri;
@@ -87,19 +85,10 @@ nautilus_network_cell_init (NautilusNetworkCell *self)
 {
     gtk_widget_init_template (GTK_WIDGET (self));
 
-    /* Connect automatically to an item. */
-    self->item_signal_group = g_signal_group_new (NAUTILUS_TYPE_VIEW_ITEM);
-    g_signal_group_connect_swapped (self->item_signal_group, "notify::loading",
-                                    (GCallback) on_file_changed, self);
-    g_signal_group_connect_swapped (self->item_signal_group, "file-changed",
-                                    (GCallback) on_file_changed, self);
-    g_signal_connect_object (self->item_signal_group, "bind",
-                             (GCallback) on_file_changed, self,
-                             G_CONNECT_SWAPPED);
-
-    g_object_bind_property (self, "item",
-                            self->item_signal_group, "target",
-                            G_BINDING_SYNC_CREATE);
+    nautilus_view_cell_connect_item_signals (NAUTILUS_VIEW_CELL (self),
+                                             G_CALLBACK (on_file_changed),
+                                             "notify::loading", G_CALLBACK (on_file_changed),
+                                             NULL);
 }
 
 static void
@@ -113,22 +102,12 @@ nautilus_network_cell_dispose (GObject *object)
 }
 
 static void
-nautilus_network_cell_finalize (GObject *object)
-{
-    NautilusNetworkCell *self = (NautilusNetworkCell *) object;
-
-    g_clear_object (&self->item_signal_group);
-    G_OBJECT_CLASS (nautilus_network_cell_parent_class)->finalize (object);
-}
-
-static void
 nautilus_network_cell_class_init (NautilusNetworkCellClass *klass)
 {
     GObjectClass *object_class = G_OBJECT_CLASS (klass);
     GtkWidgetClass *widget_class = GTK_WIDGET_CLASS (klass);
 
     object_class->dispose = nautilus_network_cell_dispose;
-    object_class->finalize = nautilus_network_cell_finalize;
 
     gtk_widget_class_set_template_from_resource (widget_class, "/org/gnome/nautilus/ui/nautilus-network-cell.ui");
 
