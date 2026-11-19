@@ -853,18 +853,39 @@ on_view_drop (GtkDropTarget *target,
     return accepted;
 }
 
+static void
+on_list_item_item_changed (GtkListItem      *listitem,
+                           GParamSpec       *pspec,
+                           NautilusViewCell *cell)
+{
+    GObject *model_item = gtk_list_item_get_item (listitem);
+
+    if (GTK_IS_TREE_LIST_ROW (model_item))
+    {
+        g_autoptr (NautilusViewItem) item = NULL;
+
+        item = NAUTILUS_VIEW_ITEM (gtk_tree_list_row_get_item (GTK_TREE_LIST_ROW (model_item)));
+        nautilus_view_cell_set_item (cell, item);
+    }
+    else
+    {
+        nautilus_view_cell_set_item (cell,
+                                     NAUTILUS_IS_VIEW_ITEM (model_item) ? NAUTILUS_VIEW_ITEM (model_item) : NULL);
+    }
+}
+
 void
 setup_cell_common (GObject          *listitem,
                    NautilusViewCell *cell,
                    GtkWidget        *hover_target)
 {
-    GtkExpression *expression;
     GtkEventController *controller;
     GtkDropTarget *drop_target;
 
-    expression = gtk_property_expression_new (GTK_TYPE_LIST_ITEM, NULL, "item");
-    expression = gtk_property_expression_new (GTK_TYPE_TREE_LIST_ROW, expression, "item");
-    gtk_expression_bind (expression, cell, "item", listitem);
+    g_signal_connect_object (listitem, "notify::item",
+                             G_CALLBACK (on_list_item_item_changed), cell,
+                             G_CONNECT_DEFAULT);
+    on_list_item_item_changed (GTK_LIST_ITEM (listitem), NULL, cell);
     g_object_bind_property (listitem, "position", cell, "position", G_BINDING_SYNC_CREATE);
 
     controller = GTK_EVENT_CONTROLLER (gtk_gesture_click_new ());
