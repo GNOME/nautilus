@@ -270,6 +270,20 @@ on_starred_changed (NautilusTagManager *tag_manager,
 }
 
 static void
+nautilus_grid_cell_item_changed (NautilusViewCell *cell,
+                                 NautilusViewItem *old_item,
+                                 NautilusViewItem *item)
+{
+    NautilusGridCell *self = NAUTILUS_GRID_CELL (cell);
+
+    g_signal_group_set_target (self->item_signal_group, item);
+    if (item != NULL)
+    {
+        on_file_changed (self);
+    }
+}
+
+static void
 nautilus_grid_cell_dispose (GObject *object)
 {
     NautilusGridCell *self = (NautilusGridCell *) object;
@@ -465,8 +479,10 @@ nautilus_grid_cell_class_init (NautilusGridCellClass *klass)
 {
     GObjectClass *object_class = G_OBJECT_CLASS (klass);
     GtkWidgetClass *widget_class = GTK_WIDGET_CLASS (klass);
+    NautilusViewCellClass *view_cell_class = NAUTILUS_VIEW_CELL_CLASS (klass);
 
     object_class->dispose = nautilus_grid_cell_dispose;
+    view_cell_class->item_changed = nautilus_grid_cell_item_changed;
 
     widget_class->measure = nautilus_grid_cell_measure;
     widget_class->size_allocate = nautilus_grid_cell_size_allocate;
@@ -508,13 +524,6 @@ nautilus_grid_cell_init (NautilusGridCell *self)
                                     (GCallback) update_icon, self);
     g_signal_group_connect_swapped (self->item_signal_group, "file-changed",
                                     (GCallback) on_file_changed, self);
-    g_signal_connect_object (self->item_signal_group, "bind",
-                             (GCallback) on_file_changed, self,
-                             G_CONNECT_SWAPPED);
-
-    g_object_bind_property (self, "item",
-                            self->item_signal_group, "target",
-                            G_BINDING_SYNC_CREATE);
 }
 
 NautilusGridCell *

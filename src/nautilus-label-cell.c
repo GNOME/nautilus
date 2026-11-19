@@ -76,6 +76,20 @@ nautilus_label_cell_set_property (GObject      *object,
 }
 
 static void
+nautilus_label_cell_item_changed (NautilusViewCell *cell,
+                                  NautilusViewItem *old_item,
+                                  NautilusViewItem *item)
+{
+    NautilusLabelCell *self = NAUTILUS_LABEL_CELL (cell);
+
+    g_signal_group_set_target (self->item_signal_group, item);
+    if (item != NULL)
+    {
+        update_label (self);
+    }
+}
+
+static void
 nautilus_label_cell_init (NautilusLabelCell *self)
 {
     GtkWidget *child;
@@ -90,12 +104,6 @@ nautilus_label_cell_init (NautilusLabelCell *self)
     self->item_signal_group = g_signal_group_new (NAUTILUS_TYPE_VIEW_ITEM);
     g_signal_group_connect_swapped (self->item_signal_group, "file-changed",
                                     G_CALLBACK (update_label), self);
-    g_signal_connect_object (self->item_signal_group, "bind",
-                             G_CALLBACK (update_label), self,
-                             G_CONNECT_SWAPPED);
-    g_object_bind_property (self, "item",
-                            self->item_signal_group, "target",
-                            G_BINDING_SYNC_CREATE);
 }
 
 static void
@@ -149,10 +157,13 @@ nautilus_label_cell_class_init (NautilusLabelCellClass *klass)
 {
     GObjectClass *object_class = G_OBJECT_CLASS (klass);
     GtkWidgetClass *widget_class = GTK_WIDGET_CLASS (klass);
+    NautilusViewCellClass *view_cell_class = NAUTILUS_VIEW_CELL_CLASS (klass);
 
     object_class->set_property = nautilus_label_cell_set_property;
     object_class->constructed = nautilus_label_cell_constructed;
     object_class->dispose = nautilus_label_cell_dispose;
+
+    view_cell_class->item_changed = nautilus_label_cell_item_changed;
 
     properties[PROP_COLUMN] = g_param_spec_object ("column",
                                                    "", "",

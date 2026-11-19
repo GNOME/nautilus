@@ -345,6 +345,20 @@ on_label_query_tooltip (GtkWidget  *widget,
 }
 
 static void
+nautilus_name_cell_item_changed (NautilusViewCell *cell,
+                                 NautilusViewItem *old_item,
+                                 NautilusViewItem *item)
+{
+    NautilusNameCell *self = NAUTILUS_NAME_CELL (cell);
+
+    g_signal_group_set_target (self->item_signal_group, item);
+    if (item != NULL)
+    {
+        on_file_changed (self);
+    }
+}
+
+static void
 nautilus_name_cell_init (NautilusNameCell *self)
 {
     gtk_widget_init_template (GTK_WIDGET (self));
@@ -363,13 +377,6 @@ nautilus_name_cell_init (NautilusNameCell *self)
                                     (GCallback) on_item_is_loading_changed, self);
     g_signal_group_connect_swapped (self->item_signal_group, "file-changed",
                                     (GCallback) on_file_changed, self);
-    g_signal_connect_object (self->item_signal_group, "bind",
-                             (GCallback) on_file_changed, self,
-                             G_CONNECT_SWAPPED);
-
-    g_object_bind_property (self, "item",
-                            self->item_signal_group, "target",
-                            G_BINDING_SYNC_CREATE);
 }
 
 static void
@@ -454,9 +461,12 @@ nautilus_name_cell_class_init (NautilusNameCellClass *klass)
 {
     GObjectClass *object_class = G_OBJECT_CLASS (klass);
     GtkWidgetClass *widget_class = GTK_WIDGET_CLASS (klass);
+    NautilusViewCellClass *view_cell_class = NAUTILUS_VIEW_CELL_CLASS (klass);
 
     object_class->dispose = nautilus_name_cell_dispose;
     object_class->finalize = nautilus_name_cell_finalize;
+
+    view_cell_class->item_changed = nautilus_name_cell_item_changed;
 
     widget_class->snapshot = snapshot;
 

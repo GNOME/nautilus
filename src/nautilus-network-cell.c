@@ -83,6 +83,20 @@ on_unmount_clicked (NautilusNetworkCell *self)
 }
 
 static void
+nautilus_network_cell_item_changed (NautilusViewCell *cell,
+                                    NautilusViewItem *old_item,
+                                    NautilusViewItem *item)
+{
+    NautilusNetworkCell *self = NAUTILUS_NETWORK_CELL (cell);
+
+    g_signal_group_set_target (self->item_signal_group, item);
+    if (item != NULL)
+    {
+        on_file_changed (self);
+    }
+}
+
+static void
 nautilus_network_cell_init (NautilusNetworkCell *self)
 {
     gtk_widget_init_template (GTK_WIDGET (self));
@@ -93,13 +107,6 @@ nautilus_network_cell_init (NautilusNetworkCell *self)
                                     (GCallback) on_file_changed, self);
     g_signal_group_connect_swapped (self->item_signal_group, "file-changed",
                                     (GCallback) on_file_changed, self);
-    g_signal_connect_object (self->item_signal_group, "bind",
-                             (GCallback) on_file_changed, self,
-                             G_CONNECT_SWAPPED);
-
-    g_object_bind_property (self, "item",
-                            self->item_signal_group, "target",
-                            G_BINDING_SYNC_CREATE);
 }
 
 static void
@@ -126,9 +133,12 @@ nautilus_network_cell_class_init (NautilusNetworkCellClass *klass)
 {
     GObjectClass *object_class = G_OBJECT_CLASS (klass);
     GtkWidgetClass *widget_class = GTK_WIDGET_CLASS (klass);
+    NautilusViewCellClass *view_cell_class = NAUTILUS_VIEW_CELL_CLASS (klass);
 
     object_class->dispose = nautilus_network_cell_dispose;
     object_class->finalize = nautilus_network_cell_finalize;
+
+    view_cell_class->item_changed = nautilus_network_cell_item_changed;
 
     gtk_widget_class_set_template_from_resource (widget_class, "/org/gnome/nautilus/ui/nautilus-network-cell.ui");
 
