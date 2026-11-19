@@ -25,6 +25,8 @@ NautilusListBase *nautilus_view_cell_get_view (NautilusViewCell *self);
 NautilusViewItem *nautilus_view_cell_get_item (NautilusViewCell *self);
 void nautilus_view_cell_set_item (NautilusViewCell *self,
                                   NautilusViewItem *item);
+void nautilus_view_cell_set_list_item (NautilusViewCell *self,
+                                       GtkListItem      *list_item);
 guint nautilus_view_cell_get_position (NautilusViewCell *self);
 
 void nautilus_view_cell_connect_item_signals (NautilusViewCell *self,
