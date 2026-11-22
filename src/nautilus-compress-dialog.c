@@ -14,7 +14,7 @@
 
 struct _NautilusCompressDialog
 {
-    AdwWindow parent_instance;
+    AdwDialog parent_instance;
 
     NautilusFilenameValidator *validator;
 
