@@ -8,6 +8,7 @@
 #include <test-utilities.h>
 
 #include <nautilus-application.h>
+#include <nautilus-clipboard.h>
 #include <nautilus-enums.h>
 #include <nautilus-file.h>
 #include <nautilus-file-operations.h>
@@ -128,6 +129,395 @@ create_view_with_slot (NautilusMode         mode,
     *slot_out = slot;
 
     return g_object_ref (view);
+}
+
+static GAction *
+lookup_view_action (NautilusFilesView *view,
+                    const gchar       *action_name)
+{
+    GActionGroup *group = nautilus_files_view_get_private_action_group (view);
+    GAction *action = g_action_map_lookup_action (G_ACTION_MAP (group), action_name);
+
+    g_assert_nonnull (action);
+
+    return action;
+}
+
+#define VIEW_ACTION_IS_ENABLED(files_view, action_name) \
+        g_action_get_enabled (lookup_view_action (files_view, action_name))
+
+static void
+wait_activate_action (NautilusFilesView *view,
+                      const gchar       *action_name)
+{
+    GAction *action = lookup_view_action (view, action_name);
+    g_autofree gchar *detailed_name = g_strconcat ("view.", action_name, NULL);
+
+    ITER_CONTEXT_WHILE (!g_action_get_enabled (action));
+
+    gtk_widget_activate_action (GTK_WIDGET (view), detailed_name, NULL);
+}
+
+static void
+test_copy_cut_paste_actions (void)
+{
+    const GStrv files_hierarchy = (char *[]) {
+        "source/",
+        "source/copy_file",
+        "source/cut_file",
+        "destination/",
+        NULL
+    };
+    g_autoptr (NautilusWindowSlot) slot = NULL;
+    g_autoptr (NautilusFilesView) files_view = create_view_with_slot (NAUTILUS_MODE_BROWSE,
+                                                                      NAUTILUS_VIEW_GRID_ID,
+                                                                      &slot);
+    g_autoptr (GFile) tmp_location = g_file_new_for_path (test_get_tmp_dir ());
+    g_autoptr (GFile) source_dir = g_file_get_child (tmp_location, "source");
+    g_autoptr (GFile) destination_dir = g_file_get_child (tmp_location, "destination");
+    g_autoptr (GFile) copy_source = g_file_get_child (source_dir, "copy_file");
+    g_autoptr (GFile) cut_source = g_file_get_child (source_dir, "cut_file");
+    g_autoptr (GFile) copy_destination = g_file_get_child (destination_dir, "copy_file");
+    g_autoptr (GFile) cut_destination = g_file_get_child (destination_dir, "cut_file");
+    g_autoptr (NautilusFile) copy_file = NULL;
+    g_autoptr (NautilusFile) cut_file = NULL;
+    GdkClipboard *clipboard = gtk_widget_get_clipboard (GTK_WIDGET (files_view));
+
+    file_hierarchy_create (files_hierarchy, "");
+
+    nautilus_files_view_set_location (files_view, source_dir);
+    ITER_CONTEXT_WHILE (nautilus_files_view_get_loading (files_view));
+
+    copy_file = nautilus_file_get (copy_source);
+    nautilus_files_view_set_selection (files_view,
+                                       &(GList){ .data = copy_file },
+                                       NAUTILUS_SELECTION_SOURCE_MANUAL);
+    wait_activate_action (files_view, "copy");
+    /* TODO: Add more rigorous clipboard checker */
+    g_assert_true (gdk_content_formats_contain_gtype (gdk_clipboard_get_formats (clipboard),
+                                                      NAUTILUS_TYPE_CLIPBOARD));
+
+    nautilus_files_view_set_location (files_view, destination_dir);
+    ITER_CONTEXT_WHILE (nautilus_files_view_get_loading (files_view));
+
+    nautilus_clipboard_prepare_for_files (clipboard, &(GList){ .data = copy_file }, FALSE);
+    wait_activate_action (files_view, "paste");
+    ITER_CONTEXT_WHILE (!g_file_query_exists (copy_destination, NULL));
+
+    nautilus_files_view_set_location (files_view, source_dir);
+    ITER_CONTEXT_WHILE (nautilus_files_view_get_loading (files_view));
+
+    cut_file = nautilus_file_get (cut_source);
+    nautilus_files_view_set_selection (files_view,
+                                       &(GList){ .data = cut_file },
+                                       NAUTILUS_SELECTION_SOURCE_MANUAL);
+    wait_activate_action (files_view, "cut");
+    /* TODO: Add more rigorous clipboard checker */
+    g_assert_true (gdk_content_formats_contain_gtype (gdk_clipboard_get_formats (clipboard),
+                                                      NAUTILUS_TYPE_CLIPBOARD));
+
+    nautilus_files_view_set_location (files_view, destination_dir);
+    ITER_CONTEXT_WHILE (nautilus_files_view_get_loading (files_view));
+
+    nautilus_clipboard_prepare_for_files (clipboard, &(GList){ .data = cut_file }, TRUE);
+    wait_activate_action (files_view, "paste_accel");
+
+    ITER_CONTEXT_WHILE (!g_file_query_exists (cut_destination, NULL) ||
+                        g_file_query_exists (cut_source, NULL));
+
+    g_assert_true (g_file_query_exists (copy_destination, NULL));
+    g_assert_true (g_file_query_exists (cut_destination, NULL));
+    g_assert_false (g_file_query_exists (cut_source, NULL));
+
+    test_clear_tmp_dir ();
+}
+
+static void
+test_copy_current_location_action (void)
+{
+    g_autoptr (NautilusWindowSlot) slot = NULL;
+    g_autoptr (NautilusFilesView) files_view = create_view_with_slot (NAUTILUS_MODE_BROWSE,
+                                                                      NAUTILUS_VIEW_GRID_ID,
+                                                                      &slot);
+    g_autoptr (GFile) tmp_location = g_file_new_for_path (test_get_tmp_dir ());
+    GdkClipboard *clipboard = gtk_widget_get_clipboard (GTK_WIDGET (files_view));
+
+    nautilus_files_view_set_location (files_view, tmp_location);
+    ITER_CONTEXT_WHILE (nautilus_files_view_get_loading (files_view));
+
+    wait_activate_action (files_view, "copy-current-location");
+
+    /* TODO: Check clipboard content */
+    g_assert_true (gdk_content_formats_contain_gtype (gdk_clipboard_get_formats (clipboard),
+                                                      NAUTILUS_TYPE_CLIPBOARD));
+    g_assert_true (gdk_content_formats_contain_gtype (gdk_clipboard_get_formats (clipboard),
+                                                      GDK_TYPE_FILE_LIST));
+
+    test_clear_tmp_dir ();
+}
+
+static gboolean
+file_is_symbolic_link (GFile *file)
+{
+    g_autoptr (GError) error = NULL;
+    g_autoptr (GFileInfo) info = g_file_query_info (file,
+                                                    G_FILE_ATTRIBUTE_STANDARD_TYPE ","
+                                                    G_FILE_ATTRIBUTE_STANDARD_IS_SYMLINK,
+                                                    G_FILE_QUERY_INFO_NOFOLLOW_SYMLINKS,
+                                                    NULL,
+                                                    &error);
+
+    if (info == NULL)
+    {
+        return FALSE;
+    }
+
+    return g_file_info_get_file_type (info) == G_FILE_TYPE_SYMBOLIC_LINK &&
+           g_file_info_get_is_symlink (info);
+}
+
+static void
+run_create_link_testcase (gboolean show_create_link)
+{
+    const GStrv files_hierarchy = (char *[]) {
+        "source/",
+        "source/file",
+        "destination/",
+        NULL
+    };
+    const gchar *create_link_action;
+    const gchar *other_create_link_action;
+    const gchar *in_place_action;
+    const gchar *other_in_place_action;
+    g_autoptr (NautilusWindowSlot) slot = NULL;
+    g_autoptr (NautilusFilesView) files_view = create_view_with_slot (NAUTILUS_MODE_BROWSE,
+                                                                      NAUTILUS_VIEW_GRID_ID,
+                                                                      &slot);
+    g_autoptr (GFile) tmp_location = g_file_new_for_path (test_get_tmp_dir ());
+    g_autoptr (GFile) source_dir = g_file_get_child (tmp_location, "source");
+    g_autoptr (GFile) destination_dir = g_file_get_child (tmp_location, "destination");
+    g_autoptr (GFile) source_file = g_file_get_child (source_dir, "file");
+    g_autoptr (GFile) destination_link = g_file_get_child (destination_dir, "file");
+    /* The new link can't use the target's name in the same directory. */
+    g_autoptr (GFile) in_place_link = g_file_get_child (source_dir, "Link to file");
+    g_autoptr (NautilusFile) source_nautilus_file = NULL;
+    g_autoslist (GFile) file_list = NULL;
+    g_autoptr (GdkContentProvider) provider = NULL;
+    GdkClipboard *clipboard = gtk_widget_get_clipboard (GTK_WIDGET (files_view));
+
+    if (show_create_link)
+    {
+        create_link_action = "create-link";
+        other_create_link_action = "create-link-shortcut";
+        in_place_action = "create-link-in-place";
+        other_in_place_action = "create-link-in-place-shortcut";
+    }
+    else
+    {
+        create_link_action = "create-link-shortcut";
+        other_create_link_action = "create-link";
+        in_place_action = "create-link-in-place-shortcut";
+        other_in_place_action = "create-link-in-place";
+    }
+
+    g_settings_set_boolean (nautilus_preferences,
+                            NAUTILUS_PREFERENCES_SHOW_CREATE_LINK,
+                            show_create_link);
+    file_hierarchy_create (files_hierarchy, "");
+
+    nautilus_files_view_set_location (files_view, source_dir);
+    ITER_CONTEXT_WHILE (nautilus_files_view_get_loading (files_view));
+
+    source_nautilus_file = nautilus_file_get (source_file);
+    nautilus_files_view_set_selection (files_view,
+                                       &(GList){ .data = source_nautilus_file },
+                                       NAUTILUS_SELECTION_SOURCE_MANUAL);
+
+    ITER_CONTEXT_WHILE (!VIEW_ACTION_IS_ENABLED (files_view, in_place_action));
+    g_assert_false (VIEW_ACTION_IS_ENABLED (files_view, other_in_place_action));
+    wait_activate_action (files_view, in_place_action);
+
+    ITER_CONTEXT_WHILE (!file_is_symbolic_link (in_place_link));
+
+    nautilus_files_view_set_location (files_view, destination_dir);
+    ITER_CONTEXT_WHILE (nautilus_files_view_get_loading (files_view));
+
+    /* A plain file list enables the link actions synchronously. */
+    file_list = g_slist_append (file_list, g_object_ref (source_file));
+    provider = gdk_content_provider_new_typed (GDK_TYPE_FILE_LIST, file_list);
+    gdk_clipboard_set_content (clipboard, provider);
+
+    ITER_CONTEXT_WHILE (!VIEW_ACTION_IS_ENABLED (files_view, create_link_action));
+    g_assert_false (VIEW_ACTION_IS_ENABLED (files_view, other_create_link_action));
+    wait_activate_action (files_view, create_link_action);
+
+    ITER_CONTEXT_WHILE (!file_is_symbolic_link (destination_link));
+
+    test_clear_tmp_dir ();
+}
+
+static void
+test_create_link_actions (void)
+{
+    run_create_link_testcase (FALSE);
+    run_create_link_testcase (TRUE);
+
+    g_settings_reset (nautilus_preferences, NAUTILUS_PREFERENCES_SHOW_CREATE_LINK);
+}
+
+static void
+test_delete_action (void)
+{
+    const GStrv files_hierarchy = (char *[]) {
+        "file",
+        NULL
+    };
+    g_autoptr (NautilusWindowSlot) slot = NULL;
+    g_autoptr (NautilusFilesView) files_view = create_view_with_slot (NAUTILUS_MODE_BROWSE,
+                                                                      NAUTILUS_VIEW_GRID_ID,
+                                                                      &slot);
+    g_autoptr (GFile) tmp_location = g_file_new_for_path (test_get_tmp_dir ());
+    g_autoptr (GFile) file_location = g_file_get_child (tmp_location, "file");
+    g_autoptr (NautilusFile) file = NULL;
+
+    file_hierarchy_create (files_hierarchy, "");
+
+    nautilus_files_view_set_location (files_view, tmp_location);
+    ITER_CONTEXT_WHILE (nautilus_files_view_get_loading (files_view));
+
+    file = nautilus_file_get (file_location);
+    file_load_attributes (file, NAUTILUS_ATTRIBUTE_INFO);
+    nautilus_files_view_set_selection (files_view,
+                                       &(GList){ .data = file },
+                                       NAUTILUS_SELECTION_SOURCE_MANUAL);
+    wait_activate_action (files_view, "delete-permanently-shortcut");
+
+    ITER_CONTEXT_WHILE (g_file_query_exists (file_location, NULL));
+    g_assert_false (g_file_query_exists (file_location, NULL));
+
+    test_clear_tmp_dir ();
+}
+
+static void
+test_action_basic_state (void)
+{
+    const GStrv files_hierarchy = (char *[]) {
+        "file",
+        "dir/",
+        NULL
+    };
+    g_autoptr (NautilusWindowSlot) slot = NULL;
+    g_autoptr (NautilusFilesView) files_view = create_view_with_slot (NAUTILUS_MODE_BROWSE,
+                                                                      NAUTILUS_VIEW_GRID_ID,
+                                                                      &slot);
+    g_autoptr (GFile) tmp_location = g_file_new_for_path (test_get_tmp_dir ());
+    g_autoptr (GFile) file_location = g_file_get_child (tmp_location, "file");
+    g_autoptr (GFile) dir_location = g_file_get_child (tmp_location, "dir");
+    g_autoptr (NautilusFile) file = NULL;
+    g_autoptr (NautilusFile) dir = NULL;
+
+    file_hierarchy_create (files_hierarchy, "");
+
+    nautilus_files_view_set_location (files_view, tmp_location);
+    ITER_CONTEXT_WHILE (nautilus_files_view_get_loading (files_view));
+
+    /* No selection. */
+    g_assert_false (VIEW_ACTION_IS_ENABLED (files_view, "copy"));
+    g_assert_false (VIEW_ACTION_IS_ENABLED (files_view, "cut"));
+    g_assert_false (VIEW_ACTION_IS_ENABLED (files_view, "move-to-trash"));
+    g_assert_false (VIEW_ACTION_IS_ENABLED (files_view, "preview-selection"));
+    g_assert_false (VIEW_ACTION_IS_ENABLED (files_view, "open-with-default-application"));
+    g_assert_false (VIEW_ACTION_IS_ENABLED (files_view, "open-item-new-tab"));
+    g_assert_false (VIEW_ACTION_IS_ENABLED (files_view, "open-item-new-window"));
+    g_assert_true (VIEW_ACTION_IS_ENABLED (files_view, "new-folder"));
+    g_assert_true (VIEW_ACTION_IS_ENABLED (files_view, "paste_accel"));
+    g_assert_true (VIEW_ACTION_IS_ENABLED (files_view, "copy-current-location"));
+    g_assert_true (VIEW_ACTION_IS_ENABLED (files_view, "properties"));
+    g_assert_true (VIEW_ACTION_IS_ENABLED (files_view, "current-directory-properties"));
+    g_assert_false (VIEW_ACTION_IS_ENABLED (files_view, "visible-columns"));
+    g_assert_true (VIEW_ACTION_IS_ENABLED (files_view, "visible-captions"));
+
+    /* Regular file selection. */
+    file = nautilus_file_get (file_location);
+    file_load_attributes (file, NAUTILUS_ATTRIBUTE_INFO);
+    nautilus_files_view_set_selection (files_view,
+                                       &(GList){ .data = file },
+                                       NAUTILUS_SELECTION_SOURCE_MANUAL);
+
+    g_assert_true (VIEW_ACTION_IS_ENABLED (files_view, "copy"));
+    g_assert_true (VIEW_ACTION_IS_ENABLED (files_view, "cut"));
+    g_assert_true (VIEW_ACTION_IS_ENABLED (files_view, "delete-permanently-shortcut"));
+    g_assert_true (VIEW_ACTION_IS_ENABLED (files_view, "preview-selection"));
+    g_assert_true (VIEW_ACTION_IS_ENABLED (files_view, "open-with-default-application"));
+    g_assert_false (VIEW_ACTION_IS_ENABLED (files_view, "open-item-new-tab"));
+    g_assert_false (VIEW_ACTION_IS_ENABLED (files_view, "open-item-new-window"));
+    g_assert_false (VIEW_ACTION_IS_ENABLED (files_view, "paste-into"));
+    g_assert_true (VIEW_ACTION_IS_ENABLED (files_view, "properties"));
+
+    /* Directory selection. */
+    dir = nautilus_file_get (dir_location);
+    file_load_attributes (dir, NAUTILUS_ATTRIBUTE_INFO);
+    nautilus_files_view_set_selection (files_view,
+                                       &(GList){ .data = dir },
+                                       NAUTILUS_SELECTION_SOURCE_MANUAL);
+
+    g_assert_true (VIEW_ACTION_IS_ENABLED (files_view, "open-item-new-tab"));
+    g_assert_true (VIEW_ACTION_IS_ENABLED (files_view, "open-item-new-window"));
+    g_assert_true (VIEW_ACTION_IS_ENABLED (files_view,
+                                           "open-current-directory-with-other-application"));
+    g_assert_true (VIEW_ACTION_IS_ENABLED (files_view, "properties"));
+
+    test_clear_tmp_dir ();
+}
+
+static void
+test_paste_into_action (void)
+{
+    const GStrv files_hierarchy = (char *[]) {
+        "source/",
+        "source/file",
+        "destination/",
+        NULL
+    };
+    g_autoptr (NautilusWindowSlot) slot = NULL;
+    g_autoptr (NautilusFilesView) files_view = create_view_with_slot (NAUTILUS_MODE_BROWSE,
+                                                                      NAUTILUS_VIEW_GRID_ID,
+                                                                      &slot);
+    g_autoptr (GFile) tmp_location = g_file_new_for_path (test_get_tmp_dir ());
+    g_autoptr (GFile) source_dir = g_file_get_child (tmp_location, "source");
+    g_autoptr (GFile) destination_dir = g_file_get_child (tmp_location, "destination");
+    g_autoptr (GFile) source_file = g_file_get_child (source_dir, "file");
+    g_autoptr (GFile) destination_file = g_file_get_child (destination_dir, "file");
+    g_autoptr (NautilusFile) source_nautilus_file = NULL;
+    g_autoptr (NautilusFile) destination_nautilus_file = NULL;
+
+    file_hierarchy_create (files_hierarchy, "");
+
+    nautilus_files_view_set_location (files_view, source_dir);
+    ITER_CONTEXT_WHILE (nautilus_files_view_get_loading (files_view));
+
+    source_nautilus_file = nautilus_file_get (source_file);
+    nautilus_files_view_set_selection (files_view,
+                                       &(GList){ .data = source_nautilus_file },
+                                       NAUTILUS_SELECTION_SOURCE_MANUAL);
+    wait_activate_action (files_view, "copy");
+
+    nautilus_files_view_set_location (files_view, tmp_location);
+    ITER_CONTEXT_WHILE (nautilus_files_view_get_loading (files_view));
+
+    nautilus_clipboard_prepare_for_files (gtk_widget_get_clipboard (GTK_WIDGET (files_view)),
+                                          &(GList){ .data = source_nautilus_file },
+                                          FALSE);
+    destination_nautilus_file = nautilus_file_get (destination_dir);
+    nautilus_files_view_set_selection (files_view,
+                                       &(GList){ .data = destination_nautilus_file },
+                                       NAUTILUS_SELECTION_SOURCE_MANUAL);
+    wait_activate_action (files_view, "paste-into");
+
+    ITER_CONTEXT_WHILE (!g_file_query_exists (destination_file, NULL));
+    g_assert_true (g_file_query_exists (source_file, NULL));
+
+    test_clear_tmp_dir ();
 }
 
 static void
@@ -1315,6 +1705,18 @@ main (int   argc,
                      test_extract_action);
     g_test_add_func ("/view/actions/open_item_location/search",
                      test_open_item_location_in_search);
+    g_test_add_func ("/view/actions/copy_cut_paste",
+                     test_copy_cut_paste_actions);
+    g_test_add_func ("/view/actions/copy_current_location",
+                     test_copy_current_location_action);
+    g_test_add_func ("/view/actions/create_link",
+                     test_create_link_actions);
+    g_test_add_func ("/view/actions/delete",
+                     test_delete_action);
+    g_test_add_func ("/view/actions/basic_state",
+                     test_action_basic_state);
+    g_test_add_func ("/view/actions/paste_into",
+                     test_paste_into_action);
     g_test_add_func ("/view/actions/zoom",
                      test_zoom_actions);
 
