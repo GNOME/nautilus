@@ -20,6 +20,11 @@ void test_clear_tmp_dir (void);
 void test_isolate_user_dirs (void);
 void test_init_config_dir (void);
 
+/* Returns the root of a new tmpfs mount, or NULL after skipping the test if
+ * mounting is not permitted. Pair with test_mount_point_destroy (). */
+GFile *test_mount_point_create (void);
+void test_mount_point_destroy (void);
+
 void empty_directory_by_prefix (GFile *parent,
                                 gchar *prefix);
 

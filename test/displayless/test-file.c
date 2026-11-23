@@ -855,6 +855,32 @@ test_directory_counts (void)
     test_clear_tmp_dir ();
 }
 
+static void
+test_file_mount_point (void)
+{
+    g_autoptr (GFile) location = test_mount_point_create ();
+
+    if (location == NULL)
+    {
+        return;
+    }
+
+    g_autoptr (GFile) tmp_dir_location = g_file_new_for_path (test_get_tmp_dir ());
+    g_autoptr (NautilusFile) tmp_dir_file = nautilus_file_get (tmp_dir_location);
+    g_autoptr (NautilusFile) mount_file = nautilus_file_get (location);
+
+    file_load_attributes (tmp_dir_file, NAUTILUS_ATTRIBUTE_INFO);
+    file_load_attributes (mount_file, NAUTILUS_ATTRIBUTE_MOUNT);
+
+    g_assert_true (mount_file->details->is_mountpoint);
+    g_assert_true (mount_file->details->mount_is_up_to_date);
+    g_assert_cmpstr (nautilus_file_get_filesystem_id (mount_file), !=,
+                     nautilus_file_get_filesystem_id (tmp_dir_file));
+
+    test_mount_point_destroy ();
+    test_clear_tmp_dir ();
+}
+
 int
 main (int   argc,
       char *argv[])
@@ -905,6 +931,8 @@ main (int   argc,
                      test_file_permissions_set_same);
     g_test_add_func ("/file/deep-counts/basic",
                      test_directory_counts);
+    g_test_add_func ("/file/mount-point/basic",
+                     test_file_mount_point);
 
     return g_test_run ();
 }

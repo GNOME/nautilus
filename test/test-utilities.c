@@ -8,6 +8,7 @@
 
 #include "test-utilities.h"
 
+#include <sys/mount.h>
 #include <sys/random.h>
 #include <sys/types.h>
 #include <nautilus-file.h>
@@ -43,6 +44,48 @@ test_clear_tmp_dir (void)
         rmdir (nautilus_tmp_dir);
         g_clear_pointer (&nautilus_tmp_dir, g_free);
     }
+}
+
+static gchar *mount_point_path = NULL;
+
+GFile *
+test_mount_point_create (void)
+{
+    g_autofree gchar *path = g_dir_make_tmp ("nautilus-mount-point-XXXXXX", NULL);
+
+    g_assert_null (mount_point_path);
+    g_assert_nonnull (path);
+
+    /* Unlike bind mounts, a tmpfs can be mounted unprivileged inside the user
+     * namespace that containers run in. */
+    if (mount ("tmpfs", path, "tmpfs",
+               MS_NOSUID | MS_NODEV,
+               "size=10M,mode=0755") != 0)
+    {
+        int saved_errno = errno;
+
+        rmdir (path);
+        g_test_skip_printf ("Cannot mount a tmpfs: %s", g_strerror (saved_errno));
+
+        return NULL;
+    }
+
+    mount_point_path = g_steal_pointer (&path);
+
+    return g_file_new_for_path (mount_point_path);
+}
+
+void
+test_mount_point_destroy (void)
+{
+    if (mount_point_path == NULL)
+    {
+        return;
+    }
+
+    g_assert_no_errno (umount (mount_point_path));
+    g_assert_no_errno (rmdir (mount_point_path));
+    g_clear_pointer (&mount_point_path, g_free);
 }
 
 void
