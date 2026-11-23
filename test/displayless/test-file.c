@@ -7,6 +7,15 @@
 #include <nautilus-file-utilities.h>
 #include <test-utilities.h>
 
+static NautilusFile *
+get_test_file (const gchar *relative_path)
+{
+    g_autoptr (GFile) location = g_file_new_build_filename (test_get_tmp_dir (),
+                                                            relative_path,
+                                                            NULL);
+
+    return nautilus_file_get (location);
+}
 
 static void
 test_file_refcount_single_file (void)
@@ -53,40 +62,440 @@ test_file_duplicate_pointers (void)
 }
 
 static void
-test_file_sort_order (void)
+assert_cmpfile_order (NautilusFile         *file_a,
+                      int                   expected_order,
+                      NautilusFile         *file_b,
+                      gboolean              directories_first,
+                      NautilusFileSortType  sort_attribute)
 {
-    g_autoptr (NautilusFile) file_1 = nautilus_file_get_by_uri ("file:///etc");
-    g_autoptr (NautilusFile) file_2 = nautilus_file_get_by_uri ("file:///usr");
-    NautilusFileSortType sort_type = NAUTILUS_FILE_SORT_BY_DISPLAY_NAME;
+    int order = nautilus_file_compare_for_sort (file_a, file_b,
+                                                sort_attribute,
+                                                directories_first, FALSE);
+    int reversed_order = nautilus_file_compare_for_sort (file_a, file_b,
+                                                         sort_attribute,
+                                                         directories_first, TRUE);
+    int swapped_order = nautilus_file_compare_for_sort (file_b, file_a,
+                                                        sort_attribute,
+                                                        directories_first, FALSE);
+    int swapped_reversed_order = nautilus_file_compare_for_sort (file_b, file_a,
+                                                                 sort_attribute,
+                                                                 directories_first, TRUE);
+    gboolean reverse_direction = !(directories_first &&
+                                   nautilus_file_is_directory (file_a) !=
+                                   nautilus_file_is_directory (file_b));
 
-    g_assert_cmpint (G_OBJECT (file_1)->ref_count, ==, 1);
-    g_assert_cmpint (G_OBJECT (file_2)->ref_count, ==, 1);
+    g_assert_true (order != 0);
+    g_assert_true ((order > 0) == (expected_order > 0));
+    g_assert_true (reversed_order != 0);
+    g_assert_true ((reversed_order > 0) ==
+                   (reverse_direction ? expected_order < 0 : expected_order > 0));
+    g_assert_true (swapped_order != 0);
+    g_assert_true ((swapped_order > 0) == (expected_order < 0));
+    g_assert_true (swapped_reversed_order != 0);
+    g_assert_true ((swapped_reversed_order > 0) ==
+                   (reverse_direction ? expected_order > 0 : expected_order < 0));
+}
 
-    int order = nautilus_file_compare_for_sort (file_1, file_2, sort_type, FALSE, FALSE);
-    g_assert_cmpint (order, <, 0);
+#define assert_cmpfile(file_a, comparison, file_b, directories_first) \
+        assert_cmpfile_order (file_a, \
+                              (1 comparison 0) ? 1 : -1, \
+                              file_b, \
+                              directories_first, \
+                              SORT_ATTRIBUTE)
 
-    int order_reversed = nautilus_file_compare_for_sort (file_1, file_2, sort_type, FALSE, TRUE);
-    g_assert_cmpint (order_reversed, >, 0);
+#define assert_cmpfile_with_attribute(file_a, comparison, file_b, directories_first, attribute) \
+        assert_cmpfile_order (file_a, \
+                              (1 comparison 0) ? 1 : -1, \
+                              file_b, \
+                              directories_first, \
+                              attribute)
+
+static void
+set_file_time_for_sort (NautilusFile *file,
+                        const gchar  *attribute,
+                        guint64       value)
+{
+    g_autofree gchar *uri = nautilus_file_get_uri (file);
+    g_autoptr (GFile) location = g_file_new_for_uri (uri);
+    g_autoptr (GError) error = NULL;
+
+    g_assert_true (g_file_set_attribute_uint64 (location, attribute, value,
+                                                G_FILE_QUERY_INFO_NONE, NULL, &error));
+    g_assert_no_error (error);
 }
 
 static void
-test_file_sort_with_self (void)
+test_file_compare_for_sort_same_file (void)
 {
-    g_autoptr (NautilusFile) file_1 = nautilus_file_get_by_uri ("file:///etc");
-    NautilusFileSortType sort_type = NAUTILUS_FILE_SORT_BY_DISPLAY_NAME;
-    int order;
+    const NautilusFileSortType sort_types[] =
+    {
+        NAUTILUS_FILE_SORT_BY_DISPLAY_NAME,
+        NAUTILUS_FILE_SORT_BY_SIZE,
+        NAUTILUS_FILE_SORT_BY_TYPE,
+        NAUTILUS_FILE_SORT_BY_MTIME,
+        NAUTILUS_FILE_SORT_BY_ATIME,
+        NAUTILUS_FILE_SORT_BY_BTIME,
+        NAUTILUS_FILE_SORT_BY_RECENCY,
+        NAUTILUS_FILE_SORT_BY_SEARCH_RELEVANCE,
+    };
+    const GStrv hierarchy = (char *[])
+    {
+        "sort_same.txt",
+        NULL
+    };
 
-    order = nautilus_file_compare_for_sort (file_1, file_1, sort_type, TRUE, TRUE);
-    g_assert_cmpint (order, ==, 0);
+    file_hierarchy_create (hierarchy, "");
 
-    order = nautilus_file_compare_for_sort (file_1, file_1, sort_type, TRUE, FALSE);
-    g_assert_cmpint (order, ==, 0);
+    g_autoptr (NautilusFile) file = get_test_file ("sort_same.txt");
 
-    order = nautilus_file_compare_for_sort (file_1, file_1, sort_type, FALSE, TRUE);
-    g_assert_cmpint (order, ==, 0);
+    for (guint i = 0; i < G_N_ELEMENTS (sort_types); i++)
+    {
+        for (guint j = 0; j < 4; j++)
+        {
+            gboolean directories_first = (j & 1) != 0;
+            gboolean reversed = (j & 2) != 0;
 
-    order = nautilus_file_compare_for_sort (file_1, file_1, sort_type, FALSE, FALSE);
-    g_assert_cmpint (order, ==, 0);
+            g_assert_cmpint (nautilus_file_compare_for_sort (file, file,
+                                                             sort_types[i],
+                                                             directories_first,
+                                                             reversed), ==, 0);
+        }
+    }
+
+    test_clear_tmp_dir ();
+}
+
+static void
+test_file_compare_for_sort_display_name (void)
+{
+#define SORT_ATTRIBUTE NAUTILUS_FILE_SORT_BY_DISPLAY_NAME
+    const GStrv hierarchy = (char *[])
+    {
+        "sort_name_a.txt",
+        "sort_name_b.txt",
+        ".sort_name_hidden",
+        "#sort_name_hash",
+        "sort_name_dir_a/",
+        "sort_name_dir_a/same.txt",
+        "sort_name_dir_b/",
+        "sort_name_dir_b/same.txt",
+        "sort_name_tie_a.txt",
+        "sort_name_tie_z.txt",
+        NULL
+    };
+    g_autoptr (NautilusFile) file_a = get_test_file ("sort_name_a.txt");
+    g_autoptr (NautilusFile) file_b = get_test_file ("sort_name_b.txt");
+    g_autoptr (NautilusFile) hidden = get_test_file (".sort_name_hidden");
+    g_autoptr (NautilusFile) hash = get_test_file ("#sort_name_hash");
+    g_autoptr (NautilusFile) file_in_a = get_test_file ("sort_name_dir_a/same.txt");
+    g_autoptr (NautilusFile) file_in_b = get_test_file ("sort_name_dir_b/same.txt");
+    g_autoptr (NautilusFile) tie_a = get_test_file ("sort_name_tie_a.txt");
+    g_autoptr (NautilusFile) tie_z = get_test_file ("sort_name_tie_z.txt");
+
+    file_hierarchy_create (hierarchy, "");
+
+    assert_cmpfile (file_a, <, file_b, FALSE);
+
+    /* Names starting with '.' or '#' sort last. */
+    assert_cmpfile (file_a, <, hidden, FALSE);
+    assert_cmpfile (file_a, <, hash, FALSE);
+
+    /* Equal display names are tie-broken by directory name. */
+    assert_cmpfile (file_in_a, <, file_in_b, FALSE);
+
+    /* Equal display names in the same directory are tie-broken by name. */
+    nautilus_file_set_display_name (tie_a, "same", NULL, TRUE);
+    nautilus_file_set_display_name (tie_z, "same", NULL, TRUE);
+
+    assert_cmpfile (tie_z, >, tie_a, FALSE);
+
+    test_clear_tmp_dir ();
+#undef SORT_ATTRIBUTE
+}
+
+static void
+test_file_compare_for_sort_size (void)
+{
+#define SORT_ATTRIBUTE NAUTILUS_FILE_SORT_BY_SIZE
+    const GStrv hierarchy = (char *[])
+    {
+        "sort_size_dir_small/",
+        "sort_size_dir_small/child",
+        "sort_size_dir_big/",
+        "sort_size_dir_big/child1",
+        "sort_size_dir_big/child2",
+        "sort_size_dir_z_equal/",
+        "sort_size_dir_z_equal/child",
+        "sort_size_dir_unknown_a/",
+        "sort_size_dir_unknown_b/",
+        "sort_size_unknown_a",
+        "sort_size_unknown_b",
+        "sort_size_cross_a/",
+        "sort_size_cross_a/equal",
+        "sort_size_cross_b/",
+        "sort_size_cross_b/equal",
+        NULL
+    };
+    g_autoptr (GFile) small_location = g_file_new_build_filename (test_get_tmp_dir (), "sort_size_small", NULL);
+    g_autoptr (GFile) large_location = g_file_new_build_filename (test_get_tmp_dir (), "sort_size_large", NULL);
+    g_autoptr (GFile) equal_a_location = g_file_new_build_filename (test_get_tmp_dir (), "sort_size_equal_a", NULL);
+    g_autoptr (GFile) equal_b_location = g_file_new_build_filename (test_get_tmp_dir (), "sort_size_equal_b", NULL);
+    g_autoptr (NautilusFile) small = nautilus_file_get (small_location);
+    g_autoptr (NautilusFile) large = nautilus_file_get (large_location);
+    g_autoptr (NautilusFile) equal_a = nautilus_file_get (equal_a_location);
+    g_autoptr (NautilusFile) equal_b = nautilus_file_get (equal_b_location);
+    g_autoptr (NautilusFile) directory_small = get_test_file ("sort_size_dir_small");
+    g_autoptr (NautilusFile) directory_big = get_test_file ("sort_size_dir_big");
+    g_autoptr (NautilusFile) directory_z_equal = get_test_file ("sort_size_dir_z_equal");
+    g_autoptr (NautilusFile) directory_unknown_a = get_test_file ("sort_size_dir_unknown_a");
+    g_autoptr (NautilusFile) directory_unknown_b = get_test_file ("sort_size_dir_unknown_b");
+    g_autoptr (NautilusFile) unknown_a = get_test_file ("sort_size_unknown_a");
+    g_autoptr (NautilusFile) unknown_b = get_test_file ("sort_size_unknown_b");
+    g_autoptr (NautilusFile) cross_a = get_test_file ("sort_size_cross_a/equal");
+    g_autoptr (NautilusFile) cross_b = get_test_file ("sort_size_cross_b/equal");
+
+    file_hierarchy_create (hierarchy, "");
+    create_random_file (small_location, 1);
+    create_random_file (large_location, 4096);
+    create_random_file (equal_a_location, 16);
+    create_random_file (equal_b_location, 16);
+
+    file_load_attributes (small, NAUTILUS_ATTRIBUTE_INFO);
+    file_load_attributes (large, NAUTILUS_ATTRIBUTE_INFO);
+    file_load_attributes (equal_a, NAUTILUS_ATTRIBUTE_INFO);
+    file_load_attributes (equal_b, NAUTILUS_ATTRIBUTE_INFO);
+    file_load_attributes (cross_a, NAUTILUS_ATTRIBUTE_INFO);
+    file_load_attributes (cross_b, NAUTILUS_ATTRIBUTE_INFO);
+    file_load_attributes (directory_small,
+                          NAUTILUS_ATTRIBUTE_INFO | NAUTILUS_ATTRIBUTE_DIRECTORY_ITEM_COUNT);
+    file_load_attributes (directory_big,
+                          NAUTILUS_ATTRIBUTE_INFO | NAUTILUS_ATTRIBUTE_DIRECTORY_ITEM_COUNT);
+    file_load_attributes (directory_z_equal,
+                          NAUTILUS_ATTRIBUTE_INFO | NAUTILUS_ATTRIBUTE_DIRECTORY_ITEM_COUNT);
+    /* These only load the file type, leaving the item counts unknown. */
+    file_load_attributes (directory_unknown_a, NAUTILUS_ATTRIBUTE_INFO);
+    file_load_attributes (directory_unknown_b, NAUTILUS_ATTRIBUTE_INFO);
+
+    assert_cmpfile (small, <, large, FALSE);
+
+    /* Equal sizes are tie-broken by full path. */
+    assert_cmpfile (equal_a, <, equal_b, FALSE);
+
+    /* Equal sizes in different directories are tie-broken by directory name. */
+    assert_cmpfile (cross_a, <, cross_b, FALSE);
+
+    /* Equal display names in the same directory are tie-broken by name. */
+    nautilus_file_set_display_name (equal_a, "same", NULL, TRUE);
+    nautilus_file_set_display_name (equal_b, "same", NULL, TRUE);
+
+    assert_cmpfile (equal_a, <, equal_b, FALSE);
+
+    /* Files with unknown sizes are ordered relative to known sizes. */
+    assert_cmpfile (unknown_a, <, small, FALSE);
+    assert_cmpfile (unknown_a, <, unknown_b, FALSE);
+
+    /* Directories are sorted by item count before files. */
+    assert_cmpfile (directory_small, <, directory_big, FALSE);
+
+    /* Directories with equal item counts are tie-broken by full path. */
+    assert_cmpfile (directory_small, <, directory_z_equal, FALSE);
+
+    /* Directories with unknown item counts are ordered relative to known ones. */
+    assert_cmpfile (directory_unknown_a, <, directory_small, FALSE);
+    assert_cmpfile (directory_unknown_a, <, directory_unknown_b, FALSE);
+
+    assert_cmpfile (directory_small, <, small, FALSE);
+
+    test_clear_tmp_dir ();
+#undef SORT_ATTRIBUTE
+}
+
+static void
+test_file_compare_for_sort_type (void)
+{
+#define SORT_ATTRIBUTE NAUTILUS_FILE_SORT_BY_TYPE
+    const GStrv hierarchy = (char *[])
+    {
+        "sort_type_dir_a/",
+        "sort_type_dir_b/",
+        "sort_type_image.png",
+        "sort_type_script.py",
+        "sort_type_text_a.txt",
+        "sort_type_text_b.txt",
+        "sort_type_unknown_a",
+        "sort_type_unknown_b",
+        NULL
+    };
+    g_autoptr (NautilusFile) directory_a = get_test_file ("sort_type_dir_a");
+    g_autoptr (NautilusFile) directory_b = get_test_file ("sort_type_dir_b");
+    g_autoptr (NautilusFile) image = get_test_file ("sort_type_image.png");
+    g_autoptr (NautilusFile) script = get_test_file ("sort_type_script.py");
+    g_autoptr (NautilusFile) text_a = get_test_file ("sort_type_text_a.txt");
+    g_autoptr (NautilusFile) text_b = get_test_file ("sort_type_text_b.txt");
+    g_autoptr (NautilusFile) unknown_a = get_test_file ("sort_type_unknown_a");
+    g_autoptr (NautilusFile) unknown_b = get_test_file ("sort_type_unknown_b");
+
+    file_hierarchy_create (hierarchy, "");
+    file_load_attributes (directory_a, NAUTILUS_ATTRIBUTE_INFO);
+    file_load_attributes (directory_b, NAUTILUS_ATTRIBUTE_INFO);
+    file_load_attributes (image, NAUTILUS_ATTRIBUTE_INFO);
+    file_load_attributes (script, NAUTILUS_ATTRIBUTE_INFO);
+    file_load_attributes (text_a, NAUTILUS_ATTRIBUTE_INFO);
+    file_load_attributes (text_b, NAUTILUS_ATTRIBUTE_INFO);
+
+    /* Directories are sorted before files. */
+    assert_cmpfile (directory_a, <, text_a, FALSE);
+
+    /* Files of the same type are tie-broken by full path. */
+    assert_cmpfile (directory_a, <, directory_b, FALSE);
+    assert_cmpfile (text_a, <, text_b, FALSE);
+
+    /* Same generic type, so the MIME type breaks the tie. */
+    assert_cmpfile (text_a, <, script, FALSE);
+
+    /* Different types are compared by their type string. */
+    int image_vs_text = nautilus_file_compare_for_sort (image, text_a,
+                                                        SORT_ATTRIBUTE,
+                                                        FALSE, FALSE);
+    int text_vs_image = nautilus_file_compare_for_sort (text_a, image,
+                                                        SORT_ATTRIBUTE,
+                                                        FALSE, FALSE);
+
+    /* Collation results need not be symmetric in magnitude, only in sign. */
+    g_assert_cmpint (image_vs_text, !=, 0);
+    g_assert_cmpint (image_vs_text * text_vs_image, <, 0);
+    g_assert_cmpint (nautilus_file_compare_for_sort (image, text_a,
+                                                     SORT_ATTRIBUTE,
+                                                     FALSE, TRUE), ==, -image_vs_text);
+    g_assert_cmpint (nautilus_file_compare_for_sort (text_a, image,
+                                                     SORT_ATTRIBUTE,
+                                                     FALSE, TRUE), ==, -text_vs_image);
+
+    /* Files whose type is not known are ordered relative to known types. */
+    assert_cmpfile (unknown_a, >, text_a, FALSE);
+    assert_cmpfile (unknown_a, <, unknown_b, FALSE);
+
+    test_clear_tmp_dir ();
+#undef SORT_ATTRIBUTE
+}
+
+static void
+test_file_compare_for_sort_directories_first (void)
+{
+#define SORT_ATTRIBUTE NAUTILUS_FILE_SORT_BY_DISPLAY_NAME
+    const GStrv hierarchy = (char *[])
+    {
+        "sort_dirs_z_directory/",
+        "sort_dirs_a_file",
+        NULL
+    };
+    g_autoptr (NautilusFile) directory = get_test_file ("sort_dirs_z_directory");
+    g_autoptr (NautilusFile) file = get_test_file ("sort_dirs_a_file");
+
+    file_hierarchy_create (hierarchy, "");
+    file_load_attributes (directory, NAUTILUS_ATTRIBUTE_INFO);
+    file_load_attributes (file, NAUTILUS_ATTRIBUTE_INFO);
+
+    /* Directories come first regardless of the sort criterion and reversed. */
+    assert_cmpfile (directory, <, file, TRUE);
+
+    /* Without directories_first the sort criterion decides. */
+    assert_cmpfile (file, <, directory, FALSE);
+
+    test_clear_tmp_dir ();
+#undef SORT_ATTRIBUTE
+}
+
+static void
+test_file_compare_for_sort_dates (void)
+{
+    const GStrv hierarchy = (char *[])
+    {
+        "sort_date_z_older.txt",
+        "sort_date_a_newer.txt",
+        "sort_date_unknown_a",
+        "sort_date_unknown_b",
+        NULL
+    };
+    g_autoptr (NautilusFile) older = get_test_file ("sort_date_z_older.txt");
+    g_autoptr (NautilusFile) newer = get_test_file ("sort_date_a_newer.txt");
+    g_autoptr (NautilusFile) unknown_a = get_test_file ("sort_date_unknown_a");
+    g_autoptr (NautilusFile) unknown_b = get_test_file ("sort_date_unknown_b");
+
+    file_hierarchy_create (hierarchy, "");
+
+    /* The names order the opposite way, so these assert the times are used. */
+    set_file_time_for_sort (older, G_FILE_ATTRIBUTE_TIME_MODIFIED, 1000000000);
+    set_file_time_for_sort (newer, G_FILE_ATTRIBUTE_TIME_MODIFIED, 2000000000);
+    set_file_time_for_sort (older, G_FILE_ATTRIBUTE_TIME_ACCESS, 1000000000);
+    set_file_time_for_sort (newer, G_FILE_ATTRIBUTE_TIME_ACCESS, 2000000000);
+
+    file_load_attributes (older, NAUTILUS_ATTRIBUTE_INFO);
+    file_load_attributes (newer, NAUTILUS_ATTRIBUTE_INFO);
+
+    assert_cmpfile_with_attribute (older, <, newer, FALSE, NAUTILUS_FILE_SORT_BY_MTIME);
+    assert_cmpfile_with_attribute (older, <, newer, FALSE, NAUTILUS_FILE_SORT_BY_ATIME);
+
+    /* Files with unknown times are ordered relative to known times. */
+    assert_cmpfile_with_attribute (unknown_a, <, older, FALSE, NAUTILUS_FILE_SORT_BY_MTIME);
+    assert_cmpfile_with_attribute (unknown_a, <, unknown_b, FALSE, NAUTILUS_FILE_SORT_BY_MTIME);
+
+    /* Files outside the trash have no trashed time, so they fall back to the
+     * full path. */
+    assert_cmpfile_with_attribute (older, >, newer, FALSE, NAUTILUS_FILE_SORT_BY_TRASHED_TIME);
+
+    /* Creation time may not be supported by the file system, and recency is
+     * irrelevant outside recent directories; only assert they are consistent. */
+    const NautilusFileSortType uncertain_sorts[] =
+    {
+        NAUTILUS_FILE_SORT_BY_BTIME,
+        NAUTILUS_FILE_SORT_BY_RECENCY,
+    };
+
+    for (guint i = 0; i < G_N_ELEMENTS (uncertain_sorts); i++)
+    {
+        int order = nautilus_file_compare_for_sort (older, newer,
+                                                    uncertain_sorts[i],
+                                                    FALSE, FALSE);
+
+        g_assert_cmpint (nautilus_file_compare_for_sort (newer, older,
+                                                         uncertain_sorts[i],
+                                                         FALSE, FALSE), ==, -order);
+        g_assert_cmpint (nautilus_file_compare_for_sort (older, newer,
+                                                         uncertain_sorts[i],
+                                                         FALSE, TRUE), ==, -order);
+    }
+
+    test_clear_tmp_dir ();
+}
+
+static void
+test_file_compare_for_sort_search_relevance (void)
+{
+#define SORT_ATTRIBUTE NAUTILUS_FILE_SORT_BY_SEARCH_RELEVANCE
+    const GStrv hierarchy = (char *[])
+    {
+        "sort_relevance_a.txt",
+        "sort_relevance_b.txt",
+        NULL
+    };
+    g_autoptr (NautilusFile) file_a = get_test_file ("sort_relevance_a.txt");
+    g_autoptr (NautilusFile) file_b = get_test_file ("sort_relevance_b.txt");
+
+    file_hierarchy_create (hierarchy, "");
+    nautilus_file_set_search_relevance (file_a, 1.0);
+    nautilus_file_set_search_relevance (file_b, 0.5);
+
+    /* Higher relevance compares as greater. */
+    assert_cmpfile (file_a, >, file_b, FALSE);
+
+    /* Equal relevance is tie-broken by full path, but the result is inverted. */
+    nautilus_file_set_search_relevance (file_b, 1.0);
+
+    assert_cmpfile (file_a, >, file_b, FALSE);
+
+    test_clear_tmp_dir ();
+#undef SORT_ATTRIBUTE
 }
 
 typedef struct
@@ -466,10 +875,20 @@ main (int   argc,
                      test_file_check_name_trailing_slash);
     g_test_add_func ("/file-duplicate-pointers/1.0",
                      test_file_duplicate_pointers);
-    g_test_add_func ("/file-sort/order",
-                     test_file_sort_order);
-    g_test_add_func ("/file-sort/with-self",
-                     test_file_sort_with_self);
+    g_test_add_func ("/file-sort/same-file",
+                     test_file_compare_for_sort_same_file);
+    g_test_add_func ("/file-sort/display-name",
+                     test_file_compare_for_sort_display_name);
+    g_test_add_func ("/file-sort/size",
+                     test_file_compare_for_sort_size);
+    g_test_add_func ("/file-sort/type",
+                     test_file_compare_for_sort_type);
+    g_test_add_func ("/file-sort/directories-first",
+                     test_file_compare_for_sort_directories_first);
+    g_test_add_func ("/file-sort/dates",
+                     test_file_compare_for_sort_dates);
+    g_test_add_func ("/file-sort/search-relevance",
+                     test_file_compare_for_sort_search_relevance);
     g_test_add_func ("/file-batch-rename/cycles",
                      test_file_batch_rename_cycles);
     g_test_add_func ("/file-batch-rename/chains",
