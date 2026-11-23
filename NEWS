@@ -1,3 +1,40 @@
+Major Changes in 51.2
+=====================
+* Bugfixes:
+- Use file-chooser portal directly (Corey Berla)
+- Create thumbnails from Recent (Corey Berla)
+- Only offer to open gnome-disks for block devices (Corey Berla)
+- Avoid unnecessary scrolling in compress dialog (Peter Eisenmann)
+- Skip free space checks for merges on the same file system (Corey Berla)
+- Follow initial symlink when starting a deep count (Corey Berla)
+- Update file chooser view on filter changes (Corey Berla)
+- Accept activated files in file chooser directly (Corey Berla)
+- Handle SIGINT (Corey Berla)
+- Ensure trash does not link to other files (Corey Berla)
+- Improve image properties speed on external locations (Khalid Abu Shawarib)
+- Treat webp and jpeg xl as pictures for search (Peter Eisenmann)
+- Keep underscores in history menu labels (Corey Berla)
+- Don't open folders on hover while scrolling (Corey Berla)
+- Don't name a skipped file in the progress status (Corey Berla)
+- Don't accept empty archive names when compressing (Corey Berla)
+- Make access and creation times optional in search (Corey Berla)
+- Fix selection on deleting last item (Peter Eisenmann)
+- Use correct date with date range search (Khalid Abu Shawarib)
+- Keep prior focus when closing location entry with button (Khalid Abu Shawarib)
+- Fix critical warning when unmounting onedrive (Khalid Abu Shawarib)
+- Fix stack buffer overflow when dropping text (Corey Berla)
+- Fix crash when a file chooser portal is the active window (Corey Berla)
+- Fix crash on middle-click in the path bar of the file chooser (Corey Berla)
+- Fix use-after-free when opening a regular file location (Khalid Abu Shawarib)
+- Don't offer to delete folder contents when undoing a folder copy (Corey Berla)
+- Fix wrong location when navigating from a non-search location (Corey Berla)
+- Don't abort deep counts when files disappear (Corey Berla)
+- Fix invalid UTF-8 names in the trash notification (Corey Berla)
+- Fix swapped owner and group undo labels (Corey Berla)
+- Fix swapped source and destination icons in the conflict dialog (Corey Berla)
+
+* Translation updates (GNOME Translation Project contributors)
+
 Major Changes in 51.1
 =====================
 * Bugfixes:
