@@ -19,12 +19,14 @@
 typedef struct
 {
     GPtrArray *script_names;
+    GPtrArray *shortcuts;
 } ScriptsMenuData;
 
 static void
 scripts_menu_data_free (ScriptsMenuData *data)
 {
     g_clear_pointer (&data->script_names, g_ptr_array_unref);
+    g_clear_pointer (&data->shortcuts, g_ptr_array_unref);
     g_free (data);
 }
 
@@ -35,17 +37,33 @@ scripts_menu_data_new (void)
 {
     ScriptsMenuData *data = g_new0 (ScriptsMenuData, 1);
 
-    data->script_names = g_ptr_array_new_null_terminated (0, g_free, TRUE);
+    data->script_names = g_ptr_array_new_with_free_func (g_free);
+    data->shortcuts = g_ptr_array_new_with_free_func (g_free);
 
     return data;
 }
 
-static gboolean
-scripts_menu_data_equal (ScriptsMenuData *data,
-                         const GStrv      script_names)
+static void
+scripts_menu_data_equal (ScriptsMenuData     *data,
+                         const gchar * const *script_names,
+                         guint                n_script_names,
+                         const gchar * const *shortcuts,
+                         guint                n_shortcuts)
 {
-    return g_strv_equal ((const gchar * const *) data->script_names->pdata,
-                         (const gchar * const *) script_names);
+    g_assert_cmpuint (data->script_names->len, ==, n_script_names);
+    g_assert_cmpuint (data->shortcuts->len, ==, n_shortcuts);
+
+    for (guint i = 0; i < n_script_names; i++)
+    {
+        g_assert_cmpstr (g_ptr_array_index (data->script_names, i), ==,
+                         script_names[i]);
+    }
+
+    for (guint i = 0; i < n_shortcuts; i++)
+    {
+        g_assert_cmpstr (g_ptr_array_index (data->shortcuts, i), ==,
+                         shortcuts[i]);
+    }
 }
 
 /* Mimics how the real closure adds scripts to the menu. */
@@ -59,6 +77,8 @@ add_script_to_menu (NautilusFile *file,
     const gchar *name = nautilus_file_get_display_name (file);
 
     g_ptr_array_add (data->script_names, g_strdup (name));
+    g_ptr_array_add (data->shortcuts, g_strdup (g_hash_table_lookup (script_accels, name)));
+
     g_menu_append (menu, name, "scripts.run");
 }
 
@@ -182,6 +202,31 @@ create_script_file (const gchar *relative_path,
     g_assert_no_error (error);
 }
 
+static GFile *
+get_shortcuts_location (void)
+{
+    return g_file_new_build_filename (g_get_user_config_dir (),
+                                      "nautilus", "scripts-accels", NULL);
+}
+
+static void
+create_shortcuts_file (const gchar *contents)
+{
+    g_autoptr (GFile) location = get_shortcuts_location ();
+    g_autoptr (GFile) parent = g_file_get_parent (location);
+    g_autoptr (GError) error = NULL;
+
+    if (!g_file_make_directory_with_parents (parent, NULL, &error) &&
+        !g_error_matches (error, G_IO_ERROR, G_IO_ERROR_EXISTS))
+    {
+        g_assert_no_error (error);
+    }
+    g_clear_error (&error);
+
+    g_assert_true (g_file_set_contents (g_file_peek_path (location), contents, -1, &error));
+    g_assert_no_error (error);
+}
+
 static gboolean
 directory_contains (NautilusDirectory *directory,
                     const GStrv        names)
@@ -206,13 +251,16 @@ directory_contains (NautilusDirectory *directory,
     return TRUE;
 }
 
-/* Remove all files and directories from the scripts directory. */
+/* Remove all files and directories from the scripts directory, as well as the
+ * custom shortcuts file. */
 static void
 clear_scripts_directory (void)
 {
     g_autoptr (GFile) location = get_scripts_relative_location (NULL);
+    g_autoptr (GFile) shortcuts = get_shortcuts_location ();
 
     empty_directory_by_prefix (location, "");
+    g_file_delete (shortcuts, NULL, NULL);
 }
 
 /* Wait until the directory monitor notices the given entries. */
@@ -241,7 +289,49 @@ test_empty (void)
     menu = nautilus_scripts_monitor_get_menu (monitor, add_script_to_menu, data);
 
     g_assert_null (menu);
-    g_assert_cmpuint (data->script_names->len, ==, 0);
+    scripts_menu_data_equal (data, NULL, 0, NULL, 0);
+}
+
+static void
+test_shortcuts (void)
+{
+    g_autoptr (NautilusDirectory) directory = NULL;
+    g_autoptr (ScriptsMenuData) data = scripts_menu_data_new ();
+    g_autoptr (NautilusScriptsMonitor) monitor = NULL;
+    g_autoptr (GMenu) menu = NULL;
+    const GStrv expected_entries = (char *[]){
+        "accelerated.sh",
+        "plain.sh",
+        NULL
+    };
+    const gchar *expected_shortcuts[] =
+    {
+        "<Primary>F9",
+        NULL
+    };
+
+    clear_scripts_directory ();
+
+    create_script_file ("accelerated.sh", 0755);
+    create_script_file ("plain.sh", 0755);
+    create_shortcuts_file ("<Primary>F9 accelerated.sh\n");
+
+    monitor = get_initialized_monitor ();
+    directory = get_scripts_directory ();
+    wait_for_directory_entries (directory, expected_entries);
+    directory_load_attributes (directory,
+                               NAUTILUS_ATTRIBUTE_FILE_LIST |
+                               NAUTILUS_ATTRIBUTE_INFO);
+
+    menu = nautilus_scripts_monitor_get_menu (monitor, add_script_to_menu, data);
+
+    g_assert_nonnull (menu);
+    g_assert_cmpuint (g_menu_model_get_n_items (G_MENU_MODEL (menu)), ==, 2);
+    scripts_menu_data_equal (data,
+                             (const gchar * const *) expected_entries,
+                             g_strv_length (expected_entries),
+                             expected_shortcuts,
+                             G_N_ELEMENTS (expected_shortcuts));
 }
 
 static void
@@ -272,7 +362,7 @@ test_non_exec_script (void)
     /* The file is known to the directory but it is not executable, so the
      * scripts menu must be empty. */
     g_assert_null (menu);
-    g_assert_cmpuint (data->script_names->len, ==, 0);
+    scripts_menu_data_equal (data, NULL, 0, NULL, 0);
 }
 
 static void
@@ -287,6 +377,7 @@ test_single_script (void)
         "executable.sh",
         NULL
     };
+    const gchar *expected_shortcuts[] = { NULL };
 
     clear_scripts_directory ();
 
@@ -307,7 +398,11 @@ test_single_script (void)
     label = get_menu_item_label (G_MENU_MODEL (menu), 0);
     g_assert_cmpstr (label, ==, "executable.sh");
 
-    g_assert_true (scripts_menu_data_equal (data, expected_entries));
+    scripts_menu_data_equal (data,
+                             (const gchar * const *) expected_entries,
+                             g_strv_length (expected_entries),
+                             expected_shortcuts,
+                             G_N_ELEMENTS (expected_shortcuts));
 }
 
 static void
@@ -346,6 +441,8 @@ test_hierarchy (void)
         "top_script.sh",
         NULL
     };
+    /* No script has a shortcut here. */
+    const gchar *expected_shortcuts[] = { NULL, NULL, NULL, NULL, NULL };
 
     clear_scripts_directory ();
 
@@ -369,6 +466,7 @@ test_hierarchy (void)
     menu = nautilus_scripts_monitor_get_menu (monitor, add_script_to_menu, data);
     g_clear_object (&menu);
     g_ptr_array_set_size (data->script_names, 0);
+    g_ptr_array_set_size (data->shortcuts, 0);
 
     wait_for_directory_entries (first_folder, first_folder_entries);
     directory_load_attributes (first_folder, attributes);
@@ -386,7 +484,11 @@ test_hierarchy (void)
     label = get_menu_item_label (G_MENU_MODEL (menu), 2);
     g_assert_cmpstr (label, ==, "top_script.sh");
 
-    g_assert_true (scripts_menu_data_equal (data, expected_scripts));
+    scripts_menu_data_equal (data,
+                             (const gchar * const *) expected_scripts,
+                             g_strv_length (expected_scripts),
+                             expected_shortcuts,
+                             G_N_ELEMENTS (expected_shortcuts));
 }
 
 int
@@ -419,6 +521,8 @@ main (int   argc,
                      test_single_script);
     g_test_add_func ("/hierarchy/basic",
                      test_hierarchy);
+    g_test_add_func ("/shortcuts",
+                     test_shortcuts);
 
     result = g_test_run ();
 
