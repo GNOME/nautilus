@@ -510,8 +510,7 @@ main (int   argc,
     }
     g_setenv ("XDG_CONFIG_HOME", test_get_tmp_dir (), TRUE);
 
-    g_test_init (&argc, &argv, NULL);
-    nautilus_ensure_extension_points ();
+    nautilus_test_init (&argc, &argv, NAUTILUS_TEST_INIT_EXTENSIONS);
 
     g_test_add_func ("/empty",
                      test_empty);

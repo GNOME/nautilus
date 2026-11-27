@@ -198,15 +198,15 @@ main (int   argc,
 
     g_autoptr (NautilusTagManager) tag_manager = NULL;
 
-    gtk_test_init (&argc, &argv, G_TEST_OPTION_ISOLATE_DIRS, NULL);
+    nautilus_test_gtk_init (&argc, &argv,
+                            NAUTILUS_TEST_INIT_REGISTER_RESOURCE |
+                            NAUTILUS_TEST_INIT_EXTENSIONS |
+                            NAUTILUS_TEST_INIT_PREFS);
     adw_init ();
 
     /* HACK: Pretend to be a snap to disable sandboxing in libgnome-desktop */
     g_setenv ("SNAP_NAME", "1", TRUE);
 
-    nautilus_register_resource ();
-    nautilus_ensure_extension_points ();
-    nautilus_global_preferences_init ();
     tag_manager = nautilus_tag_manager_new_dummy ();
 
     g_test_add_func ("/properties/directory/empty",

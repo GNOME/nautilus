@@ -37,7 +37,7 @@ test_bookmark (void)
 static GFile *
 setup_tmp_bookmarks_file (void)
 {
-    /* The config directory is isolated by test_isolate_user_dirs () */
+    /* The config directory is isolated by NAUTILUS_TEST_INIT_ISOLATE */
     g_autofree char *bookmark_list_folder = g_build_filename (g_get_user_config_dir (),
                                                               "gtk-3.0",
                                                               NULL);
@@ -353,10 +353,7 @@ int
 main (int   argc,
       char *argv[])
 {
-    test_isolate_user_dirs ();
-    g_test_init (&argc, &argv, NULL);
-
-    nautilus_ensure_extension_points ();
+    nautilus_test_init (&argc, &argv, NAUTILUS_TEST_INIT_ISOLATE | NAUTILUS_TEST_INIT_EXTENSIONS);
 
     g_test_add_func ("/bookmarks/basic",
                      test_bookmark);

@@ -152,9 +152,7 @@ main (int   argc,
     g_autoptr (NautilusTagManager) tag_manager = NULL;
     g_autoptr (NautilusFileUndoManager) undo_manager = NULL;
 
-    g_test_init (&argc, &argv, NULL);
-    g_test_set_nonfatal_assertions ();
-    nautilus_ensure_extension_points ();
+    nautilus_test_init (&argc, &argv, NAUTILUS_TEST_INIT_EXTENSIONS);
 
     undo_manager = nautilus_file_undo_manager_new ();
     tag_manager = nautilus_tag_manager_new_dummy ();

@@ -447,13 +447,12 @@ main (int   argc,
     g_autoptr (NautilusFileUndoManager) undo_manager = NULL;
     g_autoptr (NautilusTagManager) tag_manager = NULL;
 
-    test_isolate_user_dirs ();
-    gtk_test_init (&argc, &argv, NULL);
+    nautilus_test_gtk_init (&argc, &argv,
+                            NAUTILUS_TEST_INIT_ISOLATE);
 
     g_setenv ("RUNNING_TESTS", "TRUE", TRUE);
 
     undo_manager = nautilus_file_undo_manager_new ();
-    test_init_config_dir ();
 
     g_test_add_func ("/create/folder/basic",
                      test_create_folder);

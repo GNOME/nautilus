@@ -190,10 +190,8 @@ int
 main (int   argc,
       char *argv[])
 {
-    g_test_init (&argc, &argv, NULL);
+    nautilus_test_init (&argc, &argv, NAUTILUS_TEST_INIT_EXTENSIONS);
     g_test_bug_base ("http://bugzilla.gnome.org/show_bug.cgi?id=747907");
-    g_test_set_nonfatal_assertions ();
-    nautilus_ensure_extension_points ();
 
     g_test_add_func ("/common-prefix/two-strings",
                      test_common_prefix_two_strings);

@@ -892,9 +892,7 @@ main (int   argc,
     g_autoptr (NautilusProgressInfoManager) progress_manager = NULL;
     g_autoptr (NautilusFileUndoManager) undo_manager = NULL;
 
-    g_test_init (&argc, &argv, NULL);
-    g_test_set_nonfatal_assertions ();
-    nautilus_ensure_extension_points ();
+    nautilus_test_init (&argc, &argv, NAUTILUS_TEST_INIT_EXTENSIONS);
 
     progress_manager = nautilus_progress_info_manager_dup_singleton ();
     undo_manager = nautilus_file_undo_manager_new ();

@@ -518,10 +518,7 @@ int
 main (int   argc,
       char *argv[])
 {
-    nautilus_ensure_extension_points ();
-
-    gtk_test_init (&argc, &argv, G_TEST_OPTION_ISOLATE_DIRS, NULL);
-    g_test_set_nonfatal_assertions ();
+    nautilus_test_gtk_init (&argc, &argv, NAUTILUS_TEST_INIT_EXTENSIONS);
 
     if (nautilus_application_is_sandboxed ())
     {

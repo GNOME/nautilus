@@ -343,10 +343,8 @@ int
 main (int   argc,
       char *argv[])
 {
-    gtk_test_init (&argc, &argv, G_TEST_OPTION_ISOLATE_DIRS, NULL);
-
-    nautilus_register_resource ();
-    nautilus_global_preferences_init ();
+    nautilus_test_gtk_init (&argc, &argv,
+                            NAUTILUS_TEST_INIT_REGISTER_RESOURCE | NAUTILUS_TEST_INIT_PREFS);
 
     if (nautilus_application_is_sandboxed ())
     {

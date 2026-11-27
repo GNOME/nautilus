@@ -13,12 +13,16 @@
 #include <sys/types.h>
 #include <nautilus-file.h>
 #include <nautilus-directory.h>
+#include <nautilus-file-utilities.h>
+#include <nautilus-global-preferences.h>
+#include <nautilus-resources.h>
 #include <src/nautilus-file-undo-manager.h>
 #include <src/nautilus-progress-info.h>
 #include <src/nautilus-progress-info-manager.h>
 #include <nautilus-thumbnails.h>
 
 #include <glycin.h>
+#include <gtk/gtk.h>
 
 static gchar *nautilus_tmp_dir = NULL;
 
@@ -164,6 +168,63 @@ test_init_config_dir (void)
         g_debug ("Initialized config folder %s", g_get_user_config_dir ());
         config_dir_initialized = TRUE;
     }
+}
+
+static void
+nautilus_test_init_internal (int                     *argc,
+                             char                  ***argv,
+                             NautilusTestInitFlags    flags,
+                             gboolean                 use_gtk)
+{
+    if (flags & NAUTILUS_TEST_INIT_ISOLATE)
+    {
+        test_isolate_user_dirs ();
+    }
+
+    if (use_gtk)
+    {
+        gtk_test_init (argc, argv, NULL);
+    }
+    else
+    {
+        g_test_init (argc, argv, NULL);
+    }
+
+    if (flags & NAUTILUS_TEST_INIT_REGISTER_RESOURCE)
+    {
+        nautilus_register_resource ();
+    }
+
+    if (flags & NAUTILUS_TEST_INIT_EXTENSIONS)
+    {
+        nautilus_ensure_extension_points ();
+    }
+
+    if (flags & NAUTILUS_TEST_INIT_PREFS)
+    {
+        nautilus_global_preferences_init ();
+    }
+
+    if (flags & NAUTILUS_TEST_INIT_ISOLATE)
+    {
+        test_init_config_dir ();
+    }
+}
+
+void
+nautilus_test_init (int                     *argc,
+                    char                  ***argv,
+                    NautilusTestInitFlags    flags)
+{
+    nautilus_test_init_internal (argc, argv, flags, FALSE);
+}
+
+void
+nautilus_test_gtk_init (int                     *argc,
+                        char                  ***argv,
+                        NautilusTestInitFlags    flags)
+{
+    nautilus_test_init_internal (argc, argv, flags, TRUE);
 }
 
 void

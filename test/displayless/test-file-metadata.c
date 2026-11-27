@@ -4,6 +4,8 @@
 #include <nautilus-file-utilities.h>
 #include <nautilus-metadata.h>
 
+#include <test-utilities.h>
+
 static const char *TEST_FILE = "file:///etc/passwd";
 static const char *KEY_BOOL = NAUTILUS_METADATA_KEY_ICON_VIEW_SORT_REVERSED;
 static const char *KEY_STR = NAUTILUS_METADATA_KEY_ICON_VIEW_SORT_BY;
@@ -38,9 +40,7 @@ int
 main (int   argc,
       char *argv[])
 {
-    g_test_init (&argc, &argv, NULL);
-    g_test_set_nonfatal_assertions ();
-    nautilus_ensure_extension_points ();
+    nautilus_test_init (&argc, &argv, NAUTILUS_TEST_INIT_EXTENSIONS);
 
     g_test_add_func ("/file-metadata-set-bool/true",
                      test_file_metadata_bool_set_true);

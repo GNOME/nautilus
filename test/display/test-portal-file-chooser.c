@@ -380,9 +380,7 @@ main (int   argc,
         return 1;
     }
 
-    g_test_init (&argc, &argv, NULL);
-
-    nautilus_register_resource ();
+    nautilus_test_init (&argc, &argv, NAUTILUS_TEST_INIT_REGISTER_RESOURCE);
 
     g_autoptr (NautilusTagManager) tag_manager = nautilus_tag_manager_new_dummy ();
     g_autoptr (GApplication) app = G_APPLICATION (nautilus_application_new ());

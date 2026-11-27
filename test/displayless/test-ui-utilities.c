@@ -2,6 +2,8 @@
 
 #include <nautilus-ui-utilities.h>
 
+#include <test-utilities.h>
+
 
 static void
 test_string_capitalization (void)
@@ -27,8 +29,7 @@ int
 main (int   argc,
       char *argv[])
 {
-    g_test_init (&argc, &argv, NULL);
-    g_test_set_nonfatal_assertions ();
+    nautilus_test_init (&argc, &argv, NAUTILUS_TEST_INIT_NONE);
 
     g_test_add_func ("/string-capitalization",
                      test_string_capitalization);

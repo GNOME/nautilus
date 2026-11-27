@@ -133,9 +133,7 @@ int
 main (int   argc,
       char *argv[])
 {
-    g_test_init (&argc, &argv, NULL);
-    g_test_set_nonfatal_assertions ();
-    nautilus_ensure_extension_points ();
+    nautilus_test_init (&argc, &argv, NAUTILUS_TEST_INIT_EXTENSIONS);
 
     g_test_add_func ("/directory-duplicate-pointers/1.0",
                      test_directory_duplicate_pointers);

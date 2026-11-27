@@ -895,10 +895,9 @@ main (int   argc,
     g_autoptr (NautilusTagManager) tag_manager = NULL;
     int ret;
 
-    test_isolate_user_dirs ();
-    g_test_init (&argc, &argv, NULL);
-    g_test_set_nonfatal_assertions ();
-    nautilus_ensure_extension_points ();
+    nautilus_test_init (&argc, &argv,
+                        NAUTILUS_TEST_INIT_ISOLATE |
+                        NAUTILUS_TEST_INIT_EXTENSIONS);
     progress_manager = nautilus_progress_info_manager_dup_singleton ();
     undo_manager = nautilus_file_undo_manager_new ();
     tag_manager = nautilus_tag_manager_new_dummy ();

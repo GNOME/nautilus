@@ -1663,8 +1663,11 @@ main (int   argc,
 {
     g_autoptr (NautilusTagManager) tag_manager = NULL;
 
-    test_isolate_user_dirs ();
-    gtk_test_init (&argc, &argv, NULL);
+    nautilus_test_gtk_init (&argc, &argv,
+                            NAUTILUS_TEST_INIT_ISOLATE |
+                            NAUTILUS_TEST_INIT_REGISTER_RESOURCE |
+                            NAUTILUS_TEST_INIT_EXTENSIONS |
+                            NAUTILUS_TEST_INIT_PREFS);
 
     if (nautilus_application_is_sandboxed ())
     {
@@ -1673,11 +1676,7 @@ main (int   argc,
         return 77;
     }
 
-    nautilus_register_resource ();
-    nautilus_ensure_extension_points ();
-    nautilus_global_preferences_init ();
     tag_manager = nautilus_tag_manager_new_dummy ();
-    test_init_config_dir ();
 
     g_autoptr (NautilusApplication) app = nautilus_application_new ();
 

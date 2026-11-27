@@ -14,6 +14,24 @@
         g_main_context_iteration (NULL, TRUE); \
     }
 
+typedef enum
+{
+    NAUTILUS_TEST_INIT_NONE = 0,
+    /* Isolate the XDG user dirs and initialize the config dir. */
+    NAUTILUS_TEST_INIT_ISOLATE = 1 << 0,
+    NAUTILUS_TEST_INIT_REGISTER_RESOURCE = 1 << 1,
+    NAUTILUS_TEST_INIT_EXTENSIONS = 1 << 2,
+    NAUTILUS_TEST_INIT_PREFS = 1 << 3,
+} NautilusTestInitFlags;
+
+void nautilus_test_init (int                     *argc,
+                         char                  ***argv,
+                         NautilusTestInitFlags    flags);
+
+void nautilus_test_gtk_init (int                     *argc,
+                             char                  ***argv,
+                             NautilusTestInitFlags    flags);
+
 const gchar *test_get_tmp_dir (void);
 void test_clear_tmp_dir (void);
 

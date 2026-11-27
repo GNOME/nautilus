@@ -12,6 +12,8 @@
 
 #include <gtk/gtk.h>
 
+#include <test-utilities.h>
+
 static void
 test_themed_cache (void)
 {
@@ -76,7 +78,7 @@ int
 main (int   argc,
       char *argv[])
 {
-    gtk_test_init (&argc, &argv, NULL);
+    nautilus_test_gtk_init (&argc, &argv, NAUTILUS_TEST_INIT_NONE);
 
     g_test_add_func ("/icon-info/themed/cache",
                      test_themed_cache);

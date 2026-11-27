@@ -2,6 +2,8 @@
 
 #include "nautilus-filename-utilities.h"
 
+#include <test-utilities.h>
+
 
 static void
 test_has_large_enough_common_prefix (void)
@@ -171,9 +173,8 @@ int
 main (int   argc,
       char *argv[])
 {
-    g_test_init (&argc, &argv, NULL);
+    nautilus_test_init (&argc, &argv, NAUTILUS_TEST_INIT_NONE);
     g_test_bug_base ("http://bugzilla.gnome.org/show_bug.cgi?id=747907");
-    g_test_set_nonfatal_assertions ();
 
     setup_test_suite ();
 

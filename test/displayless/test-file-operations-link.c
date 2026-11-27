@@ -286,7 +286,7 @@ main (int   argc,
 {
     g_autoptr (NautilusFileUndoManager) undo_manager = NULL;
 
-    g_test_init (&argc, &argv, NULL);
+    nautilus_test_init (&argc, &argv, NAUTILUS_TEST_INIT_NONE);
 
     undo_manager = nautilus_file_undo_manager_new ();
 
